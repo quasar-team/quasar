@@ -1,0 +1,123 @@
+<!-- © Copyright CERN and Universidad de Oviedo, 2015.                             -->
+<!-- All rights not expressly granted are reserved.                                -->
+<!-- This file is part of Quasar.                                                  -->
+<!--                                                                               -->
+<!-- Quasar is free software: you can redistribute it and/or modify                -->     
+<!-- it under the terms of the GNU Lesser General Public Licence as published by   -->     
+<!-- the Free Software Foundation, either version 3 of the Licence.                -->     
+<!-- Quasar is distributed in the hope that it will be useful,                     -->     
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of                -->     
+<!--                                                                               -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 -->
+<!-- GNU Lesser General Public Licence for more details.                           -->
+<!--                                                                               -->
+<!-- You should have received a copy of the GNU Lesser General Public License      -->
+<!-- along with Quasar.  If not, see <http://www.gnu.org/licenses/>                -->
+<!--                                                                               -->
+<!-- Created:   Sep 2015                                                           -->
+<!-- Authors:                                                                      -->
+<!--   Damian Abalo Miron <damian.abalo@cern.ch>                                   -->
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Windows Setup</title></head><body>
+<h1>Windows Setup</h1>
+
+The QUASAR Framework has many dependencies that are common place in a Linux environment, however this is not the case for a Windows one. In this page there are provided instructions on how to install the different dependencies of the framework, and some useful links as well, to help the user find the required programs.
+The availability of the links is not guaranteed at all, as they are external links that may become outdated.
+
+<br>
+<h2>Compulsory Dependencies</h2>
+This dependencies need to be taking care of in order to be able to use the main functionality of the framework.<br><br>
+<li>CMake</li>
+	<ul>
+		<li><a href="https://cmake.org/download/">Download and install from the official web-page</a></li>
+		<li>Add the folder bin, inside the main installation folder, to the Windows PATH environment variable</li>
+			<ul><li>To make sure everything went well run the command <i>cmake</i> in a Windows Command Prompt. If the command is recognized you are good to go.</li></ul>
+	</ul>
+<li>Python</li>
+	<ul>
+		<li><a href="https://www.python.org/downloads/">Download and install from the official web-page</a></li>
+		<ul><li>Scripts were developed with Python 2.7, but this doesn't mean that other versions will not work</li></ul>
+		<li>Add the main installation folder to the Windows PATH environment variable. This may be done automatically by the installer.</li>
+			<ul><li>To make sure everything went well run the command <i>python --help</i> in a Windows Command Prompt. If the command is recognized you are good to go.</li></ul>
+	</ul>
+<li>lxml</li>
+	<ul>
+		<li><a href="https://pypi.python.org/pypi/lxml/3.4.4">Download and install from the Python Software Foundation web-page</a></li>
+		<ul><li>Be careful, as you need to take into account the python version in order to install correctly this package.</li></ul>
+	</ul>
+<li>pysvn</li>
+	<ul>
+		<li>Download and install. <a href="http://pysvn.tigris.org/servlets/ProjectDocumentList?folderID=1768">Working binaries found here</a></li>
+		<ul><li>Be careful, as you need to take into account the svn and the python version in order to install correctly this package.</li></ul>
+	</ul>
+<li>Artistic Style</li>
+	<ul>
+		<li><a href="http://sourceforge.net/projects/astyle/files/">Download and install from sourceforge</a></li>
+		<li>Add the folder bin, inside the main installation folder, to the Windows PATH environment variable</li>
+			<ul><li>To make sure everything went well run the command <i>astyle --help</i> in a Windows Command Prompt. If the command is recognized you are good to go.</li></ul>
+	</ul>
+<li>KDiff3</li>
+	<ul>
+		<li><a href="http://sourceforge.net/projects/kdiff3/files/">Download and install from sourceforge</a></li>
+		<li>Add the main installation folder to the Windows PATH environment variable</li>
+			<ul><li>To make sure everything went well run the command <i>kdiff3</i> in a Windows Command Prompt. If the command is recognized you are good to go.</li></ul>
+	</ul>
+<li>Visual Studio</li>
+	<ul>
+		<li>Install visual studio, version of your choice.</li>
+			<ul><li>For CERN users it is advised to do it trough CMF</li></ul>
+		<li>Add the folder containing the executable MSBUILD.exe to the Windows PATH environment variable</li>
+			<ul>
+			<li>The location of this file changes depending on the version you are installing. Check for help online if you can't locate it</li>
+			<li>To make sure everything went well run the command <i>msbuild /help</i> in a Windows Command Prompt. If the command is recognized you are good to go.</li>
+			</ul>
+	</ul>
+<li>libxml2</li>
+	<ul>
+		<li><a href="http://www.xmlsoft.org/downloads.html">Download and install from the official web-page</a></li>
+		<li>Add the folder bin, inside the main installation folder, to the Windows PATH environment variable</li>
+			<ul><li>To make sure everything went well run the command <i>xmllint --help</i> in a Windows Command Prompt. If the command is recognized you are good to go.</li></ul>
+	</ul>
+<li>CodeSynthesis XSD (a.k.a. xsdcxx)</li>
+	<ul>
+		<li><a href="http://www.codesynthesis.com/products/xsd/download.xhtml">Download and install from the official web-page</a></li>
+		<li><a href="http://wiki.codesynthesis.com/Using_XSD_with_Microsoft_Visual_Studio">Conflict with Microsoft xsd.exe: to solve this rename binary xsd.exe to xsdcxx.exe </a></li>
+	</ul>
+<li>Boost</li>
+	<ul>
+		<li><a href="http://sourceforge.net/projects/boost/files/boost-binaries/">Download and install from sourceforge</a></li>
+	</ul>
+<li>OpenSSL</li>
+	<ul>
+		<li><a href="http://slproweb.com/products/Win32OpenSSL.html">Download and install from Shining Light Productions</a></li>
+	</ul>
+<li>xerces-c</li>
+	<ul>
+		<li><a href="http://xerces.apache.org/xerces-c/download.cgi">Download from the official web-page</a></li>
+		<li>Since there is no precompiled binary available, the user will need to compile this software <a href="https://xerces.apache.org/xerces-c/build-3.html#Windows">following this instructions</a></li>
+	</ul>
+
+<h2>Optional Dependencies</h2>
+This dependencies are needed to access some functionality of the framework that it's not critical.<br><br>
+<li>Graphviz</li>
+	<ul>
+		<li>Needed for generating graphs</li>
+		<li><a href="http://www.graphviz.org/">Download and install from the official web-page</a></li>
+		<li>Add the folder bin, inside the main installation folder, to the Windows PATH environment variable. This may be done automatically by the installer</li>
+			<ul><li>To make sure everything went well run the command <i>dot --help</i> in a Windows Command Prompt. If the command is recognized you are good to go.</li></ul>
+	</ul>
+<li>Doxygen</li>
+	<ul>
+		<li>Needed for doxygen documentation generation</li>
+		<li><a href="http://www.stack.nl/~dimitri/doxygen/download.html">Download and install from the official web-page</a></li>
+		<li>Add the folder bin, inside the main installation folder, to the Windows PATH environment variable. This may be done automatically by the installer</li>
+			<ul><li>To make sure everything went well run the command <i>doxygen --help</i> in a Windows Command Prompt. If the command is recognized you are good to go.</li></ul>
+	</ul>
+<li>Md5sum</li>
+	<ul>
+		<li>Needed for consistency cheks</li>
+		<li><a href="http://www.etree.org/md5com.html">Download and install from the official web-page</a></li>
+		<li>Add the folder where you decompress the executable to the Windows PATH environment variable.</li>
+			<ul><li>To make sure everything went well run the command <i>md5sum --help</i> in a Windows Command Prompt. If the command is recognized you are good to go.</li></ul>
+	</ul>
+</body></html>

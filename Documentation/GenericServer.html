@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html><head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <meta charset="UTF-8"><title>QUASAR</title></head><body>
+
+<h1>QUASAR (aka Generic OPC UA Server Framework)<br>
+</h1>
+Quick opcUA Server Generation frameworK
+<h2>Versions</h2><a href="ChangeLog.html">Changelog</a><br>
+<h2>Credits</h2>
+
+
+This framework was brought to you by:<br>
+
+<ul>
+
+  
+  <li>Damian Abalo Miron (damian.abalo@cern.ch)</li>
+  <ul>
+<li>Windows / MSVC10 compatibility<br>
+</li><li>Python-based scripts and tools<br>
+</li>
+  </ul>
+  <li>Benjamin Farnham (benjamin.farnham@cern.ch):</li>
+
+  <ul>
+    <li>LogIt logging engine</li>
+    <li>Meta module</li>
+    <li>Use cases &amp; ideas<br>
+    </li>
+  </ul>
+  <li>Viatcheslav "Slava" Filimonov (Viatcheslav.Filimonov@cern.ch):</li>
+
+  <ul>
+    <li>XML Configuration</li>
+    <li>Calculation engine</li>
+    <li>Node manager</li>
+  </ul>
+  <li>Piotr Nikiel (Piotr.Nikiel@cern.ch, piotr@nikiel.info):</li>
+  <ul>
+    <li>Framework's concept and architecture</li>
+    <li>Address Space, Device and Configuration generation (XSLTs, design files,
+scripts)</li>
+    <li>CMake-based build system</li>
+    <li>RPM generation for Linux<br>
+    </li>
+
+    
+    <li>Documentation and screencasts</li>
+    <li>Build configurations for Raspberry Pi, Zynq and MSVC10 on Wine<br>
+    </li>
+
+
+  </ul>
+  <li>Stefan Schlenker (Stefan.Schlenker@cern.ch)</li>
+  <ul>
+    <li>Use cases &amp; ideas</li>
+  </ul>
+  <li>Cristian-Valeriu Soare</li>
+  <ul>
+    <li>Embedded Python module<br>
+    </li>
+  </ul>
+</ul>
+
+<h2>Dependencies</h2>
+
+Mandatory:<br>
+
+<ul>
+
+  <li>Suitable C++ compiler (gcc is assumed by default)<br>
+  </li>
+  <li>The Unified Automation OPC UA Toolkit, version 1.3.3, headers +
+libraries. We recommend OpcUaToolkit-1.3.3.rpm package available from
+ATLAS Central DCS. We currently don't support any other version as
+their API are not compatible. Your mileage may vary.</li>
+  <li>Boost development libraries. (In principle, boost-regex,
+boost-devel and boost-program-options should be sufficient)<br>
+  </li>
+  <li>XSLT processor capable of XSLT2.0 processing. We use Saxon9 which
+is bundled with the package.</li>
+  <li>Java run time environment, to run the Saxon XSLT Processor.<br>
+  </li>
+  <li>Cmake version 2.8 or later. Available in SLC6 as cmake28 package.</li>
+</ul>
+
+Recommended:<br>
+
+<ul>
+
+  <li>Schema-aware XML editor. We use Eclipse, as can be seen in the
+screencasts.</li>
+  <li>Good C++ IDE / editor. We use Eclipse, as can be seen in the
+screencasts.<br>
+  </li>
+  <li>Good merge tool. We use kdiff3 (available as kdiff3 RPM in SLC6
+Linux).</li>
+  <li>ArtisticStyle ( <a href="http://astyle.sourceforge.net/">http://astyle.sourceforge.net/</a>
+) for automatic formatting of generated code. If you don't use it, the
+generated code will look like a shipwreck (but will still work). <br>
+ArtisticStyle RPM for SLC6 can be obtained from Piotr Nikiel, or you can compile it yourself from sources.<br>
+</li>
+  <li>graphviz, if you want to visualize your object design in
+UML-alike class diagram. Available in SLC6 as graphviz RPM package.</li>
+  <li>UnifiedAutomation UaExpert or any other OPC UA Client for
+exploring OPC UA address space.<br>
+  </li>
+  <li>Valgrind, for checking memory-related problems. (valgrind RPM in
+SLC6)</li>
+  <li>PDF viewer for opening UML-like diagrams created from design file.</li>
+  <li>Doxygen for generating documentation.</li>
+  <li>RPM Build tools for RPM generation<br>
+  </li>
+
+</ul><br>
+<h3>Quick setup hints for SLC6 users <br>
+</h3>
+<ol>
+  <li>Get Eclipse (www.eclipse.org) with :</li>
+  <ol>
+    <li>CDT (C/C++ Development tools) - "Eclipse IDE for C/C++ Developers"</li>
+    <li>XML editors - "Eclipse XML Editors and Tools"</li>
+    <li>Subversive SVN and SVN providers</li>
+  </ol>
+  <li>Issue this to install software from official SLC6 RPMs:<br>sudo
+yum install gcc-c++ gdb boost-devel boost-regex boost-program-options
+boost-signals jre cmake28 kdiff3 graphviz valgrind doxygen rpm-build
+subversion xsd openssl-dev libxml2-devel<br>
+  </li>
+  <li>From the ATLAS Central DCS<br>
+    <ul>
+      <li>obtain OPC UA Toolkit 1.3.3 RPM and astyle and install them:<br>
+sudo yum install OpcUaToolkit-1.3.3-0.x86_64.rpm astyle-2.0.4-0.rpm</li>
+      <li>obtain UaExpert and install it<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+</ol>
+<h3>Setup for Windows users <br>
+</h3>
+<ol>   
+ To set up the generic server in a windows environment, follow the instrunctions found <a href="WindowsSetup.html">here</a> <br>
+</ol>
+
+<h2>FAQ</h2>
+
+<ol>
+  
+  <li>How to build an executable with<span style="font-weight: bold;"> debug symbols</span>?<br>
+
+Pass the following parameter to your generateCmake.sh or automated_build_linux.sh script, like this:<br>
+
+./generateCmake.sh Debug<br>
+
+IMPORTANT: You have to keep appending this parameter every time you run
+any of the above mentioned scripts. Once you run any of them without
+Debug flag, build type will revert to Release.</li>
+
+  
+  <li>Something is wrong with my autogenerated code and the build fails. What could that be?<br>
+
+Please first try to do some diagnostics on your own. <br>
+
+  </li>
+
+  <ol>
+    
+    <li>Check whether your Design.xml file validates against Design.xsd. This can be done easily using Eclipse (Validate function).</li>
+
+    
+    <li>Since Device logic is your responsibility, make sure if you
+regenerated headers and bodies of your Device logic classes and root
+after altering the Design.xml file.<br>
+
+    </li>
+
+  </ol>
+  
+  <li>The server does not start, with such message:<br>
+
+***************************************************<br>
+
+&nbsp;Server opened endpoints for following URLs:<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp; opc.tcp://pcatldcsp10.cern.ch:4841<br>
+
+***************************************************<br>
+
+terminate called after throwing an instance of 'xsd::cxx::tree::parsing&lt;char&gt;'<br>
+
+&nbsp; what():&nbsp; instance document parsing failed<br>
+
+Aborted (core dumped)<br>
+
+    <br>
+
+It means that there is a problem with your config.xml file. The easiest
+way to check if it adheres to its schema file (Configuration.xsd) is
+either using Eclipse (Validate function from Project Explorer) or using
+xmllint:<br>
+
+xmllint --schema ../Configuration/Configuration.xsd config.xml<br>
+
+The last line tells you whether document validater properly or not (in this case: "config.xml fails to validate").</li>
+
+  
+  <li>The server starts up, but crashes.<br>
+
+There are plenty of possibilities here. The best way is to build a
+server with debug symbols (refer to FAQ:"How to build an executable
+with debug symbols?" above) and enable core dumping in your system.
+Then run it again and let it crash. You will obtain a coredump file,
+which you can load into GDB this way:<br>
+
+gdb &lt;path_to_executable&gt; &lt;core_dump_file&gt;<br>
+
+Then type 'bt' and gdb will show you crash back trace. Refer to GDB manual for more advanced debugging.</li>
+
+  
+  <li>How to create a <span style="font-weight: bold;">RPM</span> package with my server?<br>
+
+RPM packaging is possible when you store your project properly on SVN
+(which should always be the case, even when not using RPMs). The steps
+to configure RPM builder are as follows:</li>
+
+  <ol>
+    
+    <li>Edit buildRpm.sh<br>
+
+You have to edit 2 variables in the shell script: one that points to
+SVN location of tags directory and one that points to trunk. Both of
+them may be easily found in supplied buildRpm.sh by comment texts "This
+is the path to tag:" and "This is the path to trunk:". <br>
+
+    </li>
+
+    
+    <li>Edit template.spec</li>
+
+    <ol>
+      
+      <li>In the very first line, set name of the RPM. It shall match
+the value of "projectShortName" which you have put into design element
+of your Design.xml file.</li>
+
+      
+      <li>You may edit Summary: field with short (one-line) description of the server.</li>
+
+      
+      <li>You may edit %description section with long description of the server.</li>
+
+      
+      <li>Review the list of files listed in %install section. These
+files will be packed inside the package. Add additional files, if
+applicable (e.g. documentation, data files, additional libraries,
+etc...)</li>
+
+      
+      <li>If applicable, complete %pre, %post, %preun and %postun sections. <br>
+
+      </li>
+
+    </ol>
+    
+    <li>Commit changes in both files</li>
+
+    
+    <li>To generate RPM, run either:<br>
+
+./buildRpm.sh --revision &lt;revision_number&gt;<br>
+
+or<br>
+
+./buildRpm.sh --tag &lt;tag_name&gt;</li>
+
+    
+    <li>IMPORTANT: For delivering production packages, you should first
+tag given release on SVN, and then generate RPM from the tag (using the
+second version of command listed above).</li>
+
+  </ol>
+  
+  <li>After adding new class, I get such error:
+"AddressSpace/src/SourceVariables.cpp:48:19: error: ASxxxxxxx.h: No
+such file or directory" where xxxxxx stands for name of my class.<br>
+
+Don't forget to run generateCmake.sh each time you add a new class.</li>
+  <li>How to <span style="font-weight: bold;">upgrade</span> to newer <span style="font-weight: bold;">release</span> of Generic Server Framework?</li>
+  <ol>
+    <li>Download Generic OPC UA Server Framework in the version of your choice</li>
+    <li>Unpack it</li>
+    <li>Execute install_framework.sh which is in its root directory, passing path to your project to be upgraded as the first parameter:<br>
+sh install_framework.sh ....path..to..my..project....</li>
+  </ol>
+  <li>What is the difference between cache variable and source variable?<br>The difference lies in where factual value of the variable is stored, which impacts what happens after Read OPC UA Transaction:<br><ul><li>For
+cache variables, there are stored in the server's RAM (thus "cache"),
+and the value served back to the client is the value from RAM. Cache
+variables are perfect whenever some device logic code updates the
+address space or reads from the address space.</li><li>For source
+variables, there are stored "at the source", which for example might be
+at a remote computer. Therefore every Read transaction will trigger
+Device Logic method supposed to fetch that data from the source.&nbsp;
+Contrary to cache variables one may expect that such Read&nbsp;
+transaction may be blocking and time consuming, and therefore may be
+required to be executed in a separate thread of execution.</li></ul>Here is a picture taken from our CHEP2015 poster with sequence diagrams for both types of variables:<br><br>
+    <br>
+<img src="variable_types.png"></li>
+  <li>Can I use <span style="font-weight: bold;">evaluation version</span> of the UA Toolkit to create an OPC UA server using this framework?<br>
+You can.<br>
+Beware that at the time of writing the evaluation version is only
+available in 32 bits. Therefore we recommend to create a build
+configuration specifically for compiling in 32 bits with evaluation
+version of the toolkit.&nbsp;</li>
+  <li>How to use upgrade_design tool?<br>
+Rarely - but sometimes - XML stylesheet of Design file (Design.xsd)
+changes in backwards-incompatible way. For all such changes conversion
+tools are provided to mitigate the pain. upgrade_design is one of them.<br>
+upgrade_design currently accepts this commands:<br>
+    <ul>
+      <li>./quasar.py upgrade_design convert_to_hasDeviceLogic=yes</li>
+      <li>./quasar.py upgrade_design add_nullPolicy=nullAllowed or ./quasar.py upgrade_design add_nullPolicy=nullForbidden</li>
+      <li>./quasar.py upgrade_design remove_makeSetGet=yes</li>
+    </ul>
+Please refer to the Changelog which lists (in backwards incompatibility column) at which moments you may need any of the above.</li>
+  <li>Can I automatically prepare the required dependencies?<br>
+We have a shell script which could be useful if you e.g. need to
+crosscompile and do not yet have the libs required by Quasar. The
+script is places in the Documentation/Addons/prepare_dependencies.sh<br>
+  </li>
+
+
+
+</ol>
+<br>
+<h2><br>
+</h2>
+<h2>Tutorial</h2>
+
+
+<br>
+
+<h3>Chapter 1. Setup and create a working server with empty Address
+Space</h3>
+
+<ol>
+
+  <li>Prepare a working directory for your project. If you use version
+control system (e.g. SVN, Git) create a directory in it and check it
+out locally. If you plan to use Eclipse as an IDE, this is the right
+time to create a C++ Eclipse project (pick an "Empty Project" type
+which will
+force Eclispe not to create Makefiles for you.)</li>
+  <li>Copy contents of the Generic Server directory which you
+downloaded/checked out to your project directory. After that, inside
+your project directory you should see directories AddressSpace,
+Configuration, etc.</li>
+  <li>Inside Design directory create a simplest Design.xml file which
+adheres to its schema Design.xsd. Put a value "Tutorial" to
+projectShortName attribute. This is the contents of Design.xml file:<br>
+    <br>
+    <div><span style="font-family: monospace;">&lt;?xml version="1.0"
+encoding="UTF-8"?&gt;<br>
+&lt;d:design projectShortName="Tutorial" <br>
+xmlns:d="http://cern.ch/quasar/Design" <br>
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" <br>
+xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd "&gt;<br>
+&nbsp; &lt;d:root/&gt;<br>
+&lt;/d:design&gt;<br>
+    </span><br>
+    </div>
+  </li>
+  <li>Run automated_build_linux.sh script from the root directory.<br>
+  </li>
+  <li>From the root directory run make.</li>
+  <li>At this step, a server binary shall have been built inside bin
+Directory.&nbsp; However it will not start properly without a config
+file. <br>
+  </li>
+  <li>A requirement to run the server is presence of a XML
+configuration file (by default config.xml) in the directory from which
+the server was run.
+The config file has to adhere to (automatically generated) schema
+called Configuration.xsd, which is stored in Configuration directory.
+Similarly to the step before, create a schema-adhering config file
+inside bin directory, named config.xml. You can use such simplest&nbsp;
+configuration
+file:<br>
+    <div><span style="font-family: monospace;">&lt;?xml version="1.0"
+encoding="UTF-8"?&gt;<br>
+&lt;tns:configuration <br>
+xmlns:tns="http://cern.ch/quasar/Configuration" <br>
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" <br>
+xsi:schemaLocation="http://cern.ch/quasar/Configuration <br>
+../Configuration/Configuration.xsd "&gt;<br>
+&lt;/tns:configuration&gt;<br>
+    <br>
+    </span></div>
+  </li>
+  <li>You should be able to run your OPC UA Server now.</li>
+  <li>Open UaExpert and connect to your OPC UA Server to verify that it
+works.</li>
+</ol>
+
+<h3>Chapter 2. Create OPC UA address space (without any device logic
+yet)</h3>
+
+In this chapter we will create a simple object model of an address
+space and then generate server's source code. Our sample server will be
+an interface to automatic water heating system, which contains many
+individual heaters of different types.<br>
+
+<br>
+
+Imagine that our system is composed of such elements:<br>
+
+<ul>
+
+  <li>simple water heater, that can be either turned on or off and
+which measures passing water temperature.<br>
+  </li>
+  <li>advanced water heater, which autonomously controls heater basing
+on temperature setpoint, and which measures passing water temperature.
+The temperature setpoint has to be less than maximal allowed
+temperature, which is individual parameter of every heater. <br>
+  </li>
+</ul>
+
+Both heater types described above correspond to classes. Objects of
+these
+classes, representing particular instances, will be then instantiated
+in the real address space basing on configuration file (config.xml)
+supplied while
+running the server.<br>
+
+Measured values and setpoints correspond to variables, belonging to
+objects.<br>
+
+<br>
+
+<ol>
+
+  <li>Within Design.xml file:</li>
+  <ol>
+    <li>Under d:design add d:class and set its name attribute to
+SimpleHeater.</li>
+    <li>Add d:cachevariable named "heaterEnabled" of type
+OpcUa_Boolean. It shall not have setters or getters, and its address
+space write shall be regular. It shall be initialized with value and
+status, with initial value being OpcUa_False and initial status
+OpcUa_Good.</li>
+    <li>Add d:cachevariable named "currentTemperature" of type
+OpcUa_Float. It shall have setters and getters, and its address space
+write shall be forbidden. It shall be initialized with value and
+status, without initial value and with status
+OpcUa_BadWaitingForInitialData.</li>
+    <li>Under d:design add another d:class and set its name to
+AdvancedHeater.</li>
+    <li>Add d:cachevariable named "desiredTemperature" of type
+OpcUa_Float, with setters/getters, with its address space set as
+delegated. It shall be initialized with value and status, with value
+being 0 and initial status OpcUa_Good.</li>
+    <li>Add d:cachevariable named "currentTemperature" of type
+OpcUa_Float. It shall
+have setters and getters, and its address space write shall be
+forbidden. It shall be initialized with value and status, without
+initial value and with status OpcUa_BadWaitingForInitialData.</li>
+    <li>Add d:cachevariable named "temperatureHighLimit" of type
+OpcUa_Float, with setters/getters, with regular address space write. It
+shall be initialized with configuration.</li>
+    <li>Under d:design add two elements of d:hasobjects type, both
+instantiated using configuration and with class being SimpleHeater for
+the first one, and AdvancedHeater for the other.<br>
+    </li>
+  </ol>
+  <li>From the main directory run generateCmake.sh<br>
+  </li>
+  <li>From the main directory run make</li>
+  <li>When merge tool opens up for Configurator, accept all changes
+from Configurator.generated.cpp file.</li>
+  <li>At this step the new executable file shall be ready. We shall now
+add some hardware to the configuration file.</li>
+  <li>Within config.xml file, add few objects of simpleheater and
+advancedheater type. For advancedheater, remember to put some value
+into tooHighTemperatureEmergency type (e.g. 80 ).</li>
+  <li>You can run the server now and explore your new address space.
+Verify that some values indeed came from config file, and that
+OpcUa_BadWaitingForInitialData indeed is signalised.</li>
+  <li>You can visualize your object design:</li>
+  <ol>
+    <li>Go to Design directory</li>
+    <li>Run createDiagram.sh</li>
+    <li>Open file diagram.pdf using your facourite PDF viewer.<br>
+You should obtain a diagram similar to this one:<br>
+      <br>
+      <img src="diagram.png"></li>
+  </ol>
+</ol>
+
+<h3>Chapter 3. Adding device logic (without realtime actions yet)<br>
+</h3>
+
+In this chapter we will add device logic to AdvancedHeater class. <br>
+
+<ol>
+
+  <li>Within Design.xml file, add deviceLogicTypeName attribute to
+AdvancedHeater class, and set its value to DAdvancedHeater.</li>
+  <li>Go to Device directory. Run:<br>
+./generateDeviceHeader.sh AdvancedHeater<br>
+./generateDeviceBody.sh AdvancedHeater<br>
+These commands will create stubs for your Device Logic C++ classes for
+AdvancedHeater class.</li>
+  <li>Edit CMakeLists.txt file in Design directory, add
+src/DAdvancedHeater.cpp to the list of source files to compile.</li>
+  <li>We will add some handler logic when heatingPower variable of
+AdvancedHeader is to be adjusted. This is possible, because this
+variable's address space write was declared as delegated. Edit
+src/DAdvancedHeater.cpp class and inside writeDesiredTemperature
+method, put:<br>
+    
+    <div>&nbsp;<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; std::cout &lt;&lt; "write desired temperature" &lt;&lt; std::endl; &nbsp;  <br>
+&nbsp;&nbsp;&nbsp; OpcUa_Float desiredTemperature, highLimit;<br>
+&nbsp;&nbsp;&nbsp; UaVariant v (*dataValue.value());<br>
+&nbsp;&nbsp;&nbsp; v.toFloat (desiredTemperature);<br>
+&nbsp;&nbsp;&nbsp; if (!
+m_addressSpaceLink-&gt;getTemperatureHighLimit(highLimit).isGood())<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return OpcUa_BadInternalError;<br>
+&nbsp;&nbsp;&nbsp; if (desiredTemperature &gt; highLimit)<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return OpcUa_BadOutOfRange;<br>
+&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return OpcUa_Good;</span><br>
+    </div>
+</li>
+  <li>In the Device directory run generateRoot.sh <span style="font-weight: bold; color: rgb(255, 102, 102);"></span><br>
+  </li>
+  <li>In the main directory type make to compile the server.<br>
+  </li>
+  <li>Accept all changes from Configurator.generated.cpp<br>
+  </li>
+  <li>Run the server.</li>
+  <li>Try to write various values to desiredTemperature. Watch the
+statuscode and the console of the server.</li>
+</ol>
+
+<h3>Chapter 4. Adding real time actions</h3>
+
+In this chapter we will provide an example of how to run independent real time
+actions inside device logic. This could be e.g. a loop to connect to
+hardware for current data and push them to the address space.<br>
+
+<ol>
+
+  
+  <li>Inside DAdvancedHeater class add a method update and a field storing current temperature.<br>
+In DAdvancedHeater.h, public part:<br>
+    <div style="font-family: monospace;">&nbsp;&nbsp;&nbsp; void update();<br></div>
+
+In DAdvancedHeater.h, private part:<br>
+    <div><span style="font-family: monospace;">&nbsp;float m_currentTemperature;</span><br></div>
+
+Inside DAdvancedHeater.cpp constructor initialization list:<br>
+    <div style="font-family: monospace;">DAdvancedHeater::DAdvancedHeater (const Configuration::AdvancedHeater &amp; config):<br>
+&nbsp;&nbsp;&nbsp; m_addressSpaceLink(0),<br>
+&nbsp;&nbsp;&nbsp; m_currentTemperature(0)<br>
+    </div>
+Below in DAdvancedHeater.cpp add a method which will be the real time business:<br>
+    <div><span style="font-family: monospace;">void DAdvancedHeater::update ()</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">{</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; float desiredTemperature;</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; if (! m_addressSpaceLink-&gt;getDesiredTemperature(desiredTemperature).isGood())</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return;</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; m_currentTemperature = 0.9*m_currentTemperature + 0.1*desiredTemperature;</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; m_addressSpaceLink-&gt;setCurrentTemperature(m_currentTemperature, OpcUa_Good, UaDateTime::now());</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">}</span><br>
+    </div>
+    <br>
+  </li>
+  <li>Add a new class DUpdateInvoker. Place its header in Device/include/DUpdateInvoker.h:<br>
+    <div><span style="font-family: monospace;">#ifndef DUPDATEINVOKER_H_</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">#define DUPDATEINVOKER_H_</span><br>
+#include &lt;uathread.h&gt;<br style="font-family: monospace;">
+    <span style="font-family: monospace;">namespace Device</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">{</span><br style="font-family: monospace;">
+    <br style="font-family: monospace;">
+    <span style="font-family: monospace;">class DUpdateInvoker : public UaThread</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">{</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">public:</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; DUpdateInvoker ();</span><br style="font-family: monospace;">
+    <br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; void run ();</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; void exit () { m_exitFlag=1; }</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">private:</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; volatile bool m_exitFlag;</span><br style="font-family: monospace;">
+    <br style="font-family: monospace;">
+    <span style="font-family: monospace;">};</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">}</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">#endif</span><br>
+    </div>
+Place its source in Device/src/DUpdateInvoker.cpp:<br>
+    <div><span style="font-family: monospace;">#include &lt;iostream&gt;</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">#include &lt;boost/foreach.hpp&gt;</span><br style="font-family: monospace;">
+    <br style="font-family: monospace;">
+    <span style="font-family: monospace;">#include &lt;DRoot.h&gt;</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">#include &lt;DUpdateInvoker.h&gt;</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">#include &lt;DAdvancedHeater.h&gt;</span><br style="font-family: monospace;">
+    <br style="font-family: monospace;">
+    <span style="font-family: monospace;">namespace Device</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">{</span><br style="font-family: monospace;">
+    <br style="font-family: monospace;">
+    <span style="font-family: monospace;">DUpdateInvoker::DUpdateInvoker ():</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; m_exitFlag(0)</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">{</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">}</span><br style="font-family: monospace;">
+    <br style="font-family: monospace;">
+    <span style="font-family: monospace;">void DUpdateInvoker::run()</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">{</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; while (!m_exitFlag)</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; {</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; UaThread::sleep(1);</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; std::cout &lt;&lt; "tick" &lt;&lt; std::endl;</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; BOOST_FOREACH(DAdvancedHeater* h, DRoot::getInstance()-&gt;advancedheaters())</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; h-&gt;update();</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; }</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; std::cout &lt;&lt; "thread exit" &lt;&lt; std::endl;</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">}</span><br style="font-family: monospace;">
+    <br style="font-family: monospace;">
+    <span style="font-family: monospace;">}</span><br>
+    <br>
+    </div>
+    <br>
+    <br>
+  </li>
+  <li>Add into Server/src/main.cpp a way to run your new thread and to
+make it exit. Include header for boost's uathread and for
+DAdvancedHeater.h.<br>
+    <div><span style="font-family: monospace;">#include &lt;DUpdateInvoker.h&gt;</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">#include &lt;DAdvancedHeater.h&gt;</span><br>
+    </div>
+ Just before server enters its main waiting loop, add a code starting your thread:<span style="font-weight: bold;"><span style="font-weight: bold;"><br>
+    </span></span><span style="font-weight: bold;"></span>
+    <div><span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Device::DUpdateInvoker * invoker = new Device::DUpdateInvoker();</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; invoker-&gt;start();</span><br>
+    </div>
+    <span style="font-weight: bold;"><br>
+    </span>Just after "Shutting down server" text is printed, add instructions which will shut your thread down:<span style="font-weight: bold;"><br>
+    </span><span style="font-weight: bold;"></span>
+    <div><span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; invoker-&gt;exit();</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* Wait until threads terminate. */</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; while (invoker-&gt;running())</span><br style="font-family: monospace;">
+    <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; UaThread::msleep (100);</span><br>
+    </div>
+  </li>
+
+  <li>Run make from the main directory.</li>
+  <li>Test
+your server. Subscribe to currentTemperature of instances of
+advancedHeader. Write to desiredTemperature and watch
+currentTemperature converging to the value.<br>
+  </li>
+</ol>
+
+<br>
+
+<hr style="width: 100%; height: 2px;">
+Written by Piotr Nikiel &lt;piotr.nikiel@cern.ch&gt;<br>
+
+Report inconsistencies and bugs to the email above.<br>(C) CERN 2015. All rights not expressly granted are reserved.<br>
+
+<br>
+
+</body></html>

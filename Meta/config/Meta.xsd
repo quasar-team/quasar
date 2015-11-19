@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- © Copyright CERN, 2015.                                                       -->
+<!-- All rights not expressly granted are reserved.                                -->
+<!-- This file is part of Quasar.                                                  -->
+<!--                                                                               -->
+<!-- Quasar is free software: you can redistribute it and/or modify                -->     
+<!-- it under the terms of the GNU Lesser General Public Licence as published by   -->     
+<!-- the Free Software Foundation, either version 3 of the Licence.                -->     
+<!-- Quasar is distributed in the hope that it will be useful,                     -->     
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of                -->     
+<!--                                                                               -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 -->
+<!-- GNU Lesser General Public Licence for more details.                           -->
+<!--                                                                               -->
+<!-- You should have received a copy of the GNU Lesser General Public License      -->
+<!-- along with Quasar.  If not, see <http://www.gnu.org/licenses/>                -->
+<!--                                                                               -->
+<!-- Created:   Jun 2014                                                           -->
+<!-- Authors:                                                                      -->
+<!--   Piotr Nikiel <piotr@nikiel.info>                                            -->
+<!--   Damian Abalo Miron <damian.abalo@cern.ch>                                   -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://cern.ch/quasar/Configuration"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:d="http://cern.ch/quasar/Design" targetNamespace="http://www.example.org/Configuration"
+	elementFormDefault="qualified">
+
+	<xs:complexType name="StandardMetaData">
+		<xs:sequence>
+			<xs:element name="Quasar" type="tns:Quasar" minOccurs="0" 	maxOccurs="1" />
+			<xs:element name="Log" type="tns:Log" minOccurs="0" 	maxOccurs="1" />
+			<xs:element name="SourceVariableThreadPool" type="tns:SourceVariableThreadPool" minOccurs="0" 	maxOccurs="1" />
+			<xs:element name="Server" type="tns:Server" minOccurs="0" 	maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Log">
+		<xs:sequence>
+			<xs:element name="GeneralLogLevel" type="tns:GeneralLogLevel"
+				minOccurs="0" maxOccurs="1" />
+			<xs:element name="ComponentLogLevels" type="tns:ComponentLogLevels"
+				minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="GeneralLogLevel">
+		<xs:attribute name="logLevel" use="required" type="tns:logLevelIdentifier" />
+	</xs:complexType>
+
+	<xs:complexType name="ComponentLogLevels">
+		<xs:sequence>
+			<xs:element name="ComponentLogLevel" type="tns:ComponentLogLevel"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ComponentLogLevel">
+		<xs:attribute name="componentName" use="required" type="xs:string" />
+		<xs:attribute name="logLevel" use="required" type="tns:logLevelIdentifier" />
+	</xs:complexType>
+	
+    <xs:complexType name="SourceVariableThreadPool">
+      <xs:attribute name="minThreads" use="required" type="xs:unsignedInt"/>
+      <xs:attribute name="maxThreads" use="required" type="xs:unsignedInt"/>
+   </xs:complexType>   
+
+	<xs:simpleType name="logLevelIdentifier">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ERR" />
+			<xs:enumeration value="WRN" />
+			<xs:enumeration value="INF" />
+			<xs:enumeration value="DBG" />
+			<xs:enumeration value="TRC" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="Quasar">
+	</xs:complexType>
+   
+	<xs:complexType name="Server">
+	</xs:complexType>
+
+</schema>
