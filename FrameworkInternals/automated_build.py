@@ -50,11 +50,17 @@ def automatedBuild(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="FrameworkInternal
 			
 	print('Calling make/msbuild')
 	if platform.system() == "Windows":
-		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE)# + ';OutDir=..\\bin\\ ')
-		returnCode = subprocess.call('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE, shell=True)# + ';OutDir=..\\bin\\ ', shell=True)
+		print('Calling visual studio vcvarsall to set the environment')
+		print('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64')
+		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64', shell=True)
+		if returnCode != 0:
+			print('ERROR: vcvarsall could not be executed, maybe the installation folder is different than the one expected? [C:\Program Files (x86)\Microsoft Visual Studio 12.0]')			
+			return returnCode
+		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE)
+		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64 && msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE, shell=True)
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
 		returnCode = subprocess.call('make -j$(nproc)', shell=True)
 	if returnCode != 0:
-		print("There was a problem calling make/msbuild; Return code = " + str(returnCode))
+		print("Error returned from calling make/msbuild; Return code = " + str(returnCode))
 	return returnCode

@@ -78,8 +78,8 @@
 		<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
 		<xsl:for-each select="/d:design/d:class[@name=$class]/d:cachevariable[@isKey='true']">
 		/* Returns 0 when element not found */
-		<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> key) const;
-		
+		<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (
+		  <xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const;
 		</xsl:for-each>
 		</xsl:for-each>
 		
@@ -87,8 +87,8 @@
 		<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
 		<xsl:for-each select="/d:design/d:class[@name=$class]/d:configentry[@isKey='true']">
 		/* Returns 0 when element not found */
-		<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> key) const;
-		
+		<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (
+          <xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const;	
 		</xsl:for-each>
 		</xsl:for-each>
 		
