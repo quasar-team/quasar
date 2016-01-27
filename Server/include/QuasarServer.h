@@ -31,19 +31,23 @@
  */
 class QuasarServer : public BaseQuasarServer{
 public:
-	QuasarServer();
-	virtual ~QuasarServer();
-	//Main loop of the application logic.
-	virtual void mainLoop();
-	//Method for initialising LogIt. Can be overided for a specific implementation, but a default initialization is already provided.
-	virtual void initializeLogIt();
-	/*
-	 * Method for initialising Custom Modules, to be overwritten by the final user
-	 * return: When the return is 0, the execution will continue normally. When the return is different than 0 it will exit the server execution.
-	 */
-	virtual void initializeCustomModules();
-	//Method for deinitialising Custom Modules, to be overwritten by the final user
-	virtual void shutdownCustomModules();
+    QuasarServer();
+    virtual ~QuasarServer();
+    //Main loop of the application logic.
+    virtual void mainLoop();
+    //Method for initialising LogIt. Can be overided for a specific implementation, but a default initialization is already provided.
+    virtual void initializeLogIt();
+    /*
+     * Method for initialising Custom Modules, to be overwritten by the final user
+     * return: When the return is 0, the execution will continue normally. When the return is different than 0 it will exit the server execution.
+     */
+    virtual void initialize();
+    //Method for deinitialising Custom Modules, to be overwritten by the final user
+    virtual void shutdown();
+private:
+    //Disable copy-constructor and assignment-operator
+    QuasarServer( const QuasarServer& server );
+    void operator=( const QuasarServer& server );
 
 };
 

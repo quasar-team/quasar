@@ -32,34 +32,35 @@ QuasarServer::QuasarServer() : BaseQuasarServer()
 
 QuasarServer::~QuasarServer()
 {
-
+ 
 }
 
 void QuasarServer::mainLoop()
 {
-	printServerMsg("Press "+std::string(SHUTDOWN_SEQUENCE)+" to shutdown server");
+    printServerMsg("Press "+std::string(SHUTDOWN_SEQUENCE)+" to shutdown server");
 
-	// Wait for user command to terminate the server thread.
+    // Wait for user command to terminate the server thread.
 
-	while(ShutDownFlag() == 0)
-	{
+    while(ShutDownFlag() == 0)
+    {
 		UaThread::sleep (1);
-	}
-	printServerMsg(" Shutting down server");
+    }
+    printServerMsg(" Shutting down server");
 }
 
-void QuasarServer::initializeCustomModules()
+void QuasarServer::initialize()
 {
-	LOG(Log::INF) << "Initializing custom modules";
+    LOG(Log::INF) << "Initializing Quasar server.";
+
 }
 
-void QuasarServer::shutdownCustomModules()
+void QuasarServer::shutdown()
 {
-	LOG(Log::INF) << "shutting down custom modules";
+	LOG(Log::INF) << "Shutting down Quasar server.";
 }
 
 void QuasarServer::initializeLogIt()
 {
 	Log::initializeLogging();
-	LOG(Log::INF) << "Testing logging.";
+  LOG(Log::INF) << "Logging initialized.";
 }

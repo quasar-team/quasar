@@ -152,7 +152,7 @@ File CMakeLists.txt                         must_exist,must_be_versioned,install
 
 Directory Server/include install=create
 File BaseQuasarServer.h                    must_exist,must_be_versioned,md5=check,install=overwrite
-File QuasarServer.h                         must_exist,must_be_versioned,md5=check,install=copy_if_not_existing
+File QuasarServer.h                         must_exist,must_be_versioned,install=copy_if_not_existing
 File shutdown.h                             must_exist,must_be_versioned,md5=check,install=overwrite
 File serverconfigxml.h                      must_exist,must_be_versioned,md5=check,install=overwrite
 File opcserver.h                            must_exist,must_be_versioned,md5=check,install=overwrite
@@ -163,7 +163,7 @@ File QUASARFrameworkVersion.h               must_exist,must_be_versioned,md5=che
 Directory Server/src install=create
 File main.cpp                               must_exist,must_be_versioned,install=ask_to_merge
 File BaseQuasarServer.cpp                  must_exist,must_be_versioned,md5=check,install=overwrite
-File QuasarServer.cpp                       must_exist,must_be_versioned,md5=check,install=copy_if_not_existing
+File QuasarServer.cpp                       must_exist,must_be_versioned,install=copy_if_not_existing
 File serverconfigxml.cpp                    must_exist,must_be_versioned,md5=check,install=overwrite
 File shutdown.cpp                           must_exist,must_be_versioned,md5=check,install=overwrite
 File opcserver.cpp                          must_exist,must_be_versioned,md5=check,install=overwrite

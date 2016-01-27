@@ -67,6 +67,7 @@ UaStatus ASNodeManager::afterStartUp()
 		if (!s.isGood())
 			return s;
 	}
+	
 	return OpcUa_Good;
 }
 

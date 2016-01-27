@@ -48,8 +48,6 @@
 using namespace std;
 using namespace boost::program_options;
 
-using namespace std;
-
 
 BaseQuasarServer::BaseQuasarServer():
 	m_pServer(0), 
@@ -59,215 +57,190 @@ BaseQuasarServer::BaseQuasarServer():
 
 BaseQuasarServer::~BaseQuasarServer()
 {
+    LOG(Log::TRC) << "Entered BaseQuasarServer dtr.";
+    shutdownEnvironment();
 }
 
-const int BaseQuasarServer::startApplication(int argc, char *argv[])
+int BaseQuasarServer::startApplication(int argc, char *argv[])
 {
-	RegisterSignalHandler();
+    RegisterSignalHandler();
 	
-	bool isHelpOrVersion = false;	
-	string configurationFileName  = "config.xml";
-	bool isCreateCertificateOnly = false;
+    bool isHelpOrVersion = false;	
+    string configurationFileName  = "config.xml";
+    bool isCreateCertificateOnly = false;
 	
-	int ret = parseCommandLine(argc, argv, &isHelpOrVersion, &isCreateCertificateOnly, &configurationFileName);
+    int ret = parseCommandLine(argc, argv, &isHelpOrVersion, &isCreateCertificateOnly, &configurationFileName);
 	
-	if(ret != 0 || isHelpOrVersion)//If there was a problem parsing the arguments, or it was a help/version call, we finish the execution
-		return ret;
-	try
-	{
-		ret = serverRun(configurationFileName, isCreateCertificateOnly);
-		std::cout << "OpcServerMain() exited with code [" << ret << "]" << std::endl;
-		return ret;
-	}
-	catch (std::runtime_error &e)
-	{
-		std::cerr << "Caught runtime exception with msg: [" << e.what() << "]" << std::endl;
-		return 1;
-	}
-}
-
-const int BaseQuasarServer::serverRun(const std::string configFileName, bool onlyCreateCertificate)
-{
-	const std::string serverSettingsPath = getApplicationPath();
-	const int initializeEnvironmentReturn = initializeEnvironment();
-	if(initializeEnvironmentReturn != 0)
-	{
-		LOG(Log::ERR) << "Initialization of components failed. Return code: [" << initializeEnvironmentReturn << "]";
-		return initializeEnvironmentReturn;
-	}
-	
-	//- Start up OPC server ---------------------
-	// This code can be integrated into a start up
-	// sequence of the application where the
-	// OPC server should be integrated
-	//-------------------------------------------
-	// Create and initialize server object
-	m_pServer = new OpcServer;
-	m_pServer->setServerConfig(getServerConfigFullPath(serverSettingsPath), serverSettingsPath.c_str());
-
-	if (onlyCreateCertificate)
-	{
-		m_pServer->createCertificate();
-		LOG(Log::INF) << "Create certificate only";
-		return 0;
-	}
-
-	m_nodeManager = new AddressSpace::ASNodeManager();
-	m_nodeManager->setAfterStartupDelegate( boost::bind(&BaseQuasarServer::configurationInitializerHandler, this, configFileName, m_nodeManager) );
-	m_pServer->addNodeManager(m_nodeManager);
-
-	try
-	{
-		const int startServerReturn = m_pServer->start();
-		if ( startServerReturn != 0 )
-		{
-			serverStartFailLogError(startServerReturn, m_pServer->getLogFilePath());
-			delete m_pServer;
-			return startServerReturn;
-		}
-	}
-	catch (const std::exception &e)
-	{
-		LOG(Log::ERR) << "Caught exception in server startup code [" << e.what() << "]";
-		throw; //rethrow
-	}
-	//-------------------------------------------
-
-	//- Add variable to address space -----------
-	// Get the default node manager for server specific nodes from the SDK
-
-
-	try
-	{
-		mainLoop();
-	}
-	catch (const std::exception &e)
-	{
-		LOG(Log::ERR) << "Caught exception in mainLoop() [" << e.what() << "]";
-		throw; //rethrow
-	}
-
-	try
-	{
-		shutdownCustomModules();
-	}
-	catch (const std::exception &e)
-	{
-		LOG(Log::ERR) << "Caught exception in shutdownCustomModules() [" << e.what() << "]";
-		throw; //rethrow
-	}
-
-
-	/* For all devices: disconnect their address space links */
-	Device::DRoot::getInstance()->unlinkAllChildren();
-	/* For all address space items: disconnect their device links */
-	unlinkAllDevices(m_nodeManager);
-	destroyMeta(m_nodeManager);
-
-	//- Stop OPC server -------------------------
-	// This code can be integrated into a shut down
-	// sequence of the application where the
-	// OPC server should be integrated
-	//-------------------------------------------
-	// Stop the server and wait three seconds if clients are connected
-	// to allow them to disconnect after they received the shutdown signal
-	m_pServer->stop(3, UaLocalizedText("", "User shut down"));
-	delete m_pServer;
-	m_pServer = NULL;
-	//-------------------------------------------
-	shutdownEnvironment();
-	return 0;
-}
-
-const std::string BaseQuasarServer::getApplicationPath()
-{  
-#ifdef __linux__
-  char serverSettingsPath[PATH_MAX];
-  memset( serverSettingsPath, 0, sizeof serverSettingsPath  );
-  readlink("/proc/self/exe", serverSettingsPath, sizeof(serverSettingsPath));
-  char *pszFind = strrchr(serverSettingsPath, '/');
-#elif _WIN32
-  char serverSettingsPath[MAX_PATH];
-  memset( serverSettingsPath, 0, sizeof serverSettingsPath  );
-  int bytes = GetModuleFileNameA(NULL, serverSettingsPath, MAX_PATH);
-  char *pszFind = strrchr(serverSettingsPath, '\\');
-#else
-  char serverSettingsPath[0];//We declare this so the compiler is happy
-#error "ERROR: Unable to determine your platform."
-#endif
-  if (pszFind)
+    if(ret != 0 || isHelpOrVersion)//If there was a problem parsing the arguments, or it was a help/version call, we finish the execution
+	return ret;
+    try
     {
-      *pszFind = 0; // cut off appname
+	ret = serverRun(configurationFileName, isCreateCertificateOnly);
+	std::cout << "OpcServerMain() exited with code [" << ret << "]" << std::endl;
+	return ret;
+    }
+    catch (std::runtime_error &e)
+    {
+	std::cerr << "Caught runtime exception with msg: [" << e.what() << "]" << std::endl;
+	return 1;
+    }
+}
+
+int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCreateCertificate)
+{
+    const std::string serverSettingsPath = getApplicationPath();
+    const int initializeEnvironmentReturn = initializeEnvironment();
+    if(initializeEnvironmentReturn != 0)
+    {
+	LOG(Log::ERR) << "Initialization of components failed. Return code: [" << initializeEnvironmentReturn << "]";
+	return initializeEnvironmentReturn;
+    }
+	
+    //- Start up OPC server ---------------------
+    // This code can be integrated into a start up
+    // sequence of the application where the
+    // OPC server should be integrated
+    //-------------------------------------------
+    // Create and initialize server object
+    m_pServer = new OpcServer;
+    m_pServer->setServerConfig(getServerConfigFullPath(serverSettingsPath), serverSettingsPath.c_str());
+
+    if (onlyCreateCertificate)
+    {
+	m_pServer->createCertificate();
+	LOG(Log::INF) << "Create certificate only";
+	return 0;
     }
 
-  return std::string(serverSettingsPath);
+    m_nodeManager = new AddressSpace::ASNodeManager();
+    m_nodeManager->setAfterStartupDelegate( boost::bind(&BaseQuasarServer::configurationInitializerHandler, this, configFileName, m_nodeManager) );
+    m_pServer->addNodeManager(m_nodeManager);
+
+    try
+    {
+	const int startServerReturn = m_pServer->start();
+	if ( startServerReturn != 0 )
+	{
+	    serverStartFailLogError(startServerReturn, m_pServer->getLogFilePath());
+
+	    return startServerReturn;
+	}
+	mainLoop();
+	
+    }
+    catch (const std::exception &e)
+    {
+	LOG(Log::ERR) << "Exception caught in BaseQuasarServer::serverRun:  [" << e.what() << "]";
+    }
+
+    shutdown();  // this is typically overridden by the developer
+
+    unlinkAllDevices(m_nodeManager);
+    destroyMeta(m_nodeManager);
+    Device::DRoot::getInstance()->unlinkAllChildren();
+    m_pServer->stop(3, UaLocalizedText("", "User shut down"));
+
+    if (m_pServer != 0)
+    {
+	delete m_pServer;
+	m_pServer = NULL;
+    }
+
+ 
+    return 0;
 }
 
-const int BaseQuasarServer::parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName)
+std::string BaseQuasarServer::getApplicationPath() const
+{  
+#ifdef __linux__
+    char serverSettingsPath[PATH_MAX];
+    memset( serverSettingsPath, 0, sizeof serverSettingsPath  );
+    readlink("/proc/self/exe", serverSettingsPath, sizeof(serverSettingsPath));
+    char *pszFind = strrchr(serverSettingsPath, '/');
+#elif _WIN32
+    char serverSettingsPath[MAX_PATH];
+    memset( serverSettingsPath, 0, sizeof serverSettingsPath  );
+    int bytes = GetModuleFileNameA(NULL, serverSettingsPath, MAX_PATH);
+    char *pszFind = strrchr(serverSettingsPath, '\\');
+#else
+    char serverSettingsPath[0];//We declare this so the compiler is happy
+#error "ERROR: Unable to determine your platform."
+#endif
+    if (pszFind)
+    {
+	*pszFind = 0; // cut off appname
+    }
+
+    return std::string(serverSettingsPath);
+}
+
+int BaseQuasarServer::parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName)
 {	
-	bool createCertificateOnly = false;
-	bool printVersion = false;
-	string logFile;
+    bool createCertificateOnly = false;
+    bool printVersion = false;
+    string logFile;
     options_description desc ("Allowed options");
 
-	desc.add_options()
-			("config_file", value<string>(), "A path to the config file")
-			("create_certificate", bool_switch(&createCertificateOnly), "Create new certificate and exit" )
-			("help", "Print help")
-			("version", bool_switch(&printVersion), "Print version and exit")
-			;
-	positional_options_description p;
-	p.add("config_file", 1);
-	variables_map vm;
-	try
-	{
-		store(command_line_parser(argc,argv)
-				.options(desc)
-				.style(command_line_style::allow_long_disguise | command_line_style::unix_style)
-				.positional(p)
-				.run(),
-				vm);
-	}
-	catch (boost::exception &e)
-	{
-		cout << "Couldn't interpret command line, please run with -help "  << endl;
-		return 1;
-	}
-	notify(vm);
-	if (vm.count("help"))
-	{
-		cout << desc << endl;
-		*isHelpOrVersion = true;
-		return 0;
-	}
-	//Print version if needed
-	if (printVersion)
-	{
-		std::cout << VERSION_STR << std::endl;
-		*isHelpOrVersion = true;
-		return 0;
-	}
-	else
-	{		
-		if (vm.count("config_file") > 0)
-			*configurationFileName = vm["config_file"].as< string > ();
-		*isHelpOrVersion = false;
-		*isCreateCertificateOnly = createCertificateOnly;
-		return 0;
-	}
+    desc.add_options()
+	("config_file", value<string>(), "A path to the config file")
+	("create_certificate", bool_switch(&createCertificateOnly), "Create new certificate and exit" )
+	("help", "Print help")
+	("version", bool_switch(&printVersion), "Print version and exit")
+	;
+    positional_options_description p;
+    p.add("config_file", 1);
+    variables_map vm;
+    try
+    {
+	store(command_line_parser(argc,argv)
+	      .options(desc)
+	      .style(command_line_style::allow_long_disguise | command_line_style::unix_style)
+	      .positional(p)
+	      .run(),
+	      vm);
+    }
+    catch (boost::exception &e)
+    {
+	cout << "Couldn't interpret command line, please run with -help "  << endl;
+	return 1;
+    }
+    notify(vm);
+    if (vm.count("help"))
+    {
+	cout << desc << endl;
+	if (isHelpOrVersion)
+	    *isHelpOrVersion = true;
+	return 0;
+    }
+    //Print version if needed
+    if (printVersion)
+    {
+	std::cout << VERSION_STR << std::endl;
+	if (isHelpOrVersion)
+	    *isHelpOrVersion = true;
+	return 0;
+    }
+    else
+    {		
+	if (vm.count("config_file") > 0)
+	    *configurationFileName = vm["config_file"].as< string > ();
+	*isHelpOrVersion = false;
+	*isCreateCertificateOnly = createCertificateOnly;
+	return 0;
+    }
 }
-const int BaseQuasarServer::initializeEnvironment()
+int BaseQuasarServer::initializeEnvironment()
 {
-	//- initialize the environment --------------
+    //- initialize the environment --------------
 #ifdef SUPPORT_XML_CONFIG
     // initialize the XML Parser
     UaXmlDocument::initParser();
 #endif
-	// initialize the UA Stack platform layer
+    // initialize the UA Stack platform layer
     const int ret = UaPlatformLayer::init();
     //-------------------------------------------
     initializeLogIt();    
-	return ret;
+    return ret;
 }
 void BaseQuasarServer::initializeLogIt()
 {
@@ -276,36 +249,36 @@ void BaseQuasarServer::initializeLogIt()
 }
 void BaseQuasarServer::mainLoop()
 {
-	printServerMsg("Press "+std::string(SHUTDOWN_SEQUENCE)+" to shutdown server");
+    printServerMsg("Press "+std::string(SHUTDOWN_SEQUENCE)+" to shutdown server");
 
-	// Wait for user command to terminate the server thread.
+    // Wait for user command to terminate the server thread.
 
-	while(ShutDownFlag() == 0)
-	{
-		UaThread::sleep (1);
-	}
-	printServerMsg(" Shutting down server");
+    while(ShutDownFlag() == 0)
+    {
+	UaThread::sleep (1);
+    }
+    printServerMsg(" Shutting down server");
 }
-bool BaseQuasarServer::overridableConfigure(std::string fileName, AddressSpace::ASNodeManager *nm)
+bool BaseQuasarServer::overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm)
 {
 	return configure (fileName, nm);
 }
-const UaString BaseQuasarServer::getServerConfigFullPath(const std::string serverSettingsPath)
+UaString BaseQuasarServer::getServerConfigFullPath(const std::string& serverSettingsPath) const
 {
-	// Create configuration file name
-	UaString sConfigFileName(serverSettingsPath.c_str());
+    // Create configuration file name
+    UaString sConfigFileName(serverSettingsPath.c_str());
 
 #ifdef SUPPORT_XML_CONFIG
-	sConfigFileName += "/ServerConfig.xml";
+    sConfigFileName += "/ServerConfig.xml";
 #else
-	sConfigFileName += "/ServerConfig.ini";
+    sConfigFileName += "/ServerConfig.ini";
 #endif
-	return sConfigFileName;
+    return sConfigFileName;
 }
 
 void BaseQuasarServer::shutdownEnvironment()
 {
-	//- Cleanup the environment --------------
+    //- Cleanup the environment --------------
     // Cleanup the UA Stack platform layer
     UaPlatformLayer::cleanup();
 #ifdef SUPPORT_XML_CONFIG
@@ -315,32 +288,32 @@ void BaseQuasarServer::shutdownEnvironment()
     //-------------------------------------------
 }
 
-void BaseQuasarServer::serverStartFailLogError(const int ret, const std::string logFilePath)
+void BaseQuasarServer::serverStartFailLogError(int ret, const std::string& logFilePath)
 {
-	LOG(Log::ERR) << "Starting up of the server failed. Return code: [" << ret << "]";
-	if (logFilePath != "")
-		LOG(Log::ERR) << "The reason of failure should have been logged in your server log file: " << logFilePath;			
-	else
-	{
-		LOG(Log::ERR) << "The exact reason is unknown because you haven't enabled logging in your ServerConfig file.";
-		LOG(Log::ERR) << "To enable, change value of <UaAppTraceEnabled> content to true.";			
-	}
+    LOG(Log::ERR) << "Starting up of the server failed. Return code: [" << ret << "]";
+    if (logFilePath != "")
+	LOG(Log::ERR) << "The reason of failure should have been logged in your server log file: " << logFilePath;			
+    else
+    {
+	LOG(Log::ERR) << "The exact reason is unknown because you haven't enabled logging in your ServerConfig file.";
+	LOG(Log::ERR) << "To enable, change value of <UaAppTraceEnabled> content to true.";			
+    }
 }
 
-void BaseQuasarServer::printServerMsg(const std::string message)
+void BaseQuasarServer::printServerMsg(const std::string& message)
 {
-	LOG(Log::INF) << "***************************************************";
-	LOG(Log::INF) << message;
-	LOG(Log::INF) << "***************************************************";
+    LOG(Log::INF) << "***************************************************";
+    LOG(Log::INF) << message;
+    LOG(Log::INF) << "***************************************************";
 }
 
-UaStatus BaseQuasarServer::configurationInitializerHandler(std::string configFileName, AddressSpace::ASNodeManager *nm)
+UaStatus BaseQuasarServer::configurationInitializerHandler(const std::string& configFileName, AddressSpace::ASNodeManager *nm)
 {
-	LOG(Log::INF) << "Configuration Initializer Handler";
-	if (!overridableConfigure (configFileName, nm))
-	       	return OpcUa_Bad; // error is already printed in configure()
+    LOG(Log::INF) << "Configuration Initializer Handler";
+    if (!overridableConfigure (configFileName, nm))
+	return OpcUa_Bad; // error is already printed in configure()
     validateDeviceTree();
-    //initialize Custom modules
-	initializeCustomModules();
-	return OpcUa_Good;
+    
+    initialize();
+    return OpcUa_Good;
 }

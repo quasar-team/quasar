@@ -210,6 +210,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	#include &lt;meta.h&gt;
 
+	#include &lt;LogIt.h&gt;
 	
 <!-- *************************************************** -->
 <!-- HEADERS OF ALL DECLARED CLASSES ******************* -->
@@ -250,12 +251,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	} 
 	catch (xsd::cxx::tree::parsing&lt;char&gt; &amp;exception)
 	{
-        std::cout &lt;&lt; "Failed when trying to open the configuration, with general error message: " &lt;&lt; exception.what() &lt;&lt; std::endl;
+        LOG(Log::ERR) &lt;&lt; "Configuration: Failed when trying to open the configuration, with general error message: " &lt;&lt; exception.what();
 		BOOST_FOREACH( const xsd::cxx::tree::error&lt;char&gt; &amp;error, exception.diagnostics() )
 		{
-			std::cout &lt;&lt; "Problem at " &lt;&lt; error.id() &lt;&lt; ":" &lt;&lt; error.line() &lt;&lt; ": " &lt;&lt; error.message() &lt;&lt; std::endl;
+			LOG(Log::ERR) &lt;&lt; "Configuration: Problem at " &lt;&lt; error.id() &lt;&lt; ":" &lt;&lt; error.line() &lt;&lt; ": " &lt;&lt; error.message();
 		}
-	    return false;
+	    throw std::runtime_error("Configuration: failed to load configuration. The exact problem description should have been logged.");
 	}
 	
 	
@@ -327,14 +328,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 <!-- *************************************************** -->
 	void unlinkAllDevices (AddressSpace::ASNodeManager *nm)
 	{
+	        unsigned int totalObjectsNumber = 0;
 		<xsl:for-each select="/d:design/d:class">
 		<xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
 		{
 			std::vector&lt; AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/> * &gt; objects;
 			std::string pattern (".*");
 			nm->findAllByPattern&lt;AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/>&gt; ( nm-&gt;getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-			PRINT("objects.size=");
-			PRINT(objects.size());
+			totalObjectsNumber += objects.size();
 			BOOST_FOREACH(AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/> *a, objects)
 			{
 				a-&gt;unlinkDevice();
@@ -342,6 +343,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		}
 		</xsl:if>
 		</xsl:for-each>
+		LOG(Log::INF) &lt;&lt; "Total number of unlinked objects: " &lt;&lt; totalObjectsNumber;
 	}
 	
 	</xsl:template>
