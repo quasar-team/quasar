@@ -36,12 +36,16 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	 	#include &lt;boost/foreach.hpp&gt;
 		#include &lt;DRoot.h&gt;
 		#include &lt;ASUtils.h&gt;
-		<xsl:for-each select="/d:design/d:root/d:hasobjects">
-		<xsl:variable name="className"><xsl:value-of select="@class"/></xsl:variable>
-		<xsl:if test="fnc:classHasDeviceLogic(/,$className)='true'">
-		#include &lt;<xsl:value-of select="fnc:DClassName(@class)"/>.h&gt;
-		</xsl:if>
-		</xsl:for-each>
+		
+
+
+        <xsl:for-each select="/d:design/d:class">
+        <xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
+        <xsl:if test="fnc:classHasDeviceLogic(/,$className)='true'">
+        #include &lt;<xsl:value-of select="fnc:DClassName($className)"/>.h&gt;
+        </xsl:if>
+        </xsl:for-each>
+		
 		namespace Device
 		{
 		
@@ -62,6 +66,20 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			m_children<xsl:value-of select="@class"/>.clear();
 			</xsl:if>
 			</xsl:for-each>
+			<xsl:for-each select="/d:design/d:class">
+            <xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
+             {
+             auto objects = <xsl:value-of select="fnc:Base_DClassName(@name)"/>::orphanedObjects ();
+             BOOST_FOREACH( <xsl:value-of select="fnc:DClassName(@name)"/>* object, objects )
+             {
+                  delete object;
+                  
+             }
+             objects.clear();
+        
+             }
+            </xsl:if>
+            </xsl:for-each>
 		}
 
 		DRoot* DRoot::getInstance()
@@ -81,6 +99,18 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:if test="fnc:classHasDeviceLogic(/,$className)='true'">
 			for (auto it = m_children<xsl:value-of select="@class"/>.begin(); it!=m_children<xsl:value-of select="@class"/>.end();it++)
 				objectCounter += (*it)->unlinkAllChildren();
+			</xsl:if>
+			</xsl:for-each>
+			<xsl:for-each select="/d:design/d:class">
+			<xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
+			 {
+			 auto objects = <xsl:value-of select="fnc:DClassName(@name)"/>::orphanedObjects ();
+			 BOOST_FOREACH( <xsl:value-of select="fnc:DClassName(@name)"/>* object, objects )
+			 {
+			      objectCounter += object->unlinkAllChildren();
+			 }
+		
+			 }
 			</xsl:if>
 			</xsl:for-each>
 			std::cout &lt;&lt; "DRoot::unlinkAllChildren(): " &lt;&lt; objectCounter &lt;&lt; " objects unlinked " &lt;&lt; std::endl;

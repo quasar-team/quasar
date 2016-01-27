@@ -57,4 +57,4 @@ def automatedBuild(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="FrameworkInternal
 		returnCode = subprocess.call('make -j$(nproc)', shell=True)
 	if returnCode != 0:
 		print("There was a problem calling make/msbuild; Return code = " + str(returnCode))
-	return 0
+	return returnCode

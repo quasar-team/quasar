@@ -47,6 +47,11 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		&lt;font point-size="18" &gt;
 		<xsl:value-of select="@name"/>
 		&lt;/font&gt;
+		<xsl:if test="$detailLevel>=2">
+		&lt;font point-size="10" color="blue" &gt;
+        DL=<xsl:value-of select="count(d:devicelogic)"/>
+        &lt;/font&gt;
+		</xsl:if>
 		
 		&lt;/b&gt; 
 		&lt;/td&gt;  

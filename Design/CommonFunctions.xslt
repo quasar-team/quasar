@@ -44,6 +44,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 <xsl:value-of select="concat('Base_D',$name)"/>
 </xsl:function>
 
+<!--  Returns C++ class name of Parent class with given Design name -->
+<xsl:function name="fnc:Parent_DClassName">
+<xsl:param name="name"/>
+<xsl:value-of select="concat('Parent_D',$name)"/>
+</xsl:function>
+
 <!-- Capitalize first letter (useful for creating setCamelCase from camelCase variable name) -->
 <xsl:function name="fnc:capFirst">
 <xsl:param name="name"/>

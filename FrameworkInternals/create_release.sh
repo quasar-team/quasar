@@ -15,7 +15,7 @@ fi
 
 # after this put a version info into files
 echo $TAG > ../Design/genericFrameworkVersion.txt
-echo "#define QUASAR_VERSION_STR \"$TAG\"" > ../Configuration/QUASARFrameworkVersion.h
+echo "#define QUASAR_VERSION_STR \"$TAG\"" > ../Server/include/QUASARFrameworkVersion.h
 
 python ../quasar.py create_release
 

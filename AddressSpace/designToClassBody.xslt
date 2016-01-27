@@ -32,7 +32,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	 	<xsl:param name="xsltFileName"/>
 
 	
-	<xsl:template name="classBody">
+		<xsl:template name="classBody">
+		  <xsl:variable name="singleVariableNode"><xsl:if test="/d:design/d:class[@name=$className]/@singleVariableNode='true'">true</xsl:if></xsl:variable>
 	
 #include &lt;<xsl:value-of select="fnc:ASClassName(@name)"/>.h&gt;
 
@@ -52,11 +53,14 @@ AS<xsl:value-of select="@name"/>::AS<xsl:value-of select="@name"/> (
 	ASNodeManager *nm,
 	const Configuration::<xsl:value-of select="@name"/> &amp; config):
 	OpcUa::BaseObjectType ( 
-		/*nodeId*/nm->makeChildNodeId(parentNodeId,config.name().c_str()), /*name*/config.name().c_str(), nm->getNameSpaceIndex(), nm),
+		/*nodeId*/
+		nm->makeChildNodeId(parentNodeId,(<xsl:if test="$singleVariableNode='true'">"__single_item_node__"+</xsl:if>config.name()).c_str()), /*name*/(<xsl:if test="$singleVariableNode='true'">"__single_item_node__"+</xsl:if>config.name()).c_str(), nm->getNameSpaceIndex(), nm),
 	m_typeNodeId (typeNodeId)
 <!--  check number of variables -->
 
 <xsl:for-each select="child::d:cachevariable">,
+<xsl:variable name="variableName"><xsl:choose><xsl:when test="$singleVariableNode='true'">config.name().c_str()</xsl:when><xsl:otherwise>"<xsl:value-of select="@name"/>"</xsl:otherwise></xsl:choose></xsl:variable>
+														  
 m_<xsl:value-of select="@name"/> (new 
 
 		<xsl:choose>
@@ -65,7 +69,12 @@ m_<xsl:value-of select="@name"/> (new
 		</xsl:choose>
 
 
-(nm->makeChildNodeId(this->nodeId(),UaString("<xsl:value-of select="@name"/>")), UaString("<xsl:value-of select="@name"/>"), nm->getNameSpaceIndex(), UaVariant(), 
+		(nm->makeChildNodeId(
+		<xsl:choose>
+		  <xsl:when test="$singleVariableNode='true'">parentNodeId</xsl:when>
+		  <xsl:otherwise>this->nodeId()</xsl:otherwise>
+		</xsl:choose>,
+		UaString(<xsl:value-of select="$variableName"/>)), UaString(<xsl:value-of select="$variableName"/>), nm->getNameSpaceIndex(), UaVariant(), 
 <!--  now depends if write access is forbidden or not -->
 <xsl:choose>
 <xsl:when test="@addressSpaceWrite='forbidden'">OpcUa_AccessLevels_CurrentRead</xsl:when>
@@ -77,8 +86,14 @@ m_<xsl:value-of select="@name"/> (new
 <!--  sourcevariables -->
 </xsl:for-each>
 <xsl:for-each select="d:sourcevariable">,
+<xsl:variable name="variableName"><xsl:choose><xsl:when test="$singleVariableNode='true'">config.name().c_str()</xsl:when><xsl:otherwise>"<xsl:value-of select="@name"/>"</xsl:otherwise></xsl:choose></xsl:variable>
 m_<xsl:value-of select="@name"/> (new ASSourceVariable(
-  nm->makeChildNodeId(this->nodeId(),UaString("<xsl:value-of select="@name"/>")), UaString("<xsl:value-of select="@name"/>"), nm->getNameSpaceIndex(), UaVariant(), 
+  nm->makeChildNodeId(
+   <xsl:choose>
+     <xsl:when test="$singleVariableNode='true'">parentNodeId</xsl:when>
+     <xsl:otherwise>this->nodeId()</xsl:otherwise>
+   </xsl:choose>,
+  UaString(<xsl:value-of select="$variableName"/>)), UaString(<xsl:value-of select="$variableName"/>), nm->getNameSpaceIndex(), UaVariant(), 
   <xsl:choose>
   <xsl:when test="@addressSpaceRead='asynchronous' or @addressSpaceRead='synchronous' ">OpcUa_AccessLevels_CurrentRead</xsl:when>
   <xsl:when test="@addressSpaceRead='forbidden'">0</xsl:when>
@@ -154,7 +169,12 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
 		</xsl:message>
 	</xsl:otherwise>
 </xsl:choose>
-s = nm->addNodeAndReference(this, m_<xsl:value-of select="@name"/>, OpcUaId_HasComponent);
+s = nm->addNodeAndReference(
+	<xsl:choose>
+	  <xsl:when test="$singleVariableNode='true'">parentNodeId</xsl:when>
+	  <xsl:otherwise>this</xsl:otherwise>
+	</xsl:choose>,
+	m_<xsl:value-of select="@name"/>, OpcUaId_HasComponent);
 if (!s.isGood())
 {
 	std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; this->nodeId().toString().toUtf8() &lt;&lt; " to " &lt;&lt; m_<xsl:value-of select="@name"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
@@ -167,7 +187,12 @@ if (!s.isGood())
 
 <xsl:for-each select="d:sourcevariable">
 
-s = nm->addNodeAndReference(this, m_<xsl:value-of select="@name"/>, OpcUaId_HasComponent);
+s = nm->addNodeAndReference(
+    <xsl:choose>
+      <xsl:when test="$singleVariableNode='true'">parentNodeId</xsl:when>
+      <xsl:otherwise>this</xsl:otherwise>
+    </xsl:choose>,
+    m_<xsl:value-of select="@name"/>, OpcUaId_HasComponent);
 if (!s.isGood())
 {
 	std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; this->nodeId().toString().toUtf8() &lt;&lt; " to " &lt;&lt; m_<xsl:value-of select="@name"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
