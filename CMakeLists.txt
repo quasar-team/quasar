@@ -17,6 +17,8 @@
 # Author: Piotr Nikiel <piotr@nikiel.info>
 # Author: Damian Abalo Miron <damian.abalo@cern.ch>
 
+# mods for open62541
+
 project(opc_ua)
 cmake_minimum_required(VERSION 2.8)
 add_definitions(
