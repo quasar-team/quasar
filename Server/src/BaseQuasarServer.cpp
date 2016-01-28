@@ -185,8 +185,10 @@ int BaseQuasarServer::parseCommandLine(int argc, char *argv[], bool *isHelpOrVer
 	("config_file", value<string>(), "A path to the config file")
 	("create_certificate", bool_switch(&createCertificateOnly), "Create new certificate and exit" )
 	("help", "Print help")
-	("version", bool_switch(&printVersion), "Print version and exit")
-	;
+	("version", bool_switch(&printVersion), "Print version and exit");
+
+    appendCustomCommandLineOptions(desc);
+
     positional_options_description p;
     p.add("config_file", 1);
     variables_map vm;
@@ -317,3 +319,6 @@ UaStatus BaseQuasarServer::configurationInitializerHandler(const std::string& co
     initialize();
     return OpcUa_Good;
 }
+
+void BaseQuasarServer::appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions)
+{}
