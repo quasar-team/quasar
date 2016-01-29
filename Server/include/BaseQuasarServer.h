@@ -3,7 +3,7 @@
  *
  *  Created on: Nov 6, 2015
  * 		Author: Damian Abalo Miron <damian.abalo@cern.ch>
- *      Author: Piotr Nikiel <piotr@nikiel.info>
+ *  Author: Piotr Nikiel <piotr@nikiel.info>
  *
  *  This file is part of Quasar.
  *
@@ -46,7 +46,7 @@ public:
     BaseQuasarServer();
     virtual ~BaseQuasarServer();
     //Starts application. Parses command line arguments and then calls serverRun
-    const int startApplication(int argc, char *argv[]);
+	int startApplication(int argc, char *argv[]);
 
 #ifdef BACKEND_OPEN62541
     void runThread();
@@ -61,44 +61,48 @@ protected:
 #endif
     //Reference to the Node manager
     AddressSpace::ASNodeManager* m_nodeManager;
-    /* Instantiate singleton class */
-    Device::DRoot root;
-
     //Main loop of the application logic.
     virtual void mainLoop();
     //Method for initialising Custom Modules, to be overwritten by the final user.
-    virtual void initializeCustomModules(){}
+	virtual void initialize () {}
     //Method for shutting down Custom Modules, to be overwritten by the final user
     //This method will be called from configurationInitializerHandler.
-    virtual void shutdownCustomModules(){}
-    //Method for initialising LogIt. Can be overrided for a specific implementation, but a default initialization is already provided.
-    virtual void initializeLogIt();
-    //Call to the method configure inside configuration. If a different configuration method wants to be implemented by the user, this should be overrided.
+	virtual void shutdown () {}
+	//Method for initialising LogIt. Can be overriden for a specific implementation, but a default initialization is already provided.
+	virtual void initializeLogIt();
+	//Call to the method configure inside configuration. If a different configuration method has to be implemented by the user, this should be overriden
     //This method will be called from configurationInitializerHandler.
-    virtual bool overridableConfigure(std::string fileName, AddressSpace::ASNodeManager *nm);
+	virtual bool overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
     //Gets the full path to the server configuration
-    const UaString getServerConfigFullPath(const std::string szAppPath);
+	UaString getServerConfigFullPath(const std::string& szAppPath) const;
     //Gets the application path of the server
-    const std::string getApplicationPath();
+	std::string getApplicationPath() const;
     //Logs the appropriate error when failing to start the server
-    void serverStartFailLogError(const int ret, const std::string logFilePath);
+	void serverStartFailLogError(int ret, const std::string& logFilePath);
     //Logs a server message
-    void printServerMsg(const std::string);
+	void printServerMsg(const std::string&);
 
     static void stopHandler(int sign);
 
     
 private:
+	//Disable copy-constructor and assignment-operator
+	BaseQuasarServer( const BaseQuasarServer& other);
+	void operator= ( const BaseQuasarServer& other );
+
+	/* Instantiate singleton for device collections */
+	Device::DRoot m_deviceRoot;
+
     //Starting point of the server, called by startApplication. Calls various other methods in the class, including mainLoop, which contains the mainLoop logic
-    const int serverRun(const char* configFileName, bool onlyCreateCertificate);
+	int serverRun(const std::string& configFileName, bool onlyCreateCertificate);
     //Parse command line arguments.
-    const int parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, const char *configurationFileName);
+	int parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName);
     //initialize XML parser, logging and UA stack (in that order)
-    const int initializeEnvironment();
+	int initializeEnvironment();
     //Cleans the server before exiting.
     void shutdownEnvironment();
     //Handler for initializing the node manager configuration only when the server is ready
-    UaStatus configurationInitializerHandler(std::string configFileName, AddressSpace::ASNodeManager *nm);
+	UaStatus configurationInitializerHandler(const std::string& configFileName, AddressSpace::ASNodeManager *nm);
 
 };
 #endif // include guard

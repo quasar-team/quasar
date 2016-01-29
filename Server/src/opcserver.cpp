@@ -12,6 +12,9 @@
 **
 ** Description: Main OPC Server object class.
 **
+
+** @author Unified Automation
+** @author Piotr Nikiel <piotr@nikiel.info>
 ******************************************************************************/
 #include "opcserver.h"
 #include "uamutex.h"
@@ -26,6 +29,9 @@
 #include "uamodule.h"
 #include <list>
 #include <iostream>
+#include <LogIt.h>
+#include <stdexcept>
+#include <Utils.h>
 
 using namespace std;
 
@@ -87,6 +93,8 @@ private:
 };
 #endif
 
+#define throw_runtime_error_with_origin(MSG) throw std::runtime_error(std::string("At ")+__FILE__+":"+Utils::toString(__LINE__)+" "+MSG)
+
 /** Construction. */
 OpcServer::OpcServer()
 {
@@ -134,6 +142,8 @@ OpcServer::~OpcServer()
     delete m_quasarCallback;
     d = NULL;
     m_quasarCallback = NULL;
+
+    SrvT::closeTrace();
 }
 
 /** Sets the server configuration by passing the path of the configuration file.
@@ -287,10 +297,7 @@ int OpcServer::start()
     int ret = 0;
 
     if ( d->m_isStarted != OpcUa_False )
-    {
-        // Error, the method is called after the server was already started
-        return -1;
-    }
+        throw_runtime_error_with_origin("Error, the method is called after the server was already started");
 
     // Create default configuration object if not provided by the application
     if ( d->m_pServerConfig == NULL )
@@ -310,12 +317,8 @@ int OpcServer::start()
     }
 
     if ( d->m_pServerConfig == NULL )
-    {
-    	std::cout << "Failed to load server configuration file (typically called ServerConfig.xml or ServerConfig.ini) " << std::endl;
-        // We have no configuration
-        return -1;
-    }
-
+     	throw_runtime_error_with_origin("Failed to load server configuration file (typically called ServerConfig.xml or ServerConfig.ini) ");
+ 
     // Check trace settings
     if ( d->m_pServerConfig->loadConfiguration().isGood() )
     {
@@ -338,7 +341,7 @@ int OpcServer::start()
 
         if ( bSdkTraceEnabled != OpcUa_False)
         {
-        	m_logFilePath.assign( sTraceFile.toUtf8() );
+	    m_logFilePath.assign( sTraceFile.toUtf8() );
             UaString sServerUri;
             UaLocalizedTextArray ltServerNames;
             d->m_pServerConfig->getServerInstanceInfo(sServerUri, ltServerNames);
@@ -359,8 +362,7 @@ int OpcServer::start()
     if ( 0 != ret )
     {
         TRACE0_ERROR(SERVER_UI, "<== OpcServer::start - can not initialize core module");
-        SrvT::closeTrace();
-        return ret;
+	throw_runtime_error_with_origin("CoreModule::initialize returned "+Utils::toString(ret));
     }
 
     // Create and initialize UA server module
@@ -374,8 +376,7 @@ int OpcServer::start()
     ret = d->m_pUaModule->initialize(d->m_pServerConfig,pUaServer);
     if ( 0 != ret )
     {
-        SrvT::closeTrace();
-        return ret;
+	throw_runtime_error_with_origin( "UaModule::initialize returned "+Utils::toString(ret) );
     }
 
     // Start core server module
@@ -383,8 +384,8 @@ int OpcServer::start()
     if ( 0 != ret )
     {
         TRACE0_ERROR(SERVER_UI, "<== OpcServer::start - can not start up Core module");
-        SrvT::closeTrace();
-        return ret;
+	throw_runtime_error_with_origin( "CoreModule::startUp failed. Returned: "+Utils::toString(ret) );
+      
     }
     else
     {
@@ -395,9 +396,8 @@ int OpcServer::start()
         {
             TRACE1_ERROR(SERVER_UI, "<== OpcServer::start - can not start up Server Config [ret=0x%lx]", uaStatus.statusCode());
             d->m_pCoreModule->shutDown();
-            SrvT::closeTrace();
-            return -1;
-        }
+	    throw_runtime_error_with_origin( std::string("ServerConfig::startUp failed: ")+uaStatus.toString().toUtf8() );
+	}
     }
 
     // Start NodeManagers
@@ -409,7 +409,8 @@ int OpcServer::start()
         if ( ret.isNotGood() )
         {
             TRACE1_ERROR(SERVER_UI, "Error: OpcServer::start - can not start up node manager [ret=0x%lx]", ret.statusCode());
-        }
+	    throw_runtime_error_with_origin( std::string("NodeManager::startUp failed: ")+ret.toString().toUtf8() );
+	}
     }
 
     // Start UA server module
@@ -432,8 +433,10 @@ int OpcServer::start()
         delete d->m_pServerConfig;
         d->m_pServerConfig = NULL;
 
-        SrvT::closeTrace();
-        return ret;
+	
+	throw_runtime_error_with_origin( std::string("UaModule::startUp failed: ")+Utils::toString(ret)+
+					 " NOTE: UaModule startup fail typically means TCP/IP port in use or other network related issue. Refer to the logfile for details." );
+ 
     }
 
     UaString        sRejectedCertificateDirectory;

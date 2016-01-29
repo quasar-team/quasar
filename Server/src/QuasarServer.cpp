@@ -39,7 +39,7 @@ QuasarServer::QuasarServer() : BaseQuasarServer()
 
 QuasarServer::~QuasarServer()
 {
-
+ 
 }
 
 void QuasarServer::mainLoop()
@@ -75,18 +75,19 @@ void QuasarServer::mainLoop()
   printServerMsg(" Shutting down server");
 }
 
-void QuasarServer::initializeCustomModules()
+void QuasarServer::initialize()
 {
-	LOG(Log::INF) << "Initializing custom modules";
+    LOG(Log::INF) << "Initializing Quasar server.";
+
 }
 
-void QuasarServer::shutdownCustomModules()
+void QuasarServer::shutdown()
 {
-	LOG(Log::INF) << "Deinitializing custom modules";
+	LOG(Log::INF) << "Shutting down Quasar server.";
 }
 
 void QuasarServer::initializeLogIt()
 {
-	Log::initializeLogging(Log::INF);
-	LOG(Log::INF) << "Testing logging.";
+	Log::initializeLogging();
+  LOG(Log::INF) << "Logging initialized.";
 }

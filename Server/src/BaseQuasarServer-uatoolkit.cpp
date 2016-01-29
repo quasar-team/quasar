@@ -61,7 +61,7 @@ BaseQuasarServer::~BaseQuasarServer()
     shutdownEnvironment();
 }
 
-const int BaseQuasarServer::startApplication(int argc, char *argv[])
+int BaseQuasarServer::startApplication(int argc, char *argv[])
 {
     RegisterSignalHandler();
 	
@@ -69,13 +69,13 @@ const int BaseQuasarServer::startApplication(int argc, char *argv[])
     string configurationFileName  = "config.xml";
     bool isCreateCertificateOnly = false;
 	
-    int ret = parseCommandLine(argc, argv, &isHelpOrVersion, &isCreateCertificateOnly, configurationFileName.c_str());
+    int ret = parseCommandLine(argc, argv, &isHelpOrVersion, &isCreateCertificateOnly, &configurationFileName);
 	
     if(ret != 0 || isHelpOrVersion)//If there was a problem parsing the arguments, or it was a help/version call, we finish the execution
 	return ret;
     try
     {
-      ret = serverRun(configurationFileName.c_str(), isCreateCertificateOnly);
+	ret = serverRun(configurationFileName, isCreateCertificateOnly);
 	std::cout << "OpcServerMain() exited with code [" << ret << "]" << std::endl;
 	return ret;
     }
@@ -86,7 +86,7 @@ const int BaseQuasarServer::startApplication(int argc, char *argv[])
     }
 }
 
-const int BaseQuasarServer::serverRun(const char* configFileName, bool onlyCreateCertificate)
+int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCreateCertificate)
 {
     const std::string serverSettingsPath = getApplicationPath();
     const int initializeEnvironmentReturn = initializeEnvironment();
@@ -133,7 +133,7 @@ const int BaseQuasarServer::serverRun(const char* configFileName, bool onlyCreat
 	LOG(Log::ERR) << "Exception caught in BaseQuasarServer::serverRun:  [" << e.what() << "]";
     }
 
-    shutdownCustomModules();  // this is typically overridden by the developer
+    shutdown();  // this is typically overridden by the developer
 
     unlinkAllDevices(m_nodeManager);
     destroyMeta(m_nodeManager);
@@ -150,7 +150,7 @@ const int BaseQuasarServer::serverRun(const char* configFileName, bool onlyCreat
     return 0;
 }
 
-const std::string BaseQuasarServer::getApplicationPath() 
+std::string BaseQuasarServer::getApplicationPath() const
 {  
 #ifdef __linux__
     char serverSettingsPath[PATH_MAX];
@@ -174,7 +174,7 @@ const std::string BaseQuasarServer::getApplicationPath()
     return std::string(serverSettingsPath);
 }
 
-const int BaseQuasarServer::parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, const char *configurationFileName)
+int BaseQuasarServer::parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName)
 {	
     bool createCertificateOnly = false;
     bool printVersion = false;
@@ -222,14 +222,14 @@ const int BaseQuasarServer::parseCommandLine(int argc, char *argv[], bool *isHel
     }
     else
     {		
-	// if (vm.count("config_file") > 0)
-	//     *configurationFileName = vm["config_file"].as< string > ();
+	if (vm.count("config_file") > 0)
+	    *configurationFileName = vm["config_file"].as< string > ();
 	*isHelpOrVersion = false;
 	*isCreateCertificateOnly = createCertificateOnly;
 	return 0;
     }
 }
-const int BaseQuasarServer::initializeEnvironment()
+int BaseQuasarServer::initializeEnvironment()
 {
     //- initialize the environment --------------
 #ifdef SUPPORT_XML_CONFIG
@@ -259,11 +259,11 @@ void BaseQuasarServer::mainLoop()
     }
     printServerMsg(" Shutting down server");
 }
-bool BaseQuasarServer::overridableConfigure(const std::string fileName, AddressSpace::ASNodeManager *nm)
+bool BaseQuasarServer::overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm)
 {
 	return configure (fileName, nm);
 }
-const UaString BaseQuasarServer::getServerConfigFullPath(const std::string serverSettingsPath) 
+UaString BaseQuasarServer::getServerConfigFullPath(const std::string& serverSettingsPath) const
 {
     // Create configuration file name
     UaString sConfigFileName(serverSettingsPath.c_str());
@@ -288,7 +288,7 @@ void BaseQuasarServer::shutdownEnvironment()
     //-------------------------------------------
 }
 
-void BaseQuasarServer::serverStartFailLogError(const int ret, const std::string logFilePath)
+void BaseQuasarServer::serverStartFailLogError(int ret, const std::string& logFilePath)
 {
     LOG(Log::ERR) << "Starting up of the server failed. Return code: [" << ret << "]";
     if (logFilePath != "")
@@ -300,20 +300,20 @@ void BaseQuasarServer::serverStartFailLogError(const int ret, const std::string 
     }
 }
 
-void BaseQuasarServer::printServerMsg(const std::string message)
+void BaseQuasarServer::printServerMsg(const std::string& message)
 {
     LOG(Log::INF) << "***************************************************";
     LOG(Log::INF) << message;
     LOG(Log::INF) << "***************************************************";
 }
 
-UaStatus BaseQuasarServer::configurationInitializerHandler( std::string configFileName, AddressSpace::ASNodeManager *nm)
+UaStatus BaseQuasarServer::configurationInitializerHandler(const std::string& configFileName, AddressSpace::ASNodeManager *nm)
 {
     LOG(Log::INF) << "Configuration Initializer Handler";
     if (!overridableConfigure (configFileName, nm))
 	return OpcUa_Bad; // error is already printed in configure()
     validateDeviceTree();
     
-    initializeCustomModules();
+    initialize();
     return OpcUa_Good;
 }

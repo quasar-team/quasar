@@ -1,3 +1,7 @@
+# © Copyright CERN, 2015. All rights not expressly granted are reserved.
+# 
+# This file lists files of Quasar which should be installed in the target project.
+# Please note that this file is a derivative of original_files.txt with md5 checksums applied.
 Directory AddressSpace install=create,
 File CMakeLists.txt must_exist,must_be_versioned,md5=df57a63a951d11d500cf779fab86e615,install=overwrite,
 File designToClassBody.xslt must_exist,must_be_versioned,md5=05d9902c0a281ff62f37cb1d14124125,install=overwrite,
