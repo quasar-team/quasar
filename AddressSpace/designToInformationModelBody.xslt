@@ -42,6 +42,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	void ASInformationModel::createNodesOfTypes (ASNodeManager *nm)
 	{
+	#ifndef BACKEND_OPEN62541
+
 		UaObjectTypeSimple * type;
 		UaStatus addStatus;
 		<xsl:for-each select="/d:design/d:class">
@@ -53,7 +55,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			ASSERT_GOOD(addStatus);
 		}
 		</xsl:for-each>
+	#endif // BACKEND_OPEN62541
 	}
+
 	
 	}
 	

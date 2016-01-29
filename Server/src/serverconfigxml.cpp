@@ -1,3 +1,4 @@
+#ifndef BACKEND_OPEN62541
 /******************************************************************************
 ** serverconfigxml.cpp
 **
@@ -1957,3 +1958,4 @@ UaStatus UaEndpointXml::setXmlConfig(UaXmlElement &xmlElement, const UaString& s
 }
 
 
+#endif //  BACKEND_OPEN62541

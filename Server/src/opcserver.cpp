@@ -1,3 +1,5 @@
+#ifndef BACKEND_OPEN62541
+
 /******************************************************************************
 ** opcserver.cpp
 **
@@ -24,7 +26,6 @@
 #include "uamodule.h"
 #include <list>
 #include <iostream>
-#include <LogIt.h>
 
 using namespace std;
 
@@ -408,8 +409,6 @@ int OpcServer::start()
         if ( ret.isNotGood() )
         {
             TRACE1_ERROR(SERVER_UI, "Error: OpcServer::start - can not start up node manager [ret=0x%lx]", ret.statusCode());
-            LOG(Log::ERR) << "NodeManager failed to start-up";
-            return -1;
         }
     }
 
@@ -696,3 +695,5 @@ UaStatus ServerConfigBasicXml::logonSessionUser(
     return OpcUa_Bad;
 }
 #endif
+
+#endif // BACKEND_OPEN62541

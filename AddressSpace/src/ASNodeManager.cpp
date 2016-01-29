@@ -67,6 +67,7 @@ UaStatus ASNodeManager::afterStartUp()
 		if (!s.isGood())
 			return s;
 	}
+	
 	return OpcUa_Good;
 }
 
@@ -172,7 +173,12 @@ UaStatus ASNodeManager::beforeShutDown()
 			{
 				/* okay, the parent is The Objects Folder */
 				// TODO: fix 2 --> this shall be taken from the node manager
-				return UaNodeId (childName, 2);
+			    #ifdef BACKEND_OPEN62541
+			    int ns=1;
+			    #else
+			    int ns=2;
+			    #endif
+			    return UaNodeId (childName, ns);
 			}
 			else
 				throw std::runtime_error ("CASUtils::makeChildNodeId: numeric identifier which can't have children.");
@@ -188,9 +194,14 @@ UaStatus ASNodeManager::beforeShutDown()
 
 	const UaNodeId ASNodeManager::getTypeNodeId (unsigned int numericalType)
 	{
+#ifdef BACKEND_OPEN62541
+	return UaNodeId(UA_NS0ID_BASEOBJECTTYPE,0);
+#else
 		return UaNodeId (numericalType, getNameSpaceIndex());
+#endif // BACKEND_OPEN62541
 	}
 
+	#ifndef BACKEND_OPEN62541
 	  IOManager* ASNodeManager::getIOManager(UaNode* pUaNode, OpcUa_Int32 attributeId) const
 	  {
 
@@ -205,6 +216,10 @@ UaStatus ASNodeManager::beforeShutDown()
 
 		  return NodeManagerBase::getIOManager (pUaNode, attributeId);
 	  }
+	  #endif // BACKEND_OPEN62541
+
+	  
+	  
 	void ASNodeManager::setAfterStartupDelegate( boost::function<UaStatus ()> afterStartUpDelegate )
 	{
 		m_afterStartUpDelegate = afterStartUpDelegate;

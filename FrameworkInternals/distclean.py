@@ -65,7 +65,15 @@ def distClean(param=None):
 		else:
 			print("Calling: python quasar.py clean " + param)
 	if platform.system() == "Windows":
-		returnCode = subprocess.call('msbuild ALL_BUILD.vcxproj /t:Clean', shell=True)
+		print('Calling visual studio vcvarsall to set the environment')
+		print('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64')
+		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64', shell=True)
+		if returnCode != 0:
+			print('ERROR: vcvarsall could not be executed, maybe the installation folder is different than the one expected? [C:\Program Files (x86)\Microsoft Visual Studio 12.0]')			
+			return returnCode
+		print('Calling msbuild clean')
+		print('msbuild ALL_BUILD.vcxproj /t:Clean')
+		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64 && msbuild ALL_BUILD.vcxproj /t:Clean', shell=True)
 	elif platform.system() == "Linux":
 		returnCode = subprocess.call(['make', 'clean'])
 	if returnCode != 0:
@@ -92,4 +100,4 @@ def distClean(param=None):
 	if param == '--orig':
 		print('Removing .orig files')
 		deleteExtensionRecursively('.', 'orig')
-	return 0;
+	return returnCode;

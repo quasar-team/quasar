@@ -19,6 +19,8 @@
  *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef BACKEND_OPEN62541
+
 #include <ASSourceVariableIoManager.h>
 #include <LogIt.h>
 
@@ -93,3 +95,5 @@ UaStatus ASSourceVariableIoManager::finishTransaction (
 
 
 }
+
+#endif //  BACKEND_OPEN62541

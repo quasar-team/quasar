@@ -5,7 +5,7 @@
 # The approach is to satisfy the requirements as much as possible.
 
 message("using build configuration from enice_win_configuration.cmake")
-message(STATUS "environment vars: BOOST_HOME [$ENV{BOOST_HOME}] UNIFIED_AUTOMATION_HOME [$ENV{UNIFIED_AUTOMATION_HOME}] CODE_SYNTHESYS_XSD [$ENV{CODE_SYNTHESYS_XSD}] OPENSSL [$ENV{OPENSSL}] XERCESC [$ENV{XERCESC}] LIBXML2[$ENV{LIBXML2}]")
+message(STATUS "environment vars: BOOST_HOME [$ENV{BOOST_HOME}] CODE_SYNTHESYS_XSD [$ENV{CODE_SYNTHESYS_XSD}] OPENSSL [$ENV{OPENSSL}] XERCESC [$ENV{XERCESC}] LIBXML2[$ENV{LIBXML2}]")
 
 
 #-------
@@ -54,69 +54,6 @@ endif()
 
 #set( BOOST_LIBS libboost_system-vc120-mt-1_57 libboost_program_options-vc120-mt-1_57 libboost_thread-vc120-mt-1_57 libboost_date_time-vc120-mt-1_57 libboost_chrono-vc120-mt-1_57 libboost_regex-vc120-mt-1_57 -lrt)
 set( BOOST_LIBS  libboostlogsetup libboostlog libboostsystem libboostfilesystem libboostthread libboostprogramoptions libboostchrono libboostdatetime -lrt)
-
-#------
-#OPCUA
-#------
-if( NOT DEFINED ENV{UNIFIED_AUTOMATION_HOME} )
-	message(FATAL_ERROR "environment variable UNIFIED_AUTOMATION_HOME not defined - please set this to a 64bit unified automation toolkit installation")
-else()
-	SET( OPCUA_TOOLKIT_PATH $ENV{UNIFIED_AUTOMATION_HOME} )		
-endif()
-message(STATUS "UA TOOLKIT - OPC-UA toolkit path [${OPCUA_TOOLKIT_PATH}]" )
-
-if(NOT TARGET libuamodule)
-	add_library(libuamodule STATIC IMPORTED)
-	set_property(TARGET libuamodule PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/uamodule.lib)
-endif()
-if(NOT TARGET libcoremodule)
-	add_library(libcoremodule STATIC IMPORTED)
-	set_property(TARGET libcoremodule PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/coremodule.lib)
-endif()
-if(NOT TARGET libuabase)
-	add_library(libuabase STATIC IMPORTED)
-	set_property(TARGET libuabase PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/uabase.lib)
-endif()
-if(NOT TARGET libuastack)
-	add_library(libuastack STATIC IMPORTED)
-	set_property(TARGET libuastack PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/uastack.lib)
-endif()
-if(NOT TARGET libuapki)
-	add_library(libuapki STATIC IMPORTED)
-	set_property(TARGET libuapki PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/uapki.lib)
-endif()
-if(NOT TARGET libxmlparser)
-	add_library(libxmlparser STATIC IMPORTED)
-	set_property(TARGET libxmlparser PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/xmlparser.lib)
-endif()
-
-if(NOT TARGET libuamoduled)
-	add_library(libuamoduled STATIC IMPORTED)
-	set_property(TARGET libuamoduled PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/uamoduled.lib)
-endif()
-if(NOT TARGET libcoremoduled)
-	add_library(libcoremoduled STATIC IMPORTED)
-	set_property(TARGET libcoremoduled PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/coremoduled.lib)
-endif()
-if(NOT TARGET libuabased)
-	add_library(libuabased STATIC IMPORTED)
-	set_property(TARGET libuabased PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/uabased.lib)
-endif()
-if(NOT TARGET libuastackd)
-	add_library(libuastackd STATIC IMPORTED)
-	set_property(TARGET libuastackd PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/uastackd.lib)
-endif()
-if(NOT TARGET libuapkid)
-	add_library(libuapkid STATIC IMPORTED)
-	set_property(TARGET libuapkid PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/uapkid.lib)
-endif()
-if(NOT TARGET libxmlparserd)
-	add_library(libxmlparserd STATIC IMPORTED)
-	set_property(TARGET libxmlparserd PROPERTY IMPORTED_LOCATION ${OPCUA_TOOLKIT_PATH}/lib/xmlparserd.lib)
-endif()
-
-SET( OPCUA_TOOLKIT_LIBS_DEBUG libuamoduled libcoremoduled libuabased libuastackd libuapkid libxmlparserd ) 
-SET( OPCUA_TOOLKIT_LIBS_RELEASE libuamodule libcoremodule libuabase libuastack libuapki libxmlparser )
 
 #-----
 # LogIt
@@ -203,9 +140,14 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/GoogleTest/gtest/src/gtest/include
 )
 
+add_definitions( -DBACKEND_OPEN62541 )
+
 add_definitions(-DSUPPORT_XML_CONFIG -Wall -DWIN32_LEAN_AND_MEAN)
+
 set(CMAKE_CXX_FLAGS_RELEASE "/MD")
 set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Zi")
 
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG bin/)
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE bin/)
+
+set(BACKEND_SERVER_MODULES open62541 Open62541-compat)

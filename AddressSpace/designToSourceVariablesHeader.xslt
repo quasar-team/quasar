@@ -41,6 +41,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	#ifndef __IOMANAGERS_H__
 	#define __IOMANAGERS_H__
 
+	#ifndef BACKEND_OPEN62541
+	
 	#include &lt;iomanager.h&gt;
 	#include &lt;uathreadpool.h&gt;
 	#include &lt;uabasenodes.h&gt;
@@ -90,6 +92,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		
 
 	}
+
+#endif // BACKEND_OPEN62541
+
 
 #endif // include guard
 

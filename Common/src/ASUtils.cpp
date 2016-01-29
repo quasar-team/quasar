@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdexcept>
 #include <iostream>
-#include <uanodeid.h>
+
 
 #include "ASUtils.h"
 
@@ -36,7 +36,10 @@ void abort_with_message(const char* file, int line, const char* message)
 	std::cout << "At " << file << ":" << line << std::endl;
 	abort ();
 }
-
+void abort_with_message(const char* file, int line, const std::string& msg)
+{
+  abort_with_message(file, line, msg.c_str());
+}
 namespace AddressSpace
 {
 

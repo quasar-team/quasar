@@ -31,7 +31,6 @@
 #include <boost/log/sources/logger.hpp>
 #include <boost/log/common.hpp>
 
-#include <boost/log/utility/empty_deleter.hpp>
 #include <boost/log/sinks/text_ostream_backend.hpp>
 #include <boost/log/sinks/text_file_backend.hpp>
 #include <boost/log/sinks/text_multifile_backend.hpp>

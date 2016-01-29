@@ -1,3 +1,4 @@
+#ifndef BACKEND_OPEN62541
 /* © Copyright CERN, Universidad de Oviedo, 2015.  All rights not expressly granted are reserved.
  * QuasarServerCallback.cpp
  *
@@ -51,3 +52,4 @@ UaServer* QuasarServerCallback::createUaServer()
 {
 	return NULL;
 }
+#endif // BACKEND_OPEN62541

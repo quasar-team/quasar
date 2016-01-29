@@ -110,6 +110,17 @@ m_deviceLink (0)
 </xsl:if>
 
 {
+#ifdef BACKEND_OPEN62541
+{
+UaStatus s = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent);
+		if (!s.isGood())
+		{
+			std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; parentNodeId.toString().toUtf8() &lt;&lt; " to " &lt;&lt; this-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
+			ASSERT_GOOD(s);
+		}
+}
+#endif // BACKEND_OPEN62541
+
 UaStatus s;
 UaVariant v;
 <xsl:for-each select="d:cachevariable">
@@ -205,6 +216,7 @@ UaVariant v;
 <xsl:choose>
 <xsl:when test="@dataType='UaVariant'"> 
 v = value;
+
 </xsl:when>
 <xsl:otherwise>
 v.<xsl:value-of select="fnc:dataTypeToVariantSetter(@dataType)"/>( value );

@@ -24,6 +24,13 @@
 #include <LogIt.h>
 #include <string.h>
 #include <shutdown.h>
+#include <DRoot.h>
+#include <boost/foreach.hpp>
+#include <DClass.h>
+#include <ASClass.h>
+#include <stdlib.h>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread/thread.hpp> 
 
 QuasarServer::QuasarServer() : BaseQuasarServer()
 {
@@ -37,15 +44,35 @@ QuasarServer::~QuasarServer()
 
 void QuasarServer::mainLoop()
 {
-	printServerMsg("Press "+std::string(SHUTDOWN_SEQUENCE)+" to shutdown server");
+  printServerMsg("Press "+std::string(SHUTDOWN_SEQUENCE)+" to shutdown server");
 
-	// Wait for user command to terminate the server thread.
+  // Wait for user command to terminate the server thread.
 
-	while(ShutDownFlag() == 0)
+  while(true)
+    {
+
+      #ifdef BACKEND_OPEN62541
+      if(!running)
+	break;
+      #else
+      if(ShutDownFlag() != 0)
+	break;
+      #endif
+	  
+      //sleep(1);
+	  boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+
+	  
+      BOOST_FOREACH(Device::DClass* cl, Device::DRoot::getInstance()->classs() )
 	{
-		UaThread::sleep (1);
+
+	   cl->getAddressSpaceLink()->setVarUInt32( rand(), OpcUa_Good );
+
 	}
-	printServerMsg(" Shutting down server");
+
+
+    }
+  printServerMsg(" Shutting down server");
 }
 
 void QuasarServer::initializeCustomModules()
@@ -55,11 +82,11 @@ void QuasarServer::initializeCustomModules()
 
 void QuasarServer::shutdownCustomModules()
 {
-	LOG(Log::INF) << "shutting down custom modules";
+	LOG(Log::INF) << "Deinitializing custom modules";
 }
 
 void QuasarServer::initializeLogIt()
 {
-	Log::initializeLogging();
+	Log::initializeLogging(Log::INF);
 	LOG(Log::INF) << "Testing logging.";
 }

@@ -23,7 +23,7 @@
 #ifndef QUASARSERVER_H_
 #define QUASARSERVER_H_
 
-#include <BaseQuasarServer.h>
+#include "BaseQuasarServer.h"
 
 /*
  * Example class. This class overrides functionality from BaseQuasarServer in order to make the logic fit an specific implementation.

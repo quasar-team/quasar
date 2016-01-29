@@ -17,8 +17,6 @@
 # Author: Piotr Nikiel <piotr@nikiel.info>
 # Author: Damian Abalo Miron <damian.abalo@cern.ch>
 
-# mods for open62541
-# mods2
 project(opc_ua)
 cmake_minimum_required(VERSION 2.8)
 add_definitions(
@@ -35,14 +33,14 @@ endif(DEFINED CMAKE_TOOLCHAIN_FILE)
 
 set(PYTHON_COMMAND python)
 set(CUSTOM_SERVER_MODULES "")
-set(NATIVE_SERVER_MODULES AddressSpace Configuration Common Server Device Meta LogIt) 
-set(SERVER_MODULES ${NATIVE_SERVER_MODULES} ${CUSTOM_SERVER_MODULES})
+set(NATIVE_SERVER_MODULES AddressSpace Configuration Common Server Device Meta  LogIt  ) 
+set(SERVER_MODULES ${NATIVE_SERVER_MODULES} ${CUSTOM_SERVER_MODULES} ${BACKEND_SERVER_MODULES} )
 set(EXECUTABLE OpcUaServer)
 
 include_directories (
 	${OPCUA_TOOLKIT_PATH}/include/uastack
 	${OPCUA_TOOLKIT_PATH}/include/uabase
-	${OPCUA_TOOLKIT_PATH}/include/uaserver
+ 	${OPCUA_TOOLKIT_PATH}/include/uaserver
 	${OPCUA_TOOLKIT_PATH}/include/xmlparser
 	${OPCUA_TOOLKIT_PATH}/include/uapki
 	${BOOST_PATH_HEADERS}
@@ -95,7 +93,8 @@ endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 target_link_libraries ( ${EXECUTABLE} 
 	${BOOST_LIBS}
 	${XML_LIBS}
-
+	-lboost_thread-mt
+	-lboost_system
 	# Add your custom libraries here
 )
 

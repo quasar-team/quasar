@@ -1,3 +1,4 @@
+#ifndef BACKEND_OPEN62541
 /******************************************************************************
 ** Copyright (C) 2006-2011 Unified Automation GmbH. All Rights Reserved.
 ** Web: http://www.unifiedautomation.com
@@ -169,3 +170,4 @@ char* getAppPath()
 
     return pszAppPath;
 }
+#endif // BACKEND_OPEN62541

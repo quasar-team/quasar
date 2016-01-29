@@ -24,6 +24,6 @@
 
 int main (int argc, char *argv[])
 {
-	QuasarServer quasarServer;
+	QuasarServer quasarServer ;
 	return quasarServer.startApplication(argc, argv);
 }
