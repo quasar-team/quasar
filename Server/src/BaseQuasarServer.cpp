@@ -187,10 +187,11 @@ int BaseQuasarServer::parseCommandLine(int argc, char *argv[], bool *isHelpOrVer
 	("help", "Print help")
 	("version", bool_switch(&printVersion), "Print version and exit");
 
-    appendCustomCommandLineOptions(desc);
-
     positional_options_description p;
     p.add("config_file", 1);
+
+    appendCustomCommandLineOptions(desc, p);
+
     variables_map vm;
     try
     {
@@ -320,5 +321,5 @@ UaStatus BaseQuasarServer::configurationInitializerHandler(const std::string& co
     return OpcUa_Good;
 }
 
-void BaseQuasarServer::appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions)
+void BaseQuasarServer::appendCustomCommandLineOptions(options_description& commandLineOptions, positional_options_description& positionalOptionsDescription)
 {}

@@ -61,7 +61,7 @@ protected:
 	//This method will be called from configurationInitializerHandler.
 	virtual bool overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
 	// override this function to add custom command line arguments.
-	virtual void appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions);
+	virtual void appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions, boost::program_options::positional_options_description& positionalOptionsDescription);
 	//Gets the full path to the server configuration
 	UaString getServerConfigFullPath(const std::string& szAppPath) const;
 	//Gets the application path of the server
