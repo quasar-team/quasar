@@ -25,7 +25,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <iostream>
-//#include "uaplatformlayer.h"
+
+#ifndef BACKEND_OPEN62541
+#include "uaplatformlayer.h"
+#endif // BACKEND_OPEN62541
+
 #include <boost/program_options.hpp>
 #include "version.h"
 

@@ -1,4 +1,5 @@
-#ifndef BACKEND_OPEN62541
+//#ifndef BACKEND_OPEN62541
+
 /******************************************************************************
 ** Copyright (C) 2006-2011 Unified Automation GmbH. All Rights Reserved.
 ** Web: http://www.unifiedautomation.com
@@ -13,7 +14,10 @@
           the "CTRL-C" exception in the "Win32 Exceptions" category.
 ******************************************************************************/
 #include "shutdown.h"
+
+#ifndef BACKEND_OPEN62541
 #include "uaplatformlayer.h"
+#endif
 
 #include <stdio.h>
 #include <string.h>
@@ -170,4 +174,4 @@ char* getAppPath()
 
     return pszAppPath;
 }
-#endif // BACKEND_OPEN62541
+// #endif // BACKEND_OPEN62541
