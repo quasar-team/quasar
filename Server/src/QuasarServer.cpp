@@ -44,35 +44,21 @@ QuasarServer::~QuasarServer()
 
 void QuasarServer::mainLoop()
 {
-  printServerMsg("Press "+std::string(SHUTDOWN_SEQUENCE)+" to shutdown server");
+    printServerMsg("Press "+std::string(SHUTDOWN_SEQUENCE)+" to shutdown server");
 
-  // Wait for user command to terminate the server thread.
+    // Wait for user command to terminate the server thread.
 
-  while(true)
+    while(!ShutDownFlag())
     {
 
-      #ifdef BACKEND_OPEN62541
-      if(!running)
-	break;
-      #else
-      if(ShutDownFlag() != 0)
-	break;
-      #endif
-	  
-      //sleep(1);
-	  boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-
-	  
-      BOOST_FOREACH(Device::DClass* cl, Device::DRoot::getInstance()->classs() )
+	boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+	BOOST_FOREACH(Device::DClass* cl, Device::DRoot::getInstance()->classs() )
 	{
-
-	   cl->getAddressSpaceLink()->setVarUInt32( rand(), OpcUa_Good );
-
+	    cl->getAddressSpaceLink()->setVarUInt32( rand(), OpcUa_Good );
 	}
 
-
     }
-  printServerMsg(" Shutting down server");
+    printServerMsg(" Shutting down server");
 }
 
 void QuasarServer::initialize()

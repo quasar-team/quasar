@@ -64,8 +64,6 @@ using namespace boost::program_options;
 using namespace std;
 UA_Logger logger = Logger_Stdout;
 
-UA_Boolean BaseQuasarServer::running = 1;
-
 BaseQuasarServer::BaseQuasarServer()
 {	
 }
@@ -78,7 +76,7 @@ BaseQuasarServer::~BaseQuasarServer()
 
 int BaseQuasarServer::startApplication(int argc, char *argv[])
 {
-//    RegisterSignalHandler();
+    RegisterSignalHandler();
 	
     bool isHelpOrVersion = false;	
     string configurationFileName  = "config.xml";
@@ -101,15 +99,16 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
     }
 }
 
-void BaseQuasarServer::stopHandler(int sign)
-{
-  running=0;
-}
+// TODO: remove
+// void BaseQuasarServer::stopHandler(int sign)
+// {
+//   running=0;
+// }
 
 void BaseQuasarServer::runThread()
 {
 
-  UA_StatusCode retval = UA_Server_run(server, 1, &running);
+  UA_StatusCode retval = UA_Server_run(server, 1, &g_RunningFlag);
 }
   
 
@@ -125,8 +124,8 @@ int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCrea
 
 
     //m_pServer->addNodeManager(m_nodeManager);
-    signal(SIGINT, stopHandler); /* catches ctrl-c */
-    running = 1;
+    // signal(SIGINT, stopHandler); /* catches ctrl-c */
+    // running = 1;
     server = UA_Server_new(UA_ServerConfig_standard);
     UA_Server_setLogger(server, logger);
     UA_Server_addNetworkLayer(server, ServerNetworkLayerTCP_new(UA_ConnectionConfig_standard, 4841));

@@ -1,5 +1,4 @@
 //#ifndef BACKEND_OPEN62541
-
 /******************************************************************************
 ** Copyright (C) 2006-2011 Unified Automation GmbH. All Rights Reserved.
 ** Web: http://www.unifiedautomation.com
@@ -27,8 +26,13 @@
 #  include <limits.h> 
 # endif
 
-/* shutdown flag */
-static volatile unsigned int g_ShutDown = 0;
+volatile unsigned int  g_ShutDown = 0;
+
+#ifdef BACKEND_OPEN62541
+UA_Boolean g_RunningFlag = 1;
+#endif
+
+
 #ifdef _WIN32_WCE
 	# include <windows.h>	 
 #elif defined(_WIN32) && !defined(USE_CTRLC_ON_WINDOWS)
@@ -62,6 +66,9 @@ void sig_int(int signo)
 {
     SHUTDOWN_TRACE("Received SIG_INT(%i) signal.\n", signo);
     g_ShutDown = 1;
+    #ifdef BACKEND_OPEN62541
+    g_RunningFlag = 0;
+    #endif
 }
 
 void RegisterSignalHandler()
