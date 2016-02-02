@@ -61,7 +61,6 @@
 using namespace std;
 using namespace boost::program_options;
 
-using namespace std;
 UA_Logger logger = Logger_Stdout;
 
 BaseQuasarServer::BaseQuasarServer()
@@ -99,47 +98,21 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
     }
 }
 
-// TODO: remove
-// void BaseQuasarServer::stopHandler(int sign)
-// {
-//   running=0;
-// }
-
 void BaseQuasarServer::runThread()
 {
-
   UA_StatusCode retval = UA_Server_run(server, 1, &g_RunningFlag);
 }
   
 
 int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCreateCertificate)
 {
-    // const std::string szAppPath = getApplicationPath();
+    const std::string szAppPath = getApplicationPath();
     const int initializeEnvironmentReturn = initializeEnvironment();
     if(initializeEnvironmentReturn != 0)
     {
 	LOG(Log::ERR) << "Initialization of components failed. Return code: [" << initializeEnvironmentReturn << "]";
 	return initializeEnvironmentReturn;
     }
-
-
-    //m_pServer->addNodeManager(m_nodeManager);
-    // signal(SIGINT, stopHandler); /* catches ctrl-c */
-    // running = 1;
-    server = UA_Server_new(UA_ServerConfig_standard);
-    UA_Server_setLogger(server, logger);
-    UA_Server_addNetworkLayer(server, ServerNetworkLayerTCP_new(UA_ConnectionConfig_standard, 4841));
-
-    m_nodeManager = new AddressSpace::ASNodeManager();
-    m_nodeManager->setAfterStartupDelegate( boost::bind(&BaseQuasarServer::configurationInitializerHandler, this, configFileName, m_nodeManager) );
-    m_nodeManager->linkServer(server);
-    m_nodeManager->afterStartUp();
-
-
-
-	
-	
-    // UaString sConfigFileName = getServerConfigFullPath(szAppPath);
 	
     //- Start up OPC server ---------------------
     // This code can be integrated into a start up
@@ -147,39 +120,52 @@ int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCrea
     // OPC server should be integrated
     //-------------------------------------------
     // Create and initialize server object
-    // m_pServer = new OpcServer;
-    // m_pServer->setServerConfig(sConfigFileName, szAppPath.c_str());
 
-    // if (onlyCreateCertificate)
-    // {
-    // 	// m_pServer->createCertificate();
-    // 	LOG(Log::INF) << "Create certificate only";
-    // 	return 0;
-    // }
+#ifdef BACKEND_UATOOLKIT
+    m_pServer = new OpcServer;
+    m_pServer->setServerConfig(sConfigFileName, szAppPath.c_str());
+#else
+    server = UA_Server_new(UA_ServerConfig_standard);
+    UA_Server_setLogger(server, logger);
+    UA_Server_addNetworkLayer(server, ServerNetworkLayerTCP_new(UA_ConnectionConfig_standard, 4841));
+#endif
 
-    // Start server object
-    // const int startServerReturn = m_pServer->start();
-    // if ( startServerReturn != 0 )
-    // {
-    // 	serverStartFailLogError(startServerReturn, m_pServer->getLogFilePath());
-    // 	delete m_pServer;
-    // 	return startServerReturn;
-    // }
-    // //-------------------------------------------
+    if (onlyCreateCertificate)
+    {
+#ifdef BACKEND_OPEN62541
+	LOG(Log::ERR) << "Creating certificates is not yet supported with Open62541 backend. Please consider contributing to the project ;-)";
+	return -1;
+#else
+    	m_pServer->createCertificate();
+    	LOG(Log::INF) << "Create certificate only";
+    	return 0;
+#endif
+    }
 
+    
+    m_nodeManager = new AddressSpace::ASNodeManager();
+    m_nodeManager->setAfterStartupDelegate( boost::bind(&BaseQuasarServer::configurationInitializerHandler, this, configFileName, m_nodeManager) );
+#if defined(BACKEND_UATOOLKIT)
+    m_pServer->addNodeManager(m_nodeManager);
+#elif defined(BACKEND_OPEN62541)
+    m_nodeManager->linkServer(server);
+    m_nodeManager->afterStartUp();
+#endif
 
     try
     {
-//	const int startServerReturn = m_pServer->start();
-//	if ( startServerReturn != 0 )
-//	{
-//	    serverStartFailLogError(startServerReturn, m_pServer->getLogFilePath());
+#ifdef BACKEND_UATOOLKIT
+	const int startServerReturn = m_pServer->start();
+	if ( startServerReturn != 0 )
+	{
+	    serverStartFailLogError(startServerReturn, m_pServer->getLogFilePath());
+	    return startServerReturn;
+	}
+#elif defined(BACKEND_OPEN62541)
+	boost::thread serverThread ( &BaseQuasarServer::runThread, this );
+#endif
 
-    // m_nodeManager = new AddressSpace::ASNodeManager();
-    // m_nodeManager->setAfterStartupDelegate( boost::bind(&BaseQuasarServer::configurationInitializerHandler, this, configFileName, m_nodeManager) );
-    // m_pServer->addNodeManager(m_nodeManager);
-    boost::thread serverThread ( &BaseQuasarServer::runThread, this );
-    mainLoop();
+	mainLoop();
 
     }
     catch (const std::exception &e)
@@ -192,13 +178,20 @@ int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCrea
     unlinkAllDevices(m_nodeManager);
     //destroyMeta(m_nodeManager);
     Device::DRoot::getInstance()->unlinkAllChildren();
-   // m_pServer->stop(3, UaLocalizedText("", "User shut down"));
 
+#if defined(BACKEND_UATOOLKIT)
+    m_pServer->stop(3, UaLocalizedText("", "User shut down"));
+    if (m_pServer != 0)
+    {
+	delete m_pServer;
+	m_pServer = NULL;
+    }
+#elif defined(BACKEND_OPEN62541)
     delete m_nodeManager;
     UA_Server_delete(server);
     /* For all address space items: disconnect their device links */
+#endif
 
- 
     return 0;
 }
 
