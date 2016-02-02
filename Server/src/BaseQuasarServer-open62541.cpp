@@ -39,17 +39,19 @@
 #include <shutdown.h>
 #include <LogIt.h>
 #include <LogLevels.h>
-// #ifdef SUPPORT_XML_CONFIG
-//   #include "xmldocument.h"
-// #endif
 
-// #include <shutdown.h>
-// #include <SourceVariables.h>
-// #include <meta.h>
+#ifdef BACKEND_UATOOLKIT
+#ifdef SUPPORT_XML_CONFIG
+   #include "xmldocument.h"
+#endif
+#endif
+
+#include <shutdown.h>
+#include <SourceVariables.h>
+#include <meta.h>
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
-#include <open62541.h>
 
 #include <signal.h>
 #ifndef __GNUC__
@@ -61,9 +63,13 @@
 using namespace std;
 using namespace boost::program_options;
 
+#ifdef BACKEND_OPEN62541
 UA_Logger logger = Logger_Stdout;
+#endif
 
-BaseQuasarServer::BaseQuasarServer()
+BaseQuasarServer::BaseQuasarServer():
+    m_pServer(0), 
+    m_nodeManager(0)
 {	
 }
 
@@ -88,25 +94,27 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
     try
     {
 	ret = serverRun(configurationFileName, isCreateCertificateOnly);
-	    LOG(Log::INF) << "OpcServerMain() exited with code [" << ret << "]";
+        LOG(Log::INF) << "OpcServerMain() exited with code [" << ret << "]";
 	return ret;
     }
     catch (std::runtime_error &e)
     {
-	    LOG(Log::ERR) << "Caught runtime exception with msg: [" << e.what() << "]";
+        LOG(Log::ERR) << "Caught runtime exception with msg: [" << e.what() << "]";
 	return 1;
     }
 }
 
+#ifdef BACKEND_OPEN62541
 void BaseQuasarServer::runThread()
 {
-  UA_StatusCode retval = UA_Server_run(server, 1, &g_RunningFlag);
+    UA_StatusCode retval = UA_Server_run(m_pServer, 1, &g_RunningFlag);
 }
+#endif
   
 
 int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCreateCertificate)
 {
-    const std::string szAppPath = getApplicationPath();
+    const std::string serverSettingsPath = getApplicationPath();
     const int initializeEnvironmentReturn = initializeEnvironment();
     if(initializeEnvironmentReturn != 0)
     {
@@ -123,11 +131,11 @@ int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCrea
 
 #ifdef BACKEND_UATOOLKIT
     m_pServer = new OpcServer;
-    m_pServer->setServerConfig(sConfigFileName, szAppPath.c_str());
+    m_pServer->setServerConfig(getServerConfigFullPath(serverSettingsPath), serverSettingsPath.c_str());
 #else
-    server = UA_Server_new(UA_ServerConfig_standard);
-    UA_Server_setLogger(server, logger);
-    UA_Server_addNetworkLayer(server, ServerNetworkLayerTCP_new(UA_ConnectionConfig_standard, 4841));
+    m_pServer = UA_Server_new(UA_ServerConfig_standard);
+    UA_Server_setLogger(m_pServer, logger);
+    UA_Server_addNetworkLayer(m_pServer, ServerNetworkLayerTCP_new(UA_ConnectionConfig_standard, 4841));
 #endif
 
     if (onlyCreateCertificate)
@@ -148,7 +156,7 @@ int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCrea
 #if defined(BACKEND_UATOOLKIT)
     m_pServer->addNodeManager(m_nodeManager);
 #elif defined(BACKEND_OPEN62541)
-    m_nodeManager->linkServer(server);
+    m_nodeManager->linkServer(m_pServer);
     m_nodeManager->afterStartUp();
 #endif
 
@@ -176,7 +184,9 @@ int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCrea
     shutdown();  // this is typically overridden by the developer
 
     unlinkAllDevices(m_nodeManager);
-    //destroyMeta(m_nodeManager);
+#ifdef BACKEND_UATOOLKIT
+    destroyMeta(m_nodeManager);
+#endif
     Device::DRoot::getInstance()->unlinkAllChildren();
 
 #if defined(BACKEND_UATOOLKIT)
@@ -188,7 +198,7 @@ int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCrea
     }
 #elif defined(BACKEND_OPEN62541)
     delete m_nodeManager;
-    UA_Server_delete(server);
+    UA_Server_delete(m_pServer);
     /* For all address space items: disconnect their device links */
 #endif
 
@@ -276,13 +286,20 @@ int BaseQuasarServer::parseCommandLine(int argc, char *argv[], bool *isHelpOrVer
 }
 int BaseQuasarServer::initializeEnvironment()
 {
-// 	//- initialize the environment --------------
-// #ifdef SUPPORT_XML_CONFIG
-//     // initialize the XML Parser
-//     UaXmlDocument::initParser();
-// #endif
+#ifdef BACKEND_UATOOLKIT
+    //- initialize the environment --------------
+#ifdef SUPPORT_XML_CONFIG
+    // initialize the XML Parser
+    UaXmlDocument::initParser();
+#endif
+    // initialize the UA Stack platform layer
+    const int ret = UaPlatformLayer::init();
+    //-------------------------------------------
+#else
+     const int ret = 0;
+#endif    
     initializeLogIt();    
-     return 0;
+    return ret;
 }
 void BaseQuasarServer::initializeLogIt()
 {
@@ -295,11 +312,10 @@ void BaseQuasarServer::mainLoop()
 
     // Wait for user command to terminate the server thread.
 
-	while(0 == 0)
+    while(ShutDownFlag() == 0)
 	{
-	  //sleep(1);
-		// UaThread::sleep (1);
-		boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+
+	boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 	}
 	printServerMsg(" Shutting down server");
 }
@@ -312,24 +328,28 @@ UaString BaseQuasarServer::getServerConfigFullPath(const std::string& serverSett
     // Create configuration file name
     UaString sConfigFileName(serverSettingsPath.c_str());
 
-// #ifdef SUPPORT_XML_CONFIG
-// 	sConfigFileName += "/ServerConfig.xml";
-// #else
-// 	sConfigFileName += "/ServerConfig.ini";
-// #endif
+#ifdef BACKEND_UATOOLKIT
+#ifdef SUPPORT_XML_CONFIG
+    sConfigFileName += "/ServerConfig.xml";
+#else
+    sConfigFileName += "/ServerConfig.ini";
+#endif
+#endif
     return sConfigFileName;
 }
 
 void BaseQuasarServer::shutdownEnvironment()
 {
-// 	//- Cleanup the environment --------------
-//     // Cleanup the UA Stack platform layer
-//     UaPlatformLayer::cleanup();
-// #ifdef SUPPORT_XML_CONFIG
-//     // Cleanup the XML Parser
-//     UaXmlDocument::cleanupParser();
-// #endif
-//     //-------------------------------------------
+#ifdef BACKEND_UATOOLKIT
+    //- Cleanup the environment --------------
+    // Cleanup the UA Stack platform layer
+    UaPlatformLayer::cleanup();
+#ifdef SUPPORT_XML_CONFIG
+    // Cleanup the XML Parser
+    UaXmlDocument::cleanupParser();
+#endif
+    //-------------------------------------------
+#endif
 }
 
 void BaseQuasarServer::serverStartFailLogError(int ret, const std::string& logFilePath)

@@ -29,6 +29,10 @@
 #include <opcserver.h>
 #endif
 
+#ifdef BACKEND_OPEN62541
+#include <open62541.h>
+#endif
+
 #include <uastring.h>//#include <opcserver.h>
 
 #include <ASNodeManager.h>
@@ -46,63 +50,63 @@ public:
     BaseQuasarServer();
     virtual ~BaseQuasarServer();
     //Starts application. Parses command line arguments and then calls serverRun
-	int startApplication(int argc, char *argv[]);
+    int startApplication(int argc, char *argv[]);
 
 #ifdef BACKEND_OPEN62541
     void runThread();
-    UA_Server *server;
-    static UA_Boolean running;
 #endif
 
 protected:
-#ifndef BACKEND_OPEN62541
-    //Reference to the OPC UA Server internal implementation
+    //Reference to the OPC UA Server internal implementation    
+#if defined BACKEND_UATOOLKIT
     OpcServer* m_pServer;
+#elif defined BACKEND_OPEN62541
+    UA_Server *m_pServer;
 #endif
     //Reference to the Node manager
     AddressSpace::ASNodeManager* m_nodeManager;
     //Main loop of the application logic.
     virtual void mainLoop();
     //Method for initialising Custom Modules, to be overwritten by the final user.
-	virtual void initialize () {}
+    virtual void initialize () {}
     //Method for shutting down Custom Modules, to be overwritten by the final user
     //This method will be called from configurationInitializerHandler.
-	virtual void shutdown () {}
-	//Method for initialising LogIt. Can be overriden for a specific implementation, but a default initialization is already provided.
-	virtual void initializeLogIt();
-	//Call to the method configure inside configuration. If a different configuration method has to be implemented by the user, this should be overriden
+    virtual void shutdown () {}
+    //Method for initialising LogIt. Can be overriden for a specific implementation, but a default initialization is already provided.
+    virtual void initializeLogIt();
+    //Call to the method configure inside configuration. If a different configuration method has to be implemented by the user, this should be overriden
     //This method will be called from configurationInitializerHandler.
-	virtual bool overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
+    virtual bool overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
     //Gets the full path to the server configuration
-	UaString getServerConfigFullPath(const std::string& szAppPath) const;
+    UaString getServerConfigFullPath(const std::string& szAppPath) const;
     //Gets the application path of the server
-	std::string getApplicationPath() const;
+    std::string getApplicationPath() const;
     //Logs the appropriate error when failing to start the server
-	void serverStartFailLogError(int ret, const std::string& logFilePath);
+    void serverStartFailLogError(int ret, const std::string& logFilePath);
     //Logs a server message
-	void printServerMsg(const std::string&);
+    void printServerMsg(const std::string&);
 
     static void stopHandler(int sign);
 
     
 private:
-	//Disable copy-constructor and assignment-operator
-	BaseQuasarServer( const BaseQuasarServer& other);
-	void operator= ( const BaseQuasarServer& other );
+    //Disable copy-constructor and assignment-operator
+    BaseQuasarServer( const BaseQuasarServer& other);
+    void operator= ( const BaseQuasarServer& other );
 
-	/* Instantiate singleton for device collections */
-	Device::DRoot m_deviceRoot;
+    /* Instantiate singleton for device collections */
+    Device::DRoot m_deviceRoot;
 
     //Starting point of the server, called by startApplication. Calls various other methods in the class, including mainLoop, which contains the mainLoop logic
-	int serverRun(const std::string& configFileName, bool onlyCreateCertificate);
+    int serverRun(const std::string& configFileName, bool onlyCreateCertificate);
     //Parse command line arguments.
-	int parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName);
+    int parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName);
     //initialize XML parser, logging and UA stack (in that order)
-	int initializeEnvironment();
+    int initializeEnvironment();
     //Cleans the server before exiting.
     void shutdownEnvironment();
     //Handler for initializing the node manager configuration only when the server is ready
-	UaStatus configurationInitializerHandler(const std::string& configFileName, AddressSpace::ASNodeManager *nm);
+    UaStatus configurationInitializerHandler(const std::string& configFileName, AddressSpace::ASNodeManager *nm);
 
 };
 #endif // include guard
