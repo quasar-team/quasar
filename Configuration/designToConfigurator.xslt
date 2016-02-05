@@ -340,7 +340,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		{
 			std::vector&lt; AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/> * &gt; objects;
 			std::string pattern (".*");
-			nm->findAllByPattern&lt;AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/>&gt; ( nm-&gt;getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
+			AddressSpace::findAllByPattern&lt;AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/>&gt; (nm, nm-&gt;getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
 			totalObjectsNumber += objects.size();
 			BOOST_FOREACH(AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/> *a, objects)
 			{
