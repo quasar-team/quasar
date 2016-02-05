@@ -24,9 +24,8 @@
 #define ASNODEMANAGER_H_
 
 #include <iostream>
-#include <boost/xpressive/xpressive.hpp>
 #include <boost/function.hpp>
-#include <boost/foreach.hpp>
+
 #include <nodemanagerbase.h>
 
 #include <ASUtils.h>
@@ -36,15 +35,15 @@ namespace AddressSpace
 
 {
 
-  class ASNodeManager : public NodeManagerBase
-  {
-    UA_DISABLE_COPY(ASNodeManager);
-  public:
-    ASNodeManager();
-    virtual ~ASNodeManager();
+    class ASNodeManager : public NodeManagerBase
+    {
+	UA_DISABLE_COPY(ASNodeManager);
+    public:
+	ASNodeManager();
+	virtual ~ASNodeManager();
 
-    virtual UaStatus afterStartUp();
-    virtual UaStatus beforeShutDown();
+	virtual UaStatus afterStartUp();
+	virtual UaStatus beforeShutDown();
 
 #ifndef BACKEND_OPEN62541
     UaObject * getInstanceDeclarationObjectType (OpcUa_UInt32 typeId);
@@ -52,14 +51,6 @@ namespace AddressSpace
     virtual IOManager* getIOManager(UaNode* pUaNode, OpcUa_Int32 attributeId) const;
 #endif
 
-    /*
-    // improve this
-    OpcUa_Int32  findUaVariables(OpcUa::BaseObjectType *pParObj,std::string& pattern,UaControlVariableSet& storage);
-    OpcUa_Int32  findUaNodeVariables(UaNode *pNode,std::string & pattern,UaControlVariableSet& storage);
-    */
-
-    //	/* get rid of this */
-    //	UaControlVariable * findUaControlVariable (std::string & fullName);
 
     UaNodeId makeChildNodeId (const UaNodeId &parent, const UaString& childName);
 
@@ -69,9 +60,13 @@ namespace AddressSpace
     const UaNodeId getTypeNodeId (unsigned int numericalType);
     void setAfterStartupDelegate( boost::function<UaStatus ()> afterStartUpDelegate );
 
+	UaStatus addUnreferencedNode( UaNode* node ) { m_unreferencedNodes.push_back(node); return OpcUa_Good; }
+	const std::list<UaNode*>& getUnreferencedNodes () const { return m_unreferencedNodes; }
+
   private:
     UaStatus createTypeNodes();
     boost::function<UaStatus ()> m_afterStartUpDelegate;
+	std::list<UaNode*> m_unreferencedNodes;
   };
 
 
