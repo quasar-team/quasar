@@ -1,5 +1,5 @@
 # LICENSE:
-# Copyright (c) 2015, CERN, University of Oviedo
+# Copyright (c) 2015, CERN
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -15,7 +15,7 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Author: Piotr Nikiel <piotr@nikiel.info>
-# Author: Damian Abalo Miron <damian.abalo@cern.ch>
+
 
 project(opc_ua)
 cmake_minimum_required(VERSION 2.8)
