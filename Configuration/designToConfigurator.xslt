@@ -204,6 +204,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	#include &lt;ASUtils.h&gt;
 	#include &lt;ASInformationModel.h&gt;
+	#include &lt;ASNodeQueries.h&gt;
 	
 	#include &lt;DRoot.h&gt;
 	

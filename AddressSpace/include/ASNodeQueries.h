@@ -151,7 +151,7 @@ template<typename T>
 #ifdef BACKEND_OPEN62541
       BOOST_FOREACH( const UaNode::ReferencedTarget &target, *(startNode->referencedTargets()) )
 	{
-	  nMatched = nMatched + findAllByRegex( target.target, nodeClass, expression, storage);
+	  nMatched = nMatched + findAllByRegex(nm, target.target, nodeClass, expression, storage);
 	}
 #else // BACKEND_OPEN62541
       UaReference *pRefList = const_cast<UaReference *>(startNode->getUaReferenceLists()->pTargetNodes());
