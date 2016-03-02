@@ -55,6 +55,13 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:variable name="className">
 		<xsl:value-of select="@name" />
 	</xsl:variable>
+	<xsl:if test="@singleVariableNode='true' and (count(d:cachevariable)+count(d:sourcevariable)!=1)">
+<xsl:message terminate="yes">ERROR (at class='<xsl:value-of select="$className"/>' When singleVariableNode attribute is set to true, the class requires exactly one variable (cachevariable or sourcevariable).</xsl:message>
+	</xsl:if>
+	<xsl:if test="@singleVariableNode='true' and (count(d:hasobjects)!=0)">
+<xsl:message terminate="yes">ERROR (at class='<xsl:value-of select="$className"/>' When singleVariableNode attribute is set to true, the class must not have any children (=d:hasobjects).</xsl:message>
+
+	</xsl:if>
 	<xsl:for-each select="d:cachevariable">
 		<xsl:call-template name="cachevariable">
 		<xsl:with-param name="className"><xsl:value-of select="$className"/></xsl:with-param>

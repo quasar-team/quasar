@@ -32,6 +32,7 @@
 #include <ASUtils.h>
 #include <ASInformationModel.h>
 #include <ASNodeManager.h>
+#include <ASNodeQueries.h>
 
 #include <MetaUtils.h>
 
@@ -50,7 +51,6 @@
 #include <DQuasar.h>
 #include <ASServer.h>
 #include <DServer.h>
-#include <ASNodeQueries.h>
 
 using std::string;
 
@@ -320,7 +320,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 	{
 		std::vector< AddressSpace::ASStandardMetaData * > objects;
 		std::string pattern (".*");
-                AddressSpace::findAllByPattern<AddressSpace::ASStandardMetaData> ( nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
+		AddressSpace::findAllByPattern<AddressSpace::ASStandardMetaData> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
 		BOOST_FOREACH(AddressSpace::ASStandardMetaData *a, objects)
 		{
 			a->unlinkDevice();
@@ -330,7 +330,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 	{
 		std::vector< AddressSpace::ASGeneralLogLevel * > objects;
 		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASGeneralLogLevel> ( nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
+		AddressSpace::findAllByPattern<AddressSpace::ASGeneralLogLevel> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
 		BOOST_FOREACH(AddressSpace::ASGeneralLogLevel *a, objects)
 		{
 			a->unlinkDevice();
@@ -340,7 +340,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 	{
 		std::vector< AddressSpace::ASQuasar * > objects;
 		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASQuasar> ( nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
+		AddressSpace::findAllByPattern<AddressSpace::ASQuasar> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
 		BOOST_FOREACH(AddressSpace::ASQuasar *a, objects)
 		{
 			a->unlinkDevice();
@@ -350,7 +350,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 	{
 		std::vector< AddressSpace::ASServer * > objects;
 		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASServer> ( nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
+		AddressSpace::findAllByPattern<AddressSpace::ASServer> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
 		BOOST_FOREACH(AddressSpace::ASServer *a, objects)
 		{
 			a->unlinkDevice();
@@ -360,7 +360,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 	{
 		std::vector< AddressSpace::ASSourceVariableThreadPool * > objects;
 		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASSourceVariableThreadPool> ( nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
+		AddressSpace::findAllByPattern<AddressSpace::ASSourceVariableThreadPool> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
 		BOOST_FOREACH(AddressSpace::ASSourceVariableThreadPool *a, objects)
 		{
 			a->unlinkDevice();
@@ -370,7 +370,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 	{
 		std::vector< AddressSpace::ASComponentLogLevel * > objects;
 		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASComponentLogLevel> ( nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
+		AddressSpace::findAllByPattern<AddressSpace::ASComponentLogLevel> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
 		BOOST_FOREACH(AddressSpace::ASComponentLogLevel *a, objects)
 		{
 			a->unlinkDevice();

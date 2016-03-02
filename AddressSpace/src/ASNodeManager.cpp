@@ -44,6 +44,11 @@ ASNodeManager::ASNodeManager () :
 
 ASNodeManager::~ASNodeManager()
 {
+	for (auto it = m_unreferencedNodes.begin(); it != m_unreferencedNodes.end(); it++)
+	{
+		(*it)->releaseReference();
+	}
+	m_unreferencedNodes.clear();
 
 }
 

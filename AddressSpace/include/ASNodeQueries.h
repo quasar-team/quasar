@@ -33,155 +33,154 @@ namespace AddressSpace
     {
 
         UaNode* node = nm->getNode ( UaNodeId(stringId.c_str(), nm->getNameSpaceIndex()));
-  if (node && node == dynamic_cast<T*>(node) )
-    {
-      /* Alright, we deal with given type or its descendant */
-      return (T*) node;
+        if (node && node == dynamic_cast<T*>(node) )
+        {
+            /* Alright, we deal with given type or its descendant */
+            return (T*) node;
+        }
+        else
+            return 0;
     }
-  else
-    return 0;
-}
 
 
 
-template<typename T>
-unsigned int findVariablesByRegex (UaNode* startNode, const boost::xpressive::sregex & expression, std::vector<T*> &storage)
-{
-  if (!startNode)
-    return 0; 
-  UaNodeId id = startNode->nodeId();
-  if (startNode->nodeClass() == OpcUa_NodeClass_Variable)
+    template<typename T>
+        unsigned int findVariablesByRegex (UaNode* startNode, const boost::xpressive::sregex & expression, std::vector<T*> &storage)
     {
-      if (id.identifierType() == OpcUa_IdentifierType_String)
-	{
+        if (!startNode)
+            return 0;
+        UaNodeId id = startNode->nodeId();
+        if (startNode->nodeClass() == OpcUa_NodeClass_Variable)
+        {
+            if (id.identifierType() == OpcUa_IdentifierType_String)
+            {
 
-	  std::string sId = UaString(id.identifierString()).toUtf8();
+                std::string sId = UaString(id.identifierString()).toUtf8();
 
 
-	  boost::xpressive::smatch what;
-	  if (boost::xpressive::regex_match( sId , what, expression ))
-	    {
-	      std::cout << "name matched:" << sId << std::endl;
-	      T* t = dynamic_cast<T*>(startNode);
-	      if (t == startNode) /* this type itself or its descendant */
-		{
-		  std::cout << "type also matched" << std::endl;
-		  storage.push_back( t );
-		  return 1;
-		}
-	      else
-		return 0; /* type mismatch */
-	    }
-	  else
-	    return 0; /* name mismatch */
-	}
-      else
-	return 0; /* strange identifier type */
-    }
-  else if (startNode->nodeClass() == OpcUa_NodeClass_Object)
-    {
+                boost::xpressive::smatch what;
+                if (boost::xpressive::regex_match( sId , what, expression ))
+                {
+                    std::cout << "name matched:" << sId << std::endl;
+                    T* t = dynamic_cast<T*>(startNode);
+                    if (t == startNode) /* this type itself or its descendant */
+                    {
+                        std::cout << "type also matched" << std::endl;
+                        storage.push_back( t );
+                        return 1;
+                    }
+                    else
+                        return 0; /* type mismatch */
+                }
+                else
+                    return 0; /* name mismatch */
+            }
+            else
+                return 0; /* strange identifier type */
+        }
+        else if (startNode->nodeClass() == OpcUa_NodeClass_Object)
+        {
 #ifndef BACKEND_OPEN62541
-      unsigned int nMatched=0;
-      UaReference *pRefList = const_cast<UaReference *>(startNode->getUaReferenceLists()->pTargetNodes());
-      while (pRefList)
-	{
-	  nMatched = nMatched + findVariablesByRegex( pRefList->pTargetNode(), expression, storage);
-	  pRefList = pRefList->pNextForwardReference();
-	}
-      return nMatched;
+            unsigned int nMatched=0;
+            UaReference *pRefList = const_cast<UaReference *>(startNode->getUaReferenceLists()->pTargetNodes());
+            while (pRefList)
+            {
+                nMatched = nMatched + findVariablesByRegex( pRefList->pTargetNode(), expression, storage);
+                pRefList = pRefList->pNextForwardReference();
+            }
+            return nMatched;
 #else // BACKEND_OPEN62541
 
 #endif // BACKEND_OPEN62541
 		
+        }
+        else
+            return 0;
     }
-  else
-    return 0;
-	    
-}
 
-	template<typename T>
-	    unsigned int findVariablesByPattern (UaNode* startNode, const std::string & pattern, std::vector<T*> &storage)
-	{
-	    if (!startNode)
-		return 0; 
-	    boost::xpressive::sregex expression;
-	    try
-	    {
-		expression = boost::xpressive::sregex::compile( pattern );
-	    }
-	    catch (boost::xpressive::regex_error &e)
-	    {
-		ABORT_MESSAGE(CONCAT3(" REGEX Expression is wrong:",pattern,e.what()));
-	    }
-	    return findVariablesByRegex<T> (startNode, expression, storage);
-	}
+    template<typename T>
+        unsigned int findVariablesByPattern (UaNode* startNode, const std::string & pattern, std::vector<T*> &storage)
+    {
+        if (!startNode)
+            return 0;
+        boost::xpressive::sregex expression;
+        try
+        {
+            expression = boost::xpressive::sregex::compile( pattern );
+        }
+        catch (boost::xpressive::regex_error &e)
+        {
+            ABORT_MESSAGE(CONCAT3(" REGEX Expression is wrong:",pattern,e.what()));
+        }
+        return findVariablesByRegex<T> (startNode, expression, storage);
+    }
 
-template<typename T>
+    template<typename T>
         unsigned int findAllByRegex (const ASNodeManager *nm, UaNode* startNode, OpcUa_NodeClass nodeClass, const boost::xpressive::sregex & expression, std::vector<T*> &storage)
-{
-  if (!startNode)
-    return 0; 
+    {
+        if (!startNode)
+            return 0;
 
-  UaNodeId id = startNode->nodeId();
-  unsigned int numAdded=0;
-  if (startNode->nodeClass() == nodeClass)
-    {
-      if (id.identifierType() == OpcUa_IdentifierType_String)
-	{
-	  std::string sId = UaString(id.identifierString()).toUtf8();
-	  boost::xpressive::smatch what;
-	  if (boost::xpressive::regex_match( sId , what, expression ))
-	    {
-	      //std::cout << "name matched:" << sId << std::endl;
-	      T* t = dynamic_cast<T*>(startNode);
-	      if (t == startNode) /* this type itself or its descendant */
-		{
-		  //	std::cout << "type also matched" << std::endl;
-		  storage.push_back( t );
-		  numAdded++;
-		}
-	      //else
-	      //	std::cout << "type didnt match:" << typeid(startNode).name() << std::endl;
-	    }
-	}
-    }
-  if (startNode->nodeClass() == OpcUa_NodeClass_Object)
-    {
-      unsigned int nMatched=0;
+        UaNodeId id = startNode->nodeId();
+        unsigned int numAdded=0;
+        if (startNode->nodeClass() == nodeClass)
+        {
+            if (id.identifierType() == OpcUa_IdentifierType_String)
+            {
+                std::string sId = UaString(id.identifierString()).toUtf8();
+                boost::xpressive::smatch what;
+                if (boost::xpressive::regex_match( sId , what, expression ))
+                {
+                    //std::cout << "name matched:" << sId << std::endl;
+                    T* t = dynamic_cast<T*>(startNode);
+                    if (t == startNode) /* this type itself or its descendant */
+                    {
+                        //      std::cout << "type also matched" << std::endl;
+                        storage.push_back( t );
+                        numAdded++;
+                    }
+                    //else
+                    //  std::cout << "type didnt match:" << typeid(startNode).name() << std::endl;
+                }
+            }
+        }
+        if (startNode->nodeClass() == OpcUa_NodeClass_Object)
+        {
+            unsigned int nMatched=0;
 #ifdef BACKEND_OPEN62541
       BOOST_FOREACH( const UaNode::ReferencedTarget &target, *(startNode->referencedTargets()) )
 	{
 	  nMatched = nMatched + findAllByRegex(nm, target.target, nodeClass, expression, storage);
 	}
 #else // BACKEND_OPEN62541
-      UaReference *pRefList = const_cast<UaReference *>(startNode->getUaReferenceLists()->pTargetNodes());
-      while (pRefList)
-	{
+            UaReference *pRefList = const_cast<UaReference *>(startNode->getUaReferenceLists()->pTargetNodes());
+            while (pRefList)
+            {
                 nMatched = nMatched + findAllByRegex(nm, pRefList->pTargetNode(), nodeClass, expression, storage);
-	  pRefList = pRefList->pNextForwardReference();
-	}
+                pRefList = pRefList->pNextForwardReference();
+            }
 
 #endif // BACKEND_OPEN62541
-      return nMatched;
+            return nMatched;
+        }
+        else
+            return numAdded;
     }
-  else
-    return numAdded;
-}
 
-	template<typename T>
+    template<typename T>
         unsigned int findAllByPattern (const ASNodeManager *nm, UaNode* startNode, OpcUa_NodeClass nodeClass, const std::string & pattern, std::vector<T*> &storage)
-	{
-	    if (!startNode)
-		return 0; 
-	    boost::xpressive::sregex expression;
-	    try
-	    {
-		expression = boost::xpressive::sregex::compile( pattern );
-	    }
-	    catch (boost::xpressive::regex_error &e)
-	    {
-		ABORT_MESSAGE(CONCAT3(" REGEX Expression is wrong:",pattern,e.what()));
-	    }
+    {
+        if (!startNode)
+            return 0;
+        boost::xpressive::sregex expression;
+        try
+        {
+            expression = boost::xpressive::sregex::compile( pattern );
+        }
+        catch (boost::xpressive::regex_error &e)
+        {
+            ABORT_MESSAGE(CONCAT3(" REGEX Expression is wrong:",pattern,e.what()));
+        }
         return findAllByRegex<T> (nm, startNode, nodeClass, expression, storage);
     }
 
@@ -192,7 +191,7 @@ template<typename T>
         try
         {
             expression = boost::xpressive::sregex::compile( pattern );
-	}
+        }
         catch (boost::xpressive::regex_error &e)
         {
             ABORT_MESSAGE(CONCAT3(" REGEX Expression is wrong:",pattern,e.what()));

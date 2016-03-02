@@ -56,34 +56,40 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:param name="containingClass" />
 	<xsl:choose>
 	<xsl:when test="@instantiateUsing='configuration'">
-	BOOST_FOREACH(const Configuration::<xsl:value-of select="@class"/> &amp; <xsl:value-of select="@class"/>config, config.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>())
+	BOOST_FOREACH(const Configuration::<xsl:value-of select="@class"/> &amp; <xsl:value-of select="@class"/>config, <xsl:value-of select="$configuration"/>.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>())
 	<!-- this funny thing with adding 1 above is when a class has hasObjects towards itself- xsdcxx then renames access method with 1 at the end in order not to confuse it with the constructor -->
 		{
 			<xsl:variable name="containedClass"><xsl:value-of select="@class"/></xsl:variable>
 			<!-- If contained class doesn't have device logic then there is nothing to add -->
 			<xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
-			<!-- If containing class doesn't have device logic then dItem doesn't exist.  -->
-			<xsl:if test="fnc:classHasDeviceLogic(/,$containingClass)='true'">
-			dItem-&gt;add(
-			</xsl:if>
+			Device::<xsl:value-of select="fnc:DClassName($containedClass)"/>* newObject =
 			</xsl:if>
 			configure<xsl:value-of select="@class"/> (
 				<xsl:value-of select="@class"/>config,
 				nm,
-				asItem->nodeId()
-				<xsl:if test="fnc:getCountParentClassesAndRoot(/,@class)=1">
-				<xsl:if test="fnc:classHasDeviceLogic(/,$containingClass)='true'">
-				, dItem
-				</xsl:if>
-				</xsl:if> 
-				)
+				<xsl:value-of select="$parentNodeId"/><xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">,
+				<xsl:choose>
+				<xsl:when test="(fnc:getCountParentClassesAndRoot(/,@class)=1) and (fnc:classHasDeviceLogic(/,$containingClass)='true')">
+				<xsl:value-of select="$parentDevice"/>
+				</xsl:when>
+				<xsl:otherwise>
+				/*parent not existing */ 0
+				</xsl:otherwise>
+				</xsl:choose>
+			      </xsl:if>
+				);
+			
 			<xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
-			<xsl:if test="fnc:classHasDeviceLogic(/,$containingClass)='true'">
-			)
+			<xsl:choose>
+			<xsl:when test="fnc:classHasDeviceLogic(/,$containingClass)='true'">
+			<xsl:value-of select="$parentDevice"/>-&gt;add( newObject );
+			</xsl:when>
+			<xsl:otherwise>
+			Device::<xsl:value-of select="fnc:DClassName($containedClass)"/>::registerOrphanedObject( newObject );
+			</xsl:otherwise>
+			</xsl:choose>
 			</xsl:if>
-			</xsl:if>;
-				
-
+			
 		}
 	</xsl:when>
 	<xsl:when test="@instantiateUsing='design'">
@@ -127,11 +133,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	configure<xsl:value-of select="$class"/>( const Configuration::<xsl:value-of select="$class"/> &amp; config,
 					AddressSpace::ASNodeManager *nm,
 					UaNodeId parentNodeId
-		<xsl:if test="fnc:getCountParentClassesAndRoot(/,$class)=1">
-		<xsl:if test="fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$class))='true'">
-		, Device::<xsl:value-of select="fnc:DClassName(fnc:getParentClass(/,$class))"/> * parentDevice
-		</xsl:if>
-		</xsl:if>
+					<xsl:if test="fnc:classHasDeviceLogic(/,$class)='true'">
+					,Device::<xsl:value-of select="fnc:Parent_DClassName($class)"/> * parentDevice
+					</xsl:if>
 		);
 
 	</xsl:template>
@@ -147,35 +151,23 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	configure<xsl:value-of select="$class"/>( const Configuration::<xsl:value-of select="$class"/> &amp; config,
 					AddressSpace::ASNodeManager *nm,
 					UaNodeId parentNodeId
-		<xsl:if test="fnc:getCountParentClassesAndRoot(/,$class)=1">
-		<xsl:if test="fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$class))='true'">
-		, Device::<xsl:value-of select="fnc:DClassName(fnc:getParentClass(/,$class))"/> * parentDevice
-		</xsl:if>
-		</xsl:if>
+					<xsl:if test="fnc:classHasDeviceLogic(/,$class)='true'">
+					,Device::<xsl:value-of select="fnc:Parent_DClassName($class)"/> * parentDevice
+					</xsl:if>
+				
 		)
 	{
-		
 		AddressSpace::<xsl:value-of select="fnc:ASClassName($class)"/> *asItem = 
 				new AddressSpace::<xsl:value-of select="fnc:ASClassName($class)"/>(
 				parentNodeId, 
 				nm->getTypeNodeId(AddressSpace::ASInformationModel::<xsl:value-of select="fnc:typeNumericId($class)"/>), 
 				nm, 
 				<xsl:value-of select="@class"/>config);
-		#ifndef BACKEND_OPEN62541
-		UaStatus s = nm->addNodeAndReference( parentNodeId, asItem, OpcUaId_HasComponent);
-		if (!s.isGood())
-		{
-			std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; parentNodeId.toString().toUtf8() &lt;&lt; " to " &lt;&lt; asItem-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
-			ASSERT_GOOD(s);
-		}
-		#endif
+
 		<xsl:if test="fnc:classHasDeviceLogic(/,$class)='true'">
-		Device::<xsl:value-of select="fnc:DClassName(@name)"/> *dItem = new Device::<xsl:value-of select="fnc:DClassName(@name)"/> (config
-		<xsl:if test="fnc:getCountParentClassesAndRoot(/,@name)=1">
-		<xsl:if test="fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$class))='true'">
-		, parentDevice
-		</xsl:if>
-		</xsl:if>
+ 		  Device::<xsl:value-of select="fnc:DClassName(@name)"/> *dItem = new Device::<xsl:value-of select="fnc:DClassName(@name)"/> (
+		  config,
+		  parentDevice
 		);
 		asItem-&gt;linkDevice( dItem );
 		dItem-&gt;linkAddressSpace( asItem, asItem-&gt;nodeId().toString().toUtf8() );
@@ -185,6 +177,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:for-each select="/d:design/d:class[@name=$class]/d:hasobjects">
 		<xsl:call-template name="hasObjects">
 		<xsl:with-param name="containingClass"><xsl:value-of select="$class"/></xsl:with-param>
+		<xsl:with-param name="parentDevice">dItem</xsl:with-param>
+		<xsl:with-param name="parentNodeId">asItem->nodeId()</xsl:with-param>
+		<xsl:with-param name="configuration">config</xsl:with-param>
 		</xsl:call-template>
 		</xsl:for-each>
 		
@@ -273,31 +268,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	#endif
 	
 	<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']">
-	BOOST_FOREACH(const Configuration::<xsl:value-of select="@class"/> &amp; <xsl:value-of select="@class"/>config, theConfiguration-&gt;<xsl:value-of select="@class"/>())
-	{
-	<xsl:variable name="containedClass"><xsl:value-of select="@class"/></xsl:variable>
-	
-	<xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
-	deviceRoot->add(
-	</xsl:if>
-	configure<xsl:value-of select="@class"/> (
-				<xsl:value-of select="@class"/>config,
-				nm,
-				rootNode
-				<xsl:if test="fnc:getCountParentClassesAndRoot(/,@class)=1">
-				<xsl:if test="fnc:classHasDeviceLogic(/,fnc:getParentClass(/,@class))='true'">
-				, deviceRoot
-				</xsl:if>
-				</xsl:if> 
-				)
-	
-	<xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
-	)
-	</xsl:if>
-	;
 
+        <xsl:call-template name="hasObjects">
+        <xsl:with-param name="containingClass">Root</xsl:with-param>
+        <xsl:with-param name="parentDevice">deviceRoot</xsl:with-param>
+        <xsl:with-param name="parentNodeId">rootNode</xsl:with-param>
+        <xsl:with-param name="configuration">(*theConfiguration)</xsl:with-param>
+        </xsl:call-template>
 
-	}
 	</xsl:for-each>
 	
 	<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='design']">
@@ -341,7 +319,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		{
 			std::vector&lt; AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/> * &gt; objects;
 			std::string pattern (".*");
-			AddressSpace::findAllByPattern&lt;AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/>&gt; (nm, nm-&gt;getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
+			AddressSpace::findAllObjectsByPatternInNodeManager&lt;AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/>&gt; (nm, pattern, objects);
 			totalObjectsNumber += objects.size();
 			BOOST_FOREACH(AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/> *a, objects)
 			{

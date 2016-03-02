@@ -63,10 +63,9 @@
 
 		public:
 		/* sample constructor */
-		explicit <xsl:value-of select="fnc:DClassName($className)" /> ( const Configuration::<xsl:value-of select="@name"/> &amp; config 
-		<xsl:if test="(fnc:getCountParentClassesAndRoot(/,$className)=1) and (fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$className))='true')">
-		, <xsl:value-of select="fnc:getParentDeviceClass(/,$className)"/> * parent
-		</xsl:if>
+		explicit <xsl:value-of select="fnc:DClassName($className)" /> (
+		const Configuration::<xsl:value-of select="@name"/> &amp; config, 
+		 <xsl:value-of select="fnc:Parent_DClassName($className)"/> * parent
 		) ;
 		/* sample dtr */
 		~<xsl:value-of select="fnc:DClassName($className)" /> ();

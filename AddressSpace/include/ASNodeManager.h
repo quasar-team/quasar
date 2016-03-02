@@ -51,11 +51,7 @@ namespace AddressSpace
     virtual IOManager* getIOManager(UaNode* pUaNode, OpcUa_Int32 attributeId) const;
 #endif
 
-
     UaNodeId makeChildNodeId (const UaNodeId &parent, const UaString& childName);
-
-
-
 
     const UaNodeId getTypeNodeId (unsigned int numericalType);
     void setAfterStartupDelegate( boost::function<UaStatus ()> afterStartUpDelegate );

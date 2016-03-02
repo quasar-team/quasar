@@ -44,6 +44,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 <xsl:value-of select="concat('Base_D',$name)"/>
 </xsl:function>
 
+<!--  Returns C++ class name of Parent class with given Design name -->
+<xsl:function name="fnc:Parent_DClassName">
+<xsl:param name="name"/>
+<xsl:value-of select="concat('Parent_D',$name)"/>
+</xsl:function>
+
 <!-- Capitalize first letter (useful for creating setCamelCase from camelCase variable name) -->
 <xsl:function name="fnc:capFirst">
 <xsl:param name="name"/>
@@ -213,6 +219,15 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <xsl:when test="$dataType='OpcUa_Boolean'">setBool</xsl:when>
 <xsl:when test="$dataType='UaString'">setString</xsl:when>
 <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
+</xsl:choose>
+</xsl:function>
+
+<!-- Some OPC data types shall not be used in Base Device classes (i.e. UaString which is a typically Address Space construct).  -->
+<xsl:function name="fnc:dataTypeToBaseDeviceType">
+<xsl:param name="dataType"/>
+<xsl:choose>
+<xsl:when test="$dataType='UaString'">const std::string &amp;</xsl:when>
+<xsl:otherwise><xsl:value-of select="$dataType"/></xsl:otherwise>
 </xsl:choose>
 </xsl:function>
 

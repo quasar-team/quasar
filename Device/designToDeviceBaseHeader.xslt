@@ -36,11 +36,10 @@
 
 		public:
 		/* Constructor */
-		explicit <xsl:value-of select="fnc:Base_DClassName($className)" /> ( const Configuration::<xsl:value-of select="@name"/> &amp; config 
-		<xsl:if test="(fnc:getCountParentClassesAndRoot(/,$className)=1) and (fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$className))='true')">
-		, <xsl:value-of select="fnc:getParentDeviceClass(/,$className)"/> * parent
-		</xsl:if>
-		) ;
+		explicit <xsl:value-of select="fnc:Base_DClassName($className)" /> (
+		const Configuration::<xsl:value-of select="@name"/> &amp; config,
+		<xsl:value-of select="fnc:Parent_DClassName($className)"/> * parent
+				) ;
 		
 		private:
 		/* No copy constructors or assignment operators */
@@ -51,10 +50,8 @@
 		
 		/* sample dtr */
 		virtual ~<xsl:value-of select="fnc:Base_DClassName($className)" /> ();
-
-		<xsl:if test="(fnc:getCountParentClassesAndRoot(/,$className)=1) and (fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$className))='true')">
-		<xsl:value-of select="fnc:getParentDeviceClass(/,$className)"/> * getParent () const { return m_parent; } 	
-		</xsl:if>
+		
+		<xsl:value-of select="fnc:Parent_DClassName($className)"/> * getParent () const { return m_parent; } 	
 
 		/* add/remove for handling device structure */
 		<xsl:for-each select="d:hasobjects">
@@ -81,8 +78,8 @@
 		<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
 		<xsl:for-each select="/d:design/d:class[@name=$class]/d:cachevariable[@isKey='true']">
 		/* Returns 0 when element not found */
-		<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> key) const;
-		
+		<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (
+		  <xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const;
 		</xsl:for-each>
 		</xsl:for-each>
 		
@@ -90,8 +87,8 @@
 		<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
 		<xsl:for-each select="/d:design/d:class[@name=$class]/d:configentry[@isKey='true']">
 		/* Returns 0 when element not found */
-		<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> key) const;
-		
+		<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (
+          <xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const;	
 		</xsl:for-each>
 		</xsl:for-each>
 		
@@ -144,20 +141,16 @@
 		
 		/* query address-space for full name (mostly for debug purposes) */
 		std::string getFullName() const { return m_stringAddress; };
+		
+		static std::list &lt; <xsl:value-of select="fnc:DClassName($className)"/> * &gt; s_orphanedObjects;
+		static void registerOrphanedObject( <xsl:value-of select="fnc:DClassName($className)"/> * object ) { s_orphanedObjects.push_back( object ); }
+        static std::list &lt; <xsl:value-of select="fnc:DClassName($className)"/>* &gt; &amp; orphanedObjects() { return  s_orphanedObjects; }
 
 		private:
-		<!-- Check if parent is unique (if more than one class has this class as hasObjects, then it is not -->
 		
-		<xsl:choose>
-			<xsl:when test="(fnc:getCountParentClassesAndRoot(/,$className)=1) and (fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$className))='true')">
-			<xsl:value-of select="fnc:getParentDeviceClass(/,$className)"/> * m_parent;
-			</xsl:when>
-			<xsl:otherwise>
-				/* Parent link has not been generated */
-			</xsl:otherwise>
-		</xsl:choose>
+		Parent_<xsl:value-of select="fnc:DClassName($className)"/> * m_parent;
 	
-		public:	  // TODO: reconsider this!
+		public:	  // TODO: reconsider this! shoudln't be public!
 		AddressSpace::
 		<xsl:value-of select="fnc:ASClassName($className)" />
 		*m_addressSpaceLink;
@@ -234,6 +227,7 @@
 
 		#include &lt;vector&gt;
 		#include &lt;string&gt;
+		#include &lt;list&gt;
 		#include &lt;boost/thread/mutex.hpp&gt;
 
 		
@@ -255,7 +249,18 @@
 
 		namespace Device
 		{
+
+		<xsl:choose>
+		  <xsl:when test="fnc:getCountParentClassesAndRoot(/,$className)=1 and fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$className))='true'">
+		    typedef <xsl:value-of select="fnc:getParentDeviceClass(/,$className)"/> Parent_<xsl:value-of select="fnc:DClassName($className)"/> ;
+		  </xsl:when>
+		  <xsl:otherwise>
+		      typedef struct{/*No exact Parent of the class*/} Parent_<xsl:value-of select="fnc:DClassName($className)"/> ;
+		  </xsl:otherwise>
+		</xsl:choose>
+
 		
+		class <xsl:value-of select="fnc:DClassName($className)"/>;
 		/* forward declarations (comes from design.class.hasObjects) */
 		<xsl:for-each select="/d:design/d:class[@name=$className]/d:hasobjects">
 		class <xsl:value-of select="fnc:DClassName(@class)"/>;

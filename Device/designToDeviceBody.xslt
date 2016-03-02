@@ -94,16 +94,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     // 2222222222222222222222222222222222222222222222222222222222222222222222222
     
     /* sample ctr */
-		<xsl:value-of select="fnc:DClassName(@name)"/>::<xsl:value-of select="fnc:DClassName(@name)"/> (const Configuration::<xsl:value-of select="@name"/> &amp; config
-		<xsl:if test="(fnc:getCountParentClassesAndRoot(/,$className)=1) and (fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$className))='true')">
-		, <xsl:value-of select="fnc:getParentDeviceClass(/,$className)"/> * parent
-		</xsl:if>
+    <xsl:value-of select="fnc:DClassName(@name)"/>::<xsl:value-of select="fnc:DClassName(@name)"/> (
+    const Configuration::<xsl:value-of select="@name"/> &amp; config,
+    <xsl:value-of select="fnc:Parent_DClassName($className)"/> * parent
 		):
-			<xsl:value-of select="fnc:Base_DClassName(@name)"/>( config
-			<xsl:if test="(fnc:getCountParentClassesAndRoot(/,$className)=1) and (fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$className))='true')">
-		 	, parent
-			</xsl:if>
-			)
+			<xsl:value-of select="fnc:Base_DClassName(@name)"/>( config, parent)
+			
 		/* fill up constructor initialization list here */
 		{
 			/* fill up constructor body here */

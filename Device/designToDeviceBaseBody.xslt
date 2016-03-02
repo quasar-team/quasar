@@ -78,12 +78,13 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			
 		}
 		
+		
 		/* find methods for children */
 		<xsl:for-each select="d:hasobjects">
 		<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
 		<xsl:for-each select="/d:design/d:class[@name=$class]/d:cachevariable[@isKey='true']">
 		
-		<xsl:value-of select="fnc:DClassName($class)"/> * <xsl:value-of select="fnc:Base_DClassName($className)"/>::get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> key) const
+		<xsl:value-of select="fnc:DClassName($class)"/> * <xsl:value-of select="fnc:Base_DClassName($className)"/>::get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const
 		{
 			BOOST_FOREACH( <xsl:value-of select="fnc:DClassName($class)"/> *test, m_<xsl:value-of select="$class"/>s )
 			{
@@ -96,7 +97,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		
 		<xsl:for-each select="/d:design/d:class[@name=$class]/d:configentry[@isKey='true']">
 		
-		<xsl:value-of select="fnc:DClassName($class)"/> * <xsl:value-of select="fnc:Base_DClassName($className)"/>::get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> key) const
+		<xsl:value-of select="fnc:DClassName($class)"/> * <xsl:value-of select="fnc:Base_DClassName($className)"/>::get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const
 		{
 			BOOST_FOREACH( <xsl:value-of select="fnc:DClassName($class)"/> *test, m_<xsl:value-of select="$class"/>s )
 			{
@@ -124,14 +125,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
     
     /* Constructor */
-		<xsl:value-of select="fnc:Base_DClassName(@name)"/>::<xsl:value-of select="fnc:Base_DClassName(@name)"/> (const Configuration::<xsl:value-of select="@name"/> &amp; config
-		<xsl:if test="(fnc:getCountParentClassesAndRoot(/,$className)=1) and (fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$className))='true')">
-		, <xsl:value-of select="fnc:getParentDeviceClass(/,$className)"/> * parent
-		</xsl:if>
+    <xsl:value-of select="fnc:Base_DClassName(@name)"/>::<xsl:value-of select="fnc:Base_DClassName(@name)"/> (
+    const Configuration::<xsl:value-of select="@name"/> &amp; config,
+		 <xsl:value-of select="fnc:Parent_DClassName($className)"/> * parent
 		):
-			<xsl:if test="(fnc:getCountParentClassesAndRoot(/,$className)=1) and (fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$className))='true')">
+
 		 	m_parent(parent),
-			</xsl:if>
 			m_addressSpaceLink(0),
 			m_stringAddress("**NB**")	
 			<xsl:for-each select="d:cachevariable[@isKey='true']">
@@ -180,6 +179,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 #include &lt;<xsl:value-of select="fnc:Base_DClassName($className)"/>.h&gt;
 
 
+
 	<xsl:for-each select="/d:design/d:class[@name=$className]">
 	<xsl:if test="fnc:classHasDeviceLogic(/,$className)='true'">
 	<xsl:for-each select="d:hasobjects">
@@ -198,6 +198,9 @@ namespace Device
 
 	<xsl:for-each select="/d:design/d:class[@name=$className]">
 	<xsl:call-template name="deviceBody"/>
+	
+	std::list&lt;<xsl:value-of select="fnc:DClassName($className)"/>*&gt; Base_<xsl:value-of select="fnc:DClassName($className)"/>::s_orphanedObjects;
+	
 	</xsl:for-each>
 	
 	

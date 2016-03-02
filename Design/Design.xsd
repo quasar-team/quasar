@@ -83,22 +83,26 @@ elementFormDefault="qualified">
     </element>
 
     <complexType name="Class">
-        <sequence>
-            <element name="devicelogic" type="tns:DeviceLogic" minOccurs="0" maxOccurs="1"></element>
-            <sequence minOccurs="0" maxOccurs="unbounded">
-         
-            <choice>
-                <element name="cachevariable" type="tns:CacheVariable" />
-                <element name="sourcevariable"
-                    type="tns:SourceVariable" />
-                <element name="hasobjects" type="tns:HasObjects" />
-                <element name="configentry" type="tns:ConfigEntry" />
-            </choice>
-        </sequence>
-        </sequence>
-        
+    	<sequence>
+    		<element name="devicelogic" type="tns:DeviceLogic"
+    			minOccurs="0" maxOccurs="1">
+    		</element>
+    		<sequence minOccurs="0" maxOccurs="unbounded">
+
+    			<choice>
+    				<element name="cachevariable"
+    					type="tns:CacheVariable" />
+    				<element name="sourcevariable"
+    					type="tns:SourceVariable" />
+    				<element name="hasobjects" type="tns:HasObjects" />
+    				<element name="configentry" type="tns:ConfigEntry" />
+    			</choice>
+    		</sequence>
+    	</sequence>
+
 
     	<attribute name="name" type="tns:ClassName" use="required"></attribute>
+    	<attribute name="singleVariableNode" type="boolean" use="optional"></attribute>
     </complexType>
 
     <complexType name="CacheVariable">
