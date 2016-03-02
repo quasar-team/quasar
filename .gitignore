@@ -5,3 +5,6 @@ cmake_install.cmake
 *.generated
 *.orig
 
+*.pyc
+bin/PKI
+Makefile
