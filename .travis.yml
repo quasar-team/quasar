@@ -1,4 +1,27 @@
 language: cpp
 compiler: gcc
-script: 
- - echo "Fake test"
+before_install:
+# - sudo dpkg --add-architecture i386
+ - sudo apt-get -qq update
+ - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle libboost-all-dev libboost-all-dev:i386 cmake xsdcxx default-jre libssl-dev
+ - wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
+ - tar -xzvf cmake-2.8.12.2.tar.gz 
+ - cd cmake-2.8.12.2
+ - ./bootstrap
+ - make      
+ - sudo make install
+ - cd ..
+ - wget --no-check-certificate https://cernbox.cern.ch/index.php/s/nYKgDvAwmSVnMLx/download
+ - tar -xzvf download
+ - sudo cp -R sdk/ /opt/OpcUaToolkit-1.3.3-evaluation/
+script:
+ - git clone https://github.com/quasar-team/quasar-validation-ci.git
+ - cd quasar
+ - mv quasar-validation-ci/CI/Design.xml Design/
+ - mv quasar-validation-ci/CI/config.xml bin/
+ - mv quasar-validation-ci/CI/ubuntu_evaluationToolkit.cmake .
+ - python quasar.py generate device GreenLED
+ - python quasar.py generate device YellowLED
+ - python quasar.py generate device RedLED
+ - python quasar.py build Release ubuntu_evaluationToolkit.cmake
+ #
