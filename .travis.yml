@@ -6,8 +6,7 @@ before_install:
  #- sudo DEBIAN_FRONTEND=noninteractive apt-get -q --yes --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
  - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle cmake xsdcxx default-jre libssl-dev build-essential
  - sudo apt-get install -y libboost-all-dev
- - sudo apt-get install -y gcc-multilib
- - sudo apt-get install libssl-dev:i386
+ - sudo apt-get install -y gcc-multilib 
  - wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
  - tar -xzvf cmake-2.8.12.2.tar.gz 
  - cd cmake-2.8.12.2
@@ -23,6 +22,7 @@ before_install:
  - wget --no-check-certificate https://cernbox.cern.ch/index.php/s/nYKgDvAwmSVnMLx/download
  - tar -xzvf download
  - sudo cp -R sdk/ /opt/OpcUaToolkit-1.3.3-evaluation/
+ - sudo apt-get install libssl-dev:i386 gcc-multilib:i386 libxml2-dev:i386
 script:
  - git clone https://github.com/quasar-team/quasar-validation-ci.git
  #again, the cernbox link is not permanent, be careful
@@ -35,4 +35,3 @@ script:
  - python quasar.py generate device YellowLED
  - python quasar.py generate device RedLED
  - C_INCLUDE_PATH=/usr/include/$(gcc -print-multiarch) && python quasar.py build Release ubuntu_evaluationToolkit.cmake
- #
