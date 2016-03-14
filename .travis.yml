@@ -14,10 +14,10 @@ before_install:
  - make      
  - sudo make install
  - cd ..
- - sudo sh -c "echo 'foreign-architecture i386' > /etc/dpkg/dpkg.cfg.d/multiarch"
+ #- sudo sh -c "echo 'foreign-architecture i386' > /etc/dpkg/dpkg.cfg.d/multiarch"
  # not sure if boost 32 bit is needed for the trial build, but installing this seems to break the compilers
  #- sudo aptitude install -y libboost-all-dev:i386 build-essential:i386
- - sudo apt-get -f install
+ #- sudo apt-get -f install
  #this is not a permanent link! At some point it may stop working
  - wget --no-check-certificate https://cernbox.cern.ch/index.php/s/nYKgDvAwmSVnMLx/download
  - tar -xzvf download
