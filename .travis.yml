@@ -22,7 +22,7 @@ before_install:
  - wget --no-check-certificate https://cernbox.cern.ch/index.php/s/nYKgDvAwmSVnMLx/download
  - tar -xzvf download
  - sudo cp -R sdk/ /opt/OpcUaToolkit-1.3.3-evaluation/
- - sudo apt-get install libssl-dev:i386 gcc-multilib:i386 libxml2-dev:i386
+ - sudo aptitude install libssl-dev:i386 gcc-multilib:i386 libxml2-dev:i386
 script:
  - git clone https://github.com/quasar-team/quasar-validation-ci.git
  #again, the cernbox link is not permanent, be careful
