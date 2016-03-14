@@ -23,7 +23,9 @@ before_install:
  - sudo cp -R sdk/ /opt/OpcUaToolkit-1.3.3-evaluation/
 script:
  - git clone https://github.com/quasar-team/quasar-validation-ci.git
- - cd quasar
+ #again, the cernbox link is not permanent, be careful
+ - wget -O saxon9he.jar --no-check-certificat https://cernbox.cern.ch/index.php/s/FIZm1Ew5CyxLDUd/download
+ - mv saxon9he.jar Design/
  - mv quasar-validation-ci/CI/Design.xml Design/
  - mv quasar-validation-ci/CI/config.xml bin/
  - mv quasar-validation-ci/CI/ubuntu_evaluationToolkit.cmake .
