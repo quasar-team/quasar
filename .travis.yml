@@ -37,6 +37,7 @@ before_install:
  - sudo cp -R sdk/ /opt/OpcUaToolkit-1.3.3-evaluation/
  #- sudo aptitude -q -y install libssl-dev:i386 gcc-multilib:i386 libxml2-dev:i386
 script:
+ - ls /usr/include/boost/algorithm/string/case_conv.hpp
  - git clone https://github.com/quasar-team/quasar-validation-ci.git
  #again, the cernbox link is not permanent, be careful
  - wget -O saxon9he.jar --no-check-certificat https://cernbox.cern.ch/index.php/s/FIZm1Ew5CyxLDUd/download
