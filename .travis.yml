@@ -6,6 +6,7 @@ addons:
     - python-lxml
     - astyle
     - default-jre
+    - xerces-c
     - libssl-dev:i386
     - libxml2-dev:i386
     - libxml2-utils:i386
