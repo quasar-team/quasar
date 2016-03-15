@@ -31,6 +31,7 @@ script:
  - mv quasar-validation-ci/CI/Design.xml Design/
  - mv quasar-validation-ci/CI/config.xml bin/
  - mv quasar-validation-ci/CI/ubuntu_evaluationToolkit.cmake .
+ - sudo chmod 777 -R *
  - python quasar.py generate device GreenLED
  - python quasar.py generate device YellowLED
  - python quasar.py generate device RedLED
