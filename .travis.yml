@@ -7,7 +7,6 @@ before_install:
  - sudo apt-get -qq update
  #- sudo DEBIAN_FRONTEND=noninteractive apt-get -q --yes --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
  - sudo apt-get install -y python-svn python-lxml astyle cmake xsdcxx default-jre build-essential
- - sudo apt-get install -y libssl-dev:i386 libxml2-dev:i386
  - wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
  - tar -xzvf cmake-2.8.12.2.tar.gz 
  - cd cmake-2.8.12.2
@@ -17,6 +16,7 @@ before_install:
  - cd ..
  #- sudo sh -c "echo 'foreign-architecture i386' > /etc/dpkg/dpkg.cfg.d/multiarch"
  # not sure if boost 32 bit is needed for the trial build, but installing this seems to break the compilers
+ - sudo apt-get install -y libssl-dev:i386 libxml2-dev:i386
  - sudo aptitude install -y libboost-all-dev:i386 libxerces-c-dev:i386
  - sudo apt-get -f install
  - sudo apt-get install -y gcc-multilib g++-multilib 
