@@ -6,8 +6,8 @@ before_install:
  #- sudo DEBIAN_FRONTEND=noninteractive apt-get -q --yes --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
  - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle cmake xsdcxx default-jre libssl-dev build-essential
  - sudo apt-get install -y libboost-all-dev
- - sudo apt-get install -y gcc-multilib 
  - sudo apt-get install -y libssl-dev:i386
+ - sudo apt-get install -y gcc-multilib 
  - wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
  - tar -xzvf cmake-2.8.12.2.tar.gz 
  - cd cmake-2.8.12.2
