@@ -2,6 +2,8 @@ language: cpp
 compiler: gcc
 before_install:
 #- sudo dpkg --add-architecture i386
+ - sudo apt-get install -f
+ - sudo dpkg --configure -a
  - sudo apt-get -qq update
  #- sudo DEBIAN_FRONTEND=noninteractive apt-get -q --yes --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
  - sudo apt-get install -y python-svn python-lxml astyle cmake xsdcxx default-jre build-essential
