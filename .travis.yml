@@ -10,7 +10,7 @@ addons:
     - libxml2-dev:i386
     - gcc-multilib
 before_install:
-- sudo apt-get install -y python-svn xsdcxx g++-multilib
+ - sudo apt-get install -y python-svn xsdcxx g++-multilib
 #- sudo dpkg --add-architecture i386
  #- sudo apt-get install -f
  #- sudo dpkg --configure -a
