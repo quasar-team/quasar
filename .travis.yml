@@ -4,7 +4,7 @@ before_install:
 #- sudo dpkg --add-architecture i386
  - sudo apt-get -qq update
  #- sudo DEBIAN_FRONTEND=noninteractive apt-get -q --yes --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
- - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle cmake xsdcxx default-jre libssl-dev build-essential libboost-all-dev
+ - sudo apt-get install -y python-svn python-lxml astyle cmake xsdcxx default-jre build-essential
  - sudo apt-get install -y libssl-dev:i386 libxml2-dev:i386
  - sudo apt-get install -y -f libboost-all-dev:i386 libxerces-c-dev:i386
  - sudo apt-get install -y gcc-multilib g++-multilib 
