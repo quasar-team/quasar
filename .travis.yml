@@ -24,8 +24,9 @@ before_install:
  - cd ..
  #- sudo sh -c "echo 'foreign-architecture i386' > /etc/dpkg/dpkg.cfg.d/multiarch"
  # not sure if boost 32 bit is needed for the trial build, but installing this seems to break the compilers
- - sudo apt-get install -y libssl-dev:i386 libxml2-dev:i386 libxml2-utils:i386 
  - sudo aptitude install -y libboost-all-dev:i386 #libxerces-c-dev:i386 libicu-dev:i386
+ - sudo apt-get install -y libssl-dev:i386 libxml2-dev:i386 libxml2-utils:i386 libboost-all-dev:i386
+ 
  - sudo apt-get install -y gcc-multilib g++-multilib
  #- sudo apt-get -f install
  #- sudo apt-get install -y gcc-multilib g++-multilib 
