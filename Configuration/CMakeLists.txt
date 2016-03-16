@@ -26,7 +26,7 @@ add_custom_command(OUTPUT Configuration.xsd
 
 add_custom_command(OUTPUT Configuration.cxx Configuration.hxx
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Configuration
-	COMMAND xsdcxx cxx-tree --namespace-map http://cern.ch/quasar/Configuration=Configuration  Configuration.xsd
+	COMMAND xsdcxx cxx-tree  --generate-serialization --namespace-map http://cern.ch/quasar/Configuration=Configuration  Configuration.xsd
 	DEPENDS Configuration.xsd
 )
 

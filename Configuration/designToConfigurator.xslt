@@ -244,10 +244,27 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	</xsl:for-each>
 	
 <!-- *************************************************** -->
+<!-- CONFIGURATION DECORATION ************************** -->
+<!-- *************************************************** -->	
+	bool runConfigurationDecoration(Configuration::Configuration&amp; theConfiguration, ConfigXmlDecoratorFunction&amp; configXmlDecoratorFunction)
+	{
+		if(configXmlDecoratorFunction.empty()) return true;
+		
+		if(configXmlDecoratorFunction(theConfiguration))
+		{
+			return true;
+		}
+		else
+		{
+			std::cout &lt;&lt; "Error: device specific configuration decoration failed, check logs for details" &lt;&lt; std::endl;
+		}
+		return false;
+	}	
+	
+<!-- *************************************************** -->
 <!-- CONFIGURATOR MAIN ********************************* -->
 <!-- *************************************************** -->	
-	using namespace std;
-	bool configure (std::string fileName, AddressSpace::ASNodeManager *nm)
+	bool configure (std::string fileName, AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction configXmlDecoratorFunction)
     {
 	
 	std::auto_ptr&lt;Configuration::Configuration&gt; theConfiguration;
@@ -271,6 +288,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	Device::DRoot *deviceRoot = Device::DRoot::getInstance();
 		
 	configureMeta( *theConfiguration.get(), nm, rootNode );	
+	if(!runConfigurationDecoration(*theConfiguration, configXmlDecoratorFunction)) return false;
 		
 	<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']">
 

@@ -28,8 +28,13 @@
 #include <string>
 
 #include <ASNodeManager.h>
+#include <Configuration.hxx>
 
-bool configure (std::string fileName, AddressSpace::ASNodeManager *nm);
+typedef boost::function<bool (Configuration::Configuration&)> ConfigXmlDecoratorFunction;
+bool configure (std::string fileName,
+        AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction
+        configXmlDecoratorFunction = ConfigXmlDecoratorFunction()); // 'empty' function by default.
+
 void unlinkAllDevices (AddressSpace::ASNodeManager *nm);
 
 /* The body for that one is generated in ConfigValidator.cpp */
