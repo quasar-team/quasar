@@ -1,4 +1,34 @@
 language: cpp
 compiler: gcc
-script: 
- - echo "Fake test"
+before_install:
+ - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle libboost-all-dev xsdcxx default-jre libssl-dev
+ - wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
+ - tar -xzvf cmake-2.8.12.2.tar.gz 
+ - cd cmake-2.8.12.2
+ - ./bootstrap
+ - make      
+ - sudo make install
+ - cd ..
+ 
+script:
+ #- git clone -b backend_open62541 https://github.com/quasar-team/quasar.git
+ - git clone https://github.com/quasar-team/open62541-compat.git
+ - git clone https://github.com/quasar-team/quasar-validation-ci.git
+ - mkdir open62541
+ - mkdir open62541/src
+ - mkdir open62541/include
+ - mv quasar-validation-ci/CI/open62541CI/open62541folderCMakeLists.txt open62541/CMakeLists.txt
+ - sudo rm Server/src/QuasarServer.cpp
+ - mv quasar-validation-ci/CI/open62541CI/QuasarServer.cpp Server/src/
+ - mv quasar-validation-ci/CI/Design.xml Design/
+ - mv quasar-validation-ci/CI/config.xml bin/
+ #- sudo mv open62541-compat/ quasar/
+#links from cernbox are not permanent, be carefull
+ - wget -O Design/saxon9he.jar --no-check-certificat https://cernbox.cern.ch/index.php/s/FIZm1Ew5CyxLDUd/download
+ - wget -O open62541/src/open62541.c --no-check-certificat https://cernbox.cern.ch/index.php/s/RbxN9UP2iWz04ra/download
+ - wget -O open62541/include/open62541.h --no-check-certificat https://cernbox.cern.ch/index.php/s/l9jPKvmI4l2CogC/download
+ - python quasar.py generate device GreenLED
+ - python quasar.py generate device YellowLED
+ - python quasar.py generate device RedLED
+ - sudo chmod 777 -R *
+ - python quasar.py build Release open62541_config.cmake
