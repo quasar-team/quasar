@@ -17,7 +17,7 @@
 #include "opcserver.h"
 #include "uamutex.h"
 #include "srvtrace.h"
-#include "serverconfigsettings.h"
+//TODO: not in 1.4.2 #include "serverconfigsettings.h"
 #ifdef SUPPORT_XML_CONFIG
 #include "serverconfigxml.h"
 #endif
@@ -59,20 +59,7 @@ public:
     list<NodeManager*> m_listNodeManagers;
 };
 
-/** Basic server configuration class using the INI file format for internal use in the class OpcServer.*/
-class ServerConfigBasicIni: public ServerConfigSettings
-{
-public:
-    ServerConfigBasicIni(const UaString& sIniFileName, const UaString& sApplicationPath, OpcServerCallback* pOpcServerCallback);
-    ~ServerConfigBasicIni(){}
-    UaStatus afterLoadConfiguration(){return OpcUa_Good;}
-    UaStatus startUp(ServerManager*){return OpcUa_Good;}
-    UaStatus shutDown(){return OpcUa_Good;}
-    Session* createSession(OpcUa_Int32 sessionID, const UaNodeId &authenticationToken);
-    UaStatus logonSessionUser(Session* pSession, UaUserIdentityToken* pUserIdentityToken);
-private:
-    OpcServerCallback* m_pOpcServerCallback;
-};
+
 
 #ifdef SUPPORT_XML_CONFIG
 /** Basic server configuration class using the XML file format for internal use in the class OpcServer.*/
@@ -304,7 +291,9 @@ int OpcServer::start()
         sConfigFile = sConfigFile.toLower();
         if ( sConfigFile.lastIndexOf(".ini") > (sConfigFile.length() - 5) )
         {
-            d->m_pServerConfig = new ServerConfigBasicIni(d->m_configurationFile, d->m_applicationPath, d->m_pOpcServerCallback);
+            throw std::runtime_error("Toolkit 1.4.2 no ini config");
+            
+            //d->m_pServerConfig = new ServerConfigBasicIni(d->m_configurationFile, d->m_applicationPath, d->m_pOpcServerCallback);
         }
 #ifdef SUPPORT_XML_CONFIG
         else if ( sConfigFile.lastIndexOf(".xml") > (sConfigFile.length() - 5) )
@@ -438,9 +427,11 @@ int OpcServer::start()
     }
 
     UaString        sRejectedCertificateDirectory;
+    OpcUa_UInt32 rejectedCertificateCount;
     UaEndpointArray uaEndpointArray;
     d->m_pServerConfig->getEndpointConfiguration(
         sRejectedCertificateDirectory,
+		rejectedCertificateCount,
         uaEndpointArray);
     if ( uaEndpointArray.length() > 0 )
     {
@@ -545,80 +536,7 @@ NodeManagerConfig* OpcServer::getDefaultNodeManager()
     return d->m_pServerManager->getNodeManagerNS1()->getNodeManagerConfig();
 }
 
-/** construction
- @param sIniFileName Path and file name of the INI configuration file.
- @param sApplicationPath The path of the configuration file and PKI store used to replace path placeholders in the configuration file
- @param pOpcServerCallback Interface pointer of the callback interface.
- */
-ServerConfigBasicIni::ServerConfigBasicIni(const UaString& sIniFileName, const UaString& sApplicationPath, OpcServerCallback* pOpcServerCallback)
-: ServerConfigSettings(sIniFileName, sApplicationPath),
-  m_pOpcServerCallback(pOpcServerCallback)
-{}
 
-/** Creates a session object for the OPC server.
- *  @param sessionID            Session Id created by the server application. 
- *  @param authenticationToken  Secret session Id created by the server application. 
- *  @return                     A pointer to the created session.
- */
-Session* ServerConfigBasicIni::createSession(OpcUa_Int32 sessionID, const UaNodeId &authenticationToken)
-{
-    if ( m_pOpcServerCallback )
-    {
-        return m_pOpcServerCallback->createSession(sessionID, authenticationToken);
-    }
-    else
-    {
-        return new UaSession(sessionID, authenticationToken);
-    }
-}
-
-/** Validates the user identity token and sets the user for a session.
- *  @param pSession             Interface to the Session context for the method call
- *  @param pUserIdentityToken   Secret session Id created by the server application. 
- *  @return                     Error code.
- */
-UaStatus ServerConfigBasicIni::logonSessionUser(
-    Session*             pSession,
-    UaUserIdentityToken* pUserIdentityToken)
-{
-    OpcUa_Boolean  bEnableAnonymous;
-    OpcUa_Boolean  bEnableUserPw;
-
-    // Get the settings for user identity tokens to support
-    getUserIdentityTokenConfig(bEnableAnonymous, bEnableUserPw);
-
-    if ( pUserIdentityToken->getTokenType() == OpcUa_UserTokenType_Anonymous )
-    {
-        if ( bEnableAnonymous == OpcUa_False )
-        {
-            return OpcUa_Bad;
-        }
-        else
-        {
-            return OpcUa_Good;
-        }
-    }
-    else if ( pUserIdentityToken->getTokenType() == OpcUa_UserTokenType_UserName )
-    {
-        if ( bEnableUserPw == OpcUa_False )
-        {
-            return OpcUa_Bad;
-        }
-        else
-        {
-            if ( m_pOpcServerCallback )
-            {
-                return m_pOpcServerCallback->logonSessionUser(pSession, pUserIdentityToken);
-            }
-            else
-            {
-                return OpcUa_Bad;
-            }
-        }
-    }
-
-    return OpcUa_Bad;
-}
 
 #ifdef SUPPORT_XML_CONFIG
 /** construction
@@ -627,7 +545,7 @@ UaStatus ServerConfigBasicIni::logonSessionUser(
  @param pOpcServerCallback Interface pointer of the callback interface.
  */
 ServerConfigBasicXml::ServerConfigBasicXml(const UaString& sXmlFileName, const UaString& sApplicationPath, OpcServerCallback* pOpcServerCallback)
-: ServerConfigXml(sXmlFileName, sApplicationPath),
+: ServerConfigXml(sXmlFileName, sApplicationPath, /*TODO: config path*/ "/tmp", /* TODO: trace path*/ "/tmp"),
   m_pOpcServerCallback(pOpcServerCallback)
 {}
 
@@ -659,9 +577,11 @@ UaStatus ServerConfigBasicXml::logonSessionUser(
 {
     OpcUa_Boolean  bEnableAnonymous;
     OpcUa_Boolean  bEnableUserPw;
+    OpcUa_Boolean  bEnableCertificate;
+    OpcUa_Boolean  bEnableKerberosTicket;
 
     // Get the settings for user identity tokens to support
-    getUserIdentityTokenConfig(bEnableAnonymous, bEnableUserPw);
+    getUserIdentityTokenConfig(bEnableAnonymous, bEnableUserPw, bEnableCertificate, bEnableKerberosTicket);
 
     if ( pUserIdentityToken->getTokenType() == OpcUa_UserTokenType_Anonymous )
     {
