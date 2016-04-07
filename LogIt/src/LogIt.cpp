@@ -77,17 +77,6 @@ void registerComponents(const std::list<ComponentAttributes>& components)
     }
 }
 
-bool Log::initializeDllLogging(LogItInstance* remoteInstance)
-{
-	if(!remoteInstance)
-	{
-		std::cerr << "initializeDllLogging called with invalid remote remoteInstance ptr ["<<remoteInstance<<"], logger initialization failed" << std::endl;
-		return false;
-	}
-
-	std::cout << "initializing logging in a DLL" << std::endl;
-	return LogItInstance::setInstance(remoteInstance);
-}
 
 bool Log::initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel)
 {
@@ -103,6 +92,11 @@ bool Log::initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel, const st
 	if(!initializeLogging(nonComponentLogLevel)) return false;
     registerComponents(components);
     return true;;
+}
+
+bool Log::initializeDllLogging(LogItInstance* remoteInstance)
+{
+	return LogItInstance::setInstance(remoteInstance);
 }
 
 bool Log::isLoggable(const Log::LOG_LEVEL& level)

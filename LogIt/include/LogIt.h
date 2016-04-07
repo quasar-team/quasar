@@ -62,8 +62,6 @@ namespace Log
      * at any time (by any thread).
      */
 
-	bool initializeDllLogging(LogItInstance* remoteLogInstance);
-
     /**
      * Simple initializer, without component specific logging. Only
      * LOG(LOG_LEVEL)
@@ -81,6 +79,16 @@ namespace Log
      * (i.e. for component IDs specified in the vector of components).
      */
     bool initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel, const std::list<ComponentAttributes>& components);
+
+	/**
+	 * initializer to be called when using LogIt *inside* a shared library. The remoteLogInstance ptr should be supplied
+	 * to the shared library from the main executable (note that this will probably require that the shared library API supports
+	 * passing this ptr *before* the shared library can initialize the logger and start logging).
+	 *
+	 * The ptr (in the main executable, to pass to the DLL) is available from LogItInstance::getInstance() after the exe
+	 * calls LogIt::initialiseLogging().
+	 */
+	bool initializeDllLogging(LogItInstance* remoteLogInstance);
 
     /**
      * log check - non-component (single-arg) and component (double-arg) specific

@@ -29,6 +29,7 @@ LogItInstance* LogItInstance::getInstance()
 
 bool LogItInstance::setInstance(LogItInstance* remoteInstance)
 {
+	if(!remoteInstance) return false;
 	if(instanceExists())
 	{
 		std::cerr << "Failed to set LogItInstance with remoteInstance ["<<remoteInstance<<"], already have incumbent instance ["<<getInstance()<<"]. Ignoring (and returning false)";
