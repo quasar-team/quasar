@@ -24,6 +24,7 @@
 
 #include <string>
 #include "LogSinkInterface.h"
+#include <boost/log/sources/logger.hpp>
 
 class BoostRotatingFileLog : public LogSinkInterface
 {
@@ -33,6 +34,7 @@ public:
 
 private:
     void addFileSink();
+	boost::log::sources::logger_mt m_boostLogger;
 };
 
 #endif /* BOOST_ROTATING_FILE_LOG_H_ */

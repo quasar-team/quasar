@@ -28,6 +28,7 @@
 #include "LogRecord.h"
 #include "LogLevels.h"
 #include "ComponentAttributes.h"
+#include "LogItInstance.h"
 
 const uint32_t g_sMaxComponentIdCount = 1024;
 
@@ -60,6 +61,8 @@ namespace Log
      * logging is initialized once, logging thresholds (for non-component and component verbosity) can be set
      * at any time (by any thread).
      */
+
+	bool initializeDllLogging(LogItInstance* remoteLogInstance);
 
     /**
      * Simple initializer, without component specific logging. Only
