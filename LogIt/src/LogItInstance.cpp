@@ -8,7 +8,7 @@
 #include "LogItInstance.h"
 #include <iostream>
 
-LogItInstance* LogItInstance::g_sLogItInstance(NULL); // initially
+LogItInstance* LogItInstance::g_sLogItInstance(NULL); // initially - set by any LogIt::initialize*Logging() call.
 
 LogItInstance::LogItInstance()
 :m_isLoggingInitialized(false), m_nonComponentLogLevel(Log::INF)
