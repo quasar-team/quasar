@@ -8,6 +8,9 @@
 #include "LogItInstance.h"
 #include <iostream>
 
+using std::cerr;
+using std::endl;
+
 LogItInstance* LogItInstance::g_sLogItInstance(NULL); // initially - set by any LogIt::initialize*Logging() call.
 
 LogItInstance::LogItInstance()
@@ -29,13 +32,18 @@ LogItInstance* LogItInstance::getInstance()
 
 bool LogItInstance::setInstance(LogItInstance* remoteInstance)
 {
-	if(!remoteInstance) return false;
-	if(instanceExists())
+	if(!remoteInstance)
 	{
-		std::cerr << "Failed to set LogItInstance with remoteInstance ["<<remoteInstance<<"], already have incumbent instance ["<<getInstance()<<"]. Ignoring (and returning false)";
+		cerr << "Failed to set LogItInstance with NULL remoteInstance. Ignoring (and returning false)" << endl;
 		return false;
 	}
-	LogItInstance::g_sLogItInstance = remoteInstance;
+	if(instanceExists())
+	{
+		if(getInstance() == remoteInstance) return true; // fine - do nothing.
+		cerr << "Failed to set LogItInstance with remoteInstance ["<<remoteInstance<<"], already have incumbent instance ["<<getInstance()<<"]. Ignoring (and returning false)" << endl;
+		return false;
+	}
+	g_sLogItInstance = remoteInstance;
 	return true;
 }
 
@@ -43,12 +51,13 @@ LogItInstance* LogItInstance::createInstance()
 {
 	if(instanceExists())
 	{
-		std::cerr << "Failed to create new LogItInstance, already have instance ["<<getInstance()<<"]. Ignoring (and returning instance)";
-		return false;
+		std::cerr << "Failed to create new LogItInstance, already have instance ["<<getInstance()<<"]. Ignoring (and returning instance)" << endl;
 	}
-
-	LogItInstance::g_sLogItInstance = new LogItInstance();
-	return LogItInstance::g_sLogItInstance;
+	else
+	{
+		g_sLogItInstance = new LogItInstance();
+	}
+	return getInstance();
 }
 
 
