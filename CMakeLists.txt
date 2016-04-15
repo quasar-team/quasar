@@ -16,6 +16,7 @@
 
 # Author: Piotr Nikiel <piotr@nikiel.info>
 # Author: Damian Abalo Miron <damian.abalo@cern.ch>
+# Author: Stefan Schlenker
 
 project(opc_ua)
 cmake_minimum_required(VERSION 2.8)
@@ -32,9 +33,6 @@ else(DEFINED CMAKE_TOOLCHAIN_FILE)
 endif(DEFINED CMAKE_TOOLCHAIN_FILE)
 
 set(PYTHON_COMMAND python)
-set(CUSTOM_SERVER_MODULES "")
-set(NATIVE_SERVER_MODULES AddressSpace Configuration Common Server Device Meta LogIt) 
-set(SERVER_MODULES ${NATIVE_SERVER_MODULES} ${CUSTOM_SERVER_MODULES})
 set(EXECUTABLE OpcUaServer)
 
 include_directories (
@@ -48,17 +46,51 @@ include_directories (
 	${PROJECT_SOURCE_DIR}/Configuration
 	)
 
+#
+# begin optional quasar modules
+#
+set(OPTIONAL_SERVER_MODULES) 
+file(GLOB OPTIONAL_SERVER_MODULE_URLS "FrameworkInternals/EnabledModules/*.url")
+
+foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
+#foreach(module ${OPTIONAL_SERVER_MODULES})
+    #
+    file (STRINGS ${moduleFile} OPT_MODULE_URL)
+    get_filename_component(module ${moduleFile} NAME_WE) 
+    #string(REPLACE ".url" "" moduleName ${moduleFile})
+    message("module=${module} URL=${OPT_MODULE_URL}")
+    set(OPTIONAL_SERVER_MODULES ${OPTIONAL_SERVER_MODULES} ${module})
+
+    set(OPT_MODULE_NAME ${module})
+    message("adding ${module}")
+    configure_file(${PROJECT_SOURCE_DIR}/OptionalModule.cmake
+                   ${OPT_MODULE_NAME}_cmake/CMakeLists.txt)
+    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME}_cmake)
+    execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME}_cmake )
+    
+    include_directories(${module}/include)
+    #
+#endforeach(module)
+endforeach(moduleFile)
+#
+# end quasar modules
+#
+
+set(NATIVE_SERVER_MODULES AddressSpace Configuration Common Server Device Meta LogIt) 
+set(SERVER_MODULES ${NATIVE_SERVER_MODULES} ${OPTIONAL_SERVER_MODULES})
+
 foreach(module ${SERVER_MODULES})
 	message("Adding headers for module: ${module}")
-	include_directories(${PROJECT_SOURCE_DIR}/${module}/include ) 
+	include_directories(${PROJECT_SOURCE_DIR}/${module}/include )
 endforeach(module)
 
-if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG} )
-else(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
-endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
-	
+set(MODULES_OBJECTS "")
+
+foreach(module ${SERVER_MODULES})
+	add_subdirectory( ${module} )
+	set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}> )
+endforeach(module)
+
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
 add_custom_command(
@@ -73,13 +105,10 @@ add_custom_target(validateDesign DEPENDS  ${PROJECT_SOURCE_DIR}/Design/validated
 add_custom_target(dep ALL COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device ) 
 
 
-set(MODULES_OBJECTS "")
-
-foreach(module ${SERVER_MODULES})
-	add_subdirectory( ${module} )
-	set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}> )
-endforeach(module)
-
+#foreach(module ${EXTERNAL_MODULES})
+#	add_subdirectory( ../${module} )
+#	set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}> )
+#endforeach(module)
 	
 link_directories(
 	${OPCUA_TOOLKIT_PATH}/lib
@@ -90,9 +119,17 @@ add_executable ( ${EXECUTABLE}
 	)
 set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
 
+if(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    target_link_libraries ( ${EXECUTABLE} ${OPCUA_TOOLKIT_LIBS_DEBUG} )
+else(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    target_link_libraries ( ${EXECUTABLE} ${OPCUA_TOOLKIT_LIBS_RELEASE} )
+endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
+
 target_link_libraries ( ${EXECUTABLE} 
 	${BOOST_LIBS}
 	${XML_LIBS}
-	${OPCUA_TOOLKIT_LIBS}        
+
 	# Add your custom libraries here
 )
+
+
