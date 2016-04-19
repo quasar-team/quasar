@@ -57,10 +57,8 @@ foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
     #
     file (STRINGS ${moduleFile} OPT_MODULE_URL)
     get_filename_component(module ${moduleFile} NAME_WE) 
-    #string(REPLACE ".url" "" moduleName ${moduleFile})
     message("module=${module} URL=${OPT_MODULE_URL}")
     set(OPTIONAL_SERVER_MODULES ${OPTIONAL_SERVER_MODULES} ${module})
-
     set(OPT_MODULE_NAME ${module})
     message("adding ${module}")
     configure_file(${PROJECT_SOURCE_DIR}/OptionalModule.cmake
