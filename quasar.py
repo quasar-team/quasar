@@ -56,6 +56,7 @@ from designTools import upgradeDesign
 from designTools import createDiagram
 from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
+from optionalModules import enableModule, disableModule
 
 # format is: [command name], callable
 commands = [
@@ -81,8 +82,10 @@ commands = [
 	[['design_vs_device'], mfDesignVsDevice, True],
 	[['upgrade_design'], upgradeDesign, True],
 	[['format_design'], formatDesign, True],
-	[['validate_design'], validateDesign, True],	
-	[['doxygen'], runDoxygen, True],	
+	[['validate_design'], validateDesign, True],
+	[['doxygen'], runDoxygen, True],
+	[['enable_module'], enableModule, True],
+	[['disable_module'], disableModule, True],
 	]
 
 

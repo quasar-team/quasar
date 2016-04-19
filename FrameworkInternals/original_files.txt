@@ -63,11 +63,10 @@ File designToDot.xslt                       must_exist,md5=check,install=overwri
 File Design.xml                             must_exist,must_be_versioned,install=copy_if_not_existing 
 File Design.xsd                             must_exist,must_be_versioned,md5=check,install=overwrite
 File functions.sh                           deprecated,install=dont_touch
-File genericFrameworkVersion.txt            must_exist,must_be_versioned,md5=check,install=overwrite
+File quasarVersion.txt                      must_exist,must_be_versioned,md5=check,install=overwrite
 File saxon9he.jar                           must_exist,md5=check,install=overwrite
 File schema-for-xslt20.xsd                  must_exist,must_be_versioned,md5=check,install=overwrite
 File validateDesign.sh                      deprecated,install=dont_touch
-File genericFrameworkVersion.txt			must_exist,must_be_versioned,md5=check
 File designToUpgradedDesign.xslt            must_exist,must_be_versioned,md5=check,install=overwrite
 File formatDesign.sh                        deprecated,install=dont_touch
 File upgradeDesign.sh                       deprecated,install=dont_touch
@@ -159,7 +158,7 @@ File serverconfigxml.h                      must_exist,must_be_versioned,md5=che
 File opcserver.h                            must_exist,must_be_versioned,md5=check,install=overwrite
 File version.h                              must_exist,must_be_versioned,md5=check,install=overwrite
 File QuasarServerCallback.h                 must_exist,must_be_versioned,md5=check,install=overwrite
-File QUASARFrameworkVersion.h               must_exist,must_be_versioned,md5=check,install=overwrite
+File QuasarVersion.h                        must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Server/src install=create
 File main.cpp                               must_exist,must_be_versioned,install=ask_to_merge
