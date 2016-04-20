@@ -53,7 +53,6 @@ set(OPTIONAL_SERVER_MODULES)
 file(GLOB OPTIONAL_SERVER_MODULE_URLS "FrameworkInternals/EnabledModules/*.url")
 
 foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
-#foreach(module ${OPTIONAL_SERVER_MODULES})
     #
     file (STRINGS ${moduleFile} OPT_MODULE_URL)
     get_filename_component(module ${moduleFile} NAME_WE) 
@@ -65,10 +64,7 @@ foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
                    ${OPT_MODULE_NAME}_cmake/CMakeLists.txt)
     execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME}_cmake)
     execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME}_cmake )
-    
-    include_directories(${module}/include)
     #
-#endforeach(module)
 endforeach(moduleFile)
 #
 # end quasar modules
@@ -76,17 +72,23 @@ endforeach(moduleFile)
 
 set(NATIVE_SERVER_MODULES AddressSpace Configuration Common Server Device Meta LogIt) 
 set(SERVER_MODULES ${NATIVE_SERVER_MODULES} ${OPTIONAL_SERVER_MODULES})
+set(OPTIONAL_MODULES_INCLUDES)
+set(MODULES_OBJECTS)
 
+# add all module include directories
+set(MODULE_INCLUDES)
 foreach(module ${SERVER_MODULES})
-	message("Adding headers for module: ${module}")
-	include_directories(${PROJECT_SOURCE_DIR}/${module}/include )
+    FILE(GLOB SUBMODULE_INCLUDES ${PROJECT_SOURCE_DIR}/${module}/*/include)
+    set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${SUBMODULE_INCLUDES}) 
 endforeach(module)
+foreach(include ${MODULE_INCLUDES})
+    include_directories(${include})
+endforeach(include)
 
-set(MODULES_OBJECTS "")
-
+# add all module directories and add module objects
 foreach(module ${SERVER_MODULES})
-	add_subdirectory( ${module} )
-	set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}> )
+    add_subdirectory( ${module} )
+	set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
 endforeach(module)
 
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
@@ -102,12 +104,6 @@ add_custom_target(validateDesign DEPENDS  ${PROJECT_SOURCE_DIR}/Design/validated
 
 add_custom_target(dep ALL COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device ) 
 
-
-#foreach(module ${EXTERNAL_MODULES})
-#	add_subdirectory( ../${module} )
-#	set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}> )
-#endforeach(module)
-	
 link_directories(
 	${OPCUA_TOOLKIT_PATH}/lib
 	${BOOST_PATH_LIBS}
