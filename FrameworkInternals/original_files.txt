@@ -134,6 +134,7 @@ File generateHonkyTonk.py					must_exist,must_be_versioned,md5=check,install=ove
 File install_framework.py					must_exist,must_be_versioned,md5=check,install=overwrite
 File transformDesign.py						must_exist,must_be_versioned,md5=check,install=overwrite
 File runDoxygen.py							must_exist,must_be_versioned,md5=check,install=overwrite
+File externalTooolCheck.py					must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory RPM install=create
 
