@@ -1,0 +1,140 @@
+<!-- © Copyright CERN and Universidad de Oviedo, 2015.                             -->
+<!-- All rights not expressly granted are reserved.                                -->
+<!-- This file is part of Quasar.                                                  -->
+<!--                                                                               -->
+<!-- Quasar is free software: you can redistribute it and/or modify                -->     
+<!-- it under the terms of the GNU Lesser General Public Licence as published by   -->     
+<!-- the Free Software Foundation, either version 3 of the Licence.                -->     
+<!-- Quasar is distributed in the hope that it will be useful,                     -->     
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of                -->     
+<!--                                                                               -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 -->
+<!-- GNU Lesser General Public Licence for more details.                           -->
+<!--                                                                               -->
+<!-- You should have received a copy of the GNU Lesser General Public License      -->
+<!-- along with Quasar.  If not, see <http://www.gnu.org/licenses/>                -->
+<!--                                                                               -->
+<!-- Created:   Apr 2016                                                           -->
+<!-- Authors:                                                                      -->
+<!--   Ben Farnham <ben.farnham@cern.ch>                                   -->
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>User Defined Runtime Confguration Modification</title></head><body>
+
+<h1>User Defined Runtime Configuration Modification</h1>
+
+<h2>Background</h2>
+A completely static configuration for an OPC-UA server may not always be exactly the desired behaviour; for example - consider a multi-channel, highly modular, power supply system. For such a system it may be beneficial to users to provide functionality from the quasar server 
+such that (with the correct command line options specified of course) the server actually detects the hardware that is connected and uses this as the basis for its runtime configuration. This might be an efficient way to run an OPC-UA server in situations where, say, the hardware 
+setup is in flux (maybe an ad-hoc lab configuration) and so manual modification of a static configuration file to describe the system is painful. Equally, in a large production set up, the server could be run the first time in a 'discovery mode' to query the connected hardware (and
+persist the corresponding configuration in an XML file) and, assuming the generated configuration passes end-user review, i.e. correctly represents the hardware, used thereafter as the static configuration.
+<br><br>
+The quasar framework provides a means to handle both runtime configuration modification (i.e. the 'discovery mode' mentioned above) and a means to persist configurations to XML files.
+<br><br>
+It is assumed the reader already knows how to specify user specific command line options; described in document <a href="UserDefinedCommandLineParameters.html">User Defined Command Line Parameters</a> <br> 
+Furthermore, knowledge of working with classes generated from schema documents is required, from the <a href="http://www.codesynthesis.com/projects/xsd/">code synthesis xsd library</a>
+
+<h2>Building or Modifying the Configuration on Server Start Up</h2>
+In order to have access to the runtime in-memory server configuration (as eventually used by quasar servers to build the address space), a developer needs to 'inject' their own handler (i.e. implementation) into quasar's  'configure' method described below
+<code>
+<pre>
+
+typedef boost::function<bool (Configuration::Configuration&)> ConfigXmlDecoratorFunction;
+
+bool configure (std::string fileName,
+        AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction
+        configXmlDecoratorFunction = ConfigXmlDecoratorFunction()); // 'empty' function by default.
+</pre>
+</code>
+In this case, the developer has to provide an implementation matching the type definition 'ConfigXmlDecoratorFunction' described above as a parameter to the 'configure' method call (3rd parameter).<br>
+One such example of user specific implementation matching the definition would be an instance of a functor class, with an interface including a public method
+<code>
+<pre>
+class UserSpecificConfigurationHandler
+{
+...etc...
+public:
+	bool operator()(Configuration::Configuration& theConfiguration);
+};
+</pre>
+</code>
+A couple of key points to note here
+<ol>
+<li>From the parameter list above, instances of this functor have access to the in-memory runtime configuration object; i.e. the object from which quasar will construct the runtime OPC-UA address space.</li>
+<li>This runtime configuration object is an instance of an xsd-cxx generated class (generated from the configuration schema, which is in turn generated from the Design.xml file). The xsd-cxx library supports direct serialization of runtime objects to XML (i.e. persistence).
+</ol>
+which is passed to the configure function above by implementation code like
+<code>
+<pre>
+...etc...
+UserSpecificConfigurationHandler configurationHandlerInstance(...args...);
+return configure (fileName, nm, configurationHandlerInstance);	
+...etc...
+</pre>
+</code>
+The implementation of method <code>UserSpecificConfigurationHandler::operator()(Configuration::Configuration& theConfiguration)</code> is up to the developer. Typically, quasar developer implementations of this functor use the underlying system programming interface 
+(e.g. the hardware API, in the case where the OPC-UA server provides a middleware interface to hardware) to query the underlying sytem and build the configuration object accordingly.
+
+<h3>Wiring in the ConfigXmlDecoratorFunction instance</h3>
+The final step is to ensure that the function <code>configure</code> above is called with the correct arguments; namely with the developer's implementation of ConfigXmlDecoratorFunction as the 3rd argument. As is often the case in quasar, injecting user
+specifc code involves overriding a virtual function. In this case, the virtual function to override is:
+<code>
+<pre>
+bool BaseQuasarServer::overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
+</pre>
+</code>
+A typical developer override of this function would be along the lines of the following pseudo code
+<code>
+<pre>
+bool QuasarServer::overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm)
+{
+    if([command line switch active for discovery mode])
+    {
+        LOG(Log::INF) << "Server running in discovery mode, address space will be built via a process of hardware discovery";
+        UserSpecificConfigurationHandler configurationHandlerInstance([command line value for where to write persisted configuration XML file]);
+        return configure (fileName, nm, configurationHandler);
+    }
+    else
+    {
+        LOG(Log::INF) << "Server running in regular mode, address space will be built from contents of config.xml";
+        return configure(fileName, nm);
+    }
+}
+</pre>
+</code>
+
+<h2 id="persist">Persisting the Configuration in an XML file</h2>
+As described above, type definition <code>ConfigXmlDecoratorFunction</code> describes a single parameter <code>Configuration::Configuration&</code>, this parameter is an instance of an XSD generated C++ class which handles both in-memory object loading from 
+an XML file (deserialization) and, the key point here, writing the contents of the in-memory object to an XML file (serialization). To persist an in-memory configuration then, we need simply only call serialization methods from xsd-cxx. In the user specific configuration
+handler example class described above <code>UserSpecificConfigurationHandler</code>, this just means that once the in-memory configuration is complete; it can be written to an XML file by calling (something like) the following code excerpt.
+<code>
+<pre>
+void UserSpecificConfigurationHandler::writeToFile(const Configuration::Configuration& theConfiguration) const
+{
+    ofstream configurationFile;
+
+    try
+    {
+        configurationFile.open(some command line specified path for the config serialization, ofstream::out | ofstream::trunc);
+    }
+    catch(...all sorts of errors....)
+    {
+        ...and handle...
+    }
+
+    if(configurationFile.is_open())
+    {
+        try
+        {
+            xml_schema::namespace_infomap nsMap;
+            nsMap[""].name = "http://cern.ch/quasar/Configuration";
+            nsMap[""].schema = "../Configuration/Configuration.xsd";
+
+            Configuration::configuration(configurationFile, theConfiguration, nsMap); // actual write executed on this line
+        }
+        catch(...all sorts of errors....)
+	    {
+	        ...and handle...
+	    }
+}
+</pre>
+</code>
