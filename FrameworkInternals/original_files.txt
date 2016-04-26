@@ -110,6 +110,8 @@ File transformations.pdf                    must_exist,must_be_versioned,md5=che
 File runDoxygen.sh                          deprecated,install=dont_touch
 File Doxyfile                               must_exist,must_be_versioned,md5=check,install=ask_to_merge
 File DesignManual.html                      must_exist,must_be_versioned,md5=check,install=overwrite
+File UserDefinedRuntimeConfigurationModification.html  must_exist,install=overwrite
+File UserDefinedCommandLineParameters.html             must_exist,install=overwrite
 
 
 

@@ -88,6 +88,8 @@ File diagram.png must_exist,must_be_versioned,md5=8852ca2be17a8661c07885716e07eb
 File transformations.pdf must_exist,must_be_versioned,md5=276020b9e012b694d1456538851809b9,install=overwrite,
 File runDoxygen.sh install=dont_touch,deprecated,
 File Doxyfile must_exist,must_be_versioned,md5=e3b7e170213293a2d316c14af04ccc7f,install=ask_to_merge,
+File UserDefinedRuntimeConfigurationModification.html must_exist,install=overwrite,
+File UserDefinedCommandLineParameters.html must_exist,install=overwrite,
 File DesignManual.html must_exist,must_be_versioned,md5=2c1b37b36bc55cbfec399801736f25fe,install=overwrite,
 Directory Documentation/DoxygenGenerated install=create,
 Directory Extra install=create,
