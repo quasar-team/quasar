@@ -37,8 +37,13 @@ def getModuleInfo():
 	os.chdir("quasar-modules")
 	print("Changing directory to: quasar-modules")
 	print("Checking out from git")
-	subprocess.call("git init;git remote add origin https://github.com/quasar-team/quasar-modules.git" , shell=True)
-	subprocess.call("git pull origin master" , shell=True)
+	try:
+		subprocess.call("git init" , shell=True)
+		subprocess.call("git remote add origin https://github.com/quasar-team/quasar-modules.git" , shell=True)
+		subprocess.call("git pull origin master" , shell=True)
+	except exception:
+		print "Error trying to fetch optional module list from github:", exception
+		return False
 
 	moduleUrls = glob("*.url")
 	print moduleUrls
@@ -62,7 +67,7 @@ def enableModule(moduleName):
 	moduleName -- name of the optional module
 	"""	
 
-	getModuleInfo()
+	if not getModuleInfo(): return False
 
 	print "Checking module to be compatible..."
 	quasarVersion = None
