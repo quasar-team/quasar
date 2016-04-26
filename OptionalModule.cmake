@@ -5,7 +5,7 @@ project(${OPT_MODULE_NAME}_download NONE)
 include(ExternalProject)
 ExternalProject_Add(
     ${OPT_MODULE_NAME}
-    GIT_REPOSITORY https://gitlab.cern.ch/quasar-team/quasar-modules/${OPT_MODULE_NAME}.git
+    GIT_REPOSITORY ${OPT_MODULE_URL}
     PREFIX "${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME}_download"
     SOURCE_DIR "${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME}"
     CONFIGURE_COMMAND ""
