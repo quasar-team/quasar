@@ -319,12 +319,16 @@ int OpcServer::start()
 
         d->m_pServerConfig->getStackTraceSettings( bTraceEnabled, uTraceLevel);
 
+        OpcUa_Boolean something;
+        
+        
         d->m_pServerConfig->getServerTraceSettings(
             bSdkTraceEnabled,
             uSdkTraceLevel,
             uMaxTraceEntries,
             uMaxBackupFiles,
-            sTraceFile);
+            sTraceFile,
+            something);
 
         if ( bSdkTraceEnabled != OpcUa_False)
         {
