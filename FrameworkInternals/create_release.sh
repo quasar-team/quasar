@@ -11,7 +11,8 @@ fi
 
 
 if [ "`git status --porcelain ../ |wc -l`" != "0" ]; then   
-  echo "Some files are probably not commited, fix that first"
+    echo "Some files are probably not commited, fix that first"
+    echo "To see the list run git status"
   exit 1 
 fi
 
@@ -26,3 +27,4 @@ git commit -m "files.txt update in preparation for tag=$1" ../
 
 # svn cp https://svn.cern.ch/reps/atlasdcs/OpcUaGenericServer/trunk https://svn.cern.ch/reps/atlasdcs/OpcUaGenericServer/tags/OpcUaGenericServer-$1
 
+git tag -a "v$1"
