@@ -261,6 +261,7 @@ File LogSinkInterface.h  must_exist,must_be_versioned,install=overwrite,md5=chec
 File LogSinks.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File StdOutLog.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File UaTraceSink.h  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItInstance.h  must_exist,must_be_versioned,install=overwrite,md5=check
 
 Directory LogIt/src install=create,
 File BoostRotatingFileLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
@@ -271,4 +272,6 @@ File LogRecord.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogSinks.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File StdOutLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File UaTraceSink.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItInstance.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
+
 

@@ -27,6 +27,7 @@
 #include "ComponentAttributes.h"
 #include "LogSinks.h"
 #include "LogLevels.h"
+#include "LogItInstance.h"
 
 #ifdef LOGIT_HAS_BOOSTLOG
 #include "BoostRotatingFileLog.h"
@@ -40,77 +41,73 @@
 #include <UaTraceSink.h>
 #endif
 
-bool g_sLoggingInitialized = false;
-Log::LOG_LEVEL g_sNonComponentLogLevel(Log::INF);
-std::map<uint32_t, ComponentAttributes> g_sComponents;
-
 // internal - not exposed via API
 void initializeSinks()
 {
-    LogSinks::g_sLogSinksInstance = new LogSinks();
+	if(!LogItInstance::instanceExists()) return;
 
 	#ifdef LOGIT_HAS_BOOSTLOG
     BoostRotatingFileLog* fileLogger = new BoostRotatingFileLog();
     fileLogger->initialize();
-    LogSinks::g_sLogSinksInstance->addSink(fileLogger);
+    LogItInstance::getInstance()->m_logSinksInstance.addSink(fileLogger);
 	#endif // LOGIT_HAS_BOOSTLOG
 
 	#ifdef LOGIT_HAS_STDOUTLOG
     StdOutLog * stdOutLog = new StdOutLog();
     stdOutLog->initialize();
-    LogSinks::g_sLogSinksInstance->addSink(stdOutLog);
+    LogItInstance::getInstance()->m_logSinksInstance.addSink(stdOutLog);
 	#endif
 
 	#ifdef LOGIT_HAS_UATRACE
     UaTraceSink * uaTraceSink = new UaTraceSink ();
     uaTraceSink->initialize();
-    LogSinks::g_sLogSinksInstance->addSink(uaTraceSink);
+    LogItInstance::getInstance()->m_logSinksInstance.addSink(uaTraceSink);
     #endif
 }
+
 
 // internal - not exposed via API.
 void registerComponents(const std::list<ComponentAttributes>& components)
 {
+	if(!LogItInstance::instanceExists()) return;
     for(std::list<ComponentAttributes>::const_iterator it = components.begin(); it != components.end(); ++it)
     {
         ComponentAttributes component = *it;
-        g_sComponents.insert( std::map<uint32_t, ComponentAttributes>::value_type(component.getId(), component) );
+        LogItInstance::getInstance()->m_sComponents.insert( std::map<uint32_t, ComponentAttributes>::value_type(component.getId(), component) );
     }
 }
 
+
 bool Log::initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel)
 {
-    if(g_sLoggingInitialized) return false;
-
+	if(LogItInstance::instanceExists()) return false;
+	LogItInstance::createInstance();
     initializeSinks();
-
     setNonComponentLogLevel(nonComponentLogLevel);
-    g_sLoggingInitialized = true;
     return true;
 }
 
 bool Log::initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel, const std::list<ComponentAttributes>& components)
 {
-    if(g_sLoggingInitialized) return false;
-
-    initializeSinks();
-
+	if(!initializeLogging(nonComponentLogLevel)) return false;
     registerComponents(components);
-    setNonComponentLogLevel(nonComponentLogLevel);
+    return true;;
+}
 
-    g_sLoggingInitialized = true;
-    return true;
+bool Log::initializeDllLogging(LogItInstance* remoteInstance)
+{
+	return LogItInstance::setInstance(remoteInstance);
 }
 
 bool Log::isLoggable(const Log::LOG_LEVEL& level)
 {
-    if(!g_sLoggingInitialized) return false;
-    return level >= g_sNonComponentLogLevel;
+    if(!LogItInstance::instanceExists()) return false;
+    return level >= LogItInstance::getInstance()->m_nonComponentLogLevel;
 }
 
 bool Log::isLoggable(const Log::LOG_LEVEL& level, const uint32_t& componentId)
 {
-    if(!g_sLoggingInitialized) return false;
+	if(!LogItInstance::instanceExists()) return false;
 
     LOG_LEVEL componentLogLevel;
     if(!getComponentLogLevel(componentId, componentLogLevel)) return false; // unregistered component id.
@@ -120,21 +117,24 @@ bool Log::isLoggable(const Log::LOG_LEVEL& level, const uint32_t& componentId)
 
 void Log::setNonComponentLogLevel(const LOG_LEVEL& level)
 {
-    if(g_sNonComponentLogLevel != level)
+	if(!LogItInstance::instanceExists()) return;
+    if(LogItInstance::getInstance()->m_nonComponentLogLevel != level)
     {
-        g_sNonComponentLogLevel = level;
+    	LogItInstance::getInstance()->m_nonComponentLogLevel = level;
     }
 }
 
 Log::LOG_LEVEL Log::getNonComponentLogLevel(void)
 {
-    return g_sNonComponentLogLevel;
+	return LogItInstance::getInstance()->m_nonComponentLogLevel;
 }
 
 const std::list<ComponentAttributes> Log::getComponentLogsList()
 {
 	std::list<ComponentAttributes> result;
-	for(std::map<uint32_t, ComponentAttributes>::const_iterator it = g_sComponents.begin(); it != g_sComponents.end(); ++it)
+	if(!LogItInstance::instanceExists()) return result; // empty
+
+	for(std::map<uint32_t, ComponentAttributes>::const_iterator it = LogItInstance::getInstance()->m_sComponents.begin(); it != LogItInstance::getInstance()->m_sComponents.end(); ++it)
 	{
 		result.push_back(it->second);
 	}
@@ -143,8 +143,10 @@ const std::list<ComponentAttributes> Log::getComponentLogsList()
 
 bool Log::setComponentLogLevel(const uint32_t& componentId, const LOG_LEVEL& level)
 {
-    std::map<uint32_t, ComponentAttributes>::iterator pos = g_sComponents.find(componentId);
-    if(pos == g_sComponents.end()) return false;
+	if(!LogItInstance::instanceExists()) return false;
+
+    std::map<uint32_t, ComponentAttributes>::iterator pos = LogItInstance::getInstance()->m_sComponents.find(componentId);
+    if(pos == LogItInstance::getInstance()->m_sComponents.end()) return false;
 
     pos->second.setLevel(level);
     return true;
@@ -152,8 +154,10 @@ bool Log::setComponentLogLevel(const uint32_t& componentId, const LOG_LEVEL& lev
 
 bool Log::getComponentLogLevel(const uint32_t& componentId, LOG_LEVEL& level)
 {
-    std::map<uint32_t, ComponentAttributes>::const_iterator pos =  g_sComponents.find(componentId);
-    if(pos == g_sComponents.end()) return false;
+	if(!LogItInstance::instanceExists()) return false;
+
+	std::map<uint32_t, ComponentAttributes>::const_iterator pos = LogItInstance::getInstance()->m_sComponents.find(componentId);
+    if(pos == LogItInstance::getInstance()->m_sComponents.end()) return false;
 
     level = pos->second.getLevel();
     return true;
@@ -161,8 +165,10 @@ bool Log::getComponentLogLevel(const uint32_t& componentId, LOG_LEVEL& level)
 
 void Log::setGlobalLogLevel(const LOG_LEVEL& level)
 {
-    g_sNonComponentLogLevel = level;
-    for(std::map<uint32_t, ComponentAttributes>::iterator pos = g_sComponents.begin(); pos != g_sComponents.end(); ++pos)
+	if(!LogItInstance::instanceExists()) return;
+
+	LogItInstance::getInstance()->m_nonComponentLogLevel = level;
+    for(std::map<uint32_t, ComponentAttributes>::iterator pos = LogItInstance::getInstance()->m_sComponents.begin(); pos != LogItInstance::getInstance()->m_sComponents.end(); ++pos)
     {
         pos->second.setLevel(level);
     }
@@ -170,8 +176,10 @@ void Log::setGlobalLogLevel(const LOG_LEVEL& level)
 
 std::string Log::componentIdToString(const uint32_t& componentId)
 {
-    std::map<uint32_t, ComponentAttributes>::iterator pos = g_sComponents.find(componentId);
-    if(pos == g_sComponents.end()) return "UNKNOWN";
+	if(!LogItInstance::instanceExists()) return "UNKNOWN";
+
+    std::map<uint32_t, ComponentAttributes>::iterator pos = LogItInstance::getInstance()->m_sComponents.find(componentId);
+    if(pos == LogItInstance::getInstance()->m_sComponents.end()) return "UNKNOWN";
 
     return pos->second.getName();
 }
