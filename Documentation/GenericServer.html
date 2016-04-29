@@ -16,6 +16,7 @@
 
 
 
+
   
   <meta charset="UTF-8"><title>QUASAR</title></head><body>
 
@@ -94,8 +95,9 @@ their API are not compatible. Your mileage may vary.</li>
   <li>Boost development libraries. (In principle, boost-regex,
 boost-devel and boost-program-options should be sufficient)<br>
   </li>
-  <li>XSLT processor capable of XSLT2.0 processing. We use Saxon9 which
-is bundled with the package.</li>
+  <li>XSLT processor capable of XSLT2.0 processing. We use <a href="http://www.saxonica.com/">The Saxon XSLT and XQuery Processor from Saxonica Limited</a> which
+is re-distributed with the Quasar package (version 9.5 HE). Conditions of redistribution are explained <a href="http://www.saxonica.com/documentation/#%21conditions">at this link</a>.<br>
+</li>
   <li>Java run time environment, to run the Saxon XSLT Processor.<br>
   </li>
   <li>Cmake version 2.8 or later. Available in SLC6 as cmake28 package.</li>
@@ -348,10 +350,15 @@ script is places in the Documentation/Addons/prepare_dependencies.sh<br>
   <li>How does a developer define specific command line options for my quasar server implementation?<br>
 This is documented here: <a href="UserDefinedCommandLineParameters.html">User Defined Command Line Parameters</a> <br>
   </li>  
-  <li>How does a developer define a dynamic (at start up) configuration? For example, where the server 'discovers' connected hardware on start up.<br>
+  <li>How
+does a developer define a dynamic (at start up) configuration? For
+example, where the server 'discovers' connected hardware on start up.<br>
 This is documented here: <a href="UserDefinedRuntimeConfigurationModification.html">User Defined Runtime Configuration</a> <br>
   </li>  
-  <li>How does a developer persist a 'discovered' configuration as described above? For example, where the server 'discovers' connected hardware initially and saves it for use thereafter as a static configuration.<br>
+  <li>How
+does a developer persist a 'discovered' configuration as described
+above? For example, where the server 'discovers' connected hardware
+initially and saves it for use thereafter as a static configuration.<br>
 This is also documented here: <a href="UserDefinedRuntimeConfigurationModification.html#persist">User Defined Runtime Configuration</a> <br>
   </li>  
 
