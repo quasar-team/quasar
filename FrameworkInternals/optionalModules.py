@@ -54,11 +54,14 @@ def getModuleInfo():
 			minVersion = open(module+".minVersion").readline().rstrip()
 		except exception:
 			print exception
-		if not minVersion: print "Error reading version info for module "+module
+		if not minVersion:
+			print "Error reading version info for module "+module
+			return False
 		moduleInfo[module] = minVersion
 	print "moduleInfo", moduleInfo
 	os.chdir(baseDirectory)
 	print("Changing directory to: " + baseDirectory)
+	return True
 
 def enableModule(moduleName):
 	"""Enables optional module. Module URL and required quasar version is downloaded from github. Module download is done later at cmake configure stage.
