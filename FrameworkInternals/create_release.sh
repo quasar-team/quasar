@@ -25,7 +25,7 @@ python ../quasar.py create_release
 # after this files.txt and genericFrameworkVersion.txt has changed so should be recommited
 git commit -m "files.txt update in preparation for tag=$1" ../
 
-
+git push origin master
 
 git tag -a "v$1"
 
