@@ -20,7 +20,7 @@ script:
  - mv quasar-validation-ci/CI/ServerConfig.xml bin/
  - mv quasar-validation-ci/CI/ubuntu_evaluationToolkit.cmake .
  #links from cernbox are not permanent, be carefull
- - wget -O quasar/Design/saxon9he.jar --no-check-certificat https://cernbox.cern.ch/index.php/s/FIZm1Ew5CyxLDUd/download
+ - wget -O Design/saxon9he.jar --no-check-certificat https://cernbox.cern.ch/index.php/s/FIZm1Ew5CyxLDUd/download
  - python quasar.py generate device GreenLED
  - python quasar.py generate device YellowLED
  - python quasar.py generate device RedLED
