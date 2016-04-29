@@ -32,10 +32,10 @@ def getModuleInfo():
 
 	baseDirectory = os.getcwd()
 	os.chdir(baseDirectory + os.path.sep + "FrameworkInternals")
-	print("Changing directory to: " + baseDirectory + os.path.sep + "FrameworkInternals")
+	#print("Changing directory to: " + baseDirectory + os.path.sep + "FrameworkInternals")
 	if not os.path.exists("quasar-modules"): os.mkdir("quasar-modules")
 	os.chdir("quasar-modules")
-	print("Changing directory to: quasar-modules")
+	#print("Changing directory to: quasar-modules")
 	print("Checking out from git")
 	try:
 		subprocess.call("git init" , shell=True)
@@ -46,7 +46,7 @@ def getModuleInfo():
 		return False
 
 	moduleUrls = glob("*.url")
-	print moduleUrls
+	#print moduleUrls
 	for moduleUrl in moduleUrls:
 		module = moduleUrl.replace(".url","")
 		minVersion = None
@@ -58,9 +58,9 @@ def getModuleInfo():
 			print "Error reading version info for module "+module
 			return False
 		moduleInfo[module] = minVersion
-	print "moduleInfo", moduleInfo
+	print "List of existing optional modules and their required quasar versions: ", moduleInfo
 	os.chdir(baseDirectory)
-	print("Changing directory to: " + baseDirectory)
+	#print("Changing directory to: " + baseDirectory)
 	return True
 
 def enableModule(moduleName):
