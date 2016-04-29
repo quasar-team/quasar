@@ -150,6 +150,11 @@ Directory RPM/build_from_svn/rpmbuild/RPMS install=create
 Directory RPM/build_from_svn/rpmbuild/SOURCES install=create
 Directory RPM/build_from_svn/rpmbuild/SPECS install=create
 
+Directory RPM/build_from_git install=create
+File buildRpm.sh                            must_exist,must_be_versioned,install=ask_to_merge
+File template.spec                          must_exist,must_be_versioned,install=ask_to_merge
+
+
 Directory Server install=create
 File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge
 
