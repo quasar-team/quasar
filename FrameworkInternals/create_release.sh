@@ -25,6 +25,8 @@ python ../quasar.py create_release
 # after this files.txt and genericFrameworkVersion.txt has changed so should be recommited
 git commit -m "files.txt update in preparation for tag=$1" ../
 
-# svn cp https://svn.cern.ch/reps/atlasdcs/OpcUaGenericServer/trunk https://svn.cern.ch/reps/atlasdcs/OpcUaGenericServer/tags/OpcUaGenericServer-$1
+
 
 git tag -a "v$1"
+
+git push origin "v$1"
