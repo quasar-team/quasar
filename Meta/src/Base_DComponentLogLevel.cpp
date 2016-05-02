@@ -50,6 +50,7 @@ unsigned int Base_DComponentLogLevel::unlinkAllChildren ()
 }
 
 Base_DComponentLogLevel::Base_DComponentLogLevel ()
+:m_addressSpaceLink(0)
 {}
 
 Base_DComponentLogLevel::~Base_DComponentLogLevel ()
