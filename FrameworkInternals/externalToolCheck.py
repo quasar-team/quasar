@@ -202,8 +202,8 @@ def subprocessWithImprovedErrors(subprocessCommand, dependencyName):
 	try:
 		return subprocess.call(subprocessCommand)
 	except OSError as e:		
-		print("There was an OS error when trying to execute the program [" + dependencyName + "]. Probably it is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
-		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. Probably it is missing or non-accesible; Exception: [" + str(e) + "]")
+		#print("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
+		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
 	except Exception, e:
-		print("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "].")
+		#print("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "].")
 		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
