@@ -24,6 +24,7 @@ import platform
 import sys
 import subprocess
 import filecmp
+import __main__
 
 VERBOSE = 1
 XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + 'saxon9he.jar'
