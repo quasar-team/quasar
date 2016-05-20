@@ -56,7 +56,7 @@ from designTools import upgradeDesign
 from designTools import createDiagram
 from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
-from externalToolCheck import checkExternalDependancies
+from externalToolCheck import checkExternalDependencies
 
 # format is: [command name], callable
 commands = [
@@ -84,6 +84,7 @@ commands = [
 	[['format_design'], formatDesign, True],
 	[['validate_design'], validateDesign, True],	
 	[['doxygen'], runDoxygen, True],	
+	[['dependency_check'], checkExternalDependencies, True],	
 	]
 
 
@@ -100,12 +101,5 @@ if '-h' in sys.argv or '--help' in sys.argv:
 	help(matched_command[1])
 	sys.exit(0)
 else:
-	#check that all the external dependancies are working before starting the execution
-	if matched_command[0] == ['generate','diagram']:
-		checkExternalDependancies(True, False)
-	elif matched_command[0] == ['doxygen']:
-		checkExternalDependancies(False, True)
-	else:
-		checkExternalDependancies(False, False)
 	exit_code = matched_command[1]( * sys.argv[1+len(matched_command[0]):])  # pack arguments after the last chunk of the command
 	sys.exit(exit_code)
