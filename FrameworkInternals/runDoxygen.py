@@ -20,8 +20,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import subprocess
 import __main__
+from externalToolCheck import subprocessWithImprovedErrors
 
 def runDoxygen():
 	"""Runs doxygen in the documentation folder, making the tool generate documentation for the server automatically."""
@@ -31,6 +31,6 @@ def runDoxygen():
 	os.chdir(baseDirectory + os.path.sep + "Documentation")
 	print("Changing directory to: " + baseDirectory + os.path.sep + "Documentation")
 	print("Calling Doxygen")
-	subprocess.call("doxygen" , shell=True)
+	subprocessWithImprovedErrors("doxygen" , "doxygen")
 	os.chdir(baseDirectory)
 	print("Changing directory to: " + baseDirectory)

@@ -20,7 +20,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import subprocess
 import platform
 from manage_files import mfInstall
 import __main__

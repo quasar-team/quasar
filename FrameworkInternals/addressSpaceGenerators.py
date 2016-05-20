@@ -20,7 +20,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import subprocess
 import platform
 from transformDesign import transformDesignVerbose
 asPath = "AddressSpace" + os.path.sep
