@@ -155,6 +155,8 @@ def checkDoxyGen():
 	
 def checkExternalDependencies():
 	"""Checks all of QUASAR dependencies to see if everything is setup as expected, and prints apropiate messages to point out what is missing."""
+	if "quasarGUI.py" in __main__.__file__:
+		print("Calling: python quasar.py dependency_check")
 	try:
 		checkSaxon()
 	except Exception, e:
