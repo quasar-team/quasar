@@ -26,19 +26,20 @@ import subprocess
 from subprocess import Popen
 import filecmp
 import __main__
+from commandMap import getCommand
 
 VERBOSE = 1
-XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + 'saxon9he.jar'
+XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + getCommand('saxon')
 
-def getVcvarsallPath(simpleQuotes=False):
-	"""
-	Method that returns the absolute path of vcvarsall.bat. Since this is hardcoded at the moment, and used trough different parts of the scripts, at least is hardcoded only once
-	It is returned in double quotation marks, because it needs to be used with quotes inside of the string, because of the spaces on the path
-	"""
-	if(simpleQuotes):
-		return "C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat"
-	else:
-		return '"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat"'
+#def getVcvarsallPath(simpleQuotes=False):
+#	"""
+#	Method that returns the absolute path of vcvarsall.bat. Since this is hardcoded at the moment, and used trough different parts of the scripts, at least is hardcoded only once
+#	It is returned in double quotation marks, because it needs to be used with quotes inside of the string, because of the spaces on the path
+#	"""
+#	if(simpleQuotes):
+#		return "C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat"
+#	else:
+#		return '"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat"'
 
 def printIfVerbose(msg):
 	if VERBOSE > 0:
@@ -46,7 +47,7 @@ def printIfVerbose(msg):
 
 def checkJava():
 	try:
-		returnCode = subprocess.call(['java', '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+		returnCode = subprocess.call([getCommand('java'), '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		if returnCode == 0:
 			printIfVerbose("Java does exist")
 		else:
@@ -62,7 +63,7 @@ def checkSaxon():
 	
 def checkAstyle():
 	try:
-		returnCode = subprocess.call(['astyle', '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+		returnCode = subprocess.call([getCommand('astyle'), '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		if returnCode == 0:
 			printIfVerbose("astyle does exist")
 		else:
@@ -74,9 +75,9 @@ def checkKdiff3():
 	try:
 		returnCode = -1
 		if platform.system() == "Windows":
-			returnCode = subprocess.call(['where', 'kdiff3'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+			returnCode = subprocess.call(['where', getCommand('diff')], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		else:
-			returnCode = subprocess.call(['kdiff3', '--help'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+			returnCode = subprocess.call([getCommand('diff'), '--help'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		if returnCode == 0:
 			printIfVerbose("kdiff3 does exist")
 		else:
@@ -86,7 +87,7 @@ def checkKdiff3():
 
 def checkCMake():
 	try:
-		returnCode = subprocess.call(['cmake', '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+		returnCode = subprocess.call([getCommand('cmake'), '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		if returnCode == 0:
 			printIfVerbose("CMake does exist")
 		else:
@@ -96,12 +97,12 @@ def checkCMake():
 		
 def checkCompiler():
 	if platform.system() == "Windows":
-		if os.path.isfile(getVcvarsallPath(True)):
+		if os.path.isfile(getCommand('vcvarsall.simple')):
 			printIfVerbose("vcvarsall.bat does exist")
 		else:		
-			raise Exception("vcvarsall.bat cannot be found in the default path [" + getVcvarsallPath(True) + "]. Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
+			raise Exception("vcvarsall.bat cannot be found in the default path [" + getCommand('vcvarsall.simple') + "]. Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
 		try:
-			returnCode = subprocess.call(getVcvarsallPath() + ' amd64 && msbuild /h', shell=True, stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+			returnCode = subprocess.call(getCommand('vcvarsall') + ' amd64 && ' + getCommand('msbuild') + ' /h', shell=True, stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 			if returnCode == 0:
 				printIfVerbose("msbuild does exist")
 			else:
@@ -111,7 +112,7 @@ def checkCompiler():
 		
 	elif platform.system() == "Linux":
 		try:
-			returnCode = subprocess.call(['make', '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+			returnCode = subprocess.call([getCommand('make'), '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 			if returnCode == 0:
 				printIfVerbose("make does exist")
 			else:
@@ -121,7 +122,7 @@ def checkCompiler():
 			
 def checkXMLLint():
 	try:
-		returnCode = subprocess.call(['xmllint', '--version'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+		returnCode = subprocess.call([getCommand('xmllint'), '--version'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		if returnCode == 0:
 			printIfVerbose("XML Lint does exist")
 		else:
@@ -132,7 +133,7 @@ def checkXMLLint():
 #Non compulsory dependancy (Needed for generating graphs, but QUASAR will perfectly work without GraphViz)
 def checkGraphViz():
 	try:
-		returnCode = subprocess.call(['dot', '-V'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+		returnCode = subprocess.call([getCommand('graphviz'), '-V'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		if returnCode == 0:
 			printIfVerbose("GraphViz does exist")
 		else:
@@ -145,9 +146,9 @@ def checkDoxyGen():
 	try:
 		returnCode = -1
 		if platform.system() == "Windows":
-			returnCode = subprocess.call(['where', 'doxygen'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+			returnCode = subprocess.call(['where', getCommand('doxygen')], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		else:
-			returnCode = subprocess.call(['which', 'doxygen'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+			returnCode = subprocess.call(['which', getCommand('doxygen')], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		if returnCode == 0:
 			printIfVerbose("DoxyGen does exist")
 		else:
@@ -155,46 +156,28 @@ def checkDoxyGen():
 	except:
 		raise Exception("DoxyGen cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nDoxyGen can be downloaded in http://www.stack.nl/~dimitri/doxygen/ ")
 	
+def tryDependency(functionCheck, critical=True):
+	try:
+		functionCheck()
+	except Exception, e:
+		if(critical):
+			print("CRITICAL dependency missing: " + str(e))
+		else:
+			print("Optional dependency missing: " + str(e))
+
 def checkExternalDependencies():
 	"""Checks all of QUASAR dependencies to see if everything is setup as expected, and prints apropiate messages to point out what is missing."""
 	if "quasarGUI.py" in __main__.__file__:
 		print("Calling: python quasar.py dependency_check")
-	try:
-		checkSaxon()
-	except Exception, e:
-		print("CRITICAL dependency missing: " + str(e))
-	try:
-		checkJava()
-	except Exception, e:
-		print("CRITICAL dependency missing: " + str(e))	
-	try:
-		checkKdiff3()
-	except Exception, e:
-		print("CRITICAL dependency missing: " + str(e))
-	try:
-		checkCMake()
-	except Exception, e:
-		print("CRITICAL dependency missing: " + str(e))
-	try:
-		checkCompiler()
-	except Exception, e:
-		print("CRITICAL dependency missing: " + str(e))
-	try:
-		checkXMLLint()
-	except Exception, e:
-		print("CRITICAL dependency missing: " + str(e))
-	try:
-		checkAstyle()
-	except Exception, e:
-		print("Optional dependency missing: " + str(e))
-	try:
-		checkGraphViz()
-	except Exception, e:
-		print("Optional dependency missing: " + str(e))
-	try:
-		checkDoxyGen()
-	except Exception, e:
-		print("Optional dependency missing: " + str(e))
+	tryDependency(checkSaxon)
+	tryDependency(checkJava)
+	tryDependency(checkKdiff3)
+	tryDependency(checkCMake)
+	tryDependency(checkCompiler)
+	tryDependency(checkXMLLint)
+	tryDependency(checkAstyle, False)
+	tryDependency(checkGraphViz, False)
+	tryDependency(checkDoxyGen, False)
 		
 def subprocessWithImprovedErrors(subprocessCommand, dependencyName):
 	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions catched.

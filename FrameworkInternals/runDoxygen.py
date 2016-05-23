@@ -31,6 +31,6 @@ def runDoxygen():
 	os.chdir(baseDirectory + os.path.sep + "Documentation")
 	print("Changing directory to: " + baseDirectory + os.path.sep + "Documentation")
 	print("Calling Doxygen")
-	subprocessWithImprovedErrors("doxygen" , "doxygen")
+	subprocessWithImprovedErrors(getCommand("doxygen") , getCommand("doxygen"))
 	os.chdir(baseDirectory)
 	print("Changing directory to: " + baseDirectory)

@@ -24,6 +24,7 @@ import sys
 import platform
 from transformDesign import transformDesignVerbose
 from externalToolCheck import subprocessWithImprovedErrors
+from commandMap import getCommand
 
 def generateCmake(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="default_configuration.cmake"):
 	"""Generates CMake header lists in various directories, and then calls cmake.
@@ -37,9 +38,9 @@ def generateCmake(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="default_configurat
 
 	print("Calling CMake")
 	if platform.system() == "Windows":
-		returnCode = subprocessWithImprovedErrors("cmake -DCMAKE_BUILD_TYPE=" + BUILD_TYPE + " -DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE + " -G \"Visual Studio 12 Win64\" .", "cmake")
+		returnCode = subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + BUILD_TYPE, "-DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE,"-G", "Visual Studio 12 2013 Win64", "."], getCommand("cmake"))
 	elif platform.system() == "Linux":
-		returnCode = subprocessWithImprovedErrors(["cmake", "-DCMAKE_BUILD_TYPE=" + BUILD_TYPE, "-DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE,"."], "cmake")
+		returnCode = subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + BUILD_TYPE, "-DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE,"."], getCommand("cmake"))
 	if returnCode != 0:
 		print("There was a problem calling cmake; Return code = " + str(returnCode))
 		return returnCode

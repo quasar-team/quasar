@@ -26,6 +26,7 @@ import __main__
 from transformDesign import transformDesignVerbose
 from externalToolCheck import subprocessWithImprovedErrors
 from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
+from commandMap import getCommand
 
 designPath = "Design" + os.path.sep
 designXML = "Design.xml"
@@ -39,7 +40,7 @@ def validateDesign():
 	# This allows some basic checks
 	print("1st line of check -- XSD conformance")
 	print("Validating the file " + designXML + " with the schema " + designXSD)
-	returnCode = subprocessWithImprovedErrors(["xmllint", "--noout", "--schema", designPath + designXSD, designPath + designXML], "xmllint")
+	returnCode = subprocessWithImprovedErrors([getCommand("xmllint"), "--noout", "--schema", designPath + designXSD, designPath + designXML], getCommand("xmllint"))
 	if returnCode != 0:
 		print("There was a problem validating the file" + designXML + " with the schema " + designXSD + "; Return code = " + str(returnCode))
 		return returnCode
@@ -62,9 +63,9 @@ def formatDesign():
 
 	print("Formatting the file " + designXML + "using the tool XMLlint. The result will be saved in " + tempName)
 	if platform.system() == "Windows":
-		returnCode = subprocessWithImprovedErrorsPipeOutputToFile(["xmllint", designPath + designXML], designPath + tempName, "xmllint")
+		returnCode = subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), designPath + designXML], designPath + tempName, getCommand("xmllint"))
 	elif platform.system() == "Linux":
-		returnCode = subprocessWithImprovedErrorsPipeOutputToFile(["xmllint", "--format", designPath + designXML], designPath + tempName, "xmllint")
+		returnCode = subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", designPath + designXML], designPath + tempName, getCommand("xmllint"))
 	if returnCode != 0:
 		print("There was a problem Formatting the file " + designXML + "; Return code = " + str(returnCode))
 		return returnCode
@@ -89,15 +90,15 @@ def upgradeDesign(additionalParam):
 	print("Formatting the upgraded file ")
 	formatedOutput = output + ".formatted"
 	if platform.system() == "Windows":
-		returnCode = subprocessWithImprovedErrorsPipeOutputToFile(["xmllint", designPath + output], designPath + formatedOutput, "xmllint")
+		returnCode = subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), designPath + output], designPath + formatedOutput, getCommand("xmllint"))
 	elif platform.system() == "Linux":
-		returnCode = subprocessWithImprovedErrorsPipeOutputToFile(["xmllint", "--format", designPath + output], designPath + formatedOutput, "xmllint")
+		returnCode = subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", designPath + output], designPath + formatedOutput, getCommand("xmllint"))
 	if returnCode != 0:
 		print("There was a problem formatting the upgraded file; Return code = " + str(returnCode))
 		return returnCode
 		
 	print("Now running merge-tool. Please merge the upgraded changed")
-	returnCode = subprocessWithImprovedErrors(["kdiff3", "-o", designPath + designXML, designPath + designXML, designPath + formatedOutput], "kdiff3")
+	returnCode = subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, designPath + formatedOutput], getCommand("diff"))
 	if returnCode != 0:
 		print("There was a problem with kdiff3; Return code = " + str(returnCode))
 		return returnCode
@@ -116,7 +117,7 @@ def createDiagram(detailLevel=0):
 	output = "Design.dot"
 	returnCode = transformDesignVerbose(designPath + "designToDot.xslt", designPath + output, 0, 1, "detailLevel=" + str(detailLevel))
 	print("Generating pdf diagram with dot.")
-	returnCode = subprocessWithImprovedErrors(["dot", "-Tpdf", "-o", designPath + "diagram.pdf", designPath + "Design.dot"], "GraphViz (dot)")
+	returnCode = subprocessWithImprovedErrors([getCommand("graphviz"), "-Tpdf", "-o", designPath + "diagram.pdf", designPath + "Design.dot"], "GraphViz (dot)")
 	if returnCode != 0:
 		print("There was a problem generating pdf diagram with dot; Return code = " + str(returnCode))
 		return returnCode
