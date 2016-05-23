@@ -21,6 +21,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 import os
 import platform
+import subprocess
 import __main__
 from generateCmake import generateCmake
 from externalToolCheck import subprocessWithImprovedErrors
@@ -61,7 +62,11 @@ def automatedBuild(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="FrameworkInternal
 		returnCode = subprocessWithImprovedErrors( getVcvarsallPath() + ' amd64 && msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE, "visual studio msbuild")
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
-		returnCode = ssubprocessWithImprovedErrors('make -j$(nproc)', "make")
+		#we call process nproc and store its output
+		process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
+		out, err = process.communicate()
+		#this output is used for calling make
+		returnCode = subprocessWithImprovedErrors(["make", "-j" + str(int(out))], "make")#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
 	if returnCode != 0:
 		print("Error returned from calling make/msbuild; Return code = " + str(returnCode))
 	return returnCode

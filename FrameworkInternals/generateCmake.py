@@ -39,7 +39,7 @@ def generateCmake(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="default_configurat
 	if platform.system() == "Windows":
 		returnCode = subprocessWithImprovedErrors("cmake -DCMAKE_BUILD_TYPE=" + BUILD_TYPE + " -DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE + " -G \"Visual Studio 12 Win64\" .", "cmake")
 	elif platform.system() == "Linux":
-		returnCode = subprocessWithImprovedErrors("cmake -DCMAKE_BUILD_TYPE=" + BUILD_TYPE + " -DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE + " .", "cmake")
+		returnCode = subprocessWithImprovedErrors(["cmake", "-DCMAKE_BUILD_TYPE=" + BUILD_TYPE, "-DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE,"."], "cmake")
 	if returnCode != 0:
 		print("There was a problem calling cmake; Return code = " + str(returnCode))
 		return returnCode

@@ -61,7 +61,6 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
 	#files
 	XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + 'saxon9he.jar'
 	DESIGN_XML = '.' + os.path.sep + 'Design' + os.path.sep + 'Design.xml'
-
 	if overwriteProtection == 1:
 		originalOutputFile = outputFile
 		outputFile = outputFile + '.generated'
@@ -76,10 +75,14 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
 		if returnCode != 0:
 			raise Exception("There was a problem generating " + outputFile + "; Return code = " + str(returnCode))
 
-	if astyleRun == 1:
-		returnCode = subprocessWithImprovedErrors(['astyle', outputFile], "astyle")
-		if returnCode != 0:
-			raise Exception("There was a formatting the file " + outputFile + " with astyle; Return code = " + str(returnCode))
+	if astyleRun == 1:		
+		try:
+			returnCode = subprocessWithImprovedErrors(['astyle', outputFile], "astyle")
+			if returnCode != 0:
+				raise Exception("There was a formatting the file " + outputFile + " with astyle; Return code = " + str(returnCode))
+		except Exception, e:			
+			print("Warning: Error when calling astyle: [" + str(e) + "]")
+			print("Execution will continue normally, but astyle wasn't executed.")
 	if overwriteProtection == 1:
 		#If the file existed previously and it is different from the old one we run kdiff3
 		if (os.path.isfile(originalOutputFile)) and (filecmp.cmp(originalOutputFile, outputFile) == False):

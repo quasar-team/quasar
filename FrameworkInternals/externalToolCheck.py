@@ -23,6 +23,7 @@ import os.path
 import platform
 import sys
 import subprocess
+from subprocess import Popen
 import filecmp
 import __main__
 
@@ -165,11 +166,7 @@ def checkExternalDependencies():
 	try:
 		checkJava()
 	except Exception, e:
-		print("CRITICAL dependency missing: " + str(e))
-	try:
-		checkAstyle()
-	except Exception, e:
-		print("CRITICAL dependency missing: " + str(e))
+		print("CRITICAL dependency missing: " + str(e))	
 	try:
 		checkKdiff3()
 	except Exception, e:
@@ -186,6 +183,10 @@ def checkExternalDependencies():
 		checkXMLLint()
 	except Exception, e:
 		print("CRITICAL dependency missing: " + str(e))
+	try:
+		checkAstyle()
+	except Exception, e:
+		print("Optional dependency missing: " + str(e))
 	try:
 		checkGraphViz()
 	except Exception, e:
@@ -204,6 +205,26 @@ def subprocessWithImprovedErrors(subprocessCommand, dependencyName):
 	"""	
 	try:
 		return subprocess.call(subprocessCommand)
+	except OSError as e:		
+		#print("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
+		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
+	except Exception, e:
+		#print("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "].")
+		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
+
+def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, dependencyName):
+	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions catched, and then pipes the output of the process to the given file
+	
+	Keyword arguments:
+	subprocessCommand -- String or list of strings that will be given to subprocess
+	dependencyName -- parameterless name of the command, just for error loging purposes
+	outputFile -- file where the std out of the process will be written into
+	"""	
+	try:
+		with open(outputFile,"wb") as out:
+			process = subprocess.Popen(subprocessCommand, stdout=out)
+			streamdata = process.communicate()
+			return process.returncode
 	except OSError as e:		
 		#print("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
 		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
