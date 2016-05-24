@@ -45,31 +45,28 @@ def printIfVerbose(msg):
 	if VERBOSE > 0:
 		print(msg)
 
-def checkJava():
+def checkExecutableExists(executableKeyName, doesNotExistErrorMessage):
+	errorMessage = "executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \n"+doesNotExistErrorMessage
 	try:
-		returnCode = subprocess.call([getCommand('java'), '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+		returnCode = subprocess.call([getCommand(executableKeyName), '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		if returnCode == 0:
-			printIfVerbose("Java does exist")
+			printIfVerbose("executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] exists")
 		else:
-			raise Exception("Java cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nJava can be downloaded in https://www.java.com/en/download/ ")
+			raise Exception(errorMessage)
 	except:
-		raise Exception("Java cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nJava can be downloaded in https://www.java.com/en/download/ ")
+		raise Exception(errorMessage)
+
+def checkJava():
+	checkExecutableExists('java', 'Java can be downloaded in https://www.java.com/en/download/')
 	
 def checkSaxon():
 	if os.path.isfile(XSLT_JAR):
-		printIfVerbose("jaxon0he.jar does exist")
+		printIfVerbose("saxon0he.jar does exist")
 	else:
-		raise Exception("jaxon0he.jar cannot be found in the Design folder. \njaxon0he.jar can be downloaded in http://saxon.sourceforge.net/#F9.7HE ")
+		raise Exception("saxon0he.jar cannot be found in the Design folder. \nsaxon0he.jar can be downloaded in http://saxon.sourceforge.net/#F9.7HE ")
 	
 def checkAstyle():
-	try:
-		returnCode = subprocess.call([getCommand('astyle'), '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-		if returnCode == 0:
-			printIfVerbose("astyle does exist")
-		else:
-			raise Exception("Astyle cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nAstyle can be downloaded in http://astyle.sourceforge.net/ ")
-	except:
-		raise Exception("Astyle cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nAstyle can be downloaded in http://astyle.sourceforge.net/ ")
+	checkExecutableExists('astyle', 'Astyle can be downloaded in http://astyle.sourceforge.net/')
 	
 def checkKdiff3():
 	try:
@@ -86,14 +83,7 @@ def checkKdiff3():
 		raise Exception("kdiff3 cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nkdiff3 can be downloaded in http://kdiff3.sourceforge.net/ ")
 
 def checkCMake():
-	try:
-		returnCode = subprocess.call([getCommand('cmake'), '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-		if returnCode == 0:
-			printIfVerbose("CMake does exist")
-		else:
-			raise Exception("CMake cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nCMake can be downloaded in https://cmake.org/ ")
-	except:
-		raise Exception("CMake cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nCMake can be downloaded in https://cmake.org/ ")
+	checkExecutableExists('cmake', 'CMake can be downloaded in https://cmake.org/')
 		
 def checkCompiler():
 	if platform.system() == "Windows":
