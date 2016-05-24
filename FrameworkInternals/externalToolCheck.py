@@ -31,16 +31,6 @@ from commandMap import getCommand
 VERBOSE = 1
 XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + getCommand('saxon')
 
-#def getVcvarsallPath(simpleQuotes=False):
-#	"""
-#	Method that returns the absolute path of vcvarsall.bat. Since this is hardcoded at the moment, and used trough different parts of the scripts, at least is hardcoded only once
-#	It is returned in double quotation marks, because it needs to be used with quotes inside of the string, because of the spaces on the path
-#	"""
-#	if(simpleQuotes):
-#		return "C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat"
-#	else:
-#		return '"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat"'
-
 def printIfVerbose(msg):
 	if VERBOSE > 0:
 		print(msg)
@@ -69,39 +59,39 @@ def checkAstyle():
 	checkExecutableExists('astyle', 'Astyle can be downloaded in http://astyle.sourceforge.net/')
 	
 def checkKdiff3():
-	try:
-		returnCode = -1
-		if platform.system() == "Windows":
+		if platform.system() == "Linux":
+			return checkExecutableExists('diff', 'kdiff3 can be downloaded in http://kdiff3.sourceforge.net/', '--help')
+		#if the system is a windows machine then:
+		errorMessageWindows = "kdiff3 cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nkdiff3 can be downloaded in http://kdiff3.sourceforge.net/ "
+		try:
 			returnCode = subprocess.call(['where', getCommand('diff')], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-		else:
-			returnCode = subprocess.call([getCommand('diff'), '--help'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-		if returnCode == 0:
-			printIfVerbose("kdiff3 does exist")
-		else:
-			raise Exception("kdiff3 cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nkdiff3 can be downloaded in http://kdiff3.sourceforge.net/ ")
-	except:
-		raise Exception("kdiff3 cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nkdiff3 can be downloaded in http://kdiff3.sourceforge.net/ ")
+			if returnCode == 0:
+				printIfVerbose("kdiff3 does exist")
+			else:
+				raise Exception(errorMessageWindows)
+		except:
+			raise Exception(errorMessageWindows)
 
 def checkCMake():
 	checkExecutableExists('cmake', 'CMake can be downloaded in https://cmake.org/')
 		
 def checkCompiler():
-	if platform.system() == "Windows":
-		if os.path.isfile(getCommand('vcvarsall.simple')):
-			printIfVerbose("vcvarsall.bat does exist")
-		else:		
-			raise Exception("vcvarsall.bat cannot be found in the default path [" + getCommand('vcvarsall.simple') + "]. Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
-		try:
-			returnCode = subprocess.call(getCommand('vcvarsall') + ' amd64 && ' + getCommand('msbuild') + ' /h', shell=True, stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-			if returnCode == 0:
-				printIfVerbose("msbuild does exist")
-			else:
-				raise Exception("msbuild cannot be properly executed after calling vcvarsall.bat . Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
-		except:
+	if platform.system() == "Linux":
+		return checkExecutableExists('make', 'Please, install gcc using the package manager of your distribution.')
+	#if the system is a windows machine then:
+	if os.path.isfile(getCommand('vcvarsall')):
+		printIfVerbose("vcvarsall.bat does exist")
+	else:		
+		raise Exception("vcvarsall.bat cannot be found in the default path [" + getCommand('vcvarsall') + "]. Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
+	try:
+		returnCode = subprocess.call("\"" + getCommand('vcvarsall') + "\"" + ' amd64 && ' + getCommand('msbuild') + ' /h', shell=True, stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+		if returnCode == 0:
+			printIfVerbose("msbuild does exist")
+		else:
 			raise Exception("msbuild cannot be properly executed after calling vcvarsall.bat . Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
+	except:
+		raise Exception("msbuild cannot be properly executed after calling vcvarsall.bat . Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
 		
-	elif platform.system() == "Linux":
-		checkExecutableExists('make', 'Please, install gcc using the package manager of your distribution.')
 			
 def checkXMLLint():
 	checkExecutableExists('xmllint', 'XML Lint can be downloaded in http://xmlsoft.org/', '--version')
