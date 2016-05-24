@@ -20,10 +20,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import subprocess
 import platform
+import subprocess
 import __main__
 from generateCmake import generateCmake
+from externalToolCheck import subprocessWithImprovedErrors
+from commandMap import getCommand
 
 def findFileRecursively( topdir, target ):
 	for dirpath, dirnames, files in os.walk(topdir):
@@ -51,16 +53,20 @@ def automatedBuild(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="FrameworkInternal
 	print('Calling make/msbuild')
 	if platform.system() == "Windows":
 		print('Calling visual studio vcvarsall to set the environment')
-		print('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64')
-		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64', shell=True)
+		print(getCommand("vcvarsall.simple") + ' amd64')
+		returnCode = subprocessWithImprovedErrors( getCommand("vcvarsall") + ' amd64', "visual studio vcvarsall.bat")
 		if returnCode != 0:
-			print('ERROR: vcvarsall could not be executed, maybe the installation folder is different than the one expected? [C:\Program Files (x86)\Microsoft Visual Studio 12.0]')			
+			print('ERROR: vcvarsall could not be executed, maybe the installation folder is different than the one expected? [' + getCommand("vcvarsall.simple") + ']')			
 			return returnCode
 		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE)
-		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64 && msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE, shell=True)
+		returnCode = subprocessWithImprovedErrors( getCommand("vcvarsall") + ' amd64 && msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE, "visual studio msbuild")
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
-		returnCode = subprocess.call('make -j$(nproc)', shell=True)
+		#we call process nproc and store its output
+		process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
+		out, err = process.communicate()
+		#this output is used for calling make
+		returnCode = subprocessWithImprovedErrors([getCommand("make"), "-j" + str(int(out))], getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
 	if returnCode != 0:
 		print("Error returned from calling make/msbuild; Return code = " + str(returnCode))
 	return returnCode

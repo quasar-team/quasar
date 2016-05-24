@@ -21,11 +21,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 import os
 import sys
-import subprocess
 import shutil
 import platform
 import __main__
-
+from commandMap import getCommand
+from externalToolCheck import subprocessWithImprovedErrors
 
 def deleteFolderRecursively( topdir, target ):
 	for dirpath, dirnames, files in os.walk(topdir):
@@ -66,16 +66,16 @@ def distClean(param=None):
 			print("Calling: python quasar.py clean " + param)
 	if platform.system() == "Windows":
 		print('Calling visual studio vcvarsall to set the environment')
-		print('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64')
-		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64', shell=True)
+		print(getCommand("vcvarsall.simple") + ' amd64')
+		returnCode = subprocessWithImprovedErrors(getCommand("vcvarsall") + ' amd64', "visual studio vcvarsall.bat")
 		if returnCode != 0:
-			print('ERROR: vcvarsall could not be executed, maybe the installation folder is different than the one expected? [C:\Program Files (x86)\Microsoft Visual Studio 12.0]')			
+			print('ERROR: vcvarsall could not be executed, maybe the installation folder is different than the one expected? [' + getCommand("vcvarsall.simple") + ']')			
 			return returnCode
 		print('Calling msbuild clean')
 		print('msbuild ALL_BUILD.vcxproj /t:Clean')
-		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64 && msbuild ALL_BUILD.vcxproj /t:Clean', shell=True)
+		returnCode = subprocessWithImprovedErrors(getCommand("vcvarsall") + ' amd64 && msbuild ALL_BUILD.vcxproj /t:Clean', "visual studio msbuild")
 	elif platform.system() == "Linux":
-		returnCode = subprocess.call(['make', 'clean'])
+		returnCode = subprocessWithImprovedErrors([getCommand('make'), 'clean'], getCommand("make"))
 	if returnCode != 0:
 		print("There was a problem calling make/msbuild clean; Return code = " + str(returnCode))		
 	print('Deleting generated files and directories')
