@@ -45,10 +45,10 @@ def printIfVerbose(msg):
 	if VERBOSE > 0:
 		print(msg)
 
-def checkExecutableExists(executableKeyName, doesNotExistErrorMessage):
+def checkExecutableExists(executableKeyName, doesNotExistErrorMessage, executableArgument='-h'):
 	errorMessage = "executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \n"+doesNotExistErrorMessage
 	try:
-		returnCode = subprocess.call([getCommand(executableKeyName), '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+		returnCode = subprocess.call([getCommand(executableKeyName), executableArgument], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
 		if returnCode == 0:
 			printIfVerbose("executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] exists")
 		else:
@@ -101,35 +101,14 @@ def checkCompiler():
 			raise Exception("msbuild cannot be properly executed after calling vcvarsall.bat . Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
 		
 	elif platform.system() == "Linux":
-		try:
-			returnCode = subprocess.call([getCommand('make'), '-h'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-			if returnCode == 0:
-				printIfVerbose("make does exist")
-			else:
-				raise Exception("make cannot be found. Maybe it is not installed, or maybe it is not set in the PATH.")
-		except:
-			raise Exception("make cannot be found. Maybe it is not installed, or maybe it is not set in the PATH.")
+		checkExecutableExists('make', 'Please, install gcc using the package manager of your distribution.')
 			
 def checkXMLLint():
-	try:
-		returnCode = subprocess.call([getCommand('xmllint'), '--version'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-		if returnCode == 0:
-			printIfVerbose("XML Lint does exist")
-		else:
-			raise Exception("XML Lint cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nXML Lint can be downloaded in http://xmlsoft.org/ ")
-	except:
-		raise Exception("XML Lint cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nXML Lint can be downloaded in http://xmlsoft.org/ ")
+	checkExecutableExists('xmllint', 'XML Lint can be downloaded in http://xmlsoft.org/', '--version')
 
 #Non compulsory dependancy (Needed for generating graphs, but QUASAR will perfectly work without GraphViz)
 def checkGraphViz():
-	try:
-		returnCode = subprocess.call([getCommand('graphviz'), '-V'], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-		if returnCode == 0:
-			printIfVerbose("GraphViz does exist")
-		else:
-			raise Exception("GraphViz cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nGraphViz can be downloaded in http://www.graphviz.org/ ")
-	except:
-		raise Exception("GraphViz cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nGraphViz can be downloaded in http://www.graphviz.org/ ")
+	checkExecutableExists('graphviz', 'GraphViz can be downloaded in http://www.graphviz.org/', '-V')
 
 #Non compulsory dependancy (Needed for generating documentation, but QUASAR will perfectly work without DoxyGen)
 def checkDoxyGen():
