@@ -112,18 +112,7 @@ def checkGraphViz():
 
 #Non compulsory dependancy (Needed for generating documentation, but QUASAR will perfectly work without DoxyGen)
 def checkDoxyGen():
-	try:
-		returnCode = -1
-		if platform.system() == "Windows":
-			returnCode = subprocess.call(['where', getCommand('doxygen')], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-		else:
-			returnCode = subprocess.call(['which', getCommand('doxygen')], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-		if returnCode == 0:
-			printIfVerbose("DoxyGen does exist")
-		else:
-			raise Exception("DoxyGen cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nDoxyGen can be downloaded in http://www.stack.nl/~dimitri/doxygen/ ")
-	except:
-		raise Exception("DoxyGen cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nDoxyGen can be downloaded in http://www.stack.nl/~dimitri/doxygen/ ")
+	checkExecutableExists('doxygen', 'DoxyGen can be downloaded in http://www.stack.nl/~dimitri/doxygen/', '--version')
 	
 def tryDependency(functionCheck, critical=True):
 	try:
