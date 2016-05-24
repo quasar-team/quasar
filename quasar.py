@@ -56,6 +56,7 @@ from designTools import upgradeDesign
 from designTools import createDiagram
 from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
+from externalToolCheck import checkExternalDependencies
 
 # format is: [command name], callable
 commands = [
@@ -83,6 +84,7 @@ commands = [
 	[['format_design'], formatDesign, True],
 	[['validate_design'], validateDesign, True],	
 	[['doxygen'], runDoxygen, True],	
+	[['dependency_check'], checkExternalDependencies, True],	
 	]
 
 

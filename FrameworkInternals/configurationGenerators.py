@@ -20,10 +20,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import subprocess
 import platform
+import subprocess
 import shutil
 from transformDesign import transformDesignVerbose
+from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
+from commandMap import getCommand
 
 configPath = "Configuration" + os.path.sep	
 def generateConfiguration():
@@ -31,7 +33,8 @@ def generateConfiguration():
 	output = "Configuration.xsd"
 	returnCode = transformDesignVerbose(configPath + "designToConfigurationXSD.xslt", configPath + output, 0, 0)
 	print("Calling xmllint to modify " + output)
-	returnCode = subprocess.call("xmllint --xinclude " + configPath + output + " > " + configPath + output + ".new", shell=True)
+	#this call is not using subprocess with improved errors because of the need of the piping.
+	returnCode = subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--xinclude", configPath + output], configPath + output + ".new", getCommand("xmllint"))
 	if returnCode != 0:
 		print("ERROR: There was an problem executing xmllint")
 		return returnCode

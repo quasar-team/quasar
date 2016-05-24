@@ -52,6 +52,7 @@ from designTools import upgradeDesign
 from designTools import createDiagram
 from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
+from externalToolCheck import checkExternalDependencies
 
 exitLoop = False
 myScreen = None
@@ -191,6 +192,7 @@ def createMenus():
 	additionalMenu = SubMenu("     Additional operations     ")
 	additionalMenu.addOption(Option("       Generate Diagram        ", inspect.getdoc(createDiagram), createDiagram, True, "                  Please specify detail level (0 by detault)                    "))
 	additionalMenu.addOption(Option("          Run Doxygen          ", "Runs doxygen in the documentation folder, making the tool generate documentation for the server automatically", runDoxygen, True))
+	additionalMenu.addOption(Option("       Dependency Check        ", inspect.getdoc(checkExternalDependencies), checkExternalDependencies, True))
 	additionalMenu.addOption(Option("            Return             ", "                             Return to the main menu                            ", backToMainMenu, False))
 	exitMenu = SubMenu("             Exit              ")
 	mainMenu.addSubmenu(buildMenu)
