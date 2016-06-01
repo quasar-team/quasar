@@ -45,28 +45,19 @@ def automatedBuild(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="FrameworkInternal
 		BUILD_TYPE = "Release"
 	if "quasarGUI.py" in __main__.__file__:
 		print("Calling: python quasar.py build " + BUILD_TYPE + " " + CMAKE_TOOLCHAIN_FILE)
-	returnCode = generateCmake(BUILD_TYPE, CMAKE_TOOLCHAIN_FILE)
-	if returnCode != 0:
-		print("There was a problem calling generateCmake; Return code = " + str(returnCode))		
-		return returnCode			
+	generateCmake(BUILD_TYPE, CMAKE_TOOLCHAIN_FILE)			
 			
 	print('Calling make/msbuild')
 	if platform.system() == "Windows":
 		print('Calling visual studio vcvarsall to set the environment')
 		print(getCommand("vcvarsall") + ' amd64')
-		returnCode = subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
-		if returnCode != 0:
-			print('ERROR: vcvarsall could not be executed, maybe the installation folder is different than the one expected? [' + getCommand("vcvarsall") + ']')			
-			return returnCode
+		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
 		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE)
-		returnCode = subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64 && msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE, "visual studio msbuild")
+		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE, "visual studio msbuild")
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
 		#we call process nproc and store its output
 		process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
 		out, err = process.communicate()
 		#this output is used for calling make
-		returnCode = subprocessWithImprovedErrors([getCommand("make"), "-j" + str(int(out))], getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
-	if returnCode != 0:
-		print("Error returned from calling make/msbuild; Return code = " + str(returnCode))
-	return returnCode
+		subprocessWithImprovedErrors([getCommand("make"), "-j" + str(int(out))], getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer

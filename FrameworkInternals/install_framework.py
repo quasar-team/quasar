@@ -36,12 +36,9 @@ def upgradeProject(destination):
 		destination = os.path.abspath(destination)
 		print( "Selected installation folder: " + destination)
 	else:
-		print("Invalid path!")
-		return -1		
+		raise Exception("There was a problem when trying to ugrade a project, invalid path.")
 	
 	installFramework(destination)
-	
-	return 0
 	
 def createProject(destination):
 	"""Installs the framework in a given directory. If the directory doesn't exist, it gets created
@@ -59,8 +56,6 @@ def createProject(destination):
 		os.makedirs(destination)
 		print( "Created installation folder: " + destination)	
 	installFramework(destination)
-	
-	return 0
 
 def installFramework(destination):
 	"""Installs or upgrades the framework in a given directory
@@ -72,9 +67,4 @@ def installFramework(destination):
 	baseDirectory = os.getcwd()
 	
 	print("Calling mfInstall")
-	returnCode = mfInstall(baseDirectory, destination)
-	if returnCode != 0:
-		print("There was a problem calling manage_files.py; Return code = " + str(returnCode))
-		os.chdir(baseDirectory)
-		return -1
-	return 0
+	mfInstall(baseDirectory, destination)

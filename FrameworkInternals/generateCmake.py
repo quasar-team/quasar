@@ -32,16 +32,12 @@ def generateCmake(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="default_configurat
 	Keyword arguments:
 	BUILD_TYPE -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""	
-	returnCode = transformDesignVerbose("AddressSpace" + os.path.sep + "designToGeneratedCmakeAddressSpace.xslt", "AddressSpace" + os.path.sep + "cmake_generated.cmake", 0, 0)
-	returnCode = transformDesignVerbose("Device" + os.path.sep + "designToGeneratedCmakeDevice.xslt", "Device" + os.path.sep + "generated" + os.path.sep + "cmake_header.cmake", 0, 0)
+	transformDesignVerbose("AddressSpace" + os.path.sep + "designToGeneratedCmakeAddressSpace.xslt", "AddressSpace" + os.path.sep + "cmake_generated.cmake", 0, 0)
+	transformDesignVerbose("Device" + os.path.sep + "designToGeneratedCmakeDevice.xslt", "Device" + os.path.sep + "generated" + os.path.sep + "cmake_header.cmake", 0, 0)
 	print("Build type ["+BUILD_TYPE+"], Toolchain file [" + CMAKE_TOOLCHAIN_FILE + "]")
 
 	print("Calling CMake")
 	if platform.system() == "Windows":
-		returnCode = subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + BUILD_TYPE, "-DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE,"-G", "Visual Studio 12 2013 Win64", "."], getCommand("cmake"))
+		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + BUILD_TYPE, "-DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE,"-G", "Visual Studio 12 2013 Win64", "."], getCommand("cmake"))		
 	elif platform.system() == "Linux":
-		returnCode = subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + BUILD_TYPE, "-DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE,"."], getCommand("cmake"))
-	if returnCode != 0:
-		print("There was a problem calling cmake; Return code = " + str(returnCode))
-		return returnCode
-	return 0#return code 0 if everything went well.
+		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + BUILD_TYPE, "-DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE,"."], getCommand("cmake"))

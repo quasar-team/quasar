@@ -127,38 +127,40 @@ def checkExternalDependencies():
 	tryDependency(checkGraphViz, False)
 	tryDependency(checkDoxyGen, False)
 		
-def subprocessWithImprovedErrors(subprocessCommand, dependencyName):
+def subprocessWithImprovedErrors(subprocessCommand, dependencyName, validReturnCodes=[0]):
 	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions catched.
 	
 	Keyword arguments:
 	subprocessCommand -- String or list of strings that will be given to subprocess
 	dependencyName -- parameterless name of the command, just for error loging purposes
+	validReturnCodes -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
 	"""	
 	try:
-		return subprocess.call(subprocessCommand)
+		returnCode = subprocess.call(subprocessCommand)
 	except OSError as e:		
-		#print("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
 		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
 	except Exception, e:
-		#print("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "].")
 		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
+	if(returnCode not in validReturnCodes):
+		raise Exception("Application returned bad return code when trying to execute the program [" + dependencyName + "]. Return code: [" + str(returnCode) + "]")
 
-def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, dependencyName):
+def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, dependencyName, validReturnCodes=[0]):
 	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions catched, and then pipes the output of the process to the given file
 	
 	Keyword arguments:
 	subprocessCommand -- String or list of strings that will be given to subprocess
 	dependencyName -- parameterless name of the command, just for error loging purposes
 	outputFile -- file where the std out of the process will be written into
+	validReturnCodes -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
 	"""	
 	try:
 		with open(outputFile,"wb") as out:
 			process = subprocess.Popen(subprocessCommand, stdout=out)
 			streamdata = process.communicate()
-			return process.returncode
+			returnCode = process.returncode
 	except OSError as e:		
-		#print("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
 		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
 	except Exception, e:
-		#print("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "].")
 		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
+	if(returnCode not in validReturnCodes):
+		raise Exception("Application returned bad return code when trying to execute the program [" + dependencyName + "]. Return code: [" + str(returnCode) + "]")

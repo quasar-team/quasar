@@ -67,17 +67,13 @@ def distClean(param=None):
 	if platform.system() == "Windows":
 		print('Calling visual studio vcvarsall to set the environment')
 		print(getCommand("vcvarsall") + ' amd64')
-		returnCode = subprocessWithImprovedErrors("\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
-		if returnCode != 0:
-			print('ERROR: vcvarsall could not be executed, maybe the installation folder is different than the one expected? [' + getCommand("vcvarsall") + ']')			
-			return returnCode
+		subprocessWithImprovedErrors("\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
+
 		print('Calling msbuild clean')
 		print('msbuild ALL_BUILD.vcxproj /t:Clean')
-		returnCode = subprocessWithImprovedErrors("\"" + getCommand("vcvarsall") + '\" amd64 && msbuild ALL_BUILD.vcxproj /t:Clean', "visual studio msbuild")
+		subprocessWithImprovedErrors("\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /t:Clean', "visual studio msbuild", [0, 1])
 	elif platform.system() == "Linux":
-		returnCode = subprocessWithImprovedErrors([getCommand('make'), 'clean'], getCommand("make"))
-	if returnCode != 0:
-		print("There was a problem calling make/msbuild clean; Return code = " + str(returnCode))		
+		subprocessWithImprovedErrors([getCommand('make'), 'clean'], getCommand("make"))	
 	print('Deleting generated files and directories')
 	deleteFolderRecursively('.', 'CMakeFiles')
 	deleteFolderRecursively('.', 'Win32')
@@ -100,4 +96,3 @@ def distClean(param=None):
 	if param == '--orig':
 		print('Removing .orig files')
 		deleteExtensionRecursively('.', 'orig')
-	return returnCode;

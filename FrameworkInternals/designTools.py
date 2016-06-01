@@ -40,16 +40,14 @@ def validateDesign():
 	# This allows some basic checks
 	print("1st line of check -- XSD conformance")
 	print("Validating the file " + designXML + " with the schema " + designXSD)
-	returnCode = subprocessWithImprovedErrors([getCommand("xmllint"), "--noout", "--schema", designPath + designXSD, designPath + designXML], getCommand("xmllint"))
-	if returnCode != 0:
-		print("There was a problem validating the file" + designXML + " with the schema " + designXSD + "; Return code = " + str(returnCode))
-		return returnCode
-
-	# 2nd line of validation -- including XSLT
-	print("2nd line of check -- more advanced checks using XSLT processor")
-	output = "validationOutput.removeme"
-	returnCode = transformDesignVerbose(designPath + "designValidation.xslt", designPath + output, 0, 0)
-	return 0
+	try:
+		subprocessWithImprovedErrors([getCommand("xmllint"), "--noout", "--schema", designPath + designXSD, designPath + designXML], getCommand("xmllint"))
+		# 2nd line of validation -- including XSLT
+		print("2nd line of check -- more advanced checks using XSLT processor")
+		output = "validationOutput.removeme"
+		transformDesignVerbose(designPath + "designValidation.xslt", designPath + output, 0, 0)
+	except Exception, e:
+		raise Exception ("There was a problem validating the file [" + designXML + "]; Exception: [" + str(e) + "]")
 
 def formatDesign():
 	"""Formats design.xml. This is done to have always the same indentation format. The formatting is done in a separate file, in case something goes wrong, and then copied over."""
@@ -62,47 +60,36 @@ def formatDesign():
 	shutil.copyfile(designPath + designXML, designPath + backupName)
 
 	print("Formatting the file " + designXML + "using the tool XMLlint. The result will be saved in " + tempName)
-	if platform.system() == "Windows":
-		returnCode = subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), designPath + designXML], designPath + tempName, getCommand("xmllint"))
-	elif platform.system() == "Linux":
-		returnCode = subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", designPath + designXML], designPath + tempName, getCommand("xmllint"))
-	if returnCode != 0:
-		print("There was a problem Formatting the file " + designXML + "; Return code = " + str(returnCode))
-		return returnCode
+	try:
+		if platform.system() == "Windows":
+			subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), designPath + designXML], designPath + tempName, getCommand("xmllint"))
+		elif platform.system() == "Linux":
+			subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", designPath + designXML], designPath + tempName, getCommand("xmllint"))
+	except Exception, e:
+		raise Exception ("There was a problem formatting the file [" + designXML + "]; Exception: [" + str(e) + "]")
 		
 	print("Coping the formated file  " + tempName + " into the name of " + designXML)
 	shutil.copyfile(designPath + tempName, designPath + designXML)
-	return 0
 	
 def upgradeDesign(additionalParam):
 	"""Method for adjusting Design.xml for a new Design.xsd when updating to a new version of the Framework"""
 	if "quasarGUI.py" in __main__.__file__:
 		print("Calling: python quasar.py upgrade_design")
 	print("Formatting your design file ...")
-	returnCode = formatDesign()
-	if returnCode != 0:
-		print("There was a problem generating " + output + "; Return code = " + str(returnCode))
-		return returnCode
+	formatDesign()
 	
 	output = "Design.xml.upgraded"
-	returnCode = transformDesignVerbose(designPath + "designToUpgradedDesign.xslt", designPath + output, 0, 0, additionalParam)
+	transformDesignVerbose(designPath + "designToUpgradedDesign.xslt", designPath + output, 0, 0, additionalParam)
 	
 	print("Formatting the upgraded file ")
 	formatedOutput = output + ".formatted"
 	if platform.system() == "Windows":
-		returnCode = subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), designPath + output], designPath + formatedOutput, getCommand("xmllint"))
+		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), designPath + output], designPath + formatedOutput, getCommand("xmllint"))
 	elif platform.system() == "Linux":
-		returnCode = subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", designPath + output], designPath + formatedOutput, getCommand("xmllint"))
-	if returnCode != 0:
-		print("There was a problem formatting the upgraded file; Return code = " + str(returnCode))
-		return returnCode
+		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", designPath + output], designPath + formatedOutput, getCommand("xmllint"))
 		
 	print("Now running merge-tool. Please merge the upgraded changed")
-	returnCode = subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, designPath + formatedOutput], getCommand("diff"))
-	if returnCode != 0:
-		print("There was a problem with kdiff3; Return code = " + str(returnCode))
-		return returnCode
-	return 0
+	subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, designPath + formatedOutput], getCommand("diff"))
 	
 def createDiagram(detailLevel=0):
 	"""Creates an UML diagram based on the classes of the server.
@@ -115,11 +102,7 @@ def createDiagram(detailLevel=0):
 	if detailLevel == "":
 		detailLevel = 0
 	output = "Design.dot"
-	returnCode = transformDesignVerbose(designPath + "designToDot.xslt", designPath + output, 0, 1, "detailLevel=" + str(detailLevel))
+	transformDesignVerbose(designPath + "designToDot.xslt", designPath + output, 0, 1, "detailLevel=" + str(detailLevel))
 	print("Generating pdf diagram with dot.")
-	returnCode = subprocessWithImprovedErrors([getCommand("graphviz"), "-Tpdf", "-o", designPath + "diagram.pdf", designPath + "Design.dot"], "GraphViz (dot)")
-	if returnCode != 0:
-		print("There was a problem generating pdf diagram with dot; Return code = " + str(returnCode))
-		return returnCode
-	return 0
+	subprocessWithImprovedErrors([getCommand("graphviz"), "-Tpdf", "-o", designPath + "diagram.pdf", designPath + "Design.dot"], "GraphViz (dot)")
 			

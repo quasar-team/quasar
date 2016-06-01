@@ -31,29 +31,19 @@ configPath = "Configuration" + os.path.sep
 def generateConfiguration():
 	"""Generates the file Configuration.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
 	output = "Configuration.xsd"
-	returnCode = transformDesignVerbose(configPath + "designToConfigurationXSD.xslt", configPath + output, 0, 0)
+	transformDesignVerbose(configPath + "designToConfigurationXSD.xslt", configPath + output, 0, 0)
 	print("Calling xmllint to modify " + output)
 	#this call is not using subprocess with improved errors because of the need of the piping.
-	returnCode = subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--xinclude", configPath + output], configPath + output + ".new", getCommand("xmllint"))
-	if returnCode != 0:
-		print("ERROR: There was an problem executing xmllint")
-		return returnCode
-	else:
-		print("Coping the modified file  " + output + ".new into the name of " + output)
-		shutil.copyfile(configPath + output + ".new", configPath + output)
-		return 0
-	print("ERROR: Unknown platform")
-	return -1
+	subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--xinclude", configPath + output], configPath + output + ".new", getCommand("xmllint"))
+	print("Coping the modified file  " + output + ".new into the name of " + output)
+	shutil.copyfile(configPath + output + ".new", configPath + output)
 
 def generateConfigurator():
 	"""Generates the file Configurator.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
 	output = "Configurator.cpp"
-	returnCode = transformDesignVerbose(configPath + "designToConfigurator.xslt", configPath + output, 0, 1)
-	return 0
+	transformDesignVerbose(configPath + "designToConfigurator.xslt", configPath + output, 0, 1)
 	
 def generateConfigValidator():
 	"""Generates the file ConfigValidator.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
 	output = "ConfigValidator.cpp"
-	returnCode = transformDesignVerbose(configPath + "designToConfigValidator.xslt", configPath + output, 0, 1)
-	return 0
-			
+	transformDesignVerbose(configPath + "designToConfigValidator.xslt", configPath + output, 0, 1)			

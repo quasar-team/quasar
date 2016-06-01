@@ -514,15 +514,14 @@ def mfCheckConsistency(param=None):
 		print "I've found this consistency problems (#problems="+str(len(problems))+")"
 		for p in problems:
 			print p 
-		return 1
 	else:
 		print "No problems found."
-	return 0
+		
 def mfCreateRelease():
 	"""Upgrades files.txt with the contents of original_files.txt. Expert command, only to be used by developers of the framework when creating a new release"""
 	directories = load_file('FrameworkInternals' + os.path.sep + 'original_files.txt', os.getcwd())
 	create_release(directories)
-	return 0
+
 def mfInstall(sourceDirectory, targetDirectory):
 	"""Installs or upgrades the framework in a given directory
 	
@@ -532,20 +531,19 @@ def mfInstall(sourceDirectory, targetDirectory):
 	"""
 	directories = load_file('FrameworkInternals' + os.path.sep + 'files.txt', os.getcwd())
 	perform_installation(directories, sourceDirectory, targetDirectory)
-	return 0
+
 def mfSetupSvnIgnore():
 	"""Setups the .svnignore hidden file, so the generated files will be ignored in your svn repository."""
 	if "quasarGUI.py" in __main__.__file__:
 		print("Calling: python quasar.py setup_svn_ignore")
 	project_setup_svn_ignore(os.getcwd())
-	return 0
+
 def mfCheckSvnIgnore():
 	"""Checks that the .svnignore hidden file is properly set up to ignore the generated files in your repository."""
 	check_svn_ignore_project(os.getcwd())
-	return 0
+
 def mfDesignVsDevice():
 	"""Checks if the device files are outdated (By comparing with design), and hence if they should be regenerated."""
 	if "quasarGUI.py" in __main__.__file__:
 		print("Calling: python quasar.py design_vs_device")
 	design_vs_device(os.getcwd())
-	return 0
