@@ -57,7 +57,6 @@ class VersionControlInterface:
     def is_versioned(self,file_path):
         if self.vcs_type is 'git':
             file_path = file_path.replace(os.getcwd()+os.path.sep,'')
-            print 'checking versioned for path: '+file_path
             index = self.repo.index
             index.read()
             try:
