@@ -86,7 +86,7 @@ class VersionControlInterface:
             self.repo.index.add(file_path)
             self.repo.index.write()
         elif self.vcs_type is 'svn':
-            self.svnClient.add(self.path())
+            self.svnClient.add(file_path)
         else:
             raise Exception('Internal quasar error')
                
@@ -98,6 +98,6 @@ class VersionControlInterface:
             self.repo.index.remove(file_path)
             self.repo.index.write()
         elif self.vcs_type is 'svn':
-            self.svnClient.remove(self.path())
+            self.svnClient.remove(file_path)
         else:
             raise Exception('Internal quasar error')         
