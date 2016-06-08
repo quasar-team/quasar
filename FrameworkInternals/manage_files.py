@@ -406,7 +406,7 @@ def perform_installation(directories, source_directory, target_directory):
 	
 def project_setup_svn_ignore(project_directory):
 	
-	cmd="svn propset svn:ignore -F .svnignore -R "+project_directory
+	cmd="svn propset svn:ignore -F .gitignore -R "+project_directory
 	print 'Will call: '+cmd
 	os.system(cmd)
 	
