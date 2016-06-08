@@ -59,12 +59,12 @@ File generateConfigValidator.sh             deprecated,install=dont_touch
 Directory Design install=create
 File CommonFunctions.xslt                   must_exist,must_be_versioned,md5=check,install=overwrite
 File createDiagram.sh                       deprecated,install=dont_touch
-File designToDot.xslt                       must_exist,md5=check,install=overwrite
+File designToDot.xslt                       must_exist,must_be_versioned,md5=check,install=overwrite
 File Design.xml                             must_exist,must_be_versioned,install=copy_if_not_existing 
 File Design.xsd                             must_exist,must_be_versioned,md5=check,install=overwrite
 File functions.sh                           deprecated,install=dont_touch
 File genericFrameworkVersion.txt            must_exist,must_be_versioned,md5=check,install=overwrite
-File saxon9he.jar                           must_exist,md5=check,install=overwrite
+File saxon9he.jar                           must_exist,must_be_versioned,md5=check,install=overwrite
 File schema-for-xslt20.xsd                  must_exist,must_be_versioned,md5=check,install=overwrite
 File validateDesign.sh                      deprecated,install=dont_touch
 File genericFrameworkVersion.txt			must_exist,must_be_versioned,md5=check
@@ -111,8 +111,8 @@ File transformations.pdf                    must_exist,must_be_versioned,md5=che
 File runDoxygen.sh                          deprecated,install=dont_touch
 File Doxyfile                               must_exist,must_be_versioned,md5=check,install=ask_to_merge
 File DesignManual.html                      must_exist,must_be_versioned,md5=check,install=overwrite
-File UserDefinedRuntimeConfigurationModification.html  must_exist,install=overwrite
-File UserDefinedCommandLineParameters.html             must_exist,install=overwrite
+File UserDefinedRuntimeConfigurationModification.html  must_exist,must_be_versioned,install=overwrite
+File UserDefinedCommandLineParameters.html             must_exist,must_be_versioned,install=overwrite
 
 
 
