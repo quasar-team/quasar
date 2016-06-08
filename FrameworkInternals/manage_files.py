@@ -31,27 +31,20 @@ try:
 	from optparse import OptionParser
 	import hashlib
 	import __main__
+	import version_control_interface
 
 	# lxml for getting a list of defined classes in Design file
 	from lxml import etree  
 	
 	import shutil  # for copying files, etc
 
-	# pysvn for checking whether files are into version control
-	import pysvn
-	#if platform.system() == "Windows":
-	from pysvn import ClientError
-	#elif platform.system() == "Linux":
-	#	from pysvn._pysvn import ClientError
+
 except Exception as e:
 	print "Apparently you dont have all required python modules to run this program."
 	print "For SLC6 system, please execute:"
 	print "	  sudo yum install pysvn python-lxml "
 	print "For another operating system, contact piotr@nikiel.info for assistance in setting up this project"
 	raise e
-
-
-global svnClient
 
 
 verbose=False
@@ -63,17 +56,7 @@ def yes_or_no(question):
 		if yn in ['y','n']:
 			return yn
 
-def svn_is_versioned(f):
-	try:
-		statuses = svnClient.status(f)
-	except Exception as e:
-		return False
-	if len(statuses)==0:
-		return False
-	elif len(statuses)!=1:
-		raise Exception ("bizaarre: len(statuses)="+str(len(statuses)))
-	status = statuses[0]
-	return status['is_versioned']==1
+
 
 def get_list_classes(design_file_name):
 	output=[]
@@ -157,7 +140,7 @@ class File(UserDict):
 				return []
 	
 	
-	def check_consistency(self):
+	def check_consistency(self, vci):
 		if verbose: print "--> check_consistency called on File "+self.path()
 		problems=[]
 		if self.must_exist():
@@ -168,12 +151,12 @@ class File(UserDict):
 			# this applies only if file exists
 			if os.path.isfile(self.path()):
 				if verbose: print "----> checking if versioned: "+self.path()
-				if not svn_is_versioned(self.path()):
+				if not vci.is_versioned(self.path()):
 					if ask:
 						print "File is not versioned: "+self.path()						
 						yn = yes_or_no("Do you want to fix that now?")
 						if yn is 'y':
-							svnClient.add(self.path())
+							vci.add_to_vc(self.path())
 						else:
 							problems.append('File not versioned: '+self.path())
 					else:
@@ -187,9 +170,9 @@ class File(UserDict):
 					print "File is deprecated: "+self.path()
 					yn = yes_or_no("Do you want to fix that now?")
 					if yn is 'y':
-						if svn_is_versioned(self.path()):
-							print 'Attempting SVN delete - you will have to commit the changes'
-							svnClient.remove(self.path())
+						if vci.is_versioned(self.path()):
+							print 'Attempting delete with your version control system: you will have to commit afterwards!'
+							vci.remove_from_vc(self.path())
 						else:
 							print 'Deleting deprecated file: '+self.path()
 							os.remove(self.path())
@@ -233,13 +216,13 @@ class Directory(UserDict):
 		for f in self['files']:
 			s=s+f.make_text_line()+"\n"
 		return s
-	def check_consistency(self):
+	def check_consistency(self, vci):
 		problems=[]
 		for f in self['files']:
-			problems.extend(f.check_consistency())
+			problems.extend(f.check_consistency(vci))
 		return problems
 	
-def check_consistency(directories, project_directory):
+def check_consistency(directories, project_directory, vci):
 	# to the files loaded from files.txt we have to add files that would be generated for defined classes
 	classes = get_list_classes(project_directory+os.path.sep+"Design"+os.path.sep+"Design.xml")
 	
@@ -270,7 +253,7 @@ def check_consistency(directories, project_directory):
 	
 	
 	for d in directories:
-		problems.extend(d.check_consistency())
+		problems.extend(d.check_consistency(vci))
 	return problems
 
 
@@ -282,7 +265,7 @@ def scan_dir(dir):
 		if os.path.isfile(full_path):
 			files.append(full_path)
 		elif os.path.isdir(full_path):
-			if c!=".svn":
+			if c!=".svn" and c!=".git":
 				files.extend (scan_dir(full_path))
 		else:
 			print 'skipped: '+full_path+' which is neither file nor directory'
@@ -420,39 +403,9 @@ def perform_installation(directories, source_directory, target_directory):
 			
 	return True
 
-
-def check_svn_ignore(path):
-	print 'This should be ignored: '+path
-	client = pysvn.Client()
-	try:
-		props = client.propget('svn:ignore',path)
-	except ClientError:
-		# most likely not within working copy
-		return 
-	if len(props)<1:
-		print "IGNORED should be set, but it is not."
-		yn=yes_or_no("Do you want to set ignore on this file??")
-		if yn=='y':
-			print "SETTING IGNORE"
-			# TODO
-	else:
-		pass
-		#print "IGNORED is set"
-	pass
-	
-
-def check_svn_ignore_project(root_proj):
-	# every CMakeFiles should have ignore enabled
-	root_contents = os.walk(root_proj)
-	for root, dirs, files in root_contents:
-		for d in dirs:
-			if d=='CMakeFiles':
-				check_svn_ignore(root+os.path.sep+d)
-		for f in files:
-			if f in ['cmake_install.cmake']:
-				check_svn_ignore(root+os.path.sep+f)
 	
 def project_setup_svn_ignore(project_directory):
+	
 	cmd="svn propset svn:ignore -F .svnignore -R "+project_directory
 	print 'Will call: '+cmd
 	os.system(cmd)
@@ -502,13 +455,14 @@ def mfCheckConsistency(param=None):
 	"""Checks the consistency of the project, checking that all the files that must exist do exist, everything is in svn and the md5 keys are correct."""
 	if "quasarGUI.py" in __main__.__file__:
 		print("Calling: python quasar.py check_consistency")
+	vci = version_control_interface.VersionControlInterface('')
 	global svnClient
-	svnClient=pysvn.Client()
+
 	global ask
 	if param == "--ask":
 		ask = True
 	directories = load_file('FrameworkInternals' + os.path.sep + 'files.txt', os.getcwd())
-	problems=check_consistency(directories, os.getcwd())
+	problems=check_consistency(directories, os.getcwd(), vci)
 	check_uncovered(directories,os.getcwd())
 	if len(problems)>0:
 		print "I've found this consistency problems (#problems="+str(len(problems))+")"
