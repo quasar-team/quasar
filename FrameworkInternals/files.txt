@@ -98,7 +98,7 @@ File designToHonkyTonk.xslt must_exist,must_be_versioned,md5=04b3d4257a715fc12b1
 File generateHonkyTonk.sh install=dont_touch,deprecated,
 Directory FrameworkInternals install=create,
 File files.txt must_exist,must_be_versioned,install=overwrite,
-File manage_files.py must_exist,must_be_versioned,md5=227c41e9904d15c3e659a8983db36071,install=overwrite,
+File manage_files.py must_exist,must_be_versioned,md5=43ef5f23353ea99d6e326f699054388e,install=overwrite,
 File default_configuration.cmake must_exist,must_be_versioned,md5=75300a2c7566c717d0383cf5340ee9cd,install=overwrite,
 File addressSpaceGenerators.py must_exist,must_be_versioned,md5=ed5e797d0980ada1ee771ae07cfcb970,install=overwrite,
 File automated_build.py must_exist,must_be_versioned,md5=d7140581e06cee3af028e31c465e9e5e,install=overwrite,
