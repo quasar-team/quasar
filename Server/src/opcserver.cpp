@@ -309,6 +309,11 @@ int OpcServer::start()
     // Check trace settings
     if ( d->m_pServerConfig->loadConfiguration().isGood() )
     {
+		if(VersionInfoCoreModule::getCoreModuleVersion() == UaString("1.5.1.326 / b2dd5e7d778ea11e091aeac8c1c839f5e6b3920d"))
+        {//If the version is 1.5.1.326 we define the macro UATOOLKIT_1_5_1_326, to do a ifdef switch later, because of a small change in the API
+			#define UATOOLKIT_1_5_1_326 1			
+        }
+
         OpcUa_Boolean bTraceEnabled    = OpcUa_False;
         OpcUa_UInt32  uTraceLevel      = 0;
         OpcUa_Boolean bSdkTraceEnabled = OpcUa_False;
@@ -316,6 +321,7 @@ int OpcServer::start()
         OpcUa_UInt32  uMaxTraceEntries = 0;
         OpcUa_UInt32  uMaxBackupFiles  = 0;
         UaString      sTraceFile;
+		OpcUa_Boolean bDisableFlush    = OpcUa_False;
 
         d->m_pServerConfig->getStackTraceSettings( bTraceEnabled, uTraceLevel);
 
@@ -327,8 +333,12 @@ int OpcServer::start()
             uSdkTraceLevel,
             uMaxTraceEntries,
             uMaxBackupFiles,
+#ifdef UATOOLKIT_1_5_1_326
             sTraceFile,
-            something);
+			bDisableFlush);
+#else
+			sTraceFile);
+#endif
 
         if ( bSdkTraceEnabled != OpcUa_False)
         {
