@@ -93,7 +93,7 @@
   </ThreadPoolSettings>
 
   <!--Build information for the server application software-->
-  <ApplicationUri>urn:AtlasDcs:OpcUaCanOpenServer</ApplicationUri>
+  <ApplicationUri>urn:CERN:QuasarOpcUaServer</ApplicationUri>
   <ManufacturerName>CERN</ManufacturerName>
   <ApplicationName>OPC UA SERVER</ApplicationName>
   <SoftwareVersion>1.0.0</SoftwareVersion>
@@ -102,7 +102,7 @@
 
   <!--Server instance information defined for the server installation.
       [NodeName} can be used as placeholder for the computer name. -->
-  <ServerUri>urn:[NodeName]:AtlasDcs:OpcUaServer</ServerUri>
+  <ServerUri>urn:[NodeName]:CERN:QuasarOpcUaServer</ServerUri>
   <ServerName>OpcUaServer@[NodeName]</ServerName>
   <!--Server instance information end-->
 
@@ -152,9 +152,9 @@
         <!--Name of the application - [ServerName] is the default value to use the configured server name-->
         <CommonName>[ServerName]</CommonName>
         <!--Name of the organization using the OPC UA server-->
-        <Organization>Cern</Organization>
+        <Organization>CERN</Organization>
         <!--Name of the organization unit using the OPC UA server-->
-        <OrganizationUnit>Atlas DCS</OrganizationUnit>
+        <OrganizationUnit>Quasar Team</OrganizationUnit>
         <!--Name of the location where the OPC UA server is running -->
         <Locality>LocationName</Locality>
         <!--State where the OPC UA server is running -->

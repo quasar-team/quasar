@@ -52,6 +52,12 @@ foreach(module ${SERVER_MODULES})
 	message("Adding headers for module: ${module}")
 	include_directories(${PROJECT_SOURCE_DIR}/${module}/include ) 
 endforeach(module)
+
+if(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG} )
+else(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
+endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 	
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
@@ -84,17 +90,9 @@ add_executable ( ${EXECUTABLE}
 	)
 set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
 
-if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    target_link_libraries ( ${EXECUTABLE} ${OPCUA_TOOLKIT_LIBS_DEBUG} )
-else(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    target_link_libraries ( ${EXECUTABLE} ${OPCUA_TOOLKIT_LIBS_RELEASE} )
-endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
-
 target_link_libraries ( ${EXECUTABLE} 
 	${BOOST_LIBS}
 	${XML_LIBS}
-
+	${OPCUA_TOOLKIT_LIBS}        
 	# Add your custom libraries here
 )
-
-

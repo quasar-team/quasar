@@ -110,6 +110,8 @@ File transformations.pdf                    must_exist,must_be_versioned,md5=che
 File runDoxygen.sh                          deprecated,install=dont_touch
 File Doxyfile                               must_exist,must_be_versioned,md5=check,install=ask_to_merge
 File DesignManual.html                      must_exist,must_be_versioned,md5=check,install=overwrite
+File UserDefinedRuntimeConfigurationModification.html  must_exist,install=overwrite
+File UserDefinedCommandLineParameters.html             must_exist,install=overwrite
 
 
 
@@ -147,6 +149,11 @@ Directory RPM/build_from_svn/rpmbuild/BUILDROOT install=create
 Directory RPM/build_from_svn/rpmbuild/RPMS install=create
 Directory RPM/build_from_svn/rpmbuild/SOURCES install=create
 Directory RPM/build_from_svn/rpmbuild/SPECS install=create
+
+Directory RPM/build_from_git install=create
+File buildRpm.sh                            must_exist,must_be_versioned,install=ask_to_merge
+File template.spec                          must_exist,must_be_versioned,install=ask_to_merge
+
 
 Directory Server install=create
 File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge
@@ -259,6 +266,7 @@ File LogSinkInterface.h  must_exist,must_be_versioned,install=overwrite,md5=chec
 File LogSinks.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File StdOutLog.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File UaTraceSink.h  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItInstance.h  must_exist,must_be_versioned,install=overwrite,md5=check
 
 Directory LogIt/src install=create,
 File BoostRotatingFileLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
@@ -269,4 +277,6 @@ File LogRecord.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogSinks.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File StdOutLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File UaTraceSink.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItInstance.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
+
 

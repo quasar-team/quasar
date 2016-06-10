@@ -22,8 +22,23 @@
 
 using std::vector;
 
-LogSinks* LogSinks::g_sLogSinksInstance;
+LogSinks::LogSinks()
+{}
 
+/**
+ * Clean up sink memory.
+ */
+LogSinks::~LogSinks()
+{
+    for(vector<LogSinkInterface*>::iterator it = m_sinks.begin(); it!= m_sinks.end(); ++it)
+    {
+        delete *it;
+    }
+}
+
+/**
+ * Ownership of the sink is transferred to this object (deleted in the ~dtor)
+ */
 void LogSinks::addSink(LogSinkInterface* sink)
 {
     m_sinks.push_back(sink);

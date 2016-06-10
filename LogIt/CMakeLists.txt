@@ -35,6 +35,7 @@ set(LOGIT_SOURCES
     src/LogRecord.cpp
     src/LogSinks.cpp
     src/ComponentAttributes.cpp
+    src/LogItInstance.cpp
 )    
 
 if(${LOGIT_HAS_BOOSTLOG})
@@ -51,6 +52,8 @@ if(${LOGIT_HAS_UATRACE})
     add_definitions(-DLOGIT_HAS_UATRACE)
     set(LOGIT_SOURCES ${LOGIT_SOURCES} src/UaTraceSink.cpp)
 endif(${LOGIT_HAS_UATRACE})
+
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
 MESSAGE( STATUS "building LogIt from source files [${LOGIT_SOURCES}]" )
 add_library (LogIt OBJECT ${LOGIT_SOURCES})

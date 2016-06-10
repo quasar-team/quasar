@@ -12,7 +12,19 @@
 **
 ******************************************************************************/
 
-#include "serverconfigxml.h"
+/* Support for UA Toolkit API 1.3, 1.4 and 1.5 by pnikiel and damiron */
+/* Note the API is different in these versions wrt to server configuration*/
+#define UA_API_VERSION (CPP_SDK_MAJOR * 100 \
+                               + CPP_SDK_MINOR * 10 \
+                               + CPP_SDK_MINOR2 )
+
+#if UA_API_VERSION < 140       // serverconfig comes from quasar
+#include <serverconfigxml_quasar.h>
+#else
+#include "serverconfigxml.h"   // serverconfig comes from UA API
+#endif
+
+
 #ifdef _WIN32
 	# include <winsock2.h>	 
 #endif
