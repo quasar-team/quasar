@@ -324,19 +324,17 @@ int OpcServer::start()
 
         d->m_pServerConfig->getStackTraceSettings( bTraceEnabled, uTraceLevel);
 
-        OpcUa_Boolean something;
+
         
         
         d->m_pServerConfig->getServerTraceSettings(
             bSdkTraceEnabled,
             uSdkTraceLevel,
             uMaxTraceEntries,
-            uMaxBackupFiles
-#if UA_API_VERSION >= 140
-            ,sTraceFile
+            uMaxBackupFiles,
+            sTraceFile
 #if UA_API_VERSION >= 150
 			,bDisableFlush
-#endif
 #endif
 			);
 
@@ -445,7 +443,9 @@ int OpcServer::start()
     UaEndpointArray uaEndpointArray;
     d->m_pServerConfig->getEndpointConfiguration(
         sRejectedCertificateDirectory,
-		rejectedCertificateCount,
+	#if UA_API_VERSION >= 140
+        rejectedCertificateCount,
+        #endif
         uaEndpointArray);
     if ( uaEndpointArray.length() > 0 )
     {
@@ -558,7 +558,12 @@ NodeManagerConfig* OpcServer::getDefaultNodeManager()
  @param pOpcServerCallback Interface pointer of the callback interface.
  */
 ServerConfigBasicXml::ServerConfigBasicXml(const UaString& sXmlFileName, const UaString& sApplicationPath, OpcServerCallback* pOpcServerCallback)
-: ServerConfigXml(sXmlFileName, sApplicationPath, /*TODO: config path*/ "/tmp", /* TODO: trace path*/ "/tmp"),
+: ServerConfigXml(sXmlFileName, sApplicationPath
+                  #if UA_API_VERSION >= 140
+                  , /*config path*/ "",
+                  /* trace path*/ "/tmp"
+                  #endif
+    ),
   m_pOpcServerCallback(pOpcServerCallback)
 {}
 
@@ -594,7 +599,11 @@ UaStatus ServerConfigBasicXml::logonSessionUser(
     OpcUa_Boolean  bEnableKerberosTicket;
 
     // Get the settings for user identity tokens to support
-    getUserIdentityTokenConfig(bEnableAnonymous, bEnableUserPw, bEnableCertificate, bEnableKerberosTicket);
+    getUserIdentityTokenConfig(bEnableAnonymous, bEnableUserPw
+#if UA_API_VERSION >= 140
+                               , bEnableCertificate, bEnableKerberosTicket
+#endif
+        );
 
     if ( pUserIdentityToken->getTokenType() == OpcUa_UserTokenType_Anonymous )
     {

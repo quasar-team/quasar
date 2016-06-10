@@ -162,7 +162,8 @@ Directory Server/include install=create
 File BaseQuasarServer.h                    must_exist,must_be_versioned,md5=check,install=overwrite
 File QuasarServer.h                         must_exist,must_be_versioned,install=copy_if_not_existing
 File shutdown.h                             must_exist,must_be_versioned,md5=check,install=overwrite
-File serverconfigxml.h                      must_exist,must_be_versioned,md5=check,install=overwrite
+File serverconfigxml.h                      deprecated
+File serverconfigxml_quasar.h               must_exist,must_be_versioned,md5=check,install=overwrite
 File opcserver.h                            must_exist,must_be_versioned,md5=check,install=overwrite
 File version.h                              must_exist,must_be_versioned,md5=check,install=overwrite
 File QuasarServerCallback.h                 must_exist,must_be_versioned,md5=check,install=overwrite
