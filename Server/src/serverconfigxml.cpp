@@ -18,12 +18,8 @@
                                + CPP_SDK_MINOR * 10 \
                                + CPP_SDK_MINOR2 )
 
-#if UA_API_VERSION < 140       // serverconfig comes from quasar
+#if UA_API_VERSION < 140       // serverconfig is implemented by files coming from quasar
 #include <serverconfigxml_quasar.h>
-#else
-#include "serverconfigxml.h"   // serverconfig comes from UA API
-#endif
-
 
 #ifdef _WIN32
 	# include <winsock2.h>	 
@@ -1968,4 +1964,6 @@ UaStatus UaEndpointXml::setXmlConfig(UaXmlElement &xmlElement, const UaString& s
     return ret;
 }
 
+
+#endif // UA_API_VERSION < 140
 

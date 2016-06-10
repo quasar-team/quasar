@@ -17,10 +17,20 @@
 #include "opcserver.h"
 #include "uamutex.h"
 #include "srvtrace.h"
-//TODO: not in 1.4.2 #include "serverconfigsettings.h"
-#ifdef SUPPORT_XML_CONFIG
-#include "serverconfigxml.h"
+
+#include <version_coremodule.h>
+
+#define UA_API_VERSION (CPP_SDK_MAJOR * 100 \
+                               + CPP_SDK_MINOR * 10 \
+                               + CPP_SDK_MINOR2 )
+
+#if UA_API_VERSION < 140       // serverconfig comes from quasar
+#include <serverconfigxml_quasar.h>
+#else
+#include "serverconfigxml.h"   // serverconfig comes from UA API
 #endif
+
+
 #include "uasession.h"
 #include "uaunistring.h"
 #include "coremodule.h"
@@ -60,8 +70,6 @@ public:
 };
 
 
-
-#ifdef SUPPORT_XML_CONFIG
 /** Basic server configuration class using the XML file format for internal use in the class OpcServer.*/
 class ServerConfigBasicXml: public ServerConfigXml
 {
@@ -76,7 +84,7 @@ public:
 private:
     OpcServerCallback* m_pOpcServerCallback;
 };
-#endif
+
 
 #define throw_runtime_error_with_origin(MSG) throw std::runtime_error(std::string("At ")+__FILE__+":"+Utils::toString(__LINE__)+" "+MSG)
 
@@ -224,7 +232,7 @@ int OpcServer::setCallback(OpcServerCallback* pOpcServerCallback)
     return 0;
 }
 
-/* Taken from Slava from OpcUaCanOpenServer */
+/* Contribution from Slava Filimonov from OpcUaCanOpenServer */
 int OpcServer::createCertificate ()
 {
 	UaMutexLocker lock(&d->m_mutex);
@@ -241,19 +249,12 @@ int OpcServer::createCertificate ()
 	{
 		UaUniString sConfigFile(d->m_configurationFile.toUtf8());
 		sConfigFile = sConfigFile.toLower();
-#ifdef SUPPORT_XML_CONFIG
+
 		if ( sConfigFile.lastIndexOf(".xml") > (sConfigFile.length() - 5) )
 		{
 			d->m_pServerConfig = new ServerConfigBasicXml(d->m_configurationFile, d->m_applicationPath, d->m_pOpcServerCallback);
 		}
-#else
-		/*
-	        if ( sConfigFile.lastIndexOf(".ini") > (sConfigFile.length() - 5) )
-	        {
-	            m_pServerConfig = new ServerConfigBasicIni(m_configurationFile, m_applicationPath, m_pOpcServerCallback);
-	        }
-		 */
-#endif
+
 	}
 
 	if ( d->m_pServerConfig == NULL )
@@ -291,16 +292,14 @@ int OpcServer::start()
         sConfigFile = sConfigFile.toLower();
         if ( sConfigFile.lastIndexOf(".ini") > (sConfigFile.length() - 5) )
         {
-            throw std::runtime_error("Toolkit 1.4.2 no ini config");
-            
-            //d->m_pServerConfig = new ServerConfigBasicIni(d->m_configurationFile, d->m_applicationPath, d->m_pOpcServerCallback);
+            throw std::runtime_error(".ini based configuration is not supported anymore.");
         }
-#ifdef SUPPORT_XML_CONFIG
         else if ( sConfigFile.lastIndexOf(".xml") > (sConfigFile.length() - 5) )
         {
             d->m_pServerConfig = new ServerConfigBasicXml(d->m_configurationFile, d->m_applicationPath, d->m_pOpcServerCallback);
         }
-#endif
+        else
+        	throw_runtime_error_with_origin("Failed to understand format of Server Configuration. Config file not ending with .xml perhaps?");
     }
 
     if ( d->m_pServerConfig == NULL )
@@ -332,13 +331,14 @@ int OpcServer::start()
             bSdkTraceEnabled,
             uSdkTraceLevel,
             uMaxTraceEntries,
-            uMaxBackupFiles,
-#ifdef UATOOLKIT_1_5_1_326
-            sTraceFile,
-			bDisableFlush);
-#else
-			sTraceFile);
+            uMaxBackupFiles
+#if UA_API_VERSION >= 140
+            ,sTraceFile
+#if UA_API_VERSION >= 150
+			,bDisableFlush
 #endif
+#endif
+			);
 
         if ( bSdkTraceEnabled != OpcUa_False)
         {
@@ -552,7 +552,6 @@ NodeManagerConfig* OpcServer::getDefaultNodeManager()
 
 
 
-#ifdef SUPPORT_XML_CONFIG
 /** construction
  @param sXmlFileName Path and file name of the XML configuration file.
  @param sApplicationPath The path of the configuration file and PKI store used to replace path placeholders in the configuration file
@@ -629,4 +628,4 @@ UaStatus ServerConfigBasicXml::logonSessionUser(
 
     return OpcUa_Bad;
 }
-#endif
+
