@@ -33,5 +33,5 @@ script:
  - python quasar.py generate device RedLED
  - sudo chmod 777 -R *
 #set environment vars, then invoke build
- - export BOOST_LIBS="-lboost_thread-mt -lboost_system"
+ - export BOOST_LIBS="-lboost_thread -lboost_system"
  - python quasar.py build Release open62541_config.cmake
