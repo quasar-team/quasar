@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html><head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <meta charset="UTF-8"><title>QUASAR</title></head><body>
+
+<h1>QUASAR (aka Generic OPC UA Server Framework)<br>
+</h1>
+Quick opcUA Server Generation frameworK
+<h2>Versions</h2><a href="ChangeLog.html">Changelog</a><br>
+<h2>Credits</h2>
+
+
+This framework was brought to you by:<br>
+
+<ul>
+
+  
+  <li>Damian Abalo Miron (damian.abalo@cern.ch)</li>
+  <ul>
+<li>Windows / MSVC10 compatibility<br>
+</li><li>Python-based scripts and tools<br>
+</li>
+  </ul>
+  <li>Benjamin Farnham (benjamin.farnham@cern.ch):</li>
+
+  <ul>
+    <li>LogIt logging engine</li>
+    <li>Meta module</li>
+    <li>Use cases &amp; ideas<br>
+    </li>
+  </ul>
+  <li>Viatcheslav "Slava" Filimonov (Viatcheslav.Filimonov@cern.ch):</li>
+
+  <ul>
+    <li>XML Configuration</li>
+    <li>Calculation engine</li>
+    <li>Node manager</li>
+  </ul>
+  <li>Piotr Nikiel (Piotr.Nikiel@cern.ch, piotr@nikiel.info):</li>
+  <ul>
+    <li>Framework's concept and architecture</li>
+    <li>Address Space, Device and Configuration generation (XSLTs, design files,
+scripts)</li>
+    <li>CMake-based build system</li>
+    <li>RPM generation for Linux<br>
+    </li>
+
+    
+    <li>Documentation and screencasts</li>
+    <li>Build configurations for Raspberry Pi, Zynq and MSVC10 on Wine<br>
+    </li>
+
+
+  </ul>
+  <li>Stefan Schlenker (Stefan.Schlenker@cern.ch)</li>
+  <ul>
+    <li>Use cases &amp; ideas</li>
+  </ul>
+  <li>Cristian-Valeriu Soare</li>
+  <ul>
+    <li>Embedded Python module<br>
+    </li>
+  </ul>
+</ul>
+
+<h2>Dependencies</h2>
+
+Mandatory:<br>
+
+<ul>
+
+  <li>Suitable C++ compiler (gcc is assumed by default)<br>
+  </li>
+  <li>The Unified Automation OPC UA Toolkit, version 1.3.3, headers +
+libraries. We recommend OpcUaToolkit-1.3.3.rpm package available from
+ATLAS Central DCS. We currently don't support any other version as
+their API are not compatible. Your mileage may vary.</li>
+  <li>Boost development libraries. (In principle, boost-regex,
+boost-devel and boost-program-options should be sufficient)<br>
+  </li>
+  <li>XSLT processor capable of XSLT2.0 processing. We use <a href="http://www.saxonica.com/">The Saxon XSLT and XQuery Processor from Saxonica Limited</a> which
+is re-distributed with the Quasar package (version 9.5 HE). Conditions of redistribution are explained <a href="http://www.saxonica.com/documentation/#%21conditions">at this link</a>.<br>
+</li>
+  <li>Java run time environment, to run the Saxon XSLT Processor.<br>
+  </li>
+  <li>Cmake version 2.8 or later. Available in SLC6 as cmake28 package.</li>
+</ul>
+
+Recommended:<br>
+
+<ul>
+
+  <li>Schema-aware XML editor. We use Eclipse, as can be seen in the
+screencasts.</li>
+  <li>Good C++ IDE / editor. We use Eclipse, as can be seen in the
+screencasts.<br>
+  </li>
+  <li>Good merge tool. We use kdiff3 (available as kdiff3 RPM in SLC6
+Linux).</li>
+  <li>ArtisticStyle ( <a href="http://astyle.sourceforge.net/">http://astyle.sourceforge.net/</a>
+) for automatic formatting of generated code. If you don't use it, the
+generated code will look like a shipwreck (but will still work). <br>
+ArtisticStyle RPM for SLC6 can be obtained from Piotr Nikiel, or you can compile it yourself from sources.<br>
+</li>
+  <li>graphviz, if you want to visualize your object design in
+UML-alike class diagram. Available in SLC6 as graphviz RPM package.</li>
+  <li>UnifiedAutomation UaExpert or any other OPC UA Client for
+exploring OPC UA address space.<br>
+  </li>
+  <li>Valgrind, for checking memory-related problems. (valgrind RPM in
+SLC6)</li>
+  <li>PDF viewer for opening UML-like diagrams created from design file.</li>
+  <li>Doxygen for generating documentation.</li>
+  <li>RPM Build tools for RPM generation<br>
+  </li>
+
+</ul><br>
+<h3>Quick setup hints for SLC6 users <br>
+</h3>
+<ol>
+  <li>Get Eclipse (www.eclipse.org) with :</li>
+  <ol>
+    <li>CDT (C/C++ Development tools) - "Eclipse IDE for C/C++ Developers"</li>
+    <li>XML editors - "Eclipse XML Editors and Tools"</li>
+    <li>Subversive SVN and SVN providers</li>
+  </ol>
+  <li>Issue this to install software from official SLC6 RPMs:<br>sudo
+yum install gcc-c++ gdb boost-devel boost-regex boost-program-options
+boost-signals jre cmake28 kdiff3 graphviz valgrind doxygen rpm-build
+subversion xsd openssl-dev libxml2-devel<br>
+  </li>
+  <li>From the ATLAS Central DCS<br>
+    <ul>
+      <li>obtain OPC UA Toolkit 1.3.3 RPM and astyle and install them:<br>
+sudo yum install OpcUaToolkit-1.3.3-0.x86_64.rpm astyle-2.0.4-0.rpm</li>
+      <li>obtain UaExpert and install it<br>
+        <br>
+      </li>
+    </ul>
+  </li>
+</ol>
+<h3>Setup for Windows users <br>
+</h3>
+<ol>   
+ To set up the generic server in a windows environment, follow the instrunctions found <a href="WindowsSetup.html">here</a> <br>
+</ol>
+
+<h2>FAQ</h2>
+
+<ol>
+  
+  <li>How to build an executable with<span style="font-weight: bold;"> debug symbols</span>?<br>Just append Debug to your "quasar.py build" invocation, i.e.:<br>
+    <span style="font-family: monospace;">./quasar.py build Debug</span><br>
+or<br>
+    <span style="font-family: monospace;">./quasar.py build &lt;build_config_name&gt; Debug</span><br>
+</li><li>Build fails<br>
+Try to read carefully the output.<br>
+If you can't figure the issue on your own, try contacting quasar-developers@cern.ch, at the last resort contact piotr.nikiel@cern.ch<br>
+</li>
+
+  
+  <li>The server starts up, but crashes.<br>
+
+There are plenty of possibilities here. The best way is to build a
+server with debug symbols (explained above in the tutorial) and enable core dumping in your system.
+Then run it again and let it crash. You will obtain a coredump file,
+which you can load into GDB this way:<br><span style="font-family: monospace;">
+
+gdb &lt;path_to_executable&gt; &lt;core_dump_file&gt;</span><br>Then
+type 'bt' and gdb will show you crash back trace. If it seems that the
+crash is within quasar itself, please don't hesitate and file a report
+to us. <br>
+</li>
+
+  
+  
+  <li>How to create a <span style="font-weight: bold;">RPM</span> package with my server?<br>
+RPM builder is provided with the quasar. RPM builder builds "directly"
+from your version control system and not from your local files (this is
+intentional and will not be changed). At the moment SVN and Git are
+supported.<br>
+Please have a look at scripts in RPM/build_from_svn or RPM/build_from_git.</li>
+  <ol>
+    <li>You will need to set repository paths in the build scripts.</li>
+    <li>Then edit template.spec:<br>
+    </li>
+    <ol>
+      <li>In the very first line, set name of the RPM. It shall match
+the value of "projectShortName" which you have put into design element
+of your Design.xml file.</li>
+      <li>You may edit Summary: field with short (one-line) description of the server.</li>
+      <li>You may edit %description section with long description of the server.</li>
+      <li>Review the list of files listed in %install section. These
+files will be packed inside the package. Add additional files, if
+applicable (e.g. documentation, data files, additional libraries,
+etc...)</li>
+      <li>If applicable, complete %pre, %post, %preun and %postun sections.</li>
+    </ol>
+    <li>Commit changes in both files</li>
+
+
+    
+    
+    <li>To generate RPM, run either:<br>
+
+./buildRpm.sh --revision &lt;revision_number&gt;<br>
+
+or<br>
+
+./buildRpm.sh --tag &lt;tag_name&gt;</li>
+
+
+    
+    <ol><ol>
+      
+      
+
+      
+      
+
+      
+      
+
+      
+      
+
+      
+      
+
+    </ol></ol>
+  
+  
+    <li>IMPORTANT: For delivering production packages, you should first
+tag given release on SVN, and then generate RPM from the tag (using the
+second version of command listed above).</li>
+  </ol>
+  <li>How to <span style="font-weight: bold;">upgrade</span> to newer <span style="font-weight: bold;">release</span> of Generic Server Framework?</li>
+  <ol>
+
+  
+  
+  
+    <ol>
+
+    <li>Download quasar in the version of your choice</li>
+    <li>Unpack it</li>
+    
+      <li>Execute quasar.py upgrade_project which is in its root
+directory, passing path to your project to be upgraded as the first
+parameter:<br><span style="font-family: monospace;">./quasar.py upgrade_project &lt;path&gt;</span></li>
+    </ol>
+  </ol>
+  <li>What is the difference between cache variable and source variable?<br>The difference lies in where factual value of the variable is stored, which impacts what happens after Read OPC UA Transaction:<br><ul><li>For
+cache variables, there are stored in the server's RAM (thus "cache"),
+and the value served back to the client is the value from RAM. Cache
+variables are perfect whenever some device logic code updates the
+address space or reads from the address space.</li><li>For source
+variables, there are stored "at the source", which for example might be
+at a remote computer. Therefore every Read transaction will trigger
+Device Logic method supposed to fetch that data from the source.&nbsp;
+Contrary to cache variables one may expect that such Read&nbsp;
+transaction may be blocking and time consuming, and therefore may be
+required to be executed in a separate thread of execution.</li></ul>Here is a picture taken from our CHEP2015 poster with sequence diagrams for both types of variables:<br><br>
+    <br>
+<img src="variable_types.png"></li>
+  <li>Can I use <span style="font-weight: bold;">evaluation version</span> of the UA Toolkit to create an OPC UA server using this framework?<br>
+You can.<br>
+Beware that at the time of writing the evaluation version is only
+available in 32 bits. Therefore we recommend to create a build
+configuration specifically for compiling in 32 bits with evaluation
+version of the toolkit.&nbsp;</li>
+  <li>How to use upgrade_design tool?<br>
+Rarely - but sometimes - XML stylesheet of Design file (Design.xsd)
+changes in backwards-incompatible way. For all such changes conversion
+tools are provided to mitigate the pain. upgrade_design is one of them.<br>
+upgrade_design currently accepts this commands:<br>
+    <ul>
+      <li>./quasar.py upgrade_design convert_to_hasDeviceLogic=yes</li>
+      <li>./quasar.py upgrade_design add_nullPolicy=nullAllowed or ./quasar.py upgrade_design add_nullPolicy=nullForbidden</li>
+      <li>./quasar.py upgrade_design remove_makeSetGet=yes</li>
+    </ul>
+Please refer to the Changelog which lists (in backwards incompatibility column) at which moments you may need any of the above.</li>
+  <li>Can I automatically prepare the required dependencies?<br>
+We have a shell script which could be useful if you e.g. need to
+crosscompile and do not yet have the libs required by Quasar. The
+script is places in the Documentation/Addons/prepare_dependencies.sh<br>
+  </li>
+  <li>How does a developer define specific command line options for my quasar server implementation?<br>
+This is documented here: <a href="UserDefinedCommandLineParameters.html">User Defined Command Line Parameters</a> <br>
+  </li>
+  <li>How
+does a developer define a dynamic (at start up) configuration? For
+example, where the server 'discovers' connected hardware on start up.<br>
+This is documented here: <a href="UserDefinedRuntimeConfigurationModification.html">User Defined Runtime Configuration</a> <br>
+  </li>
+  <li>How
+does a developer persist a 'discovered' configuration as described
+above? For example, where the server 'discovers' connected hardware
+initially and saves it for use thereafter as a static configuration.<br>
+This is also documented here: <a href="UserDefinedRuntimeConfigurationModification.html#persist">User Defined Runtime Configuration</a> <br>
+  </li>
+</ol>
+
+<br>
+
+<h2>Tutorial</h2>Quasar have a pretty detailed tutorial for both comers as well as experienced users.<br>
+The tutorial is available at our YouTube channel:<br>
+<br>
+https://www.youtube.com/channel/UCQdLb4N-CEWrpYROcC-UF6w<br>
+
+
+
+<br>
+<hr style="width: 100%; height: 2px;">
+Written by Piotr Nikiel &lt;piotr.nikiel@cern.ch&gt;<br>
+
+Report inconsistencies and bugs to the email above.<br>(C) CERN 2015. All rights not expressly granted are reserved.<br>
+
+<br>
+
+</body></html>
