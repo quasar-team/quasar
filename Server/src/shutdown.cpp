@@ -20,12 +20,14 @@
 # ifndef WIN32
 #  include <unistd.h>
 #  include <limits.h> 
+# else
+#  include <windows.h>
 # endif
 
 /* shutdown flag */
 static volatile unsigned int g_ShutDown = 0;
 #ifdef _WIN32_WCE
-	# include <windows.h>	 
+		 
 #elif defined(_WIN32) && !defined(USE_CTRLC_ON_WINDOWS)
 #  include <conio.h> /* DOS header for _kbhit() and _getch() */
 #endif
@@ -98,7 +100,7 @@ void RegisterSignalHandler()
  * Windows CTRL-C Handler implementation. *
  ******************************************/
 # ifdef USE_CTRLC_ON_WINDOWS
-#  include <windows.h>
+#  
 #  include <conio.h>
 BOOL CtrlHandler(DWORD fdwCtrlType) 
 {
