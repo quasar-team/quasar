@@ -84,7 +84,7 @@ commands = [
 	[['format_design'], formatDesign, True],
 	[['validate_design'], validateDesign, True],	
 	[['doxygen'], runDoxygen, True],	
-	[['dependency_check'], checkExternalDependencies, True],	
+	[['external_tool_check'], checkExternalDependencies, True],	
 	]
 
 
