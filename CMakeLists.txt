@@ -93,8 +93,6 @@ endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 target_link_libraries ( ${EXECUTABLE} 
 	${BOOST_LIBS}
 	${XML_LIBS}
-	-lboost_thread-mt
-	-lboost_system
 	# Add your custom libraries here
 )
 
