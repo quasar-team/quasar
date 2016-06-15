@@ -103,6 +103,7 @@ Directory Device/src install=create
 Directory Documentation install=create
 File GenericServer.html                     deprecated
 File quasar.html                     must_exist,must_be_versioned,md5=check,install=overwrite
+File ChangeLog.html                         must_exist,must_be_versioned,md5=check,install=overwrite
 File WindowsSetup.html                     	must_exist,must_be_versioned,md5=check,install=overwrite
 File enice_win_configuration.cmake			must_exist,must_be_versioned,md5=check,install=overwrite
 File youtube_links.html                     must_exist,must_be_versioned,md5=check,install=overwrite

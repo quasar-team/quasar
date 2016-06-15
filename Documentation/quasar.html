@@ -18,6 +18,7 @@
 
 
 
+
   
   <meta charset="UTF-8"><title>QUASAR</title></head><body>
 
@@ -89,10 +90,10 @@ Mandatory:<br>
 
   <li>Suitable C++ compiler (gcc is assumed by default)<br>
   </li>
-  <li>The Unified Automation OPC UA Toolkit, version 1.3.3, headers +
-libraries. We recommend OpcUaToolkit-1.3.3.rpm package available from
-ATLAS Central DCS. We currently don't support any other version as
-their API are not compatible. Your mileage may vary.</li>
+  <li>The
+Unified Automation OPC UA Toolkit in versions 1.3.x, 1.4.x or 1.5.x.
+Note that a version with alternative backend (open62541) is available.<br>
+</li>
   <li>Boost development libraries. (In principle, boost-regex,
 boost-devel and boost-program-options should be sufficient)<br>
   </li>
@@ -172,8 +173,10 @@ sudo yum install OpcUaToolkit-1.3.3-0.x86_64.rpm astyle-2.0.4-0.rpm</li>
 or<br>
     <span style="font-family: monospace;">./quasar.py build &lt;build_config_name&gt; Debug</span><br>
 </li><li>Build fails<br>
-Try to read carefully the output.<br>
-If you can't figure the issue on your own, try contacting quasar-developers@cern.ch, at the last resort contact piotr.nikiel@cern.ch<br>
+Try to read carefully the output.<br>If you
+can't figure the issue on your own, try contacting
+quasar-developers@cern.ch, at the last resort contact
+piotr.nikiel@cern.ch<br>
 </li>
 
   
