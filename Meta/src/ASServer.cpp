@@ -60,7 +60,7 @@ ASServer::ASServer (
 
 
 {
-    UaStatus s;
+	UaStatus s;
     UaVariant v;
 
     v.setUInt32
@@ -68,9 +68,8 @@ ASServer::ASServer (
 
     m_connectedClientCount->setValue(/*pSession*/0, UaDataValue(UaVariant( v ),
             OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
-
-    s = nm->addNodeAndReference(this, m_connectedClientCount, OpcUaId_HasComponent);
-    if (!s.isGood())
+   s = nm->addNodeAndReference(this, m_connectedClientCount, OpcUaId_HasComponent);
+  if (!s.isGood())
     {
         std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_connectedClientCount->nodeId().toString().toUtf8() << " : " << std::endl;
         ASSERT_GOOD(s);

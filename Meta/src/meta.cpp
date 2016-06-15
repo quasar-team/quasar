@@ -53,6 +53,7 @@
 #include <DServer.h>
 
 using std::string;
+using namespace std;
 
 const string getComponentLogLevelFromConfig(const ComponentAttributes& component, const Configuration::ComponentLogLevels& config)
 {
@@ -294,19 +295,34 @@ const Configuration::StandardMetaData getMetaConfig(const Configuration::Configu
 
 Device::DStandardMetaData* configureMeta( const Configuration::StandardMetaData & config,AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId, Device::DRoot * parent)
 {
-	
-    AddressSpace::ASStandardMetaData *asMeta = new AddressSpace::ASStandardMetaData(parentNodeId, nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_STANDARDMETADATA), nm, config);
-    UaStatus s = nm->addNodeAndReference( parentNodeId, asMeta, OpcUaId_HasComponent);
-    MetaUtils::assertNodeAdded(s, parentNodeId, asMeta->nodeId());
+	const UaNodeId unid =	nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_STANDARDMETADATA);
+	AddressSpace::ASStandardMetaData *asMeta = new AddressSpace::ASStandardMetaData(parentNodeId, unid, nm, config);
+	//AddressSpace::ASStandardMetaData *asMeta = new AddressSpace::ASStandardMetaData(parentNodeId,
+	//			nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_STANDARDMETADATA), nm, config);
 
-    Device::DStandardMetaData *dMeta = new Device::DStandardMetaData (config, parent);
-    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dMeta, asMeta);
+	UaStatus s = nm->addNodeAndReference( parentNodeId, asMeta, /* implementation specific type data */ OpcUaId_HasComponent );
+	MetaUtils::assertNodeAdded(s, parentNodeId, asMeta->nodeId());
+	Device::DStandardMetaData *dMeta = new Device::DStandardMetaData ( config, parent );
+	MetaUtils::linkHandlerObjectAndAddressSpaceNode(dMeta, asMeta);
 
+#if 0
+	// add standard meta information which has to be always there:
+	// Server
+	// Log
+	// Quasar
+	// SourceVariableThreadPool
+	// and maybe also Certificates, to be created
+	Configuration::Server m_server = getServerConfig( config );
+	const UaNodeId unid_s02 =	nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_SERVER );
+	AddressSpace::ASServer *asServer_s02 = new AddressSpace::ASServer( asMeta->nodeId(), unid_s02, nm, m_server );
+	s = nm->addNodeAndReference( asMeta, asServer_s02, /* implementation specific type data */ OpcUaId_HasComponent );
+
+	// or wrapped up in Meta:: to be fixed
     configureLog(getLogConfig(config), nm, asMeta);
     configureSourceVariableThreadPool(getSourceVariableThreadPoolConfig(config), nm, asMeta);
     configureQuasar(getQuasarConfig(config), nm, asMeta, parent);
 	configureServer(getServerConfig(config), nm, asMeta, parent);
-	
+#endif
     return dMeta;
 }
 
