@@ -140,7 +140,6 @@ File runDoxygen.py							must_exist,must_be_versioned,md5=check,install=overwrit
 File version_control_interface.py           must_exist,must_be_versioned,md5=check,install=overwrite
 File externalTooolCheck.py					must_exist,must_be_versioned,md5=check,install=overwrite
 File commandMap.py							must_exist,must_be_versioned,md5=check,install=overwrite
-File version_control_interface.py           must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory RPM install=create
 
