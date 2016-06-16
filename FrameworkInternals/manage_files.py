@@ -189,7 +189,7 @@ class File(UserDict):
 		print 'Calling '+cmd
 		[status,output]=commands.getstatusoutput('md5sum '+self.path())
 		if status!=0:
-			raise Exception ('Calling md5sum was not successful. This is a fatal error. Cant continue')
+			raise Exception ('Calling md5sum was not successful on file '+self.path()+' . This is a fatal error. Cant continue')
 		md5=output.split(" ")[0]
 		#print "obtained md5="+md5
 		self['md5']=md5
