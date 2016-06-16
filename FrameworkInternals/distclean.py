@@ -23,7 +23,6 @@ import os
 import sys
 import shutil
 import platform
-import __main__
 from commandMap import getCommand
 from externalToolCheck import subprocessWithImprovedErrors
 
@@ -58,12 +57,10 @@ def deleteExtensionRecursively( topdir, target ):
 	return;
 	
 def distClean(param=None):
-	"""Cleaning method. It first calls msbuild/make clean and after that it will delete the leftover generated files in the Server."""
-	if "quasarGUI.py" in __main__.__file__:
-		if(param == None):
-			print("Calling: python quasar.py clean")
-		else:
-			print("Calling: python quasar.py clean " + param)
+	"""
+	Cleaning method. It first calls msbuild/make clean and after that it will delete the leftover generated files in the Server.
+	If parameter --orig is specified, the generated files ending with the extension .orig will also be cleared.	
+	"""
 	if platform.system() == "Windows":
 		print('Calling visual studio vcvarsall to set the environment')
 		print(getCommand("vcvarsall") + ' amd64')

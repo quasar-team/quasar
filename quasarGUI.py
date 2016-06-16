@@ -53,6 +53,7 @@ from designTools import createDiagram
 from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
 from externalToolCheck import checkExternalDependencies
+from quasarCommands import getCommandFromFunction
 
 exitLoop = False
 myScreen = None
@@ -76,7 +77,9 @@ class Option:
 		if self.userInput != None:
 			param = queryUser(self.userInput)
 		if self.closeCurses:
-			curses.endwin()
+			curses.endwin()		
+		if self.function != backToMainMenu:
+			print 'Calling: [python quasar.py '+ getCommandFromFunction(self.function) +']'
 		if self.userInput == None or not param:			
 			self.function()
 		else:

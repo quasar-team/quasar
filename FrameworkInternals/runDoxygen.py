@@ -20,13 +20,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import __main__
 from externalToolCheck import subprocessWithImprovedErrors
 
 def runDoxygen():
 	"""Runs doxygen in the documentation folder, making the tool generate documentation for the server automatically."""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py doxygen")
 	baseDirectory = os.getcwd()
 	os.chdir(baseDirectory + os.path.sep + "Documentation")
 	print("Changing directory to: " + baseDirectory + os.path.sep + "Documentation")

@@ -25,7 +25,6 @@ import sys
 import subprocess
 from subprocess import Popen
 import filecmp
-import __main__
 from commandMap import getCommand
 
 VERBOSE = 1
@@ -109,14 +108,12 @@ def tryDependency(functionCheck, critical=True):
 
 def checkExternalDependencies():
 	"""Checks all of QUASAR dependencies to see if everything is setup as expected, and prints apropiate messages to point out what is missing."""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py dependency_check")
 	tryDependency(checkJava)
 	tryDependency(checkKdiff3)
 	tryDependency(checkCMake)
 	tryDependency(checkCompiler)
 	tryDependency(checkXMLLint)
-	tryDependency(checkAstyle, False)
+	tryDependency(checkAstyle)
 	tryDependency(checkGraphViz, False)
 	tryDependency(checkDoxyGen, False)
 		

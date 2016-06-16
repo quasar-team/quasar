@@ -20,9 +20,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import platform
 from manage_files import mfInstall
-import __main__
 
 def upgradeProject(destination):
 	"""Upgrades the framework in a given directory
@@ -30,8 +28,6 @@ def upgradeProject(destination):
 	Keyword arguments:
 	destination -- The target directory where the framework will be installed or upgraded
 	"""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py upgrade_project " + destination)
 	if os.path.exists(destination) and os.path.exists(destination + os.path.sep + 'Device') and os.path.exists(destination + os.path.sep + 'Design') and os.path.exists(destination + os.path.sep + 'Configuration') and os.path.exists(destination + os.path.sep + 'AddressSpace'):
 		destination = os.path.abspath(destination)
 		print( "Selected installation folder: " + destination)
@@ -46,8 +42,6 @@ def createProject(destination):
 	Keyword arguments:
 	destination -- The target directory where the framework will be installed or upgraded
 	"""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py create_project " + destination)
 	if os.path.exists(destination):
 		destination = os.path.abspath(destination)
 		print( "Selected installation folder: " + destination)

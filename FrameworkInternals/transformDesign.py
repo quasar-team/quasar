@@ -78,7 +78,7 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
 		if overwriteProtection == 1:
 			#If the file existed previously and it is different from the old one we run kdiff3
 			if (os.path.isfile(originalOutputFile)) and (filecmp.cmp(originalOutputFile, outputFile) == False):
-				subprocessWithImprovedErrors([getCommand('kdiff3'), "-o", originalOutputFile, originalOutputFile, outputFile], getCommand("kdiff3"), [0, 1])#1 is a valid return, since it means that the user quitted without saving the merge, and this is still ok.
+				subprocessWithImprovedErrors([getCommand('diff'), "-o", originalOutputFile, originalOutputFile, outputFile], getCommand("diff"), [0, 1])#1 is a valid return, since it means that the user quitted without saving the merge, and this is still ok.
 			else:#If the file didn't exist before, or it is equal to the old one, we rename the generated file to have the proper name
 				if os.path.isfile(originalOutputFile):
 					os.remove(originalOutputFile)
