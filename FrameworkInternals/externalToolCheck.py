@@ -118,7 +118,7 @@ def checkExternalDependencies():
 	tryDependency(checkDoxyGen, False)
 		
 def subprocessWithImprovedErrors(subprocessCommand, dependencyName, validReturnCodes=[0]):
-	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions catched.
+	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions caught.
 	
 	Keyword arguments:
 	subprocessCommand -- String or list of strings that will be given to subprocess
@@ -128,7 +128,7 @@ def subprocessWithImprovedErrors(subprocessCommand, dependencyName, validReturnC
 	try:
 		returnCode = subprocess.call(subprocessCommand)
 	except OSError as e:		
-		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
+		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
 	except Exception, e:
 		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
 	if(returnCode not in validReturnCodes):
@@ -149,7 +149,7 @@ def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, 
 			streamdata = process.communicate()
 			returnCode = process.returncode
 	except OSError as e:		
-		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependancy is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py dependency_check'.")
+		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
 	except Exception, e:
 		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
 	if(returnCode not in validReturnCodes):

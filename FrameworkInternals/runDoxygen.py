@@ -21,6 +21,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 import os
 from externalToolCheck import subprocessWithImprovedErrors
+from commandMap import getCommand
 
 def runDoxygen():
 	"""Runs doxygen in the documentation folder, making the tool generate documentation for the server automatically."""

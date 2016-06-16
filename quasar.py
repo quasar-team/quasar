@@ -33,6 +33,11 @@ sys.path.insert(0, './FrameworkInternals')
 from quasarCommands import printCommandList
 from quasarCommands import getCommands
 
+if len(sys.argv) < 2:
+        print 'The script was run without specifying what to do. Here are available commands:'
+        printCommandList()
+        sys.exit(1)
+
 try:
 	commands = getCommands()
 	matched_command = filter(lambda x: x[0] == sys.argv[1:1+len(x[0])], commands)[0]
@@ -45,5 +50,9 @@ if '-h' in sys.argv or '--help' in sys.argv:
 	help(matched_command[1])
 	sys.exit(0)
 else:
-	matched_command[1]( * sys.argv[1+len(matched_command[0]):])  # pack arguments after the last chunk of the command
+        try:
+	        matched_command[1]( * sys.argv[1+len(matched_command[0]):])  # pack arguments after the last chunk of the command
+        except Exception as e:
+                print 'Failed because: '+str(e)+'.\nHint: look at the lines above, answer might be there.'
+                sys.exit(1)
 	sys.exit(0)

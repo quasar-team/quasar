@@ -33,7 +33,7 @@ def generateConfiguration():
 	print("Calling xmllint to modify " + output)
 	#this call is not using subprocess with improved errors because of the need of the piping.
 	subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--xinclude", configPath + output], configPath + output + ".new", getCommand("xmllint"))
-	print("Coping the modified file  " + output + ".new into the name of " + output)
+	print("Copying the modified file  " + output + ".new into the name of " + output)
 	shutil.copyfile(configPath + output + ".new", configPath + output)
 
 def generateConfigurator():

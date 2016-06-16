@@ -63,7 +63,7 @@ def formatDesign():
 	except Exception, e:
 		raise Exception ("There was a problem formatting the file [" + designXML + "]; Exception: [" + str(e) + "]")
 		
-	print("Coping the formated file  " + tempName + " into the name of " + designXML)
+	print("Copying the formated file  " + tempName + " into the name of " + designXML)
 	shutil.copyfile(designPath + tempName, designPath + designXML)
 	
 def upgradeDesign(additionalParam):
