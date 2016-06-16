@@ -206,9 +206,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	#include &lt;Configurator.h&gt;
 	#include &lt;Configuration.hxx&gt;
 
-//	#ifndef BACKEND_OPEN62541
+<!--	#ifndef BACKEND_OPEN62541 -->
 	#include &lt;meta.h&gt;
-//	#endif
+<!--	#endif -->
 
 	#include &lt;LogIt.h&gt;
 	
