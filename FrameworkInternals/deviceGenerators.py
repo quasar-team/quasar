@@ -20,10 +20,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import platform
-import __main__
 from transformDesign import transformDesignVerbose
 from lxml import etree 
+from manage_files import get_list_classes
 
 devicePath = "Device" + os.path.sep
 def generateRoot():	
@@ -54,8 +53,6 @@ def generateDeviceClass(*classList):
 	if(len(classList) == 0):
 		print("Please, provide the name of the class you wish to generate")
 		return
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py generate device " + classList[0])
 	
 	if classList[0] == '--all':
 		return generateAllDevices()		
@@ -67,20 +64,12 @@ def generateDeviceClass(*classList):
 		output = "src/D" + c + ".cpp"
 		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, 1,"className=" + c)
 	
-def get_list_classes(design_file_name):
-	output=[]
-	f = file(design_file_name,'r')	
-	tree = etree.parse(f)
-	classes = tree.findall('{http://cern.ch/quasar/Design}class')
-	for c in classes:
-		output.append(c.get('name'))
-	return output
-	
 def generateAllDevices():
 	"""Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
 	project_directory = os.getcwd()		
 	classes = get_list_classes(project_directory+os.path.sep+"Design"+os.path.sep+"Design.xml")
-	for classname in classes:
+	for tuple in classes:
+		classname = tuple['name']
 		output = "include/D" + classname + ".h"
 		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, 1, 1, "className=" + classname)
 			

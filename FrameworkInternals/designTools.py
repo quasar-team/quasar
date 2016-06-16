@@ -22,7 +22,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 import platform
 import shutil
-import __main__
 from transformDesign import transformDesignVerbose
 from externalToolCheck import subprocessWithImprovedErrors
 from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
@@ -34,8 +33,6 @@ designXSD = "Design.xsd"
 
 def validateDesign():
 	"""Checks design.xml against Design.xsd, and after that performs some additional checks (defined in designValidation.xslt)"""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py validate_design")
 	# 1st line of validation -- does it matches its schema?
 	# This allows some basic checks
 	print("1st line of check -- XSD conformance")
@@ -51,8 +48,6 @@ def validateDesign():
 
 def formatDesign():
 	"""Formats design.xml. This is done to have always the same indentation format. The formatting is done in a separate file, in case something goes wrong, and then copied over."""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py format_design")
 	backupName = designXML + ".backup"
 	tempName = designXML + ".new"
 
@@ -73,8 +68,6 @@ def formatDesign():
 	
 def upgradeDesign(additionalParam):
 	"""Method for adjusting Design.xml for a new Design.xsd when updating to a new version of the Framework"""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py upgrade_design")
 	print("Formatting your design file ...")
 	formatDesign()
 	
@@ -97,8 +90,6 @@ def createDiagram(detailLevel=0):
 	Keyword arguments:
 	detailLevel -- Detail level of the diagram. If it is not present, 0 will be assumed
 	"""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py generate diagram")
 	if detailLevel == "":
 		detailLevel = 0
 	output = "Design.dot"

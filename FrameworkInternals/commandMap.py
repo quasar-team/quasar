@@ -8,6 +8,7 @@ commandMap = {
 "cmake":"cmake",
 "msbuild":"msbuild",
 "make":"make",
+"gcc":"gcc",
 "xmllint":"xmllint",
 "graphviz":"dot",
 "doxygen":"doxygen"

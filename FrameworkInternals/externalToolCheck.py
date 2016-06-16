@@ -25,11 +25,9 @@ import sys
 import subprocess
 from subprocess import Popen
 import filecmp
-import __main__
 from commandMap import getCommand
 
 VERBOSE = 1
-XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + getCommand('saxon')
 
 def printIfVerbose(msg):
 	if VERBOSE > 0:
@@ -48,12 +46,6 @@ def checkExecutableExists(executableKeyName, doesNotExistErrorMessage, executabl
 
 def checkJava():
 	checkExecutableExists('java', 'Java can be downloaded in https://www.java.com/en/download/')
-	
-def checkSaxon():
-	if os.path.isfile(XSLT_JAR):
-		printIfVerbose("saxon0he.jar does exist")
-	else:
-		raise Exception("saxon0he.jar cannot be found in the Design folder. \nsaxon0he.jar can be downloaded in http://saxon.sourceforge.net/#F9.7HE ")
 	
 def checkAstyle():
 	checkExecutableExists('astyle', 'Astyle can be downloaded in http://astyle.sourceforge.net/')
@@ -77,7 +69,8 @@ def checkCMake():
 		
 def checkCompiler():
 	if platform.system() == "Linux":
-		return checkExecutableExists('make', 'Please, install gcc using the package manager of your distribution.')
+		checkExecutableExists('make', 'Please, install the package make using the package manager of your distribution.')
+		return checkExecutableExists('gcc', 'Please, install the package gcc using the package manager of your distribution.', '--help')
 	#if the system is a windows machine then:
 	if os.path.isfile(getCommand('vcvarsall')):
 		printIfVerbose("vcvarsall.bat does exist")
@@ -115,15 +108,12 @@ def tryDependency(functionCheck, critical=True):
 
 def checkExternalDependencies():
 	"""Checks all of QUASAR dependencies to see if everything is setup as expected, and prints apropiate messages to point out what is missing."""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py dependency_check")
-	tryDependency(checkSaxon)
 	tryDependency(checkJava)
 	tryDependency(checkKdiff3)
 	tryDependency(checkCMake)
 	tryDependency(checkCompiler)
 	tryDependency(checkXMLLint)
-	tryDependency(checkAstyle, False)
+	tryDependency(checkAstyle)
 	tryDependency(checkGraphViz, False)
 	tryDependency(checkDoxyGen, False)
 		

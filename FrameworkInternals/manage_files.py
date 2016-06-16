@@ -26,11 +26,9 @@ try:
 	import commands
 	import traceback
 	import string
-	import platform
 	from UserDict import UserDict
 	from optparse import OptionParser
 	import hashlib
-	import __main__
 	import version_control_interface
 
 	# lxml for getting a list of defined classes in Design file
@@ -453,8 +451,6 @@ def design_vs_device(project_directory):
 #manage files API starts here
 def mfCheckConsistency(param=None):
 	"""Checks the consistency of the project, checking that all the files that must exist do exist, everything is in svn and the md5 keys are correct."""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py check_consistency")
 	vci = version_control_interface.VersionControlInterface('')
 	global svnClient
 
@@ -488,8 +484,6 @@ def mfInstall(sourceDirectory, targetDirectory):
 
 def mfSetupSvnIgnore():
 	"""Setups the .svnignore hidden file, so the generated files will be ignored in your svn repository."""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py setup_svn_ignore")
 	project_setup_svn_ignore(os.getcwd())
 
 def mfCheckSvnIgnore():
@@ -498,6 +492,4 @@ def mfCheckSvnIgnore():
 
 def mfDesignVsDevice():
 	"""Checks if the device files are outdated (By comparing with design), and hence if they should be regenerated."""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py design_vs_device")
 	design_vs_device(os.getcwd())

@@ -20,8 +20,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import platform
-import subprocess
 import shutil
 from transformDesign import transformDesignVerbose
 from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile

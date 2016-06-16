@@ -22,7 +22,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 import platform
 import subprocess
-import __main__
 from generateCmake import generateCmake
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
@@ -43,8 +42,6 @@ def automatedBuild(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="FrameworkInternal
 	if BUILD_TYPE != "Release" and BUILD_TYPE != "Debug" and CMAKE_TOOLCHAIN_FILE == "FrameworkInternals" + os.path.sep + "default_configuration.cmake":
 		CMAKE_TOOLCHAIN_FILE = BUILD_TYPE
 		BUILD_TYPE = "Release"
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py build " + BUILD_TYPE + " " + CMAKE_TOOLCHAIN_FILE)
 	generateCmake(BUILD_TYPE, CMAKE_TOOLCHAIN_FILE)			
 			
 	print('Calling make/msbuild')
