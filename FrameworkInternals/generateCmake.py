@@ -25,22 +25,23 @@ import subprocess
 import platform
 from transformDesign import transformDesignVerbose
 
-def generateCmake(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="default_configuration.cmake"):
+def generateCmake(buildType="Release",
+		  cmakeToolchainFile="FrameworkInternals" + os.path.sep + "default_configuration.cmake"):
 	"""Generates CMake header lists in various directories, and then calls cmake.
 	
 	Keyword arguments:
-	BUILD_TYPE -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
+	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""	
 	returnCode = transformDesignVerbose("AddressSpace" + os.path.sep + "designToGeneratedCmakeAddressSpace.xslt", "AddressSpace" + os.path.sep + "cmake_generated.cmake", 0, 0)
 	returnCode = transformDesignVerbose("Device" + os.path.sep + "designToGeneratedCmakeDevice.xslt", "Device" + os.path.sep + "generated" + os.path.sep + "cmake_header.cmake", 0, 0)
-	print("Build type ["+BUILD_TYPE+"], Toolchain file [" + CMAKE_TOOLCHAIN_FILE + "]")
+	print("Build type ["+buildType+"], Toolchain file [" + cmakeToolchainFile + "]")
 
 	print("Calling CMake")
 	if platform.system() == "Windows":
-		returnCode = subprocess.call("cmake -DCMAKE_BUILD_TYPE=" + BUILD_TYPE + " -DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE + " -G \"Visual Studio 12 Win64\" .", shell=True)
+		returnCode = subprocess.call("cmake -DCMAKE_buildType=" + buildType + " -DcmakeToolchainFile=" + cmakeToolchainFile + " -G \"Visual Studio 12 Win64\" .", shell=True)
 	elif platform.system() == "Linux":
-		returnCode = subprocess.call("cmake -DCMAKE_BUILD_TYPE=" + BUILD_TYPE + " -DCMAKE_TOOLCHAIN_FILE=" + CMAKE_TOOLCHAIN_FILE + " .", shell=True)
+		returnCode = subprocess.call("cmake -DCMAKE_buildType=" + buildType + " -DcmakeToolchainFile=" + cmakeToolchainFile + " .", shell=True)
 	if returnCode != 0:
 		print("There was a problem calling cmake; Return code = " + str(returnCode))
 		return returnCode
-	return 0#return code 0 if everything went well.
+	return 0 # return code 0 if everything went well.
