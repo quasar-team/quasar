@@ -6,6 +6,7 @@ include(ExternalProject)
 ExternalProject_Add(
     ${OPT_MODULE_NAME}
     GIT_REPOSITORY ${OPT_MODULE_URL}
+    GIT_TAG ${OPT_MODULE_TAG}
     PREFIX "${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME}_download"
     SOURCE_DIR "${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME}"
     CONFIGURE_COMMAND ""
