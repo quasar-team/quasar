@@ -20,17 +20,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import subprocess
-import platform
 from transformDesign import transformDesignVerbose
 asPath = "AddressSpace" + os.path.sep
 def generateSourceVariables():
 	"""Generates the files SourceVariables.h and SourceVariables.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
 	output = "include/SourceVariables.h"
-	returnCode = transformDesignVerbose(asPath + "designToSourceVariablesHeader.xslt", asPath + output, 0, 1)
+	transformDesignVerbose(asPath + "designToSourceVariablesHeader.xslt", asPath + output, 0, 1)
 	output = "src/SourceVariables.cpp"
-	returnCode = transformDesignVerbose(asPath + "designToSourceVariablesBody.xslt", asPath + output,0, 1)
-	return 0
+	transformDesignVerbose(asPath + "designToSourceVariablesBody.xslt", asPath + output,0, 1)
 
 def generateASClass(classname):
 	"""Generates the files AS<classname>.h and AS<classname>.cpp. This method is called automatically by cmake, it does not need to be called by the user.
@@ -39,18 +36,15 @@ def generateASClass(classname):
 	classname -- the name of the device, which this class will be associated to.
 	"""
 	output = "include/AS" + classname + ".h"
-	returnCode = transformDesignVerbose(asPath + "designToClassHeader.xslt", asPath + output, 0, 1, "className=" + classname)
+	transformDesignVerbose(asPath + "designToClassHeader.xslt", asPath + output, 0, 1, "className=" + classname)
 		
 	output = "src/AS" + classname + ".cpp"
-	returnCode = transformDesignVerbose(asPath + "designToClassBody.xslt", asPath + output, 0, 1,"className=" + classname)
-	
-	return 0
+	transformDesignVerbose(asPath + "designToClassBody.xslt", asPath + output, 0, 1,"className=" + classname)
 	
 def generateInformationModel():
 	"""Generates the files ASInformationModel.h and ASInformationModel.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
 	output = "include/ASInformationModel.h"
-	returnCode = transformDesignVerbose(asPath + "designToInformationModelHeader.xslt", asPath + output, 0, 1)
+	transformDesignVerbose(asPath + "designToInformationModelHeader.xslt", asPath + output, 0, 1)
 	output = "src/ASInformationModel.cpp"
-	returnCode = transformDesignVerbose(asPath + "designToInformationModelBody.xslt", asPath + output,0, 1)
-	return 0
+	transformDesignVerbose(asPath + "designToInformationModelBody.xslt", asPath + output,0, 1)
 			

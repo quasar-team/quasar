@@ -26,11 +26,9 @@ try:
 	import commands
 	import traceback
 	import string
-	import platform
 	from UserDict import UserDict
 	from optparse import OptionParser
 	import hashlib
-	import __main__
 	import version_control_interface
 
 	# lxml for getting a list of defined classes in Design file
@@ -189,7 +187,7 @@ class File(UserDict):
 		print 'Calling '+cmd
 		[status,output]=commands.getstatusoutput('md5sum '+self.path())
 		if status!=0:
-			raise Exception ('Calling md5sum was not successful. This is a fatal error. Cant continue')
+			raise Exception ('Calling md5sum was not successful on file '+self.path()+' . This is a fatal error. Cant continue')
 		md5=output.split(" ")[0]
 		#print "obtained md5="+md5
 		self['md5']=md5
@@ -453,8 +451,6 @@ def design_vs_device(project_directory):
 #manage files API starts here
 def mfCheckConsistency(param=None):
 	"""Checks the consistency of the project, checking that all the files that must exist do exist, everything is in svn and the md5 keys are correct."""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py check_consistency")
 	vci = version_control_interface.VersionControlInterface('')
 	global svnClient
 
@@ -468,15 +464,14 @@ def mfCheckConsistency(param=None):
 		print "I've found this consistency problems (#problems="+str(len(problems))+")"
 		for p in problems:
 			print p 
-		return 1
 	else:
 		print "No problems found."
-	return 0
+		
 def mfCreateRelease():
 	"""Upgrades files.txt with the contents of original_files.txt. Expert command, only to be used by developers of the framework when creating a new release"""
 	directories = load_file('FrameworkInternals' + os.path.sep + 'original_files.txt', os.getcwd())
 	create_release(directories)
-	return 0
+
 def mfInstall(sourceDirectory, targetDirectory):
 	"""Installs or upgrades the framework in a given directory
 	
@@ -486,20 +481,15 @@ def mfInstall(sourceDirectory, targetDirectory):
 	"""
 	directories = load_file('FrameworkInternals' + os.path.sep + 'files.txt', os.getcwd())
 	perform_installation(directories, sourceDirectory, targetDirectory)
-	return 0
+
 def mfSetupSvnIgnore():
 	"""Setups the .svnignore hidden file, so the generated files will be ignored in your svn repository."""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py setup_svn_ignore")
 	project_setup_svn_ignore(os.getcwd())
-	return 0
+
 def mfCheckSvnIgnore():
 	"""Checks that the .svnignore hidden file is properly set up to ignore the generated files in your repository."""
 	check_svn_ignore_project(os.getcwd())
-	return 0
+
 def mfDesignVsDevice():
 	"""Checks if the device files are outdated (By comparing with design), and hence if they should be regenerated."""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py design_vs_device")
 	design_vs_device(os.getcwd())
-	return 0
