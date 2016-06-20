@@ -29,6 +29,7 @@ script:
  - wget -O open62541/src/open62541.c --no-check-certificat https://cernbox.cern.ch/index.php/s/RbxN9UP2iWz04ra/download
  - wget -O open62541/include/open62541.h --no-check-certificat https://cernbox.cern.ch/index.php/s/l9jPKvmI4l2CogC/download
  - python quasar.py external_tool_check
+ - astyle --version
  - python quasar.py generate device GreenLED
  - python quasar.py generate device YellowLED
  - python quasar.py generate device RedLED
