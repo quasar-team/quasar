@@ -20,10 +20,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import subprocess
-import platform
 from manage_files import mfInstall
-import __main__
 
 def upgradeProject(destination):
 	"""Upgrades the framework in a given directory
@@ -31,18 +28,13 @@ def upgradeProject(destination):
 	Keyword arguments:
 	destination -- The target directory where the framework will be installed or upgraded
 	"""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py upgrade_project " + destination)
 	if os.path.exists(destination) and os.path.exists(destination + os.path.sep + 'Device') and os.path.exists(destination + os.path.sep + 'Design') and os.path.exists(destination + os.path.sep + 'Configuration') and os.path.exists(destination + os.path.sep + 'AddressSpace'):
 		destination = os.path.abspath(destination)
 		print( "Selected installation folder: " + destination)
 	else:
-		print("Invalid path!")
-		return -1		
+		raise Exception("There was a problem when trying to ugrade a project, invalid path.")
 	
 	installFramework(destination)
-	
-	return 0
 	
 def createProject(destination):
 	"""Installs the framework in a given directory. If the directory doesn't exist, it gets created
@@ -50,8 +42,6 @@ def createProject(destination):
 	Keyword arguments:
 	destination -- The target directory where the framework will be installed or upgraded
 	"""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py create_project " + destination)
 	if os.path.exists(destination):
 		destination = os.path.abspath(destination)
 		print( "Selected installation folder: " + destination)
@@ -60,8 +50,6 @@ def createProject(destination):
 		os.makedirs(destination)
 		print( "Created installation folder: " + destination)	
 	installFramework(destination)
-	
-	return 0
 
 def installFramework(destination):
 	"""Installs or upgrades the framework in a given directory
@@ -73,9 +61,4 @@ def installFramework(destination):
 	baseDirectory = os.getcwd()
 	
 	print("Calling mfInstall")
-	returnCode = mfInstall(baseDirectory, destination)
-	if returnCode != 0:
-		print("There was a problem calling manage_files.py; Return code = " + str(returnCode))
-		os.chdir(baseDirectory)
-		return -1
-	return 0
+	mfInstall(baseDirectory, destination)

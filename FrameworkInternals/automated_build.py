@@ -20,10 +20,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import subprocess
 import platform
-import __main__
+import subprocess
 from generateCmake import generateCmake
+from externalToolCheck import subprocessWithImprovedErrors
+from commandMap import getCommand
 
 def findFileRecursively( topdir, target ):
 	for dirpath, dirnames, files in os.walk(topdir):
@@ -41,26 +42,19 @@ def automatedBuild(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="FrameworkInternal
 	if BUILD_TYPE != "Release" and BUILD_TYPE != "Debug" and CMAKE_TOOLCHAIN_FILE == "FrameworkInternals" + os.path.sep + "default_configuration.cmake":
 		CMAKE_TOOLCHAIN_FILE = BUILD_TYPE
 		BUILD_TYPE = "Release"
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py build " + BUILD_TYPE + " " + CMAKE_TOOLCHAIN_FILE)
-	returnCode = generateCmake(BUILD_TYPE, CMAKE_TOOLCHAIN_FILE)
-	if returnCode != 0:
-		print("There was a problem calling generateCmake; Return code = " + str(returnCode))		
-		return returnCode			
+	generateCmake(BUILD_TYPE, CMAKE_TOOLCHAIN_FILE)			
 			
 	print('Calling make/msbuild')
 	if platform.system() == "Windows":
 		print('Calling visual studio vcvarsall to set the environment')
-		print('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64')
-		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64', shell=True)
-		if returnCode != 0:
-			print('ERROR: vcvarsall could not be executed, maybe the installation folder is different than the one expected? [C:\Program Files (x86)\Microsoft Visual Studio 12.0]')			
-			return returnCode
+		print(getCommand("vcvarsall") + ' amd64')
+		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
 		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE)
-		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64 && msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE, shell=True)
+		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE, "visual studio msbuild")
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
-		returnCode = subprocess.call('make -j$(nproc)', shell=True)
-	if returnCode != 0:
-		print("Error returned from calling make/msbuild; Return code = " + str(returnCode))
-	return returnCode
+		#we call process nproc and store its output
+		process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
+		out, err = process.communicate()
+		#this output is used for calling make
+		subprocessWithImprovedErrors([getCommand("make"), "-j" + str(int(out))], getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer

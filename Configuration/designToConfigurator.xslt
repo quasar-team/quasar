@@ -107,7 +107,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				UaStatus s = nm->addNodeAndReference(<xsl:value-of select="$parentNodeId"/>, a<xsl:value-of select="fnc:ASClassName($className)"/>, OpcUaId_HasComponent);
 				if (!s.isGood())
 				{
-					std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; <xsl:value-of select="$parentNodeId"/>.toString().toUtf8() &lt;&lt; " to " &lt;&lt; a<xsl:value-of select="fnc:ASClassName($className)"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; endl;
+					std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; <xsl:value-of select="$parentNodeId"/>.toString().toUtf8() &lt;&lt; " to " &lt;&lt; a<xsl:value-of select="fnc:ASClassName($className)"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
 					ASSERT_GOOD(s);
 				}
 				<xsl:variable name="className"><xsl:value-of select="$className"/></xsl:variable>
@@ -237,10 +237,27 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	</xsl:for-each>
 	
 <!-- *************************************************** -->
+<!-- CONFIGURATION DECORATION ************************** -->
+<!-- *************************************************** -->	
+	bool runConfigurationDecoration(Configuration::Configuration&amp; theConfiguration, ConfigXmlDecoratorFunction&amp; configXmlDecoratorFunction)
+	{
+		if(configXmlDecoratorFunction.empty()) return true;
+		
+		if(configXmlDecoratorFunction(theConfiguration))
+		{
+			return true;
+		}
+		else
+		{
+			std::cout &lt;&lt; "Error: device specific configuration decoration failed, check logs for details" &lt;&lt; std::endl;
+		}
+		return false;
+	}	
+	
+<!-- *************************************************** -->
 <!-- CONFIGURATOR MAIN ********************************* -->
 <!-- *************************************************** -->	
-	using namespace std;
-	bool configure (std::string fileName, AddressSpace::ASNodeManager *nm)
+	bool configure (std::string fileName, AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction configXmlDecoratorFunction)
     {
 	
 	std::auto_ptr&lt;Configuration::Configuration&gt; theConfiguration;
@@ -263,9 +280,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	UaNodeId rootNode = UaNodeId(OpcUaId_ObjectsFolder, 0);
 	Device::DRoot *deviceRoot = Device::DRoot::getInstance();
 
-    nm->setNamespace( 2,  "OPCUASERVER" );    
-    configureMeta( *theConfiguration.get(), nm, rootNode );
-	
+    nm->setNamespace( 2,  "OPCUASERVER" );
+    <!-- Set the namespace index from now on to 2. -->        configureMeta( *theConfiguration.get(), nm, rootNode );
+    if(!runConfigurationDecoration(*theConfiguration, configXmlDecoratorFunction)) return false;
+		
 	<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']">
 
         <xsl:call-template name="hasObjects">
@@ -291,7 +309,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				UaStatus s = nm->addNodeAndReference(rootNode, a<xsl:value-of select="fnc:ASClassName($className)"/>, OpcUaId_HasComponent);
 				if (!s.isGood())
 				{
-					std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; rootNode.toString().toUtf8() &lt;&lt; " to " &lt;&lt; a<xsl:value-of select="fnc:ASClassName($className)"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; endl;
+					std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; rootNode.toString().toUtf8() &lt;&lt; " to " &lt;&lt; a<xsl:value-of select="fnc:ASClassName($className)"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
 					ASSERT_GOOD(s);
 				}
 				<xsl:variable name="className"><xsl:value-of select="$className"/></xsl:variable>

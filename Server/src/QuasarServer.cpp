@@ -24,10 +24,7 @@
 #include <LogIt.h>
 #include <string.h>
 #include <shutdown.h>
-#include <DRoot.h>
 #include <boost/foreach.hpp>
-#include <DClass.h>
-#include <ASClass.h>
 #include <stdlib.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp> 
@@ -52,10 +49,10 @@ void QuasarServer::mainLoop()
     {
 
 	boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-	BOOST_FOREACH(Device::DClass* cl, Device::DRoot::getInstance()->classs() )
+	/*BOOST_FOREACH(Device::DClass* cl, Device::DRoot::getInstance()->classs() )
 	{
 	    cl->getAddressSpaceLink()->setVarUInt32( rand(), OpcUa_Good );
-	}
+	}*/
 
     }
     printServerMsg(" Shutting down server");
