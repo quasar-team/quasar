@@ -56,12 +56,12 @@ from designTools import upgradeDesign
 from designTools import createDiagram
 from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
-from optionalModules import enableModule, disableModule, getModuleInfo, listEnabledModules, cleanModules, cleanModule
+from optionalModules import enableModule, disableModule, getModuleInfo, listEnabledModules, removeModules, removeModule
 
 # format is: [command name], callable
 commands = [
-	[['generate','cmake_headers'], generateCmake, False],   # Deprecated, takes variable number of params, same as configure_build
-	[['configure_build'], generateCmake, True], # generates CMake files and downloads optional modules only
+	[['generate','cmake_headers'], generateCmake, False],   # Deprecated, takes variable number of params, same as prepare_build
+	[['prepare_build'], generateCmake, True], # generates CMake files and downloads optional modules only
 	[['generate','root'], generateRoot, False],		 # This takes none - check
 	[['generate','base'], generateBaseClass, False],	 # 1 argument. Check that this works OK only for 1 arg
 	[['generate','device'], generateDeviceClass, True],
@@ -77,8 +77,8 @@ commands = [
 	[['setup_svn_ignore'], mfSetupSvnIgnore, True],
 	[['build'], automatedBuild, True], # includes prepare_build step
 	[['clean'], distClean, True],
-	[['clean_module'], cleanModule, True],
-	[['clean_modules'], cleanModules, True],
+	[['remove_module'], removeModule, True], # removes module dirs but does not disable it
+	[['remove_modules'], removeModules, True],
 	[['create_project'], createProject, True],
 	[['create_release'], mfCreateRelease, False],
 	[['upgrade_project'], upgradeProject, True],
