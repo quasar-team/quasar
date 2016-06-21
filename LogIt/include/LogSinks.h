@@ -29,8 +29,8 @@
 class LogSinks
 {
 public:
-    static LogSinks* g_sLogSinksInstance;
-
+	LogSinks();
+	virtual ~LogSinks();
     void addSink(LogSinkInterface* sink);
     void logMessage(const std::string& logMsg);
 
