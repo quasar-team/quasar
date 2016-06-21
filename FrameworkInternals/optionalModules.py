@@ -176,8 +176,9 @@ def enableModule(moduleName, tag="master", serverString=""):
 	# Check first if module is maybe already present with different version
 	#
 	tagFileName = "EnabledModules/"+moduleName+".tag"
-	oldTag = open(tagFileName).read()
-	if oldTag!=tag:
+	oldTag = ""
+	if os.path.exists(tagFileName): oldTag = open(tagFileName).read()
+	if oldTag and oldTag!=tag:
 		print "Old version of "+moduleName+" exists ("+oldTag+"). Removing it first..."
 		os.chdir(baseDirectory)
 		if not removeModule(moduleName):
@@ -244,9 +245,12 @@ def removeModule(module):
 	# first check whether module contains modified files
 	#
 	baseDirectory = os.getcwd()
+	if not os.path.exists(baseDirectory + os.path.sep + module):
+		print "Error, module directory "+module+" does not exist."
+		return False
 	os.chdir(baseDirectory + os.path.sep + module)
 	output = subprocess.Popen(['git', 'ls-files', '-m'], stdout=subprocess.PIPE).communicate()[0]
-	## with python 2.7 use the following:
+	## with python 2.7 use the f ollowing:
 	## output = subprocess.call("git ls-files -m", shell=True)
 	if output:
 		print "Error, tracked modified files exist in "+module+". Please resolve this before removing the module. Modified files: "
