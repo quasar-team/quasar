@@ -132,7 +132,8 @@ File generateCmake.py						must_exist,must_be_versioned,md5=check,install=overwr
 File generateHonkyTonk.py					must_exist,must_be_versioned,md5=check,install=overwrite
 File install_framework.py					must_exist,must_be_versioned,md5=check,install=overwrite
 File transformDesign.py						must_exist,must_be_versioned,md5=check,install=overwrite
-File runDoxygen.py							must_exist,must_be_versioned,md5=check,install=overwrite
+File runDoxygen.py					        must_exist,must_be_versioned,md5=check,install=overwrite
+File optionalModules.py                                         must_exist,must_be_versioned,md5=check,install=overwrite,
 
 Directory RPM install=create
 
@@ -186,9 +187,9 @@ File framework.py                           deprecated
 File frameworkGUI.py                        deprecated 
 File generated_files_list.cmake             deprecated,install=dont_touch
 File generated_headers_list.cmake           deprecated,install=dont_touch
-File transformDesign.sh               		deprecated,install=dont_touch
+File transformDesign.sh               	    deprecated,install=dont_touch
 File LICENSE.TXT                            must_exist,must_be_versioned,install=overwrite,md5=check,
-
+File OptionalModule.cmake                   must_exist,must_be_versioned,md5=check,install=overwrite,
 
 Directory Meta install=create,
 File CMakeLists.txt must_exist,must_be_versioned,install=overwrite,md5=check
