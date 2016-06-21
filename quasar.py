@@ -56,7 +56,7 @@ from designTools import upgradeDesign
 from designTools import createDiagram
 from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
-from optionalModules import enableModule, disableModule, getModuleInfo, listEnabledModules, removeModules, removeModule
+from optionalModules import enableModule, disableModule, listModules, listEnabledModules, removeModules, removeModule
 
 # format is: [command name], callable
 commands = [
@@ -89,7 +89,7 @@ commands = [
 	[['doxygen'], runDoxygen, True],
 	[['enable_module'], enableModule, True],
 	[['disable_module'], disableModule, True],
-	[['list_modules'], getModuleInfo, True],
+	[['list_modules'], listModules, True],
 	[['list_enabled_modules'], listEnabledModules, True],
 	]
 
