@@ -24,13 +24,14 @@ import platform
 from glob import glob
 from distutils.version import StrictVersion
 from shutil import copy, rmtree
+import json
 
-moduleInfo = {}
+moduleInfo = {} # key = module name, value = module metadata
 
 
 #def stringR
 
-def getEnabledModules():
+def _getEnabledModules():
 	"""Get all enabled module metadata"""
 	baseDirectory = os.getcwd()
 	os.chdir(baseDirectory + os.path.sep + "FrameworkInternals")
@@ -61,15 +62,15 @@ def getEnabledModules():
 
 def listEnabledModules():
 	"""List registered module URLs"""
-	enabledModules = getEnabledModules()
+	enabledModules = _getEnabledModules()
 	print "Enabled optional modules and their required quasar versions: "
 	for module in enabledModules.keys():
 		print module, enabledModules[module]["tag"], "(requires quasar", enabledModules[module]["minVersion"]+")"
 
-def getModuleInfo(serverString="", forceFetch=False):
+def _getModuleInfo(serverString="", forceFetch=False):
 	"""Downloads list of modules from git and initializes global module list."""
 
-	if not serverString: serverString = "https:://github.com"
+	if not serverString: serverString = "https://github.com"
 	else: forceFetch = True
 
 	baseDirectory = os.getcwd()
@@ -103,15 +104,36 @@ def getModuleInfo(serverString="", forceFetch=False):
 		module = moduleUrl.replace(".url","")
 		minVersion = None
 		try:
-			minVersion = open(module+".minVersion").readline().rstrip()
+			moduleInfo[module] = {"minVersion" : open(module+".minVersion").readline().rstrip(),
+					      "url" : open(moduleUrl).readline().rstrip()}
 		except Exception, ex:
-			print ex
-		if not minVersion:
-			print "Error reading version info for module "+module
+			print "Error reading version info for module "+module, ex
 			return False
-		moduleInfo[module] = minVersion
-	print "List of existing optional modules and their required quasar versions: ", moduleInfo
 	os.chdir(baseDirectory)
+	return True
+
+def listModules(serverString="", forceFetch=False):
+	"""Prints list of modules available on git server."""
+
+	print "List of existing optional modules and their required quasar versions: "
+	_getModuleInfo(serverString, forceFetch)
+	print json.dumps(moduleInfo, indent=2)
+
+def _getModuleUrl(moduleName, serverString=""):
+	if not moduleInfo: getModuleInfo(serverString="")
+	url = moduleInfo[moduleName]
+	serverBegin = url.find("://")+3
+	serverEnd = url.find("/", serverBegin)
+	return serverString+url[serverEnd:]
+
+def _checkTagExists(url, tag):
+	if tag=="master": return True
+	output = subprocess.Popen(['git', 'ls-remote', '--tags', url, tag], stdout=subprocess.PIPE).communicate()[0]
+	## with python 2.7 use the following:
+	## output = subprocess.call("git ls-remote --tags "+url+" "+tag, shell=True)
+	if not output:
+		print "Error, tag "+tag+" for URL "+url+" does not exist. Please specify existing tag."
+		return False
 	return True
 
 def enableModule(moduleName, tag="master", serverString=""):
@@ -122,10 +144,10 @@ def enableModule(moduleName, tag="master", serverString=""):
 	moduleName   -- name of the optional module
 	tag          -- tag to checkout, if not specified, master branch is used
 	serverString -- default git server is "https://github.com", specify custom if necessary, e.g. "ssh://git@gitlab.cern.ch:7999"
-	"""	
-	print "Enabling module", moduleName, ", tag", tag
+	"""
+	print "Enabling module "+moduleName+", tag "+tag
 
-	if not getModuleInfo(serverString): return False
+	if not _getModuleInfo(serverString): return False
 
 	print "Checking module to be compatible..."
 	quasarVersion = None
@@ -136,14 +158,16 @@ def enableModule(moduleName, tag="master", serverString=""):
 	if not quasarVersion:
 		print "Error reading version info from Design/quasarVersion.txt"
 		return False
-	moduleMinVersion = moduleInfo[moduleName]
+	moduleMinVersion = moduleInfo[moduleName]["minVersion"]
 	if StrictVersion(quasarVersion) >= StrictVersion(moduleMinVersion):
 		print "Module "+moduleName+" required version "+moduleMinVersion+" is compatible with installed quasar version "+quasarVersion
 	else:
 		print "Cannot enable module "+moduleName+". Minimum required version "+moduleMinVersion+" is newer than installed quasar version "+quasarVersion
 		return False
 
-	print("Copying module url file...")
+	# Check tag to be existing
+	#
+	if not _checkTagExists(moduleInfo[moduleName]["url"], tag): return
 
 	baseDirectory = os.getcwd()
 	fwInternalsDir = baseDirectory + os.path.sep + "FrameworkInternals"
@@ -156,7 +180,9 @@ def enableModule(moduleName, tag="master", serverString=""):
 	if oldTag!=tag:
 		print "Old version of "+moduleName+" exists ("+oldTag+"). Removing it first..."
 		os.chdir(baseDirectory)
-		removeModule(moduleName)
+		if not removeModule(moduleName):
+			print "Module not enabled, correct above errors first."
+			return
 		os.chdir(fwInternalsDir)
 
 	# actually enable
@@ -168,15 +194,9 @@ def enableModule(moduleName, tag="master", serverString=""):
 			copy(file, "EnabledModules/")
 		# change URL if non-default server is specified
 		if serverString:
+			url = _getModuleUrl(moduleName, serverString="")
 			urlFileName = "EnabledModules/"+moduleName+".url"
-			url = open(urlFileName).read()
-			serverBegin = url.find("://")+3
-			serverEnd = url.find("/", serverBegin)
-			print "current server="+url[:serverEnd]
-			url = serverString+url[serverEnd:]
-			print "new url="+url
-			file = open(urlFileName, "w")
-			file.write(url)
+			open(urlFileName, "w").write(url)
 		# add tag
 		if os.path.exists(tagFileName): os.remove(tagFileName)
 		file = open(tagFileName, "w")
@@ -190,14 +210,6 @@ def enableModule(moduleName, tag="master", serverString=""):
 	print("Created module files.")
 
 	return True
-
-def replaceModuleGitServer(moduleName, serverString="github.com/"):
-	"""Changes the module source URL replacing the configured git server with the specified one.
-	
-	Keyword arguments:
-	moduleName -- name of the optional module
-	serverString -- string containing [user]"
-	"""	
 
 def disableModule(moduleName):
 	"""Disables optional module. Module files will be deleted.
@@ -239,7 +251,7 @@ def removeModule(module):
 	if output:
 		print "Error, tracked modified files exist in "+module+". Please resolve this before removing the module. Modified files: "
 		print output
-		return
+		return False
 	os.chdir(baseDirectory)
 
 	# actually remove dirs and files
@@ -255,6 +267,7 @@ def removeModule(module):
 			except Exception, ex:
 				print "Failed to remove dir", dir, ex
 	else: print "Nothing to be removed for module", module
+	return True
 
 def removeModules():
 	"""Remove all enabled modules"""
