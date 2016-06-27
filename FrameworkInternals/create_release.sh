@@ -17,8 +17,8 @@ if [ "`git status --porcelain ../ |wc -l`" != "0" ]; then
 fi
 
 # after this put a version info into files
-echo $TAG > ../Design/genericFrameworkVersion.txt
-echo "#define QUASAR_VERSION_STR \"$TAG\"" > ../Server/include/QUASARFrameworkVersion.h
+echo $TAG > ../Design/quasarVersion.txt
+echo "#define QUASAR_VERSION_STR \"$TAG\"" > ../Server/include/QuasarVersion.h
 
 python ../quasar.py create_release
 

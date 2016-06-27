@@ -33,24 +33,25 @@ def findFileRecursively( topdir, target ):
 				return True;
 	return False;
 
-def automatedBuild(BUILD_TYPE="Release", CMAKE_TOOLCHAIN_FILE="FrameworkInternals" + os.path.sep + "default_configuration.cmake"):
+def automatedBuild(buildType="Release",
+		   cmakeToolchainFile="FrameworkInternals" + os.path.sep + "default_configuration.cmake"):
 	"""Method that generates the cmake headers, and after that calls make/msbuild to compile your server.
 	
 	Keyword arguments:
-	BUILD_TYPE -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
+	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""	
-	if BUILD_TYPE != "Release" and BUILD_TYPE != "Debug" and CMAKE_TOOLCHAIN_FILE == "FrameworkInternals" + os.path.sep + "default_configuration.cmake":
-		CMAKE_TOOLCHAIN_FILE = BUILD_TYPE
-		BUILD_TYPE = "Release"
-	generateCmake(BUILD_TYPE, CMAKE_TOOLCHAIN_FILE)			
+	if buildType != "Release" and buildType != "Debug" and cmakeToolchainFile == "FrameworkInternals" + os.path.sep + "default_configuration.cmake":
+		cmakeToolchainFile = buildType
+		buildType = "Release"
+	generateCmake(buildType, cmakeToolchainFile)			
 			
 	print('Calling make/msbuild')
 	if platform.system() == "Windows":
 		print('Calling visual studio vcvarsall to set the environment')
 		print(getCommand("vcvarsall") + ' amd64')
 		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
-		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE)
-		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + BUILD_TYPE, "visual studio msbuild")
+		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType)
+		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType, "visual studio msbuild")
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
 		#we call process nproc and store its output

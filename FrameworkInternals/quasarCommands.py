@@ -25,6 +25,7 @@ from designTools import createDiagram
 from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
 from externalToolCheck import checkExternalDependencies
+from optionalModules import enableModule, disableModule, listModules, listEnabledModules, removeModules, removeModule
 
 # format is: [command name], callable
 commands = [
@@ -53,6 +54,10 @@ commands = [
 	[['validate_design'], validateDesign, True],	
 	[['doxygen'], runDoxygen, True],	
 	[['external_tool_check'], checkExternalDependencies, True],	
+	[['enable_module'], enableModule, True],
+	[['disable_module'], disableModule, True],
+	[['list_modules'], listModules, True],
+	[['list_enabled_modules'], listEnabledModules, True],
 	]
 	
 def printCommandList():
