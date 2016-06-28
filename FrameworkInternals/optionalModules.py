@@ -25,7 +25,6 @@ from glob import glob
 from distutils.version import StrictVersion
 from shutil import copy, rmtree
 import json
-from externalToolCheck import subprocessWithImprovedErrors
 
 moduleInfo = {} # key = module name, value = module metadata
 
@@ -83,18 +82,19 @@ def _getModuleInfo(serverString="", forceFetch=False):
 		os.mkdir("quasar-modules")
 	os.chdir("quasar-modules")
 	print("Checking out module list from "+serverString)
+	os.system("pwd")
 	if os.path.exists(".git") and not forceFetch:
 		try:
-			subprocessWithImprovedErrors("git pull origin master", "git")
+			subprocess.call("git pull origin master", shell=True)
 		except Exception, ex:
 			print "Error trying to fetch optional module list from git:", ex
 			return False
 	else:
 		try:
-			subprocessWithImprovedErrors("git init", "git")
-			subprocessWithImprovedErrors("git remote add origin "+serverString+"/quasar-team/quasar-modules.git", "git")
-			subprocessWithImprovedErrors("git remote set-url --push origin push-disabled", "git")
-			subprocessWithImprovedErrors("git pull origin master", "git")
+			subprocess.call("git init", shell=True)
+			subprocess.call("git remote add origin "+serverString+"/quasar-team/quasar-modules.git", shell=True)
+			subprocess.call("git remote set-url --push origin push-disabled", shell=True)
+			subprocess.call("git pull origin master", shell=True)
 		except Exception, ex:
 			print "Error trying to fetch optional module list from git:", ex
 			return False

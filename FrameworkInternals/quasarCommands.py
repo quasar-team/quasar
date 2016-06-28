@@ -30,6 +30,7 @@ from optionalModules import enableModule, disableModule, listModules, listEnable
 # format is: [command name], callable
 commands = [
 	[['generate','cmake_headers'], generateCmake, False],   # This one takes variable number of params
+	[['prepare_build'], generateCmake, True],   #
 	[['generate','root'], generateRoot, False],		 # This takes none - check
 	[['generate','base'], generateBaseClass, False],	 # 1 argument. Check that this works OK only for 1 arg
 	[['generate','device'], generateDeviceClass, True],

@@ -116,16 +116,14 @@ add_executable ( ${EXECUTABLE}
 set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
 
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    target_link_libraries ( ${EXECUTABLE} ${OPCUA_TOOLKIT_LIBS_DEBUG} )
+    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG} )
 else(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    target_link_libraries ( ${EXECUTABLE} ${OPCUA_TOOLKIT_LIBS_RELEASE} )
+    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
 endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 
 target_link_libraries ( ${EXECUTABLE} 
 	${BOOST_LIBS}
 	${XML_LIBS}
-
+	${OPCUA_TOOLKIT_LIBS}
 	# Add your custom libraries here
 )
-
-
