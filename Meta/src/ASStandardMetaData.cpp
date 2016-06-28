@@ -19,6 +19,8 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 #include <iostream>
 
 
@@ -50,10 +52,6 @@ ASStandardMetaData::ASStandardMetaData (
 
 
 {
-    UaStatus s;
-    UaVariant v;
-
-
 }
 
 
@@ -111,4 +109,5 @@ void ASStandardMetaData::unlinkDevice ()
 
 
 }
+
 

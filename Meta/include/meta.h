@@ -26,5 +26,16 @@
 #include <ASNodeManager.h>
 #include <DStandardMetaData.h>
 
+#include <ASSourceVariableThreadPool.h>
+#include <ASServer.h>
+#include <ASQuasar.h>
+#include <ASGeneralLogLevel.h>
+#include <ASComponentLogLevel.h>
+
+#include <uavariant.h>
+
 Device::DStandardMetaData* configureMeta(Configuration::Configuration & config, AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId);
+
 void destroyMeta (AddressSpace::ASNodeManager *nm);
+void updateStandardMetaData( AddressSpace::ASNodeManager *nm );
+

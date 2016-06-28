@@ -74,9 +74,12 @@
 	</xs:simpleType>
 	
 	<xs:complexType name="Quasar">
+  	    <xs:attribute name="version" use="required" type="xs:string"/>
 	</xs:complexType>
    
 	<xs:complexType name="Server">
+		<xs:attribute name="connectedClientCount" use="required" type="xs:unsignedInt" />
+  	    <xs:attribute name="certValidityRemaining" use="required" type="xs:string"/>
 	</xs:complexType>
 
 </schema>

@@ -55,7 +55,7 @@ public:
                      ) ;
     /* sample dtr */
     ~DQuasar ();
-	void updateVersion();
+	void setVersion();
 
 
 

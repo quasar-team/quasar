@@ -45,19 +45,6 @@ ASGeneralLogLevel::ASGeneralLogLevel (
  m_logLevel (new ASDelegatingVariable<ASGeneralLogLevel> (nm->makeChildNodeId(this->nodeId(),UaString("logLevel")), UaString("logLevel"), nm->getNameSpaceIndex(), UaVariant(logLevel.c_str()), OpcUa_AccessLevels_CurrentReadOrWrite , nm)),
  m_deviceLink (0)
 {
-    UaVariant v;
-    v.setString (logLevel.c_str());
-
-    m_logLevel->setValue(/*pSession*/0, UaDataValue(UaVariant( v ), OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
-
-    const UaStatus s = nm->addNodeAndReference(this, m_logLevel, OpcUaId_HasComponent);
-    if (!s.isGood())
-    {
-        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_logLevel->nodeId().toString().toUtf8() << " : " << std::endl;
-        ASSERT_GOOD(s);
-    }
-
-    m_logLevel->assignHandler(this, &ASGeneralLogLevel::writeLogLevel);
 }
 
 ASGeneralLogLevel::~ASGeneralLogLevel ()
@@ -139,6 +126,21 @@ void ASGeneralLogLevel::linkDevice( Device::DGeneralLogLevel *deviceLink)
 void ASGeneralLogLevel::unlinkDevice ()
 {
     m_deviceLink = 0;
+}
+
+void ASGeneralLogLevel::connectStandardMetaVariables( AddressSpace::ASNodeManager *nm,
+		UaVariant v_logLevel,
+		UaNode *parentNode )
+{
+	m_logLevel->setValue(/*pSession*/0, UaDataValue( v_logLevel, OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+	UaStatus s = nm->addNodeAndReference( parentNode, m_logLevel, OpcUaId_HasComponent);
+	if (!s.isGood())
+	{
+		LOG(Log::ERR) << "While connectVariable from "
+				<< parentNode->nodeId().toString().toUtf8() << " to "
+				<< m_logLevel->browseName().unqualifiedName().toUtf8();
+		ASSERT_GOOD(s);
+	}
 }
 
 

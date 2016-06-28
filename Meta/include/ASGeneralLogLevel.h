@@ -63,6 +63,9 @@ public:
 
     /* OPC UA Type Information provider for this class. */
     virtual UaNodeId typeDefinitionId () const {return m_typeNodeId;}
+    void connectStandardMetaVariables( AddressSpace::ASNodeManager *nm,
+    		UaVariant v_logLevel,
+    		UaNode *parentNode );
 
 private:
     UaNodeId m_typeNodeId;

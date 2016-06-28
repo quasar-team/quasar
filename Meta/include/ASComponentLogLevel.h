@@ -67,6 +67,11 @@ public:
     void unlinkDevice ();
     Device::DComponentLogLevel * getDeviceLink () const {return m_deviceLink;}
 
+    void connectStandardMetaVariables( AddressSpace::ASNodeManager *nm,
+    		UaVariant v_logLevel,
+    		UaNode *parentNode );
+
+
     /* OPC UA Type Information provider for this class. */
     virtual UaNodeId typeDefinitionId () const {return m_typeNodeId;}
 

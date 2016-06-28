@@ -55,7 +55,11 @@ public:
                      ) ;
     /* sample dtr */
     ~DServer ();
-	void updateConnectedClientCount(unsigned int count);
+
+    // user code specific methods
+	void setConnectedClientCount(unsigned int count);
+	OpcUa_UInt32 getConnectedClientCount( void );
+	void setCertValidityRemaining( std::string vr );
 
 
 

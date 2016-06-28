@@ -106,6 +106,12 @@ public:
     virtual UaNodeId typeDefinitionId () const {
         return m_typeNodeId;
     }
+
+    void connectStandardMetaVariables( AddressSpace::ASNodeManager *nm,
+    		UaVariant v_minThreads,
+    		UaVariant v_maxThreads,
+    		UaNode *parentNode );
+
 private:
     UaNodeId m_typeNodeId;
     /* Variables */

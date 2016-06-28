@@ -96,6 +96,7 @@ namespace AddressSpace
         }
         else
             return 0;
+        return 0;
     }
 
     template<typename T>

@@ -22,61 +22,34 @@
 #include <ASServer.h>
 #include <DServer.h>
 
+#include <ASNodeManager.h>
+
 namespace AddressSpace
 {
 
 
 
 /*ctr*/
-ASServer::ASServer (
-    UaNodeId parentNodeId,
-    const UaNodeId& typeNodeId,
-    ASNodeManager *nm,
-    const Configuration::Server & config):
-    OpcUa::BaseObjectType (
-        /*nodeId*/nm->makeChildNodeId(parentNodeId,"Server"), "Server", nm->getNameSpaceIndex(), nm),
-    m_typeNodeId (typeNodeId)
-
-
-    ,
-    m_connectedClientCount (new
-
-                            OpcUa::BaseDataVariableType
-
-
-                            (nm->makeChildNodeId(this->nodeId(),UaString("connectedClientCount")), UaString("connectedClientCount"), nm->getNameSpaceIndex(), UaVariant(
-
-                                 OpcUa_UInt32( 0 )
-
-                             ),
-
-                             OpcUa_AccessLevels_CurrentRead
-                             , nm))
-
-
-
-    ,
-    m_deviceLink (0)
-
+ASServer::ASServer ( UaNodeId parentNodeId,
+		const UaNodeId& typeNodeId,
+		ASNodeManager *nm,
+		const Configuration::Server & config): OpcUa::BaseObjectType (
+				/*nodeId*/ nm->makeChildNodeId(parentNodeId,"Server"),
+				"Server", nm->getNameSpaceIndex(), nm),
+				m_typeNodeId (typeNodeId),
+				m_connectedClientCount ( new OpcUa::BaseDataVariableType( nm->makeChildNodeId(this->nodeId(), UaString("connectedClientCount")),
+											UaString("connectedClientCount"),
+											nm->getNameSpaceIndex(),
+											UaVariant(OpcUa_UInt32( 0 )),
+										OpcUa_AccessLevels_CurrentRead, nm)),
+				m_certValidityRemaining ( new OpcUa::BaseDataVariableType( nm->makeChildNodeId(this->nodeId(), UaString("m_certValidityRemaining")),
+											UaString("m_certValidityRemaining"),
+											nm->getNameSpaceIndex(),
+											UaVariant(OpcUa_UInt32( 0 )),
+										OpcUa_AccessLevels_CurrentRead, nm)),
+		m_deviceLink (0)
 
 {
-	UaStatus s;
-    UaVariant v;
-
-    v.setUInt32
-    ( 0 );
-
-    m_connectedClientCount->setValue(/*pSession*/0, UaDataValue(UaVariant( v ),
-            OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
-   s = nm->addNodeAndReference(this, m_connectedClientCount, OpcUaId_HasComponent);
-  if (!s.isGood())
-    {
-        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_connectedClientCount->nodeId().toString().toUtf8() << " : " << std::endl;
-        ASSERT_GOOD(s);
-    }
-
-
-
 }
 
 
@@ -104,13 +77,8 @@ ASServer::~ASServer ()
 UaStatus ASServer::setConnectedClientCount (const OpcUa_UInt32 value, OpcUa_StatusCode statusCode,const UaDateTime & srcTime )
 {
     UaVariant v;
-
     v.setUInt32( value );
-
-
-
     return m_connectedClientCount->setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
-
 }
 
 UaStatus ASServer::getConnectedClientCount (OpcUa_UInt32 & r) const
@@ -127,6 +95,19 @@ OpcUa_UInt32 ASServer::getConnectedClientCount () const
     OpcUa_UInt32 v_value;
     v.toUInt32 ( v_value );
     return v_value;
+}
+
+UaStatus ASServer::setCertValidityRemaining (const std::string value, OpcUa_StatusCode statusCode, const UaDateTime & srcTime )
+{
+    UaVariant v;
+    v.setString( value.c_str() );
+    return m_certValidityRemaining->setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
+}
+
+void ASServer::getCertValidityRemaining ( std::string & s) const
+{
+    UaVariant v (* (m_certValidityRemaining->value(/*session*/0).value()));
+    s = v.toString().toUtf8();
 }
 
 
@@ -162,5 +143,33 @@ void ASServer::unlinkDevice ()
 }
 
 
+
+/// add and connect the BaseDataVariables, which are initialized using variants to the specified parent node
+/// this does not work in the constructor, that is why the code is separated into here
+void ASServer::connectStandardMetaVariables( AddressSpace::ASNodeManager *nm,
+		UaVariant v_connectedClientCount,
+		UaVariant v_certValidityRemaining,
+		UaNode *parentNode )
+{
+	m_connectedClientCount->setValue(/*pSession*/0, UaDataValue( v_connectedClientCount, OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+	UaStatus s = nm->addNodeAndReference( parentNode, m_connectedClientCount, OpcUaId_HasComponent);
+	if (!s.isGood())
+	{
+		LOG(Log::ERR) << "While connectVariable from "
+				<< parentNode->nodeId().toString().toUtf8() << " to "
+				<< m_connectedClientCount->browseName().unqualifiedName().toUtf8();
+		ASSERT_GOOD(s);
+	}
+
+	m_certValidityRemaining->setValue(/*pSession*/0, UaDataValue( v_certValidityRemaining, OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+	s = nm->addNodeAndReference( parentNode, m_certValidityRemaining, OpcUaId_HasComponent);
+	if (!s.isGood())
+	{
+		LOG(Log::ERR) << "While connectVariable from "
+				<< parentNode->nodeId().toString().toUtf8() << " to "
+				<< m_certValidityRemaining->browseName().unqualifiedName().toUtf8();
+		ASSERT_GOOD(s);
+	}
 }
 
+} // namespace

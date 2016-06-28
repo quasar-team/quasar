@@ -52,8 +52,12 @@
 #include <ASServer.h>
 #include <DServer.h>
 
+#include <QUASARFrameworkVersion.h>
+
 using std::string;
 using namespace std;
+using namespace AddressSpace;
+
 
 const string getComponentLogLevelFromConfig(const ComponentAttributes& component, const Configuration::ComponentLogLevels& config)
 {
@@ -76,6 +80,7 @@ const string getComponentLogLevelFromConfig(const ComponentAttributes& component
  * This function ensures that:
  * 1) all specified component log levels are registered in the server (to prevent config file typos, etc)
  * 2) that all specified component log levels are present at most once (to not have conflicting levels)
+ * 3) that at least one component log level is registered and exists
  *
  * @return true, when component log levels are sane, false otherwise
  */
@@ -83,6 +88,12 @@ bool validateComponentLogLevels( const Configuration::ComponentLogLevels& logLev
 {
 	std::list<std::string> checkedComponentNames;
 	const std::list<ComponentAttributes> registeredComponents (Log::getComponentLogsList());
+
+	if ( !registeredComponents.size() ) {
+		LOG(Log::ERR) << "validateComponentLogLevels: did not find any registered Component Log Levels";
+		return false;
+	}
+
 	BOOST_FOREACH( const Configuration::ComponentLogLevel &logLevel, logLevels.ComponentLogLevel() )
 	{
 		std::string name (logLevel.componentName());
@@ -124,14 +135,16 @@ bool validateComponentLogLevels( const Configuration::ComponentLogLevels& logLev
 
 const Configuration::ComponentLogLevels getComponentLogLevels(const Configuration::Log & config)
 {
+#if 0
 	if(config.ComponentLogLevels().present())
 	{
 		LOG(Log::INF) << "StandardMetaData.Log.ComponentLogLevels configuration found in the configuration file, configuring StandardMetaData.Log.ComponentLogLevels from the configuration file";
 		return config.ComponentLogLevels().get();
 	}
 	else
+#endif
 	{
-		LOG(Log::INF) << "no StandardMetaData.Log.ComponentLogLevels configuration found in the configuration file, configuring StandardMetaData.Log.ComponentLogLevels with default values";
+		LOG(Log::INF) << " configuring StandardMetaData.Log.ComponentLogLevels with fixed format default values";
 		return Configuration::ComponentLogLevels();
 	}
 }
@@ -157,6 +170,8 @@ void configureGeneralLogLevel(const string& logLevel, AddressSpace::ASNodeManage
 
     Device::DGeneralLogLevel* dGeneralLogLevel = new Device::DGeneralLogLevel (logLevel);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dGeneralLogLevel, asGeneralLogLevel);
+    UaVariant v_logLevel; v_logLevel.setString( logLevel.c_str() );
+    asGeneralLogLevel->connectStandardMetaVariables( nm, v_logLevel, asGeneralLogLevel );
 }
 
 void configureSourceVariableThreadPool(const Configuration::SourceVariableThreadPool& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent)
@@ -166,7 +181,13 @@ void configureSourceVariableThreadPool(const Configuration::SourceVariableThread
 
     Device::DSourceVariableThreadPool* dSourceVariableThreadPool = new Device::DSourceVariableThreadPool(config.minThreads(), config.maxThreads());
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dSourceVariableThreadPool, asSourceVariableThreadPool);
+    MetaUtils::setDSourceVariableThreadPool( dSourceVariableThreadPool );
+
+    UaVariant v_minThreads; v_minThreads.setUInt32( 0 );
+    UaVariant v_maxThreads; v_maxThreads.setUInt32( 10 );
+    asSourceVariableThreadPool->connectStandardMetaVariables( nm, v_minThreads, v_maxThreads, asSourceVariableThreadPool );
 }
+
 
 void configureQuasar(const Configuration::Quasar& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent, Device::DRoot * deviceParent)
 {
@@ -175,7 +196,10 @@ void configureQuasar(const Configuration::Quasar& config, AddressSpace::ASNodeMa
 
     Device::DQuasar* dQuasar = new Device::DQuasar(config, deviceParent);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dQuasar, asQuasar);
-    dQuasar->updateVersion();
+    MetaUtils::setDQuasar( dQuasar );
+
+    UaVariant v_version; v_version.setString( QUASAR_VERSION_STR );
+    asQuasar->connectStandardMetaVariables( nm,	v_version, asQuasar );
 }
 
 void configureServer(const Configuration::Server& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent, Device::DRoot * deviceParent)
@@ -186,72 +210,93 @@ void configureServer(const Configuration::Server& config, AddressSpace::ASNodeMa
     Device::DServer* dServer = new Device::DServer(config, deviceParent);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dServer, asServer);
     MetaUtils::setDServer(dServer);
+
+    UaVariant v_connectedClientCount; v_connectedClientCount.setUInt32( 0 );
+    UaVariant v_certValidityRemaining; v_certValidityRemaining.setString( "remaining certificate time unknown" );
+    asServer->connectStandardMetaVariables( nm,
+    		v_connectedClientCount,
+			v_certValidityRemaining,
+			asServer );
 }
 
-void configureComponentLogLevel(const ComponentAttributes& component, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
+void addComponentLogLevel(const ComponentAttributes& component, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
 {
-    AddressSpace::ASComponentLogLevel *asComponentLogLevel = new AddressSpace::ASComponentLogLevel(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVEL), nm, component.getName(), logLevel);
+	// have to hand-add each component, getting the parent right
+    AddressSpace::ASComponentLogLevel *asComponentLogLevel = new AddressSpace::ASComponentLogLevel(parent->nodeId(),
+    		nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVEL), nm, component.getName(), logLevel);
     MetaUtils::linkChildNodeToParent(asComponentLogLevel, parent, nm);
 
-    Device::DComponentLogLevel* dComponentLogLevel = new Device::DComponentLogLevel (component.getId(), logLevel);
-    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dComponentLogLevel, asComponentLogLevel);
+    UaVariant v_logLevel; v_logLevel.setString("ERR");
+    asComponentLogLevel->connectStandardMetaVariables( nm, v_logLevel, asComponentLogLevel );
 }
+
 
 const Configuration::Log getLogConfig(const Configuration::StandardMetaData & config)
 {
+#if 0
 	if( config.Log().present() )
 	{
 		LOG(Log::INF) << "StandardMetaData.Log configuration found in the configuration file, configuring StandardMetaData.Log from the configuration file";
 		return config.Log().get();
 	}
 	else
-	{
-		LOG(Log::INF) << "no StandardMetaData.Log configuration found in the configuration file, configuring StandardMetaData.Log with default values";
+#endif
+		// use a fixed format, see Configuration/Configuration.xsd and Meta/config/Meta.xsd
+		LOG(Log::INF) << "configuring StandardMetaData.Log with fixed format default values";
 		return Configuration::Log();
-	}
 }
+
 
 const Configuration::SourceVariableThreadPool getSourceVariableThreadPoolConfig(const Configuration::StandardMetaData & config)
 {
+#if 0
 	if( config.SourceVariableThreadPool().present() )
 	{
 		LOG(Log::INF) << "StandardMetaData.SourceVariableThreadPool configuration found in the configuration file, configuringStandardMetaData.SourceVariableThreadPool from the configuration file";
 		return config.SourceVariableThreadPool().get();
 	}
 	else
+#endif
 	{
-		LOG(Log::INF) << "no StandardMetaData.SourceVariableThreadPool configuration found in the configuration file, configuring StandardMetaData.SourceVariableThreadPool with default values";
-		unsigned int min = 1;
-		unsigned int max = 10;
-		return Configuration::SourceVariableThreadPool(min, max);
+		LOG(Log::INF) << "configuring StandardMetaData.SourceVariableThreadPool with fixed format default values";
+		Configuration::SourceVariableThreadPool::minThreads_type minThreads = 0;
+		Configuration::SourceVariableThreadPool::maxThreads_type maxThreads = 10;
+		return Configuration::SourceVariableThreadPool(minThreads, maxThreads);
 	}
 }
 
 const Configuration::Quasar getQuasarConfig(const Configuration::StandardMetaData & config)
 {
+#if 0
 	if( config.Quasar().present() )
 	{
 		LOG(Log::INF) << "StandardMetaData.Quasar configuration found in the configuration file, configuringStandardMetaData.Quasar from the configuration file";
 		return config.Quasar().get();
 	}
 	else
+#endif
 	{
-		LOG(Log::INF) << "no StandardMetaData.Quasar configuration found in the configuration file, configuring StandardMetaData.Quasar with default values";
-		return Configuration::Quasar();
+		LOG(Log::INF) << "configuring StandardMetaData.Quasar with fixed format default values";
+		Configuration::Quasar::version_type version = QUASAR_VERSION_STR;
+		return Configuration::Quasar( version );
 	}
 }
 
 const Configuration::Server getServerConfig(const Configuration::StandardMetaData & config)
 {
+#if 0
 	if( config.Server().present() )
 	{
 		LOG(Log::INF) << "StandardMetaData.Server configuration found in the configuration file, configuringStandardMetaData.Server from the configuration file";
 		return config.Server().get();
 	}
 	else
+#endif
 	{
-		LOG(Log::INF) << "no StandardMetaData.Server configuration found in the configuration file, configuring StandardMetaData.Server with default values";
-		return Configuration::Server();
+		LOG(Log::INF) << "configuring StandardMetaData.Server with fixed format default values";
+		Configuration::Server::connectedClientCount_type connectedClientCount = 0;
+		Configuration::Server::certValidityRemaining_type certValidityRemaining = "unknown";
+		return Configuration::Server( connectedClientCount, certValidityRemaining );
 	}
 }
 
@@ -260,35 +305,44 @@ void configureComponentLogLevels(const Configuration::ComponentLogLevels& config
     AddressSpace::ASComponentLogLevels* asComponentLogLevels = new AddressSpace::ASComponentLogLevels(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVELS), nm);
     MetaUtils::linkChildNodeToParent(asComponentLogLevels, parent, nm);
 
-    BOOST_FOREACH(const ComponentAttributes& component, Log::getComponentLogsList())
+    // set up a fixed format list as "smallest common denominator". More specific log components can be added later,
+    // probably using LogIt again
+    std::list<ComponentAttributes> attList;
+    attList.push_back( ComponentAttributes( 0, "AS_DISCO",   Log::ERR ) );
+    attList.push_back( ComponentAttributes( 1, "AS_UPDATES", Log::ERR ) );
+    attList.push_back( ComponentAttributes( 2, "AS_WRITES",  Log::ERR ) );
+    attList.push_back( ComponentAttributes( 3, "STATES",     Log::ERR ) );
+    BOOST_FOREACH(const ComponentAttributes& component, attList )
     {
+    	// the log level for each of them might be overwritten by config
     	const string componentLogLevel = getComponentLogLevelFromConfig(component, config);
-    	configureComponentLogLevel(component, componentLogLevel, nm, asComponentLogLevels);
+    	addComponentLogLevel(component, componentLogLevel, nm, asComponentLogLevels);
     }
 }
+
 
 void configureLog(const Configuration::Log & config, AddressSpace::ASNodeManager *nm, AddressSpace::ASStandardMetaData* parent)
 {
     AddressSpace::ASLog *asLog = new AddressSpace::ASLog(parent->nodeId(),nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_LOG), nm, config);
     MetaUtils::linkChildNodeToParent(asLog, parent, nm);
-
     configureGeneralLogLevel(getGeneralLogLevelFromConfig(config), nm, asLog);
-    const Configuration::ComponentLogLevels componentLogLevels = getComponentLogLevels(config);
-    if (!validateComponentLogLevels(componentLogLevels))
-    	abort(); // TODO: Ben: pass the information back in more human way, perhaps?
+
+    const Configuration::ComponentLogLevels componentLogLevels = Configuration::ComponentLogLevels(); // empty
     configureComponentLogLevels(componentLogLevels, nm, asLog);
 }
 
 const Configuration::StandardMetaData getMetaConfig(const Configuration::Configuration& config)
 {
+#if 0
 	if( config.StandardMetaData().present() )
 	{
 		LOG(Log::INF) << "meta configuration found in the configuration file, configuring StandardMetaData from the configuration file";
 		return config.StandardMetaData().get();
 	}
 	else
+#endif
 	{
-		LOG(Log::INF) << "no Meta configuration found in the configuration file, configuring StandardMetaData with default values";
+		LOG(Log::INF) << "configuring StandardMetaData with fixed format default values";
 		return Configuration::StandardMetaData ();
 	}
 }
@@ -296,33 +350,21 @@ const Configuration::StandardMetaData getMetaConfig(const Configuration::Configu
 Device::DStandardMetaData* configureMeta( const Configuration::StandardMetaData & config,AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId, Device::DRoot * parent)
 {
 	const UaNodeId unid =	nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_STANDARDMETADATA);
-	AddressSpace::ASStandardMetaData *asMeta = new AddressSpace::ASStandardMetaData(parentNodeId, unid, nm, config);
-	//AddressSpace::ASStandardMetaData *asMeta = new AddressSpace::ASStandardMetaData(parentNodeId,
-	//			nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_STANDARDMETADATA), nm, config);
 
+	AddressSpace::ASStandardMetaData *asMeta = new AddressSpace::ASStandardMetaData(parentNodeId, unid, nm, config);
 	UaStatus s = nm->addNodeAndReference( parentNodeId, asMeta, /* implementation specific type data */ OpcUaId_HasComponent );
+	if ( s != UA_STATUSCODE_GOOD ){
+		LOG(Log::ERR) << "could not add StandardMetaData node, exiting...";
+		exit(-1);
+	}
 	MetaUtils::assertNodeAdded(s, parentNodeId, asMeta->nodeId());
 	Device::DStandardMetaData *dMeta = new Device::DStandardMetaData ( config, parent );
-	MetaUtils::linkHandlerObjectAndAddressSpaceNode(dMeta, asMeta);
+	MetaUtils::linkHandlerObjectAndAddressSpaceNode( dMeta, asMeta );
 
-#if 0
-	// add standard meta information which has to be always there:
-	// Server
-	// Log
-	// Quasar
-	// SourceVariableThreadPool
-	// and maybe also Certificates, to be created
-	Configuration::Server m_server = getServerConfig( config );
-	const UaNodeId unid_s02 =	nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_SERVER );
-	AddressSpace::ASServer *asServer_s02 = new AddressSpace::ASServer( asMeta->nodeId(), unid_s02, nm, m_server );
-	s = nm->addNodeAndReference( asMeta, asServer_s02, /* implementation specific type data */ OpcUaId_HasComponent );
-
-	// or wrapped up in Meta:: to be fixed
-    configureLog(getLogConfig(config), nm, asMeta);
-    configureSourceVariableThreadPool(getSourceVariableThreadPoolConfig(config), nm, asMeta);
-    configureQuasar(getQuasarConfig(config), nm, asMeta, parent);
 	configureServer(getServerConfig(config), nm, asMeta, parent);
-#endif
+	configureSourceVariableThreadPool(getSourceVariableThreadPoolConfig(config), nm, asMeta);
+	configureQuasar(getQuasarConfig(config), nm, asMeta, parent);
+	configureLog( getLogConfig(config), nm, asMeta);
     return dMeta;
 }
 
@@ -330,6 +372,39 @@ Device::DStandardMetaData* configureMeta(Configuration::Configuration & config, 
 {
 	return configureMeta(getMetaConfig(config), nm, parentNodeId, Device::DRoot::getInstance());
 }
+
+// update nodes in standard meta data where the information does NOT come from the client
+// this can be called i.e. by the QuasarServer at 1Hz
+void updateStandardMetaData( AddressSpace::ASNodeManager *nm ){
+
+	Device::DServer *dserver = MetaUtils::getDServer();
+	//LOG(Log::INF) << " updating StandardMetaData.Server";
+
+	// some fake animation for now. This needs to be connected correctly
+	int cc = rand();
+	dserver->setConnectedClientCount( cc );
+
+	string validityRemaining;
+	ostringstream convert;
+	convert << cc;
+	validityRemaining = "still unknown" + convert.str();
+	dserver->setCertValidityRemaining( validityRemaining );
+
+	// quasar has just the version string, does not need to be updated.
+	// if more variables are needed, for info:
+	// Device::DQuasar *dquasar = MetaUtils::getDQuasar();
+	// dquasar->setVersion();
+
+	// variable thread pool:
+	// some clarification needed: do we need this dynamically updatable?
+	// Device::DSourceVariableThreadPool *dsvtp = MetaUtils::getDSourceVariableThreadPool();
+	// LOG(Log::INF) << " updating " << dsvtp->getFullName();
+
+	// logging: GeneralLogLevel and ComponentLogLevels: this information comes from the client
+
+}
+
+
 
 void destroyMeta (AddressSpace::ASNodeManager *nm)
 {
@@ -392,5 +467,5 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 			a->unlinkDevice();
 		}
 	}
-
 }
+

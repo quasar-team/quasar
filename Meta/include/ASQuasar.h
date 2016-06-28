@@ -95,7 +95,10 @@ public:
     virtual UaNodeId typeDefinitionId () const {
         return m_typeNodeId;
     }
-private:
+
+    void connectStandardMetaVariables( AddressSpace::ASNodeManager *nm, UaVariant v_version, UaNode *parentNode );
+
+    private:
     UaNodeId m_typeNodeId;
     /* Variables */
     OpcUa::BaseDataVariableType

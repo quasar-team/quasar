@@ -84,36 +84,6 @@ ASSourceVariableThreadPool::ASSourceVariableThreadPool (
 
 
 {
-    UaStatus s;
-    UaVariant v;
-
-    v.setUInt32 (
-    		static_cast<OpcUa_UInt32>(min)
-    );
-    m_minThreads->setValue(/*pSession*/0, UaDataValue(UaVariant( v ), OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
-
-    s = nm->addNodeAndReference(this, m_minThreads, OpcUaId_HasComponent);
-    if (!s.isGood())
-    {
-        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_minThreads->nodeId().toString().toUtf8() << " : " << std::endl;
-        ASSERT_GOOD(s);
-    }
-
-
-    v.setUInt32 (
-    		static_cast<OpcUa_UInt32>(max)
-    );
-    m_maxThreads->setValue(/*pSession*/0, UaDataValue(UaVariant( v ), OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
-
-    s = nm->addNodeAndReference(this, m_maxThreads, OpcUaId_HasComponent);
-    if (!s.isGood())
-    {
-        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_maxThreads->nodeId().toString().toUtf8() << " : " << std::endl;
-        ASSERT_GOOD(s);
-    }
-
-
-
 }
 
 
@@ -227,6 +197,31 @@ void ASSourceVariableThreadPool::unlinkDevice ()
     m_deviceLink = 0;
 }
 
+void ASSourceVariableThreadPool::connectStandardMetaVariables( AddressSpace::ASNodeManager *nm,
+		UaVariant v_minThreads,
+		UaVariant v_maxThreads,
+		UaNode *parentNode )
+{
+	m_minThreads->setValue(/*pSession*/0, UaDataValue( v_minThreads, OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+	UaStatus s = nm->addNodeAndReference( parentNode, m_minThreads, OpcUaId_HasComponent);
+	if (!s.isGood())
+	{
+		LOG(Log::ERR) << "While connectVariable from "
+				<< parentNode->nodeId().toString().toUtf8() << " to "
+				<< m_minThreads->browseName().unqualifiedName().toUtf8();
+		ASSERT_GOOD(s);
+	}
+
+	m_maxThreads->setValue(/*pSession*/0, UaDataValue( v_maxThreads, OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+	s = nm->addNodeAndReference( parentNode, m_maxThreads, OpcUaId_HasComponent);
+	if (!s.isGood())
+	{
+		LOG(Log::ERR) << "While connectVariable from "
+				<< parentNode->nodeId().toString().toUtf8() << " to "
+				<< m_maxThreads->browseName().unqualifiedName().toUtf8();
+		ASSERT_GOOD(s);
+	}
+}
 
 }
 

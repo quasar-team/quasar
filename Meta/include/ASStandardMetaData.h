@@ -62,11 +62,7 @@ public:
     ~ASStandardMetaData ();
 
 
-
     /* setters and getters for variables */
-
-
-
 
     /* delegators for cachevariables  */
 
@@ -77,9 +73,9 @@ public:
 
     void linkDevice( Device::DStandardMetaData *deviceLink);
     void unlinkDevice ();
-    Device::DStandardMetaData * getDeviceLink () const {
-        return m_deviceLink;
-    }
+    //Device::DStandardMetaData * getDeviceLink () const {
+    //    return m_deviceLink;
+    //}
 
     /* OPC UA Type Information provider for this class. */
     virtual UaNodeId typeDefinitionId () const {
@@ -87,8 +83,8 @@ public:
     }
 private:
     UaNodeId m_typeNodeId;
-    /* Variables */
 
+    /* Variables */
 
     /* Device Logic link (if requested) */
 

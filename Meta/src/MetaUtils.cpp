@@ -22,6 +22,8 @@
 #include "MetaUtils.h"
 unsigned int g_sessionCounter = 0;
 Device::DServer* g_dServer = 0;
+Device::DQuasar* g_dQuasar = 0;
+Device::DSourceVariableThreadPool* g_dSourceVariableThreadPool = 0;
 
 void MetaUtils::assertNodeAdded(const UaStatus& status, const UaNodeId& parentNodeId, const UaNodeId& childNodeId)
 {
@@ -32,17 +34,22 @@ void MetaUtils::assertNodeAdded(const UaStatus& status, const UaNodeId& parentNo
     }
 }
 
+Device::DServer* MetaUtils::getDServer( void ){	return( g_dServer );}
+void MetaUtils::setDServer(Device::DServer* ser) {	g_dServer = ser; }
 
-void MetaUtils::setDServer(Device::DServer* ser)
-{
-	g_dServer = ser;
-}
+Device::DQuasar* MetaUtils::getDQuasar( void ){	return( g_dQuasar );}
+void MetaUtils::setDQuasar(Device::DQuasar* ser) {	g_dQuasar = ser; }
+
+Device::DSourceVariableThreadPool* MetaUtils::getDSourceVariableThreadPool( void ){	return( g_dSourceVariableThreadPool );}
+void MetaUtils::setDSourceVariableThreadPool(Device::DSourceVariableThreadPool* ser) {	g_dSourceVariableThreadPool = ser; }
+
+
 void MetaUtils::increaseSessionCounter()
 {
 	g_sessionCounter ++;
 	if(g_dServer != 0)
 	{
-		g_dServer->updateConnectedClientCount(g_sessionCounter);
+		g_dServer->setConnectedClientCount(g_sessionCounter);
 	}
 }
 void MetaUtils::decreaseSessionCounter()
@@ -50,8 +57,19 @@ void MetaUtils::decreaseSessionCounter()
 	g_sessionCounter --;
 	if(g_dServer != 0)
 	{
-		g_dServer->updateConnectedClientCount(g_sessionCounter);
+		g_dServer->setConnectedClientCount(g_sessionCounter);
 	}
+}
+uint32_t MetaUtils::getSessionCounter()
+{
+	if( g_dServer != 0 )
+	{
+		g_sessionCounter = g_dServer->getConnectedClientCount();
+		return( g_sessionCounter );
+	} else {
+		std::cout << __FILE__ << " " << __LINE__ << " MetaUtils::getSessionCounter: no server found" << std::endl;
+	}
+	return( 0 );
 }
 
 

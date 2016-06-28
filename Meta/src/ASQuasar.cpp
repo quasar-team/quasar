@@ -60,24 +60,6 @@ ASQuasar::ASQuasar (
 
 
 {
-    UaStatus s;
-    UaVariant v;
-
-    v.setString
-    ( "dummy version" );
-
-    m_version->setValue(/*pSession*/0, UaDataValue(UaVariant( v ),
-                                    OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
-
-    s = nm->addNodeAndReference(this, m_version, OpcUaId_HasComponent);
-    if (!s.isGood())
-    {
-        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_version->nodeId().toString().toUtf8() << " : " << std::endl;
-        ASSERT_GOOD(s);
-    }
-
-
-
 }
 
 
@@ -170,6 +152,20 @@ void ASQuasar::unlinkDevice ()
     m_deviceLink = 0;
 }
 
+void ASQuasar::connectStandardMetaVariables( AddressSpace::ASNodeManager *nm,
+		UaVariant v_version,
+		UaNode *parentNode )
+{
+	m_version->setValue(/*pSession*/0, UaDataValue( v_version, OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+	UaStatus s = nm->addNodeAndReference( parentNode, m_version, OpcUaId_HasComponent);
+	if (!s.isGood())
+	{
+		LOG(Log::ERR) << "While connectVariable from "
+				<< parentNode->nodeId().toString().toUtf8() << " to "
+				<< m_version->browseName().unqualifiedName().toUtf8();
+		ASSERT_GOOD(s);
+	}
+}
 
 }
 

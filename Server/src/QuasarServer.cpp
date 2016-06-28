@@ -29,6 +29,13 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp> 
 
+
+#include <MetaUtils.h>
+#include <meta.h>
+
+
+using namespace std;
+
 QuasarServer::QuasarServer() : BaseQuasarServer()
 {
 
@@ -36,31 +43,34 @@ QuasarServer::QuasarServer() : BaseQuasarServer()
 
 QuasarServer::~QuasarServer()
 {
- 
+
 }
 
 void QuasarServer::mainLoop()
 {
-    printServerMsg("Press "+std::string(SHUTDOWN_SEQUENCE)+" to shutdown server");
+	printServerMsg("Press "+std::string(SHUTDOWN_SEQUENCE)+" to shutdown server");
 
-    // Wait for user command to terminate the server thread.
-
-    while(!ShutDownFlag())
-    {
-
-	boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-	/*BOOST_FOREACH(Device::DClass* cl, Device::DRoot::getInstance()->classs() )
+	// Wait for user command to terminate the server thread.
+	srand(std::time(0));
+	while(!ShutDownFlag())
 	{
-	    cl->getAddressSpaceLink()->setVarUInt32( rand(), OpcUa_Good );
-	}*/
+		boost::this_thread::sleep(boost::posix_time::milliseconds( 1000 ));
+		boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+		/*BOOST_FOREACH(Device::DClass* cl, Device::DRoot::getInstance()->classs() )
+		{
+		    cl->getAddressSpaceLink()->setVarUInt32( rand(), OpcUa_Good );
+		}*/
 
+		// update variable in std meta which are coming from the server, like certificates, nb clients
+		// modify that method to your needs
+		// updateStandardMetaData( m_nodeManager );
     }
     printServerMsg(" Shutting down server");
 }
 
 void QuasarServer::initialize()
 {
-    LOG(Log::INF) << "Initializing Quasar server.";
+	LOG(Log::INF) << "Initializing Quasar server.";
 
 }
 
@@ -72,5 +82,5 @@ void QuasarServer::shutdown()
 void QuasarServer::initializeLogIt()
 {
 	Log::initializeLogging();
-  LOG(Log::INF) << "Logging initialized.";
+	LOG(Log::INF) << "Logging initialized.";
 }

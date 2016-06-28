@@ -23,7 +23,9 @@
 #define META_INCLUDE_METAUTILS_H_
 
 #include <ASNodeManager.h>
-#include "DServer.h"
+#include <DServer.h>
+#include <DQuasar.h>
+#include <DSourceVariableThreadPool.h>
 
 namespace MetaUtils
 {
@@ -44,9 +46,18 @@ void linkHandlerObjectAndAddressSpaceNode(THandlerObject* handlerObject, TAddres
 	addressSpaceNode->linkDevice( handlerObject );
     handlerObject->linkAddressSpace( addressSpaceNode );
 }
-void setDServer(Device::DServer*);
 void increaseSessionCounter();
 void decreaseSessionCounter();
+uint32_t getSessionCounter();
+
+void setDServer(Device::DServer*);
+Device::DServer* getDServer( void );
+
+void setDQuasar(Device::DQuasar* ser);
+Device::DQuasar* getDQuasar( void );
+
+void setDSourceVariableThreadPool(Device::DSourceVariableThreadPool* ser);
+Device::DSourceVariableThreadPool* getDSourceVariableThreadPool( void );
 
 
 } // namespace MetaUtils

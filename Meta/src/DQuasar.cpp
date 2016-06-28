@@ -78,9 +78,9 @@ DQuasar::~DQuasar ()
 {
 }
 
-void DQuasar::updateVersion()
+void DQuasar::setVersion()
 {
-	getAddressSpaceLink()->setVersion(QUASAR_VERSION_STR, OpcUa_Good);
+	getAddressSpaceLink()->setVersion( QUASAR_VERSION_STR, OpcUa_Good );
 }
 /* delegators for cachevariables and externalvariables */
 

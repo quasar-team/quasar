@@ -1,5 +1,7 @@
 #ifndef BACKEND_OPEN62541
 
+this does not compile for open62541_backend
+
 /******************************************************************************
 ** opcserver.cpp
 **

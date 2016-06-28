@@ -64,18 +64,12 @@ public:
 
 
     /* setters and getters for variables */
-
-
-
     UaStatus getConnectedClientCount (OpcUa_UInt32 &) const ;
-    UaStatus setConnectedClientCount (const OpcUa_UInt32 value, OpcUa_StatusCode statusCode,const UaDateTime & srcTime = UaDateTime::now()) ;
+    UaStatus setConnectedClientCount (const OpcUa_UInt32 value, OpcUa_StatusCode statusCode, const UaDateTime & srcTime = UaDateTime::now()) ;
+    OpcUa_UInt32 getConnectedClientCount () const; // short getter (possible because nullPolicy=nullForbidden)
 
-
-
-    /* short getter (possible because nullPolicy=nullForbidden) */
-    OpcUa_UInt32 getConnectedClientCount () const;
-
-
+    UaStatus setCertValidityRemaining (const std::string value, OpcUa_StatusCode statusCode, const UaDateTime & srcTime = UaDateTime::now());
+    void getCertValidityRemaining ( std::string & s) const;
 
 
     /* delegators for cachevariables  */
@@ -95,12 +89,17 @@ public:
     virtual UaNodeId typeDefinitionId () const {
         return m_typeNodeId;
     }
+
+    void connectStandardMetaVariables( AddressSpace::ASNodeManager *nm,
+    		UaVariant v_connectedClientCount,
+			UaVariant v_certValidityRemaining,
+			UaNode *parentNode );
+
 private:
     UaNodeId m_typeNodeId;
     /* Variables */
-    OpcUa::BaseDataVariableType
-    * m_connectedClientCount;
-
+    OpcUa::BaseDataVariableType *m_connectedClientCount;
+    OpcUa::BaseDataVariableType *m_certValidityRemaining;
 
     /* Device Logic link (if requested) */
 
