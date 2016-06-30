@@ -44,7 +44,7 @@ class VersionControlInterface:
         try:
             if self.vcs_type is 'git':
                 import pygit2
-                self.repo = pygit2.Repository('.')
+                self.repo = pygit2.Repository(project_path)
             elif self.vcs_type is 'svn':
                 import pysvn
                 self.svnClient = pysvn.Client()

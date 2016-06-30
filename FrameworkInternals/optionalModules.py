@@ -8,7 +8,7 @@ optional_modules.py
 @copyright:  2016 CERN
 
 @license:
-Copyright (c) 2016, CERN, Universidad de Oviedo.
+Copyright (c) 2016, CERN
 All rights reserved.
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -25,6 +25,7 @@ from glob import glob
 from distutils.version import StrictVersion
 from shutil import copy, rmtree
 import json
+import version_control_interface
 
 moduleInfo = {} # key = module name, value = module metadata
 
@@ -207,10 +208,21 @@ def enableModule(moduleName, tag="master", serverString=""):
 		print "Failed to set up module files in FrameworkInternals/EnabledModules/ :", ex
 		return False
 
+        print("Created module files. Adding them to your version control system to store the selection.")
+        try:
+                vci = version_control_interface.VersionControlInterface(baseDirectory + os.path.sep)
+                module_description_files = ['.url', '.tag', '.minVersion']
+                for suffix in module_description_files:
+                        full_path = os.getcwd() + os.path.sep + 'FrameworkInternals' + os.path.sep + 'EnabledModules' + os.path.sep + moduleName + suffix
+                        if not vci.is_versioned(full_path):
+                                vci.add_to_vc(full_path)
+                print('Your selection got remembered in the VCS. Dont forget to commit the changes.')
+        except Exception as e:
+                print('Unable to store your module selection because: '+str(e)+'. Note that module description files were created so you can add them to the VCS yourself')
+        
 	os.chdir(baseDirectory)
 
-	print("Created module files.")
-
+	
 	return True
 
 def disableModule(moduleName):
@@ -230,7 +242,21 @@ def disableModule(moduleName):
 		print "Failed to remove module file in FrameworkInternals/EnabledModules/ :", ex
 		return False
 
-	print("Removed url file of "+moduleName)
+	print("Removed url file of "+moduleName+'. Now trying to store your decision in the VCS.')
+        try:
+                vci = version_control_interface.VersionControlInterface(os.getcwd() + os.path.sep)
+                module_description_files = ['.url', '.tag', '.minVersion']
+                for suffix in module_description_files:
+                        full_path = os.path.join(os.getcwd(), 'FrameworkInternals', 'EnabledModules', moduleName + suffix)
+                        if vci.is_versioned(full_path):
+                                vci.remove_from_vc(full_path)
+                print('Your selection got remembered in the VCS. Dont forget to commit the changes.')
+        except Exception as e:
+                print('Unable to store your module selection because: '+str(e)+'. Note that module description files were removed.')
+                raise e
+                
+        
+        
 	print("Remove module code if existing...")
 	removeModule(moduleName)
 
