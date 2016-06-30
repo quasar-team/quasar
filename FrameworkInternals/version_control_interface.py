@@ -30,7 +30,7 @@ class VersionControlInterface:
     def __init__(self,project_path):
         magic_found_per_type = {}
         for vcs_type in known_vcs_types:
-            magic_found_per_type[vcs_type] = os.path.isdir(project_path +  magic_vcs_dir[vcs_type])
+            magic_found_per_type[vcs_type] = os.path.isdir(project_path + os.path.sep + magic_vcs_dir[vcs_type])
         #  see what vcs types were identified: preferably there should be exactly one
         magic_found = filter( lambda x: magic_found_per_type[x], magic_found_per_type )
         if len(magic_found) < 1:

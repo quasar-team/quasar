@@ -252,7 +252,7 @@ def disableModule(moduleName):
                                 vci.remove_from_vc(full_path)
                 print('Your selection got remembered in the VCS. Dont forget to commit the changes.')
         except Exception as e:
-                print('Unable to store your module selection because: '+str(e)+'. Note that module description files were removed.')
+                print('Unable to store your module selection because: '+str(e)+'. Note that module description files were created so you can add them to the VCS yourself')
                 raise e
                 
         

@@ -451,7 +451,7 @@ def design_vs_device(project_directory):
 #manage files API starts here
 def mfCheckConsistency(param=None):
 	"""Checks the consistency of the project, checking that all the files that must exist do exist, everything is in svn and the md5 keys are correct."""
-	vci = version_control_interface.VersionControlInterface('')
+	vci = version_control_interface.VersionControlInterface('.')
 	global svnClient
 
 	global ask
