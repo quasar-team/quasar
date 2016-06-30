@@ -57,14 +57,15 @@ foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
     file (STRINGS ${moduleFile} OPT_MODULE_URL)
     get_filename_component(module ${moduleFile} NAME_WE) 
     file (STRINGS FrameworkInternals/EnabledModules/${module}.tag OPT_MODULE_TAG)
-    message("module=${module} URL=${OPT_MODULE_URL} TAG=${OPT_MODULE_TAG}")
+    message("Adding module ${module} URL=${OPT_MODULE_URL} TAG=${OPT_MODULE_TAG}")
     set(OPTIONAL_SERVER_MODULES ${OPTIONAL_SERVER_MODULES} ${module})
     set(OPT_MODULE_NAME ${module})
-    message("adding ${module}")
     configure_file(${PROJECT_SOURCE_DIR}/OptionalModule.cmake
-                   ${OPT_MODULE_NAME}_cmake/CMakeLists.txt)
-    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME}_cmake)
-    execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME}_cmake )
+                   FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake/CMakeLists.txt)
+    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake)
+    execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake OUTPUT_FILE ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_download.log)
+    execute_process(COMMAND git remote set-url --push origin push-disabled WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME})
+    message("Module ${module} was added.")
     #
 endforeach(moduleFile)
 #
@@ -115,16 +116,14 @@ add_executable ( ${EXECUTABLE}
 set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
 
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    target_link_libraries ( ${EXECUTABLE} ${OPCUA_TOOLKIT_LIBS_DEBUG} )
+    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG} )
 else(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    target_link_libraries ( ${EXECUTABLE} ${OPCUA_TOOLKIT_LIBS_RELEASE} )
+    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
 endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 
 target_link_libraries ( ${EXECUTABLE} 
 	${BOOST_LIBS}
 	${XML_LIBS}
-
+	${OPCUA_TOOLKIT_LIBS}
 	# Add your custom libraries here
 )
-
-

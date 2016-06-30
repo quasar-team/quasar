@@ -21,11 +21,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 import os
 import sys
-import subprocess
 import shutil
 import platform
-import __main__
-
+from commandMap import getCommand
+from externalToolCheck import subprocessWithImprovedErrors
 
 def deleteFolderRecursively( topdir, target ):
 	for dirpath, dirnames, files in os.walk(topdir):
@@ -58,26 +57,20 @@ def deleteExtensionRecursively( topdir, target ):
 	return;
 	
 def distClean(param=None):
-	"""Cleaning method. It first calls msbuild/make clean and after that it will delete the leftover generated files in the Server."""
-	if "quasarGUI.py" in __main__.__file__:
-		if(param == None):
-			print("Calling: python quasar.py clean")
-		else:
-			print("Calling: python quasar.py clean " + param)
+	"""
+	Cleaning method. It first calls msbuild/make clean and after that it will delete the leftover generated files in the Server.
+	If parameter --orig is specified, the generated files ending with the extension .orig will also be cleared.	
+	"""
 	if platform.system() == "Windows":
 		print('Calling visual studio vcvarsall to set the environment')
-		print('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64')
-		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64', shell=True)
-		if returnCode != 0:
-			print('ERROR: vcvarsall could not be executed, maybe the installation folder is different than the one expected? [C:\Program Files (x86)\Microsoft Visual Studio 12.0]')			
-			return returnCode
+		print(getCommand("vcvarsall") + ' amd64')
+		subprocessWithImprovedErrors("\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
+
 		print('Calling msbuild clean')
 		print('msbuild ALL_BUILD.vcxproj /t:Clean')
-		returnCode = subprocess.call('"C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat" amd64 && msbuild ALL_BUILD.vcxproj /t:Clean', shell=True)
+		subprocessWithImprovedErrors("\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /t:Clean', "visual studio msbuild", [0, 1])
 	elif platform.system() == "Linux":
-		returnCode = subprocess.call(['make', 'clean'])
-	if returnCode != 0:
-		print("There was a problem calling make/msbuild clean; Return code = " + str(returnCode))		
+		subprocessWithImprovedErrors([getCommand('make'), 'clean'], getCommand("make"))	
 	print('Deleting generated files and directories')
 	deleteFolderRecursively('.', 'CMakeFiles')
 	deleteFolderRecursively('.', 'Win32')
@@ -100,4 +93,3 @@ def distClean(param=None):
 	if param == '--orig':
 		print('Removing .orig files')
 		deleteExtensionRecursively('.', 'orig')
-	return returnCode;

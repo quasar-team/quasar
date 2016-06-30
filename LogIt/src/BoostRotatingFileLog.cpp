@@ -26,7 +26,6 @@
 #include <boost/log/core/core.hpp>
 
 #include <boost/log/sources/record_ostream.hpp>
-#include <boost/log/sources/logger.hpp>
 #include <boost/log/core/record.hpp>
 #include <boost/log/sources/logger.hpp>
 #include <boost/log/common.hpp>
@@ -44,10 +43,8 @@ using sinks::text_file_backend;
 
 const std::string fileNamePattern = "file_%5N.log";
 const std::string logDirectory = "log";
-const size_t maxLogFileSizeBytes = 5000;
+const size_t maxLogFileSizeBytes = 5000000;
 const size_t maxLogFileCount = 10;
-
-boost::log::sources::logger_mt g_sTheLogger;
 
 bool BoostRotatingFileLog::initialize()
 {
@@ -57,14 +54,14 @@ bool BoostRotatingFileLog::initialize()
 
 void BoostRotatingFileLog::logMessage(const std::string& logEntry)
 {
-    boost::log::record record = g_sTheLogger.open_record();
+    boost::log::record record = m_boostLogger.open_record();
 
     if(record)
     {
         boost::log::record_ostream stream(record);
         stream << logEntry;
         stream.flush();
-        g_sTheLogger.push_record(boost::move(record));
+		m_boostLogger.push_record(boost::move(record));
     }
 }
 

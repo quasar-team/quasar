@@ -30,81 +30,29 @@ if(currentFolder in internalFolders):
 	os.chdir("../")
 sys.path.insert(0, './FrameworkInternals')
 
-from generateCmake import generateCmake
-from automated_build import automatedBuild
-from distclean import distClean
-from install_framework import createProject
-from install_framework import upgradeProject
-from manage_files import mfCheckConsistency
-from manage_files import mfCreateRelease
-from manage_files import mfInstall
-from manage_files import mfSetupSvnIgnore
-from manage_files import mfCheckSvnIgnore
-from manage_files import mfDesignVsDevice
-from deviceGenerators import generateRoot
-from deviceGenerators import generateBaseClass
-from deviceGenerators import generateDeviceClass
-from addressSpaceGenerators import generateASClass
-from addressSpaceGenerators import generateInformationModel
-from addressSpaceGenerators import generateSourceVariables
-from configurationGenerators import generateConfiguration
-from configurationGenerators import generateConfigurator
-from configurationGenerators import generateConfigValidator
-from designTools import validateDesign
-from designTools import formatDesign
-from designTools import upgradeDesign
-from designTools import createDiagram
-from generateHonkyTonk import generateHonkyTonk
-from runDoxygen import runDoxygen
-from optionalModules import enableModule, disableModule, getModuleInfo, listEnabledModules, cleanModules, cleanModule
+from quasarCommands import printCommandList
+from quasarCommands import getCommands
 
-# format is: [command name], callable
-commands = [
-	[['generate','cmake_headers'], generateCmake, False],   # Deprecated, takes variable number of params, same as configure_build
-	[['configure_build'], generateCmake, True], # generates CMake files and downloads optional modules only
-	[['generate','root'], generateRoot, False],		 # This takes none - check
-	[['generate','base'], generateBaseClass, False],	 # 1 argument. Check that this works OK only for 1 arg
-	[['generate','device'], generateDeviceClass, True],
-	[['generate','source_variables'], generateSourceVariables, False],
-	[['generate','info_model'], generateInformationModel, False],
-	[['generate','asclass'], generateASClass, False],
-	[['generate','config_xsd'], generateConfiguration, False],
-	[['generate','config_cpp'], generateConfigurator, False],
-	[['generate','config_validator'], generateConfigValidator, False],
-	[['generate','honkytonk'], generateHonkyTonk, True],
-	[['generate','diagram'], createDiagram, True],
-	[['check_consistency'], mfCheckConsistency, True],
-	[['setup_svn_ignore'], mfSetupSvnIgnore, True],
-	[['build'], automatedBuild, True], # includes prepare_build step
-	[['clean'], distClean, True],
-	[['clean_module'], cleanModule, True],
-	[['clean_modules'], cleanModules, True],
-	[['create_project'], createProject, True],
-	[['create_release'], mfCreateRelease, False],
-	[['upgrade_project'], upgradeProject, True],
-	[['design_vs_device'], mfDesignVsDevice, True],
-	[['upgrade_design'], upgradeDesign, True],
-	[['format_design'], formatDesign, True],
-	[['validate_design'], validateDesign, True],
-	[['doxygen'], runDoxygen, True],
-	[['enable_module'], enableModule, True],
-	[['disable_module'], disableModule, True],
-	[['list_modules'], getModuleInfo, True],
-	[['list_enabled_modules'], listEnabledModules, True],
-	]
+if len(sys.argv) < 2:
+        print 'The script was run without specifying what to do. Here are available commands:'
+        printCommandList()
+        sys.exit(1)
 
 try:
+	commands = getCommands()
 	matched_command = filter(lambda x: x[0] == sys.argv[1:1+len(x[0])], commands)[0]
 except IndexError:
 	print 'Sorry, no such command. These are available:'
-	for cmd in commands:
-		if cmd[2]:
-			print ' '.join(cmd[0])
+	printCommandList()
 	sys.exit(1)
 
 if '-h' in sys.argv or '--help' in sys.argv:
 	help(matched_command[1])
 	sys.exit(0)
 else:
-	exit_code = matched_command[1]( * sys.argv[1+len(matched_command[0]):])  # pack arguments after the last chunk of the command
-	sys.exit(exit_code)
+        try:
+	        matched_command[1]( * sys.argv[1+len(matched_command[0]):])  # pack arguments after the last chunk of the command
+        except Exception as e:
+                print 'Failed because: '+str(e)+'.\nHint: look at the lines above, answer might be there.'
+                sys.exit(1)
+	sys.exit(0)

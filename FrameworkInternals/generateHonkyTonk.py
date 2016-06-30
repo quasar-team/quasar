@@ -20,14 +20,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import platform
 from transformDesign import transformDesignVerbose
 
 def generateHonkyTonk():
 	"""Generates honkyTonky.cc, a special class intended for testing your namespace with simulated (random) values."""
 	extraPath = "Extra" + os.path.sep
 	output = "honkyTonky.cc"
-	returnCode = transformDesignVerbose(extraPath + "designToHonkyTonk.xslt", extraPath + output, 0, 1)
-	if returnCode == 0 :
-		print("Properly generated.")
-	return returnCode
+	transformDesignVerbose(extraPath + "designToHonkyTonk.xslt", extraPath + output, 0, 1)
+	print("Properly generated.")	
