@@ -107,7 +107,8 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
 #ifdef BACKEND_OPEN62541
 void BaseQuasarServer::runThread()
 {
-    UA_StatusCode retval = UA_Server_run(m_pServer, 1, &g_RunningFlag);
+    UA_StatusCode retval = UA_Server_run(m_pServer, &g_RunningFlag);
+    
 }
 #endif
   
@@ -133,9 +134,14 @@ int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCrea
     m_pServer = new OpcServer;
     m_pServer->setServerConfig(getServerConfigFullPath(serverSettingsPath), serverSettingsPath.c_str());
 #else
-    m_pServer = UA_Server_new(UA_ServerConfig_standard);
-    UA_Server_setLogger(m_pServer, logger);
-    UA_Server_addNetworkLayer(m_pServer, ServerNetworkLayerTCP_new(UA_ConnectionConfig_standard, 4841));
+    UA_ServerConfig config = UA_ServerConfig_standard;
+    UA_ServerNetworkLayer nl = UA_ServerNetworkLayerTCP(UA_ConnectionConfig_standard, 4841);
+    config.networkLayers = &nl;
+    config.networkLayersSize = 1;
+    m_pServer = UA_Server_new(config);
+//    UA_Server_setLogger(m_pServer, logger);
+    
+  
 #endif
 
     if (onlyCreateCertificate)
