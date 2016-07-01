@@ -56,4 +56,4 @@ add_definitions(-Wall -Wno-deprecated -std=gnu++0x -Wno-literal-suffix)
 # 62xxx no uatrace
 set (LOGIT_HAS_UATRACE FALSE)
 
-set(BACKEND_SERVER_MODULES open62541 open62541-compat)
+set(BACKEND_SERVER_MODULES open62541-compat)
