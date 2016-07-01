@@ -60,12 +60,16 @@ foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
     message("Adding module ${module} URL=${OPT_MODULE_URL} TAG=${OPT_MODULE_TAG}")
     set(OPTIONAL_SERVER_MODULES ${OPTIONAL_SERVER_MODULES} ${module})
     set(OPT_MODULE_NAME ${module})
-    configure_file(${PROJECT_SOURCE_DIR}/OptionalModule.cmake
+    configure_file(${PROJECT_SOURCE_DIR}/FrameworkInternals/OptionalModule.cmake
                    FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake/CMakeLists.txt)
     execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake)
     execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake OUTPUT_FILE ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_download.log)
-    execute_process(COMMAND git remote set-url --push origin push-disabled WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME})
-    message("Module ${module} was added.")
+    if (EXISTS ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME})
+       message("Module ${module} was added.")
+       execute_process(COMMAND git remote set-url --push origin push-disabled WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME})
+    else()
+       message("Error, module ${module} was not properly fetched. Please check FrameworkInternals/EnabledModules/${module}_download.log for errors.")
+    endif()
     #
 endforeach(moduleFile)
 #
