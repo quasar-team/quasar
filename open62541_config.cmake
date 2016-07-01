@@ -23,7 +23,7 @@ else(DEFINED ENV{BOOST_PATH_HEADERS})
     message ("Assuming standard Boost installation as no BOOST_PATH_HEADERS is defined in your environment")
     SET( BOOST_PATH_HEADERS "" )
     SET( BOOST_PATH_LIBS "" )
-    SET( BOOST_LIBS "-lboost_program_options -lboost_thread" )
+    SET( BOOST_LIBS "-lboost_program_options -lboost_thread-mt" )
 endif(DEFINED ENV{BOOST_PATH_HEADERS})
 
 message ("using BOOST_LIBS [$ENV{BOOST_LIBS}]")

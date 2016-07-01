@@ -206,9 +206,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	#include &lt;Configurator.h&gt;
 	#include &lt;Configuration.hxx&gt;
 
-<!--	#ifndef BACKEND_OPEN62541 -->
 	#include &lt;meta.h&gt;
-<!--	#endif -->
 
 	#include &lt;LogIt.h&gt;
 	
@@ -280,8 +278,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	UaNodeId rootNode = UaNodeId(OpcUaId_ObjectsFolder, 0);
 	Device::DRoot *deviceRoot = Device::DRoot::getInstance();
 
-    nm->setNamespace( 2,  "OPCUASERVER" );
-    <!-- Set the namespace index from now on to 2. -->        configureMeta( *theConfiguration.get(), nm, rootNode );
+    configureMeta( *theConfiguration.get(), nm, rootNode );
     if(!runConfigurationDecoration(*theConfiguration, configXmlDecoratorFunction)) return false;
 		
 	<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']">
