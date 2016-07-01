@@ -33,6 +33,10 @@ else(DEFINED CMAKE_TOOLCHAIN_FILE)
 endif(DEFINED CMAKE_TOOLCHAIN_FILE)
 
 set(PYTHON_COMMAND python)
+set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
+
+set(CUSTOM_SERVER_MODULES "")
+
 set(EXECUTABLE OpcUaServer)
 
 include_directories (
@@ -77,7 +81,7 @@ endforeach(moduleFile)
 #
 
 set(NATIVE_SERVER_MODULES AddressSpace Configuration Common Server Device Meta LogIt) 
-set(SERVER_MODULES ${NATIVE_SERVER_MODULES} ${OPTIONAL_SERVER_MODULES})
+set(SERVER_MODULES ${NATIVE_SERVER_MODULES} ${OPTIONAL_SERVER_MODULES} ${CUSTOM_SERVER_MODULES})
 set(OPTIONAL_MODULES_INCLUDES)
 set(MODULES_OBJECTS)
 
@@ -97,7 +101,6 @@ foreach(module ${SERVER_MODULES})
 	set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
 endforeach(module)
 
-set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
 add_custom_command(
     OUTPUT ${PROJECT_SOURCE_DIR}/Design/validated.tmp
