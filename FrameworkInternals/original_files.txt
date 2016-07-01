@@ -128,8 +128,8 @@ File generateHonkyTonk.sh                   deprecated,install=dont_touch
 Directory FrameworkInternals install=create
 File files.txt                              must_exist,must_be_versioned,install=overwrite
 File manage_files.py                        must_exist,must_be_versioned,md5=check,install=overwrite
-File default_configuration.cmake	    	must_exist,must_be_versioned,md5=check,install=overwrite
-File addressSpaceGenerators.py				must_exist,must_be_versioned,md5=check,install=overwrite
+File default_configuration.cmake            must_exist,must_be_versioned,md5=check,install=overwrite
+File addressSpaceGenerators.py	            must_exist,must_be_versioned,md5=check,install=overwrite
 File automated_build.py						must_exist,must_be_versioned,md5=check,install=overwrite
 File configurationGenerators.py				must_exist,must_be_versioned,md5=check,install=overwrite
 File designTools.py							must_exist,must_be_versioned,md5=check,install=overwrite
@@ -145,6 +145,7 @@ File version_control_interface.py           must_exist,must_be_versioned,md5=che
 File externalToolCheck.py					must_exist,must_be_versioned,md5=check,install=overwrite
 File commandMap.py							must_exist,must_be_versioned,md5=check,install=overwrite
 File quasarCommands.py						must_exist,must_be_versioned,md5=check,install=overwrite
+File OptionalModule.cmake                   must_exist,must_be_versioned,md5=check,install=overwrite,
 
 Directory RPM install=create
 
@@ -207,7 +208,7 @@ File generated_files_list.cmake             deprecated,install=dont_touch
 File generated_headers_list.cmake           deprecated,install=dont_touch
 File transformDesign.sh               	    deprecated,install=dont_touch
 File LICENSE.TXT                            must_exist,must_be_versioned,install=overwrite,md5=check,
-File OptionalModule.cmake                   must_exist,must_be_versioned,md5=check,install=overwrite,
+
 
 Directory Meta install=create,
 File CMakeLists.txt must_exist,must_be_versioned,install=overwrite,md5=check
