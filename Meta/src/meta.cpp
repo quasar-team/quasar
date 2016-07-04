@@ -52,6 +52,8 @@
 #include <ASServer.h>
 #include <DServer.h>
 
+#include <Certificate.h>
+
 #include <QUASARFrameworkVersion.h>
 
 using std::string;
@@ -217,6 +219,12 @@ void configureServer(const Configuration::Server& config, AddressSpace::ASNodeMa
     		v_connectedClientCount,
 			v_certValidityRemaining,
 			asServer );
+
+    // certificate
+    string certfn = "./PKI/CA/certs/certificate.der";
+    string privkeyfn = "./PKI/CA/private/server_priv.pem";
+    Certificate::Instance( certfn, privkeyfn, Certificate::BEHAVIOR_TRY );
+    Certificate::Instance()->init();
 }
 
 void addComponentLogLevel(const ComponentAttributes& component, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
@@ -384,16 +392,14 @@ void updateStandardMetaData( AddressSpace::ASNodeManager *nm ){
 	int cc = rand();
 	dserver->setConnectedClientCount( cc );
 
-	string validityRemaining;
-	ostringstream convert;
-	convert << cc;
-	validityRemaining = "still unknown" + convert.str();
-	dserver->setCertValidityRemaining( validityRemaining );
+
+	dserver->setCertValidityRemaining( Certificate::Instance()->remainingTime() );
 
 	// quasar has just the version string, does not need to be updated.
-	// if more variables are needed, for info:
-	// Device::DQuasar *dquasar = MetaUtils::getDQuasar();
-	// dquasar->setVersion();
+
+	// get some open6 version
+	// cout << (char *) UA_ServerConfig_standard.buildInfo.softwareVersion.data << endl;
+
 
 	// variable thread pool:
 	// some clarification needed: do we need this dynamically updatable?
