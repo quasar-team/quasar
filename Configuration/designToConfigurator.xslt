@@ -277,7 +277,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	UaNodeId rootNode = UaNodeId(OpcUaId_ObjectsFolder, 0);
 	Device::DRoot *deviceRoot = Device::DRoot::getInstance();
-
+    // namespace index should be 2 from here on
+    nm->setNamespace(2, "OPCUASERVER");
+    
     configureMeta( *theConfiguration.get(), nm, rootNode );
     if(!runConfigurationDecoration(*theConfiguration, configXmlDecoratorFunction)) return false;
 		
