@@ -14,7 +14,7 @@ before_install:
 script:
  - git clone https://github.com/quasar-team/open62541-compat.git
  - git clone https://github.com/quasar-team/quasar-validation-ci.git
- - mv quasar-validation-ci/CI/open62541CI/open62541folderCMakeLists.txt open62541/CMakeLists.txt
+ #- mv quasar-validation-ci/CI/open62541CI/open62541folderCMakeLists.txt open62541/CMakeLists.txt
  - mv quasar-validation-ci/CI/Design.xml Design/
  - mv quasar-validation-ci/CI/config.xml bin/
  
