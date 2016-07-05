@@ -1,50 +1,28 @@
 language: cpp
 compiler: gcc
-addons:
-  apt:
-   packages:
-    - python-lxml
-    - astyle
-    - default-jre
-    - libxerces-c-dev
 before_install:
- #- sudo aptitude install -y libboost-all-dev:i386 #libxerces-c-dev:i386 libicu-dev:i386
- #- sudo apt-get install -y libssl-dev:i386 libxml2-dev:i386 libxml2-utils:i386
- #- sudo apt-get install -y gcc-multilib g++-multilib python-svn xsdcxx
-#- sudo dpkg --add-architecture i386
- #- sudo apt-get install -f
- #- sudo dpkg --configure -a
- #- sudo apt-get -qq update
- #- sudo DEBIAN_FRONTEND=noninteractive apt-get -q --yes --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
- #- sudo apt-get install -y python-svn python-lxml astyle cmake xsdcxx default-jre build-essential
- #- wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
- #- tar -xzvf cmake-2.8.12.2.tar.gz 
- #- cd cmake-2.8.12.2
- #- CC=gcc CXX=g++ bash -c './bootstrap'
- #- make      
- #- sudo make install
- #- cd ..
- #- sudo sh -c "echo 'foreign-architecture i386' > /etc/dpkg/dpkg.cfg.d/multiarch"
- # not sure if boost 32 bit is needed for the trial build, but installing this seems to break the compilers
- #- sudo apt-get -f install
- #- sudo apt-get install -y gcc-multilib g++-multilib 
- #this is not a permanent link! At some point it may stop working
- #- wget --no-check-certificate https://cernbox.cern.ch/index.php/s/nYKgDvAwmSVnMLx/download
- #- tar -xzvf download
- #- sudo cp -R sdk/ /opt/OpcUaToolkit-1.3.3-evaluation/
- #- sudo aptitude -q -y install libssl-dev:i386 gcc-multilib:i386 libxml2-dev:i386
+ - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle libboost-all-dev xsdcxx default-jre libssl-dev gcc-multilib g++-multilib
+ - wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
+ - tar -xzvf cmake-2.8.12.2.tar.gz 
+ - cd cmake-2.8.12.2
+ - ./bootstrap
+ - make      
+ - sudo make install
+ - cd ..
+ #links from cernbox are not permanent, be carefull
+ - wget -O uatoolkit151.tar.gz --no-check-certificat https://cernbox.cern.ch/index.php/s/xZRLNSZluifm7uk/download
+ - tar -xzvf uatoolkit151.tar.gz
+ - sudo cp -R sdk/ /opt/OpcUaToolkit-1.5.1-evaluation/
 script:
- #- sudo find / -name "*boost*"
-# - git clone https://github.com/quasar-team/quasar-validation-ci.git
- #again, the cernbox link is not permanent, be careful
- #- wget -O saxon9he.jar --no-check-certificat https://cernbox.cern.ch/index.php/s/FIZm1Ew5CyxLDUd/download
- #- mv saxon9he.jar Design/
- #- mv quasar-validation-ci/CI/Design.xml Design/
- #- mv quasar-validation-ci/CI/config.xml bin/
- #- mv quasar-validation-ci/CI/ubuntu_evaluationToolkit.cmake .
- #- sudo chmod 777 -R *
- #- python quasar.py generate device GreenLED
- #- python quasar.py generate device YellowLED
- #- python quasar.py generate device RedLED
- #- C_INCLUDE_PATH=/usr/include/$(gcc -print-multiarch) && python quasar.py build Release ubuntu_evaluationToolkit.cmake
- - ls
+ - git clone https://github.com/quasar-team/quasar-validation-ci.git
+ - mv quasar-validation-ci/CI/Design.xml Design/
+ - mv quasar-validation-ci/CI/config.xml bin/
+ - mv quasar-validation-ci/CI/ServerConfig.xml bin/
+ - mv quasar-validation-ci/CI/ubuntu_evaluationToolkit.cmake .
+ #links from cernbox are not permanent, be carefull
+ - wget -O Design/saxon9he.jar --no-check-certificat https://cernbox.cern.ch/index.php/s/FIZm1Ew5CyxLDUd/download
+ - python quasar.py generate device GreenLED
+ - python quasar.py generate device YellowLED
+ - python quasar.py generate device RedLED
+ - sudo chmod 777 -R *
+ - python quasar.py build Release ubuntu_evaluationToolkit.cmake
