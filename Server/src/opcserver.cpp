@@ -20,6 +20,12 @@
 
 #include <version_coremodule.h>
 
+#ifndef CPP_SDK_MAJOR
+#define CPP_SDK_MAJOR PROD_MAJOR
+#define CPP_SDK_MINOR PROD_MINOR
+#define CPP_SDK_MINOR2 PROD_PATCH
+#endif
+
 #define UA_API_VERSION (CPP_SDK_MAJOR * 100 \
                                + CPP_SDK_MINOR * 10 \
                                + CPP_SDK_MINOR2 )
@@ -308,10 +314,6 @@ int OpcServer::start()
     // Check trace settings
     if ( d->m_pServerConfig->loadConfiguration().isGood() )
     {
-		if(VersionInfoCoreModule::getCoreModuleVersion() == UaString("1.5.1.326 / b2dd5e7d778ea11e091aeac8c1c839f5e6b3920d"))
-        {//If the version is 1.5.1.326 we define the macro UATOOLKIT_1_5_1_326, to do a ifdef switch later, because of a small change in the API
-			#define UATOOLKIT_1_5_1_326 1			
-        }
 
         OpcUa_Boolean bTraceEnabled    = OpcUa_False;
         OpcUa_UInt32  uTraceLevel      = 0;
