@@ -12,6 +12,10 @@ before_install:
  - cd ..
  
 script:
+ - mkdir ../TrafficLightServer
+ - python quasar.py create_project ../TrafficLightServer
+ - cd ../TrafficLightServer
+ 
  - git clone https://github.com/quasar-team/open62541-compat.git
  - git clone https://github.com/quasar-team/quasar-validation-ci.git
  #- mv quasar-validation-ci/CI/open62541CI/open62541folderCMakeLists.txt open62541/CMakeLists.txt
