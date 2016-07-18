@@ -8,19 +8,25 @@ if [ "$TAG" == "" ]; then
   exit 1
 fi
 
-if [ "`svn stat ../ |wc -l`" != "0" ]; then   
-  echo "Some files are probably not commited, fix that first"
+
+
+if [ "`git status --porcelain ../ |wc -l`" != "0" ]; then   
+    echo "Some files are probably not commited, fix that first"
+    echo "To see the list run git status"
   exit 1 
 fi
 
 # after this put a version info into files
-echo $TAG > ../Design/genericFrameworkVersion.txt
-echo "#define QUASAR_VERSION_STR \"$TAG\"" > ../Server/include/QUASARFrameworkVersion.h
+echo $TAG > ../Design/quasarVersion.txt
+echo "#define QUASAR_VERSION_STR \"$TAG\"" > ../Server/include/QuasarVersion.h
 
 python ../quasar.py create_release
 
 # after this files.txt and genericFrameworkVersion.txt has changed so should be recommited
-svn commit -m "files.txt fix for tag=$1" ../
+git commit -m "files.txt update in preparation for tag=$1" ../
 
-svn cp https://svn.cern.ch/reps/atlasdcs/OpcUaGenericServer/trunk https://svn.cern.ch/reps/atlasdcs/OpcUaGenericServer/tags/OpcUaGenericServer-$1
+git push origin master
 
+git tag -a "v$1"
+
+git push origin "v$1"

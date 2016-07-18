@@ -60,7 +60,7 @@ elementFormDefault="qualified">
     		use="required">
     	</attribute>
 
-    	<attribute name="vendor" type="string"></attribute>
+    	<attribute name="author" type="string"></attribute>
     </complexType>
 
     <element name="design" type="tns:Design">

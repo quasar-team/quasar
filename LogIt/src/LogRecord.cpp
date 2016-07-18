@@ -20,7 +20,7 @@
  */
 
 #include "LogRecord.h"
-#include "LogSinks.h"
+#include "LogItInstance.h"
 #include "LogIt.h"
 
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -49,7 +49,7 @@ LogRecord::LogRecord(const string& file, const int& line, const Log::LOG_LEVEL& 
 LogRecord::~LogRecord()
 {
     m_stream.flush();
-    LogSinks::g_sLogSinksInstance->logMessage(m_stream.str());
+    LogItInstance::getInstance()->m_logSinksInstance.logMessage(m_stream.str());
 }
 
 std::ostringstream& LogRecord::initializeStream(const string& file, const int& line, const Log::LOG_LEVEL& level)

@@ -136,7 +136,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:if test="fnc:classHasDeviceLogic(/,$className)!='true'">
 				<xsl:message terminate="yes">Class '<xsl:value-of select="$className"/>' hasnt got device logic</xsl:message>
 		</xsl:if>
-	 	/* This is device body stub */
+		<xsl:value-of select="fnc:headerStubGenerated(/,'using transform designToDeviceBody.xslt','Piotr Nikiel')"/>
 
 		
 #include &lt;boost/foreach.hpp&gt;		

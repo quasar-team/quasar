@@ -22,8 +22,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 import os.path
 import sys
-import subprocess
 import filecmp
+from externalToolCheck import subprocessWithImprovedErrors
+from commandMap import getCommand
 
 # args:
 # $1    xslt transform filename
@@ -59,35 +60,28 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
 	additionalParam -- Optional extra param. If specified, it will be given directly to saxon9he.jar
 	"""
 	#files
-	XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + 'saxon9he.jar'
+	XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + getCommand('saxon')
 	DESIGN_XML = '.' + os.path.sep + 'Design' + os.path.sep + 'Design.xml'
-
 	if overwriteProtection == 1:
 		originalOutputFile = outputFile
 		outputFile = outputFile + '.generated'
+	try:
+		#Do transformation
+		if additionalParam == None:		
+			subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile], getCommand("java"))		
+		else:
+			subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile, additionalParam], getCommand("java"))	
 
-	#Do transformation
-	if additionalParam == None:
-		returnCode = subprocess.call(['java', '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile])
-		if returnCode != 0:
-			raise Exception("There was a problem generating " + outputFile + "; Return code = " + str(returnCode))
-	else:
-		returnCode = subprocess.call(['java', '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile, additionalParam])
-		if returnCode != 0:
-			raise Exception("There was a problem generating " + outputFile + "; Return code = " + str(returnCode))
+		if astyleRun == 1:		
+			subprocessWithImprovedErrors([getCommand('astyle'), outputFile], getCommand("astyle"))
 
-	if astyleRun == 1:
-		returnCode = subprocess.call(['astyle', outputFile])
-		if returnCode != 0:
-			raise Exception("There was a formatting the file " + outputFile + " with astyle; Return code = " + str(returnCode))
-	if overwriteProtection == 1:
-		#If the file existed previously and it is different from the old one we run kdiff3
-		if (os.path.isfile(originalOutputFile)) and (filecmp.cmp(originalOutputFile, outputFile) == False):
-			returnCode = subprocess.call(['kdiff3', "-o", originalOutputFile, originalOutputFile, outputFile])
-			if returnCode != 0 and returnCode != 1:#1 is a valid return, since it means that the user quitted without saving the merge, and this is still ok.
-				raise Exception("There was a problem with kdiff3; Return code = " + str(returnCode))
-		else:#If the file didn't exist before, or it is equal to the old one, we rename the generated file to have the proper name
-			if os.path.isfile(originalOutputFile):
-				os.remove(originalOutputFile)
-			os.rename(outputFile, originalOutputFile)
-	return 0#We return 0 if everything went well
+		if overwriteProtection == 1:
+			#If the file existed previously and it is different from the old one we run kdiff3
+			if (os.path.isfile(originalOutputFile)) and (filecmp.cmp(originalOutputFile, outputFile) == False):
+				subprocessWithImprovedErrors([getCommand('diff'), "-o", originalOutputFile, originalOutputFile, outputFile], getCommand("diff"), [0, 1])#1 is a valid return, since it means that the user quitted without saving the merge, and this is still ok.
+			else:#If the file didn't exist before, or it is equal to the old one, we rename the generated file to have the proper name
+				if os.path.isfile(originalOutputFile):
+					os.remove(originalOutputFile)
+				os.rename(outputFile, originalOutputFile)
+	except Exception, e:
+		raise Exception ("There was a problem generating file [" + outputFile + "]; Exception: [" + str(e) + "]")

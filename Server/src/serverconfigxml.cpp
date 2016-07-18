@@ -13,7 +13,26 @@
 **
 ******************************************************************************/
 
-#include "serverconfigxml.h"
+#include <version_coremodule.h>
+
+/* Support for UA Toolkit API 1.3, 1.4 and 1.5 by pnikiel and damiron */
+/* Note the API is different in these versions wrt to server configuration*/
+
+// Defines storing UA SDK version are unfortunately called differently in 1.5.x compared to previous versions ...
+#ifndef CPP_SDK_MAJOR
+#define CPP_SDK_MAJOR PROD_MAJOR
+#define CPP_SDK_MINOR PROD_MINOR
+#define CPP_SDK_MINOR2 PROD_PATCH
+#endif
+
+#define UA_API_VERSION (CPP_SDK_MAJOR * 100 \
+                               + CPP_SDK_MINOR * 10 \
+                               + CPP_SDK_MINOR2 )
+
+
+#if UA_API_VERSION < 140       // serverconfig is implemented by files coming from quasar
+#include <serverconfigxml_quasar.h>
+
 #ifdef _WIN32
 	# include <winsock2.h>	 
 #endif
@@ -1957,5 +1976,7 @@ UaStatus UaEndpointXml::setXmlConfig(UaXmlElement &xmlElement, const UaString& s
     return ret;
 }
 
+
+#endif // UA_API_VERSION < 140
 
 #endif //  BACKEND_OPEN62541

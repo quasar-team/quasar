@@ -24,7 +24,7 @@
 
 #include <DQuasar.h>
 #include <ASQuasar.h>
-#include "QUASARFrameworkVersion.h"
+#include "QuasarVersion.h"
 
 
 

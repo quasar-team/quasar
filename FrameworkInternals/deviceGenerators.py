@@ -20,20 +20,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import subprocess
-import platform
-import __main__
 from transformDesign import transformDesignVerbose
 from lxml import etree 
+from manage_files import get_list_classes
 
 devicePath = "Device" + os.path.sep
 def generateRoot():	
 	"""Generates the files DRoot.h and DRoot.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
 	output = "include" + os.path.sep + "DRoot.h"
-	returnCode = transformDesignVerbose(devicePath + "designToRootHeader.xslt", devicePath + output, 0, 1)
+	transformDesignVerbose(devicePath + "designToRootHeader.xslt", devicePath + output, 0, 1)
 	output = "src" + os.path.sep + "DRoot.cpp"
-	returnCode = transformDesignVerbose(devicePath + "designToRootBody.xslt", devicePath + output,0, 1)
-	return 0
+	transformDesignVerbose(devicePath + "designToRootBody.xslt", devicePath + output,0, 1)
 
 def generateBaseClass(classname):
 	"""Generates the files Base_D<classname>.h and Base_D<classname>.cpp. This method is called automatically by cmake, it does not need to be called by the user.
@@ -42,50 +39,39 @@ def generateBaseClass(classname):
 	classname -- the name of the device, which this class will be associated to.
 	"""
 	output = "generated/Base_D" + classname + ".h"
-	returnCode = transformDesignVerbose(devicePath + "designToDeviceBaseHeader.xslt", devicePath + output, 0, 1, "className=" + classname)
+	transformDesignVerbose(devicePath + "designToDeviceBaseHeader.xslt", devicePath + output, 0, 1, "className=" + classname)
 		
 	output = "generated/Base_D" + classname + ".cpp"
-	returnCode = transformDesignVerbose(devicePath + "designToDeviceBaseBody.xslt", devicePath + output, 0, 1,"className=" + classname)
-	return 0
+	transformDesignVerbose(devicePath + "designToDeviceBaseBody.xslt", devicePath + output, 0, 1,"className=" + classname)
 	
-def generateDeviceClass(classname1, classname2=None, classname3=None, classname4=None, classname5=None, classname6=None, classname7=None, classname8=None, classname9=None, classname10=None):
+def generateDeviceClass(*classList):
 	"""Generates the files D<classname>.h and D<classname>.cpp. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.
 	
 	Keyword arguments:
 	classname -- the name of the device, which this class will be associated to. You can specify several classes (up to 10), separated by spaces or just --all to regenerate all device classes.
 	"""
-	if "quasarGUI.py" in __main__.__file__:
-		print("Calling: python quasar.py generate device " + classname1)
+	if(len(classList) == 0):
+		print("Please, provide the name of the class you wish to generate")
+		return
 	
-	if classname1 == '--all':
+	if classList[0] == '--all':
 		return generateAllDevices()		
-	classList = [classname1, classname2, classname3, classname4, classname5, classname6, classname7, classname8, classname9, classname10]
 	classList = [x for x in classList if x is not None]#Remove nones from the list
 	for c in classList:#generate all the specified device classes
 		output = "include/D" + c + ".h"
-		returnCode = transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, 1, 1, "className=" + c)
+		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, 1, 1, "className=" + c)
 			
 		output = "src/D" + c + ".cpp"
-		returnCode = transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, 1,"className=" + c)
-	return 0
-	
-def get_list_classes(design_file_name):
-	output=[]
-	f = file(design_file_name,'r')	
-	tree = etree.parse(f)
-	classes = tree.findall('{http://cern.ch/quasar/Design}class')
-	for c in classes:
-		output.append(c.get('name'))
-	return output
+		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, 1,"className=" + c)
 	
 def generateAllDevices():
 	"""Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
 	project_directory = os.getcwd()		
 	classes = get_list_classes(project_directory+os.path.sep+"Design"+os.path.sep+"Design.xml")
-	for classname in classes:
+	for tuple in classes:
+		classname = tuple['name']
 		output = "include/D" + classname + ".h"
-		returnCode = transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, 1, 1, "className=" + classname)
+		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, 1, 1, "className=" + classname)
 			
 		output = "src/D" + classname + ".cpp"
-		returnCode = transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, 1,"className=" + classname)
-	return 0
+		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, 1,"className=" + classname)

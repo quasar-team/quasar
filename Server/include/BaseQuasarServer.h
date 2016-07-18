@@ -37,6 +37,7 @@
 
 #include <ASNodeManager.h>
 #include <DRoot.h>
+#include <boost/program_options.hpp>
 
 /*
  * Class representing the internal logic for starting a Server up.
@@ -77,6 +78,8 @@ protected:
     //Call to the method configure inside configuration. If a different configuration method has to be implemented by the user, this should be overriden
     //This method will be called from configurationInitializerHandler.
     virtual bool overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
+	// override this function to add custom command line arguments.
+	virtual void appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions, boost::program_options::positional_options_description& positionalOptionsDescription);
     //Gets the full path to the server configuration
     UaString getServerConfigFullPath(const std::string& szAppPath) const;
     //Gets the application path of the server
