@@ -1,6 +1,7 @@
 language: cpp
 compiler: gcc
 before_install:
+ - sudo apt-get update -y
  - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle libboost-all-dev xsdcxx default-jre libssl-dev gcc-multilib g++-multilib
  - wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
  - tar -xzvf cmake-2.8.12.2.tar.gz 
@@ -14,6 +15,9 @@ before_install:
  - tar -xzvf uatoolkit151.tar.gz
  - sudo cp -R sdk/ /opt/OpcUaToolkit-1.5.1-evaluation/
 script:
+ - mkdir ../TrafficLightServer
+ - python quasar.py create_project ../TrafficLightServer
+ - cd ../TrafficLightServer
  - git clone https://github.com/quasar-team/quasar-validation-ci.git
  - mv quasar-validation-ci/CI/Design.xml Design/
  - mv quasar-validation-ci/CI/config.xml bin/
