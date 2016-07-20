@@ -19,6 +19,7 @@ script:
  - python quasar.py generate device RedLED
  - python quasar.py prepare_build open62541_config.cmake 
  - python quasar.py enable_module open62541-compat open62541-compat-0.2-r1
+ - python quasar.py prepare_build open62541_config.cmake 
  - cd open62541-compat/ && ./prepare.sh && cd ..
 # - sudo rm Server/src/QuasarServer.cpp
 # - mv quasar-validation-ci/CI/open62541CI/QuasarServer.cpp Server/src/
