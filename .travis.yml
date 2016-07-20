@@ -1,7 +1,11 @@
 language: cpp
 compiler: gcc
 before_install:
- - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle libboost-all-dev xsdcxx default-jre libssl-dev gcc-multilib g++-multilib cmake
+ - sudo apt-get install software-properties-common
+ - sudo add-apt-repository ppa:george-edison55/cmake-3.x
+ - sudo apt-get update
+ - sudo apt-get install cmake
+ - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle libboost-all-dev xsdcxx default-jre libssl-dev gcc-multilib g++-multilib
 # - wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
 # - tar -xzvf cmake-2.8.12.2.tar.gz 
 # - cd cmake-2.8.12.2
