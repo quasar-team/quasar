@@ -57,10 +57,10 @@ private:
 	Certificate& operator=(Certificate const&);  		// assignment operator absent (i.e. cannot call it - linker will fail).
 	static Certificate* _pInstance;
 
-	int remainingDays( void )  { return _remainingdays; }
-	int remainingHours( void ) { return _remaininghours; }
-	int remainingMins( void )  { return _remainingmins; }
-	int remainingSecs( void )  { return _remainingsecs; }
+	int remainingDays( void )  const;
+	int remainingHours( void ) const;
+	int remainingMins( void ) const;
+	int remainingSecs( void ) const;
 	int loadPrivateKeyFromFile( void);
 	int loadCertificateFromFile( void );
 	void remainingValidityTime( void );
@@ -78,20 +78,13 @@ private:
 	const string _certfn;
 	const string _privkeyfn;
 	const behaviour_t _behaviour;
-
-	SSL_CTX *_ssl_ctx;
-	SSL *_ssl;
 	int _type;
-	X509 *_x509crt;
+
+	SSL *_ssl;
 	std::time_t _time_end;
-	std::time_t _time_beg;
-	int _valid;
 	status_t _status;
 
-	int _remainingdays;
-	int _remaininghours;
-	int _remainingmins;
-	int _remainingsecs;
+	int64_t _remaining_validity_in_seconds;
 };
 
 #endif /* META_SRC_CERTIFICATE_H_ */

@@ -35,30 +35,20 @@ Certificate* Certificate::Instance( )
 }
 
 Certificate::Certificate( string certfn, string privkeyfn, enum behaviour_t beh  )
-:_certfn(certfn), _privkeyfn(privkeyfn), _behaviour(beh), _status(STATUS_UNKNOWN)
+:_certfn(certfn), _privkeyfn(privkeyfn), _behaviour(beh), _ssl(NULL), _time_end(NULL), _status(STATUS_UNKNOWN), _remaining_validity_in_seconds(0)
 {
-	// _type = SSL_FILETYPE_PEM;
-	_type = SSL_FILETYPE_ASN1; // DER
-	_x509crt = NULL;
-	_time_end = NULL;
-	_time_beg = NULL;
-	_valid = false;
-	_remainingdays = 0;
-	_remaininghours = 0;
-	_remainingmins = 0;
-	_remainingsecs = 0;
-	_ssl_ctx = NULL;
-	_ssl = NULL;
-	if ( _behaviour != BEHAVIOR_NONE ) {
-		_ssl_ctx = SSL_CTX_new( SSLv23_method() );
-		_ssl = SSL_new( _ssl_ctx );
+	setTypeDER();
+
+	if ( _behaviour != BEHAVIOR_NONE )
+	{
 		SSL_load_error_strings();            /* readable error messages */
 		SSL_library_init();                  /* initialize library */
 	}
 }
 
-Certificate::~Certificate() {
-	SSL_shutdown( _ssl );
+Certificate::~Certificate()
+{
+	if(_ssl) SSL_shutdown( _ssl );
 }
 
 int Certificate::validateCertificateFilename(const std::string& certificateFilename) const
@@ -89,9 +79,8 @@ int Certificate::loadPrivateKeyFromFile( void )
 	const int certificateFileCheckResult = validateCertificateFilename(_privkeyfn);
 	if(certificateFileCheckResult < 0) return certificateFileCheckResult;
 
-	_ssl_ctx = SSL_CTX_new( SSLv23_method() );
-	_ssl = SSL_new( _ssl_ctx );
-	SSL_use_PrivateKey_file( _ssl, _privkeyfn.c_str(), _type );
+	_ssl = SSL_new( SSL_CTX_new( SSLv23_method() ) );
+	SSL_use_PrivateKey_file( _ssl, _privkeyfn.c_str(), _type);
 	return( 0 );
 }
 
@@ -101,20 +90,17 @@ int Certificate::loadCertificateFromFile( void )
 	const int certificateFileCheckResult = validateCertificateFilename(_certfn);
 	if(certificateFileCheckResult < 0) return certificateFileCheckResult;
 
-	_ssl_ctx = SSL_CTX_new( SSLv23_method() );
-	_ssl = SSL_new( _ssl_ctx );
-	SSL_use_certificate_file( _ssl, _certfn.c_str(), _type );
+	_ssl = SSL_new( SSL_CTX_new( SSLv23_method() ) );
+	SSL_use_certificate_file( _ssl, _certfn.c_str(), _type);
 	// or like this, including a CA
 	// SSL_CTX_use_certificate_chain_file( _ssl_ctx, fname.c_str() );
-	_x509crt = SSL_get_certificate( _ssl );
+	X509 *x509crt = SSL_get_certificate( _ssl );
 
 	// validity format is here:
 	// https://github.com/openssl/openssl/commit/f48b83b4fb7d6689584cf25f61ca63a4891f5b11
-	_valid = _x509crt->valid;   // shows false, without CA, as it seems
 
 	// in fact these are strings in UTC format, need to convert them into time_t to become useful
-	_time_end = _timeASN1toTIME_T(  _x509crt->cert_info->validity->notAfter );
-	_time_beg = _timeASN1toTIME_T( _x509crt->cert_info->validity->notBefore );
+	_time_end = _timeASN1toTIME_T(  x509crt->cert_info->validity->notAfter );
 
 	remainingValidityTime();
 	LOG(Log::INF) << " certificate remaining time= " << remainingDays() << "days "
@@ -154,14 +140,28 @@ void Certificate::remainingValidityTime( void ){
 	asn1now.data = (unsigned char *) ( asn1str.c_str() );
 	std::time_t time_now = _timeASN1toTIME_T( &asn1now );
 
-	int64_t idiff = ( int64_t ) difftime( _time_end, time_now ); // seconds as int
-	//cout << __FILE__ << " " << __LINE__ << " remaining time idiff= " << idiff  << endl;
-	_remainingdays = (int64_t) ( idiff / 86400 );
-	_remaininghours = (int64_t) ((int64_t) ( idiff - _remainingdays * 86400 ) / 3600);
-	_remainingmins  = (int64_t) ((int64_t) ( idiff - _remainingdays * 86400 - _remaininghours * 3600 )/60);
-	_remainingsecs  = (int64_t) ((int64_t) ( idiff - _remainingdays * 86400 - _remaininghours * 3600 - _remainingmins * 60 ));
+	_remaining_validity_in_seconds = ( int64_t ) difftime( _time_end, time_now ); // seconds as int
 }
 
+int Certificate::remainingDays( void ) const
+{
+	return _remaining_validity_in_seconds / 86400;
+}
+
+int Certificate::remainingHours( void ) const
+{
+	return (_remaining_validity_in_seconds - (remainingDays()*86400) ) / 3600;
+}
+
+int Certificate::remainingMins( void ) const
+{
+	return (_remaining_validity_in_seconds - (remainingDays()*86400) - (remainingHours()*3600) ) / 60;
+}
+
+int Certificate::remainingSecs( void ) const
+{
+	return _remaining_validity_in_seconds - (remainingDays()*86400) - (remainingHours()*3600) - (remainingMins()*60);;
+}
 
 // validity format is here:
 // https://github.com/openssl/openssl/commit/f48b83b4fb7d6689584cf25f61ca63a4891f5b11
