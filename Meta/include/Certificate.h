@@ -39,12 +39,11 @@ public:
 
 	enum status_t { STATUS_OK, STATUS_FAILED, STATUS_UNKNOWN };
 
-	static Certificate* Instance( string certfn, string privkeyfn, enum behaviour_t beh )	{
-		if (!_pInstance)   // Only allow one instance of class to be generated.
-			_pInstance = new Certificate( certfn, privkeyfn, beh );
-		return _pInstance;
-	}
-	static Certificate* Instance( void );
+	const static std::string DEFAULT_PUBLIC_CERT_FILENAME;
+	const static std::string DEFAULT_PRIVATE_CERT_FILENAME;
+
+	static Certificate* Instance( string certfn, string privkeyfn, enum behaviour_t beh );
+	static Certificate* Instance( );
 
 	virtual ~Certificate();
 	int init( void );
@@ -54,8 +53,8 @@ public:
 
 private:
 	Certificate( string certfn, string privkeyfn, enum behaviour_t beh  );	// singleton
-	Certificate( Certificate const&);                                 // copy constructor is private
-	Certificate& operator=(Certificate const&){ return *_pInstance; };  // assignment operator is private
+	Certificate( Certificate const&);                            // copy constructor absent (i.e. cannot call it - linker will fail).
+	Certificate& operator=(Certificate const&);  		// assignment operator absent (i.e. cannot call it - linker will fail).
 	static Certificate* _pInstance;
 
 	int remainingDays( void )  { return _remainingdays; }
@@ -65,6 +64,15 @@ private:
 	int loadPrivateKeyFromFile( void);
 	int loadCertificateFromFile( void );
 	void remainingValidityTime( void );
+
+	/**
+	 * checks that certificate file name is valid and file exists and can be opened.
+	 * returns:
+	 * 0=OK
+	 * -1: file i/o error, not found
+	 * -2: filename must have a length of at least 5 characters, like i.e. "a.pem"
+	 */
+	int validateCertificateFilename(const std::string& certificateFilename) const;
 	time_t _timeASN1toTIME_T( ASN1_TIME* time );
 
 	const string _certfn;

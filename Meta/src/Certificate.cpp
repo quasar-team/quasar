@@ -15,6 +15,24 @@
 // singleton
 Certificate* Certificate::_pInstance = NULL;
 
+const std::string Certificate::DEFAULT_PUBLIC_CERT_FILENAME("./PKI/CA/certs/certificate.der");
+const std::string Certificate::DEFAULT_PRIVATE_CERT_FILENAME("./PKI/CA/private/server_priv.pem");
+
+Certificate* Certificate::Instance( string certfn, string privkeyfn, enum behaviour_t beh )
+{
+	if (!_pInstance)   // Only allow one instance of class to be generated.
+		_pInstance = new Certificate( certfn, privkeyfn, beh );
+	return _pInstance;
+}
+
+Certificate* Certificate::Instance( )
+{
+	if(!_pInstance)
+	{
+		LOG(Log::WRN) << "No Certfiicate singleton instance has been instantiated, programming error. Returning [NULL]";
+	}
+	return _pInstance;
+}
 
 Certificate::Certificate( string certfn, string privkeyfn, enum behaviour_t beh  )
 :_certfn(certfn), _privkeyfn(privkeyfn), _behaviour(beh), _status(STATUS_UNKNOWN)
@@ -43,60 +61,49 @@ Certificate::~Certificate() {
 	SSL_shutdown( _ssl );
 }
 
-
-/// loads one private key
-// returns: 0=OK
-// -1: file i/o error, not found
-// -2: filename must have a length of at least 5 characters, like i.e. "a.pem"
-int Certificate::loadPrivateKeyFromFile( void ) {
-	string fname = _privkeyfn;
-	if ( fname.length() < 5 ) {
-		LOG(Log::ERR) << "refuse to open certificate " << fname << " : filename seems to short ( \"a.der\" at least )";
-		return(-2);
+int Certificate::validateCertificateFilename(const std::string& certificateFilename) const
+{
+	if ( _privkeyfn.length() < 5 ) {
+		LOG(Log::ERR) << "refuse to open certificate " << _privkeyfn << " : filename seems to short ( \"a.der\" at least )";
+		return -2;
 	}
 	ifstream ftest;
 	string line;
-	ftest.open ( fname.c_str() );
+	ftest.open ( _privkeyfn.c_str() );
 	if ( ftest.is_open() )	{
 		while ( getline (ftest ,line) )	{
 			// cout << __FILE__ << " " << __LINE__ << " line= " << line << endl;
 		}
 		ftest.close();
 	} else {
-		LOG(Log::ERR) << "unable to open file  " << fname;
-		return(-1);
+		LOG(Log::ERR) << "unable to open file  " << _privkeyfn;
+		return -1;
 	}
+
+	return 0;
+}
+
+/// loads one private key
+int Certificate::loadPrivateKeyFromFile( void )
+{
+	const int certificateFileCheckResult = validateCertificateFilename(_privkeyfn);
+	if(certificateFileCheckResult < 0) return certificateFileCheckResult;
+
 	_ssl_ctx = SSL_CTX_new( SSLv23_method() );
 	_ssl = SSL_new( _ssl_ctx );
-	SSL_use_PrivateKey_file( _ssl, fname.c_str(), _type );
+	SSL_use_PrivateKey_file( _ssl, _privkeyfn.c_str(), _type );
 	return( 0 );
 }
 
 /// loads one PEM file with one certificate, no chain, no CA
-// returns: 0=OK
-// -1: file i/o error, not found
-// -2: filename must have a length of at least 5 characters, like i.e. "a.pem"
-int Certificate::loadCertificateFromFile( void ) {
-	string fname = _certfn;
-	if ( fname.length() < 5 ) {
-		LOG(Log::ERR) << "refuse to open certificate " << fname << " : filename seems to short ( \"a.der\" at least )";
-		return(-2);
-	}
-	ifstream ftest;
-	string line;
-	ftest.open ( fname.c_str() );
-	if ( ftest.is_open() )	{
-		while ( getline (ftest ,line) )	{
-			// cout << __FILE__ << " " << __LINE__ << " line= " << line << endl;
-		}
-		ftest.close();
-	} else {
-		LOG(Log::ERR) << "unable to open file  " << fname;
-		return(-1);
-	}
+int Certificate::loadCertificateFromFile( void )
+{
+	const int certificateFileCheckResult = validateCertificateFilename(_certfn);
+	if(certificateFileCheckResult < 0) return certificateFileCheckResult;
+
 	_ssl_ctx = SSL_CTX_new( SSLv23_method() );
 	_ssl = SSL_new( _ssl_ctx );
-	SSL_use_certificate_file( _ssl, fname.c_str(), _type );
+	SSL_use_certificate_file( _ssl, _certfn.c_str(), _type );
 	// or like this, including a CA
 	// SSL_CTX_use_certificate_chain_file( _ssl_ctx, fname.c_str() );
 	_x509crt = SSL_get_certificate( _ssl );
@@ -192,21 +199,6 @@ time_t Certificate::_timeASN1toTIME_T( ASN1_TIME* time ){
 }
 
 // ===== PUBLIC ======
-
-// convenience singleton constructor
-/* static */ Certificate* Certificate::Instance( void )	{
-	if ( _pInstance ) {
-		return _pInstance;
-	} else {
-		LOG(Log::WRN) << "coding error: constructor usage for certificate, override with NONE/defaults";
-		string certfn = "./PKI/CA/certs/certificate.der";
-		string privkeyfn = "./PKI/CA/private/server_priv.pem";
-		behaviour_t beh = BEHAVIOR_NONE;
-		_pInstance = new Certificate( certfn, privkeyfn, beh );
-		return _pInstance;
-	}
-}
-
 
 int Certificate::init( void ){
 	int ret = 0;
