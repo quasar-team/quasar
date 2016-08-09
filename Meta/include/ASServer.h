@@ -69,13 +69,12 @@ public:
 
     UaStatus getConnectedClientCount (OpcUa_UInt32 &) const ;
     UaStatus setConnectedClientCount (const OpcUa_UInt32 value, OpcUa_StatusCode statusCode,const UaDateTime & srcTime = UaDateTime::now()) ;
+
+
+
     /* short getter (possible because nullPolicy=nullForbidden) */
     OpcUa_UInt32 getConnectedClientCount () const;
 
-    UaStatus getRemainingCertificateValidity(UaString &) const ;
-    UaStatus setRemainingCertificateValidity(const UaString& value, OpcUa_StatusCode statusCode,const UaDateTime & srcTime = UaDateTime::now()) ;
-    /* short getter (possible because nullPolicy=nullForbidden) */
-    UaString getRemainingCertificateValidity() const;
 
 
 
@@ -101,8 +100,6 @@ private:
     /* Variables */
     OpcUa::BaseDataVariableType
     * m_connectedClientCount;
-    OpcUa::BaseDataVariableType
-    * m_remainingCertificateValidity;
 
 
     /* Device Logic link (if requested) */

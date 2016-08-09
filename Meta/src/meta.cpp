@@ -185,8 +185,6 @@ void configureServer(const Configuration::Server& config, AddressSpace::ASNodeMa
     Device::DServer* dServer = new Device::DServer(config, deviceParent);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dServer, asServer);
     MetaUtils::setDServer(dServer);
-
-    dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
 }
 
 void configureComponentLogLevel(const ComponentAttributes& component, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
@@ -296,6 +294,7 @@ const Configuration::StandardMetaData getMetaConfig(const Configuration::Configu
 
 Device::DStandardMetaData* configureMeta( const Configuration::StandardMetaData & config,AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId, Device::DRoot * parent)
 {
+	
     AddressSpace::ASStandardMetaData *asMeta = new AddressSpace::ASStandardMetaData(parentNodeId, nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_STANDARDMETADATA), nm, config);
     UaStatus s = nm->addNodeAndReference( parentNodeId, asMeta, OpcUaId_HasComponent);
     MetaUtils::assertNodeAdded(s, parentNodeId, asMeta->nodeId());
