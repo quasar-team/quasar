@@ -20,6 +20,10 @@
  *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "MetaUtils.h"
+#include "Certificate.h"
+
+using std::string;
+
 unsigned int g_sessionCounter = 0;
 Device::DServer* g_dServer = 0;
 
@@ -37,6 +41,7 @@ void MetaUtils::setDServer(Device::DServer* ser)
 {
 	g_dServer = ser;
 }
+
 void MetaUtils::increaseSessionCounter()
 {
 	g_sessionCounter ++;
@@ -45,6 +50,7 @@ void MetaUtils::increaseSessionCounter()
 		g_dServer->updateConnectedClientCount(g_sessionCounter);
 	}
 }
+
 void MetaUtils::decreaseSessionCounter()
 {
 	g_sessionCounter --;
@@ -52,6 +58,12 @@ void MetaUtils::decreaseSessionCounter()
 	{
 		g_dServer->updateConnectedClientCount(g_sessionCounter);
 	}
+}
+
+string MetaUtils::calculateRemainingCertificateValidity(void)
+{
+    Certificate::Instance( Certificate::DEFAULT_PUBLIC_CERT_FILENAME, Certificate::DEFAULT_PRIVATE_CERT_FILENAME, Certificate::BEHAVIOR_TRY )->init();
+    return Certificate::Instance()->remainingTime();
 }
 
 
