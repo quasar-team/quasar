@@ -35,11 +35,11 @@ Certificate* Certificate::Instance( )
 }
 
 Certificate::Certificate( string certfn, string privkeyfn, enum behaviour_t beh  )
-:_certfn(certfn), _privkeyfn(privkeyfn), _behaviour(beh), _ssl(NULL), _time_end(NULL), _status(STATUS_UNKNOWN), _remaining_validity_in_seconds(0)
+:m_certfn(certfn), m_privkeyfn(privkeyfn), m_behaviour(beh), m_ssl(NULL), m_time_end(NULL), m_status(STATUS_UNKNOWN), m_remaining_validity_in_seconds(0)
 {
 	setTypeDER();
 
-	if ( _behaviour != BEHAVIOR_NONE )
+	if (m_behaviour != BEHAVIOR_NONE )
 	{
 		SSL_load_error_strings();            /* readable error messages */
 		SSL_library_init();                  /* initialize library */
@@ -48,25 +48,26 @@ Certificate::Certificate( string certfn, string privkeyfn, enum behaviour_t beh 
 
 Certificate::~Certificate()
 {
-	if(_ssl) SSL_shutdown( _ssl );
+	if(m_ssl) SSL_shutdown( m_ssl );
 }
 
 int Certificate::validateCertificateFilename(const std::string& certificateFilename) const
 {
-	if ( _privkeyfn.length() < 5 ) {
-		LOG(Log::ERR) << "refuse to open certificate " << _privkeyfn << " : filename seems to short ( \"a.der\" at least )";
+	if ( m_privkeyfn.length() < 5 )
+	{
+		LOG(Log::ERR) << "refuse to open certificate " << m_privkeyfn << " : filename seems to short ( \"a.der\" at least )";
 		return -2;
 	}
 	ifstream ftest;
 	string line;
-	ftest.open ( _privkeyfn.c_str() );
+	ftest.open ( m_privkeyfn.c_str() );
 	if ( ftest.is_open() )	{
 		while ( getline (ftest ,line) )	{
 			// cout << __FILE__ << " " << __LINE__ << " line= " << line << endl;
 		}
 		ftest.close();
 	} else {
-		LOG(Log::ERR) << "unable to open file  " << _privkeyfn;
+		LOG(Log::ERR) << "unable to open file  " << m_privkeyfn;
 		return -1;
 	}
 
@@ -76,31 +77,31 @@ int Certificate::validateCertificateFilename(const std::string& certificateFilen
 /// loads one private key
 int Certificate::loadPrivateKeyFromFile( void )
 {
-	const int certificateFileCheckResult = validateCertificateFilename(_privkeyfn);
+	const int certificateFileCheckResult = validateCertificateFilename(m_privkeyfn);
 	if(certificateFileCheckResult < 0) return certificateFileCheckResult;
 
-	_ssl = SSL_new( SSL_CTX_new( SSLv23_method() ) );
-	SSL_use_PrivateKey_file( _ssl, _privkeyfn.c_str(), _type);
+	m_ssl = SSL_new( SSL_CTX_new( SSLv23_method() ) );
+	SSL_use_PrivateKey_file( m_ssl, m_privkeyfn.c_str(), m_type);
 	return( 0 );
 }
 
 /// loads one PEM file with one certificate, no chain, no CA
 int Certificate::loadCertificateFromFile( void )
 {
-	const int certificateFileCheckResult = validateCertificateFilename(_certfn);
+	const int certificateFileCheckResult = validateCertificateFilename(m_certfn);
 	if(certificateFileCheckResult < 0) return certificateFileCheckResult;
 
-	_ssl = SSL_new( SSL_CTX_new( SSLv23_method() ) );
-	SSL_use_certificate_file( _ssl, _certfn.c_str(), _type);
+	m_ssl = SSL_new( SSL_CTX_new( SSLv23_method() ) );
+	SSL_use_certificate_file( m_ssl, m_certfn.c_str(), m_type);
 	// or like this, including a CA
 	// SSL_CTX_use_certificate_chain_file( _ssl_ctx, fname.c_str() );
-	X509 *x509crt = SSL_get_certificate( _ssl );
+	X509 *x509crt = SSL_get_certificate( m_ssl );
 
 	// validity format is here:
 	// https://github.com/openssl/openssl/commit/f48b83b4fb7d6689584cf25f61ca63a4891f5b11
 
 	// in fact these are strings in UTC format, need to convert them into time_t to become useful
-	_time_end = _timeASN1toTIME_T(  x509crt->cert_info->validity->notAfter );
+	m_time_end = _timeASN1toTIME_T(  x509crt->cert_info->validity->notAfter );
 
 	remainingValidityTime();
 	LOG(Log::INF) << " certificate remaining time= " << remainingDays() << "days "
@@ -140,27 +141,27 @@ void Certificate::remainingValidityTime( void ){
 	asn1now.data = (unsigned char *) ( asn1str.c_str() );
 	std::time_t time_now = _timeASN1toTIME_T( &asn1now );
 
-	_remaining_validity_in_seconds = ( int64_t ) difftime( _time_end, time_now ); // seconds as int
+	m_remaining_validity_in_seconds = ( int64_t ) difftime( m_time_end, time_now ); // seconds as int
 }
 
 int Certificate::remainingDays( void ) const
 {
-	return _remaining_validity_in_seconds / 86400;
+	return m_remaining_validity_in_seconds / 86400;
 }
 
 int Certificate::remainingHours( void ) const
 {
-	return (_remaining_validity_in_seconds - (remainingDays()*86400) ) / 3600;
+	return (m_remaining_validity_in_seconds - (remainingDays()*86400) ) / 3600;
 }
 
 int Certificate::remainingMins( void ) const
 {
-	return (_remaining_validity_in_seconds - (remainingDays()*86400) - (remainingHours()*3600) ) / 60;
+	return (m_remaining_validity_in_seconds - (remainingDays()*86400) - (remainingHours()*3600) ) / 60;
 }
 
 int Certificate::remainingSecs( void ) const
 {
-	return _remaining_validity_in_seconds - (remainingDays()*86400) - (remainingHours()*3600) - (remainingMins()*60);;
+	return m_remaining_validity_in_seconds - (remainingDays()*86400) - (remainingHours()*3600) - (remainingMins()*60);;
 }
 
 // validity format is here:
@@ -202,20 +203,20 @@ time_t Certificate::_timeASN1toTIME_T( ASN1_TIME* time ){
 
 int Certificate::init( void ){
 	int ret = 0;
-	switch ( _behaviour ) {
+	switch ( m_behaviour ) {
 	case BEHAVIOR_NONE: {
-		_status = Certificate::STATUS_OK;
+		m_status = Certificate::STATUS_OK;
 		break;
 	}
 	case BEHAVIOR_TRY: {
 		ret = Certificate::loadCertificateFromFile();
-		_status = ret < 0 ? Certificate::STATUS_FAILED : Certificate::STATUS_OK;
+		m_status = ret < 0 ? Certificate::STATUS_FAILED : Certificate::STATUS_OK;
 		break;
 	}
 	case BEHAVIOR_TRYCA:
 	case BEHAVIOR_CERT:
 	case BEHAVIOR_CERTCA:{
-		_status = Certificate::STATUS_UNKNOWN;
+		m_status = Certificate::STATUS_UNKNOWN;
 		break;
 	}
 	} // switch
@@ -223,16 +224,16 @@ int Certificate::init( void ){
 }
 
 string Certificate::remainingTime( void ){
-	if ( _behaviour == BEHAVIOR_NONE )
+	if ( m_behaviour == BEHAVIOR_NONE )
 		return( "SSL NOT INITIALIZED" );
-	if (( _behaviour == BEHAVIOR_TRY ) && ( _status == Certificate::STATUS_FAILED ))
+	if (( m_behaviour == BEHAVIOR_TRY ) && ( m_status == Certificate::STATUS_FAILED ))
 		return( "Not Applicable: No Certificate Found" );
 
-	if ( _status == Certificate::STATUS_FAILED ){
+	if ( m_status == Certificate::STATUS_FAILED ){
 		LOG(Log::ERR) << "certificate status failed, a problem occurred";
 		return( "CERTIFICATE STATUS FAILED" );
 	}
-	if ( _status == Certificate::STATUS_UNKNOWN ){
+	if ( m_status == Certificate::STATUS_UNKNOWN ){
 		return( "CERTIFICATE STATUS UNKNOWN" );
 	}
 	remainingValidityTime();

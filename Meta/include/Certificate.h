@@ -48,8 +48,8 @@ public:
 	virtual ~Certificate();
 	int init( void );
 	string remainingTime( void );
-	void setTypeDER( void ) { _type = SSL_FILETYPE_ASN1; }
-	void setTypePEM( void ) { _type = SSL_FILETYPE_PEM; }
+	void setTypeDER( void ) { m_type = SSL_FILETYPE_ASN1; }
+	void setTypePEM( void ) { m_type = SSL_FILETYPE_PEM; }
 
 private:
 	Certificate( string certfn, string privkeyfn, enum behaviour_t beh  );	// singleton
@@ -75,16 +75,16 @@ private:
 	int validateCertificateFilename(const std::string& certificateFilename) const;
 	time_t _timeASN1toTIME_T( ASN1_TIME* time );
 
-	const string _certfn;
-	const string _privkeyfn;
-	const behaviour_t _behaviour;
-	int _type;
+	const string m_certfn;
+	const string m_privkeyfn;
+	const behaviour_t m_behaviour;
+	int m_type;
 
-	SSL *_ssl;
-	std::time_t _time_end;
-	status_t _status;
+	SSL *m_ssl;
+	std::time_t m_time_end;
+	status_t m_status;
 
-	int64_t _remaining_validity_in_seconds;
+	int64_t m_remaining_validity_in_seconds;
 };
 
 #endif /* META_SRC_CERTIFICATE_H_ */
