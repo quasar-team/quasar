@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <d:design projectShortName="" xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
-  <d:class name="Class">
-  	<d:devicelogic></d:devicelogic>
-  	<d:cachevariable name="varUInt32" addressSpaceWrite="regular"
-  		initializeWith="valueAndStatus" nullPolicy="nullForbidden"
-  		dataType="OpcUa_UInt32" initialValue="0" initialStatus="OpcUa_Good">
-  	</d:cachevariable>
-  	<d:cachevariable name="varString" addressSpaceWrite="regular" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="UaString" initialValue="this is text" initialStatus="OpcUa_Good">
-  	</d:cachevariable>
-
-  </d:class>
-  <d:root>
-  	<d:hasobjects instantiateUsing="configuration" class="Class"></d:hasobjects></d:root>
+  <d:root/>
 </d:design>
