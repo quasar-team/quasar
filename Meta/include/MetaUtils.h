@@ -48,6 +48,8 @@ void setDServer(Device::DServer*);
 void increaseSessionCounter();
 void decreaseSessionCounter();
 
+std::string calculateRemainingCertificateValidity(void);
+
 
 } // namespace MetaUtils
 
