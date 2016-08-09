@@ -21,16 +21,11 @@
  */
 
 #include "QuasarServer.h"
+#include <boost/thread.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <LogIt.h>
 #include <string.h>
 #include <shutdown.h>
-#include <DRoot.h>
-#include <boost/foreach.hpp>
-#include <DClass.h>
-#include <ASClass.h>
-#include <stdlib.h>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/thread/thread.hpp> 
 
 QuasarServer::QuasarServer() : BaseQuasarServer()
 {
@@ -48,15 +43,9 @@ void QuasarServer::mainLoop()
 
     // Wait for user command to terminate the server thread.
 
-    while(!ShutDownFlag())
+    while(ShutDownFlag() == 0)
     {
-
-	boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-	BOOST_FOREACH(Device::DClass* cl, Device::DRoot::getInstance()->classs() )
-	{
-	    cl->getAddressSpaceLink()->setVarUInt32( rand(), OpcUa_Good );
-	}
-
+    	boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
     }
     printServerMsg(" Shutting down server");
 }

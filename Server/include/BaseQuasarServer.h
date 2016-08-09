@@ -24,17 +24,14 @@
 #define __BaseQuasarServer__H__
 #include <string>
 
-#ifndef BACKEND_OPEN62541
-#include <uabase.h>
-#include <opcserver.h>
+#ifdef BACKEND_UATOOLKIT
+	#include <uabase.h>
+	#include <opcserver.h>
+#elif BACKEND_OPEN62541
+	#include <open62541.h>
 #endif
 
-#ifdef BACKEND_OPEN62541
-#include <open62541.h>
-#endif
-
-#include <uastring.h>//#include <opcserver.h>
-
+#include <uastring.h>
 #include <ASNodeManager.h>
 #include <DRoot.h>
 #include <boost/program_options.hpp>
@@ -59,11 +56,12 @@ public:
 
 protected:
     //Reference to the OPC UA Server internal implementation    
-#if defined BACKEND_UATOOLKIT
+#ifdef BACKEND_UATOOLKIT
     OpcServer* m_pServer;
-#elif defined BACKEND_OPEN62541
+#elif BACKEND_OPEN62541
     UA_Server *m_pServer;
 #endif
+
     //Reference to the Node manager
     AddressSpace::ASNodeManager* m_nodeManager;
     //Main loop of the application logic.
