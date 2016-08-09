@@ -15,8 +15,8 @@
 // singleton
 Certificate* Certificate::_pInstance = NULL;
 
-const std::string Certificate::DEFAULT_PUBLIC_CERT_FILENAME("./PKI/CA/certs/certificate.der");
-const std::string Certificate::DEFAULT_PRIVATE_CERT_FILENAME("./PKI/CA/private/server_priv.pem");
+const std::string Certificate::DEFAULT_PUBLIC_CERT_FILENAME("./PKI/CA/certs/OpcUaServer.der");
+const std::string Certificate::DEFAULT_PRIVATE_CERT_FILENAME("./PKI/CA/private/OpcUaServer.pem");
 
 Certificate* Certificate::Instance( string certfn, string privkeyfn, enum behaviour_t beh )
 {
