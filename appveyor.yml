@@ -158,38 +158,28 @@ platform: x64
 configuration: Release
 
 build_script:
-#Adding the needed paths to the PATH environment variable
+# Adding the needed paths to the PATH environment variable
   - cmd : SET PATH=%PATH%;C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin;C:\projects\libxml2-2.7.8.win32\bin;C:\projects\AStyle\bin
+
+# Get the LED traffic light Design.xml
   - ps : start-process -FilePath git -ArgumentList ("clone", "https://github.com/quasar-team/quasar-validation-ci.git") -Wait
-  
-  #common operations
-  - ps : mv ../saxon9he.jar Design/ -force
   - ps : mv quasar-validation-ci/CI/Design.xml Design/ -force
-  - ps : mv quasar-validation-ci/CI/config.xml bin/ -force
-  - ps : mv quasar-validation-ci/CI/ServerConfig.xml bin/ -force
-  - ps : mv quasar-validation-ci/CI/shutdown.cpp Server/src/ -force
   
-  #open6 specific operations
-  - ps : mkdir open62541
-  - ps : mkdir open62541/src
-  - ps : mkdir open62541/include
-  - ps : mv quasar-validation-ci/CI/open62541CI/open62541folderCMakeLists.txt open62541/CMakeLists.txt -force
-  - ps : mv quasar-validation-ci/CI/open62541CI/QuasarServer.cpp Server/src/ -force
+# open6 specific operations
+  - python quasar.py enable_module open62541-compat open62541-compat-0.2-rc2
+  - python quasar.py prepare_build open62541_config.cmake
+  - cd open62541-compat
+  - start-process -NoNewWindow -FilePath python -ArgumentList ("prepare.py") -Wait
+  - cd ..
   - ps : mv quasar-validation-ci/CI/open62541WindowsCIConfiguration.cmake . -force
-  - ps : DownloadFile -url "https://cernbox.cern.ch/index.php/s/RbxN9UP2iWz04ra/download" -localPath "open62541/src/open62541.c"
-  - ps : DownloadFile -url "https://cernbox.cern.ch/index.php/s/l9jPKvmI4l2CogC/download" -localPath "open62541/include/open62541.h"
 
-  - ps : start-process -FilePath git -ArgumentList ("clone", "https://github.com/quasar-team/open62541-compat.git") -Wait
-
+# run generator on Design.xml devices
   - ps : start-process -NoNewWindow -FilePath python  -ArgumentList "quasar.py generate device GreenLED" -Wait
   - ps : start-process -NoNewWindow -FilePath python  -ArgumentList "quasar.py generate device YellowLED" -Wait
   - ps : start-process -NoNewWindow -FilePath python  -ArgumentList "quasar.py generate device RedLED" -Wait
-#  - cmd : python quasar.py generate device GreenLED
-#  - cmd : python quasar.py generate device YellowLED
-#  - cmd : python quasar.py generate device RedLED
   
+# start build
   - ps : Write-Output "Calling build"
-#  - cmd : python quasar.py build Release open62541WindowsCIConfiguration.cmake
   - ps : start-process -NoNewWindow -FilePath python -ArgumentList "quasar.py build Release open62541WindowsCIConfiguration.cmake" -Wait -RedirectStandardError "error.log"
   - ps : Write-Output "Done!"
   - ps : if(Test-Path bin/OpcUaServer.exe)
