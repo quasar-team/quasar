@@ -63,6 +63,13 @@ ASQuasar::ASQuasar (
     UaStatus s;
     UaVariant v;
 
+    s = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent);
+    if (!s.isGood())
+    {
+        std::cout << "While addNodeAndReference from " << parentNodeId.toString().toUtf8() << " to " << this->nodeId().toString().toUtf8() << " : " << std::endl;
+        ASSERT_GOOD(s);
+    }
+
     v.setString
     ( "dummy version" );
 

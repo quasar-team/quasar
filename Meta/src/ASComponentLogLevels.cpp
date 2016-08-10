@@ -28,7 +28,14 @@ namespace AddressSpace
 ASComponentLogLevels::ASComponentLogLevels (UaNodeId parentNodeId, const UaNodeId& typeNodeId, ASNodeManager *nm)
 :OpcUa::BaseObjectType (nm->makeChildNodeId(parentNodeId,"ComponentLogLevels"), "ComponentLogLevels", nm->getNameSpaceIndex(), nm),
  m_typeNodeId (typeNodeId)
-{}
+{
+    const UaStatus statusAddElementToParent = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent);
+    if (!statusAddElementToParent.isGood())
+    {
+        std::cout << "While addNodeAndReference from " << parentNodeId.toString().toUtf8() << " to " << this->nodeId().toString().toUtf8() << " : " << std::endl;
+        ASSERT_GOOD(statusAddElementToParent);
+    }
+}
 
 ASComponentLogLevels::~ASComponentLogLevels ()
 {}

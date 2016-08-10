@@ -45,6 +45,13 @@ ASGeneralLogLevel::ASGeneralLogLevel (
  m_logLevel (new ASDelegatingVariable<ASGeneralLogLevel> (nm->makeChildNodeId(this->nodeId(),UaString("logLevel")), UaString("logLevel"), nm->getNameSpaceIndex(), UaVariant(logLevel.c_str()), OpcUa_AccessLevels_CurrentReadOrWrite , nm)),
  m_deviceLink (0)
 {
+    const UaStatus statusAddElementToParent = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent);
+    if (!statusAddElementToParent.isGood())
+    {
+        std::cout << "While addNodeAndReference from " << parentNodeId.toString().toUtf8() << " to " << this->nodeId().toString().toUtf8() << " : " << std::endl;
+        ASSERT_GOOD(statusAddElementToParent);
+    }
+
     UaVariant v;
     v.setString (logLevel.c_str());
 
