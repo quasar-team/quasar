@@ -33,35 +33,35 @@ message(STATUS "BOOST - include [${BOOST_PATH_HEADERS}] libs [${BOOST_PATH_LIBS}
 
 if(NOT TARGET libboostprogramoptions)
 	add_library(libboostprogramoptions STATIC IMPORTED)
-	set_property(TARGET libboostprogramoptions PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_59_0_program_options-vc120-mt-1_59.lib)
+	set_property(TARGET libboostprogramoptions PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_program_options-vc120-mt-1_59.lib)
 endif()
 if(NOT TARGET libboostsystem)
 	add_library(libboostsystem STATIC IMPORTED)
-	set_property(TARGET libboostsystem PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_59_0_system-vc120-mt-1_59.lib)
+	set_property(TARGET libboostsystem PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_system-vc120-mt-1_59.lib)
 endif()
 if(NOT TARGET libboostfilesystem)
 	add_library(libboostfilesystem STATIC IMPORTED)
-	set_property(TARGET libboostfilesystem PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_59_0_filesystem-vc120-mt-1_59.lib)
+	set_property(TARGET libboostfilesystem PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_filesystem-vc120-mt-1_59.lib)
 endif()
 if(NOT TARGET libboostchrono) 
 	add_library(libboostchrono STATIC IMPORTED)
-	set_property(TARGET libboostchrono PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_59_0_chrono-vc120-mt-1_59.lib)
+	set_property(TARGET libboostchrono PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_chrono-vc120-mt-1_59.lib)
 endif()
 if(NOT TARGET libboostdatetime) 
 	add_library(libboostdatetime STATIC IMPORTED)
-	set_property(TARGET libboostdatetime PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_59_0_date_time-vc120-mt-1_59.lib)
+	set_property(TARGET libboostdatetime PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_date_time-vc120-mt-1_59.lib)
 endif()
 if(NOT TARGET libboostthread) 
 	add_library(libboostthread STATIC IMPORTED)
-	set_property(TARGET libboostthread PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_59_0_thread-vc120-mt-1_59.lib)
+	set_property(TARGET libboostthread PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_thread-vc120-mt-1_59.lib)
 endif()
 if(NOT TARGET libboostlog)
 	add_library(libboostlog STATIC IMPORTED)
-	set_property(TARGET libboostlog PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_59_0_log-vc120-mt-1_59.lib)
+	set_property(TARGET libboostlog PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_log-vc120-mt-1_59.lib)
 endif()
 if(NOT TARGET libboostlogsetup)
 	add_library(libboostlogsetup STATIC IMPORTED)
-	set_property(TARGET libboostlogsetup PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_59_0_log_setup-vc120-mt-1_59.lib)
+	set_property(TARGET libboostlogsetup PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_log_setup-vc120-mt-1_59.lib)
 endif()
 
 #set( BOOST_LIBS libboost_system-vc120-mt-1_57 libboost_program_options-vc120-mt-1_57 libboost_thread-vc120-mt-1_57 libboost_date_time-vc120-mt-1_57 libboost_chrono-vc120-mt-1_57 libboost_regex-vc120-mt-1_57 -lrt)
@@ -142,9 +142,9 @@ MESSAGE( STATUS "LogIt build options: stdout [${LOGIT_HAS_STDOUTLOG}] boost [${L
 #CodeSynthesys XSD
 #-----
 if( NOT DEFINED ENV{CODE_SYNTHESYS_XSD} )
-	message(WARNING "environment variable CODE_SYNTHESYS_XSD not defined - using default location [C:/Program Files (x86)/CodeSynthesis XSD 4.0]")
+	message(WARNING "environment variable CODE_SYNTHESYS_XSD not defined - using default location [C:/Program Files (x86)/CodeSynthesis XSD 3.3]")
 	include_directories(
-	"C:/Program Files (x86)/CodeSynthesis XSD 4.0/include"
+	"C:/Program Files (x86)/CodeSynthesis XSD 3.3/include"
 	)
 else()
 	include_directories(
@@ -207,13 +207,6 @@ if(NOT TARGET custeay32)
 endif()
 
 SET( XML_LIBS Rpcrt4 crypt32 ws2_32 custeay32 libxercesc custlibxml)
-
-#-----
-#GoogleTest
-#-----
-include_directories(
-	${PROJECT_SOURCE_DIR}/GoogleTest/gtest/src/gtest/include
-)
 
 add_definitions(-DSUPPORT_XML_CONFIG -Wall -DWIN32_LEAN_AND_MEAN)
 set(CMAKE_CXX_FLAGS_RELEASE "/MD")
