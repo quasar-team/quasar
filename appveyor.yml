@@ -138,18 +138,7 @@ install:
   - ps: $localPath= "Win32OpenSSL-1_0_2h.exe"
   - ps: DownloadFile -url $url -localPath $localPath
   - ps: InstallExe -exeLocalPath $localPath -arguments "/install=agent /silent" 
-
-#installing uatoolkit trial
-  - ps: $url = "https://cernbox.cern.ch/index.php/s/XoLNIoypejrk5vu/download"
-  - ps: $localPath= "uasdkcppbundle-bin-EVAL-win32-x86-vs2012sp4-v1.5.1-326.exe"
-  - ps: DownloadFile -url $url -localPath $localPath
-  - ps: InstallExe -exeLocalPath $localPath -arguments "/S" 
-
-#download saxon9he.jar
-  - ps: $url = "https://cernbox.cern.ch/index.php/s/FIZm1Ew5CyxLDUd/download"
-  - ps: $localPath = "saxon9he.jar"
-  - ps: DownloadFile -url $url -localPath $localPath
-  
+ 
   - ps: cd quasar
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: x64
@@ -160,6 +149,9 @@ configuration: Release
 build_script:
 # Adding the needed paths to the PATH environment variable
   - cmd : SET PATH=%PATH%;C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin;C:\projects\libxml2-2.7.8.win32\bin;C:\projects\AStyle\bin
+  - ps : Write-Output "Calling cmake --version"
+  - ps : start-process -NoNewWindow -FilePath cmake -ArgumentList "--version" -Wait
+  - ps : Write-Output "OK, called cmake --version"
 
 # Get the LED traffic light Design.xml
   - ps : start-process -FilePath git -ArgumentList ("clone", "https://github.com/quasar-team/quasar-validation-ci.git") -Wait
