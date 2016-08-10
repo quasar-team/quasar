@@ -162,9 +162,9 @@ build_script:
 #  - python quasar.py enable_module open62541-compat open62541-compat-0.2-rc2
 #  - python quasar.py prepare_build open62541_config.cmake
   - ps : start-process -FilePath git -ArgumentList ("clone", "-b", "open62541_v0.2","--single-branch", "https://github.com/quasar-team/open62541-compat.git") -Wait
-  - cd open62541-compat
-  - start-process -NoNewWindow -FilePath python -ArgumentList ("prepare.py") -Wait
-  - cd ..
+  - ps : cd open62541-compat
+  - ps : start-process -NoNewWindow -FilePath python -ArgumentList ("prepare.py") -Wait
+  - ps : cd ..
   - ps : mv quasar-validation-ci/CI/open62541WindowsCIConfiguration.cmake . -force
 
 # run generator on Design.xml devices
