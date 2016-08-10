@@ -80,8 +80,14 @@ ASServer::ASServer (
     UaStatus s;
     UaVariant v;
 
-    v.setUInt32
-    ( 0 );
+    s = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent);
+    if (!s.isGood())
+    {
+        std::cout << "While addNodeAndReference from " << parentNodeId.toString().toUtf8() << " to " << this->nodeId().toString().toUtf8() << " : " << std::endl;
+        ASSERT_GOOD(s);
+    }
+
+    v.setUInt32(0);
 
     m_connectedClientCount->setValue(/*pSession*/0, UaDataValue(UaVariant( v ),
             OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
@@ -93,6 +99,7 @@ ASServer::ASServer (
         ASSERT_GOOD(s);
     }
 
+    v.setString("uninitialized");
     m_remainingCertificateValidity->setValue(/*pSession*/0, UaDataValue(UaVariant( v ),
                                     OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
 

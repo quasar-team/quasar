@@ -180,7 +180,6 @@ void configureQuasar(const Configuration::Quasar& config, AddressSpace::ASNodeMa
 void configureServer(const Configuration::Server& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent, Device::DRoot * deviceParent)
 {
     AddressSpace::ASServer *asServer = new AddressSpace::ASServer(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_SERVER), nm, config);
-    MetaUtils::linkChildNodeToParent(asServer, parent, nm);
 
     Device::DServer* dServer = new Device::DServer(config, deviceParent);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dServer, asServer);
@@ -303,9 +302,9 @@ Device::DStandardMetaData* configureMeta( const Configuration::StandardMetaData 
     Device::DStandardMetaData *dMeta = new Device::DStandardMetaData (config, parent);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dMeta, asMeta);
 
-    configureLog(getLogConfig(config), nm, asMeta);
-    configureSourceVariableThreadPool(getSourceVariableThreadPoolConfig(config), nm, asMeta);
-    configureQuasar(getQuasarConfig(config), nm, asMeta, parent);
+//    configureLog(getLogConfig(config), nm, asMeta);
+//    configureSourceVariableThreadPool(getSourceVariableThreadPoolConfig(config), nm, asMeta);
+//    configureQuasar(getQuasarConfig(config), nm, asMeta, parent);
 	configureServer(getServerConfig(config), nm, asMeta, parent);
 	
     return dMeta;
