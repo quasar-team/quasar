@@ -51,6 +51,7 @@ def automatedBuild(buildType="Release",
 		print(getCommand("vcvarsall") + ' amd64')
 		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
 		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType)
+		#To be improved
 		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType, "visual studio msbuild")
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
