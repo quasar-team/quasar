@@ -161,9 +161,11 @@ build_script:
 # 2 lines below SHOULD work - optional modules doesn't seem to respect my tag (says it doesn't exist)
 #  - python quasar.py enable_module open62541-compat open62541-compat-0.2-rc2
 #  - python quasar.py prepare_build open62541_config.cmake
-  - ps : start-process -FilePath git -ArgumentList ("clone", "-b", "open62541_v0.2","--single-branch", "https://github.com/quasar-team/open62541-compat.git") -Wait
+#  - ps : start-process -FilePath git -ArgumentList ("clone", "-b", "open62541_v0.2","--single-branch", "https://github.com/quasar-team/open62541-compat.git") -Wait
+  - cmd : git clone -b open62541_v0.2 --single-branch https://github.com/quasar-team/open62541-compat.git
   - ps : cd open62541-compat
   - ps : start-process -NoNewWindow -FilePath python -ArgumentList ("prepare.py") -Wait
+  - cmd : dir include
   - ps : cd ..
   - ps : mv quasar-validation-ci/CI/open62541WindowsCIConfiguration.cmake . -force
 
@@ -184,6 +186,5 @@ build_script:
          else
          {
           Write-Error "There was a problem building QUASAR; The script will now terminate." ;
-          cat error.log ;
           Exit ;
          }
