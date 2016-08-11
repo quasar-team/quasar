@@ -174,7 +174,8 @@ build_script:
   
 # start build
   - ps : Write-Output "Calling build"
-  - ps : start-process -NoNewWindow -FilePath python -ArgumentList "quasar.py build Release open62541WindowsCIConfiguration.cmake" -Wait -RedirectStandardError "error.log"
+#  - ps : start-process -NoNewWindow -FilePath python -ArgumentList "quasar.py build Release open62541WindowsCIConfiguration.cmake" -Wait -RedirectStandardError "error.log"
+  - cmd : python quasar.py build Release open62541WindowsCIConfiguration.cmake
   - ps : Write-Output "Done!"
   - ps : if(Test-Path bin/OpcUaServer.exe)
          {
