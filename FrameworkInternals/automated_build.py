@@ -48,11 +48,17 @@ def automatedBuild(buildType="Release",
 	print('Calling make/msbuild')
 	if platform.system() == "Windows":
 		print('Calling visual studio vcvarsall to set the environment')
-		print(getCommand("vcvarsall") + ' amd64')
-		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
-		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType)
-		#To be improved
-		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType, "visual studio msbuild")
+		vcvarsFullCommand = "\"" + getCommand("vcvarsall") + '\" amd64'
+		print(vcvarsFullCommand)
+		#First, vcvarsall is called. Python resets environment between subprocess calls, so this is not going to set up the variables as we need.
+		#However we do this "fake" call to identify if there is any problem finding vcvarsall.bat
+		subprocessWithImprovedErrors( vcvarsFullCommand, "visual studio vcvarsall.bat")
+		
+		msbuildFullCommand = getCommand("msbuild") + ' ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType
+		print(msbuildFullCommand)
+		#After making sure the vcvarsall works, we concatenate the vcvarsall call with the msbuild call, so the environment is preserved between the calls.
+		#Additionally, if there is any prolem on this call, we know it is coming from msbuild, since vcvarsall was previously tested.
+		subprocessWithImprovedErrors( vcvarsFullCommand + ' && ' + msbuildFullCommand, "visual studio msbuild")
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
 		#we call process nproc and store its output

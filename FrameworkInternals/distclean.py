@@ -63,12 +63,18 @@ def distClean(param=None):
 	"""
 	if platform.system() == "Windows":
 		print('Calling visual studio vcvarsall to set the environment')
-		print(getCommand("vcvarsall") + ' amd64')
-		subprocessWithImprovedErrors("\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
-
+		vcvarsFullCommand = "\"" + getCommand("vcvarsall") + '\" amd64'
+		print(vcvarsFullCommand)
+		#First, vcvarsall is called. Python resets environment between subprocess calls, so this is not going to set up the variables as we need.
+		#However we do this "fake" call to identify if there is any problem finding vcvarsall.bat
+		subprocessWithImprovedErrors( vcvarsFullCommand, "visual studio vcvarsall.bat")
+		
+		msbuildCleanFullCommand = getCommand("msbuild") + ' ALL_BUILD.vcxproj /t:Clean'
 		print('Calling msbuild clean')
-		print('msbuild ALL_BUILD.vcxproj /t:Clean')
-		subprocessWithImprovedErrors("\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /t:Clean', "visual studio msbuild", [0, 1])
+		print(msbuildCleanFullCommand)
+		#After making sure the vcvarsall works, we concatenate the vcvarsall call with the msbuild call, so the environment is preserved between the calls.
+		#Additionally, if there is any prolem on this call, we know it is coming from msbuild, since vcvarsall was previously tested.
+		subprocessWithImprovedErrors( vcvarsFullCommand + ' && ' + msbuildCleanFullCommand, "visual studio msbuild", [0, 1])
 	elif platform.system() == "Linux":
 		subprocessWithImprovedErrors([getCommand('make'), 'clean'], getCommand("make"))	
 	print('Deleting generated files and directories')

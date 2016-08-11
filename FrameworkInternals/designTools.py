@@ -31,6 +31,17 @@ designPath = "Design" + os.path.sep
 designXML = "Design.xml"
 designXSD = "Design.xsd"
 
+def callXMLlint(inputFile, outputFile):
+	print("Formatting the file " + inputFile + "using the tool XMLlint. The result will be saved in " + outputFile)
+	try:
+		if platform.system() == "Windows":
+			subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), inputFile], outputFile, getCommand("xmllint"))
+		elif platform.system() == "Linux":
+			subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", inputFile], outputFile, getCommand("xmllint"))
+	except Exception, e:
+		raise Exception ("There was a problem formatting the file [" + inputFile + "]; Exception: [" + str(e) + "]")
+	
+
 def validateDesign():
 	"""Checks design.xml against Design.xsd, and after that performs some additional checks (defined in designValidation.xslt)"""
 	# 1st line of validation -- does it matches its schema?
@@ -55,13 +66,7 @@ def formatDesign():
 	shutil.copyfile(designPath + designXML, designPath + backupName)
 
 	print("Formatting the file " + designXML + "using the tool XMLlint. The result will be saved in " + tempName)
-	try:
-		if platform.system() == "Windows":
-			subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), designPath + designXML], designPath + tempName, getCommand("xmllint"))
-		elif platform.system() == "Linux":
-			subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", designPath + designXML], designPath + tempName, getCommand("xmllint"))
-	except Exception, e:
-		raise Exception ("There was a problem formatting the file [" + designXML + "]; Exception: [" + str(e) + "]")
+	callXMLlint(designPath + designXML, designPath + tempName)	
 		
 	print("Copying the formated file  " + tempName + " into the name of " + designXML)
 	shutil.copyfile(designPath + tempName, designPath + designXML)
@@ -76,11 +81,9 @@ def upgradeDesign(additionalParam):
 	
 	print("Formatting the upgraded file ")
 	formatedOutput = output + ".formatted"
-	if platform.system() == "Windows":
-		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), designPath + output], designPath + formatedOutput, getCommand("xmllint"))
-	elif platform.system() == "Linux":
-		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", designPath + output], designPath + formatedOutput, getCommand("xmllint"))
-		
+	
+	callXMLlint(designPath + output, designPath + formatedOutput)		
+	
 	print("Now running merge-tool. Please merge the upgraded changed")
 	subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, designPath + formatedOutput], getCommand("diff"))
 	
