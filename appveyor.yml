@@ -6,20 +6,21 @@ os: Windows Server 2012
 platform: x64
 configuration: Release
 
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 # scripts that run after cloning repository
 install:
   - cmd : git clone https://github.com/quasar-team/quasar-validation-ci.git
   - cmd : python quasar-validation-ci/CI/setup-windows-dependencies.py
   - cmd : dir
   - cmd : CALL setLocalPath.bat
-  - cmd : echo %PATH%
 
 build_script:
   - cmd : echo %PATH%
-  - cmd: cd quasar
 
 # Get the LED traffic light Design.xml
-  - cmd : mv --force ../quasar-validation-ci/CI/Design.xml Design/
+  - cmd : mv --force quasar-validation-ci/CI/Design.xml Design/
   
 # open6 specific operations
 # 2 lines below SHOULD work - optional modules doesn't seem to respect my tag (says it doesn't exist)
@@ -31,7 +32,7 @@ build_script:
   - cmd : python prepare.py
   - cmd : dir include
   - cmd : cd ..
-  - cmd : mv --force ../quasar-validation-ci/CI/open62541WindowsCIConfiguration.cmake .
+  - cmd : mv --force quasar-validation-ci/CI/open62541WindowsCIConfiguration.cmake .
 
 # run generator on Design.xml devices
   - cmd : python quasar.py generate device GreenLED
