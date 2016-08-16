@@ -125,8 +125,22 @@ m_deviceLink (0)
 </xsl:if>
 
 {
+
 UaStatus s;
 UaVariant v;
+
+
+				<xsl:choose>
+		<xsl:when test="@singleVariableNode='true'">s = nm->addUnreferencedNode( this );</xsl:when>
+		<xsl:otherwise>s = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent);</xsl:otherwise>
+		</xsl:choose>
+		if (!s.isGood())
+		{
+			std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; parentNodeId.toString().toUtf8() &lt;&lt; " to " &lt;&lt; this-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
+			ASSERT_GOOD(s);
+			}
+
+
 <xsl:for-each select="d:cachevariable">
 <xsl:if test="@nullPolicy='nullForbidden'">
 m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0 )); // assumption: BuiltInTypeId matches numeric address of the type in namespace0
@@ -230,6 +244,7 @@ UaVariant v;
 <xsl:choose>
 <xsl:when test="@dataType='UaVariant'"> 
 v = value;
+
 </xsl:when>
 <xsl:otherwise>
 v.<xsl:value-of select="fnc:dataTypeToVariantSetter(@dataType)"/>( value );

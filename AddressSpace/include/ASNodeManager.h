@@ -45,23 +45,25 @@ namespace AddressSpace
 	virtual UaStatus afterStartUp();
 	virtual UaStatus beforeShutDown();
 
-	UaObject * getInstanceDeclarationObjectType (OpcUa_UInt32 typeId);
+#ifndef BACKEND_OPEN62541
+    UaObject * getInstanceDeclarationObjectType (OpcUa_UInt32 typeId);
 
-	virtual IOManager* getIOManager(UaNode* pUaNode, OpcUa_Int32 attributeId) const;
+    virtual IOManager* getIOManager(UaNode* pUaNode, OpcUa_Int32 attributeId) const;
+#endif
 
-	UaNodeId makeChildNodeId (const UaNodeId &parent, const UaString& childName);
+    UaNodeId makeChildNodeId (const UaNodeId &parent, const UaString& childName);
 
-	const UaNodeId getTypeNodeId (unsigned int numericalType);
-	void setAfterStartupDelegate( boost::function<UaStatus ()> afterStartUpDelegate );
+    const UaNodeId getTypeNodeId (unsigned int numericalType);
+    void setAfterStartupDelegate( boost::function<UaStatus ()> afterStartUpDelegate );
 
 	UaStatus addUnreferencedNode( UaNode* node ) { m_unreferencedNodes.push_back(node); return OpcUa_Good; }
 	const std::list<UaNode*>& getUnreferencedNodes () const { return m_unreferencedNodes; }
 
-    private:
-	UaStatus createTypeNodes();
-	boost::function<UaStatus ()> m_afterStartUpDelegate;
+  private:
+    UaStatus createTypeNodes();
+    boost::function<UaStatus ()> m_afterStartUpDelegate;
 	std::list<UaNode*> m_unreferencedNodes;
-    };
+  };
 
 
 

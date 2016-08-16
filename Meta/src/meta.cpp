@@ -152,7 +152,6 @@ const string getGeneralLogLevelFromConfig(const Configuration::Log & config)
 void configureGeneralLogLevel(const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASLog* parent)
 {
     AddressSpace::ASGeneralLogLevel *asGeneralLogLevel = new AddressSpace::ASGeneralLogLevel(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_GENERALLOGLEVEL), nm, logLevel);
-    MetaUtils::linkChildNodeToParent(asGeneralLogLevel, parent, nm);
 
     Device::DGeneralLogLevel* dGeneralLogLevel = new Device::DGeneralLogLevel (logLevel);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dGeneralLogLevel, asGeneralLogLevel);
@@ -161,7 +160,6 @@ void configureGeneralLogLevel(const string& logLevel, AddressSpace::ASNodeManage
 void configureSourceVariableThreadPool(const Configuration::SourceVariableThreadPool& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent)
 {
     AddressSpace::ASSourceVariableThreadPool *asSourceVariableThreadPool = new AddressSpace::ASSourceVariableThreadPool(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_SOURCEVARIABLESTHREADPOOL), nm, config.minThreads(), config.maxThreads());
-    MetaUtils::linkChildNodeToParent(asSourceVariableThreadPool, parent, nm);
 
     Device::DSourceVariableThreadPool* dSourceVariableThreadPool = new Device::DSourceVariableThreadPool(config.minThreads(), config.maxThreads());
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dSourceVariableThreadPool, asSourceVariableThreadPool);
@@ -170,7 +168,6 @@ void configureSourceVariableThreadPool(const Configuration::SourceVariableThread
 void configureQuasar(const Configuration::Quasar& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent, Device::DRoot * deviceParent)
 {
     AddressSpace::ASQuasar *asQuasar = new AddressSpace::ASQuasar(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_QUASAR), nm, config);
-    MetaUtils::linkChildNodeToParent(asQuasar, parent, nm);
 
     Device::DQuasar* dQuasar = new Device::DQuasar(config, deviceParent);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dQuasar, asQuasar);
@@ -180,17 +177,17 @@ void configureQuasar(const Configuration::Quasar& config, AddressSpace::ASNodeMa
 void configureServer(const Configuration::Server& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent, Device::DRoot * deviceParent)
 {
     AddressSpace::ASServer *asServer = new AddressSpace::ASServer(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_SERVER), nm, config);
-    MetaUtils::linkChildNodeToParent(asServer, parent, nm);
 
     Device::DServer* dServer = new Device::DServer(config, deviceParent);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dServer, asServer);
     MetaUtils::setDServer(dServer);
+
+    dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
 }
 
 void configureComponentLogLevel(const ComponentAttributes& component, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
 {
     AddressSpace::ASComponentLogLevel *asComponentLogLevel = new AddressSpace::ASComponentLogLevel(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVEL), nm, component.getName(), logLevel);
-    MetaUtils::linkChildNodeToParent(asComponentLogLevel, parent, nm);
 
     Device::DComponentLogLevel* dComponentLogLevel = new Device::DComponentLogLevel (component.getId(), logLevel);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dComponentLogLevel, asComponentLogLevel);
@@ -257,7 +254,6 @@ const Configuration::Server getServerConfig(const Configuration::StandardMetaDat
 void configureComponentLogLevels(const Configuration::ComponentLogLevels& config, AddressSpace::ASNodeManager* nm, AddressSpace::ASLog *parent)
 {
     AddressSpace::ASComponentLogLevels* asComponentLogLevels = new AddressSpace::ASComponentLogLevels(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVELS), nm);
-    MetaUtils::linkChildNodeToParent(asComponentLogLevels, parent, nm);
 
     BOOST_FOREACH(const ComponentAttributes& component, Log::getComponentLogsList())
     {
@@ -269,7 +265,6 @@ void configureComponentLogLevels(const Configuration::ComponentLogLevels& config
 void configureLog(const Configuration::Log & config, AddressSpace::ASNodeManager *nm, AddressSpace::ASStandardMetaData* parent)
 {
     AddressSpace::ASLog *asLog = new AddressSpace::ASLog(parent->nodeId(),nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_LOG), nm, config);
-    MetaUtils::linkChildNodeToParent(asLog, parent, nm);
 
     configureGeneralLogLevel(getGeneralLogLevelFromConfig(config), nm, asLog);
     const Configuration::ComponentLogLevels componentLogLevels = getComponentLogLevels(config);
@@ -294,7 +289,6 @@ const Configuration::StandardMetaData getMetaConfig(const Configuration::Configu
 
 Device::DStandardMetaData* configureMeta( const Configuration::StandardMetaData & config,AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId, Device::DRoot * parent)
 {
-	
     AddressSpace::ASStandardMetaData *asMeta = new AddressSpace::ASStandardMetaData(parentNodeId, nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_STANDARDMETADATA), nm, config);
     UaStatus s = nm->addNodeAndReference( parentNodeId, asMeta, OpcUaId_HasComponent);
     MetaUtils::assertNodeAdded(s, parentNodeId, asMeta->nodeId());

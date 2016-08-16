@@ -1,3 +1,5 @@
+#ifndef BACKEND_OPEN62541
+
 /******************************************************************************
 ** opcserver.cpp
 **
@@ -640,3 +642,5 @@ UaStatus ServerConfigBasicXml::logonSessionUser(
     return OpcUa_Bad;
 }
 
+
+#endif // BACKEND_OPEN62541

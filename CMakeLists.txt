@@ -1,5 +1,5 @@
 # LICENSE:
-# Copyright (c) 2015, CERN, University of Oviedo
+# Copyright (c) 2015, CERN
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,7 +42,7 @@ set(EXECUTABLE OpcUaServer)
 include_directories (
 	${OPCUA_TOOLKIT_PATH}/include/uastack
 	${OPCUA_TOOLKIT_PATH}/include/uabase
-	${OPCUA_TOOLKIT_PATH}/include/uaserver
+ 	${OPCUA_TOOLKIT_PATH}/include/uaserver
 	${OPCUA_TOOLKIT_PATH}/include/xmlparser
 	${OPCUA_TOOLKIT_PATH}/include/uapki
 	${BOOST_PATH_HEADERS}

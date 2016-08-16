@@ -1,6 +1,7 @@
 language: cpp
 compiler: gcc
 before_install:
+ - sudo apt-get update -y
  - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle libboost-all-dev xsdcxx default-jre libssl-dev gcc-multilib g++-multilib
  - wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
  - tar -xzvf cmake-2.8.12.2.tar.gz 
@@ -9,22 +10,21 @@ before_install:
  - make      
  - sudo make install
  - cd ..
- 
+ #links from cernbox are not permanent, be careful
+ - wget -O uatoolkit151.tar.gz --no-check-certificat https://cernbox.cern.ch/index.php/s/xZRLNSZluifm7uk/download
+ - tar -xzvf uatoolkit151.tar.gz
+ - sudo cp -R sdk/ /opt/OpcUaToolkit-1.5.1-evaluation/
 script:
- - cmake -version
+ - mkdir ../TrafficLightServer
+ - python quasar.py create_project ../TrafficLightServer
+ - cd ../TrafficLightServer
  - git clone https://github.com/quasar-team/quasar-validation-ci.git
  - mv quasar-validation-ci/CI/Design.xml Design/
+ - mv quasar-validation-ci/CI/config.xml bin/
+ - mv quasar-validation-ci/CI/ServerConfig.xml bin/
+ - mv quasar-validation-ci/CI/ubuntu_evaluationToolkit.cmake .
  - python quasar.py generate device GreenLED
  - python quasar.py generate device YellowLED
  - python quasar.py generate device RedLED
- - python quasar.py prepare_build open62541_config.cmake 
- - python quasar.py enable_module open62541-compat open62541-compat-0.2-r1
- - python quasar.py prepare_build open62541_config.cmake 
- - cd open62541-compat/ && ./prepare.sh && cd ..
-# - sudo rm Server/src/QuasarServer.cpp
-# - mv quasar-validation-ci/CI/open62541CI/QuasarServer.cpp Server/src/
- - mv quasar-validation-ci/CI/config.xml bin/
  - sudo chmod 777 -R *
-#set environment vars, then invoke build
- - export BOOST_LIBS="-lboost_thread -lboost_system"
- - python quasar.py build Release open62541_config.cmake
+ - python quasar.py build Release ubuntu_evaluationToolkit.cmake

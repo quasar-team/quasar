@@ -10,6 +10,8 @@
 **        which is not wanted normally. You can disable this by opening the
           exceptions dialog via the menu Debug->Exceptions. Then deactivate
           the "CTRL-C" exception in the "Win32 Exceptions" category.
+@author Unified Automation
+@author Piotr Nikiel
 ******************************************************************************/
 #ifndef __SHUTDOWN_H__
 #define __SHUTDOWN_H__
@@ -50,7 +52,14 @@ void RegisterSignalHandler();
 /* Use this to check if the shutdown flag is set. */
 unsigned int ShutDownFlag();
 
+#ifdef BACKEND_OPEN62541
+#include <open62541.h>
+extern  UA_Boolean g_RunningFlag;
+#endif
+
 /* Use this to get the application path created with new. Delete returned char array if not NULL. */
 char* getAppPath();
+
+
 
 #endif

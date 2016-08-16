@@ -22,6 +22,8 @@
 #ifndef ASSOURCEVARIABLEIOMANAGER_H_
 #define ASSOURCEVARIABLEIOMANAGER_H_
 
+#ifndef BACKEND_OPEN62541
+
 #include <iomanager.h>
 #include <SourceVariables.h>
 
@@ -109,6 +111,6 @@ private:
 }
 
 
-
+#endif // BACKEND_OPEN62541
 
 #endif /* ASSOURCEVARIABLEIOMANAGER_H_ */

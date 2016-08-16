@@ -70,4 +70,4 @@ SET( XML_LIBS "-lxerces-c" )
 #-----
 
 # TODO: split between Win / MSVC, perhaps MSVC has different notation for these
-add_definitions(-Wall -Wno-deprecated -std=gnu++0x ) 
+add_definitions(-Wall -Wno-deprecated -std=gnu++0x -DBACKEND_UATOOLKIT ) 

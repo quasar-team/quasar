@@ -80,6 +80,7 @@ namespace AddressSpace
         }
         else if (startNode->nodeClass() == OpcUa_NodeClass_Object)
         {
+#ifndef BACKEND_OPEN62541
             unsigned int nMatched=0;
             UaReference *pRefList = const_cast<UaReference *>(startNode->getUaReferenceLists()->pTargetNodes());
             while (pRefList)
@@ -88,6 +89,10 @@ namespace AddressSpace
                 pRefList = pRefList->pNextForwardReference();
             }
             return nMatched;
+#else // BACKEND_OPEN62541
+
+#endif // BACKEND_OPEN62541
+		
         }
         else
             return 0;
@@ -142,12 +147,20 @@ namespace AddressSpace
         if (startNode->nodeClass() == OpcUa_NodeClass_Object)
         {
             unsigned int nMatched=0;
+#ifdef BACKEND_OPEN62541
+      BOOST_FOREACH( const UaNode::ReferencedTarget &target, *(startNode->referencedTargets()) )
+	{
+	  nMatched = nMatched + findAllByRegex(nm, target.target, nodeClass, expression, storage);
+	}
+#else // BACKEND_OPEN62541
             UaReference *pRefList = const_cast<UaReference *>(startNode->getUaReferenceLists()->pTargetNodes());
             while (pRefList)
             {
                 nMatched = nMatched + findAllByRegex(nm, pRefList->pTargetNode(), nodeClass, expression, storage);
                 pRefList = pRefList->pNextForwardReference();
             }
+
+#endif // BACKEND_OPEN62541
             return nMatched;
         }
         else

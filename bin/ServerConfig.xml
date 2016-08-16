@@ -132,9 +132,9 @@
           [ApplicationPath] can be used as placeholder for the application path. -->
       <OpenSSLStore>
         <CertificateTrustListLocation>[ApplicationPath]/PKI/CA/certs/</CertificateTrustListLocation>
-        <CertificateRevocationListLocation>[ApplicationPath]/PKI/CA/crl/opcuacanopenserver.crl</CertificateRevocationListLocation>
-        <ServerCertificate>[ApplicationPath]/PKI/CA/certs/opcuacanopenserver.der</ServerCertificate>
-        <ServerPrivateKey>[ApplicationPath]/PKI/CA/private/opcuacanopenserver.pem</ServerPrivateKey>
+        <CertificateRevocationListLocation>[ApplicationPath]/PKI/CA/crl/OpcUaServer.crl</CertificateRevocationListLocation>
+        <ServerCertificate>[ApplicationPath]/PKI/CA/certs/OpcUaServer.der</ServerCertificate>
+        <ServerPrivateKey>[ApplicationPath]/PKI/CA/private/OpcUaServer.pem</ServerPrivateKey>
       </OpenSSLStore>
       <!--Windows based certificate store.
         - <StoreLocation> location of the store. Valid values are LocalMachine and CurrentUser

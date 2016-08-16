@@ -28,7 +28,14 @@ namespace AddressSpace
 ASLog::ASLog (UaNodeId parentNodeId, const UaNodeId& typeNodeId, ASNodeManager *nm, const Configuration::Log & config)
 :OpcUa::BaseObjectType (nm->makeChildNodeId(parentNodeId, "Log"), "Log", nm->getNameSpaceIndex(), nm),
  m_typeNodeId (typeNodeId)
-{}
+{
+    const UaStatus statusAddElementToParent = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent);
+    if (!statusAddElementToParent.isGood())
+    {
+        std::cout << "While addNodeAndReference from " << parentNodeId.toString().toUtf8() << " to " << this->nodeId().toString().toUtf8() << " : " << std::endl;
+        ASSERT_GOOD(statusAddElementToParent);
+    }
+}
 
 ASLog::~ASLog ()
 {}

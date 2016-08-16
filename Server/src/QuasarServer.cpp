@@ -21,6 +21,8 @@
  */
 
 #include "QuasarServer.h"
+#include <boost/thread.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <LogIt.h>
 #include <string.h>
 #include <shutdown.h>
@@ -43,7 +45,7 @@ void QuasarServer::mainLoop()
 
     while(ShutDownFlag() == 0)
     {
-		UaThread::sleep (1);
+    	boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
     }
     printServerMsg(" Shutting down server");
 }

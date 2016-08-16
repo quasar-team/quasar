@@ -56,6 +56,23 @@ ASServer::ASServer (
 
 
     ,
+	m_remainingCertificateValidity (new
+
+                            OpcUa::BaseDataVariableType
+
+
+                            (nm->makeChildNodeId(this->nodeId(),UaString("remainingCertificateValidity")), UaString("remainingCertificateValidity"), nm->getNameSpaceIndex(), UaVariant(
+
+                            		UaString( "unknown" )
+
+                             ),
+
+                             OpcUa_AccessLevels_CurrentRead
+                             , nm))
+
+
+
+    ,
     m_deviceLink (0)
 
 
@@ -63,8 +80,14 @@ ASServer::ASServer (
     UaStatus s;
     UaVariant v;
 
-    v.setUInt32
-    ( 0 );
+    s = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent);
+    if (!s.isGood())
+    {
+        std::cout << "While addNodeAndReference from " << parentNodeId.toString().toUtf8() << " to " << this->nodeId().toString().toUtf8() << " : " << std::endl;
+        ASSERT_GOOD(s);
+    }
+
+    v.setUInt32(0);
 
     m_connectedClientCount->setValue(/*pSession*/0, UaDataValue(UaVariant( v ),
             OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
@@ -76,8 +99,16 @@ ASServer::ASServer (
         ASSERT_GOOD(s);
     }
 
+    v.setString("uninitialized");
+    m_remainingCertificateValidity->setValue(/*pSession*/0, UaDataValue(UaVariant( v ),
+                                    OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
 
-
+    s = nm->addNodeAndReference(this, m_remainingCertificateValidity, OpcUaId_HasComponent);
+    if (!s.isGood())
+    {
+        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_remainingCertificateValidity->nodeId().toString().toUtf8() << " : " << std::endl;
+        ASSERT_GOOD(s);
+    }
 }
 
 
@@ -130,6 +161,39 @@ OpcUa_UInt32 ASServer::getConnectedClientCount () const
     return v_value;
 }
 
+UaStatus ASServer::setRemainingCertificateValidity(const UaString& value, OpcUa_StatusCode statusCode,const UaDateTime & srcTime )
+{
+    UaVariant v;
+
+    v.setString( value );
+
+
+
+    return m_remainingCertificateValidity->setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
+
+}
+
+UaStatus ASServer::getRemainingCertificateValidity(UaString & r) const
+{
+    UaVariant v (* (m_remainingCertificateValidity->value(/*session*/0).value()));
+
+    if (v.type() == OpcUaType_String)
+    {
+        r = v.toString();
+        return OpcUa_Good;
+    }
+    else
+        return OpcUa_Bad;
+}
+
+/* short getter (possible because nullPolicy=nullForbidden) */
+UaString ASServer::getRemainingCertificateValidity() const
+{
+    UaVariant v (* m_remainingCertificateValidity->value (0).value() );
+    UaString v_value;
+    v_value = v.toString();
+    return v_value;
+}
 
 
 

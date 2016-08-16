@@ -1,0 +1,190 @@
+# version format
+version: 1.0.{build}
+
+# Operating system (build VM template)
+os: Windows Server 2012
+
+# environment variables
+#environment:
+
+# scripts that run after cloning repository
+install:
+#define functions that will be used later
+
+#function DownloadFile will download a file from the given $url and will put it in the given $localPath
+#If there is a problem downloading the file, an Error will be shown and the script will abort.
+  - ps: function DownloadFile{
+         Param ([string]$url,[string]$localPath)
+         try 
+         {
+          Invoke-WebRequest $url -OutFile $localPath ;
+         }
+         catch
+         {
+          Write-Error "There was a problem donwloading the url [$($url)]; The script will now terminate." ;
+          Exit ;
+         }
+         Write-Output "Succesfully downloaded file [$($localPath)]." ;
+        }
+        
+#function InstallPythonWheel will call pip to install the wheel file $wheelLocalPath
+#If there is a problem installing the file, an Error will be shown and the script will abort.
+  - ps: function InstallPythonWheel{
+         Param ([string]$wheelLocalPath)
+         C:\Python27\Scripts\pip install --disable-pip-version-check --user --upgrade pip ;
+         C:\Python27\Scripts\pip install $wheelLocalPath ;
+         if($LastExitCode -ne 0)
+         {
+          Write-Error "There was a problem installing the python wheel file [$($wheelLocalPath)]; The script will now terminate." ;
+          Exit ;
+         }
+         else
+         {
+          Write-Output "Succesfully installed python wheel file [$($wheelLocalPath)]." ;
+         }
+        }
+
+#function InstallExe will call Start-Process to install the exe file $exeLocalPath using arguments "/install=agent /silent"
+#If there is a problem installing the file, an Error will be shown and the script will abort.
+  - ps: function InstallExe{
+        Param ([string]$exeLocalPath, [string]$arguments)
+          Start-Process -FilePath $exeLocalPath -ArgumentList $arguments -Wait ;
+          if($?)
+          {
+              Write-Output "Succesfully installed exe file [$($exeLocalPath)]." ;
+          }
+          else
+          {
+              Write-Error "There was a problem installing the exe file [$($exeLocalPath)]; The script will now terminate." ;
+              Exit ;
+          }
+        }
+
+
+#function InstallMsi will call msiexec to install the msi file $msiLocalPath using arguments /i /quiet /qn /norestart /log install.log
+#If there is a problem installing the file, an Error will be shown and the script will abort.
+  - ps: function InstallMsi{
+       Param ([string]$msiLocalPath)
+          Start-Process -FilePath msiexec -ArgumentList "/i $($msiLocalPath) /quiet /qn /norestart /log install.log" -Wait ;
+          if($?)
+          {
+              Write-Output "Succesfully installed msi file [$($msiLocalPath)]." ;
+          }
+          else
+          {
+              Write-Error "There was a problem installing the msi file [$($msiLocalPath)]; The script will now terminate." ;
+              Exit ;
+          }
+        }
+
+#function UnzipFile will call 7z to unzip the file $localPath
+#If there is a problem unzipping the file, an Error will be shown and the script will abort.
+  - ps: function UnzipFile{
+        Param ([string]$localPath)
+          Start-Process -FilePath 7z -ArgumentList "x $($localPath) -y" -Wait ;
+          if($?)
+          {
+              Write-Output "Succesfully unzipped compressed file [$($localPath)]." ;
+          }
+          else
+          {
+              Write-Error "There was a problem unzipping the compressed file [$($localPath)]; The script will now terminate." ;
+              Exit ;
+          }
+        }
+        
+#done defining powershell functions. Install logic starts here
+  - ps: cd ..
+
+#install lxml
+  - ps: $url = "https://pypi.python.org/packages/5c/5e/c2d36ed1f234649a9724ceaf8a5ac549cbd51b93a0b524448da46408166d/lxml-3.4.4-cp27-none-win32.whl#md5=21216e68cdbaa82dea9b6907bdc39bed"
+  - ps: $localPath = "lxml-3.4.4-cp27-none-win32.whl"
+  - ps: DownloadFile -url $url -localPath $localPath
+  - ps: InstallPythonWheel -wheelLocalPath $localPath
+  
+#install pysvn
+  - ps: $url = "https://cernbox.cern.ch/index.php/s/CFxkAy38E8C8ipA/download"
+  - ps: $localPath= "py27-pysvn-svn193-1.9.0-1849-Win32.exe"
+  - ps: DownloadFile -url $url -localPath $localPath
+  - ps: InstallExe -exeLocalPath $localPath -arguments "/install=agent /silent"
+
+#install AStyle
+  - ps: $url = "https://cernbox.cern.ch/index.php/s/MwzEg2vSDNATgTI/download"
+  - ps: $localPath= "astyle.zip"
+  - ps: DownloadFile -url $url -localPath $localPath
+  - ps: UnzipFile -localPath $localPath -outputPath $outputPath
+
+#install libxml2
+  - ps: $url = "https://cernbox.cern.ch/index.php/s/0mHSe6TqM6OBBWA/download"
+  - ps: $localPath= "libxml2-2.7.8.win32.zip"
+  - ps: DownloadFile -url $url -localPath $localPath
+  - ps: UnzipFile -localPath $localPath -outputPath $outputPath
+
+#install xsdcxx and change exe name
+  - ps: $url = "http://www.codesynthesis.com/download/xsd/3.3/windows/i686/xsd-3.3.msi"
+  - ps: $localPath= "xsd-3.3.msi"
+  - ps: DownloadFile -url $url -localPath $localPath
+  - ps: InstallMsi -msiLocalPath $localPath
+  - ps: mv "C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsd.exe" "C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsdcxx.exe"
+
+#download and unzip xerces-c
+  - ps: $url = "https://cernbox.cern.ch/index.php/s/Lz1DAa61yJJzwPQ/download"
+  - ps: $localPath= "xerces-c-3.1.2.zip"
+  - ps: DownloadFile -url $url -localPath $localPath
+  - ps: UnzipFile -localPath $localPath
+
+#installing openssl
+  - ps: $url = "http://slproweb.com/download/Win32OpenSSL-1_0_2h.exe"
+  - ps: $localPath= "Win32OpenSSL-1_0_2h.exe"
+  - ps: DownloadFile -url $url -localPath $localPath
+  - ps: InstallExe -exeLocalPath $localPath -arguments "/install=agent /silent" 
+ 
+  - ps: cd quasar
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: x64
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Release
+
+build_script:
+# Adding the needed paths to the PATH environment variable
+  - cmd : SET PATH=%PATH%;C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin;C:\projects\libxml2-2.7.8.win32\bin;C:\projects\AStyle\bin
+  - ps : Write-Output "Calling cmake --version"
+  - ps : start-process -NoNewWindow -FilePath cmake -ArgumentList "--version" -Wait
+  - ps : Write-Output "OK, called cmake --version"
+
+# Get the LED traffic light Design.xml
+  - ps : start-process -FilePath git -ArgumentList ("clone", "https://github.com/quasar-team/quasar-validation-ci.git") -Wait
+  - ps : mv quasar-validation-ci/CI/Design.xml Design/ -force
+  
+# open6 specific operations
+# 2 lines below SHOULD work - optional modules doesn't seem to respect my tag (says it doesn't exist)
+#  - python quasar.py enable_module open62541-compat open62541-compat-0.2-rc2
+#  - python quasar.py prepare_build open62541_config.cmake
+#  - ps : start-process -FilePath git -ArgumentList ("clone", "-b", "open62541_v0.2","--single-branch", "https://github.com/quasar-team/open62541-compat.git") -Wait
+  - cmd : git clone -b open62541_v0.2 --single-branch https://github.com/quasar-team/open62541-compat.git
+  - ps : cd open62541-compat
+  - ps : start-process -NoNewWindow -FilePath python -ArgumentList ("prepare.py") -Wait
+  - cmd : dir include
+  - ps : cd ..
+  - ps : mv quasar-validation-ci/CI/open62541WindowsCIConfiguration.cmake . -force
+
+# run generator on Design.xml devices
+  - ps : start-process -NoNewWindow -FilePath python  -ArgumentList "quasar.py generate device GreenLED" -Wait
+  - ps : start-process -NoNewWindow -FilePath python  -ArgumentList "quasar.py generate device YellowLED" -Wait
+  - ps : start-process -NoNewWindow -FilePath python  -ArgumentList "quasar.py generate device RedLED" -Wait
+  
+# start build
+  - ps : Write-Output "Calling build"
+#  - ps : start-process -NoNewWindow -FilePath python -ArgumentList "quasar.py build Release open62541WindowsCIConfiguration.cmake" -Wait -RedirectStandardError "error.log"
+  - cmd : python quasar.py build Release open62541WindowsCIConfiguration.cmake
+  - ps : Write-Output "Done!"
+  - ps : if(Test-Path bin/OpcUaServer.exe)
+         {
+          Write-Output "Succesfully Built QUASAR." ;
+         }
+         else
+         {
+          Write-Error "There was a problem building QUASAR; The script will now terminate." ;
+          Exit ;
+         }

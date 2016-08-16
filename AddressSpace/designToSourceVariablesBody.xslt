@@ -252,6 +252,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:template match="/">	
 	<xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToSourceVariablesBody.xslt','Piotr Nikiel')"/>    
 
+	#ifndef BACKEND_OPEN62541
+
 
 	#include &lt;iomanager.h&gt;
 	#include &lt;SourceVariables.h&gt;
@@ -431,6 +433,8 @@ UaStatus SourceVariables_spawnIoJobRead (
 	
 	}
 
+	#endif // BACKEND_OPEN62541
+	
 	</xsl:template>
 	
 

@@ -22,6 +22,8 @@
 #ifndef ASSOURCEVARIABLE_H_
 #define ASSOURCEVARIABLE_H_
 
+#ifndef BACKEND_OPEN62541
+
 #include <opcua_basedatavariabletype.h>
 #include <iomanager.h>
 #include <SourceVariables.h>
@@ -71,6 +73,8 @@ private:
 };
 
 }
+
+#endif // BACKEND_OPEN62541
 
 
 #endif /* ASSOURCEVARIABLE_H_ */

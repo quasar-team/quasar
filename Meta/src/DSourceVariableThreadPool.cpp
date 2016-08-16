@@ -61,8 +61,9 @@ namespace Device
 DSourceVariableThreadPool::DSourceVariableThreadPool (const size_t& min, const size_t& max)
 :Base_DSourceVariableThreadPool()
 {
+  #ifndef BACKEND_OPEN62541
     AddressSpace::SourceVariables_initSourceVariablesThreadPool (min, max);
-
+  #endif
 }
 
 /* sample dtr */

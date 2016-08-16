@@ -163,16 +163,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				nm->getTypeNodeId(AddressSpace::ASInformationModel::<xsl:value-of select="fnc:typeNumericId($class)"/>), 
 				nm, 
 				<xsl:value-of select="@class"/>config);
-		<xsl:choose>
-		<xsl:when test="/d:design/d:class[@name=$class]/@singleVariableNode='true'">UaStatus s = nm->addUnreferencedNode( asItem );</xsl:when>
-		<xsl:otherwise>UaStatus s = nm->addNodeAndReference( parentNodeId, asItem, OpcUaId_HasComponent);</xsl:otherwise>
-		</xsl:choose>
-		if (!s.isGood())
-		{
-			std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; parentNodeId.toString().toUtf8() &lt;&lt; " to " &lt;&lt; asItem-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
-			ASSERT_GOOD(s);
-			}
-			
+
 		<xsl:if test="fnc:classHasDeviceLogic(/,$class)='true'">
  		  Device::<xsl:value-of select="fnc:DClassName(@name)"/> *dItem = new Device::<xsl:value-of select="fnc:DClassName(@name)"/> (
 		  config,
@@ -286,10 +277,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	UaNodeId rootNode = UaNodeId(OpcUaId_ObjectsFolder, 0);
 	Device::DRoot *deviceRoot = Device::DRoot::getInstance();
-		
+
 	configureMeta( *theConfiguration.get(), nm, rootNode );	
 	if(!runConfigurationDecoration(*theConfiguration, configXmlDecoratorFunction)) return false;
-		
+	
 	<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']">
 
         <xsl:call-template name="hasObjects">

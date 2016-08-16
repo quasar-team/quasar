@@ -23,13 +23,14 @@
 #ifndef ASUTILS_H_
 #define ASUTILS_H_
 
-#include <uanodeid.h>
-#include <uabasenodes.h>
+/* #include <uanodeid.h> */
+/* #include <uabasenodes.h> */
 #include <stdlib.h>
 #include <iostream>
 #include <string>
 
 void abort_with_message(const char* file, int line, const char* message);
+void abort_with_message(const char* file, int line, const std::string& message);
 
 
 #define ASSERT_GOOD(status) { if (!(status).isGood()) { abort_with_message(__FILE__, __LINE__, status.toString().toUtf8()); } }
