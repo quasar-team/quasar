@@ -14,7 +14,7 @@ message(STATUS "environment vars: BOOST_HOME [$ENV{BOOST_HOME}] CODE_SYNTHESYS_X
 if( NOT DEFINED ENV{BOOST_HOME} )
 	message(FATAL_ERROR "environment variable BOOST_HOME not defined - please set this to a 64bit boost installation")
 else()	
-	SET( BOOST_PATH_HEADERS $ENV{BOOST_HOME}/include/boost-1_59 )
+	SET( BOOST_PATH_HEADERS $ENV{BOOST_HOME}/include )
 	SET( BOOST_PATH_LIBS $ENV{BOOST_HOME}/lib	 )
 endif()
 message(STATUS "BOOST - include [${BOOST_PATH_HEADERS}] libs [${BOOST_PATH_LIBS}]")
@@ -59,7 +59,7 @@ set( BOOST_LIBS  libboostlogsetup libboostlog libboostsystem libboostfilesystem 
 # LogIt
 #-----
 SET( LOGIT_HAS_STDOUTLOG TRUE )
-SET( LOGIT_HAS_BOOSTLOG TRUE )
+SET( LOGIT_HAS_BOOSTLOG FALSE )
 SET( LOGIT_HAS_UATRACE FALSE )
 MESSAGE( STATUS "LogIt build options: stdout [${LOGIT_HAS_STDOUTLOG}] boost [${LOGIT_HAS_BOOSTLOG}] uaTrace [${LOGIT_HAS_UATRACE}]" )
 
@@ -72,6 +72,7 @@ if( NOT DEFINED ENV{CODE_SYNTHESYS_XSD} )
 	"C:/Program Files (x86)/CodeSynthesis XSD 4.0/include"
 	)
 else()
+	message(STATUS "Using environment variable for CODE_SYNTHESYS_XSD adding include [$ENV{CODE_SYNTHESYS_XSD}/include]")
 	include_directories(
 	$ENV{CODE_SYNTHESYS_XSD}/include
 	)
@@ -150,4 +151,6 @@ set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Zi")
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG bin/)
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE bin/)
 
-set(BACKEND_SERVER_MODULES open62541 Open62541-compat)
+include_directories(
+	${PROJECT_SOURCE_DIR}/open62541-compat/include
+)

@@ -45,7 +45,7 @@ def generateCmake(buildType="Release",
 	if platform.system() == "Windows":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
 					      "-DCMAKE_TOOLCHAIN_FILE=" + cmakeToolchainFile,
-					      "-G", "Visual Studio 12 2013 Win64", "."],
+					      "-G", "Visual Studio 12 Win64", "."],
 					     getCommand("cmake"))
 	elif platform.system() == "Linux":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
