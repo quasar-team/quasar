@@ -14,10 +14,11 @@ install:
   - cmd : git clone https://github.com/quasar-team/quasar-validation-ci.git
   - cmd : python quasar-validation-ci/CI/setup-windows-dependencies.py
   - cmd : dir
+  - cmd : type setLocalPath.bat
   - cmd : CALL setLocalPath.bat
 
 build_script:
-  - cmd : echo %PATH%
+  - cmd : SET 
 
 # Get the LED traffic light Design.xml
   - cmd : mv --force quasar-validation-ci/CI/Design.xml Design/
