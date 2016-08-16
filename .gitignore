@@ -8,3 +8,14 @@ cmake_install.cmake
 *.log
 bin/PKI
 Makefile
+**/*.dir
+**/*.vcxproj*
+**/*.tmp
+**/*.removeme
+**/*.suo
+**/*.opensdf
+**/*.sln
+**/x64/
+**/*.sdf
+**/generated/
+**/cmake_generated.cmake
