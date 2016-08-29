@@ -33,7 +33,6 @@ build_script:
   - cmd : python prepare.py
   - cmd : dir include
   - cmd : cd ..
-  - cmd : mv --force quasar-validation-ci/CI/open62541WindowsCIConfiguration.cmake .
 
 # run generator on Design.xml devices
   - cmd : python quasar.py generate device GreenLED
@@ -42,7 +41,7 @@ build_script:
   
 # start build
   - cmd : echo "Calling build..."
-  - cmd : python quasar.py build Release open62541WindowsCIConfiguration.cmake
+  - cmd : python quasar.py build Release open6_win_configuration.cmake
   - cmd : echo "build complete!"
   - ps : if(Test-Path bin/OpcUaServer.exe)
          {
