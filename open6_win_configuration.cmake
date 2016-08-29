@@ -131,8 +131,12 @@ if(NOT TARGET custeay32)
 	add_library(custeay32 STATIC IMPORTED)
 	set_property(TARGET custeay32 PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/libeay32.lib)
 endif()
+if(NOT TARGET custssleay32) 
+	add_library(custssleay32 STATIC IMPORTED)
+	set_property(TARGET custssleay32 PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/ssleay32.lib)
+endif()
 
-SET( XML_LIBS Rpcrt4 crypt32 ws2_32 custeay32 libxercesc custlibxml)
+SET( XML_LIBS Rpcrt4 crypt32 ws2_32 custeay32 custssleay32 libxercesc custlibxml)
 
 #-----
 #GoogleTest
@@ -151,6 +155,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Zi")
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG bin/)
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE bin/)
 
-include_directories(
-	${PROJECT_SOURCE_DIR}/open62541-compat/include
-)
+SET( CUSTOM_SERVER_MODULES open62541-compat)
+if(NOT TARGET libOpen62541)
+	add_library(libOpen62541 STATIC IMPORTED)
+	set_property(TARGET libOpen62541 PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib)
+endif()
+set( OPCUA_TOOLKIT_LIBS_RELEASE, libOpen62541)
