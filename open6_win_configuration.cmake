@@ -147,7 +147,7 @@ include_directories(
 
 add_definitions( -DBACKEND_OPEN62541 )
 
-add_definitions(-DSUPPORT_XML_CONFIG -Wall -DWIN32_LEAN_AND_MEAN)
+add_definitions(-DSUPPORT_XML_CONFIG -DWIN32_LEAN_AND_MEAN)
 
 set(CMAKE_CXX_FLAGS_RELEASE "/MD")
 set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Zi")
