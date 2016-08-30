@@ -37,8 +37,8 @@ build_script:
   - cmd : python quasar.py generate device RedLED
   
 # start build
-  - cmd : echo "Calling build..."
-  - cmd : python quasar.py build Release open6_win_configuration.cmake
+  - cmd : echo "Calling build...(note always returns 0 to mask any internal msbuild errors - exe is checked below)"
+  - cmd : python quasar.py build Release open6_win_configuration.cmake && exit 0
   - cmd : echo "build complete!"
   - ps : if(Test-Path bin/OpcUaServer.exe)
          {
