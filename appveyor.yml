@@ -6,9 +6,6 @@ os: Windows Server 2012
 platform: x64
 configuration: Release
 
-init:
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-
 # scripts that run after cloning repository
 install:
   - cmd : git clone https://github.com/quasar-team/quasar-validation-ci.git
@@ -52,3 +49,7 @@ build_script:
           Write-Error "There was a problem building QUASAR; The script will now terminate." ;
           Exit ;
          }
+
+# uncomment to block VM deletion for investigating broken builds.
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
