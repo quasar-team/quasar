@@ -175,6 +175,7 @@ File shutdown.h                             must_exist,must_be_versioned,md5=che
 File serverconfigxml.h                      deprecated
 File serverconfigxml_quasar.h               must_exist,must_be_versioned,md5=check,install=overwrite
 File opcserver.h                            must_exist,must_be_versioned,md5=check,install=overwrite
+File opcserver_open62541.h		    must_exist,must_be_versioned,md5=check,install=overwrite
 File version.h                              must_exist,must_be_versioned,md5=check,install=overwrite
 File QuasarServerCallback.h                 must_exist,must_be_versioned,md5=check,install=overwrite
 File QuasarVersion.h                        must_exist,must_be_versioned,md5=check,install=overwrite
@@ -187,6 +188,7 @@ File QuasarServer.cpp                       must_exist,must_be_versioned,install
 File serverconfigxml.cpp                    must_exist,must_be_versioned,md5=check,install=overwrite
 File shutdown.cpp                           must_exist,must_be_versioned,md5=check,install=overwrite
 File opcserver.cpp                          must_exist,must_be_versioned,md5=check,install=overwrite
+File opcserver_open62541.cpp		    must_exist,must_be_versioned,md5=check,install=overwrite
 File QuasarServerCallback.cpp               must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory .
