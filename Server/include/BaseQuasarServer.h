@@ -28,6 +28,7 @@
 	#include <uabase.h>
 	#include <opcserver.h>
 #elif BACKEND_OPEN62541
+        #include <opcserver_open62541.h>
 	#include <open62541.h>
 #endif
 
@@ -50,17 +51,9 @@ public:
     //Starts application. Parses command line arguments and then calls serverRun
     int startApplication(int argc, char *argv[]);
 
-#ifdef BACKEND_OPEN62541
-    void runThread();
-#endif
-
 protected:
     //Reference to the OPC UA Server internal implementation    
-#ifdef BACKEND_UATOOLKIT
     OpcServer* m_pServer;
-#elif BACKEND_OPEN62541
-    UA_Server *m_pServer;
-#endif
 
     //Reference to the Node manager
     AddressSpace::ASNodeManager* m_nodeManager;
