@@ -14,7 +14,7 @@ message(STATUS "environment vars: BOOST_HOME [$ENV{BOOST_HOME}] CODE_SYNTHESYS_X
 if( NOT DEFINED ENV{BOOST_HOME} )
 	message(FATAL_ERROR "environment variable BOOST_HOME not defined - please set this to a 64bit boost installation")
 else()	
-	SET( BOOST_PATH_HEADERS $ENV{BOOST_HOME}/include/boost-1_59 )
+	SET( BOOST_PATH_HEADERS $ENV{BOOST_HOME}/include )
 	SET( BOOST_PATH_LIBS $ENV{BOOST_HOME}/lib	 )
 endif()
 message(STATUS "BOOST - include [${BOOST_PATH_HEADERS}] libs [${BOOST_PATH_LIBS}]")
@@ -59,7 +59,7 @@ set( BOOST_LIBS  libboostlogsetup libboostlog libboostsystem libboostfilesystem 
 # LogIt
 #-----
 SET( LOGIT_HAS_STDOUTLOG TRUE )
-SET( LOGIT_HAS_BOOSTLOG TRUE )
+SET( LOGIT_HAS_BOOSTLOG FALSE )
 SET( LOGIT_HAS_UATRACE FALSE )
 MESSAGE( STATUS "LogIt build options: stdout [${LOGIT_HAS_STDOUTLOG}] boost [${LOGIT_HAS_BOOSTLOG}] uaTrace [${LOGIT_HAS_UATRACE}]" )
 
@@ -72,6 +72,7 @@ if( NOT DEFINED ENV{CODE_SYNTHESYS_XSD} )
 	"C:/Program Files (x86)/CodeSynthesis XSD 4.0/include"
 	)
 else()
+	message(STATUS "Using environment variable for CODE_SYNTHESYS_XSD adding include [$ENV{CODE_SYNTHESYS_XSD}/include]")
 	include_directories(
 	$ENV{CODE_SYNTHESYS_XSD}/include
 	)
@@ -130,8 +131,12 @@ if(NOT TARGET custeay32)
 	add_library(custeay32 STATIC IMPORTED)
 	set_property(TARGET custeay32 PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/libeay32.lib)
 endif()
+if(NOT TARGET custssleay32) 
+	add_library(custssleay32 STATIC IMPORTED)
+	set_property(TARGET custssleay32 PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/ssleay32.lib)
+endif()
 
-SET( XML_LIBS Rpcrt4 crypt32 ws2_32 custeay32 libxercesc custlibxml)
+SET( XML_LIBS Rpcrt4 crypt32 ws2_32 custeay32 custssleay32 libxercesc custlibxml)
 
 #-----
 #GoogleTest
@@ -142,7 +147,7 @@ include_directories(
 
 add_definitions( -DBACKEND_OPEN62541 )
 
-add_definitions(-DSUPPORT_XML_CONFIG -Wall -DWIN32_LEAN_AND_MEAN)
+add_definitions(-DSUPPORT_XML_CONFIG -DWIN32_LEAN_AND_MEAN)
 
 set(CMAKE_CXX_FLAGS_RELEASE "/MD")
 set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Zi")
@@ -150,4 +155,11 @@ set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Zi")
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG bin/)
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE bin/)
 
-set(BACKEND_SERVER_MODULES open62541 Open62541-compat)
+SET( CUSTOM_SERVER_MODULES open62541-compat)
+if(NOT TARGET libOpen62541)
+	add_library(libOpen62541 STATIC IMPORTED)
+	set_property(TARGET libOpen62541 PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib)
+endif()
+set( OPCUA_TOOLKIT_LIBS_RELEASE, libOpen62541)
+
+SET (CMAKE_EXE_LINKER_FLAGS -v)
