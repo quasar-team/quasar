@@ -33,12 +33,12 @@ message ("using BOOST_LIBS [$ENV{BOOST_LIBS}]")
 #------
 
 # No OPC-UA Toolkit: using Open62541-compat instead. It is referenced in BACKEND_MODULES below
-SET( OPCUA_TOOLKIT_PATH "" )
-    
-SET( OPCUA_TOOLKIT_LIBS_DEBUG "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/libopen62541.so" )
-SET( OPCUA_TOOLKIT_LIBS_RELEASE "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/libopen62541.so" )
-
 add_definitions( -DBACKEND_OPEN62541 )
+SET( OPCUA_TOOLKIT_PATH "" )
+SET( OPCUA_TOOLKIT_LIBS_RELEASE "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/libopen62541.so" )
+SET( OPCUA_TOOLKIT_LIBS_DEBUG "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/libopen62541.so" )
+    
+SET( CUSTOM_SERVER_MODULES open62541-compat)
 
 #-----
 #XML Libs
