@@ -18,7 +18,8 @@
 
 add_library (Server OBJECT
 	src/main.cpp 
-	src/opcserver.cpp 
+	src/opcserver.cpp
+	src/opcserver_open62541.cpp
 	src/shutdown.cpp 
 	src/serverconfigxml.cpp 
 	src/QuasarServerCallback.cpp

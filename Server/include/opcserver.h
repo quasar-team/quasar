@@ -1,3 +1,5 @@
+#ifdef BACKEND_UATOOLKIT
+
 /******************************************************************************
 ** opcserver.h
 **
@@ -61,3 +63,5 @@ private:
 
 
 #endif // MAIN_OPCSERVER_H
+
+#endif //  BACKEND_UATOOLKIT

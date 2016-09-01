@@ -1,4 +1,4 @@
-#ifndef BACKEND_OPEN62541
+#ifdef BACKEND_UATOOLKIT
 
 /******************************************************************************
 ** opcserver.cpp
@@ -643,4 +643,4 @@ UaStatus ServerConfigBasicXml::logonSessionUser(
 }
 
 
-#endif // BACKEND_OPEN62541
+#endif // BACKEND_UATOOLKIT

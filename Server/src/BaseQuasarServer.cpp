@@ -41,9 +41,7 @@
 #include <LogLevels.h>
 
 #ifdef BACKEND_UATOOLKIT
-#ifdef SUPPORT_XML_CONFIG
    #include "xmldocument.h"
-#endif
 #endif
 
 #include <shutdown.h>
@@ -62,10 +60,6 @@
 
 using namespace std;
 using namespace boost::program_options;
-
-#ifdef BACKEND_OPEN62541
-UA_Logger logger = Logger_Stdout;
-#endif
 
 BaseQuasarServer::BaseQuasarServer():
     m_pServer(0), 
@@ -103,14 +97,6 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
 	return 1;
     }
 }
-
-#ifdef BACKEND_OPEN62541
-void BaseQuasarServer::runThread()
-{
-    UA_StatusCode retval = UA_Server_run(m_pServer, &g_RunningFlag);
-    
-}
-#endif
   
 
 int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCreateCertificate)
@@ -130,57 +116,29 @@ int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCrea
     //-------------------------------------------
     // Create and initialize server object
 
-#ifdef BACKEND_UATOOLKIT
     m_pServer = new OpcServer;
     m_pServer->setServerConfig(getServerConfigFullPath(serverSettingsPath), serverSettingsPath.c_str());
-#else
-    UA_ServerConfig config = UA_ServerConfig_standard;
-    UA_ServerNetworkLayer nl = UA_ServerNetworkLayerTCP(UA_ConnectionConfig_standard, 4841);
-    config.networkLayers = &nl;
-    config.networkLayersSize = 1;
-    m_pServer = UA_Server_new(config);
-//    UA_Server_setLogger(m_pServer, logger);
-    
-  
-#endif
 
     if (onlyCreateCertificate)
     {
-#ifdef BACKEND_OPEN62541
-	LOG(Log::ERR) << "Creating certificates is not yet supported with Open62541 backend. Please consider contributing to the project ;-)";
-	return -1;
-#else
-    	m_pServer->createCertificate();
-    	LOG(Log::INF) << "Create certificate only";
-    	return 0;
-#endif
+    	return m_pServer->createCertificate();
     }
 
     
     m_nodeManager = new AddressSpace::ASNodeManager();
     m_nodeManager->setAfterStartupDelegate( boost::bind(&BaseQuasarServer::configurationInitializerHandler, this, configFileName, m_nodeManager) );
-#if defined(BACKEND_UATOOLKIT)
+
     m_pServer->addNodeManager(m_nodeManager);
-#elif defined(BACKEND_OPEN62541)
-    m_nodeManager->linkServer(m_pServer);
-    m_nodeManager->afterStartUp();
-#endif
 
     try
     {
-#ifdef BACKEND_UATOOLKIT
 	const int startServerReturn = m_pServer->start();
 	if ( startServerReturn != 0 )
 	{
 	    serverStartFailLogError(startServerReturn, m_pServer->getLogFilePath());
 	    return startServerReturn;
 	}
-#elif defined(BACKEND_OPEN62541)
-	boost::thread serverThread ( &BaseQuasarServer::runThread, this );
-#endif
-
 	mainLoop();
-
     }
     catch (const std::exception &e)
     {
@@ -190,23 +148,15 @@ int BaseQuasarServer::serverRun(const std::string& configFileName, bool onlyCrea
     shutdown();  // this is typically overridden by the developer
 
     unlinkAllDevices(m_nodeManager);
-#ifdef BACKEND_UATOOLKIT
     destroyMeta(m_nodeManager);
-#endif
     Device::DRoot::getInstance()->unlinkAllChildren();
 
-#if defined(BACKEND_UATOOLKIT)
     m_pServer->stop(3, UaLocalizedText("", "User shut down"));
     if (m_pServer != 0)
     {
 	delete m_pServer;
 	m_pServer = NULL;
     }
-#elif defined(BACKEND_OPEN62541)
-    delete m_nodeManager;
-    UA_Server_delete(m_pServer);
-    /* For all address space items: disconnect their device links */
-#endif
 
     return 0;
 }
@@ -296,14 +246,12 @@ int BaseQuasarServer::parseCommandLine(int argc, char *argv[], bool *isHelpOrVer
 int BaseQuasarServer::initializeEnvironment()
 {
 #ifdef BACKEND_UATOOLKIT
-    //- initialize the environment --------------
-#ifdef SUPPORT_XML_CONFIG
     // initialize the XML Parser
     UaXmlDocument::initParser();
-#endif
+
     // initialize the UA Stack platform layer
     const int ret = UaPlatformLayer::init();
-    //-------------------------------------------
+
 #else
      const int ret = 0;
 #endif    
@@ -335,29 +283,16 @@ bool BaseQuasarServer::overridableConfigure(const std::string& fileName, Address
 UaString BaseQuasarServer::getServerConfigFullPath(const std::string& serverSettingsPath) const
 {
     // Create configuration file name
-    UaString sConfigFileName(serverSettingsPath.c_str());
+    std::string fullpath = serverSettingsPath + "/ServerConfig.xml";
 
-#ifdef BACKEND_UATOOLKIT
-#ifdef SUPPORT_XML_CONFIG
-    sConfigFileName += "/ServerConfig.xml";
-#else
-    sConfigFileName += "/ServerConfig.ini";
-#endif
-#endif
-    return sConfigFileName;
+    return UaString( fullpath.c_str() );
 }
 
 void BaseQuasarServer::shutdownEnvironment()
 {
 #ifdef BACKEND_UATOOLKIT
-    //- Cleanup the environment --------------
-    // Cleanup the UA Stack platform layer
     UaPlatformLayer::cleanup();
-#ifdef SUPPORT_XML_CONFIG
-    // Cleanup the XML Parser
     UaXmlDocument::cleanupParser();
-#endif
-    //-------------------------------------------
 #endif
 }
 
