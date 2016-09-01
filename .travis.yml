@@ -25,7 +25,7 @@ script:
 # start: below should be replaceable by 'enable module' for open62541-compat, doesn't 
 # appear to work for (non master) branches currently.
  - git clone https://ben-farnham@github.com/quasar-team/open62541-compat.git
- - cd cd open62541-compat/
+ - cd open62541-compat/
  - git checkout open62541_v0.2
  - python prepare.py
  - cd ..
