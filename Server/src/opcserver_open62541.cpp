@@ -1,3 +1,5 @@
+#ifdef BACKEND_OPEN62541
+
 #include <opcserver_open62541.h>
 
 #include <LogIt.h>
@@ -78,3 +80,5 @@ void OpcServer::runThread()
 {
     UA_StatusCode retval = UA_Server_run(m_server, &g_RunningFlag);
 }
+
+#endif //  BACKEND_OPEN62541
