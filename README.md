@@ -9,6 +9,6 @@ Linux
 coming soon...
 
 Windows
-https://ci.appveyor.com/api/projects/status/q8ruqgd2nj54b76p/branch/master?svg=true
+[![Appveyor](https://ci.appveyor.com/api/projects/status/q8ruqgd2nj54b76p/branch/master?svg=true)]
 
 
