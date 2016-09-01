@@ -28,13 +28,16 @@ from commandMap import getCommand
 configPath = "Configuration" + os.path.sep	
 def generateConfiguration():
 	"""Generates the file Configuration.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = "Configuration.xsd"
-	transformDesignVerbose(configPath + "designToConfigurationXSD.xslt", configPath + output, 0, 0)
-	print("Calling xmllint to modify " + output)
+	outputFile = os.path.join('Configuration', 'Configuration.xsd')
+	cleanedOutputFile = os.path.join('Configuration', 'Configuration.xsd.new')
+	transformationFile = os.path.join(configPath, "designToConfigurationXSD.xslt")
+	#output = "Configuration.xsd"
+	transformDesignVerbose(transformationFile, outputFile, 0, 0)
+	print("Calling xmllint to modify " + outputFile)
 	#this call is not using subprocess with improved errors because of the need of the piping.
-	subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--xinclude", configPath + output], configPath + output + ".new", getCommand("xmllint"))
-	print("Copying the modified file  " + output + ".new into the name of " + output)
-	shutil.copyfile(configPath + output + ".new", configPath + output)
+	subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--xinclude", outputFile], cleanedOutputFile, getCommand("xmllint"))
+	print("Copying the modified file  " + cleanedOutputFile + " into the name of " + outputFile)
+	shutil.copyfile(cleanedOutputFile, outputFile)
 
 def generateConfigurator():
 	"""Generates the file Configurator.cpp. This method is called automatically by cmake, it does not need to be called by the user."""

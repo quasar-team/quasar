@@ -51,7 +51,10 @@ def automatedBuild(buildType="Release",
 		print(getCommand("vcvarsall") + ' amd64')
 		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
 		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType)
-		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType, "visual studio msbuild")
+		try:
+			subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType, "visual studio msbuild")
+		except Exception, e:
+			print("Build process error. Exception: [" + str(e) + "]")
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
 		#we call process nproc and store its output

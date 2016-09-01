@@ -8,6 +8,7 @@
 #include <iomanip>
 
 #include <Certificate.h>
+#include <boost/date_time.hpp>
 
 #include <LogIt.h>
 #include <LogLevels.h>
@@ -113,28 +114,29 @@ int Certificate::loadCertificateFromFile( void )
 
 
 void Certificate::remainingValidityTime( void ){
-	time_t t = time( 0 );
-	struct tm * now = localtime( &t );
+	const tm now = boost::posix_time::to_tm(boost::posix_time::second_clock::local_time());
+//	time_t t = time( 0 );
+//	struct tm * now = localtime( &t );
 	ASN1_TIME asn1now;
 	asn1now.type = V_ASN1_UTCTIME;
 	stringstream ss;
 	string fmon = "";
-	if ( now->tm_mon +1 < 10 ) fmon = "0";
+	if ( now.tm_mon +1 < 10 ) fmon = "0";
 	string fday = "";
-	if ( now->tm_mday < 10 ) fday = "0";
+	if ( now.tm_mday < 10 ) fday = "0";
 	string fhour = "";
-	if ( now->tm_hour < 10 ) fhour = "0";
+	if ( now.tm_hour < 10 ) fhour = "0";
 	string fmin = "";
-	if ( now->tm_min < 10 ) fmin = "0";
+	if ( now.tm_min < 10 ) fmin = "0";
 	string fsec = "";
-	if ( now->tm_sec < 10 ) fsec = "0";
+	if ( now.tm_sec < 10 ) fsec = "0";
 
-	ss << now->tm_year - 100
-			<< fmon << now->tm_mon +1
-			<< fday << now->tm_mday
-			<< fhour << now->tm_hour
-			<< fmin << now->tm_min
-			<< fsec << now->tm_sec << "Z";
+	ss << now.tm_year - 100
+			<< fmon << now.tm_mon +1
+			<< fday << now.tm_mday
+			<< fhour << now.tm_hour
+			<< fmin << now.tm_min
+			<< fsec << now.tm_sec << "Z";
 
 	string asn1str = ss.str();
 	//cout << __FILE__ << " " << __LINE__ << " asn1str= " << asn1str << endl;

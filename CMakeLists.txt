@@ -24,6 +24,8 @@ add_definitions(
 	-DSUPPORT_XML_CONFIG 
 )
 
+set(CUSTOM_SERVER_MODULES "")
+
 if(DEFINED CMAKE_TOOLCHAIN_FILE)
 	message("CMAKE_TOOLCHAIN_FILE defined -- now including it")
 	include(${CMAKE_TOOLCHAIN_FILE})
@@ -34,8 +36,6 @@ endif(DEFINED CMAKE_TOOLCHAIN_FILE)
 
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
-
-set(CUSTOM_SERVER_MODULES "")
 
 set(EXECUTABLE OpcUaServer)
 
