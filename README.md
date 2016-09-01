@@ -9,4 +9,4 @@ Once you've cloned the quasar framework git repository to your development machi
 CI build info | CI build status
 ------------ | -------------
 linux (travis-ci) | ![travis-ci](https://travis-ci.org/quasar-team/quasar.svg?branch=master)
-windows (appveyor) CI build | ![Appveyor](https://ci.appveyor.com/api/projects/status/q8ruqgd2nj54b76p/branch/master?svg=true)
+windows (appveyor) | ![Appveyor](https://ci.appveyor.com/api/projects/status/q8ruqgd2nj54b76p/branch/master?svg=true)
