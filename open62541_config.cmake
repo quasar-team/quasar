@@ -45,7 +45,7 @@ SET( CUSTOM_SERVER_MODULES open62541-compat)
 #-----
 #As of 03-Sep-2015 I see no FindXerces or whatever in our Cmake 2.8 installation, so no find_package can be user...
 # TODO perhaps also take it from environment if requested
-SET( XML_LIBS "-lxerces-c" ) 
+SET( XML_LIBS "-lxerces-c -lssl" ) 
 
 #-----
 #General settings
@@ -53,6 +53,7 @@ SET( XML_LIBS "-lxerces-c" )
 
 # TODO: split between Win / MSVC, perhaps MSVC has different notation for these
 add_definitions(-Wall -Wno-deprecated -std=gnu++0x -Wno-literal-suffix) 
+SET (CMAKE_EXE_LINKER_FLAGS -v)
 
 # 62xxx no uatrace
 set (LOGIT_HAS_UATRACE FALSE)
