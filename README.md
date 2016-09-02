@@ -6,7 +6,7 @@ Once you've cloned the quasar framework git repository to your development machi
 
 ## Continuous Integration builds status (master branch)
 
-CI build info | CI build status
------------- | -------------
-linux (travis-ci) | ![travis-ci](https://travis-ci.org/quasar-team/quasar.svg?branch=master)
-windows (appveyor) | ![Appveyor](https://ci.appveyor.com/api/projects/status/q8ruqgd2nj54b76p/branch/master?svg=true)
+CI build info | UA backend | CI build status
+------------ | ------------- | -------------
+linux (travis-ci) | open62541 | ![travis-ci](https://travis-ci.org/quasar-team/quasar.svg?branch=master)
+windows (appveyor) | open62541 | ![Appveyor](https://ci.appveyor.com/api/projects/status/q8ruqgd2nj54b76p/branch/master?svg=true)
