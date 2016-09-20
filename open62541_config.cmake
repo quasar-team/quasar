@@ -23,10 +23,14 @@ else(DEFINED ENV{BOOST_PATH_HEADERS})
     message ("Assuming standard Boost installation as no BOOST_PATH_HEADERS is defined in your environment")
     SET( BOOST_PATH_HEADERS "" )
     SET( BOOST_PATH_LIBS "" )
-    SET( BOOST_LIBS "-lboost_program_options -lboost_thread" )
+    if( NOT DEFINED ENV{BOOST_LIBS} )
+      SET( BOOST_LIBS "-lboost_program_options -lboost_thread" )
+    else()
+      SET( BOOST_LIBS $ENV{BOOST_LIBS} )
+    endif()
 endif(DEFINED ENV{BOOST_PATH_HEADERS})
 
-message ("using BOOST_LIBS [$ENV{BOOST_LIBS}]")
+message ("using BOOST_LIBS [${BOOST_LIBS}]")
 
 #------
 #OPCUA

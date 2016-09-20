@@ -1,36 +1,22 @@
+sudo: required
+
 language: cpp
-compiler: gcc
+
+services:
+ - docker
+
 before_install:
- - sudo apt-get install -y libxml2-dev libxerces-c-dev python-svn python-lxml astyle libboost-all-dev xsdcxx default-jre libssl-dev gcc-multilib g++-multilib
- - wget --no-check-certificate https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
- - tar -xzvf cmake-2.8.12.2.tar.gz 
- - cd cmake-2.8.12.2
- - ./bootstrap
- - make      
- - sudo make install
- - cd ..
+ - docker pull bfarnham/quasar:quasar-open62541
  
 script:
- - cmake -version
-
-# obtain CI helper content, insert specific Design.xml into project.
- - git clone https://github.com/quasar-team/quasar-validation-ci.git
- - mv quasar-validation-ci/CI/Design.xml Design/
-
-# run code generation from Design.xml
- - python quasar.py generate device GreenLED
- - python quasar.py generate device YellowLED
- - python quasar.py generate device RedLED
-
-# start: below should be replaceable by 'enable module' for open62541-compat, doesn't 
-# appear to work for (non master) branches currently.
- - git clone https://ben-farnham@github.com/quasar-team/open62541-compat.git
- - cd open62541-compat/
- - git checkout open62541_v0.2
- - python prepare.py
- - cd ..
-# end: (replaceable by 'enable module')
-
-# select boost libraries to link against and invoke build
- - export BOOST_LIBS="-lboost_thread -lboost_system -lboost_program_options -lboost_system"
- - python quasar.py build Release open62541_config.cmake
+ - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c " 
+     git clone https://github.com/quasar-team/quasar.git ;
+     cd quasar ;
+     git checkout travis_with_docker ;
+     git clone https://ben-farnham@github.com/quasar-team/open62541-compat.git ;
+     cd open62541-compat ;
+     git checkout open62541_v0.2 ;
+     python prepare.py ;
+     cd .. ;
+     python quasar.py build Release open62541_config.cmake ;
+     exit"
