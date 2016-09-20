@@ -9,14 +9,14 @@ before_install:
  - docker pull bfarnham/quasar:quasar-open62541
  
 script:
- - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c "\ 
-     git clone https://github.com/quasar-team/quasar.git ;\
-     cd quasar ;\
-     git checkout travis_with_docker ;\ #NB - branch specific, delete line for master
-     git clone https://ben-farnham@github.com/quasar-team/open62541-compat.git ;\
-     cd open62541-compat ;\
-     git checkout open62541_v0.2 ;\
-     python prepare.py ;\
-     cd .. ;\
-     python quasar.py build Release open62541_config.cmake ;\
+ - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c " 
+     git clone https://github.com/quasar-team/quasar.git ;
+     cd quasar ;
+     git checkout travis_with_docker ;
+     git clone https://ben-farnham@github.com/quasar-team/open62541-compat.git ;
+     cd open62541-compat ;
+     git checkout open62541_v0.2 ;
+     python prepare.py ;
+     cd .. ;
+     python quasar.py build Release open62541_config.cmake ;
      exit"
