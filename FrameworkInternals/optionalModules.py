@@ -55,7 +55,7 @@ def _getEnabledModules():
 			print "Error reading min version info for module "+module
 			return None
 		if not tag:
-			print "Error reading tag info for module "+module
+			print "Error reading tag/branch info for module "+module
 			return None
 		enabledModules[module] = {"tag":tag, "minVersion":minVersion}
 	os.chdir(baseDirectory)
@@ -128,13 +128,13 @@ def _getModuleUrl(moduleName, serverString=""):
 	serverEnd = url.find("/", serverBegin)
 	return serverString+url[serverEnd:]
 
-def _checkTagExists(url, tag):
+def _checkTagExists(url, tag): # works for tags or branchess
 	if tag=="master": return True
-	output = subprocess.Popen(['git', 'ls-remote', '--tags', url, tag], stdout=subprocess.PIPE).communicate()[0]
+	output = subprocess.Popen(['git', 'ls-remote', '--refs', url, tag], stdout=subprocess.PIPE).communicate()[0]
 	## with python 2.7 use the following:
 	## output = subprocess.call("git ls-remote --tags "+url+" "+tag, shell=True)
 	if not output:
-		print "Error, tag "+tag+" for URL "+url+" does not exist. Please specify existing tag."
+		print "Error, tag/branch "+tag+" for URL "+url+" does not exist. Please specify existing tag/branch."
 		return False
 	return True
 
@@ -144,10 +144,10 @@ def enableModule(moduleName, tag="master", serverString=""):
 	
 	Keyword arguments:
 	moduleName   -- name of the optional module
-	tag          -- tag to checkout, if not specified, master branch is used
+	tag          -- tag/branch to checkout, if not specified, master branch is used
 	serverString -- default git server is "https://github.com", specify custom if necessary, e.g. "ssh://git@gitlab.cern.ch:7999"
 	"""
-	print "Enabling module "+moduleName+", tag "+tag
+	print "Enabling module "+moduleName+", tag/branch "+tag
 
 	if not _getModuleInfo(serverString): return False
 
