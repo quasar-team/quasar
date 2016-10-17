@@ -24,7 +24,7 @@ else(DEFINED ENV{BOOST_PATH_HEADERS})
     SET( BOOST_PATH_HEADERS "" )
     SET( BOOST_PATH_LIBS "" )
     if( NOT DEFINED ENV{BOOST_LIBS} )
-      SET( BOOST_LIBS "-lboost_program_options -lboost_thread" )
+      SET( BOOST_LIBS "-lboost_program_options-mt -lboost_thread-mt" )
     else()
       SET( BOOST_LIBS $ENV{BOOST_LIBS} )
     endif()
@@ -41,8 +41,6 @@ add_definitions( -DBACKEND_OPEN62541 )
 SET( OPCUA_TOOLKIT_PATH "" )
 SET( OPCUA_TOOLKIT_LIBS_RELEASE "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/libopen62541.so" -lrt)
 SET( OPCUA_TOOLKIT_LIBS_DEBUG "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/libopen62541.so" -lrt)
-    
-SET( CUSTOM_SERVER_MODULES open62541-compat)
 
 #-----
 #XML Libs
@@ -57,7 +55,6 @@ SET( XML_LIBS "-lxerces-c -lssl" )
 
 # TODO: split between Win / MSVC, perhaps MSVC has different notation for these
 add_definitions(-Wall -Wno-deprecated -std=gnu++0x -Wno-literal-suffix) 
-SET (CMAKE_EXE_LINKER_FLAGS -v)
 
 # 62xxx no uatrace
 set (LOGIT_HAS_UATRACE FALSE)
