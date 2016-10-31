@@ -178,6 +178,7 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <xsl:when test="$dataType='OpcUa_UInt64'">OpcUaType_UInt64</xsl:when>
 <xsl:when test="$dataType='OpcUa_Boolean'">OpcUaType_Boolean</xsl:when>
 <xsl:when test="$dataType='UaString'">OpcUaType_String</xsl:when>
+<xsl:when test="$dataType='UaByteString'">OpcUaType_ByteString</xsl:when>
 <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
 </xsl:choose>
 </xsl:function>
