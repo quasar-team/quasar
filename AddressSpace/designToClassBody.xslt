@@ -244,7 +244,10 @@ UaVariant v;
 <xsl:choose>
 <xsl:when test="@dataType='UaVariant'"> 
 v = value;
-
+</xsl:when>
+<xsl:when test="@dataType='UaByteString'">
+//NOTE: const_case below is safe, mutability is required only if value is to be detached (and it isn't in our case)
+v.setByteString( const_cast&lt;UaByteString&amp;&gt;(value), /*detach value?*/ false );
 </xsl:when>
 <xsl:otherwise>
 v.<xsl:value-of select="fnc:dataTypeToVariantSetter(@dataType)"/>( value );
