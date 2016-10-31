@@ -178,6 +178,7 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <xsl:when test="$dataType='OpcUa_UInt64'">OpcUaType_UInt64</xsl:when>
 <xsl:when test="$dataType='OpcUa_Boolean'">OpcUaType_Boolean</xsl:when>
 <xsl:when test="$dataType='UaString'">OpcUaType_String</xsl:when>
+<xsl:when test="$dataType='UaByteString'">OpcUaType_ByteString</xsl:when>
 <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
 </xsl:choose>
 </xsl:function>
@@ -197,6 +198,7 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <xsl:when test="$dataType='OpcUa_Int64'">toInt64</xsl:when>
 <xsl:when test="$dataType='OpcUa_UInt64'">toUInt64</xsl:when>
 <xsl:when test="$dataType='OpcUa_Boolean'">toBool</xsl:when>
+<xsl:when test="$dataType='UaByteString'">toByteString</xsl:when>
 <xsl:when test="$dataType='UaString'"><xsl:message terminate="yes">Internal error - for UaString use toString() conversion</xsl:message></xsl:when>
 <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
 </xsl:choose>
@@ -218,6 +220,7 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <xsl:when test="$dataType='OpcUa_UInt64'">setUInt64</xsl:when>
 <xsl:when test="$dataType='OpcUa_Boolean'">setBool</xsl:when>
 <xsl:when test="$dataType='UaString'">setString</xsl:when>
+<xsl:when test="$dataType='UaByteString'">setByteString</xsl:when>
 <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
 </xsl:choose>
 </xsl:function>

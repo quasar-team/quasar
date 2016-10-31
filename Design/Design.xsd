@@ -211,6 +211,7 @@ elementFormDefault="qualified">
     		<enumeration value="OpcUa_Boolean"></enumeration>
     		<enumeration value="UaString"></enumeration>
     		<enumeration value="UaVariant"></enumeration>
+    		<enumeration value="UaByteString"></enumeration>
     	</restriction>
     </simpleType>
 

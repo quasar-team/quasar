@@ -42,6 +42,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:when test="$dataType='OpcUa_Boolean'">xs:boolean</xsl:when>
 	<xsl:when test="$dataType='OpcUa_Double'">xs:double</xsl:when>
 	<xsl:when test="$dataType='OpcUa_Float'">xs:float</xsl:when>
+	<xsl:when test="$dataType='UaByteString'"><xsl:message terminate="yes">ERROR: it is not allowed to initialize a variable of ByteString type from configuration due to ambiguity of input format. If you need this feature, please do ask quasar team for implementation.</xsl:message></xsl:when>
 	<xsl:when test="$dataType='UaVariant'"><xsl:message terminate="yes">ERROR: it is not allowed to initialize a variable of variable type (UaVariant) from configuration.</xsl:message></xsl:when>
 	<xsl:otherwise><xsl:message terminate="yes">ERROR: unknown type <xsl:value-of select="$dataType"/></xsl:message></xsl:otherwise>
 	</xsl:choose>
