@@ -58,7 +58,7 @@ AS<xsl:value-of select="@name"/>::AS<xsl:value-of select="@name"/> (
 	m_typeNodeId (typeNodeId)
 <!--  check number of variables -->
 
-<xsl:for-each select="child::d:cachevariable">,
+<xsl:for-each select="d:cachevariable">,
 <xsl:variable name="variableName"><xsl:choose><xsl:when test="$singleVariableNode='true'">config.name().c_str()</xsl:when><xsl:otherwise>"<xsl:value-of select="@name"/>"</xsl:otherwise></xsl:choose></xsl:variable>
 														  
 m_<xsl:value-of select="@name"/> (new 
@@ -81,10 +81,9 @@ m_<xsl:value-of select="@name"/> (new
 <xsl:otherwise>OpcUa_AccessLevels_CurrentReadOrWrite</xsl:otherwise>
 </xsl:choose>
 , nm))
-
+</xsl:for-each>
 
 <!--  sourcevariables -->
-</xsl:for-each>
 <xsl:for-each select="d:sourcevariable">,
 <xsl:variable name="variableName"><xsl:choose><xsl:when test="$singleVariableNode='true'">config.name().c_str()</xsl:when><xsl:otherwise>"<xsl:value-of select="@name"/>"</xsl:otherwise></xsl:choose></xsl:variable>
 m_<xsl:value-of select="@name"/> (new ASSourceVariable(
@@ -118,6 +117,14 @@ m_<xsl:value-of select="@name"/> (new ASSourceVariable(
   ))
 </xsl:for-each>
 
+<!-- methods -->
+<xsl:for-each select="d:method">,
+m_<xsl:value-of select="@name"/> (new ASDelegatingMethod&lt;AS<xsl:value-of select="$className"/>&gt;(
+  nm->makeChildNodeId( this->nodeId(), UaString( "<xsl:value-of select="@name"/>" ) ),
+  UaString( "<xsl:value-of select="@name"/>" ),
+  nm->getNameSpaceIndex()))
+
+</xsl:for-each>
 
 <!-- initialize device link to zero? -->
 <xsl:if test="fnc:classHasDeviceLogic(/,$className)='true'">,
@@ -206,6 +213,18 @@ s = nm->addNodeAndReference(
       <xsl:when test="$singleVariableNode='true'">parentNodeId</xsl:when>
       <xsl:otherwise>this</xsl:otherwise>
     </xsl:choose>,
+    m_<xsl:value-of select="@name"/>, OpcUaId_HasComponent);
+if (!s.isGood())
+{
+	std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; this->nodeId().toString().toUtf8() &lt;&lt; " to " &lt;&lt; m_<xsl:value-of select="@name"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
+	ASSERT_GOOD(s);
+}
+</xsl:for-each>
+
+<xsl:for-each select="d:method">
+m_<xsl:value-of select="@name"/>-&gt;assignHandler( this, &amp;<xsl:value-of select="fnc:ASClassName($className)"/>::call<xsl:value-of select="fnc:capFirst(@name)"/> ); // TODO
+s = nm->addNodeAndReference(
+	this,
     m_<xsl:value-of select="@name"/>, OpcUaId_HasComponent);
 if (!s.isGood())
 {
@@ -377,6 +396,64 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	}
 </xsl:if>
 </xsl:for-each>
+
+<!-- *************************************************** -->
+<!-- METHODS ******************************************* -->
+<!-- *************************************************** -->
+<xsl:if test="d:method">
+		/* Call handler defined because at least one method is declared */
+		UaStatus <xsl:value-of select="fnc:ASClassName(@name)"/>::beginCall ( 
+			 	MethodManagerCallback *  	pCallback, 
+			 	const ServiceContext &amp; 	serviceContext,
+			 	OpcUa_UInt32  	callbackHandle, 
+				MethodHandle *  	pMethodHandle, 
+				const UaVariantArray &amp;  	inputArguments  
+		)
+		{
+		<xsl:choose>
+		<xsl:when test="fnc:classHasDeviceLogic(/,$className)='true'">
+		
+		std::cout &lt;&lt; "pMethodHandle=" &lt;&lt; pMethodHandle &lt;&lt; std::endl;
+		
+		MethodHandleUaNode* upper = dynamic_cast&lt;MethodHandleUaNode*&gt; ( pMethodHandle );
+		if (!upper)
+		{
+			return OpcUa_BadInternalError;
+		}
+		
+		ASDelegatingMethod&lt; <xsl:value-of select="fnc:ASClassName(@name)"/>  &gt; * impl = 
+		  static_cast&lt; ASDelegatingMethod&lt; <xsl:value-of select="fnc:ASClassName(@name)"/> &gt; * &gt; ( upper-&gt;pUaMethod() );
+		if (impl != 0)
+		{
+		  return impl->call(pCallback, callbackHandle, inputArguments);		  
+		}
+		else
+		  return OpcUa_BadInternalError;
+		}
+		</xsl:when>
+		<xsl:otherwise>
+		return OpcUa_BadInternalError;
+		</xsl:otherwise>
+		</xsl:choose> 
+</xsl:if>
+
+<xsl:if test="fnc:classHasDeviceLogic(/,$className)='true'">
+	<xsl:for-each select="d:method">
+	UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::call<xsl:value-of select="fnc:capFirst(@name)"/> (
+		MethodManagerCallback* pCallback,
+			OpcUa_UInt32           callbackHandle,
+			const UaVariantArray&amp;  inputArguments) 
+	{
+	    // TODO: passing arguments	and the result
+	    UaStatus stat = getDeviceLink()-&gt;call<xsl:value-of select="fnc:capFirst(@name)"/> ();
+	    UaStatusCodeArray   	inputArgumentResults;
+	    UaDiagnosticInfos   	inputArgumentDiag;
+	    UaVariantArray       	outputArguments;
+	    pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, stat );
+	    return OpcUa_Good;
+	}
+	</xsl:for-each>
+</xsl:if>
 
 <!-- *************************************************** -->
 <!-- LINK/UNLINK DEVICE LOGIC ************************** -->

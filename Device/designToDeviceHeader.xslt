@@ -53,6 +53,10 @@
 			);
 		</xsl:if>
 	</xsl:template>
+	
+	<xsl:template name="method_handler">
+		UaStatus call<xsl:value-of select="fnc:capFirst(@name)"/> ( ) ;
+	</xsl:template>
 
 	<xsl:template name="deviceHeader">
 
@@ -81,6 +85,11 @@
 		
 		<xsl:for-each select="d:sourcevariable">
 			<xsl:call-template name="sourcevariables_operations"/>
+		</xsl:for-each>
+		
+		/* delegators for methods */
+		<xsl:for-each select="d:method">
+			<xsl:call-template name="method_handler"/>
 		</xsl:for-each>
 		
 		private:
