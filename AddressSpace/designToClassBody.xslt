@@ -222,6 +222,7 @@ if (!s.isGood())
 </xsl:for-each>
 
 <xsl:for-each select="d:method">
+<xsl:variable name="methodName"><xsl:value-of select="@name"/></xsl:variable>
 m_<xsl:value-of select="@name"/>-&gt;assignHandler( this, &amp;<xsl:value-of select="fnc:ASClassName($className)"/>::call<xsl:value-of select="fnc:capFirst(@name)"/> ); // TODO
 s = nm->addNodeAndReference(
 	this,
@@ -231,6 +232,59 @@ if (!s.isGood())
 	std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; this->nodeId().toString().toUtf8() &lt;&lt; " to " &lt;&lt; m_<xsl:value-of select="@name"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
 	ASSERT_GOOD(s);
 }
+
+<xsl:if test="d:argument">
+
+UaPropertyMethodArgument * prop = new UaPropertyMethodArgument ( 
+	nm->makeChildNodeId( m_<xsl:value-of select="$methodName"/>-&gt;nodeId(), "<xsl:value-of select="@name"/>" ),
+	OpcUa_AccessLevels_CurrentRead,
+	<xsl:value-of select="count(d:argument)"/>,
+	UaPropertyMethodArgument::INARGUMENTS
+	);
+
+unsigned int argCounter = 0;
+<xsl:for-each select="d:argument">
+
+
+	{
+		UaUInt32Array dimensions;
+		prop-&gt;setArgument( argCounter, UaString("<xsl:value-of select="@name"/>"), UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0), -1, dimensions, UaLocalizedText("en_US", "<xsl:value-of select="@name"/>") );
+	}
+	s = nm->addNodeAndReference(
+	m_<xsl:value-of select="$methodName"/>,
+    prop, 
+    OpcUaId_HasProperty);
+    
+    argCounter++;
+    
+
+</xsl:for-each>
+
+</xsl:if>
+
+<xsl:if test="d:returnvalue">
+
+UaPropertyMethodArgument * propReturn = new UaPropertyMethodArgument ( 
+	nm->makeChildNodeId( m_<xsl:value-of select="$methodName"/>-&gt;nodeId(), "<xsl:value-of select="@name"/>_rv" ),
+	OpcUa_AccessLevels_CurrentRead,
+	<xsl:value-of select="count(d:returnvalue)"/>,
+	UaPropertyMethodArgument::OUTARGUMENTS
+	);
+	<xsl:for-each select="d:returnvalue">
+	{
+		UaUInt32Array dimensions;
+		propReturn-&gt;setArgument( <xsl:value-of select="position()-1"/>, UaString("<xsl:value-of select="@name"/>"), UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0), -1, dimensions, UaLocalizedText("en_US", "rv") );
+	}	
+	</xsl:for-each>
+	
+	
+s = nm->addNodeAndReference(
+	m_<xsl:value-of select="$methodName"/>,
+    propReturn, 
+    OpcUaId_HasProperty);
+
+</xsl:if>
+
 </xsl:for-each>
 
 }
@@ -444,11 +498,39 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 			OpcUa_UInt32           callbackHandle,
 			const UaVariantArray&amp;  inputArguments) 
 	{
-	    // TODO: passing arguments	and the result
-	    UaStatus stat = getDeviceLink()-&gt;call<xsl:value-of select="fnc:capFirst(@name)"/> ();
+
+	  
+	    <xsl:for-each select="d:argument">
+	    	<xsl:value-of select="@dataType"/> arg_<xsl:value-of select="@name"/> ;
+	    	if ((UaVariant(inputArguments[<xsl:value-of select="position()-1"/>])).<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/>( arg_<xsl:value-of select="@name"/> ) != OpcUa_Good )
+	    		return OpcUa_Bad; // TODO: better error
+	    </xsl:for-each>
+	    
+	    <xsl:for-each select="d:returnvalue">
+	    	<xsl:value-of select="@dataType"/> rv_<xsl:value-of select="@name"/> ;
+	    </xsl:for-each>
+	    
+	    UaStatus stat = getDeviceLink()-&gt;call<xsl:value-of select="fnc:capFirst(@name)"/> (
+	    <xsl:for-each select="d:argument">
+	    	arg_<xsl:value-of select="@name"/><xsl:if test="position() &lt; (count(../d:argument)+count(../d:returnvalue))">,</xsl:if>
+	    </xsl:for-each>
+	    <xsl:for-each select="d:returnvalue">
+	    	rv_<xsl:value-of select="@name"/><xsl:if test="position() &lt; count(../d:returnvalue)">,</xsl:if>
+	    </xsl:for-each>
+	    );
 	    UaStatusCodeArray   	inputArgumentResults;
 	    UaDiagnosticInfos   	inputArgumentDiag;
 	    UaVariantArray       	outputArguments;
+	    
+	    <xsl:if test="d:returnvalue">
+	    UaVariant helper;
+	    outputArguments.create( <xsl:value-of select="count(d:returnvalue)"/> );
+	    <xsl:for-each select="d:returnvalue">
+	    	helper = rv_<xsl:value-of select="@name"/>;
+	    	helper.copyTo( &amp;outputArguments[<xsl:value-of select="position()-1"/>] );
+	    </xsl:for-each>
+	    </xsl:if>
+	    
 	    pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, stat );
 	    return OpcUa_Good;
 	}

@@ -38,95 +38,78 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
 	class_<xsl:value-of select="@name"/> [shape=rect,margin=0,label=&lt;
-		&lt;table border="1" cellspacing="0" &gt;
+		&lt;table border="0" cellspacing="0" cellpadding="2"  &gt;
 	
-		&lt;tr&gt; 
-		&lt;td align="center" border="1" &gt;
-		&lt;b&gt; 
-		
-		&lt;font point-size="18" &gt;
-		<xsl:value-of select="@name"/>
-		&lt;/font&gt;
-		<xsl:if test="$detailLevel>=2">
-		&lt;font point-size="10" color="blue" &gt;
-        DL=<xsl:value-of select="count(d:devicelogic)"/>
-        &lt;/font&gt;
-		</xsl:if>
-		
-		&lt;/b&gt; 
-		&lt;/td&gt;  
-		&lt;/tr&gt;
-		
-				&lt;tr&gt; 
-		&lt;td align="center" border="1" &gt;
-
-	<xsl:if test="count(d:cachevariable)+count(d:sourcevariable)+count(d:configentry)>0">
-
-		&lt;table border="0"&gt; 		
-	<xsl:for-each select="d:cachevariable">
-		&lt;tr&gt;
-		<xsl:if test="$detailLevel>=1">
-		&lt;td align="left" &gt;
-		<xsl:choose>
-		<xsl:when test="@isKey='true'">
-		&lt;font point-size="10" color="blue" &gt;CV,K&lt;/font&gt;
-		</xsl:when>
-		<xsl:otherwise>
-		&lt;font point-size="10" color="blue" &gt;CV&lt;/font&gt;
-		</xsl:otherwise>
-		</xsl:choose>
-		&lt;/td&gt;
-		</xsl:if>
-		&lt;td align="left" &gt;
-		<xsl:value-of select="@name"/>
-		&lt;/td&gt;
-		&lt;td align="left" &gt;
-		: <xsl:value-of select="@dataType"/>
-		&lt;/td&gt;
-		&lt;/tr&gt;
-	</xsl:for-each>
-	<xsl:for-each select="d:sourcevariable">
-		&lt;tr&gt;
-		<xsl:if test="$detailLevel>=1">
-		&lt;td align="left" &gt;
-		&lt;font point-size="10" color="darkgreen" &gt;SV&lt;/font&gt;
-		&lt;/td&gt;
-		</xsl:if>
-		&lt;td align="left" &gt;
-		<xsl:value-of select="@name"/>
-		&lt;/td&gt;
-		&lt;td align="left" &gt;
-		: <xsl:value-of select="@dataType"/>
-		&lt;/td&gt;
-		&lt;/tr&gt;
-	</xsl:for-each>
-	<xsl:for-each select="d:configentry">
-		&lt;tr&gt;
-		<xsl:if test="$detailLevel>=1">
-		&lt;td align="left" &gt;
-		<xsl:choose>
-		<xsl:when test="@isKey='true'">
-		&lt;font point-size="10" color="red" &gt;CE,K&lt;/font&gt;
-		</xsl:when>
-		<xsl:otherwise>
-		&lt;font point-size="10" color="red" &gt;CE&lt;/font&gt;
-		</xsl:otherwise>
-		</xsl:choose>
-		&lt;/td&gt;
-		</xsl:if>
-		&lt;td align="left" &gt;
-		<xsl:value-of select="@name"/>
-		&lt;/td&gt;
-		&lt;td align="left" &gt;
-		: <xsl:value-of select="@dataType"/>
-		&lt;/td&gt;
-		&lt;/tr&gt;
-	</xsl:for-each>
-		&lt;/table&gt;  
-		</xsl:if>
-
+			&lt;tr&gt; 
+				&lt;td colspan="3" border="0" &gt;
+					&lt;b&gt;
+					&lt;font point-size="18" &gt;<xsl:value-of select="@name"/>&lt;/font&gt;
+					<xsl:if test="$detailLevel>=2">
+						&lt;font point-size="10" color="blue" &gt;DL=<xsl:value-of select="count(d:devicelogic)"/>&lt;/font&gt;
+					</xsl:if>
+					&lt;/b&gt; 
 				&lt;/td&gt;  
-		&lt;/tr&gt;
+			&lt;/tr&gt;
+			
+			&lt;tr&gt;
+				&lt;td colspan="3" border="0" height="0.5"  bgcolor="black" fixedsize="false" cellpadding="0"&gt;&lt;/td&gt;
+	   		&lt;/tr&gt;
+	   		
+	 		<xsl:for-each select="d:cachevariable">
+				&lt;tr&gt;
+				<xsl:if test="$detailLevel>=1">
+					&lt;td align="left" &gt;&lt;font point-size="10" color="blue" &gt;CV<xsl:if test="@isKey='true'">,K</xsl:if>&lt;/font&gt;
+					&lt;/td&gt;
+				</xsl:if>
+				&lt;td align="left" &gt;<xsl:value-of select="@name"/>
+				&lt;/td&gt;
+				&lt;td align="left" &gt;: <xsl:value-of select="@dataType"/>
+				&lt;/td&gt;
+				&lt;/tr&gt;
+			</xsl:for-each>  	
+			<xsl:for-each select="d:sourcevariable">
+				&lt;tr&gt;
+				<xsl:if test="$detailLevel>=1">&lt;td align="left" &gt;&lt;font point-size="10" color="darkgreen" &gt;SV&lt;/font&gt;&lt;/td&gt;
+				</xsl:if>
+				&lt;td align="left" &gt;<xsl:value-of select="@name"/>
+				&lt;/td&gt;
+				&lt;td align="left" &gt;: <xsl:value-of select="@dataType"/>
+				&lt;/td&gt;
+				&lt;/tr&gt;
+			</xsl:for-each>
+			<xsl:for-each select="d:configentry">
+				&lt;tr&gt;
+				<xsl:if test="$detailLevel>=1">&lt;td align="left" &gt;&lt;font point-size="10" color="red" &gt;CE<xsl:if test="@isKey='true'">,K</xsl:if>&lt;/font&gt;
+				&lt;/td&gt;
+				</xsl:if>
+				&lt;td align="left" &gt;<xsl:value-of select="@name"/>
+				&lt;/td&gt;
+				&lt;td align="left" &gt;: <xsl:value-of select="@dataType"/>
+				&lt;/td&gt;
+				&lt;/tr&gt;
+			</xsl:for-each>	
+			
+			<xsl:if test="count(d:cachevariable)+count(d:sourcevariable)+count(d:configentry) &lt; 1">
+			&lt;tr&gt;&lt;td align="left" &gt;&lt;/td&gt;&lt;/tr&gt;
+			</xsl:if>
+	   		
+			&lt;tr&gt;
+				&lt;td colspan="3" border="0" height="0.5"  bgcolor="black" fixedsize="false" cellpadding="0"&gt;&lt;/td&gt;
+	   		&lt;/tr&gt;	  
+	   		
+	   		<xsl:for-each select="d:method">
+				&lt;tr&gt;
+				<xsl:if test="$detailLevel>=1">
+					&lt;td align="left"&gt;&lt;font point-size="10" color="blue" &gt;M&lt;/font&gt;
+					&lt;/td&gt;
+				</xsl:if>
+				&lt;td align="left"&gt;<xsl:value-of select="@name"/>( <xsl:for-each select="d:argument"><xsl:value-of select="@dataType"/><xsl:if test="position() &lt; count(../d:argument)">,</xsl:if></xsl:for-each> )
+				&lt;/td&gt;
+				&lt;td align="left" &gt;: <xsl:choose><xsl:when test="count(d:returnvalue) > 0"><xsl:for-each select="d:returnvalue"><xsl:value-of select="@dataType"/><xsl:if test="position() &lt; count(../d:returnvalue)">,</xsl:if></xsl:for-each></xsl:when><xsl:otherwise>void</xsl:otherwise></xsl:choose>
+				&lt;/td&gt;  
+				&lt;/tr&gt;	
+			</xsl:for-each> 		
+	   		 		
 		
 		&lt;/table&gt;&gt;]
 	
