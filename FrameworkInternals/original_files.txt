@@ -19,6 +19,7 @@ File designToGeneratedCmakeAddressSpace.xslt  must_exist,must_be_versioned,md5=c
 
 
 Directory AddressSpace/include install=create
+File ASDelegatingMethod.h                   must_exist,must_be_versioned,md5=check,install=overwrite
 File ASDelegatingVariable.h                 must_exist,must_be_versioned,md5=check,install=overwrite
 File ASNodeManager.h                        must_exist,must_be_versioned,md5=check,install=overwrite
 File ASNodeQueries.h                        must_exist,must_be_versioned,md5=check,install=overwrite
