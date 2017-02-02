@@ -234,6 +234,7 @@ if (!s.isGood())
 }
 
 <xsl:if test="d:argument">
+{
 
 UaPropertyMethodArgument * prop = new UaPropertyMethodArgument ( 
 	nm->makeChildNodeId( m_<xsl:value-of select="$methodName"/>-&gt;nodeId(), "<xsl:value-of select="@name"/>" ),
@@ -259,11 +260,11 @@ unsigned int argCounter = 0;
     
 
 </xsl:for-each>
-
+}
 </xsl:if>
 
 <xsl:if test="d:returnvalue">
-
+{
 UaPropertyMethodArgument * propReturn = new UaPropertyMethodArgument ( 
 	nm->makeChildNodeId( m_<xsl:value-of select="$methodName"/>-&gt;nodeId(), "<xsl:value-of select="@name"/>_rv" ),
 	OpcUa_AccessLevels_CurrentRead,
@@ -282,7 +283,7 @@ s = nm->addNodeAndReference(
 	m_<xsl:value-of select="$methodName"/>,
     propReturn, 
     OpcUaId_HasProperty);
-
+}
 </xsl:if>
 
 </xsl:for-each>
@@ -467,7 +468,6 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 		<xsl:choose>
 		<xsl:when test="fnc:classHasDeviceLogic(/,$className)='true'">
 		
-		std::cout &lt;&lt; "pMethodHandle=" &lt;&lt; pMethodHandle &lt;&lt; std::endl;
 		
 		MethodHandleUaNode* upper = dynamic_cast&lt;MethodHandleUaNode*&gt; ( pMethodHandle );
 		if (!upper)
@@ -503,7 +503,7 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	    <xsl:for-each select="d:argument">
 	    	<xsl:value-of select="@dataType"/> arg_<xsl:value-of select="@name"/> ;
 	    	if ((UaVariant(inputArguments[<xsl:value-of select="position()-1"/>])).<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/>( arg_<xsl:value-of select="@name"/> ) != OpcUa_Good )
-	    		return OpcUa_Bad; // TODO: better error
+	    		return OpcUa_BadDataEncodingInvalid; 
 	    </xsl:for-each>
 	    
 	    <xsl:for-each select="d:returnvalue">
@@ -526,7 +526,15 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	    UaVariant helper;
 	    outputArguments.create( <xsl:value-of select="count(d:returnvalue)"/> );
 	    <xsl:for-each select="d:returnvalue">
-	    	helper = rv_<xsl:value-of select="@name"/>;
+	    	<xsl:choose>
+	    		<xsl:when test="@dataType='UaByteString'">
+	    			helper.setByteString( rv_<xsl:value-of select="@name"/>, /*detach*/false );
+	    		</xsl:when>
+	    		<xsl:otherwise>
+	    			helper = rv_<xsl:value-of select="@name"/>;
+	    		</xsl:otherwise>
+	    	</xsl:choose>
+	    	
 	    	helper.copyTo( &amp;outputArguments[<xsl:value-of select="position()-1"/>] );
 	    </xsl:for-each>
 	    </xsl:if>
