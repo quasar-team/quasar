@@ -213,7 +213,8 @@ File LICENSE.TXT                            must_exist,must_be_versioned,install
 
 
 Directory Meta install=create,
-File CMakeLists.txt must_exist,must_be_versioned,install=overwrite,md5=check
+File CMakeLists.txt                         must_exist,must_be_versioned,install=overwrite,md5=check
+File amalgamate.cmake                       must_exist,must_be_versioned,install=overwrite,md5=check
 
 Directory Meta/include install=create,
 File ASGeneralLogLevel.h must_exist,must_be_versioned,install=overwrite,md5=check

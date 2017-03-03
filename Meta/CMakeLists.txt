@@ -16,8 +16,17 @@
 
 # Author: Benjamin Farnham <benjamin.farnham@cern.ch>
 
-file(GLOB META_SRCS src/*.cpp)
+file(GLOB META_SRCS src/*.cpp)	
+set(AMALGAMATED_META_CPP amalgamated_meta.cpp)
 
-add_library (Meta OBJECT ${META_SRCS})
+add_custom_command(
+	OUTPUT    ${AMALGAMATED_META_CPP}
+	COMMAND   ${CMAKE_COMMAND}  -DTARGET_FILE=${AMALGAMATED_META_CPP} -DINPUT_FILES="${META_SRCS}" -P amalgamate.cmake
+	DEPENDS   ${META_SRCS}
+	)
+
+
+add_library (Meta OBJECT ${AMALGAMATED_META_CPP} )
+
 
 add_dependencies (Meta Configuration.hxx AddressSpace)
