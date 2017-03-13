@@ -41,13 +41,15 @@ LogRecord::LogRecord(const string& file, const int& line, const Log::LOG_LEVEL& 
     initializeStream(file, line, level)<<"] ";
 }
 
-LogRecord::LogRecord(const string& file, const int& line, const Log::LOG_LEVEL& level, const uint32_t& componentId)
+LogRecord::LogRecord(const string& file, const int& line, const Log::LOG_LEVEL& level, const std::string& componentId)
 {
-    initializeStream(file, line, level)<<", "<<Log::componentIdToString(componentId)<<"] ";
+  return;
+  initializeStream(file, line, level) << ", "<< componentId <<"] ";
 }
 
 LogRecord::~LogRecord()
 {
+  return;
     m_stream.flush();
     LogItInstance::getInstance()->m_logSinksInstance.logMessage(m_stream.str());
 }

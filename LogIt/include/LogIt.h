@@ -24,23 +24,32 @@
 #include <stdint.h>
 #include <iostream>
 #include <list>
+#include <cmath>
 
 #include "LogRecord.h"
 #include "LogLevels.h"
-#include "ComponentAttributes.h"
+//#include "ComponentAttributes.h"
 #include "LogItInstance.h"
 
 const uint32_t g_sMaxComponentIdCount = 1024;
 
+unsigned long djb2(const char* str);
+
+
 // internal macro - will be called by LOG(LOG_LEVEL)
 #define LOG_WITHOUT_COMPONENT_ID(level) \
-     if( !Log::isLoggable(level) ) (void)0; \
-     else LogRecord(__FILE__, __LINE__, level).getStream()
+  if( !Log::isLoggable(level) ) (void)0;			\
+  else LogRecord(__FILE__, __LINE__, level).getStream()
 
 // internal macro - will be called by LOG(LOG_LEVEL, USER_COMPONENT_ID)
-#define LOG_WITH_COMPONENT_ID(level, component) \
-    if( !Log::isLoggable(level, component) ) (void)0; \
-    else LogRecord(__FILE__, __LINE__, level, component).getStream()
+
+  /* if( !Log::isLoggable(level, std::hash<const char*>{}(component)) ) (void)0; \ */
+  /* if( !Log::isLoggable(level, Log::djb2(component)) ) (void)0;	\ */
+  /* if( !Log::isLoggable(level, Log::pointer_hash<char>{}(component)) ) (void)0; \ */
+
+#define LOG_WITH_COMPONENT_ID(level, component)				\
+  if( !Log::isLoggable(level, djb2(component)) ) (void)0;	\
+  else LogRecord(__FILE__, __LINE__, level, component).getStream()
 
 /**
  * The one and only LOG macro - application code should log using this macro.
@@ -53,6 +62,8 @@ const uint32_t g_sMaxComponentIdCount = 1024;
  */
 #define GET_LOG_MACRO(_1, _2, LOG_MACRO_NAME, ...) LOG_MACRO_NAME
 #define LOG(...) GET_LOG_MACRO(__VA_ARGS__, LOG_WITH_COMPONENT_ID, LOG_WITHOUT_COMPONENT_ID)(__VA_ARGS__)
+
+/* uint32_t fnv1a(const char* text, uint32_t hash); // http://create.stephan-brumme.com/fnv-hash/ */
 
 namespace Log
 {
@@ -78,7 +89,7 @@ namespace Log
      * and LOG(LOG_LEVEL, USER_COMPONENT_ID) calls are considered too for registered components
      * (i.e. for component IDs specified in the vector of components).
      */
-    bool initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel, const std::list<ComponentAttributes>& components);
+    //    bool initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel, const std::list<ComponentAttributes>& components);
 
 	/**
 	 * initializer to be called when using LogIt *inside* a shared library. The remoteLogInstance ptr should be supplied
@@ -94,7 +105,9 @@ namespace Log
      * log check - non-component (single-arg) and component (double-arg) specific
      */
     bool isLoggable(const Log::LOG_LEVEL& level);
-    bool isLoggable(const Log::LOG_LEVEL& level, const uint32_t& componentId);
+    //    bool isLoggable(const Log::LOG_LEVEL& level, const std::string& componentId);
+    /* bool isLoggable(const Log::LOG_LEVEL& level, const char* componentId); */
+    bool isLoggable(const Log::LOG_LEVEL& level, const std::size_t& componentId);
 
     /**
      * Get/Set the log threshold for all LOG messages without a component specified, i.e. calls such as
@@ -109,10 +122,16 @@ namespace Log
      *
      * Note getComponentLogLevel returns false if componentId not registered.
      */
-    const std::list<ComponentAttributes> getComponentLogsList();
-    bool setComponentLogLevel(const uint32_t& componentId, const LOG_LEVEL& level);
-    bool getComponentLogLevel(const uint32_t& componentId, LOG_LEVEL& level);
+    //    const std::unordered_map<std::string, Log::LOG_LEVEL> getComponentLogsList();
+    const std::unordered_map<std::size_t, Log::LOG_LEVEL> getComponentLogsList();
+    //    bool setComponentLogLevel(const uint32_t& componentId, const LOG_LEVEL& level);
+    //    bool getComponentLogLevel(const uint32_t& componentId, LOG_LEVEL& level);
+    /* bool setComponentLogLevel(const std::string& componentName, const LOG_LEVEL& level); */
+    bool setComponentLogLevel(const char* componentName, const LOG_LEVEL& level);
+    /* bool getComponentLogLevel(const std::string& componentName, LOG_LEVEL& level); */
+    bool getComponentLogLevel(const std::size_t& componentId, LOG_LEVEL& level);
 
+    bool addComponent(const char* componentName, const LOG_LEVEL& level = Log::DBG);
 
 
     /**
@@ -131,7 +150,14 @@ namespace Log
      * for a given componentId.
      * If there is no component registered for that id, returns "UNKNOWN"
      */
-    std::string componentIdToString(const uint32_t& componentId);
+    // std::string componentIdToString(const uint32_t& componentId);
+
+    template<typename Tval> struct pointer_hash {
+      std::size_t operator()(const Tval* val) const {
+	static const std::size_t shift = (std::size_t)log2(1 + sizeof(Tval));
+	return (std::size_t)(val) >> shift;
+      }
+    };
 }
 
 #endif /* LOGIT_H_ */
