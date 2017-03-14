@@ -23,7 +23,7 @@
 #ifndef QUASARSERVER_H_
 #define QUASARSERVER_H_
 
-#include "BaseQuasarServer.h"
+#include <BaseQuasarServer.h>
 
 /*
  * Example class. This class overrides functionality from BaseQuasarServer in order to make the logic fit an specific implementation.
@@ -36,7 +36,7 @@ public:
     //Main loop of the application logic.
     virtual void mainLoop();
     //Method for initialising LogIt. Can be overided for a specific implementation, but a default initialization is already provided.
-    virtual void initializeLogIt();
+    void initializeLogItComponents();
     /*
      * Method for initialising Custom Modules, to be overwritten by the final user
      * return: When the return is 0, the execution will continue normally. When the return is different than 0 it will exit the server execution.

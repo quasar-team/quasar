@@ -61,8 +61,7 @@ void QuasarServer::shutdown()
 	LOG(Log::INF) << "Shutting down Quasar server.";
 }
 
-void QuasarServer::initializeLogIt()
+void QuasarServer::initializeLogItComponents()
 {
-	Log::initializeLogging();
-  LOG(Log::INF) << "Logging initialized.";
+  // optional: add any of your LogIt components
 }

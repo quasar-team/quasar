@@ -64,13 +64,13 @@ protected:
     //Method for shutting down Custom Modules, to be overwritten by the final user
     //This method will be called from configurationInitializerHandler.
     virtual void shutdown () {}
-    //Method for initialising LogIt. Can be overriden for a specific implementation, but a default initialization is already provided.
-    virtual void initializeLogIt();
+    //Method for adding LogIt components. Can be overriden for a specific implementation, but a default initialization is already provided.
+    virtual void initializeLogItComponents() {};
     //Call to the method configure inside configuration. If a different configuration method has to be implemented by the user, this should be overriden
     //This method will be called from configurationInitializerHandler.
     virtual bool overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
-	// override this function to add custom command line arguments.
-	virtual void appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions, boost::program_options::positional_options_description& positionalOptionsDescription);
+    // override this function to add custom command line arguments.
+    virtual void appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions, boost::program_options::positional_options_description& positionalOptionsDescription);
     //Gets the full path to the server configuration
     UaString getServerConfigFullPath(const std::string& szAppPath) const;
     //Gets the application path of the server
