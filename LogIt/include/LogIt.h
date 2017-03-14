@@ -87,7 +87,7 @@ namespace Log
      * log check - non-component (single-arg) and component (double-arg) specific
      */
     bool isLoggable(const Log::LOG_LEVEL& level);
-    bool isLoggable(const Log::LOG_LEVEL& level, const std::size_t& componentId);
+    bool isLoggable(const Log::LOG_LEVEL& level, const unsigned long& componentId);
 
     /**
      * Get/Set the log threshold for all LOG messages without a component specified, i.e. calls such as
@@ -102,13 +102,12 @@ namespace Log
      *
      * Note getComponentLogLevel returns false if componentId not registered.
      */
-    const std::unordered_map<std::size_t, Log::LOG_LEVEL> getComponentLogsList();
+    const std::unordered_map<unsigned long, Log::LOG_LEVEL> getComponentLogsList();
     bool setComponentLogLevel(const char* componentName, const LOG_LEVEL& level);
-    bool getComponentLogLevel(const std::size_t& componentId, LOG_LEVEL& level);
+    bool getComponentLogLevel(const unsigned long& componentId, LOG_LEVEL& level);
     bool getComponentLogLevel(const char* componentName, LOG_LEVEL& level);
 
     bool addComponent(const char* componentName, const LOG_LEVEL& level = Log::DBG);
-
 
     /**
      * Sets the log threshold for *all* LOG invocations...

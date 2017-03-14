@@ -84,7 +84,7 @@ bool Log::isLoggable(const Log::LOG_LEVEL& level)
   return level >= LogItInstance::getInstance()->m_nonComponentLogLevel;
 }
 
-bool Log::isLoggable(const Log::LOG_LEVEL& level, const std::size_t& componentId)
+bool Log::isLoggable(const Log::LOG_LEVEL& level, const unsigned long& componentId)
 {
   if(!LogItInstance::instanceExists()) return false;
   LOG_LEVEL componentLogLevel;
@@ -107,7 +107,7 @@ Log::LOG_LEVEL Log::getNonComponentLogLevel(void)
   return LogItInstance::getInstance()->m_nonComponentLogLevel;
 }
 
-const std::unordered_map<std::size_t, Log::LOG_LEVEL> getComponentLogsList()
+const std::unordered_map<unsigned long, Log::LOG_LEVEL> getComponentLogsList()
 {
   return *LogItInstance::getInstance()->m_componentLevels;
 }
@@ -115,9 +115,9 @@ const std::unordered_map<std::size_t, Log::LOG_LEVEL> getComponentLogsList()
 bool Log::addComponent(const char* componentName, const LOG_LEVEL& level)
 {
   if(!LogItInstance::instanceExists()) return false;
-  // std::size_t key = std::hash<const char*>{}(componentName);
-  // std::size_t key = Log::pointer_hash<char>{}(componentName);
-  std::size_t key = djb2(componentName);
+  // unsigned long key = std::hash<const char*>{}(componentName);
+  // unsigned long key = Log::pointer_hash<char>{}(componentName);
+  unsigned long key = djb2(componentName);
 
   logLevelMap *mapCopy = new logLevelMap(*LogItInstance::getInstance()->m_componentLevels);
   (*mapCopy)[key] = level;
@@ -139,24 +139,24 @@ bool Log::setComponentLogLevel(const char* componentName, const LOG_LEVEL& level
 {
   if(!LogItInstance::instanceExists()) return false;
   
-  // std::size_t key = std::hash<const char*>{}(componentName);
-  // std::size_t key = Log::pointer_hash<char>{}(componentName);
-  std::size_t key = djb2(componentName);
+  // unsigned long key = std::hash<const char*>{}(componentName);
+  // unsigned long key = Log::pointer_hash<char>{}(componentName);
+  unsigned long key = djb2(componentName);
 
   logLevelMap *levels = LogItInstance::getInstance()->m_componentLevels;
-  std::unordered_map<std::size_t,Log::LOG_LEVEL>::iterator pos = levels->find(key);
+  std::unordered_map<unsigned long,Log::LOG_LEVEL>::iterator pos = levels->find(key);
   if ( pos == levels->end()) return false;
 
   pos->second = level;
   return true;
 }
 
-bool Log::getComponentLogLevel(const std::size_t& componentId, LOG_LEVEL& level)
+bool Log::getComponentLogLevel(const unsigned long& componentId, LOG_LEVEL& level)
 {
   if(!LogItInstance::instanceExists()) return false;
 
   logLevelMap *levels = LogItInstance::getInstance()->m_componentLevels;
-  std::unordered_map<std::size_t,Log::LOG_LEVEL>::iterator pos = levels->find(componentId);
+  std::unordered_map<unsigned long,Log::LOG_LEVEL>::iterator pos = levels->find(componentId);
   if ( pos == levels->end()) {
     std::cerr << "Error, LogIt: log component " << componentId << " does not exist!" << std::endl;
     return false;
@@ -178,7 +178,7 @@ void Log::setGlobalLogLevel(const LOG_LEVEL& level)
   
   logLevelMap *levels = LogItInstance::getInstance()->m_componentLevels;
   LogItInstance::getInstance()->m_nonComponentLogLevel = level;
-  for(std::unordered_map<std::size_t, Log::LOG_LEVEL>::iterator pos = levels->begin(); pos != levels->end(); ++pos)
+  for(std::unordered_map<unsigned long, Log::LOG_LEVEL>::iterator pos = levels->begin(); pos != levels->end(); ++pos)
     {
       pos->second = level;
     }
@@ -194,4 +194,3 @@ unsigned long djb2(const char* str)
   while ( (c = *str++) ) hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
   return hash;
 }
-
