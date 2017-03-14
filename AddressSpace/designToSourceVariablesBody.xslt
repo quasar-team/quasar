@@ -167,7 +167,15 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:otherwise>
 			if (m_variant.type() == <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>)
 			{
+				<xsl:choose>
+				<xsl:when test="@dataType='UaString'">
+				m_variant = value;
+				</xsl:when>
+				<xsl:otherwise>
 				m_variant.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/> ( value );
+				</xsl:otherwise>
+				</xsl:choose>
+				
 			</xsl:otherwise>
 			</xsl:choose>
 
