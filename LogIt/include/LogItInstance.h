@@ -11,10 +11,9 @@
 #include <atomic>
 #include <unordered_map>
 #include "LogLevels.h"
-//#include "ComponentAttributes.h"
 #include "LogSinks.h"
 
-typedef std::unordered_map<std::size_t, Log::LOG_LEVEL> logLevelMap;
+typedef std::unordered_map<unsigned long, Log::LOG_LEVEL> logLevelMap;
 
 class LogItInstance
 {
@@ -26,7 +25,6 @@ public:
 
 	bool m_isLoggingInitialized;
 	LogSinks m_logSinksInstance;
-	//	std::map<uint32_t, ComponentAttributes> m_sComponents;
 	std::atomic<logLevelMap*> m_componentLevels;
 	Log::LOG_LEVEL m_nonComponentLogLevel;
 

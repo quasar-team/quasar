@@ -102,7 +102,7 @@ namespace Log
      *
      * Note getComponentLogLevel returns false if componentId not registered.
      */
-    const std::unordered_map<unsigned long, Log::LOG_LEVEL> getComponentLogsList();
+    const logLevelMap getComponentLogsList();
     bool setComponentLogLevel(const char* componentName, const LOG_LEVEL& level);
     bool getComponentLogLevel(const unsigned long& componentId, LOG_LEVEL& level);
     bool getComponentLogLevel(const char* componentName, LOG_LEVEL& level);
