@@ -43,68 +43,47 @@
 // internal - not exposed via API
 void initializeSinks()
 {
-	if(!LogItInstance::instanceExists()) return;
+  if(!LogItInstance::instanceExists()) return;
 
-	#ifdef LOGIT_HAS_BOOSTLOG
-    BoostRotatingFileLog* fileLogger = new BoostRotatingFileLog();
-    fileLogger->initialize();
-    LogItInstance::getInstance()->m_logSinksInstance.addSink(fileLogger);
-	#endif // LOGIT_HAS_BOOSTLOG
+#ifdef LOGIT_HAS_BOOSTLOG
+  BoostRotatingFileLog* fileLogger = new BoostRotatingFileLog();
+  fileLogger->initialize();
+  LogItInstance::getInstance()->m_logSinksInstance.addSink(fileLogger);
+#endif // LOGIT_HAS_BOOSTLOG
 
-	#ifdef LOGIT_HAS_STDOUTLOG
-    StdOutLog * stdOutLog = new StdOutLog();
-    stdOutLog->initialize();
-    LogItInstance::getInstance()->m_logSinksInstance.addSink(stdOutLog);
-	#endif
+#ifdef LOGIT_HAS_STDOUTLOG
+  StdOutLog * stdOutLog = new StdOutLog();
+  stdOutLog->initialize();
+  LogItInstance::getInstance()->m_logSinksInstance.addSink(stdOutLog);
+#endif
 
-	#ifdef LOGIT_HAS_UATRACE
-    UaTraceSink * uaTraceSink = new UaTraceSink ();
-    uaTraceSink->initialize();
-    LogItInstance::getInstance()->m_logSinksInstance.addSink(uaTraceSink);
-    #endif
+#ifdef LOGIT_HAS_UATRACE
+  UaTraceSink * uaTraceSink = new UaTraceSink ();
+  uaTraceSink->initialize();
+  LogItInstance::getInstance()->m_logSinksInstance.addSink(uaTraceSink);
+#endif
 }
-
-
-// internal - not exposed via API.
-// void registerComponents(const std::list<ComponentAttributes>& components)
-// {
-// 	if(!LogItInstance::instanceExists()) return;
-//     for(std::list<ComponentAttributes>::const_iterator it = components.begin(); it != components.end(); ++it)
-//     {
-//         ComponentAttributes component = *it;
-//         LogItInstance::getInstance()->m_sComponents.insert( std::map<uint32_t, ComponentAttributes>::value_type(component.getId(), component) );
-//     }
-// }
-
 
 bool Log::initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel)
 {
-	if(LogItInstance::instanceExists()) return false;
-	LogItInstance::createInstance();
-    initializeSinks();
-    setNonComponentLogLevel(nonComponentLogLevel);
-    return true;
+  if(LogItInstance::instanceExists()) return false;
+  LogItInstance::createInstance();
+  initializeSinks();
+  setNonComponentLogLevel(nonComponentLogLevel);
+  return true;
 }
-
-// bool Log::initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel, const std::list<ComponentAttributes>& components)
-// {
-// 	if(!initializeLogging(nonComponentLogLevel)) return false;
-//     registerComponents(components);
-//     return true;;
-// }
 
 bool Log::initializeDllLogging(LogItInstance* remoteInstance)
 {
-	return LogItInstance::setInstance(remoteInstance);
+  return LogItInstance::setInstance(remoteInstance);
 }
 
 bool Log::isLoggable(const Log::LOG_LEVEL& level)
 {
-    if(!LogItInstance::instanceExists()) return false;
-    return level >= LogItInstance::getInstance()->m_nonComponentLogLevel;
+  if(!LogItInstance::instanceExists()) return false;
+  return level >= LogItInstance::getInstance()->m_nonComponentLogLevel;
 }
 
-//bool Log::isLoggable(const Log::LOG_LEVEL& level, const std::string& componentId)
 bool Log::isLoggable(const Log::LOG_LEVEL& level, const std::size_t& componentId)
 {
   if(!LogItInstance::instanceExists()) return false;
@@ -116,10 +95,10 @@ bool Log::isLoggable(const Log::LOG_LEVEL& level, const std::size_t& componentId
 
 void Log::setNonComponentLogLevel(const LOG_LEVEL& level)
 {
-	if(!LogItInstance::instanceExists()) return;
-    if(LogItInstance::getInstance()->m_nonComponentLogLevel != level)
+  if(!LogItInstance::instanceExists()) return;
+  if(LogItInstance::getInstance()->m_nonComponentLogLevel != level)
     {
-    	LogItInstance::getInstance()->m_nonComponentLogLevel = level;
+      LogItInstance::getInstance()->m_nonComponentLogLevel = level;
     }
 }
 
@@ -128,19 +107,30 @@ Log::LOG_LEVEL Log::getNonComponentLogLevel(void)
   return LogItInstance::getInstance()->m_nonComponentLogLevel;
 }
 
-// const std::unordered_map<std::string, Log::LOG_LEVEL> getComponentLogsList()
 const std::unordered_map<std::size_t, Log::LOG_LEVEL> getComponentLogsList()
 {
-  return LogItInstance::getInstance()->m_componentLevels;
+  return *LogItInstance::getInstance()->m_componentLevels;
 }
 
-bool Log::addComponent(const char* componentName, const LOG_LEVEL& level) {
+bool Log::addComponent(const char* componentName, const LOG_LEVEL& level)
+{
   if(!LogItInstance::instanceExists()) return false;
   // std::size_t key = std::hash<const char*>{}(componentName);
   // std::size_t key = Log::pointer_hash<char>{}(componentName);
   std::size_t key = djb2(componentName);
-  LogItInstance::getInstance()->m_componentLevels[key] = level;
-  std::cout << "name=" << componentName << " key=" << key << " level= " << level << " size=" << LogItInstance::getInstance()->m_componentLevels.size() << std::endl;
+
+  logLevelMap *mapCopy = new logLevelMap(*LogItInstance::getInstance()->m_componentLevels);
+  (*mapCopy)[key] = level;
+  logLevelMap *oldMapPointer = LogItInstance::getInstance()->m_componentLevels.exchange(mapCopy); // thread-safe replacement of map
+
+  // std::cout << "name=" << componentName << " key=" << key << " level= " << level
+  // 	    << " size=" << mapCopy->size() << " was size=" << oldMapPointer->size() << std::endl;
+  if (mapCopy->size() == oldMapPointer->size()) {
+    std::cout << "Log::addComponent: Warning, component with name=" << componentName
+	      << " seems to exist already (hash=" << key << "). This should not happen." << std::endl;
+  }
+  delete oldMapPointer;
+
   return true;
 }
 
@@ -152,8 +142,10 @@ bool Log::setComponentLogLevel(const char* componentName, const LOG_LEVEL& level
   // std::size_t key = std::hash<const char*>{}(componentName);
   // std::size_t key = Log::pointer_hash<char>{}(componentName);
   std::size_t key = djb2(componentName);
-  std::unordered_map<std::size_t,Log::LOG_LEVEL>::iterator pos = LogItInstance::getInstance()->m_componentLevels.find(key);
-  if ( pos == LogItInstance::getInstance()->m_componentLevels.end()) return false;
+
+  logLevelMap *levels = LogItInstance::getInstance()->m_componentLevels;
+  std::unordered_map<std::size_t,Log::LOG_LEVEL>::iterator pos = levels->find(key);
+  if ( pos == levels->end()) return false;
 
   pos->second = level;
   return true;
@@ -163,8 +155,9 @@ bool Log::getComponentLogLevel(const std::size_t& componentId, LOG_LEVEL& level)
 {
   if(!LogItInstance::instanceExists()) return false;
 
-  std::unordered_map<std::size_t,Log::LOG_LEVEL>::iterator pos = LogItInstance::getInstance()->m_componentLevels.find(componentId);
-  if( pos == LogItInstance::getInstance()->m_componentLevels.end()) {
+  logLevelMap *levels = LogItInstance::getInstance()->m_componentLevels;
+  std::unordered_map<std::size_t,Log::LOG_LEVEL>::iterator pos = levels->find(componentId);
+  if ( pos == levels->end()) {
     std::cerr << "Error, LogIt: log component " << componentId << " does not exist!" << std::endl;
     return false;
   }
@@ -173,39 +166,32 @@ bool Log::getComponentLogLevel(const std::size_t& componentId, LOG_LEVEL& level)
   return true;
 }
 
+bool Log::getComponentLogLevel(const char* componentName, LOG_LEVEL& level)
+{
+  return getComponentLogLevel(djb2(componentName), level);
+}
+
+
 void Log::setGlobalLogLevel(const LOG_LEVEL& level)
 {
   if(!LogItInstance::instanceExists()) return;
   
+  logLevelMap *levels = LogItInstance::getInstance()->m_componentLevels;
   LogItInstance::getInstance()->m_nonComponentLogLevel = level;
-  for(std::unordered_map<std::size_t, Log::LOG_LEVEL>::iterator pos = LogItInstance::getInstance()->m_componentLevels.begin(); pos != LogItInstance::getInstance()->m_componentLevels.end(); ++pos)
+  for(std::unordered_map<std::size_t, Log::LOG_LEVEL>::iterator pos = levels->begin(); pos != levels->end(); ++pos)
     {
       pos->second = level;
     }
 }
 
-// std::string Log::componentIdToString(const uint32_t& componentId)
-// {
-// 	if(!LogItInstance::instanceExists()) return "UNKNOWN";
-
-//     std::map<uint32_t, ComponentAttributes>::iterator pos = LogItInstance::getInstance()->m_sComponents.find(componentId);
-//     if(pos == LogItInstance::getInstance()->m_sComponents.end()) return "UNKNOWN";
-
-//     return pos->second.getName();
-// }
-
-unsigned long djb2(const char* str) // DJB2, http://www.cse.yorku.ca/~oz/hash.html
+//
+// DJB2 hash function by Dan J. Bernstein, taken from http://www.cse.yorku.ca/~oz/hash.html
+//
+unsigned long djb2(const char* str) 
 {
-  // std::cout << "djb2: " << str << std::endl;
   unsigned long hash = 5381;
   int c;
-  while ( c = *str++ ) hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+  while ( (c = *str++) ) hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
   return hash;
 }
 
-// uint32_t fnv1a(const char* text, uint32_t hash) // http://create.stephan-brumme.com/fnv-hash/
-// {
-//   assert(text);
-//   while (*text) hash = fnv1a((unsigned char)*text++, hash);
-//   return hash;
-// }

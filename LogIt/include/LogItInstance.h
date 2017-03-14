@@ -8,11 +8,13 @@
 #ifndef THEDYNLIB_LOGIT_LOGITINSTANCE_H_
 #define THEDYNLIB_LOGIT_LOGITINSTANCE_H_
 
-//#include <map>
+#include <atomic>
 #include <unordered_map>
 #include "LogLevels.h"
 //#include "ComponentAttributes.h"
 #include "LogSinks.h"
+
+typedef std::unordered_map<std::size_t, Log::LOG_LEVEL> logLevelMap;
 
 class LogItInstance
 {
@@ -25,7 +27,7 @@ public:
 	bool m_isLoggingInitialized;
 	LogSinks m_logSinksInstance;
 	//	std::map<uint32_t, ComponentAttributes> m_sComponents;
-	std::unordered_map<std::size_t, Log::LOG_LEVEL> m_componentLevels;
+	std::atomic<logLevelMap*> m_componentLevels;
 	Log::LOG_LEVEL m_nonComponentLogLevel;
 
 private:

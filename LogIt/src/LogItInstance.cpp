@@ -14,7 +14,9 @@ using std::endl;
 LogItInstance* LogItInstance::g_sLogItInstance(NULL); // initially - set by any LogIt::initialize*Logging() call.
 
 LogItInstance::LogItInstance()
-:m_isLoggingInitialized(false), m_nonComponentLogLevel(Log::INF)
+  :m_isLoggingInitialized(false),
+   m_componentLevels(new std::unordered_map<std::size_t, Log::LOG_LEVEL>),
+   m_nonComponentLogLevel(Log::INF)
 {}
 
 LogItInstance::~LogItInstance()

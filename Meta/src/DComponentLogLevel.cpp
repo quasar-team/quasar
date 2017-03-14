@@ -28,8 +28,8 @@
 
 namespace Device
 {
-DComponentLogLevel::DComponentLogLevel (const uint32_t& loggingComponentId, const std::string& logLevel)
-:Base_DComponentLogLevel(), m_loggingComponentId(loggingComponentId), m_loggingComponentName(Log::componentIdToString(m_loggingComponentId))
+  DComponentLogLevel::DComponentLogLevel (const std::string& loggingComponentId, const std::string& logLevel)
+:Base_DComponentLogLevel(), m_loggingComponentId(loggingComponentId)
 {
 	writeLogLevel(logLevel.c_str());
 }
@@ -42,19 +42,19 @@ UaStatus DComponentLogLevel::writeLogLevel ( const UaString & v)
 	Log::LOG_LEVEL targetLevel;
 	if(Log::logLevelFromString(v.toUtf8(), targetLevel))
 	{
-		if(Log::setComponentLogLevel(m_loggingComponentId, targetLevel))
+	  if(Log::setComponentLogLevel(m_loggingComponentId.c_str(), targetLevel))
 		{
-			LOG(Log::INF) << "setting component [name:"<<m_loggingComponentName<<" id:"<<m_loggingComponentId<<"] to level ["<<Log::logLevelToString(targetLevel)<<"]";
+			LOG(Log::INF) << "setting component [id:"<<m_loggingComponentId<<"] to level ["<<Log::logLevelToString(targetLevel)<<"]";
 			return OpcUa_Good;
 		}
 		else
 		{
-			LOG(Log::WRN) << "failed to set component [name:"<<m_loggingComponentName<<" id:"<<m_loggingComponentId<<"] to level ["<<Log::logLevelToString(targetLevel)<<"], most likely an invalid component id";
+			LOG(Log::WRN) << "failed to set component [id:"<<m_loggingComponentId<<"] to level ["<<Log::logLevelToString(targetLevel)<<"], most likely an invalid component id";
 		}
 	}
 	else
 	{
-		LOG(Log::WRN) << " failed to set component [name:"<<m_loggingComponentName<<" id:"<<m_loggingComponentId<<"] to level ["<<v.toUtf8()<<"], unrecognized log level string (use on of {ERR|WRN|INF|DBG|TRC})";
+		LOG(Log::WRN) << " failed to set component [id:"<<m_loggingComponentId<<"] to level ["<<v.toUtf8()<<"], unrecognized log level string (use on of {ERR|WRN|INF|DBG|TRC})";
 	}
 
 	return OpcUa_BadInvalidArgument;
