@@ -225,13 +225,23 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 </xsl:choose>
 </xsl:function>
 
-<!-- Some OPC data types shall not be used in Base Device classes (i.e. UaString which is a typically Address Space construct).  -->
+<!-- Some OPC-UA data types shall not be used in Base Device classes (i.e. UaString which is a typically Address Space construct).  -->
 <xsl:function name="fnc:dataTypeToBaseDeviceType">
 <xsl:param name="dataType"/>
 <xsl:choose>
 <xsl:when test="$dataType='UaString'">const std::string &amp;</xsl:when>
 <xsl:otherwise><xsl:value-of select="$dataType"/></xsl:otherwise>
 </xsl:choose>
+</xsl:function>
+
+<!-- When the type is of POD type, just returns the type, otherwise adds a const reference. Should be used to generate argument passing into custom code.  -->
+<xsl:function name="fnc:fixDataTypePassingMethod">
+<xsl:param name="dataType"/>
+<xsl:choose>
+<xsl:when test="$dataType='UaString' or $dataType='UaByteString' or $dataType='UaVariant'">const <xsl:value-of select="$dataType"/> &amp; </xsl:when>
+<xsl:otherwise><xsl:value-of select="$dataType"/></xsl:otherwise>
+</xsl:choose>
+
 </xsl:function>
 
 <!-- This returns true if given hasObjects relations points to a singleton, that is, exactly 1 object -->

@@ -57,7 +57,7 @@
 	<xsl:template name="method_handler">
 		UaStatus call<xsl:value-of select="fnc:capFirst(@name)"/> ( 
 		<xsl:for-each select="d:argument">
-			<xsl:value-of select="@dataType"/><xsl:text> </xsl:text><xsl:value-of select="@name"/><xsl:if test="position() &lt; (count(../d:argument)+count(../d:returnvalue))">,</xsl:if><xsl:text>
+			<xsl:value-of select="fnc:fixDataTypePassingMethod(@dataType)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/><xsl:if test="position() &lt; (count(../d:argument)+count(../d:returnvalue))">,</xsl:if><xsl:text>
 			</xsl:text>
 		</xsl:for-each>
 		<xsl:for-each select="d:returnvalue">
@@ -142,7 +142,7 @@
 		#include &lt;statuscode.h&gt;
 		#include &lt;uadatetime.h&gt;
 		#include &lt;session.h&gt;
-		
+	
 		
 		#include &lt;DRoot.h&gt;
 		#include &lt;Configuration.hxx&gt;

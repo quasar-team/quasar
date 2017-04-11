@@ -501,9 +501,19 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 
 	  
 	    <xsl:for-each select="d:argument">
+	    	<!-- TODO: implement strict checking? -->
 	    	<xsl:value-of select="@dataType"/> arg_<xsl:value-of select="@name"/> ;
+	    	<xsl:choose>
+	    	<xsl:when test="@dataType='UaString'"> 
+	    	
+	    	arg_<xsl:value-of select="@name"/> = (UaVariant(inputArguments[<xsl:value-of select="position()-1"/>])).toString();   
+	    	</xsl:when>
+	    	<xsl:otherwise>
 	    	if ((UaVariant(inputArguments[<xsl:value-of select="position()-1"/>])).<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/>( arg_<xsl:value-of select="@name"/> ) != OpcUa_Good )
 	    		return OpcUa_BadDataEncodingInvalid; 
+	    	</xsl:otherwise>
+	    	</xsl:choose>
+
 	    </xsl:for-each>
 	    
 	    <xsl:for-each select="d:returnvalue">
