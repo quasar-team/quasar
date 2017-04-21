@@ -116,6 +116,24 @@ else()
 endif()
 message(STATUS "Lib XML 2 path [${LIBXML2_PATH}]" )
 
+#----
+#OPENSSL
+#----
+if(NOT TARGET custlibopenssl) 
+	add_library(custlibopenssl STATIC IMPORTED)
+	set_property(TARGET custlibopenssl PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/openssl.lib)
+endif()
+if(NOT TARGET custlibssl) 
+	add_library(custlibssl STATIC IMPORTED)
+	set_property(TARGET custlibssl PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/libssl.lib)
+endif()
+if(NOT TARGET custlibcrypto) 
+	add_library(custlibcrypto STATIC IMPORTED)
+	set_property(TARGET custlibcrypto PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/libcrypto.lib)
+endif()
+
+SET( OPENSSL_LIBS custlibopenssl custlibssl custlibcrypto )
+
 #-----
 #XML Libs
 #-----
@@ -125,18 +143,11 @@ if(NOT TARGET libxercesc)
 endif()
 if(NOT TARGET custlibxml) 
 	add_library(custlibxml STATIC IMPORTED)
-	set_property(TARGET custlibxml PROPERTY IMPORTED_LOCATION ${LIBXML2_PATH}/lib/libxml2.lib)	
-endif()
-if(NOT TARGET custeay32) 
-	add_library(custeay32 STATIC IMPORTED)
-	set_property(TARGET custeay32 PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/libeay32.lib)
-endif()
-if(NOT TARGET custssleay32) 
-	add_library(custssleay32 STATIC IMPORTED)
-	set_property(TARGET custssleay32 PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/ssleay32.lib)
+	set_property(TARGET custlibxml PROPERTY IMPORTED_LOCATION ${LIBXML2_PATH}/libxml2.lib)	
 endif()
 
-SET( XML_LIBS Rpcrt4 crypt32 ws2_32 custeay32 custssleay32 libxercesc custlibxml)
+
+SET( XML_LIBS Rpcrt4 crypt32 ws2_32 libxercesc custlibxml ${OPENSSL_LIBS} )
 
 #-----
 #GoogleTest
@@ -149,13 +160,11 @@ include_directories(
 #OPCUA
 #------
 add_definitions( -DBACKEND_OPEN62541 )
+SET( CUSTOM_SERVER_MODULES open62541-compat)
 SET( OPCUA_TOOLKIT_PATH "" )
 
-SET( CUSTOM_SERVER_MODULES open62541-compat)
-
-# NOTE! This actually links against the open62541.dll (the lib is the 'in' to link against the dll)
-SET( OPCUA_TOOLKIT_LIBS_RELEASE ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib)
-SET( OPCUA_TOOLKIT_LIBS_DEBUG, ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib)  
+SET( OPCUA_TOOLKIT_LIBS_RELEASE "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib" )
+SET( OPCUA_TOOLKIT_LIBS_DEBUG "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib" )
 
 #------
 #General

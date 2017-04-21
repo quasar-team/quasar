@@ -102,8 +102,8 @@ int Certificate::loadCertificateFromFile( void )
 	// https://github.com/openssl/openssl/commit/f48b83b4fb7d6689584cf25f61ca63a4891f5b11
 
 	// in fact these are strings in UTC format, need to convert them into time_t to become useful
-	m_time_end = _timeASN1toTIME_T(  x509crt->cert_info->validity->notAfter );
-
+	m_time_end = _timeASN1toTIME_T(  X509_get_notAfter(x509crt) );
+	
 	remainingValidityTime();
 	LOG(Log::INF) << " certificate remaining time= " << remainingDays() << "days "
 			<< remainingHours() << ":"
