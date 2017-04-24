@@ -25,6 +25,7 @@ import sys
 import filecmp
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
+import astyleSubstitute
 
 # args:
 # $1    xslt transform filename
@@ -72,8 +73,11 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
 		else:
 			subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile, additionalParam], getCommand("java"))	
 
-		if astyleRun == 1:		
-			subprocessWithImprovedErrors([getCommand('astyle'), outputFile], getCommand("astyle"))
+		if astyleRun == 1:
+			# TODO here decide how we configure whether somebody uses astyle or nor		
+			#subprocessWithImprovedErrors([getCommand('astyle'), outputFile], getCommand("astyle"))
+			astyleSubstitute.do_indentation( outputFile )
+			
 
 		if overwriteProtection == 1:
 			#If the file existed previously and it is different from the old one we run kdiff3
