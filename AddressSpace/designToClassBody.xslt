@@ -224,14 +224,7 @@ if (!s.isGood())
 <xsl:for-each select="d:method">
 <xsl:variable name="methodName"><xsl:value-of select="@name"/></xsl:variable>
 m_<xsl:value-of select="@name"/>-&gt;assignHandler( this, &amp;<xsl:value-of select="fnc:ASClassName($className)"/>::call<xsl:value-of select="fnc:capFirst(@name)"/> ); // TODO
-s = nm->addNodeAndReference(
-	this,
-    m_<xsl:value-of select="@name"/>, OpcUaId_HasComponent);
-if (!s.isGood())
-{
-	std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; this->nodeId().toString().toUtf8() &lt;&lt; " to " &lt;&lt; m_<xsl:value-of select="@name"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
-	ASSERT_GOOD(s);
-}
+
 
 <xsl:if test="d:argument">
 {
@@ -285,6 +278,15 @@ s = nm->addNodeAndReference(
     OpcUaId_HasProperty);
 }
 </xsl:if>
+
+s = nm->addNodeAndReference(
+	this,
+    m_<xsl:value-of select="@name"/>, OpcUaId_HasComponent);
+if (!s.isGood())
+{
+	std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; this->nodeId().toString().toUtf8() &lt;&lt; " to " &lt;&lt; m_<xsl:value-of select="@name"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
+	ASSERT_GOOD(s);
+}
 
 </xsl:for-each>
 
