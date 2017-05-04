@@ -16,7 +16,7 @@ Redistribution and use in source and binary forms, with or without modification,
 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@contact:    damian.abalo@cern.ch
+@contact:    quasar-developers@cern.ch
 '''
 
 import os
@@ -32,7 +32,7 @@ def generateConfiguration():
 	cleanedOutputFile = os.path.join('Configuration', 'Configuration.xsd.new')
 	transformationFile = os.path.join(configPath, "designToConfigurationXSD.xslt")
 	#output = "Configuration.xsd"
-	transformDesignVerbose(transformationFile, outputFile, 0, 0)
+	transformDesignVerbose(transformationFile, outputFile, 0, astyleRun=False)
 	print("Calling xmllint to modify " + outputFile)
 	#this call is not using subprocess with improved errors because of the need of the piping.
 	subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--xinclude", outputFile], cleanedOutputFile, getCommand("xmllint"))
@@ -42,9 +42,9 @@ def generateConfiguration():
 def generateConfigurator():
 	"""Generates the file Configurator.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
 	output = "Configurator.cpp"
-	transformDesignVerbose(configPath + "designToConfigurator.xslt", configPath + output, 0, 1)
+	transformDesignVerbose(configPath + "designToConfigurator.xslt", configPath + output, 0, astyleRun=True)
 	
 def generateConfigValidator():
 	"""Generates the file ConfigValidator.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
 	output = "ConfigValidator.cpp"
-	transformDesignVerbose(configPath + "designToConfigValidator.xslt", configPath + output, 0, 1)			
+	transformDesignVerbose(configPath + "designToConfigValidator.xslt", configPath + output, 0, astyleRun=True)			
