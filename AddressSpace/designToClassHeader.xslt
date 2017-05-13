@@ -192,10 +192,8 @@ private:
 #include &lt;opcua_baseobjecttype.h&gt;
 #include &lt;opcua_basedatavariabletype.h&gt;
 
-#ifdef BACKEND_UATOOLKIT // method support only for UASDK yet
 #include &lt;methodhandleuanode.h&gt; 
 #include &lt;ASDelegatingMethod.h&gt;
-#endif
 
 #include &lt;Configuration.hxx&gt;
 
