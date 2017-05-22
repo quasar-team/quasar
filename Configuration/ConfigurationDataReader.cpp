@@ -7,7 +7,6 @@
 
 #include "ConfigurationDataReader.h"
 
-
 using namespace std;
 
 namespace ns_configurationDataReader {
