@@ -212,7 +212,18 @@ elementFormDefault="qualified">
     		<enumeration value="UaString"></enumeration>
     		<enumeration value="UaVariant"></enumeration>
     		<enumeration value="UaByteString"></enumeration>
-    	</restriction>
+    		<enumeration value="OpcUa_Doublev"></enumeration>
+    		<enumeration value="OpcUa_Floatv"></enumeration>
+			<enumeration value="OpcUa_Bytev"></enumeration>
+    		<enumeration value="OpcUa_SBytev"></enumeration>
+			<enumeration value="OpcUa_Int16v"></enumeration>
+    		<enumeration value="OpcUa_UInt16v"></enumeration>
+    		<enumeration value="OpcUa_Int32v"></enumeration>
+    		<enumeration value="OpcUa_UInt32v"></enumeration>
+    		<enumeration value="OpcUa_Int64v"></enumeration>
+    		<enumeration value="OpcUa_UInt64v"></enumeration>
+    		<enumeration value="OpcUa_Booleanv"></enumeration>
+     	</restriction>
     </simpleType>
 
     <simpleType name="VariableInitializeWith">
@@ -333,8 +344,7 @@ elementFormDefault="qualified">
     <simpleType name="ConfigEntryDataType">
     <!--  this is essentially anything that variable data type might be apart from UaVariant -->
     	<restriction base="string">
-    		<enumeration value="OpcUa_Double"></enumeration>
-    		<enumeration value="OpcUa_Float"></enumeration>
+     		<enumeration value="OpcUa_Boolean"></enumeration>
 			<enumeration value="OpcUa_Byte"></enumeration>
     		<enumeration value="OpcUa_SByte"></enumeration>
 			<enumeration value="OpcUa_Int16"></enumeration>
@@ -343,7 +353,8 @@ elementFormDefault="qualified">
     		<enumeration value="OpcUa_UInt32"></enumeration>
     		<enumeration value="OpcUa_Int64"></enumeration>
     		<enumeration value="OpcUa_UInt64"></enumeration>
-    		<enumeration value="OpcUa_Boolean"></enumeration>
+    		<enumeration value="OpcUa_Double"></enumeration>
+    		<enumeration value="OpcUa_Float"></enumeration>
     		<enumeration value="UaString"></enumeration>
     	</restriction>
     </simpleType>
@@ -354,11 +365,16 @@ elementFormDefault="qualified">
     			maxOccurs="1" minOccurs="0">
     		</element>
     	</choice>
-    	<attribute name="name" type="tns:VariableName" use="required"></attribute>
-    	<attribute name="dataType" type="tns:ConfigEntryDataType"
+    	<attribute name="name" 
+    		type="tns:VariableName" 
+    		use="required">
+    	</attribute>
+    	<attribute name="dataType" 
+    		type="tns:ConfigEntryDataType"
     		use="required">
     	</attribute>
     	<attribute name="isKey" type="boolean"></attribute>
+    	<attribute name="isArray" type="boolean"></attribute>
     	<attribute name="storedInDeviceObject" type="boolean" use="optional"></attribute>
     </complexType>
 
