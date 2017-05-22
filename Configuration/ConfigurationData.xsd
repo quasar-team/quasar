@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- scalars --> 
+	<xs:complexType name="boolType_t">
+		<xs:annotation>
+			<xs:documentation>a scalar calibration coefficient, bool
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="value" type="xs:boolean" />
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="int16Type_t">
+		<xs:annotation>
+			<xs:documentation>a scalar calibration coefficient, int16
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="value" type="xs:short" />
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="int32Type_t">
+		<xs:annotation>
+			<xs:documentation>a scalar calibration coefficient, int32
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="value" type="xs:integer" />
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="int64Type_t">
+		<xs:annotation>
+			<xs:documentation>a scalar calibration coefficient, int64
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="value" type="xs:long" />
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="floatType_t">
+		<xs:annotation>
+			<xs:documentation>a scalar calibration coefficient, float
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="value" type="xs:float" />
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="doubleType_t">
+		<xs:annotation>
+			<xs:documentation>a scalar calibration coefficient, double
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="value" type="xs:double" />
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+	<!-- arrays -->
+	<xs:complexType name="boolArrayType_t">
+		<xs:annotation>
+			<xs:documentation>an array of calibration coefficients, bool
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:boolean" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+	<!-- byte does not work -->
+
+	<xs:complexType name="int16ArrayType_t">
+		<xs:annotation>
+			<xs:documentation>an array of calibration coefficients, int16
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:short" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="int32ArrayType_t">
+		<xs:annotation>
+			<xs:documentation>an array of calibration coefficients, int32
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:integer" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="int64ArrayType_t">
+		<xs:annotation>
+			<xs:documentation>an array of calibration coefficients, int64
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:long" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="floatArrayType_t">
+		<xs:annotation>
+			<xs:documentation>an array of calibration coefficients, float
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:float" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="doubleArrayType_t">
+		<xs:annotation>
+			<xs:documentation>an array of calibration coefficients, double
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:double" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+
+	<!-- sequence of arrays is unordered: they can have any succession -->
+	<xs:complexType name="configurationData_t">
+		<xs:sequence>
+			<xs:choice maxOccurs="unbounded" minOccurs="0">
+				<!-- scalars -->
+				<xs:element name="boolScalar"   type="boolType_t"   minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="int16Scalar"  type="int16Type_t"  minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="int32Scalar"  type="int32Type_t"  minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="int64Scalar"  type="int64Type_t"  minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="floatScalar"  type="floatType_t"  minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="doubleScalar" type="doubleType_t" minOccurs="0" maxOccurs="unbounded" />
+				
+				<!-- arrays -->
+				<xs:element name="boolArray" type="boolArrayType_t"
+					minOccurs="0" maxOccurs="unbounded" />
+				<!-- -->
+				<xs:element name="int16Array" type="int16ArrayType_t"
+					minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="int32Array" type="int32ArrayType_t"
+					minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="int64Array" type="int64ArrayType_t"
+					minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="doubleArray" type="doubleArrayType_t"
+					minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="floatArray" type="floatArrayType_t"
+					minOccurs="0" maxOccurs="unbounded" />
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:element name="myConfigurationData" type="configurationData_t" />
+
+</xs:schema>
