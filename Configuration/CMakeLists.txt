@@ -32,6 +32,14 @@ add_custom_command(OUTPUT Configuration.cxx Configuration.hxx
 
 add_custom_target(Configuration.hxx DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Configuration.hxx)
 
+add_custom_command(OUTPUT ConfigurationData.cxx ConfigurationData.hxx
+	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Configuration
+	COMMAND xsdcxx cxx-tree  --generate-serialization --namespace-map http://cern.ch/quasar/Configuration=Configuration  ConfigurationData.xsd
+	DEPENDS ConfigurationData.xsd
+)
+
+add_custom_target(ConfigurationData.hxx DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/ConfigurationData.hxx)
+
 add_custom_command(OUTPUT Configurator.cpp	
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 	COMMAND ${PYTHON_COMMAND} quasar.py generate config_cpp
