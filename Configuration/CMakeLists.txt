@@ -49,4 +49,9 @@ add_library (Configuration OBJECT
 	Configuration.hxx
 	Configurator.cpp
 	ConfigValidator.cpp
+	# arrays
+	ConfigurationData.cxx
+	ConfigurationData.hxx
+	ConfigurationDataReader.cpp
+	ConfigurationDataReader.h
 	)
