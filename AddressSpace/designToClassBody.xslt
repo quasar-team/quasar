@@ -267,7 +267,7 @@ UaPropertyMethodArgument * propReturn = new UaPropertyMethodArgument (
 	<xsl:for-each select="d:returnvalue">
 	{
 		UaUInt32Array dimensions;
-		propReturn-&gt;setArgument( <xsl:value-of select="position()-1"/>, UaString("<xsl:value-of select="@name"/>"), UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0), -1, dimensions, UaLocalizedText("en_US", "rv") );
+		propReturn-&gt;setArgument( <xsl:value-of select="position()-1"/>, UaString("<xsl:value-of select="@name"/>"), UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0), -1, dimensions, UaLocalizedText("en_US", "<xsl:value-of select="@name"/>") );
 	}	
 	</xsl:for-each>
 	
@@ -539,6 +539,10 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	    outputArguments.create( <xsl:value-of select="count(d:returnvalue)"/> );
 	    <xsl:for-each select="d:returnvalue">
 	    	<xsl:choose>
+	    		<xsl:when test="@dataType='OpcUa_Boolean'">
+	    		    <!--  we do this because OpcUa_Boolean decays to char and not C++ bool. -->
+	    			helper.setBool( rv_<xsl:value-of select="@name"/> );
+	    		</xsl:when>
 	    		<xsl:when test="@dataType='UaByteString'">
 	    			helper.setByteString( rv_<xsl:value-of select="@name"/>, /*detach*/false );
 	    		</xsl:when>
