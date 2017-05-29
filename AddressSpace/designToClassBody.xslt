@@ -223,7 +223,10 @@ if (!s.isGood())
 
 <xsl:for-each select="d:method">
 <xsl:variable name="methodName"><xsl:value-of select="@name"/></xsl:variable>
-m_<xsl:value-of select="@name"/>-&gt;assignHandler( this, &amp;<xsl:value-of select="fnc:ASClassName($className)"/>::call<xsl:value-of select="fnc:capFirst(@name)"/> ); // TODO
+
+	<xsl:if test="fnc:classHasDeviceLogic(/,$className)='true'">
+	m_<xsl:value-of select="@name"/>-&gt;assignHandler( this, &amp;<xsl:value-of select="fnc:ASClassName($className)"/>::call<xsl:value-of select="fnc:capFirst(@name)"/> ); 
+	</xsl:if>
 
 
 <xsl:if test="d:argument">
@@ -244,10 +247,7 @@ unsigned int argCounter = 0;
 		UaUInt32Array dimensions;
 		prop-&gt;setArgument( argCounter, UaString("<xsl:value-of select="@name"/>"), UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0), -1, dimensions, UaLocalizedText("en_US", "<xsl:value-of select="@name"/>") );
 	}
-	s = nm->addNodeAndReference(
-	m_<xsl:value-of select="$methodName"/>,
-    prop, 
-    OpcUaId_HasProperty);
+
     
     argCounter++;
     
@@ -491,12 +491,13 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 		}
 		else
 		  return OpcUa_BadInternalError;
-		}
+		
 		</xsl:when>
 		<xsl:otherwise>
 		return OpcUa_BadInternalError;
 		</xsl:otherwise>
 		</xsl:choose> 
+		}
 </xsl:if>
 
 <xsl:if test="fnc:classHasDeviceLogic(/,$className)='true'">
