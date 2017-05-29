@@ -230,7 +230,7 @@ m_<xsl:value-of select="@name"/>-&gt;assignHandler( this, &amp;<xsl:value-of sel
 {
 
 UaPropertyMethodArgument * prop = new UaPropertyMethodArgument ( 
-	nm->makeChildNodeId( m_<xsl:value-of select="$methodName"/>-&gt;nodeId(), "<xsl:value-of select="@name"/>" ),
+	nm->makeChildNodeId( m_<xsl:value-of select="$methodName"/>-&gt;nodeId(), "args" ),
 	OpcUa_AccessLevels_CurrentRead,
 	<xsl:value-of select="count(d:argument)"/>,
 	UaPropertyMethodArgument::INARGUMENTS
@@ -253,13 +253,18 @@ unsigned int argCounter = 0;
     
 
 </xsl:for-each>
+	s = nm->addNodeAndReference(
+	m_<xsl:value-of select="$methodName"/>,
+    prop, 
+    OpcUaId_HasProperty);
+    ASSERT_GOOD(s);
 }
 </xsl:if>
 
 <xsl:if test="d:returnvalue">
 {
 UaPropertyMethodArgument * propReturn = new UaPropertyMethodArgument ( 
-	nm->makeChildNodeId( m_<xsl:value-of select="$methodName"/>-&gt;nodeId(), "<xsl:value-of select="@name"/>_rv" ),
+	nm->makeChildNodeId( m_<xsl:value-of select="$methodName"/>-&gt;nodeId(), "return_values" ),
 	OpcUa_AccessLevels_CurrentRead,
 	<xsl:value-of select="count(d:returnvalue)"/>,
 	UaPropertyMethodArgument::OUTARGUMENTS
@@ -277,6 +282,7 @@ s = nm->addNodeAndReference(
     propReturn, 
     OpcUaId_HasProperty);
 }
+ASSERT_GOOD(s);
 </xsl:if>
 
 s = nm->addNodeAndReference(
