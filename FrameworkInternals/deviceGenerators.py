@@ -24,9 +24,10 @@ from transformDesign import transformDesignVerbose
 from lxml import etree 
 from manage_files import get_list_classes
 
-overwriteProtection=2 #keep original (buffer A)
+overwriteProtection=1 
+# 2=keep original (buffer A)
 # 1=manual merge, as default
-# 0=overwrite with generated
+# 0=overwrite with generated (buffer B)
 
 devicePath = "Device" + os.path.sep
 def generateRoot():	
