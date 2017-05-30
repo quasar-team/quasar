@@ -49,6 +49,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:if test="@nullPolicy!='nullAllowed' and @initializeWith!='configuration' and not(@initialValue)">
 		<xsl:message terminate="yes">ERROR (at class='<xsl:value-of select="$className"/>' variable='<xsl:value-of select="@name"/>'): these settings are invalid. When nullPolicy doesn't allow NULL, for valueAndStatus initializer you have to have initialValue attribute. </xsl:message>
 	</xsl:if>
+	<xsl:if test="@dataType='UaVariant' and @initialValue">
+		<xsl:message terminate="yes">ERROR (at class='<xsl:value-of select="$className"/>' variable='<xsl:value-of select="@name"/>'): these settings are invalid. You can't specify initialValue for UaVariant dataType (reason: quasar won't be able to deduce type). </xsl:message>
+	</xsl:if>
 </xsl:template>
 
 <xsl:template match="d:class">
