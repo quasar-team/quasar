@@ -517,6 +517,9 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	    	
 	    	arg_<xsl:value-of select="@name"/> = (UaVariant(inputArguments[<xsl:value-of select="position()-1"/>])).toString();   
 	    	</xsl:when>
+	    	<xsl:when test="@dataType='UaVariant'">
+	    	arg_<xsl:value-of select="@name"/> = inputArguments[<xsl:value-of select="position()-1"/>];
+	    	</xsl:when>
 	    	<xsl:otherwise>
 	    	if ((UaVariant(inputArguments[<xsl:value-of select="position()-1"/>])).<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/>( arg_<xsl:value-of select="@name"/> ) != OpcUa_Good )
 	    		return OpcUa_BadDataEncodingInvalid; 
