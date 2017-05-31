@@ -160,7 +160,6 @@ include_directories(
 #OPCUA
 #------
 add_definitions( -DBACKEND_OPEN62541 )
-SET( CUSTOM_SERVER_MODULES open62541-compat)
 SET( OPCUA_TOOLKIT_PATH "" )
 
 SET( OPCUA_TOOLKIT_LIBS_RELEASE "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib" )
