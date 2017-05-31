@@ -18,7 +18,7 @@ build_script:
   - cmd : SET 
 
 # Get the LED traffic light Design.xml
-  - cmd : mv --force quasar-validation-ci/CI/Design.xml Design/
+#  - cmd : mv --force quasar-validation-ci/CI/Design.xml Design/
   
 # open6 specific operations
   - cmd : python quasar.py enable_module open62541-compat
@@ -26,9 +26,9 @@ build_script:
   - cmd : cd open62541-compat && python prepare.py && cd ..
 
 # run generator on Design.xml devices
-  - cmd : python quasar.py generate device GreenLED
-  - cmd : python quasar.py generate device YellowLED
-  - cmd : python quasar.py generate device RedLED
+#  - cmd : python quasar.py generate device GreenLED
+#  - cmd : python quasar.py generate device YellowLED
+#  - cmd : python quasar.py generate device RedLED
   
 # start build
   - cmd : echo "Calling build...(note always returns 0 to mask any internal msbuild errors - exe is checked below)"
@@ -45,5 +45,5 @@ build_script:
          }
 
 # uncomment to block VM deletion for investigating broken builds.
-# on_finish:
-#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
