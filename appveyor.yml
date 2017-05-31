@@ -23,6 +23,7 @@ build_script:
 # open6 specific operations
   - cmd : python quasar.py enable_module open62541-compat
   - cmd : python quasar.py prepare_build open6_win_configuration.cmake 
+  - cmd : cd open62541-compat && python prepare.py && cd ..
 
 # run generator on Design.xml devices
   - cmd : python quasar.py generate device GreenLED
