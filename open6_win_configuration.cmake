@@ -139,7 +139,7 @@ SET( OPENSSL_LIBS custlibopenssl custlibssl custlibcrypto )
 #-----
 if(NOT TARGET libxercesc) 
 	add_library(libxercesc STATIC IMPORTED)
-	set_property(TARGET libxercesc PROPERTY IMPORTED_LOCATION ${XERCESC_PATH}/VC10/Debug/xerces-c_3D.lib)		
+	set_property(TARGET libxercesc PROPERTY IMPORTED_LOCATION ${XERCESC_PATH}/VC10/Release/xerces-c_3.lib)		
 endif()
 if(NOT TARGET custlibxml) 
 	add_library(custlibxml STATIC IMPORTED)
@@ -162,8 +162,19 @@ include_directories(
 add_definitions( -DBACKEND_OPEN62541 )
 SET( OPCUA_TOOLKIT_PATH "" )
 
-SET( OPCUA_TOOLKIT_LIBS_RELEASE "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib" )
-SET( OPCUA_TOOLKIT_LIBS_DEBUG "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib" )
+if(NOT TARGET open62541release)
+	add_library(open62541release STATIC IMPORTED)
+	set_property(TARGET open62541release PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib)
+endif()
+
+if(NOT TARGET open62541debug)
+	add_library(open62541debug STATIC IMPORTED)
+	set_property(TARGET open62541debug PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Debug/open62541.lib)
+endif()
+
+
+SET( OPCUA_TOOLKIT_LIBS_RELEASE open62541release )
+SET( OPCUA_TOOLKIT_LIBS_DEBUG open62541debug )
 
 #------
 #General
