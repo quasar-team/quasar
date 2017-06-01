@@ -18,7 +18,7 @@ build_script:
   - cmd : SET 
 
 # open6 specific operations
-  - cmd : python quasar.py enable_module open62541-compat fix_for_windows_compatibility
+  - cmd : python quasar.py enable_module open62541-compat
   - cmd : python quasar.py prepare_build Release open6_win_configuration.cmake 
   - cmd : cd open62541-compat && python prepare.py && cd ..
 
