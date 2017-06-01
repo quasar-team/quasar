@@ -68,6 +68,22 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			}
 		</xsl:if>
 	</xsl:template>
+	
+	<xsl:template name="method_handler">
+		UaStatus <xsl:value-of select="fnc:DClassName($className)"/>::call<xsl:value-of select="fnc:capFirst(@name)"/> (
+		<xsl:for-each select="d:argument">
+			<xsl:value-of select="fnc:fixDataTypePassingMethod(@dataType)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/><xsl:if test="position() &lt; (count(../d:argument)+count(../d:returnvalue))">,</xsl:if><xsl:text>
+			</xsl:text>
+		</xsl:for-each>
+		<xsl:for-each select="d:returnvalue">
+			<xsl:value-of select="@dataType"/> &amp; <xsl:value-of select="@name"/><xsl:if test="position() &lt; count(../d:returnvalue)">,
+			</xsl:if>
+		</xsl:for-each>
+		 )
+		{
+		     return OpcUa_BadNotImplemented;
+		}
+	</xsl:template>
 
 	<xsl:template name="deviceBody">
 
@@ -119,6 +135,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:call-template name="sourcevariables_operations" />
 		</xsl:for-each>
     
+		<xsl:for-each select="d:method">
+			<xsl:call-template name="method_handler"/>
+		</xsl:for-each>
 		
     // 3333333333333333333333333333333333333333333333333333333333333333333333333
     // 3     FULLY CUSTOM CODE STARTS HERE                                     3

@@ -98,16 +98,31 @@ namespace AddressSpace
 <!-- SETTERS/GETTERS *********************************** -->
 <!-- *************************************************** -->
 		/* setters and getters for variables */
-		<xsl:for-each select="child::d:cachevariable">
+		<xsl:for-each select="d:cachevariable">
 		<xsl:call-template name="cachevariables_setgetters"/>
 		</xsl:for-each>
+
+
+		
+		
 <!-- *************************************************** -->
 <!-- DELEGATES ***************************************** -->
 <!-- *************************************************** -->
 		/* delegators for cachevariables  */
-		<xsl:for-each select="child::d:cachevariable">
+		<xsl:for-each select="d:cachevariable">
 		<xsl:call-template name="cachevariables_delegates"/>
 		</xsl:for-each>
+		
+<!-- *************************************************** -->
+<!-- DELEGATES FOR METHODS ***************************** -->
+<!-- *************************************************** -->
+	<xsl:for-each select="d:method">
+	UaStatus call<xsl:value-of select="fnc:capFirst(@name)"/> (
+			MethodManagerCallback* pCallback,
+			OpcUa_UInt32           callbackHandle,
+			const UaVariantArray&amp;  inputArguments) ;
+	</xsl:for-each>
+		
 <!-- *************************************************** -->
 <!-- LINK/UNLINK DEVICE LOGIC ************************** -->
 <!-- *************************************************** -->
@@ -119,6 +134,19 @@ namespace AddressSpace
 		</xsl:if>
 		/* OPC UA Type Information provider for this class. */
 		virtual UaNodeId typeDefinitionId () const { return m_typeNodeId; }
+		
+		<xsl:if test="d:method">
+		/* Call handler defined because at least one method is declared */
+		virtual UaStatus beginCall ( 
+			 	MethodManagerCallback *  	pCallback, 
+			 	const ServiceContext &amp; 	serviceContext,
+			 	OpcUa_UInt32  	callbackHandle, 
+				MethodHandle *  	pMethodHandle, 
+				const UaVariantArray &amp;  	inputArguments  
+		);
+		</xsl:if>
+
+		
 private:
 		UaNodeId m_typeNodeId;
 		/* Variables */
@@ -132,6 +160,11 @@ private:
 		
 		<xsl:for-each select="d:sourcevariable">
 		ASSourceVariable * m_<xsl:value-of select="@name"/>;
+		</xsl:for-each>
+		
+		/* Methods */
+		<xsl:for-each select="d:method">
+		ASDelegatingMethod&lt;AS<xsl:value-of select="$className"/>&gt; * m_<xsl:value-of select="@name" />;
 		</xsl:for-each>
 		
 		/* Device Logic link (if requested) */
@@ -159,10 +192,15 @@ private:
 #include &lt;opcua_baseobjecttype.h&gt;
 #include &lt;opcua_basedatavariabletype.h&gt;
 
+#include &lt;methodhandleuanode.h&gt; 
+#include &lt;ASDelegatingMethod.h&gt;
+
 #include &lt;Configuration.hxx&gt;
 
 #include &lt;ASNodeManager.h&gt;
 #include &lt;ASDelegatingVariable.h&gt;
+
+
 #include &lt;ASSourceVariable.h&gt;
 
 	<xsl:for-each select="/d:design/d:class[@name=$className]">

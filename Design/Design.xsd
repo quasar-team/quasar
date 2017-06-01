@@ -94,6 +94,7 @@ elementFormDefault="qualified">
     					type="tns:CacheVariable" />
     				<element name="sourcevariable"
     					type="tns:SourceVariable" />
+    				<element name="method" type="tns:Method"></element>
     				<element name="hasobjects" type="tns:HasObjects" />
     				<element name="configentry" type="tns:ConfigEntry" />
     			</choice>
@@ -380,4 +381,26 @@ elementFormDefault="qualified">
     </complexType>
     
     <complexType name="DeviceLogicMutex"></complexType>
+
+    <complexType name="Method">
+    	<sequence>
+    		<element name="argument" type="tns:MethodArgument"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="returnvalue" type="tns:MethodReturnValue" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="name" type="tns:VariableName" use="required"></attribute>
+    </complexType>
+    
+    <complexType name="MethodArgument">
+    	<attribute name="name" type="tns:VariableName" use="required"></attribute>
+    	<attribute name="dataType" type="tns:VariableDataType" use="required"></attribute>
+    </complexType>
+
+    <complexType name="MethodReturnValue">
+    	<attribute name="dataType" type="tns:VariableDataType"
+    		use="required">
+    	</attribute>
+    	<attribute name="name" type="tns:VariableName" use="required"></attribute>
+    </complexType>
 </schema>
