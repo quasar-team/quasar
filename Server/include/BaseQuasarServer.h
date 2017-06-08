@@ -71,8 +71,6 @@ protected:
     virtual bool overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
 	// override this function to add custom command line arguments.
 	virtual void appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions, boost::program_options::positional_options_description& positionalOptionsDescription);
-    //Gets the full path to the server configuration
-    UaString getServerConfigFullPath(const std::string& szAppPath) const;
     //Gets the application path of the server
     std::string getApplicationPath() const;
     //Logs the appropriate error when failing to start the server
@@ -92,9 +90,9 @@ private:
     Device::DRoot m_deviceRoot;
 
     //Starting point of the server, called by startApplication. Calls various other methods in the class, including mainLoop, which contains the mainLoop logic
-    int serverRun(const std::string& configFileName, bool onlyCreateCertificate);
+    int serverRun(const std::string& configFileName, bool onlyCreateCertificate, const std::string &opcUaSettingsFile);
     //Parse command line arguments.
-    int parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName);
+    int parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName, std::string& opcUaSettingsFile);
     //initialize XML parser, logging and UA stack (in that order)
     int initializeEnvironment();
     //Cleans the server before exiting.
