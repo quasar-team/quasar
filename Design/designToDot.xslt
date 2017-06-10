@@ -30,9 +30,16 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:include href="CommonFunctions.xslt" />
 	<xsl:param name="detailLevel"/>
 
+	<xsl:function name="fnc:simplifyQuasarType">
+	  <xsl:param name="quasarTypeName"/><xsl:choose><xsl:when test="not(contains($quasarTypeName,'OpcUa'))"><xsl:value-of select="$quasarTypeName"/></xsl:when><xsl:otherwise><xsl:value-of select="substring-after($quasarTypeName,'OpcUa_')"/></xsl:otherwise></xsl:choose></xsl:function>
+
+	<xsl:function name="fnc:getArrowForSourceVariable">
+	  <xsl:param name="this"/><xsl:choose><xsl:when test="$this/@addressSpaceRead!='forbidden' and $this/@addressSpaceWrite!='forbidden'">&#8596;</xsl:when><xsl:when test="$this/@addressSpaceRead='forbidden' and $this/@addressSpaceWrite!='forbidden'">&#8594;</xsl:when><xsl:when test="$this/@addressSpaceRead!='forbidden' and $this/@addressSpaceWrite='forbidden'">&#8592;</xsl:when><xsl:otherwise>&#9949;</xsl:otherwise></xsl:choose></xsl:function>
+
+	<xsl:function name="fnc:getArrowForCacheVariable">
+	  <xsl:param name="this"/><xsl:choose><xsl:when test="$this/@addressSpaceWrite='forbidden'">&#8592;</xsl:when><xsl:otherwise>&#8596;</xsl:otherwise></xsl:choose></xsl:function>
 
 
-	
 	<xsl:template name="NodesClass">
 
 	
@@ -41,6 +48,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		&lt;table border="1" cellspacing="0" cellpadding="2" cellborder="0" &gt;
 			&lt;tr &gt; 
 			        &lt;td width="0"&gt;&lt;/td&gt;
+				&lt;td width="0"&gt;&lt;/td&gt;
 				&lt;td colspan="2"&gt;
 					&lt;b&gt;
 					&lt;font point-size="18" &gt;<xsl:value-of select="@name"/>&lt;/font&gt;
@@ -62,27 +70,30 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	 		<xsl:for-each select="d:cachevariable">
 				&lt;tr&gt;
 				<!-- don't indent the lines below: you will break the graphical layout -->
-				&lt;td align="left" width="4"&gt;<xsl:if test="$detailLevel>=1">&lt;font point-size="10" color="blue" &gt;CV<xsl:if test="@isKey='true'">,K</xsl:if>&lt;/font&gt;</xsl:if>&lt;/td&gt;
+				&lt;td align="left" width="0"&gt;<xsl:if test="$detailLevel>=3">&lt;font point-size="16"&gt;<xsl:value-of select="fnc:getArrowForCacheVariable(.)"/>&lt;/font&gt;</xsl:if>&lt;/td&gt;
+				&lt;td align="left" width="0"&gt;<xsl:if test="$detailLevel>=1">&lt;font point-size="10" color="blue" &gt;CV<xsl:if test="@isKey='true'">,K</xsl:if>&lt;/font&gt;</xsl:if>&lt;/td&gt;
 				&lt;td align="left" &gt;<xsl:value-of select="@name"/>&lt;/td&gt;
-				&lt;td align="left" &gt;: <xsl:value-of select="@dataType"/>&lt;/td&gt;
+				&lt;td align="left" &gt;: <xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/>&lt;/td&gt;
 				&lt;/tr&gt;
 			</xsl:for-each>  	
 			
 			<xsl:for-each select="d:sourcevariable">
 				&lt;tr&gt;
 				<!-- don't indent the lines below: you will break the graphical layout -->
+				&lt;td align="left" width="0"&gt;<xsl:if test="$detailLevel>=3">&lt;font point-size="16"&gt;<xsl:value-of select="fnc:getArrowForSourceVariable(.)"/>&lt;/font&gt;</xsl:if>&lt;/td&gt;
 				&lt;td align="left"&gt;<xsl:if test="$detailLevel>=1">&lt;font point-size="10" color="darkgreen" &gt;SV&lt;/font&gt;</xsl:if>&lt;/td&gt;
 				&lt;td align="left" &gt;<xsl:value-of select="@name"/>&lt;/td&gt;
-				&lt;td align="left" &gt;: <xsl:value-of select="@dataType"/>&lt;/td&gt;
+				&lt;td align="left" &gt;: <xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/>&lt;/td&gt;
 				&lt;/tr&gt;
 			</xsl:for-each>
 
 			<xsl:for-each select="d:configentry">
 				&lt;tr&gt;
 				<!-- don't indent the lines below: you will break the graphical layout -->
-				&lt;td align="left"&gt;<xsl:if test="$detailLevel>=1">&lt;font point-size="10" color="red" &gt;CE<xsl:if test="@isKey='true'">,K</xsl:if>&lt;/font&gt;</xsl:if>&lt;/td&gt;
+				&lt;td align="left" width="0"&gt;&lt;/td&gt;
+				&lt;td align="left"&gt;<xsl:if test="$detailLevel>=1">&lt;font point-size="10" color="red" &gt;&#x2008;CE<xsl:if test="@isKey='true'">,K</xsl:if>&lt;/font&gt;</xsl:if>&lt;/td&gt;
 				&lt;td align="left" &gt;<xsl:value-of select="@name"/>&lt;/td&gt;
-				&lt;td align="left" &gt;: <xsl:value-of select="@dataType"/>&lt;/td&gt;
+				&lt;td align="left" &gt;: <xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/>&lt;/td&gt;
 				&lt;/tr&gt;
 			</xsl:for-each>
 			</xsl:otherwise>
@@ -99,8 +110,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			      <!-- don't indent the lines below: you will break the graphical layout -->
 			      &lt;tr&gt;
 			      &lt;td align="left" width="4"&gt;<xsl:if test="$detailLevel>=1">&lt;font point-size="10" color="blue" &gt;M&lt;/font&gt;</xsl:if>&lt;/td&gt;
-			      &lt;td align="left"&gt;<xsl:value-of select="@name"/>( <xsl:for-each select="d:argument"><xsl:value-of select="@dataType"/><xsl:if test="position() &lt; count(../d:argument)">,</xsl:if></xsl:for-each> )&lt;/td&gt;
-			      &lt;td align="left" &gt;: <xsl:choose><xsl:when test="count(d:returnvalue) > 0"><xsl:for-each select="d:returnvalue"><xsl:value-of select="@dataType"/><xsl:if test="position() &lt; count(../d:returnvalue)">,</xsl:if></xsl:for-each></xsl:when><xsl:otherwise>void</xsl:otherwise></xsl:choose>&lt;/td&gt;  
+			      &lt;td align="left"&gt;<xsl:value-of select="@name"/>( <xsl:for-each select="d:argument"><xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/><xsl:if test="position() &lt; count(../d:argument)">,</xsl:if></xsl:for-each> )&lt;/td&gt;
+			      &lt;td align="left" &gt;: <xsl:choose><xsl:when test="count(d:returnvalue) > 0"><xsl:for-each select="d:returnvalue"><xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/><xsl:if test="position() &lt; count(../d:returnvalue)">,</xsl:if></xsl:for-each></xsl:when><xsl:otherwise>void</xsl:otherwise></xsl:choose>&lt;/td&gt;  
 			      &lt;/tr&gt;	
 			    </xsl:for-each> 			    
 			  </xsl:otherwise>
