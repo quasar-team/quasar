@@ -2,7 +2,7 @@
  * BaseQuasarServer.cpp
  *
  *  Created on: Nov 6, 2015
- * 		Author: Damian Abalo Miron <damian.abalo@cern.ch>
+ *      Author: Damian Abalo Miron <damian.abalo@cern.ch>
  *      Author: Piotr Nikiel <piotr@nikiel.info>
  *
  *  This file is part of Quasar.
@@ -79,17 +79,17 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
 
     bool isHelpOrVersion = false;
     string configurationFileName = "config.xml";
-    string opcUaSettingsFile; // default will come from parseCommandLine invocation
+    string opcUaBackendConfigFile; // default will come from parseCommandLine invocation
     bool isCreateCertificateOnly = false;
 
     int ret = parseCommandLine(argc, argv, &isHelpOrVersion, &isCreateCertificateOnly, &configurationFileName,
-            opcUaSettingsFile);
+            opcUaBackendConfigFile);
 
     if (ret != 0 || isHelpOrVersion) //If there was a problem parsing the arguments, or it was a help/version call, we finish the execution
         return ret;
     try
     {
-        ret = serverRun(configurationFileName, isCreateCertificateOnly, opcUaSettingsFile);
+        ret = serverRun(configurationFileName, isCreateCertificateOnly, opcUaBackendConfigFile);
         LOG(Log::INF) << "OpcServerMain() exited with code [" << ret << "]";
         return ret;
     }
@@ -103,7 +103,7 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
 int BaseQuasarServer::serverRun(
         const std::string& configFileName,
         bool onlyCreateCertificate,
-        const std::string &opcUaSettingsFile)
+        const std::string &opcUaBackendConfigurationFile)
 {
     const std::string serverSettingsPath = getApplicationPath();
     const int initializeEnvironmentReturn = initializeEnvironment();
@@ -122,7 +122,7 @@ int BaseQuasarServer::serverRun(
     // Create and initialize server object
 
     m_pServer = new OpcServer;
-    m_pServer->setServerConfig(opcUaSettingsFile.c_str(), serverSettingsPath.c_str());
+    m_pServer->setServerConfig(opcUaBackendConfigurationFile.c_str(), serverSettingsPath.c_str());
 
     if (onlyCreateCertificate)
     {
@@ -196,20 +196,23 @@ int BaseQuasarServer::parseCommandLine(
         bool *isHelpOrVersion, 
         bool *isCreateCertificateOnly,
         std::string *configurationFileName, 
-        std::string& opcUaSettingsFile)
+        std::string& opcUaBackendConfigurationFile)
 {
     bool createCertificateOnly = false;
     bool printVersion = false;
     string logFile;
     options_description desc("Allowed options");
 
-    std::string default_opcua_settings_file = this->getApplicationPath() + "/ServerConfig.xml";
+    std::string defaultOpcUaBackendConfigurationFile = this->getApplicationPath() + "/ServerConfig.xml";
 
-    desc.add_options()("config_file", value<string>(), "A path to the config file")("opcua_settings_file",
-            value<string>(&opcUaSettingsFile)->default_value(default_opcua_settings_file),
-            "A path to the OPC-UA settings file")("create_certificate", bool_switch(&createCertificateOnly),
-            "Create new certificate and exit")("help", "Print help")("version", bool_switch(&printVersion),
-            "Print version and exit");
+    desc.add_options()
+            ("config_file", value<string>(), "A path to the config file")
+            ("opcua_backend_config", value<string>(&opcUaBackendConfigurationFile)
+	         ->default_value(defaultOpcUaBackendConfigurationFile), 
+                 "(Optional) path to the OPC-UA settings file")
+            ("create_certificate", bool_switch(&createCertificateOnly), "Create new certificate and exit")
+            ("help", "Print help")
+            ("version", bool_switch(&printVersion), "Print version and exit");
 
     positional_options_description p;
     p.add("config_file", 1);
