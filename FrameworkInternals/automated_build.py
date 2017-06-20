@@ -57,17 +57,19 @@ def write_build_config_selector(build_config_file):
                 os.remove('CMakeCache.txt')
         print 'New build config has been set'
 
-def build_config(arg1=None):
+def build_config():
         """
-        With no further arguments, prints the currently chosen build configuration file.
-        With one argument, sets the chosen build configuration file.
+        Prints the currently chosen build configuration file.
         """
+        if os.path.isfile( os.path.join('FrameworkInternals','build_config_selector.cmake')):
+                fn = read_build_config_selector()
+                print 'Currently chosen build config is: '+fn
+        else:
+                print 'Build config not chosen yet. Please run "quasar.py build_config <path_to_the_build_config>"'
+
+def set_build_config(arg1):
         if arg1 is None:
-                if os.path.isfile( os.path.join('FrameworkInternals','build_config_selector.cmake')):
-                        fn = read_build_config_selector()
-                        print 'Currently chosen build config is: '+fn
-                else:
-                        print 'Build config not chosen yet. Please run "quasar.py build_config <path_to_the_build_config>"'
+                print 'Please provide the argument'
         else:
                 write_build_config_selector(arg1)
 
