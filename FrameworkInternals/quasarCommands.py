@@ -1,5 +1,6 @@
 from generateCmake import generateCmake
 from automated_build import automatedBuild
+from automated_build import build_config
 from distclean import distClean
 from install_framework import createProject
 from install_framework import upgradeProject
@@ -59,6 +60,7 @@ commands = [
 	[['disable_module'], disableModule, True],
 	[['list_modules'], listModules, True],
 	[['list_enabled_modules'], listEnabledModules, True],
+        [['build_config'], build_config, True]
 	]
 	
 def printCommandList():

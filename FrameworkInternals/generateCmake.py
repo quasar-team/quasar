@@ -26,8 +26,7 @@ from transformDesign import transformDesignVerbose
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
 
-def generateCmake(buildType="Release",
-		  cmakeToolchainFile="FrameworkInternals" + os.path.sep + "default_configuration.cmake"):
+def generateCmake(buildType="Release"):
 	"""Generates CMake header lists in various directories, and then calls cmake.
 	
 	Keyword arguments:
@@ -39,15 +38,14 @@ def generateCmake(buildType="Release",
 	transformDesignVerbose("Device" + os.path.sep + "designToGeneratedCmakeDevice.xslt",
 			       "Device" + os.path.sep + "generated" + os.path.sep + "cmake_header.cmake",
 			       0, 0)
-	print("Build type ["+buildType+"], Toolchain file [" + cmakeToolchainFile + "]")
+	print("Build type ["+buildType+"]")
 
 	print("Calling CMake")
 	if platform.system() == "Windows":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-					      "-DCMAKE_TOOLCHAIN_FILE=" + cmakeToolchainFile,
 					      "-G", "Visual Studio 12 Win64", "."],
 					     getCommand("cmake"))
 	elif platform.system() == "Linux":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-					      "-DCMAKE_TOOLCHAIN_FILE=" + cmakeToolchainFile, "."],
+                                              "."],
 					     getCommand("cmake"))

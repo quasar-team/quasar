@@ -51,7 +51,8 @@ if '-h' in sys.argv or '--help' in sys.argv:
 	sys.exit(0)
 else:
         try:
-	        matched_command[1]( * sys.argv[1+len(matched_command[0]):])  # pack arguments after the last chunk of the command
+                args = sys.argv[1+len(matched_command[0]):]
+                matched_command[1]( *args )  # pack arguments after the last chunk of the command                
         except Exception as e:
                 print 'Failed because: '+str(e)+'.\nHint: look at the lines above, answer might be there.'
                 sys.exit(1)
