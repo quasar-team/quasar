@@ -133,6 +133,14 @@ elementFormDefault="qualified">
     	<attribute name="dataType" type="tns:VariableDataType"
     		use="required">
     	</attribute>
+    	<attribute name="arrayType" type="tns:VariableArrayType"
+    		use="optional">
+   			<annotation>
+    		<documentation>
+    		This attribute declares the base array type of the variant for arrays.
+     		</documentation>
+     		</annotation>
+     	</attribute>
     	<attribute name="initializeWith"
     		type="tns:VariableInitializeWith" use="required">
     	</attribute>
@@ -213,6 +221,22 @@ elementFormDefault="qualified">
     		<enumeration value="UaString"></enumeration>
     		<enumeration value="UaVariant"></enumeration>
     		<enumeration value="UaByteString"></enumeration>
+    	</restriction>
+    </simpleType>
+    <simpleType name="VariableArrayType">
+    	<restriction base="string">
+    		<enumeration value="OpcUa_Double"></enumeration>
+    		<enumeration value="OpcUa_Float"></enumeration>
+			<enumeration value="OpcUa_Byte"></enumeration>
+    		<enumeration value="OpcUa_SByte"></enumeration>
+			<enumeration value="OpcUa_Int16"></enumeration>
+    		<enumeration value="OpcUa_UInt16"></enumeration>
+    		<enumeration value="OpcUa_Int32"></enumeration>
+    		<enumeration value="OpcUa_UInt32"></enumeration>
+    		<enumeration value="OpcUa_Int64"></enumeration>
+    		<enumeration value="OpcUa_UInt64"></enumeration>
+    		<enumeration value="OpcUa_Boolean"></enumeration>
+    		<enumeration value="UaString"></enumeration>
     	</restriction>
     </simpleType>
 
@@ -345,7 +369,7 @@ elementFormDefault="qualified">
     		<enumeration value="OpcUa_Int64"></enumeration>
     		<enumeration value="OpcUa_UInt64"></enumeration>
     		<enumeration value="OpcUa_Boolean"></enumeration>
-    		<enumeration value="UaString"></enumeration>
+     		<enumeration value="UaString"></enumeration>
     	</restriction>
     </simpleType>
     
@@ -359,6 +383,14 @@ elementFormDefault="qualified">
     	<attribute name="dataType" type="tns:ConfigEntryDataType"
     		use="required">
     	</attribute>
+    	<attribute name="arrayType" type="tns:VariableArrayType"
+    		use="optional">
+   			<annotation>
+    		<documentation>
+    		This attribute declares the base array type of the variant for arrays.
+     		</documentation>
+     		</annotation>
+     	</attribute>
     	<attribute name="isKey" type="boolean"></attribute>
     	<attribute name="storedInDeviceObject" type="boolean" use="optional"></attribute>
     </complexType>

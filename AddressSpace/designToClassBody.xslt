@@ -320,32 +320,64 @@ AS<xsl:value-of select="@name"/>::~AS<xsl:value-of select="@name"/> ()
 /* generate setters and getters (if requested) */
 <xsl:for-each select="d:cachevariable">
 
+
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetter(@name,@dataType,'false')"/>
 {
-UaVariant v;
+// debug: setter 
+UaVariant v = value;
 <xsl:choose>
-<xsl:when test="@dataType='UaVariant'"> 
-v = value;
+<xsl:when test="@dataType='UaVariant'">
+    				UaUInt32Array arrayDimensions;
+    				v.arrayDimensions( arrayDimensions);
+    				OpcUa_Int32 dimSize = v.dimensionSize();
+    				m_<xsl:value-of select="@name"/>-&gt;setValueRank( dimSize );
+    				m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+			<xsl:choose>
+					<xsl:when test="@arrayType='OpcUa_Int16'">
+						// int16 array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Int16, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="@arrayType='OpcUa_Int32'">
+						// int32 array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Int32, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="@arrayType='OpcUa_Int64'">
+						// int64 array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Int64, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="@arrayType='OpcUa_Float'">
+						// float array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Float, /* system namespace */ 0 ));
+ 					</xsl:when>
+					<xsl:when test="@arrayType='OpcUa_Double'">
+						// double array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Double, /* system namespace */ 0 ));
+ 					</xsl:when>
+					<xsl:otherwise>
+					/* unknown array type, seems to be a scalar UaVariant, therefore pass through without modification */
+					</xsl:otherwise>		
+			</xsl:choose>
 </xsl:when>
 <xsl:when test="@dataType='UaByteString'">
 //NOTE: const_case below is safe, mutability is required only if value is to be detached (and it isn't in our case)
 v.setByteString( const_cast&lt;UaByteString&amp;&gt;(value), /*detach value?*/ false );
 </xsl:when>
 <xsl:otherwise>
+// scalar
 v.<xsl:value-of select="fnc:dataTypeToVariantSetter(@dataType)"/>( value );
 </xsl:otherwise>
 </xsl:choose>
-
-
 return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
-
 }
+
 
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> &amp; r) const 
 {
-	UaVariant v (* (m_<xsl:value-of select="@name" />-&gt;value(/*session*/0).value()));
+	// debug: getter
+	//	UaVariant v (* (m_<xsl:value-of select="@name" />-&gt;value(/*session*/0).value()));
 	<xsl:choose>
 		<xsl:when test="@dataType='UaString'">
+	    UaVariant v (* (m_<xsl:value-of select="@name" />-&gt;value(/*session*/0).value()));
 		if (v.type() == OpcUaType_String)
 		{
 			r = v.toString(); 
@@ -355,10 +387,43 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 			return OpcUa_Bad; 
 		</xsl:when>
 		<xsl:when test="@dataType='UaVariant'">
-		r = v;
-		return OpcUa_Good;
+				<xsl:choose>
+					<xsl:when test="@arrayType='OpcUa_Boolean'">	  
+						// boolean array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Boolean, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="@arrayType='OpcUa_Int16'">	  
+						// int16 array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Int16, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="@arrayType='OpcUa_Int32'">	  
+						// int32 array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Int32, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="@arrayType='OpcUa_Int64'">	  
+						// int64 array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Int64, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="@arrayType='OpcUa_Double'">	  
+						// double array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Double, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="@arrayType='OpcUa_Float'">	  
+						// float array
+						m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Float, /* system namespace */ 0 ));
+					</xsl:when>
+				</xsl:choose>
+				// m_<xsl:value-of select="@name"/>-&gt;setValueRank( 1 ); // only 1-dim arrays for now
+				UaVariant v (* (m_<xsl:value-of select="@name"/>-&gt;value(/*session*/0).value()));
+				r = v;
+				return OpcUa_Good;
 		</xsl:when>
-		<xsl:otherwise>return v.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/> ( r ); </xsl:otherwise>
+		
+		<xsl:otherwise>
+			// scalars
+			UaVariant v (* (m_<xsl:value-of select="@name" />-&gt;value(/*session*/0).value()));
+			return v.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/> ( r ); 
+		</xsl:otherwise>
 	</xsl:choose>
 }
 
