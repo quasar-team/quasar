@@ -201,6 +201,7 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <xsl:when test="$dataType='OpcUa_Boolean'">toBool</xsl:when>
 <xsl:when test="$dataType='UaByteString'">toByteString</xsl:when>
 <xsl:when test="$dataType='UaString'"><xsl:message terminate="yes">Internal error - for UaString use toString() conversion</xsl:message></xsl:when>
+<xsl:when test="$dataType='UaVariant'">OpcUaType_Variant</xsl:when>
 <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
 </xsl:choose>
 </xsl:function>
