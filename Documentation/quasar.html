@@ -3,6 +3,7 @@
 <head>
    <title>quasar Documentation</title>
    <meta name="robots" content="index,follow">
+   <meta charset="UTF-8" />
    <link rel=stylesheet type="text/css" href="quasar.css">
 </head>
 
@@ -144,6 +145,19 @@ sudo yum install OpcUaToolkit-1.3.3-0.x86_64.rpm astyle-2.0.4-0.rpm</li>
       </li>
     </ul>
   </li>
+</ol>
+
+<h3>Quick setup hints for CC7/CentOs7 users</h3>
+<ol>
+<li>Get Eclipse (www.eclipse.org), preferably the C/C++ Developers version (e.g. https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br>
+Once installed, install Eclipse add-ons for XML editors</li>
+<li>Issue this to install software from the official CC7 RPM repos:<br>
+sudo yum install gcc-c++ gdb boost-devel boost-regex boost-program-options boost-signals jre cmake kdiff3 graphviz valgrind doxygen rpm-build subversion xsd openssl-devel libxml2-devel xerces-c-devel
+</li>
+<li>If you have access to the UA SDK, install it (the evaluation version works fine). Quasar should work with UA SDK versions 1.3.2 up to 1.5.5.
+If you don't have the UA SDK, you can run Quasar with open62541, through open62541-compat module which is off-the-shelf available in Quasar. Documentation : ... <TODO> </li>
+<li>Download UaExpert for an universal test&dev tool for OPC-UA.</li>
+
 </ol>
 
 <h3>Quick setup hints for Ubuntu (here: 14.04)</h3>
