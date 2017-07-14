@@ -2,7 +2,7 @@
  * BaseQuasarServer.h
  *
  *  Created on: Nov 6, 2015
- * 		Author: Damian Abalo Miron <damian.abalo@cern.ch>
+ *  Author: Damian Abalo Miron <damian.abalo@cern.ch>
  *  Author: Piotr Nikiel <piotr@nikiel.info>
  *
  *  This file is part of Quasar.
@@ -69,10 +69,8 @@ protected:
     //Call to the method configure inside configuration. If a different configuration method has to be implemented by the user, this should be overriden
     //This method will be called from configurationInitializerHandler.
     virtual bool overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
-	// override this function to add custom command line arguments.
-	virtual void appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions, boost::program_options::positional_options_description& positionalOptionsDescription);
-    //Gets the full path to the server configuration
-    UaString getServerConfigFullPath(const std::string& szAppPath) const;
+    // override this function to add custom command line arguments.
+    virtual void appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions, boost::program_options::positional_options_description& positionalOptionsDescription);
     //Gets the application path of the server
     std::string getApplicationPath() const;
     //Logs the appropriate error when failing to start the server
@@ -92,9 +90,9 @@ private:
     Device::DRoot m_deviceRoot;
 
     //Starting point of the server, called by startApplication. Calls various other methods in the class, including mainLoop, which contains the mainLoop logic
-    int serverRun(const std::string& configFileName, bool onlyCreateCertificate);
+    int serverRun(const std::string& configFileName, bool onlyCreateCertificate, const std::string& opcUaBackendConfigurationFile );
     //Parse command line arguments.
-    int parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName);
+    int parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName, std::string& opcUaBackendConfigurationFile);
     //initialize XML parser, logging and UA stack (in that order)
     int initializeEnvironment();
     //Cleans the server before exiting.

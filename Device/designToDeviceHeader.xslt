@@ -53,6 +53,19 @@
 			);
 		</xsl:if>
 	</xsl:template>
+	
+	<xsl:template name="method_handler">
+		UaStatus call<xsl:value-of select="fnc:capFirst(@name)"/> ( 
+		<xsl:for-each select="d:argument">
+			<xsl:value-of select="fnc:fixDataTypePassingMethod(@dataType)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/><xsl:if test="position() &lt; (count(../d:argument)+count(../d:returnvalue))">,</xsl:if><xsl:text>
+			</xsl:text>
+		</xsl:for-each>
+		<xsl:for-each select="d:returnvalue">
+			<xsl:value-of select="@dataType"/> &amp; <xsl:value-of select="@name"/><xsl:if test="position() &lt; count(../d:returnvalue)">,
+			</xsl:if>
+		</xsl:for-each>
+		) ;
+	</xsl:template>
 
 	<xsl:template name="deviceHeader">
 
@@ -81,6 +94,11 @@
 		
 		<xsl:for-each select="d:sourcevariable">
 			<xsl:call-template name="sourcevariables_operations"/>
+		</xsl:for-each>
+		
+		/* delegators for methods */
+		<xsl:for-each select="d:method">
+			<xsl:call-template name="method_handler"/>
 		</xsl:for-each>
 		
 		private:
@@ -124,7 +142,7 @@
 		#include &lt;statuscode.h&gt;
 		#include &lt;uadatetime.h&gt;
 		#include &lt;session.h&gt;
-		
+	
 		
 		#include &lt;DRoot.h&gt;
 		#include &lt;Configuration.hxx&gt;
