@@ -79,8 +79,13 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
 			try:
 				subprocess.call( [getCommand('astyle'), outputFile] )
 			except Exception as e:
-				print "We didnt manage to run 'astyle' tool. We're running a fall-back tool now. For best user satisfaction, please install astyle as described in the quasar documentation.  "
-				astyleSubstitute.do_indentation( outputFile )
+				try:
+					subprocess.call( [getCommand('indent'), outputFile, '-o', outputFile] )
+					print "We indented your code using 'indent' tool which is a fall-back tool. For best user satisfaction, please install astyle as described in the quasar documentation.  "
+				except Exception as e:
+					print "We didnt manage to run neither 'astyle' nor 'indent' tool. We're running a fall-back tool now. For best user satisfaction, please install astyle as described in the quasar documentation.  "
+					astyleSubstitute.do_indentation( outputFile )
+
 			
 
 		if overwriteProtection == 1:
