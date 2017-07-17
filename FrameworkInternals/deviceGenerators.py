@@ -24,6 +24,11 @@ from transformDesign import transformDesignVerbose
 from lxml import etree 
 from manage_files import get_list_classes
 
+overwriteProtection=1 
+# 2=keep original (buffer A)
+# 1=manual merge, as default
+# 0=overwrite with generated (buffer B)
+
 devicePath = "Device" + os.path.sep
 def generateRoot():	
 	"""Generates the files DRoot.h and DRoot.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
@@ -50,6 +55,7 @@ def generateDeviceClass(*classList):
 	Keyword arguments:
 	classname -- the name of the device, which this class will be associated to. You can specify several classes (up to 10), separated by spaces or just --all to regenerate all device classes.
 	"""
+	print("===(FrameworkInternals/deviceGenerators.py:) overwriteProtection= ", overwriteProtection, " is hardcoded (manual merge=1, keepA=2, overwrite=0)===")
 	if(len(classList) == 0):
 		print("Please, provide the name of the class you wish to generate")
 		return
@@ -59,10 +65,10 @@ def generateDeviceClass(*classList):
 	classList = [x for x in classList if x is not None]#Remove nones from the list
 	for c in classList:#generate all the specified device classes
 		output = "include/D" + c + ".h"
-		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, 1, 1, "className=" + c)
+		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, overwriteProtection, 1, "className=" + c)
 			
 		output = "src/D" + c + ".cpp"
-		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, 1,"className=" + c)
+		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, overwriteProtection, 1,"className=" + c)
 	
 def generateAllDevices():
 	"""Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
@@ -71,7 +77,7 @@ def generateAllDevices():
 	for tuple in classes:
 		classname = tuple['name']
 		output = "include/D" + classname + ".h"
-		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, 1, 1, "className=" + classname)
+		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, overwriteProtection, 1, "className=" + classname)
 			
 		output = "src/D" + classname + ".cpp"
-		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, 1,"className=" + classname)
+		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, overwriteProtection, 1,"className=" + classname)
