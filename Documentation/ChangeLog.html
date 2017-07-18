@@ -1,769 +1,1015 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html><head><title>quasar Changelog</title>
-
-
-
-
-
-   
-   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-   <meta name="robots" content="index,follow">
-   <link rel="stylesheet" type="text/css" href="quasar.css"></head><body><br>
-<span style="color: rgb(34, 84, 152);"><h1>Changelog</h1></span>
-<br>
-<table style="text-align: left; width: 100%;" border="0" cellpadding="4" cellspacing="1">
-  <tbody>
-    <tr style="background-color: rgb(34, 84, 152);">
-      <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Version</strong><br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Changes introduced</strong><br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible backward incompatibilites</strong><br>
-      </td><td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>JIRA Release notes</strong><br>
-      </td>
-    </tr>
-
-    <tr>
-      <td style="vertical-align: top;">1.1.8<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Optional modules</li>
-      </ul>
-Minor features:<br>
-      <ul>
-        <li>Python-based scripting clean-up and enhancement (external_tool_check, etc)<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">In
-the Design.xsd schema, vendor attribute is now renamed to author. If
-you used that attribute, please update your Design.xml accordingly.<br>
-      </td>
-      <td style="vertical-align: top;">Bug
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-640">OPCUA-640</a>] - Compilation error with UA API 1.5.x</li>
-      </ul>
-
-                        Task
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-634">OPCUA-634</a>] - Add option to enable_module which would persistify the selection in the VCS used</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-635">OPCUA-635</a>] - Optional modules</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-646">OPCUA-646</a>] - Improve quasar generated headers for device, rename vendor to author</li>
-      </ul>
-
-                Improvement
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-583">OPCUA-583</a>] - Python scripting system better error handling and messages, refactoring, and other improvements</li>
-      </ul>
-</td>
-    </tr>
-<tr style="background-color: rgb(191, 212, 237);">
-      <td style="vertical-align: top;">1.1.7<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Compatibility with the API of OPC-UA Toolkit 1.3.x, 1.4.x and 1.5.x.<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">NONE KNOWN<br>
-      </td>
-      <td style="vertical-align: top;">
-      Bug        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-611">OPCUA-611</a>] - Debug builds (sometimes) abort on startup during meta configuration</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-616">OPCUA-616</a>] - Bug found in shutdown.cpp, affecting certain versions of Windows</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-618">OPCUA-618</a>] - ConfigValidator missing inclusion of Utils.h</li>
-      </ul>
-
-                    
-      New Feature
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-617">OPCUA-617</a>] - check_consistency working with projects stored on git</li>
-      </ul>
-
-                
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-588">OPCUA-588</a>] - Port quasar to OPC-UA Toolkit 1.4.x</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-606">OPCUA-606</a>] - Refresh FAQ of Quasar</li>
-      </ul>
-
-                
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-627">OPCUA-627</a>] - Improve VCS ignore lists</li>
-      </ul>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">1.1.6<br>
-      </td>
-      <td style="vertical-align: top;">Major and minor features, look into the rightmost column for details.<br>
-      </td>
-      <td style="vertical-align: top;">NONE KNOWN<br>
-      </td>
-      <td style="vertical-align: top;">
-      New Feature
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-608">OPCUA-608</a>] - Ability to use server LogIt instance for logging from within dynamically loaded libraries on linux and windows</li>
-      </ul>
-
-                                                                        
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-560">OPCUA-560</a>] - Configuration discovery/serialization</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-575">OPCUA-575</a>] - Application-specific command line options</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-594">OPCUA-594</a>] - RPM building in Quasar: Create an analogue of build_from_svn for git projects</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-600">OPCUA-600</a>] - Clarify situation of Saxon jar inclusion; if impossible find alternative deployment</li>
-      </ul>
-      </td>
-    </tr>
-    <tr style="background-color: rgb(191, 212, 237);">
-      <td style="vertical-align: top;">1.1.5<br>
-      </td>
-      <td style="vertical-align: top;">Minor fixes:<br>
-      <ul>
-        <li>Missing copyright headers, and a small fix that wouldn't compile in proper C++11 compiler<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">NONE KNOWN<br>
-      </td>
-      <td style="vertical-align: top;">
-      Bug
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-577">OPCUA-577</a>] - gcc4.8.2 confused by const of NodeManager</li>
-      </ul>
-
-                                                                                                                                
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-574">OPCUA-574</a>] - Missing copyright header in ASNodeQueries.h</li>
-      </ul>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">1.1.4<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Supplied MSVC (Windows) configuration now defaults to MSVC2013</li>
-      </ul>
-Minor features:<br>
-      <ul>
-        <li>Fix for cache variables with isKey=true and UaString dataType<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">sys/time.h and uadatetime.h are no longer included Utils.h.<br>
-      </td>
-      <td style="vertical-align: top;">
-      Bug
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-565">OPCUA-565</a>] - Using configentry with dataType "UaString" as key (attribute isKey="true") generates non-compiling Base_D* code</li>
-      </ul>
-
-                                                
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-566">OPCUA-566</a>] - QUASAR for windows: Migration from VC++ 2010 to VC++ 2013</li>
-      </ul>
-      </td>
-    </tr>
-    <tr style="background-color: rgb(191, 212, 237);">
-      <td style="vertical-align: top;">1.1.3<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Single-item-classes (where the only variable takes place of the object in the Address Space)</li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">None known<br>
-      </td>
-      <td style="vertical-align: top;">
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-540">OPCUA-540</a>] - Unified device parent in DeviceLogic no matter if the factual parent exists or not</li>
-      </ul>
-
-                                
-      New Feature
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-489">OPCUA-489</a>] - Make QUASAR framework version info available to OPC-UA clients from StandardMetaData</li>
-      </ul>
-
-                                                                        
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-555">OPCUA-555</a>] - Single-item-class support (a.k.a. 'primitive')</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-557">OPCUA-557</a>] - Move heavy (templated) code for node search from ASNodeManager.h into separate header</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-561">OPCUA-561</a>] - Better level of detail for visualtion (generate diagram) to see presence of device lgoic</li>
-      </ul>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">1.1.2<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Re-design of main.cpp: it should since this revision be unchanged by the developer. Custom parts should go into QuasarServer.cpp<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">It is required to migrate to your main.cpp into new QuasarServer.cpp<br>
-      <br>
-Your initialization code should go to QuasarServer::initialize(),<br>
-your shutdown code should go to QuasarServer::shutdown(),<br>
-and the main loop into QuasarServer::mainLoop().<br>
-      <br>
-      <br>
-      </td>
-      <td style="vertical-align: top;">
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-447">OPCUA-447</a>] - Improve main.cpp to clearly structure it</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-527">OPCUA-527</a>] - New standard meta data</li>
-      </ul>
-
-                                
-      New Feature
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-489">OPCUA-489</a>] - Make QUASAR framework version info available to OPC-UA clients from StandardMetaData</li>
-      </ul>
-
-                                                                        
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-519">OPCUA-519</a>] - Fix copyright info - LogIt, Meta</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-522">OPCUA-522</a>] - Add License.txt with GPL license into Quasar sources</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-532">OPCUA-532</a>] - Add header for files.txt and original_files.txt</li>
-      </ul>
-      </td>
-    </tr>
-    <tr style="background-color: rgb(191, 212, 237);">
-      <td style="vertical-align: top;">1.1.1<br>
-      </td>
-      <td style="vertical-align: top;">Minor features:<br>
-      <ul>
-        <li>Python commands got renamed to what was chosen by Quasar developers as most optimial<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">framework.py -&gt; quasar.py<br>
-      </td>
-      <td style="vertical-align: top;">
-      Bug
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-529">OPCUA-529</a>] - upgrade_design parameters not forwarded (effectively not working)</li>
-      </ul>
-
-                                                
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-526">OPCUA-526</a>] - Python commands renaming</li>
-      </ul>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">1.1.0<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Big clean-up which brings awaited feature of converting
-"deviceLogicTypeName" into something human (but breaks Design.xml
-compatibility at the same time)</li>
-        <li>Decoupling Base device classes from the address space completely</li>
-        <li>Proper headers now introduced in almost anything apart from Meta, LogIt and Python scripts</li>
-      </ul>
-Minor features:<br>
-      <ul>
-        <li>Clean-up of source variables logging -&gt; now using LogIt</li>
-        <li>Added in-line (i.e. Eclipse compatible) documentation to source variables attributes<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">Design.xml compatibility likely to be broken in your case (if you use Device Logic), but this can be easily fixed, just run:<br>
-      <br>
-./quasar.py upgrade_design convert_to_hasDeviceLogic=yes<br>
-      <br>
-Also bear in mind that if upgrading from a version earlier than 1.0.2, namespaces have to get fixed (look at notes in 1.0.2)<br>
-      </td>
-      <td style="vertical-align: top;">
-      Sub-task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-512">OPCUA-512</a>] - Dissociate base from Address Space completely</li>
-      </ul>
-
-                                
-      Bug
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-513">OPCUA-513</a>] - Shipped config.xml and Design.xml still have old XML namespace</li>
-      </ul>
-
-                                                
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-514">OPCUA-514</a>] - deviceLogicTypeName -&gt; hasDeviceLogic</li>
-      </ul>
-
-                                                                                            
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-515">OPCUA-515</a>] - Fix copyright info - Piotr's code</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-516">OPCUA-516</a>] - In-line documentation to attributes of source variables</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-517">OPCUA-517</a>] - upgrade_design doesn't take arguments</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-518">OPCUA-518</a>] - Fix the namespace for CommonFunctions</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-520">OPCUA-520</a>] - Source variables should be logged using LogIt</li>
-      </ul>
-      </td>
-    </tr>
-    <tr style="background-color: rgb(191, 212, 237);">
-      <td style="vertical-align: top;">1.0.2<br>
-      </td>
-      <td style="vertical-align: top; text-align: left;">Minor features:<br>
-      <ul>
-        <li>A feature to store configentry data permanently in the Device object.<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">Is is required to replace in your Design.xml the occurencies of:<br>
-      <br>
-"http://www.example.org/Design"<br>
-      <br>
-to<br>
-      <br>
-"http://cern.ch/quasar/Design"<br>
-      <br>
-You can automate it using sed:<br>
-sed -e 's/www.example.org/cern.ch\/quasar/g' Design.xml -i<br>
-      <br>
-same for configuration files.<br>
-      </td>
-      <td style="vertical-align: top;">
-      Bug
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-504">OPCUA-504</a>] - Problem with pythonized scripts</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-505">OPCUA-505</a>] - check_consistency fails</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-506">OPCUA-506</a>] - Synchronous source variable not properly generated in Device</li>
-      </ul>
-
-                                                
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-495">OPCUA-495</a>] - Design.XSD Protection for unique names of variables within a class</li>
-      </ul>
-
-                                
-      New Feature
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-482">OPCUA-482</a>]
- - (optional) storage of &lt;configentry&gt; values, in generated Device
- classes, provides 'raw' configuration values at runtime.</li>
-      </ul>
-
-                                                                        
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-119">OPCUA-119</a>] - Fix example.org namespace </li>
-      </ul>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">1.0.1<br>
-      </td>
-      <td style="vertical-align: top;">Minor features:<br>
-      <ul>
-        <li>Supported data types collection has grown to: Int16, UInt16, Int8(=SByte), UInt8(=Byte)<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
-      <td style="vertical-align: top;">
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-488">OPCUA-488</a>] - Keep msbuild specific instructions in msbuild build configuration</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-501">OPCUA-501</a>] - frameworkGUI improved logging</li>
-      </ul>
-
-                                
-      New Feature
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-486">OPCUA-486</a>] - Datatype UINT16 for QUASAR</li>
-      </ul>
-      </td>
-    </tr>
-    <tr style="background-color: rgb(191, 212, 237);">
-      <td style="vertical-align: top;">1.0.0<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>sh build scripts converted to Python, so the development
-and build may be started on any operating system (previously Linux only)</li>
-        <li>MSVC10 compatibility is now guaranteed for delivered and generated code</li>
-      </ul>
-      <span style="font-weight: bold;">Note</span> that versioning
-schema has changed since this release into more common 3-section
-version id. Otherwise it would be more logical to continue with 0.100
-after 0.99 ;-)<br>
-      </td>
-      <td style="vertical-align: top;">With
-new multiplatform scripts, the entry points of the framework have
-changed. I.e. there is no longer automated_build_linux.sh script.<br>
-<br>
-      </td>
-      <td style="vertical-align: top;">
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-487">OPCUA-487</a>] - Improve #ifdefs in main.cpp to include at least one section or fail if impossible to do so</li>
-      </ul>
-
-                                                                                            
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-363">OPCUA-363</a>] - transformDesign in python</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-364">OPCUA-364</a>] - Documentation how to install astyle, kdiff3, (possibly Java), python, on Windows (update in Documentation.html)</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-483">OPCUA-483</a>] - Windows-enabled Generic Server</li>
-      </ul>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">0.99<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Cleaned up build system, which allows for customization of
-paramteres like boost version and path, OPC UA toolkit, custom compiler
-etc</li>
-      </ul>
-Minor features:<br>
-      <ul>
-        <li>In-line documentation in the Design and in the (generated)Configuration schema</li>
-        <li>Esthetical improvements with LogIt and Meta</li>
-        <li>Many small useful fixes<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">
-      <ul>
-        <li>The structure of CMakeLists.txt have changed:</li>
-        <ul>
-          <li>Server/CMakeLists.txt got standardised, it is no longer supposed to be maintained by the user</li>
-          <li>It is the master CMakeLists.txt which now have the statement to create the exec and link appropriate libraries</li>
-          <li>Therefore it may be necessary to put some effort into resolving CMakeLists.txt business</li>
-          <li>One may need to prepare custom build configuration file to capture their specific build instructions (i.e. custom boost)<br>
-          </li>
-        </ul>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">
-      Bug
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-387">OPCUA-387</a>] - Bug found in official framework release, file designToGeneratedCmakeDevice.xslt</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-428">OPCUA-428</a>] - Error messages from Meta assume the config file is called config.xml</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-450">OPCUA-450</a>] - No parent device is generated in Base class under certain conditions</li>
-      </ul>
-
-                                                
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-220">OPCUA-220</a>] - in-line documentation as to what is meant by [forbidden|delegated|regular] for addressSpaceWrite</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-429">OPCUA-429</a>] - Catch global exceptions</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-434">OPCUA-434</a>] - Print component name instead of numerical id when changing log level from the address space</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-441">OPCUA-441</a>] - Include empty Design.xml and config.xml in the framework installation package</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-446">OPCUA-446</a>] - DRoot camelCase for objects</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-448">OPCUA-448</a>] - Inline documentation for all attributes of cachevariable</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-449">OPCUA-449</a>] - Print class and variable for error "For valueAndStatus initializer initialStatus must be given."</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-458">OPCUA-458</a>] - Try carrying documentation over from Design file to Configuration schema</li>
-      </ul>
-
-                                                                                            
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-166">OPCUA-166</a>] - Allow no device logic for children when parent has one</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-357">OPCUA-357</a>] - Check with evaluation version of OPC UA toolkit; mention in tutorial+docs; prepare build target</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-375">OPCUA-375</a>] - Master CMakeLists: toolkit location should be specified with one CMake variable (defined at the top)</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-377">OPCUA-377</a>] - LogIt, use 4 digit year in timestamp</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-385">OPCUA-385</a>]
- - Proposal of enhancement of the build system to nicely capture OS 
-differences and possibly non-standard components (e.g. boost)</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-396">OPCUA-396</a>] - Better end-user error message if trying to start new server instance when server is already running</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-430">OPCUA-430</a>] - Prepare default config when build configuration wasnt specified</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-439">OPCUA-439</a>] - Investigate write/read through the same variable feature</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-440">OPCUA-440</a>] - Fix "Discovery Server not available" currently logged in all OPC UA srv logs</li>
-      </ul>
-      </td>
-    </tr>
-    <tr style="background-color: rgb(191, 212, 237);">
-      <td style="vertical-align: top;">0.98<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>LogIt</li>
-        <li>Meta</li>
-      </ul>
-Minor features:<br>
-      <ul>
-        <li>Thread pool size is not hardcoded (and can be configured from the config file)<br>
-        </li>
-        <li>Data Type identifier field is&nbsp; now populated for
-variables which have initialValue. Therefore it matches the type
-declared in the design file. This was completely unrelevant for UA
-Toolkit-based clients but affected i.e. LabView OPC UA client.</li>
-        <li>ConfigValidator has more verbose output</li>
-        <li>When loading of configuration fails, xsd's native mechanism
-is now used instead of running the external validator (here: xmllint).
-This will both improve portability (xmllint might be unavailable in the
-target system), and help with configuration schemas that may have very
-nonstandard locations.</li>
-        <li>A bug is fixed which would affect delegated cachevariables of UaVariant type.<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">NONE KNOWN<br>
-      </td>
-      <td style="vertical-align: top;">
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-156">OPCUA-156</a>] - Extend config file with configuration options (e.g. thread pool size)</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-157">OPCUA-157</a>] - Improve InformationModel for Variables</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-371">OPCUA-371</a>] - LogIt: dont put full path to file which generates message in the log</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-372">OPCUA-372</a>] - Common way of initializing log levels at startup</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-379">OPCUA-379</a>] - Merge respective changes from latest Wiener server</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-401">OPCUA-401</a>] - Suboptimal error message when schema specified in config.xml cannot be found</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-402">OPCUA-402</a>] - DataType identifiers are necessary for certain OPC UA clients</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-403">OPCUA-403</a>] - UaVariant forbidden in delegated write</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-425">OPCUA-425</a>] - Improvement in loading component log levels from the config file</li>
-      </ul>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">0.97<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Device classes are split into Base part (100% generated)
-and User part (with generated stubs). This helps to reduce merging
-efforts by an order of magnitude.</li>
-      </ul>
-Minor features:<br>
-      <ul>
-        <li>No more compilation warnings coming from ASNodeManager</li>
-        <li>SourceVariables only rebuilt for classes which actually have a source variable (and not all classes)</li>
-        <li>Configurator, Root fully autogenerated</li>
-        <li>Queriying object name is now easy in Device logic</li>
-        <li>A list of device logic files is now filled automatically</li>
-        <li>Possible to have "self-referring" hasObjects relation</li>
-        <li>When given device logic body/header doesnt exist, user is asked whether to generate</li>
-        <li>When given device logic body/header is older than design file, user will be warned<br>
-        </li>
-
-      </ul>
-      </td>
-      <td style="vertical-align: top;">
-      <ul>
-        <li>regenerating Device Logic may ask for removal of big parts
-of already existing Device Logic code. This is actually intentional as
-this code will now go to the Base part of Device Logic class<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">
-      Bug
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-259">OPCUA-259</a>] - Fix build warnings</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-361">OPCUA-361</a>] - ConfigValidator attempts to validate per-design instantiated objects (should skip them)</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-362">OPCUA-362</a>] - check_consistency: add option to ask for fixing.</li>
-      </ul>
-
-                                                                                                                                
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-248">OPCUA-248</a>] - Make SourceVariables.{h,c++} dependencies less tight</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-250">OPCUA-250</a>] - Should getName() be present for all Device Logic objects automatically?</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-257">OPCUA-257</a>] - Evaluate Ben's anti-merge improvement</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-281">OPCUA-281</a>] - Make Configurator.cpp and DRoot generation fully automatic</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-349">OPCUA-349</a>] - Cleanup generated_files_list and generated_headers_list</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-350">OPCUA-350</a>] - A warning when Device file is newer than Device Logic classes</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-355">OPCUA-355</a>] - Improve install tool</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-360">OPCUA-360</a>] - Exchange compile-time recursion for exec-time recursion of self "has" relation</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-370">OPCUA-370</a>] - check_consistencty: when file doesnt exist, md5sum bails out</li>
-      </ul>
-</td>
-    </tr>
-    <tr style="background-color: rgb(191, 212, 237);">
-      <td style="vertical-align: top;">0.96<br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
-      <td style="vertical-align: top;">
-      <ul>
-        <li>nullPolicy attribute needs to be added per-cachevariable. This can be automated by upgrade_design script (look at its help)<br>
-        </li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">
-      Bug
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-260">OPCUA-260</a>] -  addressSpaceWrite confused with addressSpaceRead</li>
-      </ul>
-
-                                                
-      Improvement
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-258">OPCUA-258</a>] - Better deprecation warning msg</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-263">OPCUA-263</a>] - Flood of destructor messages.</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-279">OPCUA-279</a>] - Focus 2nd level validation in 1 XSLT transform</li>
-      </ul>
-
-                                                                                        
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-209">OPCUA-209</a>] - null setters for non-uavariant variables</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-266">OPCUA-266</a>] - Failing XSLT processor should make the output to be deleted</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-267">OPCUA-267</a>] - Create simple XSLT for updates of the version of the framework in existing projects</li>
-      </ul>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">0.95<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Doxygen integration</li>
-        <li>Cardinality modelling (possibility to specify min and max number of objects in ts relation)</li>
-      </ul>
-Minor features:<br>
-      <ul>
-        <li>Cachevariable's setter's source time argument (3rd
-argument) has now a default of current datetime. Therefore it can be
-omitted for 99% cases.<br>
-        </li>
-      </ul>
-      <br>
-      </td>
-      <td style="vertical-align: top;">NONE KNOWN<br>
-      </td>
-      <td style="vertical-align: top;">
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-203">OPCUA-203</a>] - Integrate doxygen</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-215">OPCUA-215</a>] - Cardinality modelling in hasObjects relation</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-231">OPCUA-231</a>] - setters: current datetime (UaDateTime::now())  should be default argument for time</li>
-      </ul>
-      </td>
-    </tr>
-    <tr style="background-color: rgb(191, 212, 237);">
-      <td style="vertical-align: top;">0.94<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Config Entries</li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;">NONE KNOWN<br>
-      <br>
-Beware though that recommended layout of Device headers and sources
-changed, and you may need to reshuffle it a bit for getting easy
-merging.<br>
-      </td>
-      <td style="vertical-align: top;">
-      Bug
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-217">OPCUA-217</a>] - simple addressspace setters not updated in addressspace body generator</li>
-      </ul>
-
-                                                                                                    
-      Task
-
-        
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-168">OPCUA-168</a>] - Device header and body shall have a comment that indicates the start of custom section</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-197">OPCUA-197</a>] - Config Entries </li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-204">OPCUA-204</a>] - Document all transformations (including building the project) in a nice diagram and put it into documentation</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-206">OPCUA-206</a>] - openssl-dev and libxml2-devel dependency missing in Generic Server documentation</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-212">OPCUA-212</a>] - dont generate Device Logic stubs when DeviceLogicTypeName not defined</li>
-      </ul>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">0.93<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Files database (files.txt) and number of tools that depend on it: consistency checker, new installer</li>
-      </ul>
-Minor features:<br>
-      <ul>
-        <li>Setters for simple data types take plain value instead of reference</li>
-        <li>makeSetGet dropped as a cachevariable attribute (equivalence of true assumed)<br>
-        </li>
-      </ul>
-Internal features:<br>
-      <ul>
-        <li>create_release.sh script<br>
-        </li>
-      </ul>
-
-      </td>
-      <td style="vertical-align: top;">NONE KNOWN <br>
-(only deprecation warning shown for makeSetGet attribute)<br>
-      </td><td style="vertical-align: top;">
-      Task
-      <ul>
-<li>[<a href="https://its.cern.ch/jira/browse/OPCUA-120">OPCUA-120</a>] - Consider makeSetGet=true as normal, non-configurable parameter</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-127">OPCUA-127</a>] - A way to check that files that shall not be modified (transforms...?) are not modified</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-160">OPCUA-160</a>] - Install script should be more gentle ...</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-167">OPCUA-167</a>] - Setters: simple data types (integers, floats...) shall be passed by value rather than by reference</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-188">OPCUA-188</a>] - A script to verify if proper things are committed to the SVN (and warn if too much/not enough is within version control)</li><li>[<a href="https://its.cern.ch/jira/browse/OPCUA-198">OPCUA-198</a>] - Create script for tagging Generic Server releases</li>
-      </ul>
-      </td>
-
-    </tr>
-    <tr style="background-color: rgb(191, 212, 237);">
-      <td style="vertical-align: top;">0.92<br>
-      </td>
-      <td style="vertical-align: top;">Major features:<br>
-      <ul>
-        <li>Source variables</li>
-        <li>Automated mutex generation<br>
-        </li>
-        <li>UaVariant added as allowed data type</li>
-        <li>honkyTonk tool to simulate address space updates<br>
-        </li>
-      </ul>
-Improvements:<br>
-      <ul>
-        <li>Unified and cleaned initialization of cache variables</li>
-        <li>Configuration.xsd: proper types for various flavours of
-integers (previously every int irrespectively of length and signedness
-was just "int")</li>
-        <li>createDiagram.sh creates diagrams of varied level of details</li>
-      </ul>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td><td style="vertical-align: top;"><br>
-      </td>
-
-    </tr>
-
-  </tbody>
-</table>
-<br>
-
-
-</body></html>
+<html>
+  <head>
+    <title>quasar Changelog</title>
+    <meta content="text/html; charset=windows-1252"
+      http-equiv="content-type">
+    <meta name="robots" content="index,follow">
+    <link rel="stylesheet" type="text/css" href="quasar.css">
+  </head>
+  <body>
+    <br>
+    <span style="color: rgb(34, 84, 152);">
+      <h1>Changelog</h1>
+    </span>
+    <br>
+    <table style="text-align: left; width: 100%;" cellspacing="1"
+      cellpadding="4" border="0">
+      <tbody>
+        <tr style="background-color: rgb(34, 84, 152);">
+          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Version</strong><br>
+          </td>
+          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Changes
+              introduced</strong><br>
+          </td>
+          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+              backward incompatibilites</strong><br>
+          </td>
+          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>JIRA
+              Release notes</strong><br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">1.2.0<br>
+          </td>
+          <td valign="top">Major features:<br>
+            <ul>
+              <li>Methods support (UASDK + open62541)<br>
+              </li>
+            </ul>
+            <p>Minor features:<br>
+            </p>
+            <ul>
+              <li>astyle compatibility mode</li>
+              <li>sticky build config</li>
+              <li>commonalization of master CMakeLists.txt<br>
+              </li>
+            </ul>
+          </td>
+          <td valign="top">Note that since this release, the master
+            CMakeLists is "one-size-fits-all", i.e. you should customize
+            it. Instead, your per-project settings like the name of the
+            executable and so on should go to ProjectSettings.cmake,
+            which will be included after the upgrade.<br>
+            <br>
+            <br>
+          </td>
+          <td valign="top">Bug<br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-662">OPCUA-662</a>]
+                - prepare.py (from open62541-compat) does not work</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-745">OPCUA-745</a>]
+                - Asynchronous source variable with UaString doesn't
+                compile</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-800">OPCUA-800</a>]
+                - Cosmetic fixes for methods</li>
+            </ul>
+            <br>
+            New Feature<br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-697">OPCUA-697</a>]
+                - ByteStream data type</li>
+            </ul>
+            <br>
+            Task<br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-106">OPCUA-106</a>]
+                - Quasar methods</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-579">OPCUA-579</a>]
+                - Easily selectable OPC-UA backend configuration file
+                (ServerConfig.xml)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-668">OPCUA-668</a>]
+                - Post-merge: missing copyright header in
+                designToHonkyTonk</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-786">OPCUA-786</a>]
+                - astyle equivalent with no/minimal deployment cost</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-830">OPCUA-830</a>]
+                - Commonalize master CMakeLists.txt, find what specific
+                extensions people have</li>
+            </ul>
+            <br>
+            Improvement<br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-689">OPCUA-689</a>]
+                - Optional modules should work from branches too</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-799">OPCUA-799</a>]
+                - Sticky build config</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-819">OPCUA-819</a>]
+                - Model visualization improvements</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">1.1.8<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Optional modules</li>
+            </ul>
+            Minor features:<br>
+            <ul>
+              <li>Python-based scripting clean-up and enhancement
+                (external_tool_check, etc)<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">In
+            the Design.xsd schema, vendor attribute is now renamed to
+            author. If
+            you used that attribute, please update your Design.xml
+            accordingly.<br>
+          </td>
+          <td style="vertical-align: top;">Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-640">OPCUA-640</a>]
+                - Compilation error with UA API 1.5.x</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-634">OPCUA-634</a>]
+                - Add option to enable_module which would persistify the
+                selection in the VCS used</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-635">OPCUA-635</a>]
+                - Optional modules</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-646">OPCUA-646</a>]
+                - Improve quasar generated headers for device, rename
+                vendor to author</li>
+            </ul>
+            Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-583">OPCUA-583</a>]
+                - Python scripting system better error handling and
+                messages, refactoring, and other improvements</li>
+            </ul>
+          </td>
+        </tr>
+        <tr style="background-color: rgb(191, 212, 237);">
+          <td style="vertical-align: top;">1.1.7<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Compatibility with the API of OPC-UA Toolkit 1.3.x,
+                1.4.x and 1.5.x.<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">NONE KNOWN<br>
+          </td>
+          <td style="vertical-align: top;"> Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-611">OPCUA-611</a>]
+                - Debug builds (sometimes) abort on startup during meta
+                configuration</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-616">OPCUA-616</a>]
+                - Bug found in shutdown.cpp, affecting certain versions
+                of Windows</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-618">OPCUA-618</a>]
+                - ConfigValidator missing inclusion of Utils.h</li>
+            </ul>
+            New Feature
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-617">OPCUA-617</a>]
+                - check_consistency working with projects stored on git</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-588">OPCUA-588</a>]
+                - Port quasar to OPC-UA Toolkit 1.4.x</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-606">OPCUA-606</a>]
+                - Refresh FAQ of Quasar</li>
+            </ul>
+            Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-627">OPCUA-627</a>]
+                - Improve VCS ignore lists</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">1.1.6<br>
+          </td>
+          <td style="vertical-align: top;">Major and minor features,
+            look into the rightmost column for details.<br>
+          </td>
+          <td style="vertical-align: top;">NONE KNOWN<br>
+          </td>
+          <td style="vertical-align: top;"> New Feature
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-608">OPCUA-608</a>]
+                - Ability to use server LogIt instance for logging from
+                within dynamically loaded libraries on linux and windows</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-560">OPCUA-560</a>]
+                - Configuration discovery/serialization</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-575">OPCUA-575</a>]
+                - Application-specific command line options</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-594">OPCUA-594</a>]
+                - RPM building in Quasar: Create an analogue of
+                build_from_svn for git projects</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-600">OPCUA-600</a>]
+                - Clarify situation of Saxon jar inclusion; if
+                impossible find alternative deployment</li>
+            </ul>
+          </td>
+        </tr>
+        <tr style="background-color: rgb(191, 212, 237);">
+          <td style="vertical-align: top;">1.1.5<br>
+          </td>
+          <td style="vertical-align: top;">Minor fixes:<br>
+            <ul>
+              <li>Missing copyright headers, and a small fix that
+                wouldn't compile in proper C++11 compiler<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">NONE KNOWN<br>
+          </td>
+          <td style="vertical-align: top;"> Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-577">OPCUA-577</a>]
+                - gcc4.8.2 confused by const of NodeManager</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-574">OPCUA-574</a>]
+                - Missing copyright header in ASNodeQueries.h</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">1.1.4<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Supplied MSVC (Windows) configuration now defaults to
+                MSVC2013</li>
+            </ul>
+            Minor features:<br>
+            <ul>
+              <li>Fix for cache variables with isKey=true and UaString
+                dataType<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">sys/time.h and uadatetime.h
+            are no longer included Utils.h.<br>
+          </td>
+          <td style="vertical-align: top;"> Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-565">OPCUA-565</a>]
+                - Using configentry with dataType "UaString" as key
+                (attribute isKey="true") generates non-compiling Base_D*
+                code</li>
+            </ul>
+            Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-566">OPCUA-566</a>]
+                - QUASAR for windows: Migration from VC++ 2010 to VC++
+                2013</li>
+            </ul>
+          </td>
+        </tr>
+        <tr style="background-color: rgb(191, 212, 237);">
+          <td style="vertical-align: top;">1.1.3<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Single-item-classes (where the only variable takes
+                place of the object in the Address Space)</li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">None known<br>
+          </td>
+          <td style="vertical-align: top;"> Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-540">OPCUA-540</a>]
+                - Unified device parent in DeviceLogic no matter if the
+                factual parent exists or not</li>
+            </ul>
+            New Feature
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-489">OPCUA-489</a>]
+                - Make QUASAR framework version info available to OPC-UA
+                clients from StandardMetaData</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-555">OPCUA-555</a>]
+                - Single-item-class support (a.k.a. 'primitive')</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-557">OPCUA-557</a>]
+                - Move heavy (templated) code for node search from
+                ASNodeManager.h into separate header</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-561">OPCUA-561</a>]
+                - Better level of detail for visualtion (generate
+                diagram) to see presence of device lgoic</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">1.1.2<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Re-design of main.cpp: it should since this revision
+                be unchanged by the developer. Custom parts should go
+                into QuasarServer.cpp<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">It is required to migrate to
+            your main.cpp into new QuasarServer.cpp<br>
+            <br>
+            Your initialization code should go to
+            QuasarServer::initialize(),<br>
+            your shutdown code should go to QuasarServer::shutdown(),<br>
+            and the main loop into QuasarServer::mainLoop().<br>
+            <br>
+            <br>
+          </td>
+          <td style="vertical-align: top;"> Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-447">OPCUA-447</a>]
+                - Improve main.cpp to clearly structure it</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-527">OPCUA-527</a>]
+                - New standard meta data</li>
+            </ul>
+            New Feature
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-489">OPCUA-489</a>]
+                - Make QUASAR framework version info available to OPC-UA
+                clients from StandardMetaData</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-519">OPCUA-519</a>]
+                - Fix copyright info - LogIt, Meta</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-522">OPCUA-522</a>]
+                - Add License.txt with GPL license into Quasar sources</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-532">OPCUA-532</a>]
+                - Add header for files.txt and original_files.txt</li>
+            </ul>
+          </td>
+        </tr>
+        <tr style="background-color: rgb(191, 212, 237);">
+          <td style="vertical-align: top;">1.1.1<br>
+          </td>
+          <td style="vertical-align: top;">Minor features:<br>
+            <ul>
+              <li>Python commands got renamed to what was chosen by
+                Quasar developers as most optimial<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">framework.py -&gt; quasar.py<br>
+          </td>
+          <td style="vertical-align: top;"> Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-529">OPCUA-529</a>]
+                - upgrade_design parameters not forwarded (effectively
+                not working)</li>
+            </ul>
+            Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-526">OPCUA-526</a>]
+                - Python commands renaming</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">1.1.0<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Big clean-up which brings awaited feature of
+                converting
+                "deviceLogicTypeName" into something human (but breaks
+                Design.xml
+                compatibility at the same time)</li>
+              <li>Decoupling Base device classes from the address space
+                completely</li>
+              <li>Proper headers now introduced in almost anything apart
+                from Meta, LogIt and Python scripts</li>
+            </ul>
+            Minor features:<br>
+            <ul>
+              <li>Clean-up of source variables logging -&gt; now using
+                LogIt</li>
+              <li>Added in-line (i.e. Eclipse compatible) documentation
+                to source variables attributes<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">Design.xml compatibility
+            likely to be broken in your case (if you use Device Logic),
+            but this can be easily fixed, just run:<br>
+            <br>
+            ./quasar.py upgrade_design convert_to_hasDeviceLogic=yes<br>
+            <br>
+            Also bear in mind that if upgrading from a version earlier
+            than 1.0.2, namespaces have to get fixed (look at notes in
+            1.0.2)<br>
+          </td>
+          <td style="vertical-align: top;"> Sub-task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-512">OPCUA-512</a>]
+                - Dissociate base from Address Space completely</li>
+            </ul>
+            Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-513">OPCUA-513</a>]
+                - Shipped config.xml and Design.xml still have old XML
+                namespace</li>
+            </ul>
+            Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-514">OPCUA-514</a>]
+                - deviceLogicTypeName -&gt; hasDeviceLogic</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-515">OPCUA-515</a>]
+                - Fix copyright info - Piotr's code</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-516">OPCUA-516</a>]
+                - In-line documentation to attributes of source
+                variables</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-517">OPCUA-517</a>]
+                - upgrade_design doesn't take arguments</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-518">OPCUA-518</a>]
+                - Fix the namespace for CommonFunctions</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-520">OPCUA-520</a>]
+                - Source variables should be logged using LogIt</li>
+            </ul>
+          </td>
+        </tr>
+        <tr style="background-color: rgb(191, 212, 237);">
+          <td style="vertical-align: top;">1.0.2<br>
+          </td>
+          <td style="vertical-align: top; text-align: left;">Minor
+            features:<br>
+            <ul>
+              <li>A feature to store configentry data permanently in the
+                Device object.<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">Is is required to replace in
+            your Design.xml the occurencies of:<br>
+            <br>
+            "http://www.example.org/Design"<br>
+            <br>
+            to<br>
+            <br>
+            "http://cern.ch/quasar/Design"<br>
+            <br>
+            You can automate it using sed:<br>
+            sed -e 's/www.example.org/cern.ch\/quasar/g' Design.xml -i<br>
+            <br>
+            same for configuration files.<br>
+          </td>
+          <td style="vertical-align: top;"> Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-504">OPCUA-504</a>]
+                - Problem with pythonized scripts</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-505">OPCUA-505</a>]
+                - check_consistency fails</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-506">OPCUA-506</a>]
+                - Synchronous source variable not properly generated in
+                Device</li>
+            </ul>
+            Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-495">OPCUA-495</a>]
+                - Design.XSD Protection for unique names of variables
+                within a class</li>
+            </ul>
+            New Feature
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-482">OPCUA-482</a>]
+                - (optional) storage of &lt;configentry&gt; values, in
+                generated Device classes, provides 'raw' configuration
+                values at runtime.</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-119">OPCUA-119</a>]
+                - Fix example.org namespace </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">1.0.1<br>
+          </td>
+          <td style="vertical-align: top;">Minor features:<br>
+            <ul>
+              <li>Supported data types collection has grown to: Int16,
+                UInt16, Int8(=SByte), UInt8(=Byte)<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;"><br>
+          </td>
+          <td style="vertical-align: top;"> Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-488">OPCUA-488</a>]
+                - Keep msbuild specific instructions in msbuild build
+                configuration</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-501">OPCUA-501</a>]
+                - frameworkGUI improved logging</li>
+            </ul>
+            New Feature
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-486">OPCUA-486</a>]
+                - Datatype UINT16 for QUASAR</li>
+            </ul>
+          </td>
+        </tr>
+        <tr style="background-color: rgb(191, 212, 237);">
+          <td style="vertical-align: top;">1.0.0<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>sh build scripts converted to Python, so the
+                development
+                and build may be started on any operating system
+                (previously Linux only)</li>
+              <li>MSVC10 compatibility is now guaranteed for delivered
+                and generated code</li>
+            </ul>
+            <span style="font-weight: bold;">Note</span> that versioning
+            schema has changed since this release into more common
+            3-section
+            version id. Otherwise it would be more logical to continue
+            with 0.100
+            after 0.99 ;-)<br>
+          </td>
+          <td style="vertical-align: top;">With
+            new multiplatform scripts, the entry points of the framework
+            have
+            changed. I.e. there is no longer automated_build_linux.sh
+            script.<br>
+            <br>
+          </td>
+          <td style="vertical-align: top;"> Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-487">OPCUA-487</a>]
+                - Improve #ifdefs in main.cpp to include at least one
+                section or fail if impossible to do so</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-363">OPCUA-363</a>]
+                - transformDesign in python</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-364">OPCUA-364</a>]
+                - Documentation how to install astyle, kdiff3, (possibly
+                Java), python, on Windows (update in Documentation.html)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-483">OPCUA-483</a>]
+                - Windows-enabled Generic Server</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">0.99<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Cleaned up build system, which allows for
+                customization of
+                paramteres like boost version and path, OPC UA toolkit,
+                custom compiler
+                etc</li>
+            </ul>
+            Minor features:<br>
+            <ul>
+              <li>In-line documentation in the Design and in the
+                (generated)Configuration schema</li>
+              <li>Esthetical improvements with LogIt and Meta</li>
+              <li>Many small useful fixes<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">
+            <ul>
+              <li>The structure of CMakeLists.txt have changed:</li>
+              <ul>
+                <li>Server/CMakeLists.txt got standardised, it is no
+                  longer supposed to be maintained by the user</li>
+                <li>It is the master CMakeLists.txt which now have the
+                  statement to create the exec and link appropriate
+                  libraries</li>
+                <li>Therefore it may be necessary to put some effort
+                  into resolving CMakeLists.txt business</li>
+                <li>One may need to prepare custom build configuration
+                  file to capture their specific build instructions
+                  (i.e. custom boost)<br>
+                </li>
+              </ul>
+            </ul>
+          </td>
+          <td style="vertical-align: top;"> Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-387">OPCUA-387</a>]
+                - Bug found in official framework release, file
+                designToGeneratedCmakeDevice.xslt</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-428">OPCUA-428</a>]
+                - Error messages from Meta assume the config file is
+                called config.xml</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-450">OPCUA-450</a>]
+                - No parent device is generated in Base class under
+                certain conditions</li>
+            </ul>
+            Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-220">OPCUA-220</a>]
+                - in-line documentation as to what is meant by
+                [forbidden|delegated|regular] for addressSpaceWrite</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-429">OPCUA-429</a>]
+                - Catch global exceptions</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-434">OPCUA-434</a>]
+                - Print component name instead of numerical id when
+                changing log level from the address space</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-441">OPCUA-441</a>]
+                - Include empty Design.xml and config.xml in the
+                framework installation package</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-446">OPCUA-446</a>]
+                - DRoot camelCase for objects</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-448">OPCUA-448</a>]
+                - Inline documentation for all attributes of
+                cachevariable</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-449">OPCUA-449</a>]
+                - Print class and variable for error "For valueAndStatus
+                initializer initialStatus must be given."</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-458">OPCUA-458</a>]
+                - Try carrying documentation over from Design file to
+                Configuration schema</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-166">OPCUA-166</a>]
+                - Allow no device logic for children when parent has one</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-357">OPCUA-357</a>]
+                - Check with evaluation version of OPC UA toolkit;
+                mention in tutorial+docs; prepare build target</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-375">OPCUA-375</a>]
+                - Master CMakeLists: toolkit location should be
+                specified with one CMake variable (defined at the top)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-377">OPCUA-377</a>]
+                - LogIt, use 4 digit year in timestamp</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-385">OPCUA-385</a>]
+                - Proposal of enhancement of the build system to nicely
+                capture OS differences and possibly non-standard
+                components (e.g. boost)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-396">OPCUA-396</a>]
+                - Better end-user error message if trying to start new
+                server instance when server is already running</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-430">OPCUA-430</a>]
+                - Prepare default config when build configuration wasnt
+                specified</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-439">OPCUA-439</a>]
+                - Investigate write/read through the same variable
+                feature</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-440">OPCUA-440</a>]
+                - Fix "Discovery Server not available" currently logged
+                in all OPC UA srv logs</li>
+            </ul>
+          </td>
+        </tr>
+        <tr style="background-color: rgb(191, 212, 237);">
+          <td style="vertical-align: top;">0.98<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>LogIt</li>
+              <li>Meta</li>
+            </ul>
+            Minor features:<br>
+            <ul>
+              <li>Thread pool size is not hardcoded (and can be
+                configured from the config file)<br>
+              </li>
+              <li>Data Type identifier field is&nbsp; now populated for
+                variables which have initialValue. Therefore it matches
+                the type
+                declared in the design file. This was completely
+                unrelevant for UA
+                Toolkit-based clients but affected i.e. LabView OPC UA
+                client.</li>
+              <li>ConfigValidator has more verbose output</li>
+              <li>When loading of configuration fails, xsd's native
+                mechanism
+                is now used instead of running the external validator
+                (here: xmllint).
+                This will both improve portability (xmllint might be
+                unavailable in the
+                target system), and help with configuration schemas that
+                may have very
+                nonstandard locations.</li>
+              <li>A bug is fixed which would affect delegated
+                cachevariables of UaVariant type.<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">NONE KNOWN<br>
+          </td>
+          <td style="vertical-align: top;"> Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-156">OPCUA-156</a>]
+                - Extend config file with configuration options (e.g.
+                thread pool size)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-157">OPCUA-157</a>]
+                - Improve InformationModel for Variables</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-371">OPCUA-371</a>]
+                - LogIt: dont put full path to file which generates
+                message in the log</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-372">OPCUA-372</a>]
+                - Common way of initializing log levels at startup</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-379">OPCUA-379</a>]
+                - Merge respective changes from latest Wiener server</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-401">OPCUA-401</a>]
+                - Suboptimal error message when schema specified in
+                config.xml cannot be found</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-402">OPCUA-402</a>]
+                - DataType identifiers are necessary for certain OPC UA
+                clients</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-403">OPCUA-403</a>]
+                - UaVariant forbidden in delegated write</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-425">OPCUA-425</a>]
+                - Improvement in loading component log levels from the
+                config file</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">0.97<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Device classes are split into Base part (100%
+                generated)
+                and User part (with generated stubs). This helps to
+                reduce merging
+                efforts by an order of magnitude.</li>
+            </ul>
+            Minor features:<br>
+            <ul>
+              <li>No more compilation warnings coming from ASNodeManager</li>
+              <li>SourceVariables only rebuilt for classes which
+                actually have a source variable (and not all classes)</li>
+              <li>Configurator, Root fully autogenerated</li>
+              <li>Queriying object name is now easy in Device logic</li>
+              <li>A list of device logic files is now filled
+                automatically</li>
+              <li>Possible to have "self-referring" hasObjects relation</li>
+              <li>When given device logic body/header doesnt exist, user
+                is asked whether to generate</li>
+              <li>When given device logic body/header is older than
+                design file, user will be warned<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">
+            <ul>
+              <li>regenerating Device Logic may ask for removal of big
+                parts
+                of already existing Device Logic code. This is actually
+                intentional as
+                this code will now go to the Base part of Device Logic
+                class<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;"> Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-259">OPCUA-259</a>]
+                - Fix build warnings</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-361">OPCUA-361</a>]
+                - ConfigValidator attempts to validate per-design
+                instantiated objects (should skip them)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-362">OPCUA-362</a>]
+                - check_consistency: add option to ask for fixing.</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-248">OPCUA-248</a>]
+                - Make SourceVariables.{h,c++} dependencies less tight</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-250">OPCUA-250</a>]
+                - Should getName() be present for all Device Logic
+                objects automatically?</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-257">OPCUA-257</a>]
+                - Evaluate Ben's anti-merge improvement</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-281">OPCUA-281</a>]
+                - Make Configurator.cpp and DRoot generation fully
+                automatic</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-349">OPCUA-349</a>]
+                - Cleanup generated_files_list and
+                generated_headers_list</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-350">OPCUA-350</a>]
+                - A warning when Device file is newer than Device Logic
+                classes</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-355">OPCUA-355</a>]
+                - Improve install tool</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-360">OPCUA-360</a>]
+                - Exchange compile-time recursion for exec-time
+                recursion of self "has" relation</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-370">OPCUA-370</a>]
+                - check_consistencty: when file doesnt exist, md5sum
+                bails out</li>
+            </ul>
+          </td>
+        </tr>
+        <tr style="background-color: rgb(191, 212, 237);">
+          <td style="vertical-align: top;">0.96<br>
+          </td>
+          <td style="vertical-align: top;"><br>
+          </td>
+          <td style="vertical-align: top;">
+            <ul>
+              <li>nullPolicy attribute needs to be added
+                per-cachevariable. This can be automated by
+                upgrade_design script (look at its help)<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;"> Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-260">OPCUA-260</a>]
+                - addressSpaceWrite confused with addressSpaceRead</li>
+            </ul>
+            Improvement
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-258">OPCUA-258</a>]
+                - Better deprecation warning msg</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-263">OPCUA-263</a>]
+                - Flood of destructor messages.</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-279">OPCUA-279</a>]
+                - Focus 2nd level validation in 1 XSLT transform</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-209">OPCUA-209</a>]
+                - null setters for non-uavariant variables</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-266">OPCUA-266</a>]
+                - Failing XSLT processor should make the output to be
+                deleted</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-267">OPCUA-267</a>]
+                - Create simple XSLT for updates of the version of the
+                framework in existing projects</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">0.95<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Doxygen integration</li>
+              <li>Cardinality modelling (possibility to specify min and
+                max number of objects in ts relation)</li>
+            </ul>
+            Minor features:<br>
+            <ul>
+              <li>Cachevariable's setter's source time argument (3rd
+                argument) has now a default of current datetime.
+                Therefore it can be
+                omitted for 99% cases.<br>
+              </li>
+            </ul>
+            <br>
+          </td>
+          <td style="vertical-align: top;">NONE KNOWN<br>
+          </td>
+          <td style="vertical-align: top;"> Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-203">OPCUA-203</a>]
+                - Integrate doxygen</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-215">OPCUA-215</a>]
+                - Cardinality modelling in hasObjects relation</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-231">OPCUA-231</a>]
+                - setters: current datetime (UaDateTime::now()) should
+                be default argument for time</li>
+            </ul>
+          </td>
+        </tr>
+        <tr style="background-color: rgb(191, 212, 237);">
+          <td style="vertical-align: top;">0.94<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Config Entries</li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">NONE KNOWN<br>
+            <br>
+            Beware though that recommended layout of Device headers and
+            sources
+            changed, and you may need to reshuffle it a bit for getting
+            easy
+            merging.<br>
+          </td>
+          <td style="vertical-align: top;"> Bug
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-217">OPCUA-217</a>]
+                - simple addressspace setters not updated in
+                addressspace body generator</li>
+            </ul>
+            Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-168">OPCUA-168</a>]
+                - Device header and body shall have a comment that
+                indicates the start of custom section</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-197">OPCUA-197</a>]
+                - Config Entries </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-204">OPCUA-204</a>]
+                - Document all transformations (including building the
+                project) in a nice diagram and put it into documentation</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-206">OPCUA-206</a>]
+                - openssl-dev and libxml2-devel dependency missing in
+                Generic Server documentation</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-212">OPCUA-212</a>]
+                - dont generate Device Logic stubs when
+                DeviceLogicTypeName not defined</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">0.93<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Files database (files.txt) and number of tools that
+                depend on it: consistency checker, new installer</li>
+            </ul>
+            Minor features:<br>
+            <ul>
+              <li>Setters for simple data types take plain value instead
+                of reference</li>
+              <li>makeSetGet dropped as a cachevariable attribute
+                (equivalence of true assumed)<br>
+              </li>
+            </ul>
+            Internal features:<br>
+            <ul>
+              <li>create_release.sh script<br>
+              </li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;">NONE KNOWN <br>
+            (only deprecation warning shown for makeSetGet attribute)<br>
+          </td>
+          <td style="vertical-align: top;"> Task
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-120">OPCUA-120</a>]
+                - Consider makeSetGet=true as normal, non-configurable
+                parameter</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-127">OPCUA-127</a>]
+                - A way to check that files that shall not be modified
+                (transforms...?) are not modified</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-160">OPCUA-160</a>]
+                - Install script should be more gentle ...</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-167">OPCUA-167</a>]
+                - Setters: simple data types (integers, floats...) shall
+                be passed by value rather than by reference</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-188">OPCUA-188</a>]
+                - A script to verify if proper things are committed to
+                the SVN (and warn if too much/not enough is within
+                version control)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-198">OPCUA-198</a>]
+                - Create script for tagging Generic Server releases</li>
+            </ul>
+          </td>
+        </tr>
+        <tr style="background-color: rgb(191, 212, 237);">
+          <td style="vertical-align: top;">0.92<br>
+          </td>
+          <td style="vertical-align: top;">Major features:<br>
+            <ul>
+              <li>Source variables</li>
+              <li>Automated mutex generation<br>
+              </li>
+              <li>UaVariant added as allowed data type</li>
+              <li>honkyTonk tool to simulate address space updates<br>
+              </li>
+            </ul>
+            Improvements:<br>
+            <ul>
+              <li>Unified and cleaned initialization of cache variables</li>
+              <li>Configuration.xsd: proper types for various flavours
+                of
+                integers (previously every int irrespectively of length
+                and signedness
+                was just "int")</li>
+              <li>createDiagram.sh creates diagrams of varied level of
+                details</li>
+            </ul>
+          </td>
+          <td style="vertical-align: top;"><br>
+          </td>
+          <td style="vertical-align: top;"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+  </body>
+</html>
