@@ -4,6 +4,7 @@
 # Please note that files.txt is a derivative of this file, which replaces md5=check with the result of md5 check.
 Directory AddressSpace install=create
 File CMakeLists.txt                           must_exist,must_be_versioned,md5=check,install=overwrite
+File ProjectSettings.cmake		      must_exist,must_be_versioned,copy_if_not_existing
 File designToClassBody.xslt                   must_exist,must_be_versioned,md5=check,install=overwrite
 File designToClassHeader.xslt                 must_exist,must_be_versioned,md5=check,install=overwrite
 File designToInformationModelBody.xslt        must_exist,must_be_versioned,md5=check,install=overwrite
@@ -115,6 +116,7 @@ File Doxyfile                               must_exist,must_be_versioned,md5=che
 File DesignManual.html                      must_exist,must_be_versioned,md5=check,install=overwrite
 File UserDefinedRuntimeConfigurationModification.html  must_exist,must_be_versioned,install=overwrite
 File UserDefinedCommandLineParameters.html             must_exist,must_be_versioned,install=overwrite
+File AlternativeBackends.html               must_exist,must_be_versioned,install=overwrite
 
 Directory Documentation/images install=create
 File quasar_engine_small_smooth_square_128x128.png must_exist,must_be_versioned,md5=check,install=overwrite

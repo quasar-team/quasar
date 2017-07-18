@@ -24,7 +24,7 @@ add_definitions(
 	-DSUPPORT_XML_CONFIG 
 )
 
-set(CUSTOM_SERVER_MODULES "")
+include( ProjectSettings.cmake )
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
 	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
@@ -35,7 +35,7 @@ endif()
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
-set(EXECUTABLE OpcUaServer)
+
 
 include_directories (
 	${OPCUA_TOOLKIT_PATH}/include/uastack
@@ -46,6 +46,7 @@ include_directories (
 	${BOOST_PATH_HEADERS}
 	${PROJECT_SOURCE_DIR}/Device/generated
 	${PROJECT_SOURCE_DIR}/Configuration
+	${SERVER_INCLUDE_DIRECTORIES}
 	)
 
 #
@@ -114,6 +115,7 @@ add_custom_target(dep ALL COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_devi
 link_directories(
 	${OPCUA_TOOLKIT_PATH}/lib
 	${BOOST_PATH_LIBS}
+	${SERVER_LINK_DIRECTORIES}
 )
 add_executable ( ${EXECUTABLE} 
 	${MODULES_OBJECTS}
@@ -130,5 +132,5 @@ target_link_libraries ( ${EXECUTABLE}
 	${BOOST_LIBS}
 	${XML_LIBS}
 	${OPCUA_TOOLKIT_LIBS}
-	# Add your custom libraries here
+	${SERVER_LINK_LIBRARIES}
 )
