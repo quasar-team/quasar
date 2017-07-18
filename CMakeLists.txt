@@ -26,13 +26,11 @@ add_definitions(
 
 set(CUSTOM_SERVER_MODULES "")
 
-if(DEFINED CMAKE_TOOLCHAIN_FILE)
-	message("CMAKE_TOOLCHAIN_FILE defined -- now including it")
-	include(${CMAKE_TOOLCHAIN_FILE})
-else(DEFINED CMAKE_TOOLCHAIN_FILE)
-	message("CMAKE_TOOLCHAIN_FILE not defined -- loading default, FrameworkInternals/default_configuration.cmake")
-	include( FrameworkInternals/default_configuration.cmake )
-endif(DEFINED CMAKE_TOOLCHAIN_FILE)
+if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
+	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
+else()
+     message(FATAL_ERROR "Build configuration has not been chosen yet. Please run 'quasar.py build_config'")
+endif()       
 
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
