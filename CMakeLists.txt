@@ -29,7 +29,7 @@ include( ProjectSettings.cmake )
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
 	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
 else()
-     message(FATAL_ERROR "Build configuration has not been chosen yet. Please run 'quasar.py build_config'")
+     message(FATAL_ERROR "Build configuration has not been chosen yet. Please run 'quasar.py set_build_config'")
 endif()       
 
 set(PYTHON_COMMAND python)

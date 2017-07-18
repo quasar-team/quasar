@@ -11,8 +11,7 @@
     <br>
     <span style="color: rgb(34, 84, 152);">
       <h1>Changelog</h1>
-    </span>
-    <br>
+    </span> <br>
     <table style="text-align: left; width: 100%;" cellspacing="1"
       cellpadding="4" border="0">
       <tbody>
@@ -20,12 +19,15 @@
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Version</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Changes
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
               backward incompatibilites</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>JIRA
+
               Release notes</strong><br>
           </td>
         </tr>
@@ -46,12 +48,22 @@
               </li>
             </ul>
           </td>
-          <td valign="top">Note that since this release, the master
-            CMakeLists is "one-size-fits-all", i.e. you should customize
-            it. Instead, your per-project settings like the name of the
-            executable and so on should go to ProjectSettings.cmake,
-            which will be included after the upgrade.<br>
-            <br>
+          <td valign="top">
+            <ol>
+              <li>Note that since this release, the master CMakeLists is
+                "one-size-fits-all", i.e. you should customize it.
+                Instead, your per-project settings like the name of the
+                executable and so on should go to ProjectSettings.cmake,
+                which will be included after the upgrade.<br>
+                <br>
+              </li>
+              <li>Please note that you no longer append your build
+                config file name to "./quasar.py build".&nbsp; Now you
+                should do:<br>
+                ./quasar.py set_build_config
+                &lt;path_to_your_build_config&gt;<br>
+              </li>
+            </ol>
             <br>
           </td>
           <td valign="top">Bug<br>
@@ -113,11 +125,9 @@
               </li>
             </ul>
           </td>
-          <td style="vertical-align: top;">In
-            the Design.xsd schema, vendor attribute is now renamed to
-            author. If
-            you used that attribute, please update your Design.xml
-            accordingly.<br>
+          <td style="vertical-align: top;">In the Design.xsd schema,
+            vendor attribute is now renamed to author. If you used that
+            attribute, please update your Design.xml accordingly.<br>
           </td>
           <td style="vertical-align: top;">Bug
             <ul>
@@ -383,10 +393,8 @@
           <td style="vertical-align: top;">Major features:<br>
             <ul>
               <li>Big clean-up which brings awaited feature of
-                converting
-                "deviceLogicTypeName" into something human (but breaks
-                Design.xml
-                compatibility at the same time)</li>
+                converting "deviceLogicTypeName" into something human
+                (but breaks Design.xml compatibility at the same time)</li>
               <li>Decoupling Base device classes from the address space
                 completely</li>
               <li>Proper headers now introduced in almost anything apart
@@ -531,24 +539,19 @@
           <td style="vertical-align: top;">Major features:<br>
             <ul>
               <li>sh build scripts converted to Python, so the
-                development
-                and build may be started on any operating system
-                (previously Linux only)</li>
+                development and build may be started on any operating
+                system (previously Linux only)</li>
               <li>MSVC10 compatibility is now guaranteed for delivered
                 and generated code</li>
             </ul>
             <span style="font-weight: bold;">Note</span> that versioning
             schema has changed since this release into more common
-            3-section
-            version id. Otherwise it would be more logical to continue
-            with 0.100
-            after 0.99 ;-)<br>
+            3-section version id. Otherwise it would be more logical to
+            continue with 0.100 after 0.99 ;-)<br>
           </td>
-          <td style="vertical-align: top;">With
-            new multiplatform scripts, the entry points of the framework
-            have
-            changed. I.e. there is no longer automated_build_linux.sh
-            script.<br>
+          <td style="vertical-align: top;">With new multiplatform
+            scripts, the entry points of the framework have changed.
+            I.e. there is no longer automated_build_linux.sh script.<br>
             <br>
           </td>
           <td style="vertical-align: top;"> Improvement
@@ -575,10 +578,8 @@
           <td style="vertical-align: top;">Major features:<br>
             <ul>
               <li>Cleaned up build system, which allows for
-                customization of
-                paramteres like boost version and path, OPC UA toolkit,
-                custom compiler
-                etc</li>
+                customization of paramteres like boost version and path,
+                OPC UA toolkit, custom compiler etc</li>
             </ul>
             Minor features:<br>
             <ul>
@@ -690,21 +691,16 @@
               </li>
               <li>Data Type identifier field is&nbsp; now populated for
                 variables which have initialValue. Therefore it matches
-                the type
-                declared in the design file. This was completely
-                unrelevant for UA
-                Toolkit-based clients but affected i.e. LabView OPC UA
-                client.</li>
+                the type declared in the design file. This was
+                completely unrelevant for UA Toolkit-based clients but
+                affected i.e. LabView OPC UA client.</li>
               <li>ConfigValidator has more verbose output</li>
               <li>When loading of configuration fails, xsd's native
-                mechanism
-                is now used instead of running the external validator
-                (here: xmllint).
-                This will both improve portability (xmllint might be
-                unavailable in the
-                target system), and help with configuration schemas that
-                may have very
-                nonstandard locations.</li>
+                mechanism is now used instead of running the external
+                validator (here: xmllint). This will both improve
+                portability (xmllint might be unavailable in the target
+                system), and help with configuration schemas that may
+                have very nonstandard locations.</li>
               <li>A bug is fixed which would affect delegated
                 cachevariables of UaVariant type.<br>
               </li>
@@ -746,10 +742,9 @@
           <td style="vertical-align: top;">Major features:<br>
             <ul>
               <li>Device classes are split into Base part (100%
-                generated)
-                and User part (with generated stubs). This helps to
-                reduce merging
-                efforts by an order of magnitude.</li>
+                generated) and User part (with generated stubs). This
+                helps to reduce merging efforts by an order of
+                magnitude.</li>
             </ul>
             Minor features:<br>
             <ul>
@@ -771,11 +766,9 @@
           <td style="vertical-align: top;">
             <ul>
               <li>regenerating Device Logic may ask for removal of big
-                parts
-                of already existing Device Logic code. This is actually
-                intentional as
-                this code will now go to the Base part of Device Logic
-                class<br>
+                parts of already existing Device Logic code. This is
+                actually intentional as this code will now go to the
+                Base part of Device Logic class<br>
               </li>
             </ul>
           </td>
@@ -871,8 +864,7 @@
             <ul>
               <li>Cachevariable's setter's source time argument (3rd
                 argument) has now a default of current datetime.
-                Therefore it can be
-                omitted for 99% cases.<br>
+                Therefore it can be omitted for 99% cases.<br>
               </li>
             </ul>
             <br>
@@ -902,10 +894,8 @@
           <td style="vertical-align: top;">NONE KNOWN<br>
             <br>
             Beware though that recommended layout of Device headers and
-            sources
-            changed, and you may need to reshuffle it a bit for getting
-            easy
-            merging.<br>
+            sources changed, and you may need to reshuffle it a bit for
+            getting easy merging.<br>
           </td>
           <td style="vertical-align: top;"> Bug
             <ul>
@@ -995,10 +985,8 @@
             <ul>
               <li>Unified and cleaned initialization of cache variables</li>
               <li>Configuration.xsd: proper types for various flavours
-                of
-                integers (previously every int irrespectively of length
-                and signedness
-                was just "int")</li>
+                of integers (previously every int irrespectively of
+                length and signedness was just "int")</li>
               <li>createDiagram.sh creates diagrams of varied level of
                 details</li>
             </ul>

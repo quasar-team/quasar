@@ -4,7 +4,6 @@
 # Please note that files.txt is a derivative of this file, which replaces md5=check with the result of md5 check.
 Directory AddressSpace install=create
 File CMakeLists.txt                           must_exist,must_be_versioned,md5=check,install=overwrite
-File ProjectSettings.cmake		      must_exist,must_be_versioned,install=copy_if_not_existing
 File designToClassBody.xslt                   must_exist,must_be_versioned,md5=check,install=overwrite
 File designToClassHeader.xslt                 must_exist,must_be_versioned,md5=check,install=overwrite
 File designToInformationModelBody.xslt        must_exist,must_be_versioned,md5=check,install=overwrite
@@ -214,7 +213,7 @@ File generated_files_list.cmake             deprecated,install=dont_touch
 File generated_headers_list.cmake           deprecated,install=dont_touch
 File transformDesign.sh               	    deprecated,install=dont_touch
 File LICENSE.TXT                            must_exist,must_be_versioned,install=overwrite,md5=check,
-
+File ProjectSettings.cmake		      must_exist,must_be_versioned,install=copy_if_not_existing
 
 Directory Meta install=create,
 File CMakeLists.txt must_exist,must_be_versioned,install=overwrite,md5=check

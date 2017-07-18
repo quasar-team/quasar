@@ -65,7 +65,7 @@ def build_config():
                 fn = read_build_config_selector()
                 print 'Currently chosen build config is: '+fn
         else:
-                print 'Build config not chosen yet. Please run "quasar.py build_config <path_to_the_build_config>"'
+                print 'Build config is not chosen yet. Please run "quasar.py set_build_config <path_to_the_build_config>"'
 
 def set_build_config(arg1):
         if arg1 is None:
