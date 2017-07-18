@@ -16,7 +16,7 @@ Redistribution and use in source and binary forms, with or without modification,
 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@contact:    damian.abalo@cern.ch
+@contact:    quasar-developers@cern.ch
 '''
 
 import os
@@ -42,7 +42,7 @@ def validateDesign():
 		# 2nd line of validation -- including XSLT
 		print("2nd line of check -- more advanced checks using XSLT processor")
 		output = "validationOutput.removeme"
-		transformDesignVerbose(designPath + "designValidation.xslt", designPath + output, 0, 0)
+		transformDesignVerbose(designPath + "designValidation.xslt", designPath + output, 0, astyleRun=False)
 	except Exception, e:
 		raise Exception ("There was a problem validating the file [" + designXML + "]; Exception: [" + str(e) + "]")
 
@@ -72,7 +72,7 @@ def upgradeDesign(additionalParam):
 	formatDesign()
 	
 	output = "Design.xml.upgraded"
-	transformDesignVerbose(designPath + "designToUpgradedDesign.xslt", designPath + output, 0, 0, additionalParam)
+	transformDesignVerbose(designPath + "designToUpgradedDesign.xslt", designPath + output, 0, astyleRun=False, additionalParam=additionalParam)
 	
 	print("Formatting the upgraded file ")
 	formatedOutput = output + ".formatted"
@@ -93,7 +93,7 @@ def createDiagram(detailLevel=0):
 	if detailLevel == "":
 		detailLevel = 0
 	output = "Design.dot"
-	transformDesignVerbose(designPath + "designToDot.xslt", designPath + output, 0, 1, "detailLevel=" + str(detailLevel))
+	transformDesignVerbose(designPath + "designToDot.xslt", designPath + output, 0, astyleRun=False, additionalParam="detailLevel=" + str(detailLevel))
 	print("Generating pdf diagram with dot.")
 	subprocessWithImprovedErrors([getCommand("graphviz"), "-Tpdf", "-o", designPath + "diagram.pdf", designPath + "Design.dot"], "GraphViz (dot)")
 			

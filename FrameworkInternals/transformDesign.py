@@ -16,7 +16,7 @@ Redistribution and use in source and binary forms, with or without modification,
 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@contact:    damian.abalo@cern.ch
+@contact:    quasar-developers@cern.ch
 '''
 
 import os
@@ -25,15 +25,17 @@ import sys
 import filecmp
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
+import astyleSubstitute
+import subprocess
 
 # args:
 # $1    xslt transform filename
 # $2	output filename
 # $3	if 1, will prevent from overwriting output filename, running merge-tool
-# $4	if 1, will run astyle on generated file
+# $4	if true, will run astyle on generated file
 # $5	additional params to the transform
 
-def transformDesignVerbose(xsltTransformation, outputFile, overwriteProtection, astyleRun, additionalParam=None):
+def transformDesignVerbose(xsltTransformation, outputFile, overwriteProtection, astyleRun=False, additionalParam=None):
 	"""Prints information and then calls transformDesign
 	
 	Keyword arguments:
@@ -56,9 +58,10 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
 	xsltTransformation -- xslt file where the transformation is defined
 	outputFile -- name of the file to be generated
 	overwriteProtection -- if 1, will prevent from overwriting output filename, running merge-tool
-	astyleRun -- if 1, will run astyle on generated file
+	astyleRun -- if true, will run astyle (or the fall-back tool) on generated file
 	additionalParam -- Optional extra param. If specified, it will be given directly to saxon9he.jar
 	"""
+	
 	#files
 	XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + getCommand('saxon')
 	DESIGN_XML = '.' + os.path.sep + 'Design' + os.path.sep + 'Design.xml'
@@ -72,8 +75,18 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
 		else:
 			subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile, additionalParam], getCommand("java"))	
 
-		if astyleRun == 1:		
-			subprocessWithImprovedErrors([getCommand('astyle'), outputFile], getCommand("astyle"))
+		if astyleRun:
+			try:
+				subprocess.call( [getCommand('astyle'), outputFile] )
+			except Exception as e:
+				try:
+					subprocess.call( [getCommand('indent'), outputFile, '-o', outputFile] )
+					print "We indented your code using 'indent' tool which is a fall-back tool. For best user satisfaction, please install astyle as described in the quasar documentation.  "
+				except Exception as e:
+					print "We didnt manage to run neither 'astyle' nor 'indent' tool. We're running a fall-back tool now. For best user satisfaction, please install astyle as described in the quasar documentation.  "
+					astyleSubstitute.do_indentation( outputFile )
+
+			
 
 		if overwriteProtection == 1:
 			#If the file existed previously and it is different from the old one we run kdiff3

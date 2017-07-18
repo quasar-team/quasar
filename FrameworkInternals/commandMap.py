@@ -12,7 +12,8 @@ commandMap = {
 "xmllint":"xmllint",
 "graphviz":"dot",
 "doxygen":"doxygen",
-"git":"git"
+"git":"git",
+"indent":"indent"
 }
 
 def getCommand(key):
