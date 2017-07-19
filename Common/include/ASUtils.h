@@ -23,8 +23,6 @@
 #ifndef ASUTILS_H_
 #define ASUTILS_H_
 
-/* #include <uanodeid.h> */
-/* #include <uabasenodes.h> */
 #include <stdlib.h>
 #include <iostream>
 #include <string>
