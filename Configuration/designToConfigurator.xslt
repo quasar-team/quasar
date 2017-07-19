@@ -104,12 +104,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				nm->getTypeNodeId(AddressSpace::ASInformationModel::<xsl:value-of select="fnc:typeNumericId($className)"/>), 
 				nm,
 				c);
-				UaStatus s = nm->addNodeAndReference(<xsl:value-of select="$parentNodeId"/>, a<xsl:value-of select="fnc:ASClassName($className)"/>, OpcUaId_HasComponent);
-				if (!s.isGood())
-				{
-					std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; <xsl:value-of select="$parentNodeId"/>.toString().toUtf8() &lt;&lt; " to " &lt;&lt; a<xsl:value-of select="fnc:ASClassName($className)"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
-					ASSERT_GOOD(s);
-				}
 				<xsl:variable name="className"><xsl:value-of select="$className"/></xsl:variable>
 				<xsl:for-each select="/d:design/d:class[@name=$className]">
 				<xsl:call-template name="createDeviceLogic">
@@ -303,12 +297,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				nm->getTypeNodeId(AddressSpace::ASInformationModel::<xsl:value-of select="fnc:typeNumericId($className)"/>), 
 				nm,
 				c);
-				UaStatus s = nm->addNodeAndReference(rootNode, a<xsl:value-of select="fnc:ASClassName($className)"/>, OpcUaId_HasComponent);
-				if (!s.isGood())
-				{
-					std::cout &lt;&lt; "While addNodeAndReference from " &lt;&lt; rootNode.toString().toUtf8() &lt;&lt; " to " &lt;&lt; a<xsl:value-of select="fnc:ASClassName($className)"/>-&gt;nodeId().toString().toUtf8() &lt;&lt; " : " &lt;&lt; std::endl;
-					ASSERT_GOOD(s);
-				}
 				<xsl:variable name="className"><xsl:value-of select="$className"/></xsl:variable>
 				<xsl:for-each select="/d:design/d:class[@name=$className]">
 				<xsl:call-template name="createDeviceLogic">
