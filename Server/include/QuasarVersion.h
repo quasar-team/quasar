@@ -1,1 +1,1 @@
-#define QUASAR_VERSION_STR "1.1.8"
+#define QUASAR_VERSION_STR "v1.2.0-rc3"
