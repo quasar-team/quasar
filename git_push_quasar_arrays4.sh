@@ -7,15 +7,8 @@ rm -rf CMakeFiles
 rm -rf html
 rm -rf latex
 # come up with a message for git
-set MSG1=`date`" eclipse-push from "`whoami`"@"`hostname`
-echo ${MSG1}
-rm -f ./tmp_msg.txt
-echo ${MSG1}"\n" > ./tmp_msg.txt
-
-# blocking edit
-gedit ./tmp_msg.txt
-set MSG=`cat ./tmp_msg.txt`
-
+set MSG=`date`" eclipse-push from "`whoami`"@"`hostname`
+echo ${MSG}
 git add --all
 git commit -m "${MSG}"
 git push origin arrays4
