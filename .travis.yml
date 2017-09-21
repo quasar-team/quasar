@@ -13,9 +13,10 @@ script:
      git clone https://github.com/quasar-team/quasar.git ;
      cd quasar ;
      python quasar.py enable_module open62541-compat ;
-     python quasar.py prepare_build Release open62541_config.cmake ;
+     python quasar.py set_build_config open62541_config.cmake ;
+     python quasar.py prepare_build Release ;
      cd open62541-compat ;
      python prepare.py ;
      cd .. ;
-     python quasar.py build Release open62541_config.cmake ;
+     python quasar.py build Release ;
      exit"
