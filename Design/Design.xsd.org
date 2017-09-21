@@ -107,11 +107,10 @@ elementFormDefault="qualified">
     </complexType>
 
     <complexType name="CacheVariable">
-    	<all>
+    	<choice>
     		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
-    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
-    	</all>
-   		<attribute name="name" type="tns:VariableName" use="required"></attribute>
+    	</choice>
+    	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="addressSpaceWrite"
     		type="tns:CacheVariableAddressSpaceWrite" use="required">
     		<annotation>
@@ -264,9 +263,6 @@ elementFormDefault="qualified">
     </simpleType>
 
     <complexType name="SourceVariable">
-       	<all>
-    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
-    	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:VariableDataType"
     		use="required">
@@ -354,10 +350,11 @@ elementFormDefault="qualified">
     </simpleType>
     
     <complexType name="ConfigEntry">
-    	<all>
-    		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
-    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
-    	</all>
+    	<choice>
+    		<element name="documentation" type="tns:Documentation"
+    			maxOccurs="1" minOccurs="0">
+    		</element>
+    	</choice>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:ConfigEntryDataType"
     		use="required">
@@ -376,11 +373,6 @@ elementFormDefault="qualified">
     <simpleType name="Documentation">
     	<restriction base="string"></restriction>
     </simpleType>
- 
- 	<complexType name="Array">
- 	 	<attribute name="minimumSize" type="integer"></attribute>
- 	 	<attribute name="maximumSize" type="integer"></attribute>
-    </complexType>
 
     <complexType name="DeviceLogic">
     	<sequence>
