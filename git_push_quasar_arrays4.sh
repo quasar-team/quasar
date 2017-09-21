@@ -1,6 +1,6 @@
 #!/bin/csh
 # git push quasar branch arrays4 quasar-team gitbub, only the clean fwk
-git status
+# git status
 find ./ -name "CMakeCache.txt" -exec rm {} \;
 find ./ -name "CMakeFiles" -exec rm -rf {} \;
 rm -rf CMakeFiles
@@ -11,6 +11,8 @@ set MSG1=`date`" eclipse-push from "`whoami`"@"`hostname`
 echo ${MSG1}
 rm -f ./tmp_msg.txt
 echo ${MSG1}"\n" > ./tmp_msg.txt
+
+# blocking edit
 gedit ./tmp_msg.txt
 set MSG=`cat ./tmp_msg.txt`
 
