@@ -73,10 +73,11 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			
 			
 			<xsl:for-each select="/d:design/d:class[@name=$class]/d:hasobjects">
+			<xsl:if test="fnc:classHasDeviceLogic(/,@class)='true'">
 			<xsl:call-template name="hasObjects">
 			<xsl:with-param name="parentDevice">d<xsl:value-of select="fnc:DClassName($className)"/></xsl:with-param>
 			</xsl:call-template>
-				
+			</xsl:if>
 			</xsl:for-each>
 
 		}
@@ -92,8 +93,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	#include &lt;boost/foreach.hpp&gt;
 	
 	<xsl:for-each select="/d:design/d:class">
+	<xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
 	#include &lt;<xsl:value-of select="fnc:DClassName(@name)"/>.h&gt;
 	#include &lt;<xsl:value-of select="fnc:ASClassName(@name)"/>.h&gt;
+	</xsl:if>
 	</xsl:for-each>
 	
 	void honkyTonk ()
@@ -102,10 +105,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	Device::DRoot *root = Device::DRoot::getInstance();
 
 	<xsl:for-each select="/d:design/d:root/d:hasobjects">
+	
+	<xsl:if test="fnc:classHasDeviceLogic(/,@class)='true'">
 
 	<xsl:call-template name="hasObjects">
 	<xsl:with-param name="parentDevice">root</xsl:with-param>
 	</xsl:call-template>
+	
+	</xsl:if>
 
 	</xsl:for-each>
 
