@@ -33,16 +33,16 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:param name="className"/>
 	<xsl:param name="xsltFileName"/>
 
-
-	
 	<xsl:template name="cachevariables_setgetters">
 
+<!-- 
 	// debug: dataType = <xsl:value-of select= "@dataType"/>
 	<xsl:message>debug: dataType = <xsl:value-of select= "@dataType"/></xsl:message>
 	// debug: name = <xsl:value-of select= "@name"/>
 	<xsl:message>debug: name = <xsl:value-of select= "@name"/></xsl:message>
 	// debug: nullPolicy = <xsl:value-of select= "@nullPolicy"/>
 	<xsl:message>debug: null policy= <xsl:value-of select= "@nullPolicy"/></xsl:message>
+-->
 
 	<!-- dataType needed for this -->
 	UaStatus get<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> &amp;) const ;
@@ -67,7 +67,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	<!-- also for arrays, where we use our own signature function generator -->
 	<xsl:template name="cachevariables_setgettersarray"> 
-	UaStatus get<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> &amp;) const ;
+	UaStatus get<xsl:value-of select="fnc:capFirst(@name)"/> ( vector &lt; <xsl:value-of select="@dataType"/> &gt; &amp;) const ;
 	UaStatus <xsl:value-of select="fnc:varSetterArray(@name, @dataType, 'true')"/> ;
 		
 	<xsl:choose>
@@ -131,19 +131,12 @@ namespace AddressSpace
 		<!-- switch between arrays and scalars  -->
 		<xsl:choose>
 			<xsl:when test="d:array">
-			<!-- array signature -->
-			<xsl:call-template name="cachevariables_setgettersarray"/>
-			<!-- 
-			<xsl:for-each select="d:array">
-					<xsl:call-template name="cachevariables_setgettersarray"/>
-			</xsl:for-each> 
-			-->
-			</xsl:when>
-			
+				<!-- array signature -->
+				<xsl:call-template name="cachevariables_setgettersarray"/>
+			</xsl:when>			
 			<xsl:otherwise>
-			<!-- scalar signature -->	
-			<xsl:call-template name="cachevariables_setgetters"/>
-		// debug setters and getters for cache variables
+				<!-- scalar signature -->	
+				<xsl:call-template name="cachevariables_setgetters"/>
 			</xsl:otherwise>
 		</xsl:choose>
 		</xsl:for-each> <!-- cachevariables -->

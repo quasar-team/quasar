@@ -320,6 +320,8 @@ AS<xsl:value-of select="@name"/>::~AS<xsl:value-of select="@name"/> ()
 
 <!-- switch method signature according to scalar or array for cachevariables 
 	scalars have one value, arrays have a vector -->  
+	
+<!--  SETTER -->
 <xsl:for-each select="d:cachevariable">
 
 // debug: UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetter(@name,@dataType,'false')"/>
@@ -335,8 +337,7 @@ AS<xsl:value-of select="@name"/>::~AS<xsl:value-of select="@name"/> ()
 
 <xsl:choose>
 <xsl:when test="d:array">
-<!-- found array signature -->
-	// array signature
+	<!-- found array signature -->
 	<xsl:for-each select="d:array">
 	// debug: minimumSize = <xsl:value-of select= "@minimumSize"/>
 	// debug: maximumSize = <xsl:value-of select= "@maximumSize"/>
@@ -356,7 +357,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
     }
     
     // copy vector into Ua Array and set it into the variant
-    UaDoubleArray ua = UaDoubleArray();
+    UaDoubleArray ua; // = UaDoubleArray();
     ua.create( dim ); 
     // copy explicitly.. costly ! We can maybe use a resize
     for ( int i = 0; i &lt; dim; i++ ){
@@ -417,7 +418,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 </xsl:when> <!-- test array -->
 
 <xsl:otherwise>
-// scalar signature
+	<!-- found scalar signature -->
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetter(@name,@dataType,'false')"/>
 { 
 	UaVariant v = value;
@@ -425,12 +426,55 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 	return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
 }
 </xsl:otherwise> 
-</xsl:choose>
+</xsl:choose>  <!-- scalar/array switch SETTER -->
 
 
 
 <!-- GETTER -->
-
+<xsl:choose>
+<xsl:when test="d:array">
+	<!-- found array signature -->
+UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> ( vector &lt;<xsl:value-of select="@dataType"/> &gt; &amp; r) const 
+{
+	// get the variant, extract the array orespecting the type and put it into the vector
+	UaVariant v ( * (m_<xsl:value-of select="@name"/>-&gt;value (/* session */ 0).value())) ;
+	<xsl:choose>
+		<xsl:when test="@dataType='OpcUa_Int16'">
+			UaInt16Array ua;
+		    v.toInt16Array( ua );
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Int32'">
+			UaInt32Array ua;
+		    v.toInt32Array( ua );
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Int64'">
+			UaInt64Array ua;
+		    v.toInt64Array( ua );
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Float'">
+			UaFloatArray ua;
+		    v.toFloatArray( ua );
+ 		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Double'">
+			UaDoubleArray ua;
+		    v.toDoubleArray( ua );
+ 		</xsl:when>
+		<xsl:otherwise>
+			<xsl:message terminate="yes"> 
+			Illegal or unknown array base type <xsl:value-of select= "@dataType"/> !
+			</xsl:message>
+		</xsl:otherwise>		
+	</xsl:choose>
+	int dim = ua.length();
+	r.clear();
+	for ( int i = 0; i &lt; dim; i++ ){
+	    r.push_back( ua[ i ]);
+	}
+    return OpcUa_Good;
+}
+</xsl:when>
+<xsl:otherwise>
+	<!-- found scalar signature -->
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> &amp; r) const 
 {
 	UaVariant v (* (m_<xsl:value-of select="@name" />-&gt;value(/*session*/0).value()));
@@ -454,31 +498,31 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 
 <xsl:if test="@nullPolicy='nullForbidden'">
 	/* short getter (possible because this variable will never be null) */
-<xsl:value-of select="@dataType"/><xsl:text> </xsl:text><xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> () const
-{
-	UaVariant v (* m_<xsl:value-of select="@name"/>-&gt;value (0).value() );
-	<xsl:value-of select="@dataType"/> v_value;
-	<xsl:choose>
-		<xsl:when test="@dataType='UaString'">v_value = v.toString(); </xsl:when>
-		<xsl:otherwise>v.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/> ( v_value ); </xsl:otherwise>
-	</xsl:choose>
-	return v_value;
-}
+	<xsl:value-of select="@dataType"/><xsl:text> </xsl:text><xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> () const
+	{
+		UaVariant v (* m_<xsl:value-of select="@name"/>-&gt;value (0).value() );
+		<xsl:value-of select="@dataType"/> v_value;
+		<xsl:choose>
+			<xsl:when test="@dataType='UaString'">v_value = v.toString(); </xsl:when>
+			<xsl:otherwise>v.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/> ( v_value ); </xsl:otherwise>
+		</xsl:choose>
+		return v_value;
+	}
 </xsl:if>
 
 <xsl:if test="@nullPolicy='nullAllowed'">
     /* null-setter (possible because nullPolicy='nullAllowed') */
     UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetter(@name,'null','false')"/>
-{
-UaVariant v;
-
-return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
-
-}
+	{
+		UaVariant v;
+		return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
+	}
 </xsl:if>
 
+</xsl:otherwise>
+</xsl:choose>   <!-- scalar/array switch GETTER -->
 
-</xsl:for-each>
+</xsl:for-each> <!-- cache variable -->
 
 
 
