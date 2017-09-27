@@ -34,7 +34,7 @@ build_script:
          else
          {
           Write-Error "There was a problem building QUASAR; The script will now terminate." ;
-          Exit ;
+#          Exit ;
          }
 
 # uncomment to block VM deletion for investigating broken builds.
