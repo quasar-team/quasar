@@ -16,7 +16,7 @@ script:
      git clone https://github.com/quasar-team/quasar.git ;
      cd quasar ;
      git status ;
-     python quasar.py enable_module open62541-compat bf-fix-travis-compat ;
+     python quasar.py enable_module open62541-compat bf-travis-fix-compat ;
      python quasar.py set_build_config open62541_config.cmake ;
      python quasar.py prepare_build Release ;
      cd open62541-compat ;
