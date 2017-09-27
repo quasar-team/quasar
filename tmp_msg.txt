@@ -1,2 +1,2 @@
-Wed Sep 27 17:03:22 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-get arrays: qcquite the variant and return a vector
+Wed Sep 27 17:12:20 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+xx
