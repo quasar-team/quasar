@@ -317,29 +317,119 @@ AS<xsl:value-of select="@name"/>::~AS<xsl:value-of select="@name"/> ()
 <!-- *************************************************** -->
 <!-- SETTERS/GETTERS *********************************** -->
 <!-- *************************************************** -->
-/* generate setters and getters (if requested) */
+
+<!-- switch method signature according to scalar or array for cachevariables 
+	scalars have one value, arrays have a vector -->  
 <xsl:for-each select="d:cachevariable">
 
-UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetter(@name,@dataType,'false')"/>
-{
-UaVariant v;
+// debug: UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetter(@name,@dataType,'false')"/>
+// debug: setter attributes
+// debug: dataType = <xsl:value-of select= "@dataType"/>
+// debug: name = <xsl:value-of select= "@name"/>
+// debug: addressSpaceWrite = <xsl:value-of select= "@addressSpaceWrite"/>
+// debug: initializeWith = <xsl:value-of select= "@initializeWith"/>
+// debug: nullPolicy = <xsl:value-of select= "@nullPolicy"/>
+<!--  we have to see the attributes inside the array element -->
+<xsl:variable name="baseType" select= "@dataType"/>
+<xsl:variable name="baseName" select= "@name"/>
+
 <xsl:choose>
-<xsl:when test="@dataType='UaVariant'"> 
-v = value;
-</xsl:when>
-<xsl:when test="@dataType='UaByteString'">
-//NOTE: const_case below is safe, mutability is required only if value is to be detached (and it isn't in our case)
-v.setByteString( const_cast&lt;UaByteString&amp;&gt;(value), /*detach value?*/ false );
-</xsl:when>
+<xsl:when test="d:array">
+<!-- found array signature -->
+	// array signature
+	<xsl:for-each select="d:array">
+	// debug: minimumSize = <xsl:value-of select= "@minimumSize"/>
+	// debug: maximumSize = <xsl:value-of select= "@maximumSize"/>
+	// debug: generate array code for base type <xsl:value-of select="$baseType"/>
+	
+UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetterArray($baseName,$baseType,'false')"/>
+{ 
+	<xsl:if test="@minimumSize &lt; @maximumSize">
+	// can't have it bigger than int32 in UA
+	int min = <xsl:value-of select="@minimumSize"/>;
+	int max = <xsl:value-of select="@maximumSize"/>;
+    // make sure the size contraints from design are respected during runtime
+    OpcUa_Int32 dim = value.size();
+    if ( dim &lt; min || dim &gt; max ){
+    	   PRINT("ERROR: runtime array size out of bounds! Assuming minimum design size.");
+    	 dim = min;
+    }
+    
+    // copy vector into Ua Array and set it into the variant
+    UaDoubleArray ua = UaDoubleArray();
+    ua.create( dim ); 
+    // copy explicitly.. costly ! We can maybe use a resize
+    for ( int i = 0; i &lt; dim; i++ ){
+    	ua[ i ] = value[ i ];
+    }
+ 	UaVariant v; 
+    v.setDoubleArray( ua );
+
+	// configure variant's sizes properly for the contained array
+	UaUInt32Array arrayDimensions;
+	v.arrayDimensions( arrayDimensions);
+	OpcUa_Int32 dimSize = v.dimensionSize();
+	m_<xsl:value-of select="$baseName"/>-&gt;setValueRank( dimSize /* =1 */ );
+	m_<xsl:value-of select="$baseName"/>-&gt;setArrayDimensions( arrayDimensions );
+			<xsl:choose>
+					<xsl:when test="$baseType='OpcUa_Int16'">
+						// int16 array
+						m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Int16, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="$baseType='OpcUa_Int32'">
+						// int32 array
+						m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Int32, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="$baseType='OpcUa_Int64'">
+						// int64 array
+						m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Int64, /* system namespace */ 0 ));
+					</xsl:when>
+					<xsl:when test="$baseType='OpcUa_Float'">
+						// float array
+						m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Float, /* system namespace */ 0 ));
+ 					</xsl:when>
+					<xsl:when test="$baseType='OpcUa_Double'">
+						// double array
+						m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Double, /* system namespace */ 0 ));
+ 					</xsl:when>
+					<xsl:otherwise>
+						// debug: error with dataType = <xsl:value-of select= "$baseType"/>
+						<xsl:message terminate="yes"> 
+						Illegal or unknown array base type <xsl:value-of select= "$baseType"/> !
+						</xsl:message>
+					</xsl:otherwise>		
+			</xsl:choose>
+	</xsl:if>
+	<xsl:if test="@minimumSize &gt; @maximumSize">
+	<xsl:message terminate="yes">
+		Illegal array boundaries: minimumSize= <xsl:value-of select= "@minimumSize"/> can not be greater than maximumSize= <xsl:value-of select= "@maximumSize"/>!
+	</xsl:message>
+	</xsl:if>
+	<xsl:if test="@minimumSize &lt; 1">
+	<xsl:message terminate="yes">
+		Illegal array boundaries: minimumSize= <xsl:value-of select= "@minimumSize"/> can not be 0 or less !
+	</xsl:message>
+	</xsl:if>
+	// set the cache var
+	return m_<xsl:value-of select="$baseName"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
+}
+	</xsl:for-each> <!-- array element -->
+</xsl:when> <!-- test array -->
+
 <xsl:otherwise>
-v.<xsl:value-of select="fnc:dataTypeToVariantSetter(@dataType)"/>( value );
-</xsl:otherwise>
+// scalar signature
+UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetter(@name,@dataType,'false')"/>
+{ 
+	UaVariant v = value;
+	v.<xsl:value-of select="fnc:dataTypeToVariantSetter(@dataType)"/>( value );
+	return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
+}
+</xsl:otherwise> 
 </xsl:choose>
 
 
-return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
 
-}
+<!-- GETTER -->
 
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> &amp; r) const 
 {
@@ -389,6 +479,8 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 
 
 </xsl:for-each>
+
+
 
 <!-- *************************************************** -->
 <!-- DELEGATES ***************************************** -->

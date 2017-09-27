@@ -80,6 +80,42 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 </xsl:choose>
 </xsl:function>
 
+
+<xsl:function name="fnc:vectorOpen">
+ <xsl:text disable-output-escaping="yes">&lt;</xsl:text>
+</xsl:function>
+<xsl:function name="fnc:vectorClose">
+ <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+</xsl:function>
+
+
+<xsl:function name="fnc:varSetterArray">
+<xsl:param name="name"/>
+<xsl:param name="dataType"/>
+<xsl:param name="forHeader"/>
+
+<xsl:variable name="srcTime">const UaDateTime &amp; srcTime <xsl:if test="$forHeader='true'">= UaDateTime::now()</xsl:if></xsl:variable>
+<xsl:choose>
+<xsl:when test="$dataType='OpcUa_Double' or $dataType='OpcUa_Float' or $dataType='OpcUa_UInt32' or $dataType='OpcUa_Int32' or $dataType='OpcUa_UInt64' or $dataType='OpcUa_Int64' or $dataType='OpcUa_Boolean'">
+<!-- array signature, need fnc:vectorOpen() and friend to make xsl/Xpath happy -->
+<xsl:value-of select="concat('set',fnc:capFirst($name),' (vector ',fnc:vectorOpen(),$dataType,fnc:vectorClose(),' value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+
+</xsl:when>
+<xsl:when test="$dataType='null'">
+<!-- skip data argument for null setter -->
+<xsl:value-of select="concat('setNull',fnc:capFirst($name),' (OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+</xsl:when>
+<xsl:otherwise>
+<!-- use as API the vector<type> or the UaVariant ? --> 
+<xsl:value-of select="concat('set',fnc:capFirst($name),' (vector ',fnc:vectorOpen(),$dataType,fnc:vectorClose(),'  value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+<!-- 
+<xsl:value-of select="concat('set',fnc:capFirst($name),' (UaVariant, value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+-->
+
+</xsl:otherwise>
+</xsl:choose>
+</xsl:function>
+
 <xsl:function name="fnc:delegateWriteName">
 <xsl:param name="name"/>
 write<xsl:value-of select="fnc:capFirst($name)"/> 
@@ -201,6 +237,7 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <xsl:when test="$dataType='OpcUa_Boolean'">toBool</xsl:when>
 <xsl:when test="$dataType='UaByteString'">toByteString</xsl:when>
 <xsl:when test="$dataType='UaString'"><xsl:message terminate="yes">Internal error - for UaString use toString() conversion</xsl:message></xsl:when>
+<xsl:when test="$dataType='UaVariant'">OpcUaType_Variant</xsl:when>
 <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
 </xsl:choose>
 </xsl:function>

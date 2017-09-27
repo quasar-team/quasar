@@ -26,9 +26,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 xmlns:d="http://cern.ch/quasar/Design" 
 xmlns:fnc="http://cern.ch/quasar/MyFunctions"
-xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
+xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
 
->
 	<xsl:include href="../Design/CommonFunctions.xslt" />
 	<xsl:output method="text"/>
 	<xsl:param name="className"/>
@@ -37,8 +36,15 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	
 	<xsl:template name="cachevariables_setgetters">
-	
-	<!--  dataType needed for this -->
+
+	// debug: dataType = <xsl:value-of select= "@dataType"/>
+	<xsl:message>debug: dataType = <xsl:value-of select= "@dataType"/></xsl:message>
+	// debug: name = <xsl:value-of select= "@name"/>
+	<xsl:message>debug: name = <xsl:value-of select= "@name"/></xsl:message>
+	// debug: nullPolicy = <xsl:value-of select= "@nullPolicy"/>
+	<xsl:message>debug: null policy= <xsl:value-of select= "@nullPolicy"/></xsl:message>
+
+	<!-- dataType needed for this -->
 	UaStatus get<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> &amp;) const ;
 	UaStatus <xsl:value-of select="fnc:varSetter(@name, @dataType, 'true')"/> ; 
 	<!-- If value is guaranteed to never be null (config initialization or initialValue specified) then we can have a plain getter. -->
@@ -57,6 +63,28 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		</xsl:otherwise>
 	</xsl:choose>
 	</xsl:template>
+
+
+	<!-- also for arrays, where we use our own signature function generator -->
+	<xsl:template name="cachevariables_setgettersarray"> 
+	UaStatus get<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> &amp;) const ;
+	UaStatus <xsl:value-of select="fnc:varSetterArray(@name, @dataType, 'true')"/> ;
+		
+	<xsl:choose>
+		<xsl:when test="@nullPolicy='nullForbidden'">
+			/* short getter (possible because nullPolicy=nullForbidden) */
+			<xsl:value-of select="@dataType"/> get<xsl:value-of select="fnc:capFirst(@name)"/> () const;
+		</xsl:when>
+		<xsl:when test="@nullPolicy='nullAllowed'">
+			/* null-setter (possible because nullPolicy=nullAllowed) */
+			UaStatus <xsl:value-of select="fnc:varSetterArray(@name, 'null', 'true')"/> ;  
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:message terminate="yes">nullPolicy not present (class='<xsl:value-of select="$className"/>' variable='<xsl:value-of select="@name"/>')</xsl:message>
+		</xsl:otherwise>
+	</xsl:choose>
+	</xsl:template>
+	
 	
 	<xsl:template name="cachevariables_delegates">
 	<xsl:if test="@addressSpaceWrite='delegated' or @addressSpaceWrite='regular'">
@@ -99,8 +127,26 @@ namespace AddressSpace
 <!-- *************************************************** -->
 		/* setters and getters for variables */
 		<xsl:for-each select="d:cachevariable">
-		<xsl:call-template name="cachevariables_setgetters"/>
-		</xsl:for-each>
+			
+		<!-- switch between arrays and scalars  -->
+		<xsl:choose>
+			<xsl:when test="d:array">
+			<!-- array signature -->
+			<xsl:call-template name="cachevariables_setgettersarray"/>
+			<!-- 
+			<xsl:for-each select="d:array">
+					<xsl:call-template name="cachevariables_setgettersarray"/>
+			</xsl:for-each> 
+			-->
+			</xsl:when>
+			
+			<xsl:otherwise>
+			<!-- scalar signature -->	
+			<xsl:call-template name="cachevariables_setgetters"/>
+		// debug setters and getters for cache variables
+			</xsl:otherwise>
+		</xsl:choose>
+		</xsl:for-each> <!-- cachevariables -->
 
 
 		
