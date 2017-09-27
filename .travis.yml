@@ -10,9 +10,13 @@ before_install:
  
 script:
  - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c " 
+     echo '********************************************************************' ;
+     echo branch $TRAVIS_BRANCH ;
+     echo '********************************************************************' ;
      git clone https://github.com/quasar-team/quasar.git ;
      cd quasar ;
-     python quasar.py enable_module open62541-compat ;
+     git status ;
+     python quasar.py enable_module open62541-compat bf-fix-travis-compat ;
      python quasar.py set_build_config open62541_config.cmake ;
      python quasar.py prepare_build Release ;
      cd open62541-compat ;
