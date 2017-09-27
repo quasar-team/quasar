@@ -405,9 +405,9 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 		Illegal array boundaries: minimumSize= <xsl:value-of select= "@minimumSize"/> can not be greater than maximumSize= <xsl:value-of select= "@maximumSize"/>!
 	</xsl:message>
 	</xsl:if>
-	<xsl:if test="@minimumSize &lt; 1">
+	<xsl:if test="@minimumSize &lt; 0">
 	<xsl:message terminate="yes">
-		Illegal array boundaries for <xsl:value-of select="$baseName"/> : minimumSize= <xsl:value-of select= "@minimumSize"/> can not be 0 or less !
+		Illegal array boundaries for <xsl:value-of select="$baseName"/> : minimumSize= <xsl:value-of select= "@minimumSize"/> can not be negative !
 	</xsl:message>
 	</xsl:if>
 	// set the cache var
