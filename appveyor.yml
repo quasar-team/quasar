@@ -18,13 +18,14 @@ build_script:
   - cmd : SET 
 
 # open6 specific operations
-  - cmd : python quasar.py enable_module open62541-compat
-  - cmd : python quasar.py prepare_build Release open6_win_configuration.cmake 
+  - cmd : python quasar.py enable_module open62541-compat bf-travis-fix-compat
+  - cmd : python quasar.py set_build_config open6_win_configuration.cmake
+  - cmd : python quasar.py prepare_build Release
   - cmd : cd open62541-compat && python prepare.py && cd ..
 
 # start build
   - cmd : echo "Calling build...(note always returns 0 to mask any internal msbuild errors - exe is checked below)"
-  - cmd : python quasar.py build Release open6_win_configuration.cmake && exit 0
+  - cmd : python quasar.py build Release && exit 0
   - cmd : echo "build complete!"
   - ps : if(Test-Path bin/OpcUaServer.exe)
          {
