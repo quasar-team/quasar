@@ -375,13 +375,14 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
         return( OpcUa_BadOutOfRange );
     }   
     // copy vector into Ua Array and set it into the variant
-    UaDoubleArray ua; 
-    ua.create( dim ); 
-    for ( int i = 0; i &lt; dim; i++ ){
-    	ua[ i ] = value[ i ];
-    }
- 	UaVariant v; 
-    v.setDoubleArray( ua );
+    UaVariant v; 
+    
+    // NOT common, also type specific
+    //UaDoubleArray ua; 
+    //ua.create( dim ); 
+    //for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+    //v.setDoubleArray( ua );
+
 
 	// configure variant sizes and type properly
 	UaUInt32Array arrayDimensions;
@@ -390,26 +391,105 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 	m_<xsl:value-of select="$baseName"/>-&gt;setValueRank( dimSize /* =1 */ );
 	m_<xsl:value-of select="$baseName"/>-&gt;setArrayDimensions( arrayDimensions );
 	<xsl:choose>
+		<xsl:when test="$baseType='OpcUa_Boolean'">
+			// boolean array
+    		UaBoolArray ua; 
+    		ua.create( dim ); 
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setBoolArray( ua );
+			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Boolean, /* system namespace */ 0 ));
+		</xsl:when>
+		<xsl:when test="$baseType='OpcUa_Byte'">
+			// byte array
+    		UaByteArray ua; 
+    		ua.resize( dim ); // bastardo 
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setByteArray( ua );
+			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Byte, /* system namespace */ 0 ));
+		</xsl:when>
+		<xsl:when test="$baseType='OpcUa_SByte'">
+			// signed byte array
+    		UaSByteArray ua; 
+    		ua.create( dim );  
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setSByteArray( ua );
+			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_SByte, /* system namespace */ 0 ));
+		</xsl:when>
 		<xsl:when test="$baseType='OpcUa_Int16'">
 			// int16 array
+    		UaInt16Array ua; 
+    		ua.create( dim ); 
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setInt16Array( ua );
 			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Int16, /* system namespace */ 0 ));
+		</xsl:when>
+		<xsl:when test="$baseType='OpcUa_UInt16'">
+			// uint16 array
+    		UaUInt16Array ua; 
+    		ua.create( dim ); 
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setUInt16Array( ua );
+			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_UInt16, /* system namespace */ 0 ));
 		</xsl:when>
 		<xsl:when test="$baseType='OpcUa_Int32'">
 			// int32 array
+    		UaInt32Array ua; 
+    		ua.create( dim ); 
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setInt32Array( ua );
 			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Int32, /* system namespace */ 0 ));
+		</xsl:when>
+		<xsl:when test="$baseType='OpcUa_UInt32'">
+			// uint32 array
+    		UaUInt32Array ua; 
+    		ua.create( dim ); 
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setUInt32Array( ua );
+			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_UInt32, /* system namespace */ 0 ));
 		</xsl:when>
 		<xsl:when test="$baseType='OpcUa_Int64'">
 			// int64 array
+    		UaInt64Array ua; 
+    		ua.create( dim ); 
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setInt64Array( ua );
 			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Int64, /* system namespace */ 0 ));
+		</xsl:when>
+		<xsl:when test="$baseType='OpcUa_UInt64'">
+			// uint64 array
+    		UaUInt64Array ua; 
+    		ua.create( dim ); 
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setUInt64Array( ua );
+			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_UInt64, /* system namespace */ 0 ));
 		</xsl:when>
 		<xsl:when test="$baseType='OpcUa_Float'">
 			// float array
+    		UaFloatArray ua; 
+    		ua.create( dim ); 
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setFloatArray( ua );
 			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Float, /* system namespace */ 0 ));
-			</xsl:when>
+		</xsl:when>
 		<xsl:when test="$baseType='OpcUa_Double'">
 			// double array
+    		UaDoubleArray ua; 
+    		ua.create( dim ); 
+    		for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   			v.setDoubleArray( ua );
 			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Double, /* system namespace */ 0 ));
-			</xsl:when>
+		</xsl:when>
+		<xsl:when test="$baseType='UaString'">
+			// string array
+    		UaStringArray ua; 
+    		ua.create( dim ); 
+    		for ( int i = 0; i &lt; dim; i++ )	{
+    		        ua[ i ] = *(value[ i ].toOpcUaString()); // aha
+    		}
+   			v.setStringArray( ua );
+			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Double, /* system namespace */ 0 ));
+			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_String, /* system namespace */ 0 ));
+		</xsl:when>
 		<xsl:otherwise>
 			// debug: error with dataType = <xsl:value-of select= "$baseType"/>
 			<xsl:message terminate="yes"> 
@@ -446,25 +526,65 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 	// get the variant, extract the array correspecting the type and put it into the vector
 	UaVariant v ( * (m_<xsl:value-of select="@name"/>-&gt;value (/* session */ 0).value())) ;
 	<xsl:choose>
+		<xsl:when test="@dataType='OpcUa_Boolean'">
+			UaBooleanArray ua;
+		    v.toBoolArray( ua );
+			int dim = ua.length();
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Byte'">
+			UaByteArray ua;
+		    v.toByteArray( ua );
+			int dim = ua.size(); // bastardo ! size in bytes.. come on
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_SByte'">
+			UaSByteArray ua;
+		    v.toSByteArray( ua );
+			int dim = ua.length();
+		</xsl:when>
 		<xsl:when test="@dataType='OpcUa_Int16'">
 			UaInt16Array ua;
 		    v.toInt16Array( ua );
+			int dim = ua.length();
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_UInt16'">
+			UaUInt16Array ua;
+		    v.toUInt16Array( ua );
+			int dim = ua.length();
 		</xsl:when>
 		<xsl:when test="@dataType='OpcUa_Int32'">
 			UaInt32Array ua;
 		    v.toInt32Array( ua );
+			int dim = ua.length();
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_UInt32'">
+			UaUInt32Array ua;
+		    v.toUInt32Array( ua );
+			int dim = ua.length();
 		</xsl:when>
 		<xsl:when test="@dataType='OpcUa_Int64'">
 			UaInt64Array ua;
 		    v.toInt64Array( ua );
+			int dim = ua.length();
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_UInt64'">
+			UaUInt64Array ua;
+		    v.toUInt64Array( ua );
+			int dim = ua.length();
 		</xsl:when>
 		<xsl:when test="@dataType='OpcUa_Float'">
 			UaFloatArray ua;
 		    v.toFloatArray( ua );
+ 			int dim = ua.length();
  		</xsl:when>
 		<xsl:when test="@dataType='OpcUa_Double'">
 			UaDoubleArray ua;
 		    v.toDoubleArray( ua );
+			int dim = ua.length();
+ 		</xsl:when>
+		<xsl:when test="@dataType='UaString'">
+			UaStringArray ua;
+		    v.toStringArray( ua );
+			int dim = ua.length();
  		</xsl:when>
 		<xsl:otherwise>
 			<xsl:message terminate="yes"> 
@@ -472,7 +592,6 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 			</xsl:message>
 		</xsl:otherwise>		
 	</xsl:choose>
-	int dim = ua.length();
 	r.clear();
 	for ( int i = 0; i &lt; dim; i++ ){
 	    r.push_back( ua[ i ]);
