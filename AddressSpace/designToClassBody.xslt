@@ -343,6 +343,17 @@ AS<xsl:value-of select="@name"/>::~AS<xsl:value-of select="@name"/> ()
 	// debug: maximumSize = <xsl:value-of select= "@maximumSize"/>
 	// debug: generate array code for base type <xsl:value-of select="$baseType"/>
 	
+	
+		<!-- also generate methods for min and max size -->
+int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$baseName"/>_minimumSize()
+{ 
+return ( <xsl:value-of select="@minimumSize"/> ); 
+}
+int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$baseName"/>_maximumSize()
+{ 
+return ( <xsl:value-of select="@maximumSize"/> ); 
+}
+	
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetterArray($baseName,$baseType,'false')"/>
 { 
 	<xsl:if test="@minimumSize &gt; @maximumSize">
@@ -359,19 +370,13 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 	int max = <xsl:value-of select="@maximumSize"/>;
     // make sure the size contraints from design are respected during runtime
     OpcUa_Int32 dim = value.size();
-    if ( dim &lt; min ){
-    	   PRINT("ERROR: runtime array minimum size out of bounds! Assuming minimum design size " &lt;&lt; min );
-    	 dim = min;
-    }
-    if ( dim &gt; max ){
-    	   PRINT("ERROR: runtime array maximum size out of bounds! Assuming maximum design size " &lt;&lt; max );
-    	 dim = max;
-    }
-     
+    if ( dim &lt; min || dim &gt; max){
+    	PRINT("ERROR: set " &lt;&lt; this->getDeviceLink()->getFullName() &lt;&lt; " <xsl:value-of select="$baseName"/> "&lt;&lt; " runtime array size " &lt;&lt; dim &lt;&lt; " out of bounds!" );
+        return( OpcUa_BadOutOfRange );
+    }   
     // copy vector into Ua Array and set it into the variant
-    UaDoubleArray ua; // = UaDoubleArray();
+    UaDoubleArray ua; 
     ua.create( dim ); 
-    // copy explicitly.. costly ! We can maybe use a resize
     for ( int i = 0; i &lt; dim; i++ ){
     	ua[ i ] = value[ i ];
     }
@@ -434,9 +439,11 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 <xsl:choose>
 <xsl:when test="d:array">
 	<!-- found array signature -->
+	
+
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> ( vector &lt;<xsl:value-of select="@dataType"/> &gt; &amp; r) const 
 {
-	// get the variant, extract the array orespecting the type and put it into the vector
+	// get the variant, extract the array correspecting the type and put it into the vector
 	UaVariant v ( * (m_<xsl:value-of select="@name"/>-&gt;value (/* session */ 0).value())) ;
 	<xsl:choose>
 		<xsl:when test="@dataType='OpcUa_Int16'">

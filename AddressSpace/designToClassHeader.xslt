@@ -131,7 +131,9 @@ namespace AddressSpace
 		<!-- switch between arrays and scalars  -->
 		<xsl:choose>
 			<xsl:when test="d:array">
-				<!-- array signature -->
+				<!-- array signature, also generate methods for min and max size -->
+int <xsl:value-of select="@name"/>_minimumSize();
+int <xsl:value-of select="@name"/>_maximumSize();
 				<xsl:call-template name="cachevariables_setgettersarray"/>
 			</xsl:when>			
 			<xsl:otherwise>

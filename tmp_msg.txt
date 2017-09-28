@@ -1,2 +1,2 @@
-Thu Sep 28 10:52:37 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-
+Thu Sep 28 16:23:41 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+design array sizes have generated methods as well
