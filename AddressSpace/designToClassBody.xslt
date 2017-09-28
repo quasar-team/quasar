@@ -360,11 +360,11 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
     // make sure the size contraints from design are respected during runtime
     OpcUa_Int32 dim = value.size();
     if ( dim &lt; min ){
-    	   PRINT("ERROR: runtime array minimum size out of bounds! Assuming minimum design size.");
+    	   PRINT("ERROR: runtime array minimum size out of bounds! Assuming minimum design size " &lt;&lt; min );
     	 dim = min;
     }
     if ( dim &gt; max ){
-    	   PRINT("ERROR: runtime array maximum size out of bounds! Assuming maximum design size.");
+    	   PRINT("ERROR: runtime array maximum size out of bounds! Assuming maximum design size " &lt;&lt; max );
     	 dim = max;
     }
      

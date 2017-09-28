@@ -1,2 +1,2 @@
-Thu Sep 28 10:44:51 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-array bounds check improved & cleaned
+Thu Sep 28 10:51:22 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+print ERR boundaries
