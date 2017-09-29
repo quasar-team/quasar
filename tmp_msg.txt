@@ -1,2 +1,2 @@
-Thu Sep 28 18:07:05 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-string arrays and unsigned numerical types. testing...
+Fri Sep 29 15:16:59 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+scalars and arrays all types work, except string arrays (UaString to OpcUa_String conversion is doubtful..)
