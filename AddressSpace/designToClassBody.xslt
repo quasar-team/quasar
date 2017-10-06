@@ -202,7 +202,10 @@ if (!s.isGood())
 	ASSERT_GOOD(s);
 }
 
-<xsl:if test="@addressSpaceWrite='delegated'">m_<xsl:value-of select="@name"/>-&gt;assignHandler(this, &amp;<xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:delegateWriteName(@name)"/>);</xsl:if>
+
+<xsl:if test="@addressSpaceWrite='delegated'">
+	m_<xsl:value-of select="@name"/>-&gt;assignHandler(this, &amp;<xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:delegateWriteName(@name)"/>);
+</xsl:if>
 
 </xsl:for-each>
 
@@ -695,9 +698,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 		<xsl:when test="@addressSpaceWrite='regular'">
 			return OpcUa_Good;
 		</xsl:when>
-		<xsl:when test="@addressSpaceWrite='delegated'">
-			<xsl:value-of select="@dataType" />
-			v_value;
+		<xsl:when test="@addressSpaceWrite='delegated'">			
 			<xsl:choose>
 				<xsl:when test="@dataType='UaString'">
 					v_value = v.toString();
@@ -706,10 +707,95 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 					v_value = *dataValue.value();
 				</xsl:when>
 				<xsl:otherwise>
-					v.
-					<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)" />
-					( v_value );
-				</xsl:otherwise>
+				
+					<xsl:choose>
+					<xsl:when test="d:array">
+					// array point2
+					vector&lt;<xsl:value-of select="@dataType" />&gt; v_value;
+					// call the array method to fill the vector
+					// no size check for a change, since methods are written by the user anyway
+					
+					<xsl:choose>
+					<xsl:when test="@dataType='OpcUa_Boolean'">
+					    UaBoolArray ua;
+   						v.toBoolArray( ua );
+    					int dim = ua.length();
+    				</xsl:when>
+
+					<xsl:when test="@dataType='OpcUa_Byte'">
+					    UaByteArray ua;
+   						v.toByteArray( ua );
+    					int dim = ua.size(); // miststueck
+    				</xsl:when>
+					<xsl:when test="@dataType='OpcUa_SByte'">
+					    UaSByteArray ua;
+   						v.toSByteArray( ua );
+    					int dim = ua.length(); // miststueck miststueck !!
+    				</xsl:when>
+  
+					<xsl:when test="@dataType='OpcUa_Int16'">
+					    UaInt16Array ua;
+   						v.toInt16Array( ua );
+    					int dim = ua.length();
+    				</xsl:when>
+    				
+					<xsl:when test="@dataType='OpcUa_UInt16'">
+					    UaUInt16Array ua;
+   						v.toUInt16Array( ua );
+    					int dim = ua.length();
+    				</xsl:when>
+    				
+					<xsl:when test="@dataType='OpcUa_Int32'">
+					    UaInt32Array ua;
+   						v.toInt32Array( ua );
+    					int dim = ua.length();
+    				</xsl:when>
+    				
+					<xsl:when test="@dataType='OpcUa_UInt32'">
+					    UaUInt32Array ua;
+   						v.toUInt32Array( ua );
+    					int dim = ua.length();
+    				</xsl:when>
+    				
+ 					<xsl:when test="@dataType='OpcUa_Int64'">
+					    UaInt64Array ua;
+   						v.toInt64Array( ua );
+    					int dim = ua.length();
+    				</xsl:when>
+    				
+					<xsl:when test="@dataType='OpcUa_UInt64'">
+					    UaUInt64Array ua;
+   						v.toUInt64Array( ua );
+    					int dim = ua.length();
+    				</xsl:when>
+ 
+					<xsl:when test="@dataType='OpcUa_Float'">
+					    UaFloatArray ua;
+   						v.toFloatArray( ua );
+    					int dim = ua.length();
+    				</xsl:when>    					
+
+ 					<xsl:when test="@dataType='OpcUa_Double'">
+					    UaDoubleArray ua;
+   						v.toDoubleArray( ua );
+    					int dim = ua.length();
+    				</xsl:when>    					
+    				</xsl:choose>
+    					v_value.clear();
+    					for ( int i = 0; i &lt; dim; i++ ) {
+        					v_value.push_back( ua[ i ]);
+    					}
+    					
+    				</xsl:when>
+					<xsl:otherwise>
+					// scalar point2
+					<xsl:value-of select="@dataType" /> v_value;
+					v.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)" />( v_value );
+					</xsl:otherwise>
+					</xsl:choose>
+				
+				</xsl:otherwise> 
+				
 			</xsl:choose>
 
 			/* if device logic type specified, then generate calling functions */
@@ -717,7 +803,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 				<xsl:when test="fnc:classHasDeviceLogic(/,$className)='true'">
 					if (m_deviceLink != 0)
 					{
-						return m_deviceLink-><xsl:value-of select="fnc:delegateWriteName(@name)" /> (v_value);
+					 return m_deviceLink-><xsl:value-of select="fnc:delegateWriteName(@name)" /> (v_value);
 					}
 					else
 						return OpcUa_Bad;
