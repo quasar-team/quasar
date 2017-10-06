@@ -420,31 +420,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				s = OpcUa_BadOutOfRange;
 				return; // writing nothing
 			}
-			
-			<!-- not needed for write START -->
-			//UaVariant v;
-    		//UaUInt32Array arrayDimensions;
-    		//OpcUa_Int32 valueRank = 1; // only support 1-dim arrays
-			
-			</xsl:for-each>	
-			
-			<xsl:choose>
-			<xsl:when test="@dataType='OpcUa_Double'">
-			//UaDoubleArray ua;
-			//ua.create( dim );
-    		//for ( int i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
-    		//v.setDoubleArray( ua );				
-			</xsl:when>
-			
-			<!-- todo: other array base types -->				
-
-			</xsl:choose>
-			
-    		//v.arrayDimensions( arrayDimensions );
-    		// not needed
-			//UaDataValue result (v, s.statusCode(), UaDateTime::now(), UaDateTime::now());
-			
-			<!-- not needed for write END -->
+			</xsl:for-each>
 			
 			// get appropriate object
 			s = m_callback->finishWrite (
