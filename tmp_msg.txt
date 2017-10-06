@@ -1,2 +1,2 @@
-Fri Oct 6 13:54:33 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-source variables arrays read, write
+Fri Oct 6 13:55:05 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+source var arrays read/write
