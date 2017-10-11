@@ -131,13 +131,15 @@ m_<xsl:value-of select="@name"/> (new ASDelegatingMethod&lt;AS<xsl:value-of sele
 m_deviceLink (0)
 </xsl:if>
 
+<!-- constructor body starts here -->
+// constructor body starts here
 {
 
 UaStatus s;
 UaVariant v;
 
 
-				<xsl:choose>
+		<xsl:choose>
 		<xsl:when test="@singleVariableNode='true'">s = nm->addUnreferencedNode( this );</xsl:when>
 		<xsl:otherwise>s = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent);</xsl:otherwise>
 		</xsl:choose>
@@ -176,6 +178,202 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
 		<xsl:value-of select="@initialStatus"/>, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
 	</xsl:when>
 	<xsl:when test="@initializeWith='configuration'">
+	
+	<xsl:choose>
+	<xsl:when test="d:array">
+	 		// found array signature: have to put the vector into the variant
+			// for arrays the variant setting method is a bit more complex
+			{ // scope
+			OpcUa_Int32 valueRank = 1; // only support 1-dim arrays 
+			UaUInt32Array arrayDimensions;    
+			int dim = config.<xsl:value-of select="@name" />().value().size();
+			
+ 		   	// make sure the design size constraints are respected during runtime
+			int min = <xsl:value-of select="@name"/>_minimumSize();
+			int max = <xsl:value-of select="@name"/>_maximumSize();
+ 		    if ( dim &lt; min || dim &gt; max){
+ 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: config <xsl:value-of select="@name" /> array dim= " &lt;&lt; dim &lt;&lt; " out of designed bounds (Design.xml) !"&lt;&lt; std::endl; 
+ 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: bounds of <xsl:value-of select="@name" /> are min= " &lt;&lt; min &lt;&lt; " max= "&lt;&lt; max &lt;&lt; std::endl; 
+ 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: exiting..." &lt;&lt; std::endl; 
+ 			   	exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
+ 		   	}
+		<xsl:choose>
+			<xsl:when test="@dataType='UaString'">
+			// todo: no string arrays yet 
+			// config.<xsl:value-of select="@name" />().c_str() 
+			std::cout &lt;&lt; __FILE__ &lt;&lt; " "&lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: no string arrays config yet..." &lt;&lt; std::endl; 
+ 			exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
+			</xsl:when>
+			
+			<xsl:when test="@dataType='OpcUa_Boolean'">
+				UaBoolArray ua;
+				ua.create( dim ); 
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setBoolArray( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Boolean, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+
+			<xsl:when test="@dataType='OpcUa_Byte'">
+				UaByteArray ua;
+				ua.resize( dim ); // mamma mia 
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setByteArray( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Byte, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+
+			<xsl:when test="@dataType='OpcUa_SByte'">
+				UaSByteArray ua;
+				ua.create( dim );  
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setSByteArray( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_SByte, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+			
+			<xsl:when test="@dataType='OpcUa_Int16'">
+				UaInt16Array ua;
+				ua.create( dim );  
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setInt16Array( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Int16, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+
+			<xsl:when test="@dataType='OpcUa_UInt16'">
+				UaUInt16Array ua;
+				ua.create( dim );  
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setUInt16Array( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_UInt16, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+			
+			<xsl:when test="@dataType='OpcUa_Int32'">
+				UaInt32Array ua;
+				ua.create( dim );  
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setInt32Array( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Int32, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+
+			<xsl:when test="@dataType='OpcUa_UInt32'">
+				UaUInt32Array ua;
+				ua.create( dim );  
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setUInt32Array( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_UInt32, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+			
+			<xsl:when test="@dataType='OpcUa_Int64'">
+				UaInt64Array ua;
+				ua.create( dim );  
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setInt64Array( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Int64, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+
+			<xsl:when test="@dataType='OpcUa_UInt64'">
+				UaUInt64Array ua;
+				ua.create( dim );  
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setUInt64Array( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_UInt64, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+			
+			<xsl:when test="@dataType='OpcUa_Float'">
+				UaFloatArray ua;
+				ua.create( dim ); 
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setFloatArray( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Float, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+
+			<xsl:when test="@dataType='OpcUa_Double'">
+				UaDoubleArray ua;
+				ua.create( dim ); 
+				for ( int i = 0; i &lt; dim; i++ ){
+					ua[ i ] = config.<xsl:value-of select="@name" />().value()[ i ];
+				}
+				v.setDoubleArray( ua, false );
+   				v.arrayDimensions( arrayDimensions );
+    			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+				m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_Double, /* system namespace */ 0 ));
+				m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+			</xsl:when>
+			
+			<xsl:otherwise> 
+				std::cout &lt;&lt; __FILE__ &lt;&lt; " "&lt;&lt; __LINE__ &lt;&lt; " ERROR: <xsl:value-of select="@dataType"/> AS constructor: data type not supported" &lt;&lt; std::endl; 
+ 				exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
+			</xsl:otherwise>
+		</xsl:choose>
+
+
+
+	<!-- <xsl:for-each select="d:array"> </xsl:for-each> -->
+
+	} // scope
+	</xsl:when>
+	<xsl:otherwise>
+		// found scalar signature: can simply load the variant with the scalar
+		// fnc:dataTypeToVariantSetter(@dataType)
 		v.<xsl:value-of select="fnc:dataTypeToVariantSetter(@dataType)"/> ( 
 		<xsl:choose>
 			<xsl:when test="@dataType='UaString'"> config.<xsl:value-of select="@name" />().c_str() </xsl:when>
@@ -183,6 +381,13 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
 		</xsl:choose>
 		);
 		m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue(UaVariant( v ), OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+		
+		
+	</xsl:otherwise>
+	</xsl:choose>
+	
+			
+		// m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue(UaVariant( v ), OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
 	</xsl:when> 
 	<xsl:otherwise>
 		<xsl:message terminate="yes">

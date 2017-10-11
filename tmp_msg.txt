@@ -1,2 +1,2 @@
-Fri Oct 6 16:52:15 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-delegated cache array vars are generated as well, quite similar to the source variables
+Wed Oct 11 10:22:43 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+cache var arrays and config syntax as specified, start serious testing
