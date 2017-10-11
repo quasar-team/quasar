@@ -1,2 +1,2 @@
-Wed Oct 11 10:22:43 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-cache var arrays and config syntax as specified, start serious testing
+Wed Oct 11 16:47:36 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+config arrays are not attributes, and they do not have AS methods either. Just need the Configuration.xsd to be generated correctly.
