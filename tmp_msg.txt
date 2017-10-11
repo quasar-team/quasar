@@ -1,2 +1,2 @@
-Wed Oct 11 16:47:36 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-config arrays are not attributes, and they do not have AS methods either. Just need the Configuration.xsd to be generated correctly.
+Wed Oct 11 16:49:53 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+ups, pushed the wrong xslts. corected

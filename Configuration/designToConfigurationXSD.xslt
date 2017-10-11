@@ -68,10 +68,60 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	</xs:choice>
 	
+	
+		<!-- here we go through all the config entries and filter out the ones which are arrays. 
+		they become elements. No AS get/sets are needed -->
+		<xsl:for-each select="child::d:configentry">
+		<xsl:choose>
+			<xsl:when test="d:array">
+			<!-- look for the array base types and give different element 
+			complex types accordingly -->
+			<xsl:choose>
+			<xsl:when test="@dataType='OpcUa_Boolean'">
+				<xs:element name="{@name}" type="tns:BoolArrayType">  </xs:element>
+			</xsl:when>
+			<xsl:when test="@dataType='OpcUa_Byte'">
+			<xs:element name="{@name}" type="tns:ByteArrayType">  </xs:element>
+			</xsl:when>
+			<xsl:when test="@dataType='OpcUa_SByte'">
+				<xs:element name="{@name}" type="tns:SByteArrayType">  </xs:element>
+			</xsl:when>
+			<xsl:when test="@dataType='OpcUa_Int16'">
+				<xs:element name="{@name}" type="tns:Int16ArrayType">  </xs:element>
+			</xsl:when>
+			<xsl:when test="@dataType='OpcUa_UInt16'">
+				<xs:element name="{@name}" type="tns:UInt16ArrayType">  </xs:element>
+			</xsl:when>
+			<xsl:when test="@dataType='OpcUa_Int32'">
+				<xs:element name="{@name}" type="tns:Int32ArrayType">  </xs:element>
+			</xsl:when>
+			<xsl:when test="@dataType='OpcUa_UInt32'">
+				<xs:element name="{@name}" type="tns:UInt32ArrayType">  </xs:element>
+			</xsl:when>
+			<xsl:when test="@dataType='OpcUa_Int64'">
+				<xs:element name="{@name}" type="tns:Int64ArrayType">  </xs:element>
+			</xsl:when>
+			<xsl:when test="@dataType='OpcUa_UInt64'">
+				<xs:element name="{@name}" type="tns:UInt64ArrayType">  </xs:element>
+			</xsl:when>
+			<xsl:when test="@dataType='OpcUa_Float'">
+				<xs:element name="{@name}" type="tns:FloatArrayType">  </xs:element>
+			</xsl:when>
+			<xsl:when test="@dataType='OpcUa_Double'">
+				<xs:element name="{@name}" type="tns:DoubleArrayType">  </xs:element>
+			</xsl:when>
+			<!-- no string arrays for now -->
+		
+			</xsl:choose>	
+			</xsl:when>
+		</xsl:choose>
+		</xsl:for-each>
+	
+	
+	
 		<!-- here we go through all cachevariables which are populated
 		by configuration and filter out the ones which are arrays
 		to make them elements with complex type and not attributes -->
-
 		<xsl:for-each select="child::d:cachevariable">
 		<xsl:if test="@initializeWith='configuration'">
 		<xsl:choose>
@@ -171,7 +221,15 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	<!-- also config entries shall create attributes in xsd -->
 	<xsl:for-each select="d:configentry">
-		<xsl:element name="xs:attribute">
+	<xsl:choose>
+		<xsl:when test="d:array">
+		<!-- we have a config entry array, and this is needed in the xsd as an 
+		element and not an attribute here. therefore generate nothing -->
+		
+		</xsl:when>
+		<xsl:otherwise>
+		<!-- we have a config entry scalar, which is an attribute -->
+			<xsl:element name="xs:attribute">
 			<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 			<xsl:attribute name="use">required</xsl:attribute>
 			<xsl:attribute name="type">
@@ -190,9 +248,11 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			</xsl:if>
 			
 		</xsl:element>
+		</xsl:otherwise>
+	</xsl:choose>
+	
 	</xsl:for-each>	
 
-	
 	</xsl:element>
 
 	</xsl:template>
