@@ -1,2 +1,2 @@
-Wed Oct 11 17:44:04 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-ok
+Thu Oct 12 11:22:29 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+corrected error message for getters

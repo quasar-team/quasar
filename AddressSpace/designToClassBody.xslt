@@ -742,10 +742,10 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> ( vector &lt;<xsl:value-of select="@dataType"/> &gt; &amp; r) const 
 {
-	// get the variant, extract the array correspecting the type and put it into the vector
+	// get the variant, extract the array corresponding to the type and put it into the vector
 	UaVariant v ( * (m_<xsl:value-of select="@name"/>-&gt;value (/* session */ 0).value())) ;
 	if ( !v.isArray() ){
-	   	PRINT("ERROR: set " &lt;&lt; this->getDeviceLink()->getFullName() &lt;&lt; " <xsl:value-of select="$baseName"/> "&lt;&lt; " runtime array not found " );
+	   	PRINT("ERROR: get " &lt;&lt; this->getDeviceLink()->getFullName() &lt;&lt; " <xsl:value-of select="$baseName"/> "&lt;&lt; " runtime array not found " );
 		std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " is array= false " &lt;&lt; std::endl;
         return( OpcUa_BadIndexRangeNoData );
 	} 
