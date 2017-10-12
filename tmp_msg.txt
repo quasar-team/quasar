@@ -1,2 +1,2 @@
-Thu Oct 12 11:22:29 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-corrected error message for getters
+Thu Oct 12 14:33:26 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+can have var arrays WITHOUT boundary attributes minimumSize and maximumSize now as well, the missing attributes are replaced by fixed technical size.
