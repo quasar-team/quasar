@@ -543,85 +543,28 @@ AS<xsl:value-of select="@name"/>::~AS<xsl:value-of select="@name"/> ()
 		<!-- also generate methods for min and max size -->
 int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$baseName"/>_minimumSize()
 { 
-	<xsl:choose>
-	<xsl:when test="@minimumSize">
-	return ( <xsl:value-of select="@minimumSize"/> ); 
-	</xsl:when>
-	<xsl:otherwise>
-	return ( 0 ); 
-	</xsl:otherwise>
-	</xsl:choose>
+return ( <xsl:value-of select="@minimumSize"/> ); 
 }
 int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$baseName"/>_maximumSize()
 { 
-	<xsl:choose>
-	<xsl:when test="@maximumSize">
-	return ( <xsl:value-of select="@maximumSize"/> ); 
-	</xsl:when>
-	<xsl:otherwise>
-	return ( 524288000 ); 
-	</xsl:otherwise>
-	</xsl:choose>
+return ( <xsl:value-of select="@maximumSize"/> ); 
 }
 	
 <!-- the following code is a bit xslt heavy-handed but at least it is clear ;-) -->
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetterArray($baseName,$baseType,'false')"/>
 { 
-	<!-- optional min/max attributes. If they are not present, define own technically motivated limits -->
-
-	<xsl:variable name="xmin">0</xsl:variable>
-	<xsl:variable name="xmax">524288000</xsl:variable>
-	<xsl:choose>
-	<xsl:when test="@minimumSize">
-		// setter: found designed minimumSize attribute
-		int min = <xsl:value-of select= "@minimumSize"/>;
-	</xsl:when>
-	<xsl:otherwise>
-		// setter: no min attribute,  take tech limit
-		int min = <xsl:value-of select= "$xmin"/>;
-	</xsl:otherwise>
-	</xsl:choose>
-
-	<xsl:choose>
-	<xsl:when test="@maximumSize">
-		// setter: found designed maximumSize attribute
-		int max = <xsl:value-of select= "@maximumSize"/>;
-	</xsl:when>
-	<xsl:otherwise>
-		// setter: no max attribute,  take tech limit
-		int max = <xsl:value-of select= "$xmax"/>;
-	</xsl:otherwise>
-	</xsl:choose>
-
-
 	<xsl:if test="@minimumSize &gt; @maximumSize">
 	<xsl:message terminate="yes">
 		Illegal array boundaries: minimumSize= <xsl:value-of select= "@minimumSize"/> can not be greater than maximumSize= <xsl:value-of select= "@maximumSize"/>!
 	</xsl:message>
 	</xsl:if>
-	<xsl:if test="@minimumSize &lt; 0">
-	<xsl:message terminate="yes">
-		Illegal array boundaries for <xsl:value-of select="$baseName"/> : minimumSize= <xsl:value-of select= "$xmin"/> can not be negative !
-	</xsl:message>
-	</xsl:if>
-
-<!-- 
-	<xsl:if test="@minimumSize &gt; @maximumSize">
-	<xsl:message terminate="yes">
-		Illegal array boundaries: minimumSize= <xsl:value-of select= "@minimumSize"/> can not be greater than maximumSize= <xsl:value-of select= "@maximumSize"/>!
-	</xsl:message>
-	</xsl:if>
-	
 	<xsl:if test="@minimumSize &lt; 0">
 	<xsl:message terminate="yes">
 		Illegal array boundaries for <xsl:value-of select="$baseName"/> : minimumSize= <xsl:value-of select= "@minimumSize"/> can not be negative !
 	</xsl:message>
 	</xsl:if>
-	
 	int min = <xsl:value-of select="@minimumSize"/>;
 	int max = <xsl:value-of select="@maximumSize"/>;
- -->
- 
     // make sure the design size constraints are respected during runtime
     OpcUa_Int32 dim = value.size();   
     if ( dim &lt; min || dim &gt; max){
@@ -799,10 +742,10 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> ( vector &lt;<xsl:value-of select="@dataType"/> &gt; &amp; r) const 
 {
-	// get the variant, extract the array corresponding to the type and put it into the vector
+	// get the variant, extract the array correspecting the type and put it into the vector
 	UaVariant v ( * (m_<xsl:value-of select="@name"/>-&gt;value (/* session */ 0).value())) ;
 	if ( !v.isArray() ){
-	   	PRINT("ERROR: get " &lt;&lt; this->getDeviceLink()->getFullName() &lt;&lt; " <xsl:value-of select="$baseName"/> "&lt;&lt; " runtime array not found " );
+	   	PRINT("ERROR: set " &lt;&lt; this->getDeviceLink()->getFullName() &lt;&lt; " <xsl:value-of select="$baseName"/> "&lt;&lt; " runtime array not found " );
 		std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " is array= false " &lt;&lt; std::endl;
         return( OpcUa_BadIndexRangeNoData );
 	} 

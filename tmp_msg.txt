@@ -1,2 +1,2 @@
-Thu Oct 12 14:33:26 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-can have var arrays WITHOUT boundary attributes minimumSize and maximumSize now as well, the missing attributes are replaced by fixed technical size.
+Thu Oct 12 14:38:59 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+array setters dont call getDeviceLink() any more for the out of bounds error message: classes without device logic can be designed. Trivial so far, but... ;_)
