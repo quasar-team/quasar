@@ -1,2 +1,2 @@
-Thu Oct 12 14:38:59 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-array setters dont call getDeviceLink() any more for the out of bounds error message: classes without device logic can be designed. Trivial so far, but... ;_)
+Thu Oct 12 16:07:13 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+out of bounds error reports BadIndexRangeInvalid now.
