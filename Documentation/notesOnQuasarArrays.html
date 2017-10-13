@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 5.0.6.2 (Linux)"/>
+	<meta name="author" content="Michael Ludwig"/>
+	<meta name="created" content="2017-10-11T10:26:59.219871646"/>
+	<meta name="changedby" content="Michael Ludwig"/>
+	<meta name="changed" content="2017-10-13T09:07:23.061198497"/>
+	<style type="text/css">
+		@page { margin: 0.79in }
+		p { margin-bottom: 0.1in; line-height: 120% }
+		h2.western { font-family: "Liberation Sans", sans-serif; font-size: 16pt }
+		h2.cjk { font-family: "WenQuanYi Zen Hei Sharp"; font-size: 16pt }
+		h2.ctl { font-family: "Lohit Devanagari"; font-size: 16pt }
+		h1 { margin-bottom: 0.08in }
+		h1.western { font-family: "Liberation Sans", sans-serif; font-size: 18pt }
+		h1.cjk { font-family: "WenQuanYi Zen Hei Sharp"; font-size: 18pt }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 18pt }
+		a:link { so-language: zxx }
+	</style>
+</head>
+<body lang="en-US" dir="ltr">
+<h1 class="western">Implementation notes on the Introduction of
+arrays into the quasar framework (for creation of OPC-UA servers)</h1>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">The request for
+arrays in quasar and it's JIRA case are at:</p>
+<p style="margin-bottom: 0in; line-height: 100%"><a href="https://its.cern.ch/jira/browse/OPCUA-738"><i><b>https://its.cern.ch/jira/browse/OPCUA-738</b></i></a></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">The quasar changes
+for arrays are delivered into branch “arrays4”. You can use it:</p>
+<p style="margin-bottom: 0in; line-height: 100%"><i><b>git clone -b
+arra</b></i><i><b>ys</b></i><i><b>4
+<a href="https://github.com/quasar-team/quasar.git">https://github.com/quasar-team/quasar.git</a></b></i></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">An example server
+which demonstrates the arrays for the server-developer is available
+at:</p>
+<p style="margin-bottom: 0in; line-height: 100%"><a href="https://gitlab.cern.ch/mludwig/quasar-array-demo4.git"><i><b>https://gitlab.cern.ch/mludwig/quasar-array-demo4.git</b></i></a></p>
+<p style="margin-bottom: 0in; line-height: 100%">This is a simple
+demo server which runs some tests and exercises all types.</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<h2 class="western">Notes for the fwk user/server developer</h2>
+<ol>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%"> array base
+	type and bounds are specified by the design I.e:</p>
+	<p style="margin-bottom: 0in; line-height: 100%">	</p>
+	<p style="margin-bottom: 0in; line-height: 100%">  	&lt;d:cachevariable
+	name=&quot;cache_array_boolean&quot; addressSpaceWrite=&quot;regular&quot;</p>
+	<p style="margin-bottom: 0in; line-height: 100%"> 
+			initializeWith=&quot;configuration&quot; nullPolicy=&quot;nullAllowed&quot;</p>
+	<p style="margin-bottom: 0in; line-height: 100%"> 
+			dataType=&quot;OpcUa_Boolean&quot;&gt;</p>
+	<p style="margin-bottom: 0in; line-height: 100%"> 
+			&lt;d:documentation&gt;&quot;cachevariable array
+	boolean&quot;&lt;/d:documentation&gt;</p>
+	<p style="margin-bottom: 0in; line-height: 100%">  		&lt;d:array
+	minimumSize=&quot;2&quot; maximumSize=&quot;5&quot;&gt;&lt;/d:array&gt;</p>
+	<p style="margin-bottom: 0in; line-height: 100%"> 
+		&lt;/d:cachevariable&gt;</p>
+	<p style="margin-bottom: 0in; line-height: 100%"></p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">both
+	attributes minimumSize and maximumSize are recommended. If these
+	bounds appear to be inconsistent the code generation will still
+	succeed but the resulting code is not run-able, it will exit with an
+	error (see 5.) either during initialization or during standard
+	run-time. Arrays are stand-alone elements and not attributes, but
+	are also subjected to standard validation. If one or both attributes
+	are missing, a technical limit is imposed: minimumSize=0 and
+	maximumSize=524288000 , values of the array. This is about ~4GByte
+	for a double array. You might quite likely hit a stack size limit
+	before that, during runtime, so please…. Explicitly limit your
+	array dimensions and test them also.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">the types
+	boolean, byte, sbyte, int16, uint16, int32, uint32, int64, uint64,
+	float and double are available as base array types</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">Arrays of
+	strings are NOT implemented, but might be added later pending some
+	format clarifications.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">the maximum
+	array size is limited to 2147483647 (2^31 – 1) by the
+	implementation of the UA sdk. The UaArray dimensions there are
+	specified as 32-bit signed integers.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">array
+	dimensions are checked during initialization run-time, when the
+	configuration is read in in order to optionally populate some
+	variables. If min/max bounds are exceeded the framework exits with a
+	clear error message for the developer, i.e.:</p>
+	<p style="margin-bottom: 0in; line-height: 100%"><font size="1" style="font-size: 8pt">/home/mludwig/quasar-array-demo4/quasar/demo4/AddressSpace/src/ASDEMO4.cpp
+	428 ERROR: AS constructor: config cache_array_int16 array dim= 13
+	out of designed bounds (Design.xml) !</font></p>
+	<p style="margin-bottom: 0in; line-height: 100%"><font size="1" style="font-size: 8pt">/home/mludwig/quasar-array-demo4/quasar/demo4/AddressSpace/src/ASDEMO4.cpp
+	429 ERROR: AS constructor: bounds of cache_array_int16 are min= 2
+	max= 5</font></p>
+	<p style="margin-bottom: 0in; line-height: 100%"><font size="1" style="font-size: 8pt">/home/mludwig/quasar-array-demo4/quasar/demo4/AddressSpace/src/ASDEMO4.cpp
+	430 ERROR: AS constructor: exiting…</font></p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">the designed
+	array dimensions are also checked during standard run-time, each
+	time new values are SET. If bounds are exceeded, an error is logged,
+	the SET is terminated with an error code OpcUa_BadOutOfRange without
+	modifying the Address space. Server execution continues normally.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">an implicit
+	maximum array size is imposed by the limits of the toolkit
+	serialization.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">due to
+	limitations of the xs types available, the numerical types which are
+	accepted for population of variables through configuration are in
+	some cases mismatched to the actually available types in OpcUa and
+	C++.  Mismatches occur for:</p>
+	<p style="margin-bottom: 0in; line-height: 100%"></p>
+</ol>
+<p style="margin-left: 1in; margin-bottom: 0in; line-height: 100%">	OpcUa
+sbyte →xs:byte</p>
+<p style="margin-left: 1in; margin-bottom: 0in; line-height: 100%">	OpcUa
+uint16→xs:int (32 bit signed)</p>
+<p style="margin-left: 1in; margin-bottom: 0in; line-height: 100%">	OpcUa
+uint32→xs:long (64 bit signed)</p>
+<p style="margin-left: 1in; margin-bottom: 0in; line-height: 100%">	OpcUa
+uint64→xs:long (64 bit signed)</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<ol start="9">
+	<p style="margin-bottom: 0in; line-height: 100%">For many standard
+	cases this mismatch has no effects, but the server-developer might
+	need to explicitly type-cast her data in some cases.</p>
+	<p style="margin-bottom: 0in; line-height: 100%"></p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">only
+	one-dimensional (“flat”) arrays are supported by quasar, even
+	though OpcUa supports multi-dimensional arrays in general.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">variable
+	names have to be unique inside the scope of each class, scoping for
+	both scalars and arrays.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">Only the
+	Unified Automation sdk is compatible with quasar-arrays. The
+	open62541 toolkit is not yet available for quasar-arrays, probably
+	the compatibility layer has to be adapted for this. This has to be
+	evaluated further.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">cache and
+	source variables are available as arrays. Cache variables can be
+	initially populated through configuration. If the AS write is
+	designed to be delegated for cache array variables, the getter and
+	setter method calls are generated. Source array variables can not be
+	populated by configuration, but the get/set method calls are
+	generated directly into the data transmission.</p>
+</ol>
+<h2 class="western">Notes on the fwk code generation for the fwk
+maintainers</h2>
+<ol>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">the
+	server-developer's API exposed by quasar are std::vector&lt;OpcUa_Type&gt;
+	for all arrays everywhere for the sake of modernity. Since there is
+	no direct interface for std::vector in the UaVariant and UaArray
+	classes the vector-data is presently explicitly copied at each call,
+	and also a certain overhead in the generated code is present.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">the
+	xml-syntax specifies the name of the variable before the (optional)
+	array dimensions. Due to xslt limitations in serial decoding some
+	scalar/array code generation switching has to be used in many
+	sections.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%"> the
+	supported array types map to specific get/set data methods in the
+	UaVariants/UaArrays, and with array bounds checking included and the
+	necessary data copy the resulting C++ code for each type has some 15
+	lines instead of 1 line for scalars. Code needs to be switched per
+	type as well since methods for arrays are more type specific than
+	for scalars. 
+	</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">The designed
+	array bounds are used to generate explicit min/max size getter
+	methods for each array variable. This is much more straightforward
+	than decoding the design many times.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">xs attributes
+	do not allow complex types. Since arrays are complex types in the
+	xslt, the arrays have to be generated as additional elements of the
+	class, and NOT as attributes</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">the main
+	reasons of xslt-code increase are points 1 to 5.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">Data is kept
+	internally as UaArrays inside UaVariants, only the C++ API for the
+	fwk-user is formatted as std:vector.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">for cache
+	variables the get/set methods are generated (or not) according to
+	the designed AS access rules. For source variables the according
+	user-method calls are generated (or not) depending on the designed
+	AS access (or not). The behavior is identical to scalar variables in
+	this respect.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">The
+	approximate impact measured by “lines of xslt-code” is:</p>
+	<ol>
+		<p style="margin-bottom: 0in; line-height: 100%">100*(after-before)/before=percentage</p>
+	</ol>
+	<p style="margin-bottom: 0in; line-height: 100%">designToClassBody.xslt
+	    +98% (x1.98)</p>
+	<p style="margin-bottom: 0in; line-height: 100%">designToClassHeader.xslt
+	 +18% (x1.18)</p>
+</ol>
+<p style="margin-bottom: 0in; line-height: 100%">		designToSourceVariablesBody.xslt
++43% (x1.43)</p>
+<ol>
+	<ol>
+		<ol start="0">
+			<p style="margin-bottom: 0in; line-height: 100%">designToConfigurationXSD.xslt
+			+125% (x2.25)</p>
+		</ol>
+	</ol>
+</ol>
+<p style="margin-bottom: 0in; line-height: 100%">		</p>
+<div title="footer">
+	<p style="margin-top: 0.2in; margin-bottom: 0in; line-height: 100%"><font size="2" style="font-size: 10pt"><i>Fri
+	Oct 13 09:04:43 CEST 2017 						Michael Ludwig  CERN BE-ICS-FD</i></font></p>
+</div>
+</body>
+</html>
