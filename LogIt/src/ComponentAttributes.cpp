@@ -20,9 +20,10 @@
  */
 
 #include "ComponentAttributes.h"
+#include "LogItInternalUtils.h"
 
-ComponentAttributes::ComponentAttributes(const uint32_t& id, const std::string& name, const Log::LOG_LEVEL& level/*=INF*/)
-:m_id(id), m_name(name), m_level(level)
+ComponentAttributes::ComponentAttributes(const std::string& name, const Log::LOG_LEVEL& initialLogLevel/*=INF*/)
+:m_id(to64BitKey(name)), m_name(name), m_level(initialLogLevel)
 {}
 
 ComponentAttributes::ComponentAttributes(const ComponentAttributes& obj)
@@ -40,7 +41,7 @@ ComponentAttributes& ComponentAttributes::operator=(const ComponentAttributes& o
     return *this;
 }
 
-uint32_t ComponentAttributes::getId() const
+uint64_t ComponentAttributes::getId() const
 {
     return m_id;
 }

@@ -36,6 +36,7 @@ set(LOGIT_SOURCES
     src/LogSinks.cpp
     src/ComponentAttributes.cpp
     src/LogItInstance.cpp
+    src/LogItInternalUtils.cpp
 )    
 
 if(${LOGIT_HAS_BOOSTLOG})

@@ -72,13 +72,9 @@ namespace Log
     bool initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel = Log::INF);
 
     /**
-     * initializer with user defined component support.
-     * LOG(LOG_LEVEL) invocations will be considered for logging
-     *
-     * and LOG(LOG_LEVEL, USER_COMPONENT_ID) calls are considered too for registered components
-     * (i.e. for component IDs specified in the vector of components).
+     * register a new logger component (note components can only be added - there is no capacity for removing log components).
      */
-    bool initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel, const std::list<ComponentAttributes>& components);
+    uint64_t addLogItComponent(const std::string& logComponentName, const Log::LOG_LEVEL& initialLogLevel = Log::INF);
 
 	/**
 	 * initializer to be called when using LogIt *inside* a shared library. The remoteLogInstance ptr should be supplied
@@ -94,7 +90,8 @@ namespace Log
      * log check - non-component (single-arg) and component (double-arg) specific
      */
     bool isLoggable(const Log::LOG_LEVEL& level);
-    bool isLoggable(const Log::LOG_LEVEL& level, const uint32_t& componentId);
+    bool isLoggable(const Log::LOG_LEVEL& level, const uint64_t& componentId);
+    bool isLoggable(const Log::LOG_LEVEL& level, const std::string& componentId);
 
     /**
      * Get/Set the log threshold for all LOG messages without a component specified, i.e. calls such as
@@ -110,9 +107,12 @@ namespace Log
      * Note getComponentLogLevel returns false if componentId not registered.
      */
     const std::list<ComponentAttributes> getComponentLogsList();
-    bool setComponentLogLevel(const uint32_t& componentId, const LOG_LEVEL& level);
-    bool getComponentLogLevel(const uint32_t& componentId, LOG_LEVEL& level);
 
+    bool setComponentLogLevel(const uint64_t& componentId, const LOG_LEVEL& level);
+    bool setComponentLogLevel(const std::string& componentId, const LOG_LEVEL& level);
+
+    bool getComponentLogLevel(const uint64_t& componentId, LOG_LEVEL& level);
+    bool getComponentLogLevel(const std::string& componentId, LOG_LEVEL& level);
 
 
     /**
@@ -131,7 +131,7 @@ namespace Log
      * for a given componentId.
      * If there is no component registered for that id, returns "UNKNOWN"
      */
-    std::string componentIdToString(const uint32_t& componentId);
+    std::string componentIdToString(const uint64_t& componentId);
 }
 
 #endif /* LOGIT_H_ */

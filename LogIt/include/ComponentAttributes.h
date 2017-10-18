@@ -29,18 +29,18 @@
 class ComponentAttributes
 {
 public:
-	ComponentAttributes(const uint32_t& id, const std::string& name, const Log::LOG_LEVEL& level = Log::INF);
+	ComponentAttributes(const std::string& name, const Log::LOG_LEVEL& initialLogLevel = Log::INF);
     ComponentAttributes(const ComponentAttributes& obj);
     ComponentAttributes& operator=(const ComponentAttributes& obj);
 
-    uint32_t getId() const;
+    uint64_t getId() const;
     std::string getName() const;
 
     Log::LOG_LEVEL getLevel() const;
     void setLevel(const Log::LOG_LEVEL& level);
 
 private:
-    uint32_t m_id;
+    uint64_t m_id;
     std::string m_name;
     Log::LOG_LEVEL m_level;
 };

@@ -278,6 +278,7 @@ Directory LogIt/include install=create,
 File BoostRotatingFileLog.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File ComponentAttributes.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogIt.h  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItInternalUtils.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogItShared_WinDllExportMacroDefn.h  install=dont_touch,deprecated 
 File LogLevels.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogRecord.h  must_exist,must_be_versioned,install=overwrite,md5=check
@@ -291,6 +292,7 @@ Directory LogIt/src install=create,
 File BoostRotatingFileLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File ComponentAttributes.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogIt.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItInternalUtils.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogLevels.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogRecord.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogSinks.cpp  must_exist,must_be_versioned,install=overwrite,md5=check

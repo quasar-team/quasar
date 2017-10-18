@@ -8,7 +8,7 @@
 #ifndef THEDYNLIB_LOGIT_LOGITINSTANCE_H_
 #define THEDYNLIB_LOGIT_LOGITINSTANCE_H_
 
-#include <map>
+#include <unordered_map>
 #include "LogLevels.h"
 #include "ComponentAttributes.h"
 #include "LogSinks.h"
@@ -16,6 +16,8 @@
 class LogItInstance
 {
 public:
+	typedef std::unordered_map<uint64_t, ComponentAttributes> ComponentMap;
+
 	static bool instanceExists();
 	static LogItInstance* getInstance();
 	static bool setInstance(LogItInstance* remoteInstance);
@@ -23,7 +25,7 @@ public:
 
 	bool m_isLoggingInitialized;
 	LogSinks m_logSinksInstance;
-	std::map<uint32_t, ComponentAttributes> m_sComponents;
+	ComponentMap m_sComponents;
 	Log::LOG_LEVEL m_nonComponentLogLevel;
 
 private:
