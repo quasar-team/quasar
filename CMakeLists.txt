@@ -32,6 +32,9 @@ else()
      message(FATAL_ERROR "Build configuration has not been chosen yet. Please run 'quasar.py set_build_config'")
 endif()       
 
+# C++11 as standard
+set (CMAKE_CXX_STANDARD 11)
+
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
