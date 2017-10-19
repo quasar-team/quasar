@@ -21,7 +21,6 @@
 
 #include "LogIt.h"
 #include <iostream>
-#include <map>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "ComponentAttributes.h"
@@ -78,17 +77,18 @@ bool Log::initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel)
 
 uint64_t Log::addLogItComponent(const std::string& logComponentName, const Log::LOG_LEVEL& initialLogLevel /*= Log::INF*/)
 {
-	if(LogItInstance::instanceExists())
+	if(!LogItInstance::instanceExists())
 	{
-		ComponentAttributes componentAttributes(logComponentName, initialLogLevel);
-		LogItInstance::getInstance()->m_sComponents.emplace(componentAttributes.getId(), componentAttributes);
-		return componentAttributes.getId();
+		// must call initializeLogging before adding components - throw exception
+		std::ostringstream msg;
+		msg << "ERROR: no logger instance found, failed to add logging component ["<<logComponentName<<"] probably logging is not initialized (call initializeLogging() before adding components)";
+		throw std::runtime_error(msg.str());
 	}
 
-	// must call initializeLogging before adding components - throw exception
-	std::ostringstream msg;
-	msg << "ERROR: no logger instance found, failed to add logging component ["<<logComponentName<<"] probably logging is not initialized (call initializeLogging() before adding components)";
-	throw std::runtime_error(msg.str());
+	ComponentAttributes componentAttributes(logComponentName, initialLogLevel);
+	LogItInstance::getInstance()->addLogItComponent(componentAttributes);
+
+	return componentAttributes.getId();
 }
 
 bool Log::initializeDllLogging(LogItInstance* remoteInstance)
@@ -136,7 +136,8 @@ const std::list<ComponentAttributes> Log::getComponentLogsList()
 	std::list<ComponentAttributes> result;
 	if(!LogItInstance::instanceExists()) return result; // empty
 
-	for(LogItInstance::ComponentMap::const_iterator it = LogItInstance::getInstance()->m_sComponents.begin(); it != LogItInstance::getInstance()->m_sComponents.end(); ++it)
+	const LogItInstance::ComponentMapPtr componentsMap = LogItInstance::getInstance()->getComponentMap();
+	for(LogItInstance::ComponentMap::const_iterator it = componentsMap->begin(); it != componentsMap->end(); ++it)
 	{
 		result.push_back(it->second);
 	}
@@ -147,8 +148,10 @@ bool Log::setComponentLogLevel(const uint64_t& componentId, const LOG_LEVEL& lev
 {
 	if(!LogItInstance::instanceExists()) return false;
 
-	LogItInstance::ComponentMap::iterator pos = LogItInstance::getInstance()->m_sComponents.find(componentId);
-    if(pos == LogItInstance::getInstance()->m_sComponents.end()) return false;
+	LogItInstance::ComponentMapPtr componentsMap = LogItInstance::getInstance()->getComponentMap();
+	LogItInstance::ComponentMap::iterator pos = componentsMap->find(componentId);
+
+	if(pos == componentsMap->end()) return false;
 
     pos->second.setLevel(level);
     return true;
@@ -163,8 +166,10 @@ bool Log::getComponentLogLevel(const uint64_t& componentId, LOG_LEVEL& level)
 {
 	if(!LogItInstance::instanceExists()) return false;
 
-	LogItInstance::ComponentMap::const_iterator pos = LogItInstance::getInstance()->m_sComponents.find(componentId);
-    if(pos == LogItInstance::getInstance()->m_sComponents.end()) return false;
+	const LogItInstance::ComponentMapPtr componentsMap = LogItInstance::getInstance()->getComponentMap();
+	LogItInstance::ComponentMap::const_iterator pos = componentsMap->find(componentId);
+
+    if(pos == componentsMap->end()) return false;
 
     level = pos->second.getLevel();
     return true;
@@ -180,18 +185,22 @@ void Log::setGlobalLogLevel(const LOG_LEVEL& level)
 	if(!LogItInstance::instanceExists()) return;
 
 	LogItInstance::getInstance()->m_nonComponentLogLevel = level;
-    for(LogItInstance::ComponentMap::iterator pos = LogItInstance::getInstance()->m_sComponents.begin(); pos != LogItInstance::getInstance()->m_sComponents.end(); ++pos)
-    {
-        pos->second.setLevel(level);
-    }
+
+	LogItInstance::ComponentMapPtr componentsMap = LogItInstance::getInstance()->getComponentMap();
+	for(LogItInstance::ComponentMap::iterator it = componentsMap->begin(); it != componentsMap->end(); ++it)
+	{
+		it->second.setLevel(level);
+	}
 }
 
 std::string Log::componentIdToString(const uint64_t& componentId)
 {
 	if(!LogItInstance::instanceExists()) return "UNKNOWN";
 
-	LogItInstance::ComponentMap::iterator pos = LogItInstance::getInstance()->m_sComponents.find(componentId);
-    if(pos == LogItInstance::getInstance()->m_sComponents.end()) return "UNKNOWN";
+	const LogItInstance::ComponentMapPtr componentsMap = LogItInstance::getInstance()->getComponentMap();
+	LogItInstance::ComponentMap::const_iterator pos = componentsMap->find(componentId);
+
+    if(pos == componentsMap->end()) return "UNKNOWN";
 
     return pos->second.getName();
 }

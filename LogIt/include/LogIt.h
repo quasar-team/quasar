@@ -72,7 +72,10 @@ namespace Log
     bool initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel = Log::INF);
 
     /**
-     * register a new logger component (note components can only be added - there is no capacity for removing log components).
+     * Register a new logger component. NOTE: logComponentName must be 8 characters or less, anything greater will throw a
+     * runtime exception (this is due to the collision free hash method used).
+     *
+     * Components can only be added - there is no capacity for removing log components.
      */
     uint64_t addLogItComponent(const std::string& logComponentName, const Log::LOG_LEVEL& initialLogLevel = Log::INF);
 

@@ -7,6 +7,7 @@
 
 #include "LogItInstance.h"
 #include <iostream>
+#include <mutex>
 
 using std::cerr;
 using std::endl;
@@ -14,7 +15,7 @@ using std::endl;
 LogItInstance* LogItInstance::g_sLogItInstance(NULL); // initially - set by any LogIt::initialize*Logging() call.
 
 LogItInstance::LogItInstance()
-:m_isLoggingInitialized(false), m_nonComponentLogLevel(Log::INF)
+:m_isLoggingInitialized(false), m_nonComponentLogLevel(Log::INF), m_sComponents(new ComponentMap())
 {}
 
 LogItInstance::~LogItInstance()
@@ -28,6 +29,33 @@ bool LogItInstance::instanceExists()
 LogItInstance* LogItInstance::getInstance()
 {
 	return LogItInstance::g_sLogItInstance;
+}
+
+/**
+ * The logging component map is controlled by a shared_ptr: shared_ptr ensures that
+ * operations in play (e.g. log component look up etc) will complete before the object
+ * is destroyed (shared_ptr guarantees only one thread - the last to release - will destroy
+ * the object.
+ *
+ */
+void LogItInstance::addLogItComponent(ComponentAttributes& newComponent)
+{
+	static std::mutex g_sLogItComponentAdditionLock;
+
+	// only a single thread at a time can change the contents of the LogItComponent
+	g_sLogItComponentAdditionLock.lock();
+	{
+		// clone existing map, add new component and reset the shared ptr to hold the new map.
+		ComponentMap* newComponentMap = new ComponentMap(*m_sComponents);
+		newComponentMap->emplace(newComponent.getId(), newComponent);
+		m_sComponents.reset(newComponentMap);
+	}
+	g_sLogItComponentAdditionLock.unlock();
+}
+
+LogItInstance::ComponentMapPtr LogItInstance::getComponentMap()
+{
+	return m_sComponents;
 }
 
 bool LogItInstance::setInstance(LogItInstance* remoteInstance)
