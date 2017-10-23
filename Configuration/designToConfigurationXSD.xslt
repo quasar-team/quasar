@@ -63,13 +63,13 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:if test="d:array">
 			<xsl:variable name="minimumSize">
 				<xsl:choose>
-					<xsl:when test="d:array/@minimumSize"><xsl:value-of select="d:array/@minimumSize"/></xsl:when>
+					<xsl:when test="d:array[@minimumSize]"><xsl:value-of select="d:array/@minimumSize"/></xsl:when>
 					<xsl:otherwise>0</xsl:otherwise>						
 				</xsl:choose>
 			</xsl:variable>
 			<xsl:variable name="maximumSize">
 				<xsl:choose>
-					<xsl:when test="d:array/@maximumSize"><xsl:value-of select="d:array/@maximumSize"/></xsl:when>
+					<xsl:when test="d:array[@maximumSize]"><xsl:value-of select="d:array/@maximumSize"/></xsl:when>
 					<xsl:otherwise>unbounded</xsl:otherwise>						
 				</xsl:choose>
 			</xsl:variable>
