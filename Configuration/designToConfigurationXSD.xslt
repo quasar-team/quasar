@@ -24,10 +24,11 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 xmlns:d="http://cern.ch/quasar/Design"
+xmlns:fnc="http://cern.ch/quasar/MyFunctions"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
 	<xsl:output indent="yes" method="xml"></xsl:output>
 
-	<xsl:template name="dataTypeToXsdType">
+	<xsl:function name="fnc:dataTypeToXsdType">
 	<xsl:param name="dataType"/>	
 	<xsl:choose>
 	<xsl:when test="$dataType='UaString'">xs:string</xsl:when>
@@ -44,9 +45,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:when test="$dataType='OpcUa_Float'">xs:float</xsl:when>
 	<xsl:when test="$dataType='UaByteString'"><xsl:message terminate="yes">ERROR: it is not allowed to initialize a variable of ByteString type from configuration due to ambiguity of input format. If you need this feature, please do ask quasar team for implementation.</xsl:message></xsl:when>
 	<xsl:when test="$dataType='UaVariant'"><xsl:message terminate="yes">ERROR: it is not allowed to initialize a variable of variable type (UaVariant) from configuration.</xsl:message></xsl:when>
-	<xsl:otherwise><xsl:message terminate="yes">ERROR: unknown type <xsl:value-of select="$dataType"/></xsl:message></xsl:otherwise>
+	<xsl:otherwise><xsl:message terminate="yes">ERROR: unknown type '<xsl:value-of select="$dataType"/>'</xsl:message></xsl:otherwise>
 	</xsl:choose>
-	</xsl:template>
+	</xsl:function>
 
 
 
@@ -57,6 +58,31 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	<xs:sequence>
 	
+	
+	<xsl:for-each select="d:cachevariable">
+		<xsl:if test="d:array">
+			<xsl:variable name="minimumSize">
+				<xsl:choose>
+					<xsl:when test="d:array/@minimumSize"><xsl:value-of select="d:array/@minimumSize"/></xsl:when>
+					<xsl:otherwise>0</xsl:otherwise>						
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="maximumSize">
+				<xsl:choose>
+					<xsl:when test="d:array/@maximumSize"><xsl:value-of select="d:array/@maximumSize"/></xsl:when>
+					<xsl:otherwise>unbounded</xsl:otherwise>						
+				</xsl:choose>
+			</xsl:variable>
+				
+			<xs:element name="{@name}">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="value" type="{fnc:dataTypeToXsdType(@dataType)}" minOccurs="{$minimumSize}" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xsl:if>
+	</xsl:for-each>
 	
 	<xs:choice minOccurs="0" maxOccurs="unbounded">
 		<xs:element name="item" type="tns:ITEM" ></xs:element>
@@ -198,11 +224,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:element name="xs:attribute">
 				<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 				<xsl:attribute name="use">required</xsl:attribute>
-				<xsl:attribute name="type">
-				<xsl:call-template name="dataTypeToXsdType">
-				<xsl:with-param name="dataType" select="@dataType"/>
-				</xsl:call-template>
-				</xsl:attribute>
+				<xsl:attribute name="type"><xsl:value-of select="fnc:dataTypeToXsdType(@dataType)"/></xsl:attribute>
 				
 				<!-- OPCUA-458 Try carrying documentation over from Design file to Configuration schema -->
 				<xsl:if test="d:documentation">
@@ -232,11 +254,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:element name="xs:attribute">
 			<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 			<xsl:attribute name="use">required</xsl:attribute>
-			<xsl:attribute name="type">
-			<xsl:call-template name="dataTypeToXsdType">
-			<xsl:with-param name="dataType" select="@dataType"/>
-			</xsl:call-template>
-			</xsl:attribute>
+			<xsl:attribute name="type"><xsl:value-of select="fnc:dataTypeToXsdType(@dataType)"/></xsl:attribute>
 			
 			<!-- OPCUA-458 Try carrying documentation over from Design file to Configuration schema -->
 			<xsl:if test="d:documentation">

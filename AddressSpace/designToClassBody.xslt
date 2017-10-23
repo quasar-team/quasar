@@ -201,8 +201,26 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
 			<xsl:when test="@dataType='UaString'">
 			// todo: no string arrays yet 
 			// config.<xsl:value-of select="@name" />().c_str() 
-			std::cout &lt;&lt; __FILE__ &lt;&lt; " "&lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: no string arrays config yet..." &lt;&lt; std::endl; 
- 			exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
+			
+			std::cout &lt;&lt; config.<xsl:value-of select="@name" />().value().front();
+			
+			UaStringArray ua;
+			ua.create( dim );
+			for ( unsigned int i=0; i &lt; dim; ++i )
+			{
+				UaString uaString ( config.<xsl:value-of select="@name" />().value()[i].c_str() );
+				uaString.detach( &amp;ua[i] );
+			}
+			
+		
+ 			v.setStringArray( ua, /*detach*/ true );
+    		v.arrayDimensions( arrayDimensions );
+    		m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    		m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+			m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_String, /* system namespace */ 0 ));
+			m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);			
+ 			
+ 			
 			</xsl:when>
 			
 			<xsl:when test="@dataType='OpcUa_Boolean'">
