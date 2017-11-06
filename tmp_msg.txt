@@ -1,2 +1,2 @@
-Mon Nov 6 18:39:42 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-Documentation notesOnQuasarArrays.html cleaned up
+Mon Nov 6 18:40:21 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+doc updated
