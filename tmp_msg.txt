@@ -1,2 +1,2 @@
-Fri Oct 13 09:08:03 CEST 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-added documentation about arrays for the quasar-developer and the quasar-framework-maintainer (that's us, folks!)
+Mon Nov 6 18:39:42 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+Documentation notesOnQuasarArrays.html cleaned up
