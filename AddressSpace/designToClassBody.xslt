@@ -192,17 +192,28 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
 			int min = <xsl:value-of select="@name"/>_minimumSize();
 			int max = <xsl:value-of select="@name"/>_maximumSize();
  		    if ( dim &lt; min || dim &gt; max){
- 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: config <xsl:value-of select="@name" /> array dim= " &lt;&lt; dim &lt;&lt; " out of designed bounds (Design.xml) !"&lt;&lt; std::endl; 
- 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: bounds of <xsl:value-of select="@name" /> are min= " &lt;&lt; min &lt;&lt; " max= "&lt;&lt; max &lt;&lt; std::endl; 
- 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: exiting..." &lt;&lt; std::endl; 
- 			   	exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
+ 			   	string msg = " ERROR: AS constructor: dim of <xsl:value-of select="@name" /> = " + std::to_string( dim ) + " exceeded, design limits min= " + std::to_string( min ) + " max= " + std::to_string( max );
+ 				throw std::runtime_error ( msg.c_str());
  		   	}
 		<xsl:choose>
 			<xsl:when test="@dataType='UaString'">
-			// todo: no string arrays yet 
-			// config.<xsl:value-of select="@name" />().c_str() 
-			std::cout &lt;&lt; __FILE__ &lt;&lt; " "&lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: no string arrays config yet..." &lt;&lt; std::endl; 
- 			exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
+			
+			std::cout &lt;&lt; config.<xsl:value-of select="@name" />().value().front();
+			
+			UaStringArray ua;
+			ua.create( dim );
+			for ( unsigned int i = 0; i &lt; dim; ++i )
+			{
+				UaString uaString ( config.<xsl:value-of select="@name" />().value()[i].c_str() );
+				uaString.detach( &amp;ua[i] );
+			}
+ 			v.setStringArray( ua, /*detach*/ true );
+    		v.arrayDimensions( arrayDimensions );
+    		m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
+    		m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+			m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_String, /* system namespace */ 0 ));
+			m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);			
+			
 			</xsl:when>
 			
 			<xsl:when test="@dataType='OpcUa_Boolean'">
@@ -364,11 +375,7 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
  				exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
 			</xsl:otherwise>
 		</xsl:choose>
-
-
-
 	<!-- <xsl:for-each select="d:array"> </xsl:for-each> -->
-
 	} // scope
 	</xsl:when>
 	<xsl:otherwise>

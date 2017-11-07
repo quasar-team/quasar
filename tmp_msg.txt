@@ -1,2 +1,2 @@
-Mon Nov 6 18:40:21 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-doc updated
+Tue Nov 7 17:21:42 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+string arrays and throwing exception instead of exiting when array range check fails
