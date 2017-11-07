@@ -77,7 +77,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xs:element name="{@name}">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="value" type="{fnc:dataTypeToXsdType(@dataType)}" minOccurs="{$minimumSize}" maxOccurs="unbounded"/>
+						<xs:element name="value" type="{fnc:dataTypeToXsdType(@dataType)}" minOccurs="{$minimumSize}" maxOccurs="{$maximumSize}"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -88,8 +88,11 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xs:element name="item" type="tns:ITEM" ></xs:element>
 		<xs:element name="regexpr" type="tns:REGEXPR" ></xs:element>
 		
+
+		
+		
 		<xsl:for-each select="d:hasobjects[@instantiateUsing='configuration']">
-		<xs:element name="{@class}" type="tns:{@class}"  />
+			<xs:element name="{@class}" type="tns:{@class}"  />
 		</xsl:for-each>
 
 	</xs:choice>
@@ -138,6 +141,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			</xsl:when>
 			<!-- no string arrays for now -->
 		
+		
 			</xsl:choose>	
 			</xsl:when>
 		</xsl:choose>
@@ -155,6 +159,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 		<!-- look for the array base types and give different element 
 		complex types accordingly -->
+		<!--  PN 
 		<xsl:choose>
 		<xsl:when test="@dataType='OpcUa_Boolean'">
 			<xs:element name="{@name}" type="tns:BoolArrayType">  </xs:element>
@@ -189,9 +194,11 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:when test="@dataType='OpcUa_Double'">
 			<xs:element name="{@name}" type="tns:DoubleArrayType">  </xs:element>
 		</xsl:when>
-		<!-- no string arrays for now -->
+		 no string arrays for now 
+
 		
 		</xsl:choose>
+		-->
 
 <!-- base array type 
 <xs:element name="{@dataType}"></xs:element>
@@ -216,6 +223,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:when test="d:array">
 		<!-- array cache var: these are elements and not attributes, so that we can use
 		complex types. Do not generate them as attributes here therefore -->			
+			
+			
+
+			
+			
+			
 		</xsl:when>
 		<xsl:otherwise>
 	    <!-- scalar cache var as attribute -->
