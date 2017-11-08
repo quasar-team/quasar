@@ -240,43 +240,71 @@ int OpcServer::setCallback(OpcServerCallback* pOpcServerCallback)
     return 0;
 }
 
-/* Contribution from Slava Filimonov from OpcUaCanOpenServer */
+/* Contribution from Slava Filimonov from OpcUaCanOpenServer,
+ * Fix by Piotr Nikiel 08-Nov-2017 for UASDK 1.5.5 where few more miles have to be run.
+ */
 int OpcServer::createCertificate ()
 {
-	UaMutexLocker lock(&d->m_mutex);
-	int ret = 0;
+    LOG(Log::INF) << "Will create certificate and exit.";
+    UaMutexLocker lock(&d->m_mutex);
+    int ret = 0;
 
-	if ( d->m_isStarted != OpcUa_False )
-	{
-		std::cout << " Error, the method is called after the server was already started" << std::endl;
-		return -1;
-	}
+    if ( d->m_isStarted != OpcUa_False )
+    {
+        LOG(Log::ERR) << " Error, the method is called after the server was already started";
+        return -1;
+    }
 
-	// Create default configuration object if not provided by the application
-	if ( d->m_pServerConfig == NULL )
-	{
-		UaUniString sConfigFile(d->m_configurationFile.toUtf8());
-		sConfigFile = sConfigFile.toLower();
+    // Create default configuration object if not provided by the application
+    if ( d->m_pServerConfig == NULL )
+    {
+        UaUniString sConfigFile(d->m_configurationFile.toUtf8());
+        sConfigFile = sConfigFile.toLower();
 
-		if ( sConfigFile.lastIndexOf(".xml") > (sConfigFile.length() - 5) )
-		{
-			d->m_pServerConfig = new ServerConfigBasicXml(d->m_configurationFile, d->m_applicationPath, d->m_pOpcServerCallback);
-		}
+        if ( sConfigFile.lastIndexOf(".xml") > (sConfigFile.length() - 5) )
+        {
+            d->m_pServerConfig = new ServerConfigBasicXml(d->m_configurationFile, d->m_applicationPath, d->m_pOpcServerCallback);
+        }
 
-	}
+    }
 
-	if ( d->m_pServerConfig == NULL )
-	{
-		cout << "Problem opening config file" << endl;
-		return -2;
-	}
+    if ( d->m_pServerConfig == NULL )
+    {
+        LOG(Log::ERR) << "Problem opening server's backend configuration file -- check srvTrace logs";
+        return -2;
+    }
 
-	// Check trace settings
-	if ( d->m_pServerConfig->loadConfiguration().isGood() )
-	{
-		return ret;
-	}
-	return -3;
+    // Check trace settings
+    if (! d->m_pServerConfig->loadConfiguration().isGood() )
+    {
+        LOG(Log::ERR) << "Couldn't open server's backend configuration";
+        return -3;
+    }
+
+    CoreModule* coreModule = new CoreModule;
+    if( coreModule->initialize() != 0)
+    {
+        LOG(Log::ERR) << "CoreModule::initialize failed.";
+    }
+    UaModule* uaModule = new UaModule;
+    UaServer *pUaServer = 0;
+    if( uaModule->initialize(d->m_pServerConfig, pUaServer) != 0 )
+    {
+        LOG(Log::ERR) << "UaModule::initialize failed.";
+    }
+    if( coreModule->startUp(d->m_pServerConfig) != 0)
+    {
+        LOG(Log::ERR) << "CoreModule::startUp failed.";
+    }
+    if( uaModule->startUp(coreModule) != 0)
+    {
+        LOG(Log::ERR) << "UaModule::startUp failed.";
+    }
+
+    uaModule->shutDown();
+    coreModule->shutDown();
+
+    return 0;
 }
 
 
