@@ -212,20 +212,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			if (m_variant.type() == <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>)
 			{
 			
-				<!-- disabled, don't understand why this is here, should be removed -->
-			<!-- 
+				<!-- that is needed because UaVariant string methods have a different signature -->
 				<xsl:choose>
 				<xsl:when test="@dataType='UaString'">
-				// designToSourceVariables.xslt: 216 scalar string
-				// m_variant = value;
+				// UaVariant string methods have a different signature 
+				value = m_variant.toString();
 				</xsl:when>
-				
-				
 				<xsl:otherwise>
-				-->
 				
-				
-				// extract the values to write from the UaVariant: convert to an array, and then to the vector.
 					<xsl:choose>
     				<xsl:when test="d:array">
     					<xsl:choose>
@@ -368,10 +362,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				
 				</xsl:otherwise>
 				</xsl:choose>
-				<!-- 
+				 
 			</xsl:otherwise>
 			</xsl:choose>
--->
+
 				// Obtain Device Logic object
 				const <xsl:value-of select="fnc:ASClassName($className)"/> *addressSpaceObject;
 				addressSpaceObject = dynamic_cast&lt;const <xsl:value-of select="fnc:ASClassName($className)"/>* &gt; ( m_parentObjectNode );
