@@ -1,2 +1,2 @@
-Wed Nov 8 16:51:36 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-
+Wed Nov 8 17:16:22 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+cache delegated string scalar xslt declaration missing, corrected

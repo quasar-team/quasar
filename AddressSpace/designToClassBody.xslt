@@ -982,6 +982,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 					</xsl:when>
 					<xsl:otherwise>
 					// cache delegated string point1: scalar 
+					UaString v_value;
 					v_value = v.toString();
 					</xsl:otherwise>
 				</xsl:choose>
