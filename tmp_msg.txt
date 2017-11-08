@@ -1,2 +1,2 @@
-Tue Nov 7 17:21:42 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-string arrays and throwing exception instead of exiting when array range check fails
+Wed Nov 8 15:49:26 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+added xslt to distinguish between scalars and arrrays also for delegated cache variables string arrays. xslt is a bit asymmetrical there, but I don't dare to rip it apart yet.

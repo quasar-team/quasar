@@ -192,28 +192,31 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
 			int min = <xsl:value-of select="@name"/>_minimumSize();
 			int max = <xsl:value-of select="@name"/>_maximumSize();
  		    if ( dim &lt; min || dim &gt; max){
- 			   	string msg = " ERROR: AS constructor: dim of <xsl:value-of select="@name" /> = " + std::to_string( dim ) + " exceeded, design limits min= " + std::to_string( min ) + " max= " + std::to_string( max );
- 				throw std::runtime_error ( msg.c_str());
+ 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: config <xsl:value-of select="@name" /> array dim= " &lt;&lt; dim &lt;&lt; " out of designed bounds (Design.xml) !"&lt;&lt; std::endl; 
+ 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: bounds of <xsl:value-of select="@name" /> are min= " &lt;&lt; min &lt;&lt; " max= "&lt;&lt; max &lt;&lt; std::endl; 
+ 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: exiting..." &lt;&lt; std::endl; 
+ 			   	exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
  		   	}
 		<xsl:choose>
 			<xsl:when test="@dataType='UaString'">
 			
-			std::cout &lt;&lt; config.<xsl:value-of select="@name" />().value().front();
-			
 			UaStringArray ua;
 			ua.create( dim );
-			for ( unsigned int i = 0; i &lt; dim; ++i )
+			for ( int i = 0; i &lt; dim; ++i )
 			{
 				UaString uaString ( config.<xsl:value-of select="@name" />().value()[i].c_str() );
 				uaString.detach( &amp;ua[i] );
 			}
+			
+		
  			v.setStringArray( ua, /*detach*/ true );
     		v.arrayDimensions( arrayDimensions );
     		m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
     		m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
 			m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId( OpcUaId_String, /* system namespace */ 0 ));
 			m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);			
-			
+ 			
+ 			
 			</xsl:when>
 			
 			<xsl:when test="@dataType='OpcUa_Boolean'">
@@ -375,7 +378,11 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
  				exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
 			</xsl:otherwise>
 		</xsl:choose>
+
+
+
 	<!-- <xsl:for-each select="d:array"> </xsl:for-each> -->
+
 	} // scope
 	</xsl:when>
 	<xsl:otherwise>
@@ -566,7 +573,9 @@ int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="
 	return ( <xsl:value-of select="@maximumSize"/> ); 
 	</xsl:when>
 	<xsl:otherwise>
-	return ( 524288000 ); 
+	return ( INT_MAX ); 
+	// should be 32bit signed = 2^31-1 but depends on machine
+	// remaining issue in sdk see OPCUA-910
 	</xsl:otherwise>
 	</xsl:choose>
 }
@@ -953,7 +962,32 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 		<xsl:when test="@addressSpaceWrite='delegated'">			
 			<xsl:choose>
 				<xsl:when test="@dataType='UaString'">
+				
+				// cache delegated string point0: must distinguish between scalar and array
+				<xsl:choose>
+					<xsl:when test="d:array">
+					// cache delegated string point1: code which extracts the vector of strings
+					// from te UaVariant, via a conversion to an UaStringArray. Then we just call
+					// the (delegated) device method giving the vector as argument
+					
+					vector&lt;UaString&gt; v_value;
+        			UaStringArray ua;
+    				v.toStringArray( ua );
+    				int dim = ua.length();
+    				v_value.clear();
+    				for ( int i = 0; i &lt; dim; i++ ) {
+    	   				v_value.push_back( ua[ i ] );
+    				}
+					
+					</xsl:when>
+					<xsl:otherwise>
+					// cache delegated string point1: scalar 
 					v_value = v.toString();
+					</xsl:otherwise>
+				</xsl:choose>
+				
+				
+					
 				</xsl:when>
 				<xsl:when test="@dataType='UaVariant'">
 					v_value = *dataValue.value();
@@ -1032,7 +1066,16 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
    						v.toDoubleArray( ua );
     					int dim = ua.length();
     				</xsl:when>    					
+ 					<!-- 
+ 					not reached, see above
+  					<xsl:when test="@dataType='UaString'">
+					    UaStringArray ua;
+   						v.toStringArray( ua ); // delegate write cache string array
+    					int dim = ua.length();
+    				</xsl:when>
+    				-->    					
     				</xsl:choose>
+    				    // array common array part except for strings
     					v_value.clear();
     					for ( int i = 0; i &lt; dim; i++ ) {
         					v_value.push_back( ua[ i ]);
@@ -1220,6 +1263,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 	<xsl:template match="/">	
     <xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToClassBody.xslt','Piotr Nikiel')"/>
 	#include &lt;iostream&gt;
+	#include &lt;climits&gt;
 
 	
 	<xsl:if test="not(/d:design/d:class[@name=$className])">
@@ -1233,3 +1277,6 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 
 
 </xsl:transform>
+
+
+
