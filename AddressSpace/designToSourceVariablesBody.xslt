@@ -200,7 +200,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:value-of select="@dataType"/> value;
 		</xsl:otherwise>
 		</xsl:choose>
-			<xsl:choose>
+		
+		<xsl:choose>
 			<xsl:when test="@dataType='UaVariant'">
 			// not so sure about this: designToSourceVariablesBody.xslt
 			value = m_variant;
@@ -210,11 +211,20 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:otherwise>
 			if (m_variant.type() == <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>)
 			{
+			
+				<!-- disabled, don't understand why this is here, should be removed -->
+			<!-- 
 				<xsl:choose>
 				<xsl:when test="@dataType='UaString'">
-				m_variant = value;
+				// designToSourceVariables.xslt: 216 scalar string
+				// m_variant = value;
 				</xsl:when>
+				
+				
 				<xsl:otherwise>
+				-->
+				
+				
 				// extract the values to write from the UaVariant: convert to an array, and then to the vector.
 					<xsl:choose>
     				<xsl:when test="d:array">
@@ -329,6 +339,18 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
         					value.push_back( ua[ i ]);
     					}
     					</xsl:when>
+    					
+						<xsl:when test="@dataType='UaString'">
+						/// source variable write array string 
+     					UaStringArray ua;
+    					m_variant.toStringArray( ua );
+    					int dim = ua.length();
+    					value.clear();
+    					for ( int i = 0; i &lt; dim; i++ ) {
+        					value.push_back( ua[ i ]);
+    					}
+    					</xsl:when>
+    					
     					<xsl:otherwise>
     					<!-- string arrays for source variables are not supported -->
     					LOG(Log::ERR) &lt;&lt; "string arrays for source variables are not supported for <xsl:value-of select="fnc:capFirst(@name)"/>" &lt;&lt; std::endl;
@@ -346,9 +368,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				
 				</xsl:otherwise>
 				</xsl:choose>
+				<!-- 
 			</xsl:otherwise>
 			</xsl:choose>
-
+-->
 				// Obtain Device Logic object
 				const <xsl:value-of select="fnc:ASClassName($className)"/> *addressSpaceObject;
 				addressSpaceObject = dynamic_cast&lt;const <xsl:value-of select="fnc:ASClassName($className)"/>* &gt; ( m_parentObjectNode );
