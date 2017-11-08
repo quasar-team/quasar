@@ -110,7 +110,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:when test="@dataType='OpcUa_Double'">
 				<xs:element name="{@name}" type="tns:DoubleArrayType">  </xs:element>
 			</xsl:when>
-			<!-- no string arrays for now -->
+			<xsl:when test="@dataType='UaString'">
+				<xs:element name="{@name}" type="tns:StringArrayType">  </xs:element>
+			</xsl:when>
 		
 			</xsl:choose>	
 			</xsl:when>
@@ -163,7 +165,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:when test="@dataType='OpcUa_Double'">
 			<xs:element name="{@name}" type="tns:DoubleArrayType">  </xs:element>
 		</xsl:when>
-		<!-- no string arrays for now -->
+		<xsl:when test="@dataType='UaString'">
+			<xs:element name="{@name}" type="tns:StringArrayType">  </xs:element>
+		</xsl:when>
 		
 		</xsl:choose>
 
@@ -350,7 +354,13 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     		</xs:choice>
     	</xs:sequence>
 	</xs:complexType>
-	<!-- no string array type right now -->
+	<xs:complexType name="StringArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:string"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
 	
 	
 	
