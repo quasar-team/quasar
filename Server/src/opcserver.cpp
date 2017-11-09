@@ -277,32 +277,36 @@ int OpcServer::createCertificate ()
     // Check trace settings
     if (! d->m_pServerConfig->loadConfiguration().isGood() )
     {
-        LOG(Log::ERR) << "Couldn't open server's backend configuration";
+        LOG(Log::ERR) << "Couldn't open server's backend configuration -- check srvTrace logs";
         return -3;
     }
 
-    CoreModule* coreModule = new CoreModule;
-    if( coreModule->initialize() != 0)
+    CoreModule coreModule;
+    if( coreModule.initialize() != 0)
     {
-        LOG(Log::ERR) << "CoreModule::initialize failed.";
+        LOG(Log::ERR) << "CoreModule::initialize failed -- check srvTrace logs";
+        return -4;
     }
-    UaModule* uaModule = new UaModule;
+    UaModule uaModule;
     UaServer *pUaServer = 0;
-    if( uaModule->initialize(d->m_pServerConfig, pUaServer) != 0 )
+    if( uaModule.initialize(d->m_pServerConfig, pUaServer) != 0 )
     {
-        LOG(Log::ERR) << "UaModule::initialize failed.";
+        LOG(Log::ERR) << "UaModule::initialize failed -- check srvTrace logs";
+        return -5;
     }
-    if( coreModule->startUp(d->m_pServerConfig) != 0)
+    if( coreModule.startUp(d->m_pServerConfig) != 0)
     {
-        LOG(Log::ERR) << "CoreModule::startUp failed.";
+        LOG(Log::ERR) << "CoreModule::startUp failed -- check srvTrace logs";
+        return -6;
     }
-    if( uaModule->startUp(coreModule) != 0)
+    if( uaModule.startUp(&coreModule) != 0)
     {
-        LOG(Log::ERR) << "UaModule::startUp failed.";
+        LOG(Log::ERR) << "UaModule::startUp failed -- check srvTrace logs";
+        return -7;
     }
 
-    uaModule->shutDown();
-    coreModule->shutDown();
+    uaModule.shutDown();
+    coreModule.shutDown();
 
     return 0;
 }
