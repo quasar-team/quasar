@@ -1,2 +1,2 @@
-Wed Nov 8 18:04:04 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-
+Thu Nov 9 11:56:07 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+generate also the delegate methods for arrays of source and cache vars. They are empty of course and return NOTIMPLEMENTED.
