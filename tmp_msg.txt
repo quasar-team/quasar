@@ -1,2 +1,2 @@
-Fri Nov 10 14:22:58 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-updated doc notes on arrays
+Fri Nov 10 16:24:39 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+source vars string arrays, some missing xslt. Good idea to test all of them systematically

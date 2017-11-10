@@ -211,12 +211,28 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:otherwise>
 			if (m_variant.type() == <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>)
 			{
-			
-				<!-- that is needed because UaVariant string methods have a different signature -->
+				<!-- that part is needed because UaVariant string methods have a different signature -->
 				<xsl:choose>
 				<xsl:when test="@dataType='UaString'">
-				// UaVariant string methods have a different signature 
-				value = m_variant.toString();
+				// UaVariant string methods have a different signature , need to switch between scalar and array				
+					<!-- switch between scalar or array code -->
+					<xsl:choose>
+    				<xsl:when test="d:array">
+					// source variable write array signature
+    				UaStringArray ua;
+    				m_variant.toStringArray( ua );
+    				int dim = ua.length();
+    				value.clear();
+    				for ( int i = 0; i &lt; dim; i++ ) {
+     			   		value.push_back( ua[ i ]);
+    				}
+					</xsl:when>
+    				<xsl:otherwise>
+    				// source variable write scalar signature
+					value = m_variant.toString();
+					</xsl:otherwise>
+					</xsl:choose>
+				
 				</xsl:when>
 				<xsl:otherwise>
 				
