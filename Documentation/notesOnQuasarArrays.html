@@ -7,7 +7,7 @@
 	<meta name="author" content="Michael Ludwig"/>
 	<meta name="created" content="2017-11-06T18:18:09.659159378"/>
 	<meta name="changedby" content="Michael Ludwig"/>
-	<meta name="changed" content="2017-11-06T18:36:56.288156900"/>
+	<meta name="changed" content="2017-11-10T14:21:33.664133059"/>
 	<style type="text/css">
 		@page { margin: 0.79in }
 		p { margin-bottom: 0.1in; line-height: 120% }
@@ -70,30 +70,25 @@ demo server which runs some tests and exercises all types.</p>
 	<p style="margin-bottom: 0in; line-height: 100%"><font face="Courier 10 Pitch"><font size="1" style="font-size: 8pt">&lt;/d:cachevariable&gt;</font></font></p>
 	<li/>
 <p style="margin-bottom: 0in; line-height: 100%">both
-	attributes minimumSize and maximumSize are recommended. If these
-	bounds appear to be inconsistent the code generation will still
-	succeed but the resulting code is not run-able, it will exit with an
-	error (see 5.) either during initialization or during standard
-	run-time. Arrays are stand-alone elements and not attributes, but
-	are also subjected to standard validation. If one or both attributes
-	are missing, a technical limit is imposed: 
-	</p>
-	<p style="margin-bottom: 0in; line-height: 100%"><font face="Courier 10 Pitch"><font size="1" style="font-size: 8pt">minimumSize=0
-	and maximumSize=524288000</font></font> , values of the array. This
-	is about ~4GByte for a double array. Therefore please explicitly
-	limit your array dimensions and test them also.</p>
+	attributes minimumSize and maximumSize are strongly recommended. If
+	these bounds appear to be inconsistent quasar will exit with an
+	error (see 5.) either during design, initialization or during
+	standard run-time. Arrays are stand-alone elements and not
+	attributes, but are also subjected to standard validation.  Please
+	explicitly limit your array dimensions and test them also.</p>
 	<li/>
 <p style="margin-bottom: 0in; line-height: 100%">the types
 	boolean, byte, sbyte, int16, uint16, int32, uint32, int64, uint64,
-	float and double are available as base array types</p>
+	float, double and std::string are available as base array types</p>
 	<li/>
-<p style="margin-bottom: 0in; line-height: 100%">Arrays of
-	strings are NOT implemented, but might be added later pending some
-	format clarifications.</p>
+<p style="margin-bottom: 0in; line-height: 100%">if array
+	bounds are designed they are checked during editing of the
+	config.xml, through validation. 
+	</p>
 	<li/>
-<p style="margin-bottom: 0in; line-height: 100%">array
-	dimensions are checked during editing of the config.xml, through
-	validation</p>
+<p style="margin-bottom: 0in; line-height: 100%">Array
+	dimensions are checked during runtime-init when building up the
+	Address Space.</p>
 	<li/>
 <p style="margin-bottom: 0in; line-height: 100%">the designed
 	array dimensions are checked during run-time, each time new values
@@ -101,17 +96,27 @@ demo server which runs some tests and exercises all types.</p>
 	terminated with an error code OpcUa_BadOutOfRange without modifying
 	the Address space. Server execution continues normally.</p>
 	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">There is no
+	explicit maximum for array bound, nor for single array entries as
+	strings, in quasar. Implicitly MAX_INT elements can not be exceeded,
+	but system and toolkit limits will be reached much earlier in most
+	cases. The UA toolkit will eventually throw an exception (or just
+	segfault) when internal limits are exceeded, depending on the
+	implementation. Keep the total array mem below 4GByte is a very good
+	idea, and designing explicit array bounds is even better.</p>
+	<li/>
 <p style="margin-bottom: 0in; line-height: 100%">only
 	one-dimensional (“flat”) arrays are supported by quasar, even
 	though OpcUa supports multi-dimensional arrays in general.</p>
 	<li/>
-<p style="margin-bottom: 0in; line-height: 100%">cache and
-	source variables are available as arrays. Cache variables can be
-	initially populated through configuration. If the AS write is
-	designed to be delegated for cache array variables, the getter and
-	setter method calls are generated. Source array variables can not be
-	populated by configuration, but the read/write method calls are
-	generated directly into the data transmission.</p>
+<p style="margin-bottom: 0in; line-height: 100%">Cache, source
+	and configuration variables are available as arrays. If the AS write
+	is designed to be delegated the according getter and setter method
+	calls are generated. Source array variables can not be populated by
+	configuration, but the read/write method headers and (empty) bodies
+	are generated for the device class and the according calls to these
+	methods are made from the  data transmission in the same way as for
+	scalar methods.</p>
 </ol>
 <h2 class="western">Notes on the fwk code generation for the fwk
 maintainers</h2>
@@ -137,6 +142,14 @@ maintainers</h2>
 	array bounds are used to generate explicit min/max size getter
 	methods for each array variable. This is much more straightforward
 	than decoding the design many times.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">The array dim
+	are checked during runtime init again, even though the configuration
+	is already validated. This is done in the context of dynamical
+	Address Space modifications during runtime (object add, delete)
+	where consistency self checks should be done by the configuration
+	(<a href="https://its.cern.ch/jira/browse/OPCUA-894">https://its.cern.ch/jira/browse/OPCUA-894</a>
+	)</p>
 	<li/>
 <p style="margin-bottom: 0in; line-height: 100%">xs attributes
 	do not allow complex types. Since arrays are complex types in the
