@@ -377,10 +377,23 @@ elementFormDefault="qualified">
     	<restriction base="string"></restriction>
     </simpleType>
  
- 	<complexType name="Array">
- 	 	<attribute name="minimumSize" type="integer"></attribute>
+ 	<simpleType name="one-to-max">
+   		<restriction base="integer">
+      	<minInclusive value="1"/>
+      	<maxInclusive value="2147483647"/>
+   		</restriction>
+	</simpleType>
+	
+	<complexType name="Array">
+      	<attribute name="minimumSize" type="tns:one-to-max"></attribute>
+ 	 	<attribute name="maximumSize" type="tns:one-to-max"></attribute>
+    </complexType>
+<!-- 
+	<complexType name="Array">
+      	<attribute name="minimumSize" type="integer"></attribute>
  	 	<attribute name="maximumSize" type="integer"></attribute>
     </complexType>
+    -->
 
     <complexType name="DeviceLogic">
     	<sequence>

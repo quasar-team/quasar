@@ -1,2 +1,2 @@
-Fri Nov 10 16:24:39 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-source vars string arrays, some missing xslt. Good idea to test all of them systematically
+Mon Nov 13 14:15:51 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+restricted array sizes from 1..MAXINT in Design.xsd. 0 arrays can't be set in Ua sdk.
