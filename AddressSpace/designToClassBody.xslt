@@ -191,7 +191,7 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
  		   	// make sure the design size constraints are respected during runtime
 			int min = <xsl:value-of select="@name"/>_minimumSize();
 			int max = <xsl:value-of select="@name"/>_maximumSize();
- 		    if ( dim &lt; min || dim &gt; max){
+ 		    if ( dim &lt; min || dim &gt; max ){
  			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: config <xsl:value-of select="@name" /> array dim= " &lt;&lt; dim &lt;&lt; " out of designed bounds (Design.xml) !"&lt;&lt; std::endl; 
  			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: bounds of <xsl:value-of select="@name" /> are min= " &lt;&lt; min &lt;&lt; " max= "&lt;&lt; max &lt;&lt; std::endl; 
  			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: exiting..." &lt;&lt; std::endl; 
@@ -562,7 +562,7 @@ int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="
 	return ( <xsl:value-of select="@minimumSize"/> ); 
 	</xsl:when>
 	<xsl:otherwise>
-	return ( 0 ); 
+	return ( 1 ); 
 	</xsl:otherwise>
 	</xsl:choose>
 }
@@ -585,8 +585,8 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 { 
 	<!-- optional min/max attributes. If they are not present, define own technically motivated limits -->
 
-	<xsl:variable name="xmin">0</xsl:variable>
-	<xsl:variable name="xmax">524288000</xsl:variable>
+	<xsl:variable name="xmin">1</xsl:variable>
+	<xsl:variable name="xmax">INT_MAX</xsl:variable>
 	<xsl:choose>
 	<xsl:when test="@minimumSize">
 		// setter: found designed minimumSize attribute
@@ -623,12 +623,12 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
  
     // make sure the design size constraints are respected during runtime
     OpcUa_Int32 dim = value.size();   
-    if ( dim &lt; min || dim &gt; max){
+    if ( dim &lt; min || dim &gt; max ){
     	PRINT("ERROR: set <xsl:value-of select="$baseName"/> runtime array size " &lt;&lt; dim &lt;&lt; " out of bounds!" );
         return( OpcUa_BadIndexRangeInvalid );
     }
     UaVariant v; 
-	UaUInt32Array arrayDimensions;    
+	UaUInt32Array arrayDimensions;       		
 	OpcUa_Int32 valueRank = 1; // only support 1-dim arrays 
 	<xsl:choose>
 		<xsl:when test="$baseType='OpcUa_Boolean'">
@@ -753,13 +753,14 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 			m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId( OpcUaId_Double, /* system namespace */ 0 ));
 		</xsl:when>
 		<xsl:when test="$baseType='UaString'">
-			// string array
-    		UaStringArray ua; 
+			// string array, must detach
+   			UaStringArray ua; 
     		ua.create( dim ); 
-    		for ( int i = 0; i &lt; dim; i++ )	{
-    		        ua[ i ] = *(value[ i ].toOpcUaString()); // aha
+     		for ( int i = 0; i &lt; dim; i++ )	{
+    		      UaString uaString = (*(value[ i ].toOpcUaString()));
+    		      uaString.detach( &amp;ua[i] );
     		}
-   			v.setStringArray( ua );
+   			v.setStringArray( ua, /*detach*/ true );
    			v.arrayDimensions( arrayDimensions );
     		m_<xsl:value-of select="$baseName"/>-&gt;setValueRank( valueRank );
     		m_<xsl:value-of select="$baseName"/>-&gt;setArrayDimensions( arrayDimensions );
