@@ -1,2 +1,2 @@
-Wed Nov 15 15:22:29 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
-
+Thu Nov 16 08:49:24 CET 2017 eclipse-push from mludwig@pcbe13632.cern.ch
+Design.xsd: relaxed lower array bound to 0, since we can set zero-content arrays as well in OPC ua, therefore 1 was an unneccessary restriction.

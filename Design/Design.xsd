@@ -379,7 +379,7 @@ elementFormDefault="qualified">
  
  	<simpleType name="one-to-max">
    		<restriction base="integer">
-      	<minInclusive value="1"/>
+      	<minInclusive value="0"/>
       	<maxInclusive value="2147483647"/>
    		</restriction>
 	</simpleType>
