@@ -24,13 +24,13 @@ add_definitions(
 	-DSUPPORT_XML_CONFIG 
 )
 
-include( ProjectSettings.cmake )
-
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
 	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
 else()
      message(FATAL_ERROR "Build configuration has not been chosen yet. Please run 'quasar.py set_build_config'")
-endif()       
+endif()
+
+include( ProjectSettings.cmake )
 
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
