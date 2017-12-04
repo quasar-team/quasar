@@ -874,8 +874,9 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 		</xsl:otherwise>		
 	</xsl:choose>
 	r.clear();
+	r.reserve( dim );
 	for ( int i = 0; i &lt; dim; i++ ){
-	    r.push_back( ua[ i ]);
+	    r[ i ] = ua[ i ];
 	}
     return OpcUa_Good;
 }
