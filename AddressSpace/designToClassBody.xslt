@@ -562,7 +562,7 @@ int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="
 	return ( <xsl:value-of select="@minimumSize"/> ); 
 	</xsl:when>
 	<xsl:otherwise>
-	return ( 1 ); 
+	return ( 0 ); 
 	</xsl:otherwise>
 	</xsl:choose>
 }
