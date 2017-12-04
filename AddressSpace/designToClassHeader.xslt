@@ -35,15 +35,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	<xsl:template name="cachevariables_setgetters">
 
-<!-- 
-	// debug: dataType = <xsl:value-of select= "@dataType"/>
-	<xsl:message>debug: dataType = <xsl:value-of select= "@dataType"/></xsl:message>
-	// debug: name = <xsl:value-of select= "@name"/>
-	<xsl:message>debug: name = <xsl:value-of select= "@name"/></xsl:message>
-	// debug: nullPolicy = <xsl:value-of select= "@nullPolicy"/>
-	<xsl:message>debug: null policy= <xsl:value-of select= "@nullPolicy"/></xsl:message>
--->
-
 	<!-- dataType needed for this -->
 	UaStatus get<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="@dataType"/> &amp;) const ;
 	UaStatus <xsl:value-of select="fnc:varSetter(@name, @dataType, 'true')"/> ; 
