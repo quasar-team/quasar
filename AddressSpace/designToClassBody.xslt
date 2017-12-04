@@ -585,7 +585,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 { 
 	<!-- optional min/max attributes. If they are not present, define own technically motivated limits -->
 
-	<xsl:variable name="xmin">1</xsl:variable>
+	<xsl:variable name="xmin">0</xsl:variable>
 	<xsl:variable name="xmax">INT_MAX</xsl:variable>
 	<xsl:choose>
 	<xsl:when test="@minimumSize">
