@@ -555,7 +555,7 @@ AS<xsl:value-of select="@name"/>::~AS<xsl:value-of select="@name"/> ()
 	<!-- found array signature -->
 	<xsl:for-each select="d:array">
 		<!-- also generate methods for min and max size -->
-int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$baseName"/>_minimumSize()
+OpcUa_UInt32 <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$baseName"/>_minimumSize()
 { 
 	<xsl:choose>
 	<xsl:when test="@minimumSize">
@@ -566,7 +566,7 @@ int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="
 	</xsl:otherwise>
 	</xsl:choose>
 }
-int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$baseName"/>_maximumSize()
+OpcUa_UInt32 <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$baseName"/>_maximumSize()
 { 
 	<xsl:choose>
 	<xsl:when test="@maximumSize">
@@ -574,8 +574,6 @@ int <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="
 	</xsl:when>
 	<xsl:otherwise>
 	return ( INT_MAX ); 
-	// should be 32bit signed = 2^31-1 but depends on machine
-	// remaining issue in sdk see OPCUA-910
 	</xsl:otherwise>
 	</xsl:choose>
 }
