@@ -126,12 +126,100 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<!-- switch between scalar or array code -->
 		<xsl:choose>
     	<xsl:when test="d:array">
-			// ---pack the vector into a new UaVariant
-			OpcUa_Double value0 = 0; // hack
-			UaDataValue result (UaVariant(value0), s.statusCode(), sourceTime, UaDateTime::now());
+			// pack the vector into a new UaVariant
+  			<xsl:message terminate="no"> 
+			found array base type <xsl:value-of select= "@dataType"/> !
+			</xsl:message>		 
+			UaVariant v; 
+	        UaUInt32Array arrayDimensions;       		 
+    		OpcUa_UInt32 dim = value.size();
+			<xsl:choose>
+    			<xsl:when test="@dataType='OpcUa_Boolean'">
+    			UaBoolArray ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setBoolArray( ua  ); // **
+   				</xsl:when>
+     			<xsl:when test="@dataType='OpcUa_Byte'">
+    			UaByteArray ua; 
+    			ua.resize( dim ); // bastardo 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setByteArray( ua  ); 
+   				</xsl:when>
+      			<xsl:when test="@dataType='OpcUa_SByte'">
+    			UaSByteArray ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setSByteArray( ua  ); 
+   				</xsl:when>
+     			<xsl:when test="@dataType='OpcUa_Int16'">
+    			UaInt16Array ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setInt16Array( ua  ); 
+   				</xsl:when>
+      			<xsl:when test="@dataType='OpcUa_UInt16'">
+    			UaUInt16Array ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setUInt16Array( ua  ); 
+   				</xsl:when>
+    			<xsl:when test="@dataType='OpcUa_Int32'">
+    			UaInt32Array ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setInt32Array( ua  ); 
+   				</xsl:when>
+      			<xsl:when test="@dataType='OpcUa_UInt32'">
+    			UaUInt32Array ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setUInt32Array( ua  ); 
+   				</xsl:when>
+   				<xsl:when test="@dataType='OpcUa_Int64'">
+    			UaInt64Array ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setInt64Array( ua  ); 
+   				</xsl:when>
+      			<xsl:when test="@dataType='OpcUa_UInt64'">
+    			UaUInt64Array ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setUInt64Array( ua  ); 
+   				</xsl:when>
+     			<xsl:when test="@dataType='OpcUa_Float'">
+    			UaFloatArray ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setFloatArray( ua  ); 
+   				</xsl:when>
+     			<xsl:when test="@dataType='OpcUa_Double'">
+    			UaDoubleArray ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	ua[ i ] = value[ i ];
+   				v.setDoubleArray( ua  ); 
+   				</xsl:when>
+      			<xsl:when test="@dataType='UaString'">
+    			UaStringArray ua; 
+    			ua.create( dim ); 
+    			for ( OpcUa_UInt32 i = 0; i &lt; dim; i++ )	{
+    				UaString uaString = (*(value[ i ].toOpcUaString()));
+    		        uaString.detach( &amp;ua[i] );
+    				// basically does: ua[ i ] = value[ i ];
+    			}
+   				v.setStringArray( ua, /* detach */ true  ); 
+   				</xsl:when>
+   				<xsl:otherwise>
+   					<xsl:message terminate="yes"> 
+					Illegal or unknown array base type <xsl:value-of select= "@dataType"/> !
+					</xsl:message>		
+   				</xsl:otherwise>	
+   			</xsl:choose>
+   			
+   			v.arrayDimensions( arrayDimensions );
+			UaDataValue result ( v, s.statusCode(), sourceTime, UaDateTime::now());
 			
-			
-			//---
 			// get appropriate object
 			s = m_callback->finishRead (
 				m_hTransaction,
