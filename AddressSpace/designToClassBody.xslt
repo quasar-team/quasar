@@ -864,6 +864,8 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 			UaStringArray ua;
 		    v.toStringArray( ua );
 			int dim = ua.length();
+			// copy from UaStringArray into the vector.
+			// do we need to detach sth ?
  		</xsl:when>
 		<xsl:otherwise>
 			<xsl:message terminate="yes"> 
@@ -872,9 +874,8 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 		</xsl:otherwise>		
 	</xsl:choose>
 	r.clear();
-	r.reserve( dim );
 	for ( int i = 0; i &lt; dim; i++ ){
-	    r[ i ] = ua[ i ];
+	   r.push_back( ua[ i ] );
 	}
     return OpcUa_Good;
 }
