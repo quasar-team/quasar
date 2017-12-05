@@ -231,7 +231,7 @@ int BaseQuasarServer::parseCommandLine(
     }
     catch (boost::exception &e)
     {
-        cout << "Couldn't interpret command line, please run with -help " << endl;
+        std::cout << "Couldn't interpret command line, please run with -help " << std::endl;
         return 1;
     }
     notify(vm);

@@ -561,7 +561,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			);
 		</xsl:otherwise>
 		</xsl:choose>
-			cout &lt;&lt; "After finishRead status:" &lt;&lt; s.toString().toUtf8() &lt;&lt; endl;
+			std::cout &lt;&lt; "After finishRead status:" &lt;&lt; s.toString().toUtf8() &lt;&lt; std::endl;
 			
 		}
 		private:
