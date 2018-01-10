@@ -21,7 +21,7 @@
  */
 --->
 # LogIt
-LogIt is designed to be a high performance, flexible logging solution for C++ projects
+LogIt is designed to be a high performance, flexible, thread-safe logging solution for C++ projects
 
 # Overall Architecture
 ## Front end
@@ -81,7 +81,7 @@ _example: registering a user-defined logging component_
 ```cpp
 const Log::LogComponentHandle myHandle = Log::registerLoggingComponent("myComponentName", Log::INF);
 ```
-Once a user-defined component has been registered with LogIt there are 2 ways to log with it
+Note: new logging components can be registered, but never deleted - this detail helps keep the cost of thread-safety for LogIt to reasonable levels. Once a user-defined component has been registered with LogIt there are 2 ways to log with it
 1. **By handle:** Log using the unique handle returned from _registerLoggingComponent_
 
 _example: logging with a component using its handle_
@@ -100,3 +100,9 @@ _example: a log entry for a component_
 ```
 2018-01-09 18:27.31.122088 [SomeFile.cpp:123, TRC, myComponentName] message logged using component ...
 ```
+### Component Logging Performance Consideration: log with handle vs log with name
+At runtime, LogIt must evaluate _every_ call to _LOG(...)_ to see whether its message should be sent to the backends (i.e. logged), or ignored. This decision is based on the relevant threshold for the component. LogIt tries to minimize the cost of these evaluations in line with the general C++ maxim (_don't pay for what you don't use_), however, an evaluation is required and therefore _LOG(...)_ invocations have an associated cost. What are the costs?
+1. **log with handle == fast** : An internal implementation detail now - a component's handle actually identifies the position of an object managing that component's details held in an internal array. The component's details include the current verbosity setting. Evaluating _LOG(...)_ calls made with a component handle essentially require a simple access to that component object based on the handle then a simple, numerical, comparison. Cheap. 
+2. **log with name == slower** : Another internal implementation detail - LogIt resolves calls to _LOG(...)_ made with component names to, essentially, the same call with the corresponding component handle. Clearly then, this requires an additional step: resolving the name to the handle. This is done using a look up in a map that LogIt maintains internally. Until some (as yet unknown) more efficient way of doing this is discovered, this is a more costly operation; _LOG(...)_ calls with component names require a thread-safe lookup in a map, and then (after successfully retrieving the appropriate handle) the same cost as a _LOG(...)_ invocation with a handle. Less cheap.
+
+__Caveat: Implementations change faster than documentation - please resist any temptation to build splendiferous edifices in your code based on the information above, if the implementation changes your edifice will crumble. And I will cruelly point to this caveat. You can store handles returned from _register_ calls, and use those handles in _LOG(...)_ calls, only that will always be supported.__
