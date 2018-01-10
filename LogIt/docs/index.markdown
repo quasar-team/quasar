@@ -62,16 +62,19 @@ const Log::LogComponentHandle myHandle = Log::registerLoggingComponent("myCompon
 ```
 Once a user-defined component has been registered with LogIt there are 2 ways to log with it
 1. **By handle:** Log using the unique handle returned from _registerLoggingComponent_
+
 _example: logging with a component using its handle_
 ```cpp
 LOG(Log::TRC, myHandle) << "message logged using component HANDLE";
 ```
 2. **By name:** Log using the component name (note: name must be a case-sensitive match).
+
 _example: logging with a component using the component name_
 ```cpp
 LOG(Log::TRC, "myComponentName") << "message logged using component STRING";
 ```
-Note that the methods above can be used interchangeably to log with the component, so, if, for some reason, you need to log with the component from an area of the code where the handle is not visible, you can log from there simply using the name. Whether a message is logged with the component handle or name, the resulting log message is the same
+Note that the methods above can be used interchangeably to log with the component, so, if, for some reason, you need to log with the component from an area of the code where the handle is not visible, you can log from there simply using the name. Whether a message is logged with the component handle or name, the resulting log message is the same.
+
 _example: a log entry for a component_
 ```
 2018-01-09 18:27.31.122088 [SomeFile.cpp:123, TRC, myComponentName] message logged using component ...
