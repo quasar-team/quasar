@@ -38,12 +38,13 @@ _possible LogIt log levels_
 ```
 The 6 million dollar question: which level is appropriate for which messages? LogIt leaves that decision to you.
 
-Logging verbosity can be set at runtime via the following 2 methods
-_example: setting the generic component log level to TRC, from user code_
+Logging verbosity can be set at runtime for the generic logger and for user-defined components:
+
+_example: setting the **generic** log level to TRC, from user code_
 ```cpp
 Log::setNonComponentLogLevel(Log::TRC);
 ```
-_example: setting the log level for a specific component (see Components below) to DBG, from user code_
+_example: setting the log level for a **specific component** (see Components below) to DBG, from user code_
 ```cpp
 Log::setComponentLogLevel(myComponentHandle, Log::TRC);
 ```
@@ -53,7 +54,7 @@ Components is LogIt's way of allowing you, the user, to group related messages t
 1. In the log file, messages logged with the same component contain the same component-specific string: easier for searching.
 2. The verbosity of each component can be controlled independently at runtime. Easier to log only relevant messages.
 
-An example usage could be, say, using a component to log all invocations of some 3rd party API. At runtime, if there appears to be some problem with the functionality of whatever this API controls, then the verbosity of that component is increased, hopefully providing better insight into what the API calls are receiving and returning.
+An example usage could be, say, using a component to log all invocations of some 3rd party API. At runtime, if there appears to be some problem with the functionality of whatever this API controls, then the verbosity of that component can be increased, hopefully providing better insight into what the API calls are receiving and returning.
 
 _example: registering a user-defined logging component_
 ```cpp
