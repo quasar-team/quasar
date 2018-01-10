@@ -20,10 +20,11 @@ LogIt delivers log messages to log repositories via back-ends. LogIt comes with 
 ## Verbosity
 Key functionality in any logging library really, code using LogIt defines the messages that _can_ be logged, each message is annotated with a log level. At runtime, the logging threshold can be raised or lowered - the general idea being that raising the threshold means fewer messages are logged, lowering the threshold means more messages will be logged.
 In a production system that is currently behaving well, the logging threshold would probably be left quite high (maybe just errors and warnings), thus keeping the resources spent on logging to a minimum. In a system exhibiting problems, you'll want to diagnose it - i.e. to lower the threshold and allow more verbose logging to understand what the process is actually doing (noting that this means more resources will be spent on logging - processor/disk/...).
+
 _example: controlling verbosity with log levels_
 ```cpp
-LOG(Log::WRN) << "Some kind of bad state detected, this information is probably useful for post-error diagnosis");
-LOG(Log::DBG) << "A debug message. You may not want to spend resource logging this if everything's OK");
+LOG(Log::WRN) << "Some kind of bad state detected, this information should probably always be logged");
+LOG(Log::DBG) << "A debug message. You may not want to spend resource logging this if everything is working as expected");
 ```
 _possible LogIt log levels_
 ```cpp
