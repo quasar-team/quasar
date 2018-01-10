@@ -43,12 +43,12 @@ _example: registering a user-defined logging component_
 const Log::LogComponentHandle myHandle = Log::registerLoggingComponent("myComponentName", Log::INF);
 ```
 Once a user-defined component has been registered with LogIt there are 2 ways to log with it
-1. Log using the unique handle returned from _registerLoggingComponent_
+1. *By handle:* Log using the unique handle returned from _registerLoggingComponent_
 _example: logging with a component using its handle_
 ```cpp
 LOG(Log::TRC, myHandle) << "message logged using component HANDLE";
 ```
-2. Log using the component name, note the name must match exactly (case-sensitive) as used during registration
+2. *By name:* Log using the component name, note the name must match exactly (case-sensitive) as used during registration
 _example: logging with a component using the component name_
 ```cpp
 LOG(Log::TRC, "myComponentName") << "message logged using component STRING";
