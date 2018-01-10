@@ -38,13 +38,13 @@ _possible LogIt log levels_
 ```
 The 6 million dollar question: which log level is appropriate for which messages? Should this message be a warning or just informational? LogIt leaves those difficult decisions to you. LogIt lets you adjust logging verbosity at runtime (for both the generic logger and for user-defined components). You tell LogIt the minimum logging level, messages below that level are ignored, messages at that level or above will be logged.
 
-_example: setting the **generic** log level to TRC, from user code_
+_example: setting the **generic** log level to TRC (i.e. log all messages), from user code_
 ```cpp
 Log::setNonComponentLogLevel(Log::TRC);
 ```
-_example: setting the log level for a **specific component** (see Components below) to DBG, from user code_
+_example: setting the log level for a **specific component** (see Components below) to DBG from user code (i.e. all messages for this component of level DBG or greater will be logged; TRC messages will be omitted)_
 ```cpp
-Log::setComponentLogLevel(myComponentHandle, Log::TRC);
+Log::setComponentLogLevel(myComponentHandle, Log::DBG);
 ```
 
 ## Components
