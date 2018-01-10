@@ -53,21 +53,24 @@
 #include <DServer.h>
 
 using std::string;
+using std::map;
 
-const string getComponentLogLevelFromConfig(const ComponentAttributes& component, const Configuration::ComponentLogLevels& config)
+const string getComponentLogLevelFromConfig(const string& componentName, const Log::LogComponentHandle& componentHandle, const Configuration::ComponentLogLevels& config)
 {
-	string result = Log::logLevelToString(component.getLevel());
+	Log::LOG_LEVEL level = Log::INF;
+	Log::getComponentLogLevel(componentHandle, level);
+	string result = Log::logLevelToString(level);
 
 	BOOST_FOREACH(const Configuration::ComponentLogLevel & componentLogLevelConfig, config.ComponentLogLevel())
 	{
 		const string configuredComponentName = componentLogLevelConfig.componentName();
-		if(component.getName() == configuredComponentName)
+		if(componentName == configuredComponentName)
 		{
 			result = componentLogLevelConfig.logLevel();
 		}
 	}
 
-	LOG(Log::INF) << "configuration for logging component ["<<component.getName()<<"] using value ["<<result<<"]";
+	LOG(Log::INF) << "configuration for logging component ["<<componentName<<"] using value ["<<result<<"]";
 	return result;
 }
 
@@ -81,27 +84,22 @@ const string getComponentLogLevelFromConfig(const ComponentAttributes& component
 bool validateComponentLogLevels( const Configuration::ComponentLogLevels& logLevels )
 {
 	std::list<std::string> checkedComponentNames;
-	const std::list<ComponentAttributes> registeredComponents (Log::getComponentLogsList());
+	const map<Log::LogComponentHandle, string> registeredComponents = Log::getComponentLogsList();
 	BOOST_FOREACH( const Configuration::ComponentLogLevel &logLevel, logLevels.ComponentLogLevel() )
 	{
 		std::string name (logLevel.componentName());
 
 		/* 1) validate that the component is registered by querying its id basing on name */
-//      this nice lambda code works only with fully C++11 compatbicle compiler...
-//		std::find_if( components.begin(), components.end(),
-//				[name](ComponentAttributes &ca){ return name == ca.getName(); }
-//		);
-
-		// have to use sth gcc 4.4.7 compatible
 		bool found = false;
-		BOOST_FOREACH( const ComponentAttributes& ca, registeredComponents)
+		for(auto& componentInfo : registeredComponents)
 		{
-			if (name == ca.getName())
+			if(name == componentInfo.second)
 			{
 				found = true;
 				break;
 			}
 		}
+
 		if (!found)
 		{
 			std::cout << "Component Log Level named '" << name << "' is unknown (not registered)." << std::endl;
@@ -185,11 +183,11 @@ void configureServer(const Configuration::Server& config, AddressSpace::ASNodeMa
     dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
 }
 
-void configureComponentLogLevel(const ComponentAttributes& component, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
+void configureComponentLogLevel(const string& componentName, const Log::LogComponentHandle& componentHandle, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
 {
-    AddressSpace::ASComponentLogLevel *asComponentLogLevel = new AddressSpace::ASComponentLogLevel(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVEL), nm, component.getName(), logLevel);
+    AddressSpace::ASComponentLogLevel *asComponentLogLevel = new AddressSpace::ASComponentLogLevel(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVEL), nm, componentName, logLevel);
 
-    Device::DComponentLogLevel* dComponentLogLevel = new Device::DComponentLogLevel (component.getId(), logLevel);
+    Device::DComponentLogLevel* dComponentLogLevel = new Device::DComponentLogLevel (componentHandle, logLevel);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dComponentLogLevel, asComponentLogLevel);
 }
 
@@ -255,10 +253,13 @@ void configureComponentLogLevels(const Configuration::ComponentLogLevels& config
 {
     AddressSpace::ASComponentLogLevels* asComponentLogLevels = new AddressSpace::ASComponentLogLevels(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVELS), nm);
 
-    BOOST_FOREACH(const ComponentAttributes& component, Log::getComponentLogsList())
+	const map<Log::LogComponentHandle, string> registeredComponents = Log::getComponentLogsList();
+    for(auto componentIter : registeredComponents)
     {
-    	const string componentLogLevel = getComponentLogLevelFromConfig(component, config);
-    	configureComponentLogLevel(component, componentLogLevel, nm, asComponentLogLevels);
+    	const Log::LogComponentHandle componentHandle = componentIter.first;
+    	const string componentName = componentIter.second;
+    	const string componentLogLevel = getComponentLogLevelFromConfig(componentName, componentHandle, config);
+    	configureComponentLogLevel(componentName, componentHandle, componentLogLevel, nm, asComponentLogLevels);
     }
 }
 

@@ -20,6 +20,10 @@
 
 project(opc_ua)
 cmake_minimum_required(VERSION 2.8)
+
+# C++11 as standard
+set (CMAKE_CXX_STANDARD 11)
+
 add_definitions(
 	-DSUPPORT_XML_CONFIG 
 )

@@ -21,33 +21,18 @@
 
 #include "ComponentAttributes.h"
 
-ComponentAttributes::ComponentAttributes(const uint32_t& id, const std::string& name, const Log::LOG_LEVEL& level/*=INF*/)
-:m_id(id), m_name(name), m_level(level)
+ComponentAttributes::ComponentAttributes(const Log::LogComponentHandle& handle, const std::string& name, const Log::LOG_LEVEL& initialLogLevel/*=INF*/)
+:m_handle(handle), m_name(name), m_level(initialLogLevel)
 {}
-
-ComponentAttributes::ComponentAttributes(const ComponentAttributes& obj)
-:m_id(obj.m_id), m_name(obj.m_name), m_level(obj.m_level)
-{}
-
-ComponentAttributes& ComponentAttributes::operator=(const ComponentAttributes& obj)
-{
-    if(&obj == this) return *this;
-
-    m_id = obj.m_id;
-    m_name = obj.m_name;
-    m_level = obj.m_level;
-
-    return *this;
-}
-
-uint32_t ComponentAttributes::getId() const
-{
-    return m_id;
-}
 
 std::string ComponentAttributes::getName() const
 {
     return m_name;
+}
+
+Log::LogComponentHandle ComponentAttributes::getHandle() const
+{
+	return m_handle;
 }
 
 Log::LOG_LEVEL ComponentAttributes::getLevel() const

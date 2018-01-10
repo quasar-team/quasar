@@ -25,20 +25,18 @@
 #include <iostream>
 #include <list>
 
+#include "LogItStaticDefinitions.h"
 #include "LogRecord.h"
 #include "LogLevels.h"
-#include "ComponentAttributes.h"
 #include "LogItInstance.h"
 
-const uint32_t g_sMaxComponentIdCount = 1024;
-
 // internal macro - will be called by LOG(LOG_LEVEL)
-#define LOG_WITHOUT_COMPONENT_ID(level) \
+#define LOG_WITHOUT_COMPONENT(level) \
      if( !Log::isLoggable(level) ) (void)0; \
      else LogRecord(__FILE__, __LINE__, level).getStream()
 
-// internal macro - will be called by LOG(LOG_LEVEL, USER_COMPONENT_ID)
-#define LOG_WITH_COMPONENT_ID(level, component) \
+// internal macro - will be called by LOG(LOG_LEVEL, USER_COMPONENT)
+#define LOG_WITH_COMPONENT(level, component) \
     if( !Log::isLoggable(level, component) ) (void)0; \
     else LogRecord(__FILE__, __LINE__, level, component).getStream()
 
@@ -46,13 +44,13 @@ const uint32_t g_sMaxComponentIdCount = 1024;
  * The one and only LOG macro - application code should log using this macro.
  * Invocations resolve to either
  *
- * - single arg 'LOG(LOG_LEVEL)' - LOG without component ID.
+ * - single arg 'LOG(LOG_LEVEL)' - LOG using the general purpose logging component.
  * or
- * - double arg 'LOG(LOG_LEVEL, componentId)' - LOG with a specific component ID.
+ * - double arg 'LOG(LOG_LEVEL, component)' - LOG using a specific component (handle or name).
  *
  */
 #define GET_LOG_MACRO(_1, _2, LOG_MACRO_NAME, ...) LOG_MACRO_NAME
-#define LOG(...) GET_LOG_MACRO(__VA_ARGS__, LOG_WITH_COMPONENT_ID, LOG_WITHOUT_COMPONENT_ID)(__VA_ARGS__)
+#define LOG(...) GET_LOG_MACRO(__VA_ARGS__, LOG_WITH_COMPONENT, LOG_WITHOUT_COMPONENT)(__VA_ARGS__)
 
 namespace Log
 {
@@ -63,22 +61,12 @@ namespace Log
      */
 
     /**
-     * Simple initializer, without component specific logging. Only
+     * Simple initializer, without component specific logging.
+     * Only
      * LOG(LOG_LEVEL)
-     * invocations will be considered for logging,
-     *
-     * all LOG(LOG_LEVEL, USER_COMPONENT_ID) calls are ignored.
+     * invocations will be considered for logging, subject to logging verbosity threshold.
      */
     bool initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel = Log::INF);
-
-    /**
-     * initializer with user defined component support.
-     * LOG(LOG_LEVEL) invocations will be considered for logging
-     *
-     * and LOG(LOG_LEVEL, USER_COMPONENT_ID) calls are considered too for registered components
-     * (i.e. for component IDs specified in the vector of components).
-     */
-    bool initializeLogging(const Log::LOG_LEVEL& nonComponentLogLevel, const std::list<ComponentAttributes>& components);
 
 	/**
 	 * initializer to be called when using LogIt *inside* a shared library. The remoteLogInstance ptr should be supplied
@@ -91,10 +79,26 @@ namespace Log
 	bool initializeDllLogging(LogItInstance* remoteLogInstance);
 
     /**
-     * log check - non-component (single-arg) and component (double-arg) specific
+     * register a user defined logging component.
+     * LOG(LOG_LEVEL) invocations will be considered for logging
+     * and
+     * LOG(LOG_LEVEL, USER_COMPONENT) i.e. calls for registered components, will be considered
+     * for logging, subject to threshold.
+     *
+     * RETURNS: the logging component handle, or, in case of error, Log::INVALID_HANDLE
+     */
+	LogComponentHandle registerLoggingComponent(const std::string& componentName, const Log::LOG_LEVEL& nonComponentLogLevel = Log::INF);
+
+    /**
+     * log check: should message be logged?
+     *
+     * no component (single-arg : level)
+     * and
+     * component specific (double-arg : level + (handle or name))
      */
     bool isLoggable(const Log::LOG_LEVEL& level);
-    bool isLoggable(const Log::LOG_LEVEL& level, const uint32_t& componentId);
+    bool isLoggable(const Log::LOG_LEVEL& level, const LogComponentHandle& componentHandle);
+    bool isLoggable(const Log::LOG_LEVEL& level, const std::string& componentName);
 
     /**
      * Get/Set the log threshold for all LOG messages without a component specified, i.e. calls such as
@@ -105,33 +109,30 @@ namespace Log
 
     /**
      * Get/Set the log threshold for all LOG messages where a component is specified, i.e. calls such as
-     * LOG(Log::INF, USER_DEFINED_COMPONENT_ID_1) << "log message tagged with component id"
+     * LOG(Log::INF, USER_DEFINED_COMPONENT_HANDLE_1) << "log message tagged with component id"
      *
-     * Note getComponentLogLevel returns false if componentId not registered.
+     * Note getComponentLogLevel returns false if componentHandle not registered.
      */
-    const std::list<ComponentAttributes> getComponentLogsList();
-    bool setComponentLogLevel(const uint32_t& componentId, const LOG_LEVEL& level);
-    bool getComponentLogLevel(const uint32_t& componentId, LOG_LEVEL& level);
-
-
+    const std::map<Log::LogComponentHandle, std::string> getComponentLogsList();
+    bool setComponentLogLevel(const LogComponentHandle& componentHandle, const LOG_LEVEL& level);
+    bool getComponentLogLevel(const LogComponentHandle& componentHandle, LOG_LEVEL& level);
 
     /**
-     * Sets the log threshold for *all* LOG invocations...
+     * Finds the user defined string (specified in the registerLoggingComponent call)
+     * for a given componentHandle.
      *
-     * applies to non component-specific logging, i.e. LOG invocations like
-     * LOG(Log::INF) << "general log message"
-     *
-     * and applies to *all* component-specific logging, i.e. LOG invocations like
-     * LOG(Log::INF, USER_DEFINED_COMPONENT_ID_1) << "log message tagged with component id"
+     * If there is no component registered with that handle, returns "UNKNOWN", otherwise
+     * returns the component name.
      */
-    void setGlobalLogLevel(const LOG_LEVEL& level);
+    std::string getComponentName(const LogComponentHandle& componentHandle);
 
     /**
-     * Returns the user defined string (specified via ComponentAttributes in the initializeLogging call)
-     * for a given componentId.
-     * If there is no component registered for that id, returns "UNKNOWN"
+     * Finds the component handle for a given component name.
+     *
+     * If there is no component registered with that name, returns Log::INVALID_HANDLE, otherwise
+     * returns the component handle.
      */
-    std::string componentIdToString(const uint32_t& componentId);
+    LogComponentHandle getComponentHandle(const std::string componentName);
 }
 
 #endif /* LOGIT_H_ */

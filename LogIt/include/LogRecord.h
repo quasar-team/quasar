@@ -25,12 +25,15 @@
 #include <stdint.h>
 #include <sstream>
 #include "LogLevels.h"
+#include "LogItStaticDefinitions.h"
 
 class LogRecord
 {
 public:
     LogRecord(const std::string& file, const int& line, const Log::LOG_LEVEL& level);
-    LogRecord(const std::string& file, const int& line, const Log::LOG_LEVEL& level, const uint32_t& componentId);
+    LogRecord(const std::string& file, const int& line, const Log::LOG_LEVEL& level, const Log::LogComponentHandle& componentHandle);
+    LogRecord(const std::string& file, const int& line, const Log::LOG_LEVEL& level, const std::string& componentName);
+
     virtual ~LogRecord();
 
     std::ostream& getStream();

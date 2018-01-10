@@ -1,7 +1,7 @@
 /* © Copyright CERN, 2015.  All rights not expressly granted are reserved.
- * ComponentAttributes.h
+ * LogIt.h
  *
- *  Created on: Aug 18, 2015
+ *  Created on: Jan 8, 2018
  * 		Author: Benjamin Farnham <benjamin.farnham@cern.ch>
  *
  *  This file is part of Quasar.
@@ -18,30 +18,15 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef LOGIT_INCLUDE_LOGITSTATICDEFINITIONS_H_
+#define LOGIT_INCLUDE_LOGITSTATICDEFINITIONS_H_
 
-#ifndef COMPONENTATTRIBUTES_H_
-#define COMPONENTATTRIBUTES_H_
-
-#include <string>
-#include <stdint.h>
-#include "LogLevels.h"
-#include "LogItStaticDefinitions.h"
-
-class ComponentAttributes
+namespace Log
 {
-public:
-	ComponentAttributes(const Log::LogComponentHandle& handle, const std::string& name, const Log::LOG_LEVEL& initialLogLevel = Log::INF);
+	typedef size_t LogComponentHandle;
 
-    std::string getName() const;
-    Log::LogComponentHandle getHandle() const;
+	const size_t g_sMaxComponentIdCount = 512;
+	const LogComponentHandle INVALID_HANDLE = 999999999;
+}
 
-    Log::LOG_LEVEL getLevel() const;
-    void setLevel(const Log::LOG_LEVEL& level);
-
-private:
-    const Log::LogComponentHandle m_handle;
-    const std::string m_name;
-    Log::LOG_LEVEL m_level;
-};
-
-#endif /* COMPONENTATTRIBUTES_H_ */
+#endif /* LOGIT_INCLUDE_LOGITSTATICDEFINITIONS_H_ */
