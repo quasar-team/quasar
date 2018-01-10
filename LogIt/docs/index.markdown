@@ -36,9 +36,7 @@ _possible LogIt log levels_
         ERR
     };
 ```
-The 6 million dollar question: which level is appropriate for which messages? LogIt leaves that decision to you.
-
-Logging verbosity can be set at runtime for the generic logger and for user-defined components:
+The 6 million dollar question: which log level is appropriate for which messages? Should this message be a warning or just informational? LogIt leaves those difficult decisions to you. LogIt lets you adjust logging verbosity at runtime (for both the generic logger and for user-defined components). You tell LogIt the minimum logging level, messages below that level are ignored, messages at that level or above will be logged.
 
 _example: setting the **generic** log level to TRC, from user code_
 ```cpp
