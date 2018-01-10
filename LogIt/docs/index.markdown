@@ -12,7 +12,7 @@ LOG(Log::INF) << "hello, world!");
 ```
 logs this output
 ```
-2018-01-09 18:27.31.122088 [main.cpp:1, INF] hello, world!
+2018-01-09 18:27.31.122088 [main.cpp:10, INF] hello, world!
 ```
 
 ## Back ends
