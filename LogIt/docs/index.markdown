@@ -3,12 +3,18 @@ LogIt is designed to be a high performance, flexible logging solution for C++ pr
 
 # Overall Architecture
 ## Front end
-LogIt provides a logging front-end; this is the API your code will call to log messages via LogIt. The front-end is fixed, and is provided via the interface file LogIt.h.
+LogIt provides a logging front-end; this is the API your code will call to log messages via LogIt. The front-end is fixed, this is the API described in the interface file _LogIt.h_.
 
 _example: logging a message with the LogIt API_
 ```cpp
+// line below is line 10, in file main.cpp
 LOG(Log::INF) << "hello, world!");
 ```
+logs this output
+```
+2018-01-09 18:27.31.122088 [main.cpp:1, INF] hello, world!
+```
+
 ## Back ends
 LogIt delivers log messages to log repositories via back-ends. LogIt comes with some ready made back-end implementations (fairly standard stuff: stdout, a rolling file buffer based on the boost logging library, etc.) and an open interface for you to provide custom back-end implementations to deliver log messages to your custom log repositories.
 ## Verbosity
@@ -31,6 +37,17 @@ _possible LogIt log levels_
     };
 ```
 The 6 million dollar question: which level is appropriate for which messages? LogIt leaves that decision to you.
+
+Logging verbosity can be set at runtime via the following 2 methods
+_example: setting the generic component log level to TRC, from user code_
+```cpp
+Log::setNonComponentLogLevel(Log::TRC);
+```
+_example: setting the log level for a specific component (see Components below) to DBG, from user code_
+```cpp
+Log::setComponentLogLevel(myComponentHandle, Log::TRC);
+```
+
 ## Components
 Components is LogIt's way of allowing you, the user, to group related messages together. Each log message can be annotated with a (user-defined) component identifier, this has 2 main benefits:
 1. In the log file, messages logged with the same component contain the same component-specific string: easier for searching.
