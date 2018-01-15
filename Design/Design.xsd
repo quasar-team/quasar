@@ -377,7 +377,7 @@ elementFormDefault="qualified">
     	<restriction base="string"></restriction>
     </simpleType>
  
- 	<simpleType name="one-to-max">
+ 	<simpleType name="OneToMaxLimits">
    		<restriction base="integer">
       	<minInclusive value="0"/>
       	<maxInclusive value="2147483647"/>
@@ -385,17 +385,10 @@ elementFormDefault="qualified">
 	</simpleType>
 	
 	<complexType name="Array">
-      	<attribute name="minimumSize" type="tns:one-to-max"></attribute>
- 	 	<attribute name="maximumSize" type="tns:one-to-max"></attribute>
+      	<attribute name="minimumSize" type="tns:OneToMaxLimits"></attribute>
+ 	 	<attribute name="maximumSize" type="tns:OneToMaxLimits"></attribute>
     </complexType>
-<!-- 
-	<complexType name="Array">
-      	<attribute name="minimumSize" type="integer"></attribute>
- 	 	<attribute name="maximumSize" type="integer"></attribute>
-    </complexType>
-    -->
-
-    <complexType name="DeviceLogic">
+   <complexType name="DeviceLogic">
     	<sequence>
     		<element name="mutex" type="tns:DeviceLogicMutex" minOccurs="0" maxOccurs="1"></element>
     	</sequence>
