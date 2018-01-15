@@ -795,7 +795,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 	<!-- found array signature -->
 	
 
-UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> ( vector &lt;<xsl:value-of select="@dataType"/> &gt; &amp; r) const 
+UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> ( std::vector &lt;<xsl:value-of select="@dataType"/> &gt; &amp; r) const 
 {
 	// get the variant, extract the array corresponding to the type and put it into the vector
 	UaVariant v ( * (m_<xsl:value-of select="@name"/>-&gt;value (/* session */ 0).value())) ;
@@ -971,7 +971,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 					// from te UaVariant, via a conversion to an UaStringArray. Then we just call
 					// the (delegated) device method giving the vector as argument
 					
-					vector&lt;UaString&gt; v_value;
+					std::vector&lt;UaString&gt; v_value;
         			UaStringArray ua;
     				v.toStringArray( ua );
     				int dim = ua.length();
@@ -999,7 +999,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 					<xsl:choose>
 					<xsl:when test="d:array">
 					// array point2
-					vector&lt;<xsl:value-of select="@dataType" />&gt; v_value;
+					std::vector&lt;<xsl:value-of select="@dataType" />&gt; v_value;
 					// call the array method to fill the vector
 					// no size check for a change, since methods are written by the user anyway
 					
