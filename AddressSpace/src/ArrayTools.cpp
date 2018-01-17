@@ -1,3 +1,24 @@
+/* © Copyright CERN, PNPI, 2015.  All rights not expressly granted are reserved.
+ * ASNodeManager.h
+ *
+ *  Created on: Jun 20, 2014
+ *      Author: Piotr Nikiel <piotr@nikiel.info>
+ *      Author: Viatcheslav Filimonov <vfilimon@cern.ch>
+ *
+ *  This file is part of Quasar.
+ *
+ *  Quasar is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public Licence as published by
+ *  the Free Software Foundation, either version 3 of the Licence.
+ *
+ *  Quasar is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public Licence for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
  * ArrayUtils.cpp
  *
@@ -8,17 +29,12 @@
 #include <vector>
 #include "../include/ArrayTools.h"
 
-ArrayTools::ArrayTools() {
-	// TODO Auto-generated constructor stub
+ArrayTools::ArrayTools() {}
 
-}
-
-ArrayTools::~ArrayTools() {
-	// TODO Auto-generated destructor stub
-}
+ArrayTools::~ArrayTools() {}
 
 
-// same signature as as Boolean: unsigned char. Can't overload
+// same signature as a Boolean: unsigned char. Can't overload
 // /* static */ UaVariant ArrayUtils::convertVectorToUaVariant( std::vector <OpcUa_Boolean> value )
 /* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Byte> value )
 {
