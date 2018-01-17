@@ -33,6 +33,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:param name="className"/>
 	<xsl:param name="xsltFileName"/>
 
+
+
 	<xsl:template name="cachevariables_setgetters">
 
 	<!-- dataType needed for this -->

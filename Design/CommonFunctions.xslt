@@ -199,6 +199,30 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 
 </xsl:function>
 
+
+<!-- return the OpcUaNode Id from the OpcUa Type-->
+<xsl:function name="fnc:dataTypeToOpcNodeId">
+<xsl:param name="dtype"/>
+<xsl:choose>
+<xsl:when test="$dtype='OpcUa_Boolean'">UaNodeId( OpcUaId_Boolean, /* system namespace */ 0 )</xsl:when>
+<xsl:when test="$dtype='OpcUa_Byte'">UaNodeId( OpcUaId_Byte, /* system namespace */ 0  )</xsl:when>
+<xsl:when test="$dtype='OpcUa_SByte'">UaNodeId( OpcUaId_SByte, /* system namespace */ 0  )</xsl:when>
+<xsl:when test="$dtype='OpcUa_Int16'">UaNodeId( OpcUaId_Int16, /* system namespace */ 0  )</xsl:when>
+<xsl:when test="$dtype='OpcUa_UInt16'">UaNodeId( OpcUaId_UInt16 , /* system namespace */ 0 )</xsl:when>
+<xsl:when test="$dtype='OpcUa_Int32'">UaNodeId( OpcUaId_Int32, /* system namespace */ 0  )</xsl:when>
+<xsl:when test="$dtype='OpcUa_UInt32'">UaNodeId( OpcUaId_UInt32, /* system namespace */ 0  )</xsl:when>
+<xsl:when test="$dtype='OpcUa_Int64'">UaNodeId( OpcUaId_Int64, /* system namespace */ 0  )</xsl:when>
+<xsl:when test="$dtype='OpcUa_UInt64'">UaNodeId( OpcUaId_UInt64, /* system namespace */ 0  )</xsl:when>
+<xsl:when test="$dtype='OpcUa_Float'">UaNodeId( OpcUaId_Float, /* system namespace */ 0  )</xsl:when>
+<xsl:when test="$dtype='OpcUa_Double'">UaNodeId( OpcUaId_Double, /* system namespace */ 0  )</xsl:when>
+<xsl:when test="$dtype='UaString'">UaNodeId( OpcUaId_String, /* system namespace */ 0  )</xsl:when>
+<xsl:otherwise><xsl:message terminate="yes">Sorry, UaNodeId of this dataType='<xsl:value-of select="$dtype"/>' is unknown.</xsl:message></xsl:otherwise>
+</xsl:choose>
+</xsl:function>
+	
+
+
+
 <xsl:function name="fnc:dataTypeToBuiltinType">
 <xsl:param name="dataType"/>
 <xsl:choose>
