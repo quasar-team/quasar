@@ -30,127 +30,91 @@
 #include "../include/ArrayTools.h"
 
 ArrayTools::ArrayTools() {}
-
 ArrayTools::~ArrayTools() {}
 
-
-// same signature as a Boolean: unsigned char. Can't overload
-// /* static */ UaVariant ArrayUtils::convertVectorToUaVariant( std::vector <OpcUa_Boolean> value )
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Byte> value )
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Boolean> value, UaVariant &v )
 {
-    UaVariant v;
-    UaUInt32Array arrayDimensions;
+    UaBooleanArray ua;
+    ua.create( value.size() );
+    for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
+    v.setBoolArray( ua );
+}
+#if 0
+// OpcUa_Byte has same signature as OpcUa_Boolean: unsigned char. Can't overload. Use native C++ type therefore
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Byte> value, UaVariant &v )
+{
     UaByteArray ua;
     // ua.create( value.size() );
     ua.resize( value.size() );
     for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
     v.setByteArray( ua );
-    v.arrayDimensions( arrayDimensions );
-    return( v );
 }
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_SByte> value )
+#endif
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_SByte> value, UaVariant &v  )
 {
-	UaVariant v;
-	UaUInt32Array arrayDimensions;
 	UaSByteArray ua;
 	ua.create( value.size() );
 	for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
 	v.setSByteArray( ua );
-	v.arrayDimensions( arrayDimensions );
-	return( v );
 }
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Int16> value )
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Int16> value, UaVariant &v  )
 {
-    UaVariant v;
-    UaUInt32Array arrayDimensions;
     UaInt16Array ua;
     ua.create( value.size() );
     for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
     v.setInt16Array( ua );
-    v.arrayDimensions( arrayDimensions );
-    return( v );
 }
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_UInt16> value )
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_UInt16> value, UaVariant &v  )
 {
-    UaVariant v;
-    UaUInt32Array arrayDimensions;
     UaUInt16Array ua;
     ua.create( value.size() );
     for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
     v.setUInt16Array( ua );
-    v.arrayDimensions( arrayDimensions );
-    return( v );
 }
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Int32> value )
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Int32> value, UaVariant &v  )
 {
-    UaVariant v;
-    UaUInt32Array arrayDimensions;
     UaInt32Array ua;
     ua.create( value.size() );
     for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
     v.setInt32Array( ua );
-    v.arrayDimensions( arrayDimensions );
-    return( v );
 }
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_UInt32> value )
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_UInt32> value , UaVariant &v )
 {
-    UaVariant v;
-    UaUInt32Array arrayDimensions;
     UaUInt32Array ua;
     ua.create( value.size() );
     for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
     v.setUInt32Array( ua );
-    v.arrayDimensions( arrayDimensions );
-    return( v );
 }
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Int64> value )
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Int64> value , UaVariant &v )
 {
-    UaVariant v;
-    UaUInt32Array arrayDimensions;
     UaInt64Array ua;
     ua.create( value.size() );
     for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
     v.setInt64Array( ua );
-    v.arrayDimensions( arrayDimensions );
-    return( v );
 }
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_UInt64> value )
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_UInt64> value, UaVariant &v  )
 {
-    UaVariant v;
-    UaUInt32Array arrayDimensions;
     UaUInt64Array ua;
     ua.create( value.size() );
     for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
     v.setUInt64Array( ua );
-    v.arrayDimensions( arrayDimensions );
-    return( v );
 }
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Float> value )
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Float> value, UaVariant &v  )
 {
-    UaVariant v;
-    UaUInt32Array arrayDimensions;
+    UaFloatArray ua;
+    ua.create( value.size() );
+    for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
+    v.setFloatArray( ua );
+}
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Double> value, UaVariant &v  )
+{
     UaDoubleArray ua;
     ua.create( value.size() );
     for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
     v.setDoubleArray( ua );
-    v.arrayDimensions( arrayDimensions );
-    return( v );
 }
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Double> value )
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <UaString> value, UaVariant &v  )
 {
-    UaVariant v;
-    UaUInt32Array arrayDimensions;
-    UaDoubleArray ua;
-    ua.create( value.size() );
-    for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
-    v.setDoubleArray( ua );
-    v.arrayDimensions( arrayDimensions );
-    return( v );
-}
-/* static */ UaVariant ArrayTools::convertVectorToUaVariant( std::vector <UaString> value )
-{
-	UaVariant v;
-	UaUInt32Array arrayDimensions;
 	UaStringArray ua;
 	ua.create( value.size() );
 	for ( unsigned int i = 0; i < value.size(); i++ )	{
@@ -158,11 +122,18 @@ ArrayTools::~ArrayTools() {}
         uaString.detach( &ua[i] ); 		// basically does: ua[ i ] = value[ i ];
 	}
     v.setStringArray( ua, /* detach */ true  );
-    v.arrayDimensions( arrayDimensions );
-    return( v );
 }
 
 
+/* static */ void ArrayTools::convertUaVariantToVector( UaVariant v, std::vector <OpcUa_Boolean> &vect ){
+	UaBooleanArray ua;
+	v.toBoolArray( ua );
+	vect.clear();
+	for ( unsigned int i = 0; i < ua.length(); i++ ) {
+		vect.push_back( (bool) ua[ i ]);
+	}
+}
+#if 0
 /* static */ void ArrayTools::convertUaVariantToVector( UaVariant v, std::vector <OpcUa_Byte> &vect ){
 	UaByteArray ua;
 	v.toByteArray( ua );
@@ -171,6 +142,7 @@ ArrayTools::~ArrayTools() {}
 		vect.push_back( ua[ i ]);
 	}
 }
+#endif
 /* static */ void ArrayTools::convertUaVariantToVector( UaVariant v, std::vector <OpcUa_SByte> &vect ){
 	UaSByteArray ua;
 	v.toSByteArray( ua );

@@ -127,7 +127,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:choose>
     	<xsl:when test="d:array">
 			// pack the vector into a new UaVariant
- 			UaVariant v = ArrayTools::convertVectorToUaVariant( value );
+ 			UaVariant v;
+ 			ArrayTools::convertVectorToUaVariant( value, v );
 			UaDataValue result ( v, s.statusCode(), sourceTime, UaDateTime::now());
 			
 			// get appropriate object

@@ -181,9 +181,8 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
 	
 	<xsl:choose>
 	<xsl:when test="d:array">
-	 		// found array signature: have to put the vector into the variant
-			// for arrays the variant setting method is a bit more complex
-			{ // scope
+	// found array signature: have to put the vector into the variant
+	{ // scope
 			OpcUa_Int32 valueRank = 1; // only support 1-dim arrays 
 			UaUInt32Array arrayDimensions;    
 			int dim = config.<xsl:value-of select="@name" />().value().size();
@@ -210,7 +209,9 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
 			}
 			</xsl:otherwise>
 			</xsl:choose>
-			UaVariant v = ArrayTools::convertVectorToUaVariant( vect );
+			UaVariant v;
+			ArrayTools::convertVectorToUaVariant( vect, v );
+			v.arrayDimensions( arrayDimensions );
 			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
     		m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
 			m_<xsl:value-of select="@name"/>-&gt;setDataType( <xsl:value-of select="fnc:dataTypeToOpcNodeId(@dataType)"/> );
@@ -445,7 +446,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 	</xsl:if>
 	<xsl:if test="@minimumSize &lt; 0">
 	<xsl:message terminate="yes">
-		Illegal array boundaries for <xsl:value-of select="$baseName"/> : minimumSize= <xsl:value-of select= "$xmin"/> can not be negative !
+		Illegal array boundaries: minimumSize= <xsl:value-of select= "@minimumSize"/> can not be smaller than minimumSize= <xsl:value-of select= "@minimumSize"/>!
 	</xsl:message>
 	</xsl:if>
  
@@ -458,7 +459,10 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 	UaUInt32Array arrayDimensions;       		
 	OpcUa_Int32 valueRank = 1; // only support 1-dim arrays
 	 	
- 	UaVariant v = ArrayTools::convertVectorToUaVariant( value );
+ 	UaVariant v;
+ 	ArrayTools::convertVectorToUaVariant( value, v );
+ 	v.arrayDimensions( arrayDimensions );
+	
 	m_<xsl:value-of select="$baseName"/>-&gt;setValueRank( valueRank );
     m_<xsl:value-of select="$baseName"/>-&gt;setArrayDimensions( arrayDimensions );	
     m_<xsl:value-of select="$baseName"/>-&gt;setDataType( <xsl:value-of select="fnc:dataTypeToOpcNodeId($baseType)"/> );
@@ -484,20 +488,19 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 <xsl:choose>
 <xsl:when test="d:array">
 	<!-- found array signature -->
-	
 
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> ( std::vector &lt;<xsl:value-of select="@dataType"/> &gt; &amp; r) const 
 {
 	// get the variant, extract the array corresponding to the type and put it into the vector
 	UaVariant v ( * (m_<xsl:value-of select="@name"/>-&gt;value (/* session */ 0).value())) ;
 	if ( !v.isArray() ){
-	   	PRINT("ERROR: get " &lt;&lt; this->getDeviceLink()->getFullName() &lt;&lt; " <xsl:value-of select="$baseName"/> "&lt;&lt; " runtime array not found " );
-		std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " is array= false " &lt;&lt; std::endl;
+	   	PRINT("ERROR: get " &lt;&lt; this->getDeviceLink()->getFullName() &lt;&lt; " <xsl:value-of select="@name"/> "&lt;&lt; " runtime array not found " );
         return( OpcUa_BadIndexRangeNoData );
 	} 
 	ArrayTools::convertUaVariantToVector( v, r );
     return OpcUa_Good;
 }
+
 </xsl:when>
 <xsl:otherwise>
 	<!-- found scalar signature -->
