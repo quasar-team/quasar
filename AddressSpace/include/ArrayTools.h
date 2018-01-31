@@ -34,13 +34,17 @@
 #include <opcua_baseobjecttype.h>
 #include <opcua_basedatavariabletype.h>
 
+namespace AddressSpace
+{
+
+
 class ArrayTools {
 public:
 	ArrayTools();
 	virtual ~ArrayTools();
 
 	static void convertVectorToUaVariant( std::vector <OpcUa_Boolean>  value, UaVariant &v );
-	// static void convertVectorToUaVariant( std::vector <OpcUa_Byte>   value, UaVariant &v );
+	static void convertVectorToUaVariant( std::vector <OpcUa_Byte>  value, UaVariant &v, bool dummy ); // cheat overloading
 	static void convertVectorToUaVariant( std::vector <OpcUa_SByte>  value, UaVariant &v  );
 	static void convertVectorToUaVariant( std::vector <OpcUa_Int16>  value, UaVariant &v  );
 	static void convertVectorToUaVariant( std::vector <OpcUa_UInt16> value, UaVariant &v  );
@@ -53,7 +57,7 @@ public:
 	static void convertVectorToUaVariant( std::vector <UaString>     value , UaVariant &v );
 
 	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Boolean> &vect );
-	// static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Byte> &vect );
+	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Byte> &vect, bool dummy ); // cheat overloading
 	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_SByte> &vect );
 	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Int16> &vect );
 	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_UInt16> &vect );
@@ -64,7 +68,7 @@ public:
 	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Float> &vect );
 	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Double> &vect );
 	static void convertUaVariantToVector(  UaVariant v, std::vector <UaString> &vect );
-
 };
 
+}
 #endif /* QUASAR_COMMON_SRC_ARRAYUTILS_H_ */

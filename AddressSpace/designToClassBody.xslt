@@ -209,8 +209,16 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
 			}
 			</xsl:otherwise>
 			</xsl:choose>
+			
 			UaVariant v;
+			<xsl:choose>
+			<xsl:when test="@dataType='OpcUa_Byte'">
+			ArrayTools::convertVectorToUaVariant( vect, v, true ); // cheat overloading
+			</xsl:when>
+			<xsl:otherwise>
 			ArrayTools::convertVectorToUaVariant( vect, v );
+			</xsl:otherwise>
+			</xsl:choose>
 			v.arrayDimensions( arrayDimensions );
 			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
     		m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
@@ -460,7 +468,15 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 	OpcUa_Int32 valueRank = 1; // only support 1-dim arrays
 	 	
  	UaVariant v;
+ 	
+ 	<xsl:choose>
+ 	<xsl:when test="$baseType = 'OpcUa_Byte'">
+ 	ArrayTools::convertVectorToUaVariant( value, v, true ); // cheat overloading
+ 	</xsl:when>
+ 	<xsl:otherwise>
  	ArrayTools::convertVectorToUaVariant( value, v );
+ 	</xsl:otherwise>
+ 	</xsl:choose>
  	v.arrayDimensions( arrayDimensions );
 	
 	m_<xsl:value-of select="$baseName"/>-&gt;setValueRank( valueRank );
@@ -497,7 +513,14 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 	   	PRINT("ERROR: get " &lt;&lt; this->getDeviceLink()->getFullName() &lt;&lt; " <xsl:value-of select="@name"/> "&lt;&lt; " runtime array not found " );
         return( OpcUa_BadIndexRangeNoData );
 	} 
+	<xsl:choose>
+	<xsl:when test="@dataType='OpcUa_Byte'">
+	ArrayTools::convertUaVariantToVector( v, r, true );
+ 	</xsl:when>
+	<xsl:otherwise>
 	ArrayTools::convertUaVariantToVector( v, r );
+	</xsl:otherwise>
+	</xsl:choose>
     return OpcUa_Good;
 }
 
@@ -593,7 +616,16 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 					// from te UaVariant, via a conversion to an UaStringArray. Then we just call
 					// the (delegated) device method giving the vector as argument
 					std::vector&lt;UaString&gt; v_value;
-					ArrayTools::convertUaVariantToVector( v, v_value );					
+					
+					<xsl:choose>
+					<xsl:when test="@dataType='OpcUa_Byte'">
+					ArrayTools::convertUaVariantToVector( v, v_value, true );
+ 					</xsl:when>
+					<xsl:otherwise>
+					ArrayTools::convertUaVariantToVector( v, v_value );
+					</xsl:otherwise>
+					</xsl:choose>
+					
 					</xsl:when>
 					<xsl:otherwise>
 					// cache delegated string point1: scalar 
@@ -612,7 +644,15 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 					std::vector&lt;<xsl:value-of select="@dataType" />&gt; v_value;
 					// call the array method to fill the vector
 					// no size check for a change, since methods are written by the user anyway
+					<xsl:choose>
+					<xsl:when test="@dataType='OpcUa_Byte'">
+					ArrayTools::convertUaVariantToVector( v, v_value, true );
+ 					</xsl:when>
+					<xsl:otherwise>
 					ArrayTools::convertUaVariantToVector( v, v_value );
+					</xsl:otherwise>
+					</xsl:choose>
+
     				</xsl:when>
 					<xsl:otherwise>
 					// scalar

@@ -128,7 +128,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     	<xsl:when test="d:array">
 			// pack the vector into a new UaVariant
  			UaVariant v;
+ 			<xsl:choose>
+ 			<xsl:when test="@dataType='OpcUa_Byte'">
+ 			ArrayTools::convertVectorToUaVariant( value, v, true ); // cheat overloading
+ 			</xsl:when>
+ 			<xsl:otherwise>
  			ArrayTools::convertVectorToUaVariant( value, v );
+ 			</xsl:otherwise>
+ 			</xsl:choose>
 			UaDataValue result ( v, s.statusCode(), sourceTime, UaDateTime::now());
 			
 			// get appropriate object
@@ -237,7 +244,15 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				
 					<xsl:choose>
     				<xsl:when test="d:array">
-    					ArrayTools::convertUaVariantToVector( m_variant, value );    			
+						<xsl:choose>
+						<xsl:when test="@dataType='OpcUa_Byte'">
+						ArrayTools::convertUaVariantToVector(m_variant, value, true );
+ 						</xsl:when>
+						<xsl:otherwise>
+						ArrayTools::convertUaVariantToVector(m_variant,value );
+						</xsl:otherwise>
+						</xsl:choose>
+    					// ArrayTools::convertUaVariantToVector( m_variant, value );    			
     				</xsl:when>
     				<xsl:otherwise>
     				    // scalar-only

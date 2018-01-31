@@ -29,6 +29,9 @@
 #include <vector>
 #include "../include/ArrayTools.h"
 
+
+using namespace AddressSpace;
+
 ArrayTools::ArrayTools() {}
 ArrayTools::~ArrayTools() {}
 
@@ -39,17 +42,16 @@ ArrayTools::~ArrayTools() {}
     for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
     v.setBoolArray( ua );
 }
-#if 0
-// OpcUa_Byte has same signature as OpcUa_Boolean: unsigned char. Can't overload. Use native C++ type therefore
-/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Byte> value, UaVariant &v )
+
+// OpcUa_Byte has same signature as OpcUa_Boolean: unsigned char. Add a dummy to cheat
+/* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_Byte> value, UaVariant &v, bool dummy )
 {
     UaByteArray ua;
-    // ua.create( value.size() );
     ua.resize( value.size() );
     for ( unsigned int i = 0; i < value.size(); i++ )	ua[ i ] = value[ i ];
     v.setByteArray( ua );
 }
-#endif
+
 /* static */ void ArrayTools::convertVectorToUaVariant( std::vector <OpcUa_SByte> value, UaVariant &v  )
 {
 	UaSByteArray ua;
@@ -133,8 +135,9 @@ ArrayTools::~ArrayTools() {}
 		vect.push_back( (bool) ua[ i ]);
 	}
 }
-#if 0
-/* static */ void ArrayTools::convertUaVariantToVector( UaVariant v, std::vector <OpcUa_Byte> &vect ){
+
+// cheat overloading
+/* static */ void ArrayTools::convertUaVariantToVector( UaVariant v, std::vector <OpcUa_Byte> &vect, bool dummy ){
 	UaByteArray ua;
 	v.toByteArray( ua );
 	vect.clear();
@@ -142,7 +145,7 @@ ArrayTools::~ArrayTools() {}
 		vect.push_back( ua[ i ]);
 	}
 }
-#endif
+
 /* static */ void ArrayTools::convertUaVariantToVector( UaVariant v, std::vector <OpcUa_SByte> &vect ){
 	UaSByteArray ua;
 	v.toSByteArray( ua );
