@@ -46,6 +46,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	#include &lt;iomanager.h&gt;
 	#include &lt;uathreadpool.h&gt;
 	#include &lt;uabasenodes.h&gt;
+	
+	// general quasar array tools static methods
+	#include &lt;ArrayTools.h&gt;
+	
 
 	namespace AddressSpace
 	{

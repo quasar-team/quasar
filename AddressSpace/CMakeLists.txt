@@ -35,10 +35,9 @@ add_library (AddressSpace OBJECT
     src/ASNodeManager.cpp
     src/ASSourceVariableIoManager.cpp
     src/SourceVariables.cpp
+    src/ArrayTools.cpp
     ${ADDRESSSPACE_CLASSES}
-
 	)
-	
 
 add_custom_target(AddressSpaceGeneratedHeaders DEPENDS ${ADDRESSSPACE_HEADERS} include/ASInformationModel.h include/SourceVariables.h)
 add_dependencies (AddressSpace AddressSpaceGeneratedHeaders DeviceGeneratedHeaders Configuration.hxx)

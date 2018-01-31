@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 5.0.6.2 (Linux)"/>
+	<meta name="author" content="Michael Ludwig"/>
+	<meta name="created" content="2017-11-06T18:18:09.659159378"/>
+	<meta name="changedby" content="Michael Ludwig"/>
+	<meta name="changed" content="2017-11-10T14:21:33.664133059"/>
+	<style type="text/css">
+		@page { margin: 0.79in }
+		p { margin-bottom: 0.1in; line-height: 120% }
+		h1 { margin-bottom: 0.08in }
+		h1.western { font-family: "Liberation Serif", serif }
+		h1.cjk { font-family: "WenQuanYi Zen Hei Sharp"; font-size: 24pt }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt }
+		h2.cjk { font-family: "WenQuanYi Zen Hei Sharp" }
+		h2.ctl { font-family: "Lohit Devanagari" }
+		a:link { so-language: zxx }
+	</style>
+</head>
+<body lang="en-US" dir="ltr">
+<h1 class="western">Implementation notes on the Introduction of
+arrays into the quasar framework (for creation of OPC-UA servers)</h1>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">The request for
+arrays in quasar and it's JIRA case are at:</p>
+<p style="margin-bottom: 0in; line-height: 100%"><a href="https://its.cern.ch/jira/browse/OPCUA-738"><i><b>https://its.cern.ch/jira/browse/OPCUA-738</b></i></a></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">The quasar changes
+for arrays are delivered into branch “arrays4”. You can use it:</p>
+<p style="margin-bottom: 0in; line-height: 100%"><i><b>git clone -b
+arrays4 <a href="https://github.com/quasar-team/quasar.git">https://github.com/quasar-team/quasar.git</a></b></i></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">An example server
+which demonstrates the arrays for the server-developer is available
+at:</p>
+<p style="margin-bottom: 0in; line-height: 100%"><a href="https://gitlab.cern.ch/mludwig/quasar-array-demo4.git"><i><b>https://gitlab.cern.ch/mludwig/quasar-array-demo4.git</b></i></a></p>
+<p style="margin-bottom: 0in; line-height: 100%">This is a simple
+demo server which runs some tests and exercises all types.</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<h2 class="western">Notes for the fwk user/server developer</h2>
+<ol>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">array base
+	type and bounds are specified by the design I.e:</p>
+	<p style="margin-bottom: 0in; line-height: 100%"><font face="Courier 10 Pitch"><font size="1" style="font-size: 8pt">&lt;d:cachevariable
+	name=&quot;cache_array_boolean&quot; addressSpaceWrite=&quot;regular&quot;</font></font></p>
+	<p style="margin-bottom: 0in; line-height: 100%"><font face="Courier 10 Pitch"><font size="1" style="font-size: 8pt">initializeWith=&quot;configuration&quot;
+	nullPolicy=&quot;nullAllowed&quot;</font></font></p>
+	<p style="margin-bottom: 0in; line-height: 100%"><font face="Courier 10 Pitch"><font size="1" style="font-size: 8pt">dataType=&quot;OpcUa_Boolean&quot;&gt;</font></font></p>
+	<ol>
+		<p style="margin-bottom: 0in; line-height: 100%"><font face="Courier 10 Pitch"><font size="1" style="font-size: 8pt">&lt;d:documentation&gt;&quot;cachevariable
+		array boolean&quot;&lt;/d:documentation&gt;</font></font></p>
+		<p style="margin-bottom: 0in; line-height: 100%"><font face="Courier 10 Pitch"><font size="1" style="font-size: 8pt">&lt;d:array
+		minimumSize=&quot;2&quot; maximumSize=&quot;5&quot;&gt;&lt;/d:array&gt;</font></font></p>
+	</ol>
+	<p style="margin-bottom: 0in; line-height: 100%"><font face="Courier 10 Pitch"><font size="1" style="font-size: 8pt">&lt;/d:cachevariable&gt;</font></font></p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">both
+	attributes minimumSize and maximumSize are strongly recommended. If
+	these bounds appear to be inconsistent quasar will exit with an
+	error (see 5.) either during design, initialization or during
+	standard run-time. Arrays are stand-alone elements and not
+	attributes, but are also subjected to standard validation.  Please
+	explicitly limit your array dimensions and test them also.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">the types
+	boolean, byte, sbyte, int16, uint16, int32, uint32, int64, uint64,
+	float, double and std::string are available as base array types</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">if array
+	bounds are designed they are checked during editing of the
+	config.xml, through validation. 
+	</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">Array
+	dimensions are checked during runtime-init when building up the
+	Address Space.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">the designed
+	array dimensions are checked during run-time, each time new values
+	are SET. If bounds are exceeded, an error is logged, the SET is
+	terminated with an error code OpcUa_BadOutOfRange without modifying
+	the Address space. Server execution continues normally.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">There is no
+	explicit maximum for array bound, nor for single array entries as
+	strings, in quasar. Implicitly MAX_INT elements can not be exceeded,
+	but system and toolkit limits will be reached much earlier in most
+	cases. The UA toolkit will eventually throw an exception (or just
+	segfault) when internal limits are exceeded, depending on the
+	implementation. Keep the total array mem below 4GByte is a very good
+	idea, and designing explicit array bounds is even better.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">only
+	one-dimensional (“flat”) arrays are supported by quasar, even
+	though OpcUa supports multi-dimensional arrays in general.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">Cache, source
+	and configuration variables are available as arrays. If the AS write
+	is designed to be delegated the according getter and setter method
+	calls are generated. Source array variables can not be populated by
+	configuration, but the read/write method headers and (empty) bodies
+	are generated for the device class and the according calls to these
+	methods are made from the  data transmission in the same way as for
+	scalar methods.</p>
+</ol>
+<h2 class="western">Notes on the fwk code generation for the fwk
+maintainers</h2>
+<ol>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">the
+	server-developer's API exposed by quasar are std::vector&lt;OpcUa_Type&gt;
+	for all arrays everywhere for the sake of modernity. Since there is
+	no direct interface for std::vector in the UaVariant and UaArray
+	classes the vector-data is presently explicitly copied at each call,
+	and also a certain overhead in the generated code is present.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">the supported
+	array types map to specific get/set data methods in the
+	UaVariants/UaArrays, and with array bounds checking included and the
+	necessary data copy the resulting C++ code for each type has some 15
+	lines instead of 1 line for scalars. Code needs to be switched per
+	type as well since methods for arrays are more type specific than
+	for scalars. 
+	</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">The designed
+	array bounds are used to generate explicit min/max size getter
+	methods for each array variable. This is much more straightforward
+	than decoding the design many times.</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">The array dim
+	are checked during runtime init again, even though the configuration
+	is already validated. This is done in the context of dynamical
+	Address Space modifications during runtime (object add, delete)
+	where consistency self checks should be done by the configuration
+	(<a href="https://its.cern.ch/jira/browse/OPCUA-894">https://its.cern.ch/jira/browse/OPCUA-894</a>
+	)</p>
+	<li/>
+<p style="margin-bottom: 0in; line-height: 100%">xs attributes
+	do not allow complex types. Since arrays are complex types in the
+	xslt, the arrays have to be generated as additional elements of the
+	class, and NOT as attributes</p>
+</ol>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<div title="footer">
+	<p style="margin-top: 0.2in; margin-bottom: 0in; line-height: 100%"><font size="2" style="font-size: 10pt"><i>Fri
+	Oct 13 09:04:43 CEST 2017 Michael Ludwig CERN BE-ICS-FD</i></font></p>
+</div>
+</body>
+</html>

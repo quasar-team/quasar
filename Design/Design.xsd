@@ -107,10 +107,11 @@ elementFormDefault="qualified">
     </complexType>
 
     <complexType name="CacheVariable">
-    	<choice>
+    	<all>
     		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
-    	</choice>
-    	<attribute name="name" type="tns:VariableName" use="required"></attribute>
+    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+    	</all>
+   		<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="addressSpaceWrite"
     		type="tns:CacheVariableAddressSpaceWrite" use="required">
     		<annotation>
@@ -263,6 +264,9 @@ elementFormDefault="qualified">
     </simpleType>
 
     <complexType name="SourceVariable">
+       	<all>
+    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+    	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:VariableDataType"
     		use="required">
@@ -350,11 +354,10 @@ elementFormDefault="qualified">
     </simpleType>
     
     <complexType name="ConfigEntry">
-    	<choice>
-    		<element name="documentation" type="tns:Documentation"
-    			maxOccurs="1" minOccurs="0">
-    		</element>
-    	</choice>
+    	<all>
+    		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
+    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+    	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:ConfigEntryDataType"
     		use="required">
@@ -373,8 +376,20 @@ elementFormDefault="qualified">
     <simpleType name="Documentation">
     	<restriction base="string"></restriction>
     </simpleType>
-
-    <complexType name="DeviceLogic">
+ 
+ 	<!-- we limit all array sizes to 100M values, performance really is terrible, and above 1G OS/sdk fails -->
+ 	<simpleType name="OneToMaxLimits">
+   		<restriction base="integer">
+      	<minInclusive value="0"/>
+      	<maxInclusive value="104857600"/>
+   		</restriction>
+	</simpleType>
+	
+	<complexType name="Array">
+      	<attribute name="minimumSize" type="tns:OneToMaxLimits"></attribute>
+ 	 	<attribute name="maximumSize" type="tns:OneToMaxLimits"></attribute>
+    </complexType>
+   <complexType name="DeviceLogic">
     	<sequence>
     		<element name="mutex" type="tns:DeviceLogicMutex" minOccurs="0" maxOccurs="1"></element>
     	</sequence>

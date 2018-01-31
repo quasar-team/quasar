@@ -52,11 +52,23 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			m_callbackHandle (callbackHandle),
 			m_parentObjectNode (parentObjectNode)
 		{}
+		
+
 		virtual void execute ()
 		{
 			LOG(Log::DBG) &lt;&lt; "Executing IoJob read: className=<xsl:value-of select="$className"/> varName=<xsl:value-of select="$variableName"/>" &lt;&lt; "hTransaction:"&lt;&lt;m_hTransaction&lt;&lt;" cbkhandle "&lt;&lt; m_callbackHandle&lt;&lt;endl;
 			UaStatus s;
+		<!-- switch between scalar or array code -->
+		<xsl:choose>
+    	<xsl:when test="d:array">
+			// source variable read array signature
+			vector&lt;<xsl:value-of select="@dataType"/>&gt; value;
+		</xsl:when>
+    	<xsl:otherwise>
+    		// source variable read scalar signature
 			<xsl:value-of select="@dataType"/> value;
+		</xsl:otherwise> 
+		</xsl:choose>
 			UaDateTime sourceTime;
 			// Obtain Device Logic object
 			const <xsl:value-of select="fnc:ASClassName($className)"/> *addressSpaceObject;
@@ -111,6 +123,29 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			}
 			else
 				s = OpcUa_BadInternalError;
+		<!-- switch between scalar or array code -->
+		<xsl:choose>
+    	<xsl:when test="d:array">
+			// pack the vector into a new UaVariant
+ 			UaVariant v;
+ 			<xsl:choose>
+ 			<xsl:when test="@dataType='OpcUa_Byte'">
+ 			ArrayTools::convertVectorToUaVariant( value, v, true ); // cheat overloading
+ 			</xsl:when>
+ 			<xsl:otherwise>
+ 			ArrayTools::convertVectorToUaVariant( value, v );
+ 			</xsl:otherwise>
+ 			</xsl:choose>
+			UaDataValue result ( v, s.statusCode(), sourceTime, UaDateTime::now());
+			
+			// get appropriate object
+			s = m_callback->finishRead (
+				m_hTransaction,
+				m_callbackHandle,
+				result
+			);
+		</xsl:when>
+    	<xsl:otherwise>
 			UaDataValue result (UaVariant(value), s.statusCode(), sourceTime, UaDateTime::now());
 			// get appropriate object
 			s = m_callback->finishRead (
@@ -118,9 +153,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				m_callbackHandle,
 				result
 			);
+		</xsl:otherwise> 
+		</xsl:choose>
 			LOG(Log::DBG) &lt;&lt; "After finishRead status:" &lt;&lt; s.toString().toUtf8() &lt;&lt; endl;
 			
 		}
+		
 		private:
 			IOManagerCallback *m_callback;
 			OpcUa_UInt32 m_hTransaction;
@@ -149,17 +187,29 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			m_parentObjectNode (parentObjectNode),
 			m_variant (writeValue->Value.Value)
 	
-		{
-
-		}
+		{}
+		
+		
 		virtual void execute ()
 		{
 		    LOG(Log::DBG) &lt;&lt; "Executing IoJob write: className=<xsl:value-of select="$className"/> varName=<xsl:value-of select="@name"/>" &lt;&lt; "hTransaction:"&lt;&lt;m_hTransaction&lt;&lt;" cbkhandle "&lt;&lt; m_callbackHandle&lt;&lt;endl;
 			UaStatus s;
 			
+		<!-- switch between scalar or array code -->
+		<xsl:choose>
+    	<xsl:when test="d:array">
+			// source variable write array signature
+			vector&lt;<xsl:value-of select="@dataType"/>&gt; value;
+		</xsl:when>
+    	<xsl:otherwise>
+    		// source variable write scalar signature
 			<xsl:value-of select="@dataType"/> value;
-			<xsl:choose>
+		</xsl:otherwise>
+		</xsl:choose>
+		
+		<xsl:choose>
 			<xsl:when test="@dataType='UaVariant'">
+			// not so sure about this: designToSourceVariablesBody.xslt
 			value = m_variant;
 			if (true)
 			{
@@ -167,15 +217,52 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:otherwise>
 			if (m_variant.type() == <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>)
 			{
+				<!-- that part is needed because UaVariant string methods have a different signature -->
 				<xsl:choose>
 				<xsl:when test="@dataType='UaString'">
-				m_variant = value;
+				// UaVariant string methods have a different signature , need to switch between scalar and array				
+					<!-- switch between scalar or array code -->
+					<xsl:choose>
+    				<xsl:when test="d:array">
+					// source variable write array signature
+    				UaStringArray ua;
+    				m_variant.toStringArray( ua );
+    				int dim = ua.length();
+    				value.clear();
+    				for ( int i = 0; i &lt; dim; i++ ) {
+     			   		value.push_back( ua[ i ]);
+    				}
+					</xsl:when>
+    				<xsl:otherwise>
+    				// source variable write scalar signature
+					value = m_variant.toString();
+					</xsl:otherwise>
+					</xsl:choose>
+				
 				</xsl:when>
 				<xsl:otherwise>
-				m_variant.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/> ( value );
+				
+					<xsl:choose>
+    				<xsl:when test="d:array">
+						<xsl:choose>
+						<xsl:when test="@dataType='OpcUa_Byte'">
+						ArrayTools::convertUaVariantToVector(m_variant, value, true );
+ 						</xsl:when>
+						<xsl:otherwise>
+						ArrayTools::convertUaVariantToVector(m_variant,value );
+						</xsl:otherwise>
+						</xsl:choose>
+    					// ArrayTools::convertUaVariantToVector( m_variant, value );    			
+    				</xsl:when>
+    				<xsl:otherwise>
+    				    // scalar-only
+						m_variant.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/> ( value );
+					</xsl:otherwise>
+					</xsl:choose>
+				
 				</xsl:otherwise>
 				</xsl:choose>
-				
+				 
 			</xsl:otherwise>
 			</xsl:choose>
 
@@ -236,13 +323,40 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			}
 			else
 			    s = OpcUa_BadDataEncodingInvalid;
-			UaDataValue result (UaVariant(value), s.statusCode(), UaDateTime::now(), UaDateTime::now());
+		<xsl:choose>
+    	<xsl:when test="d:array">
+			// pack the vector into a new UaVariant, which becomes a UaDataValue, which
+			// we need for the result
+    		<xsl:for-each select="d:array">
+ 		   	<!-- there is only one array element allowed per variable -->	
+			// check design size
+			int dim = value.size(); 
+		 	int min = <xsl:value-of select="@minimumSize"/>;  
+			int max = <xsl:value-of select="@maximumSize"/>;
+			if ( dim &lt; min || dim &gt; max ){
+				s = OpcUa_BadOutOfRange;
+				return; // writing nothing
+			}
+			</xsl:for-each>
+			
 			// get appropriate object
 			s = m_callback->finishWrite (
 				m_hTransaction,
 				m_callbackHandle,
 				s
 			);
+		</xsl:when>
+    	<xsl:otherwise>
+			// not needed
+			// UaDataValue result (UaVariant(value), s.statusCode(), UaDateTime::now(), UaDateTime::now());
+			// get appropriate object
+			s = m_callback->finishWrite (
+				m_hTransaction,
+				m_callbackHandle,
+				s
+			);
+		</xsl:otherwise>
+		</xsl:choose>
 			cout &lt;&lt; "After finishRead status:" &lt;&lt; s.toString().toUtf8() &lt;&lt; endl;
 			
 		}
