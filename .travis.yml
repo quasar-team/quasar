@@ -14,4 +14,8 @@ script:
      echo branch $TRAVIS_BRANCH ;
      echo last commit id $TRAVIS_COMMIT message $TRAVIS_COMMIT_MESSAGE ;
      echo '********************************************************************' ;
+     git clone https://github.com/quasar-team/quasar.git ;
+     cd quasar ;
+     git checkout $TRAVIS_BRANCH ;
+     git status ;
      exit"
