@@ -10,7 +10,7 @@ before_install:
  
 script:
  - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c " 
-     echo '*******************TEST*************************************************' ;
+     echo '********************************************************************' ;
      echo branch $TRAVIS_BRANCH ;
      echo last commit id $TRAVIS_COMMIT message $TRAVIS_COMMIT_MESSAGE ;
      echo '********************************************************************' ;
