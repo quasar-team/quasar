@@ -9,9 +9,10 @@ before_install:
  - docker pull bfarnham/quasar:quasar-open62541
  
 script:
- - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c " 
+ - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c "
      echo '********************************************************************' ;
      echo branch $TRAVIS_BRANCH ;
      echo last commit id $TRAVIS_COMMIT message $TRAVIS_COMMIT_MESSAGE ;
      echo '********************************************************************' ;
-     exit"
+     exit ;
+     "
