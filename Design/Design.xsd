@@ -226,7 +226,7 @@ elementFormDefault="qualified">
     <simpleType name="VariableName">
     	<restriction base="string">
     		<minLength value="1"></minLength>
-    		<pattern value="[a-z]([A-Z]|[a-z]|\d|_)*"></pattern>
+    		<pattern value="[a-zA-Z]([A-Z]|[a-z]|\d|_)*"></pattern>
     	</restriction>
     </simpleType>
 
