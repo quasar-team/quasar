@@ -243,7 +243,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				m_callbackHandle,
 				s
 			);
-			cout &lt;&lt; "After finishRead status:" &lt;&lt; s.toString().toUtf8() &lt;&lt; endl;
+			LOG(Log::TRC) &lt;&lt; "After finishWrite status:" &lt;&lt; s.toString().toUtf8() &lt;&lt; endl;
 			
 		}
 		private:

@@ -207,7 +207,7 @@ if (!s.isGood())
 </xsl:for-each>
 
 <xsl:for-each select="d:sourcevariable">
-
+m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0 )); // assumption: BuiltInTypeId matches numeric address of the type in namespace0
 s = nm->addNodeAndReference(
     <xsl:choose>
       <xsl:when test="$singleVariableNode='true'">parentNodeId</xsl:when>
