@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>quasar Documentation</title>
     <meta name="robots" content="index,follow">
@@ -9,12 +8,11 @@
     <link rel="stylesheet" type="text/css" href="quasar.css">
   </head>
   <body>
-    <h1>
-      <span style="color: #225498;"><img
+    <h1> <span style="color: #225498;"><img
           src="images/quasar_engine_small_smooth_square_128x128.png"
-          alt="[logo]" hspace="10/" align="middle">quasar</span>
-    </h1>
+          alt="[logo]" align="middle" hspace="10/">quasar</span> </h1>
     <p>The <span style="color: #225498;font-size:150%;"><strong>q</strong></span>uick
+
       opc<span style="color: #225498;font-size:150%;"><strong>ua</strong>
         <strong>s</strong></span>erver gener<span style="color:
         #225498;font-size:150%;"><strong>a</strong></span>tion f<span
@@ -48,8 +46,7 @@
       <ul>
         <li>Framework's concept and architecture</li>
         <li>Address Space, Device and Configuration generation (XSLTs,
-          design files,
-          scripts)</li>
+          design files, scripts)</li>
         <li>CMake-based build system</li>
         <li>RPM generation for Linux<br>
         </li>
@@ -78,10 +75,9 @@
     <ul>
       <li>Suitable C++ compiler (gcc is assumed by default)<br>
       </li>
-      <li>The
-        Unified Automation OPC UA Toolkit in versions 1.3.x, 1.4.x or
-        1.5.x&nbsp; or&nbsp; another OPC-UA toolkit with compatible API
-        (e.g. open62541 + open62541-compat). <a
+      <li>The Unified Automation OPC UA Toolkit in versions 1.3.x, 1.4.x
+        or 1.5.x&nbsp; or&nbsp; another OPC-UA toolkit with compatible
+        API (e.g. open62541 + open62541-compat). <a
           href="AlternativeBackends.html">More info on alternative
           backends</a>.<br>
       </li>
@@ -90,9 +86,9 @@
       </li>
       <li>XSLT processor capable of XSLT2.0 processing. We use <a
           href="http://www.saxonica.com/">The Saxon XSLT and XQuery
-          Processor from Saxonica Limited</a> which
-        is re-distributed with the Quasar package (version 9.5 HE).
-        Conditions of redistribution are explained <a
+          Processor from Saxonica Limited</a> which is re-distributed
+        with the Quasar package (version 9.5 HE). Conditions of
+        redistribution are explained <a
           href="http://www.saxonica.com/documentation/#%21conditions">at
           this link</a>.<br>
       </li>
@@ -109,13 +105,11 @@
         screencasts.<br>
       </li>
       <li>Good merge tool. We use kdiff3 (available as kdiff3 RPM in
-        SLC6
-        Linux).</li>
+        SLC6 Linux).</li>
       <li>ArtisticStyle ( <a href="http://astyle.sourceforge.net/">http://astyle.sourceforge.net/</a>
         ) for automatic formatting of generated code. If you don't use
-        it, the
-        generated code will look like a shipwreck (but will still work).
-        <br>
+        it, the generated code will look like a shipwreck (but will
+        still work). <br>
         ArtisticStyle RPM for SLC6 can be obtained from Piotr Nikiel, or
         you can compile it yourself from sources.<br>
       </li>
@@ -126,8 +120,7 @@
         exploring OPC UA address space.<br>
       </li>
       <li>Valgrind, for checking memory-related problems. (valgrind RPM
-        in
-        SLC6)</li>
+        in SLC6)</li>
       <li>PDF viewer for opening UML-like diagrams created from design
         file.</li>
       <li>Doxygen for generating documentation.</li>
@@ -146,12 +139,10 @@
         <li>Subversive SVN and SVN providers</li>
       </ol>
       <li>Issue this to install software from official SLC6 RPMs:<br>
-        sudo
-        yum install gcc-c++ gdb boost-devel boost-regex
-        boost-program-options
-        boost-signals jre cmake28 kdiff3 graphviz valgrind doxygen
-        rpm-build
-        subversion xsd openssl-dev libxml2-devel xerces-c-devel<br>
+        sudo yum install gcc-c++ gdb boost-devel boost-regex
+        boost-program-options boost-signals jre cmake28 kdiff3 graphviz
+        valgrind doxygen rpm-build subversion xsd openssl-dev
+        libxml2-devel xerces-c-devel<br>
       </li>
       <li>From the ATLAS Central DCS<br>
         <ul>
@@ -176,21 +167,19 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
         sudo yum install gcc-c++ gdb boost-devel boost-regex
         boost-program-options boost-signals jre cmake kdiff3 graphviz
         valgrind doxygen rpm-build subversion xsd openssl-devel
-        libxml2-devel xerces-c-devel
-      </li>
+        libxml2-devel xerces-c-devel </li>
       <li>If you have access to the UA SDK, install it (the evaluation
         version works fine). Quasar should work with UA SDK versions
-        1.3.2 up to 1.5.5.
-        If you don't have the UA SDK, you can run Quasar with open62541,
-        through open62541-compat module which is off-the-shelf available
-        in Quasar. Documentation : ... <todo> </todo></li>
+        1.3.2 up to 1.5.5. If you don't have the UA SDK, you can run
+        Quasar with open62541, through open62541-compat module which is
+        off-the-shelf available in Quasar. Documentation : ... <todo> </todo></li>
       <li>Download UaExpert for an universal test&amp;dev tool for
         OPC-UA.</li>
     </ol>
     <h3><a name="ubuntu"></a>Quick setup hints for Ubuntu (here: 14.04)</h3>
     Execute:<br>
     sudo apt-get install cmake g++ libboost-all-dev libxml2-utils astyle
-    xsdcxx libxerces-c-dev libssl-dev kdiff3 <br>
+    xsdcxx libxerces-c-dev libssl-dev kdiff3 default-jre libxml2-utils<br>
     Note you will need the UA SDK (i.e. evaluation version) or
     alternative backend (consider open62541 with quasar integration).
     <h3><a name="windows"></a>Setup for Windows users <br>
@@ -251,37 +240,28 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
       </li>
       <li>Build fails<br>
         Try to read carefully the output.<br>
-        If you
-        can't figure the issue on your own, try contacting
+        If you can't figure the issue on your own, try contacting
         quasar-developers@cern.ch, at the last resort contact
         piotr.nikiel@cern.ch<br>
       </li>
       <li>The server starts up, but crashes.<br>
         There are plenty of possibilities here. The best way is to build
-        a
-        server with debug symbols (explained above in the tutorial) and
-        enable core dumping in your system.
-        Then run it again and let it crash. You will obtain a coredump
-        file,
-        which you can load into GDB this way:<br>
-        <span style="font-family: monospace;">
-          gdb &lt;path_to_executable&gt; &lt;core_dump_file&gt;</span><br>
-        Then
-        type 'bt' and gdb will show you crash back trace. If it seems
-        that the
-        crash is within quasar itself, please don't hesitate and file a
-        report
-        to us. <br>
+        a server with debug symbols (explained above in the tutorial)
+        and enable core dumping in your system. Then run it again and
+        let it crash. You will obtain a coredump file, which you can
+        load into GDB this way:<br>
+        <span style="font-family: monospace;"> gdb
+          &lt;path_to_executable&gt; &lt;core_dump_file&gt;</span><br>
+        Then type 'bt' and gdb will show you crash back trace. If it
+        seems that the crash is within quasar itself, please don't
+        hesitate and file a report to us. <br>
       </li>
       <li>How to create a <span style="font-weight: bold;">RPM</span>
         package with my server?<br>
         RPM builder is provided with the quasar. RPM builder builds
-        "directly"
-        from your version control system and not from your local files
-        (this is
-        intentional and will not be changed). At the moment SVN and Git
-        are
-        supported.<br>
+        "directly" from your version control system and not from your
+        local files (this is intentional and will not be changed). At
+        the moment SVN and Git are supported.<br>
         Please have a look at scripts in RPM/build_from_svn or
         RPM/build_from_git.</li>
       <ol>
@@ -290,20 +270,16 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
         </li>
         <ol>
           <li>In the very first line, set name of the RPM. It shall
-            match
-            the value of "projectShortName" which you have put into
-            design element
-            of your Design.xml file.</li>
+            match the value of "projectShortName" which you have put
+            into design element of your Design.xml file.</li>
           <li>You may edit Summary: field with short (one-line)
             description of the server.</li>
           <li>You may edit %description section with long description of
             the server.</li>
           <li>Review the list of files listed in %install section. These
             files will be packed inside the package. Add additional
-            files, if
-            applicable (e.g. documentation, data files, additional
-            libraries,
-            etc...)</li>
+            files, if applicable (e.g. documentation, data files,
+            additional libraries, etc...)</li>
           <li>If applicable, complete %pre, %post, %preun and %postun
             sections.</li>
         </ol>
@@ -317,10 +293,8 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
           </ol>
         </ol>
         <li>IMPORTANT: For delivering production packages, you should
-          first
-          tag given release on SVN, and then generate RPM from the tag
-          (using the
-          second version of command listed above).</li>
+          first tag given release on SVN, and then generate RPM from the
+          tag (using the second version of command listed above).</li>
       </ol>
       <li>How to <span style="font-weight: bold;">upgrade</span> to
         newer <span style="font-weight: bold;">release</span> of
@@ -331,8 +305,7 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
           <li>Unpack it</li>
           <li>Execute quasar.py upgrade_project which is in its root
             directory, passing path to your project to be upgraded as
-            the first
-            parameter:<br>
+            the first parameter:<br>
             <span style="font-family: monospace;">./quasar.py
               upgrade_project &lt;path&gt;</span></li>
         </ol>
@@ -343,26 +316,19 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
         stored, which impacts what happens after Read OPC UA
         Transaction:<br>
         <ul>
-          <li>For
-            cache variables, there are stored in the server's RAM (thus
-            "cache"),
-            and the value served back to the client is the value from
-            RAM. Cache
-            variables are perfect whenever some device logic code
-            updates the
-            address space or reads from the address space.</li>
-          <li>For source
-            variables, there are stored "at the source", which for
-            example might be
-            at a remote computer. Therefore every Read transaction will
-            trigger
-            Device Logic method supposed to fetch that data from the
-            source.&nbsp;
-            Contrary to cache variables one may expect that such
-            Read&nbsp;
+          <li>For cache variables, there are stored in the server's RAM
+            (thus "cache"), and the value served back to the client is
+            the value from RAM. Cache variables are perfect whenever
+            some device logic code updates the address space or reads
+            from the address space.</li>
+          <li>For source variables, there are stored "at the source",
+            which for example might be at a remote computer. Therefore
+            every Read transaction will trigger Device Logic method
+            supposed to fetch that data from the source.&nbsp; Contrary
+            to cache variables one may expect that such Read&nbsp;
             transaction may be blocking and time consuming, and
-            therefore may be
-            required to be executed in a separate thread of execution.</li>
+            therefore may be required to be executed in a separate
+            thread of execution.</li>
         </ul>
         Here is a picture taken from our CHEP2015 poster with sequence
         diagrams for both types of variables:<br>
@@ -374,18 +340,14 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
         framework?<br>
         You can.<br>
         Beware that at the time of writing the evaluation version is
-        only
-        available in 32 bits. Therefore we recommend to create a build
-        configuration specifically for compiling in 32 bits with
-        evaluation
-        version of the toolkit.&nbsp;</li>
+        only available in 32 bits. Therefore we recommend to create a
+        build configuration specifically for compiling in 32 bits with
+        evaluation version of the toolkit.&nbsp;</li>
       <li>How to use upgrade_design tool?<br>
         Rarely - but sometimes - XML stylesheet of Design file
-        (Design.xsd)
-        changes in backwards-incompatible way. For all such changes
-        conversion
-        tools are provided to mitigate the pain. upgrade_design is one
-        of them.<br>
+        (Design.xsd) changes in backwards-incompatible way. For all such
+        changes conversion tools are provided to mitigate the pain.
+        upgrade_design is one of them.<br>
         upgrade_design currently accepts this commands:<br>
         <ul>
           <li>./quasar.py upgrade_design convert_to_hasDeviceLogic=yes</li>
@@ -399,8 +361,7 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
       <li>Can I automatically prepare the required dependencies?<br>
         We have a shell script which could be useful if you e.g. need to
         crosscompile and do not yet have the libs required by Quasar.
-        The
-        script is places in the
+        The script is places in the
         Documentation/Addons/prepare_dependencies.sh<br>
       </li>
       <li>How does a developer define specific command line options for
@@ -409,31 +370,27 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
           href="UserDefinedCommandLineParameters.html">User Defined
           Command Line Parameters</a> <br>
       </li>
-      <li>How
-        does a developer define a dynamic (at start up) configuration?
-        For
-        example, where the server 'discovers' connected hardware on
-        start up.<br>
+      <li>How does a developer define a dynamic (at start up)
+        configuration? For example, where the server 'discovers'
+        connected hardware on start up.<br>
         This is documented here: <a
           href="UserDefinedRuntimeConfigurationModification.html">User
           Defined Runtime Configuration</a> <br>
       </li>
-      <li>How
-        does a developer persist a 'discovered' configuration as
-        described
-        above? For example, where the server 'discovers' connected
-        hardware
-        initially and saves it for use thereafter as a static
-        configuration.<br>
+      <li>How does a developer persist a 'discovered' configuration as
+        described above? For example, where the server 'discovers'
+        connected hardware initially and saves it for use thereafter as
+        a static configuration.<br>
         This is also documented here: <a
           href="UserDefinedRuntimeConfigurationModification.html#persist">User
+
           Defined Runtime Configuration</a> <br>
       </li>
     </ol>
     <br>
     <br>
-    <hr style="width: 100%; height: 2px;">
-    Written by Piotr Nikiel &lt;piotr.nikiel@cern.ch&gt;<br>
+    <hr style="width: 100%; height: 2px;"> Written by Piotr Nikiel
+    &lt;piotr.nikiel@cern.ch&gt;<br>
     Report inconsistencies and bugs to the email above.<br>
     (C) CERN 2015. All rights not expressly granted are reserved.<br>
     <br>
