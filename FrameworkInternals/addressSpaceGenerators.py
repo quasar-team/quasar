@@ -22,29 +22,29 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 from transformDesign import transformDesignVerbose
 asPath = "AddressSpace" + os.path.sep
-def generateSourceVariables():
+def generateSourceVariables(projectBinaryDir):
 	"""Generates the files SourceVariables.h and SourceVariables.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = "include/SourceVariables.h"
-	transformDesignVerbose(asPath + "designToSourceVariablesHeader.xslt", asPath + output, 0, astyleRun=True)
-	output = "src/SourceVariables.cpp"
-	transformDesignVerbose(asPath + "designToSourceVariablesBody.xslt", asPath + output,0, astyleRun=True)
+	output = os.path.join(projectBinaryDir, "AddressSpace", "include", "SourceVariables.h")
+	transformDesignVerbose(asPath + "designToSourceVariablesHeader.xslt", output, 0, astyleRun=True)
+	output = os.path.join(projectBinaryDir, "AddressSpace", "src", "SourceVariables.cpp")
+	transformDesignVerbose(asPath + "designToSourceVariablesBody.xslt", output,0, astyleRun=True)
 
-def generateASClass(classname):
+def generateASClass(classname, projectBinaryDir):
 	"""Generates the files AS<classname>.h and AS<classname>.cpp. This method is called automatically by cmake, it does not need to be called by the user.
 	
 	Keyword arguments:
 	classname -- the name of the device, which this class will be associated to.
 	"""
-	output = "include/AS" + classname + ".h"
-	transformDesignVerbose(asPath + "designToClassHeader.xslt", asPath + output, 0, astyleRun=True, additionalParam="className=" + classname)
+	output = os.path.join(projectBinaryDir, "AddressSpace", "include", "AS{0}.h".format(classname))
+	transformDesignVerbose(asPath + "designToClassHeader.xslt", output, 0, astyleRun=True, additionalParam="className=" + classname)
 		
-	output = "src/AS" + classname + ".cpp"
-	transformDesignVerbose(asPath + "designToClassBody.xslt", asPath + output, 0, astyleRun=True, additionalParam="className=" + classname)
+	output = os.path.join(projectBinaryDir, "AddressSpace", "src", "AS{0}.cpp".format(classname))	
+	transformDesignVerbose(asPath + "designToClassBody.xslt", output, 0, astyleRun=True, additionalParam="className=" + classname)
 	
-def generateInformationModel():
+def generateInformationModel(projectBinaryDir):
 	"""Generates the files ASInformationModel.h and ASInformationModel.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = "include/ASInformationModel.h"
-	transformDesignVerbose(asPath + "designToInformationModelHeader.xslt", asPath + output, 0, astyleRun=True)
-	output = "src/ASInformationModel.cpp"
-	transformDesignVerbose(asPath + "designToInformationModelBody.xslt", asPath + output,0, astyleRun=True)
+	output = os.path.join(projectBinaryDir,"AddressSpace","include","ASInformationModel.h")
+	transformDesignVerbose(asPath + "designToInformationModelHeader.xslt", output, 0, astyleRun=True)
+	output = os.path.join(projectBinaryDir,"AddressSpace","src","ASInformationModel.cpp")
+	transformDesignVerbose(asPath + "designToInformationModelBody.xslt", output, 0, astyleRun=True)
 			

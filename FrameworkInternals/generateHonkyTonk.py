@@ -22,7 +22,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 from transformDesign import transformDesignVerbose
 
-def generateHonkyTonk():
+def generateHonkyTonk(projectBinaryDir):
 	"""Generates honkyTonky.cc, a special class intended for testing your namespace with simulated (random) values."""
 	extraPath = "Extra" + os.path.sep
 	output = "honkyTonky.cc"

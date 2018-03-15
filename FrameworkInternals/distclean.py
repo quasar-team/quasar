@@ -56,7 +56,9 @@ def deleteExtensionRecursively( topdir, target ):
 					pass
 	return;
 	
-def distClean(param=None):
+def distClean(*args, **kwargs):
+	if len(args)>0:
+		param = args[0]
 	"""
 	Cleaning method. It first calls msbuild/make clean and after that it will delete the leftover generated files in the Server.
 	If parameter --orig is specified, the generated files ending with the extension .orig will also be cleared.	

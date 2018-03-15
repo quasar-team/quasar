@@ -18,29 +18,29 @@
 
 MESSAGE( STATUS "Design file=" ${DESIGN_FILE} )
 
-add_custom_command(OUTPUT Configuration.xsd
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configuration.xsd
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-	COMMAND ${PYTHON_COMMAND} quasar.py generate config_xsd
+	COMMAND ${PYTHON_COMMAND} quasar.py generate config_xsd --project_binary_dir ${PROJECT_BINARY_DIR}
 	DEPENDS ${DESIGN_FILE} designToConfigurationXSD.xslt validateDesign ${PROJECT_SOURCE_DIR}/quasar.py
 	)
 
-add_custom_command(OUTPUT Configuration.cxx Configuration.hxx
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configuration.cxx ${PROJECT_BINARY_DIR}/Configuration/Configuration.hxx
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Configuration
-	COMMAND xsdcxx cxx-tree  --generate-serialization --namespace-map http://cern.ch/quasar/Configuration=Configuration  Configuration.xsd
-	DEPENDS Configuration.xsd
+	COMMAND xsdcxx cxx-tree  --generate-serialization --namespace-map http://cern.ch/quasar/Configuration=Configuration --output-dir ${PROJECT_BINARY_DIR}/Configuration ${PROJECT_BINARY_DIR}/Configuration/Configuration.xsd  
+	DEPENDS ${PROJECT_BINARY_DIR}/Configuration/Configuration.xsd
 )
 
-add_custom_target(Configuration.hxx DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Configuration.hxx)
+add_custom_target(Configuration.hxx DEPENDS ${PROJECT_BINARY_DIR}/Configuration/Configuration.hxx )
 
-add_custom_command(OUTPUT Configurator.cpp	
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configurator.cpp	
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-	COMMAND ${PYTHON_COMMAND} quasar.py generate config_cpp
+	COMMAND ${PYTHON_COMMAND} quasar.py generate config_cpp --project_binary_dir ${PROJECT_BINARY_DIR}
 	DEPENDS ${DESIGN_FILE} designToConfigurator.xslt ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
 )
 
-add_custom_command(OUTPUT ConfigValidator.cpp	
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/ConfigValidator.cpp	
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-	COMMAND ${PYTHON_COMMAND} quasar.py generate config_validator
+	COMMAND ${PYTHON_COMMAND} quasar.py generate config_validator --project_binary_dir ${PROJECT_BINARY_DIR}
 	DEPENDS ${DESIGN_FILE} designToConfigValidator.xslt ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
 )
 

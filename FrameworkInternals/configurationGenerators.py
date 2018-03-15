@@ -26,25 +26,24 @@ from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
 from commandMap import getCommand
 
 configPath = "Configuration" + os.path.sep	
-def generateConfiguration():
+def generateConfiguration(projectBinaryDir):
 	"""Generates the file Configuration.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
-	outputFile = os.path.join('Configuration', 'Configuration.xsd')
-	cleanedOutputFile = os.path.join('Configuration', 'Configuration.xsd.new')
+	outputFile = os.path.join(projectBinaryDir, 'Configuration', 'Configuration.xsd')
+	cleanedOutputFile = os.path.join(projectBinaryDir, 'Configuration', 'Configuration.xsd.new')
 	transformationFile = os.path.join(configPath, "designToConfigurationXSD.xslt")
-	#output = "Configuration.xsd"
-	transformDesignVerbose(transformationFile, outputFile, 0, astyleRun=False)
+	transformDesignVerbose(transformationFile, outputFile, 0, astyleRun=False, additionalParam="metaXsdPath={0}".format(os.path.join(os.getcwd(),"Meta","config","Meta.xsd")) )
 	print("Calling xmllint to modify " + outputFile)
 	#this call is not using subprocess with improved errors because of the need of the piping.
 	subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--xinclude", outputFile], cleanedOutputFile, getCommand("xmllint"))
 	print("Copying the modified file  " + cleanedOutputFile + " into the name of " + outputFile)
 	shutil.copyfile(cleanedOutputFile, outputFile)
 
-def generateConfigurator():
+def generateConfigurator(projectBinaryDir):
 	"""Generates the file Configurator.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = "Configurator.cpp"
-	transformDesignVerbose(configPath + "designToConfigurator.xslt", configPath + output, 0, astyleRun=True)
+	output = os.path.join(projectBinaryDir, "Configuration", "Configurator.cpp")
+	transformDesignVerbose(configPath + "designToConfigurator.xslt", output, 0, astyleRun=True)
 	
-def generateConfigValidator():
+def generateConfigValidator(projectBinaryDir):
 	"""Generates the file ConfigValidator.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = "ConfigValidator.cpp"
-	transformDesignVerbose(configPath + "designToConfigValidator.xslt", configPath + output, 0, astyleRun=True)			
+	output = os.path.join(projectBinaryDir, "Configuration", "ConfigValidator.cpp")
+	transformDesignVerbose(configPath + "designToConfigValidator.xslt", output, 0, astyleRun=True)			

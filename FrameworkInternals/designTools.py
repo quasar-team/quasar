@@ -31,7 +31,7 @@ designPath = "Design" + os.path.sep
 designXML = "Design.xml"
 designXSD = "Design.xsd"
 
-def validateDesign():
+def validateDesign(projectBinaryDir):
 	"""Checks design.xml against Design.xsd, and after that performs some additional checks (defined in designValidation.xslt)"""
 	# 1st line of validation -- does it matches its schema?
 	# This allows some basic checks
@@ -42,7 +42,7 @@ def validateDesign():
 		# 2nd line of validation -- including XSLT
 		print("2nd line of check -- more advanced checks using XSLT processor")
 		output = "validationOutput.removeme"
-		transformDesignVerbose(designPath + "designValidation.xslt", designPath + output, 0, astyleRun=False)
+		transformDesignVerbose(designPath + "designValidation.xslt", os.path.join(projectBinaryDir, "Design", output), 0, astyleRun=False)
 	except Exception, e:
 		raise Exception ("There was a problem validating the file [" + designXML + "]; Exception: [" + str(e) + "]")
 

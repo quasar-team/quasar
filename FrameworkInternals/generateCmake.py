@@ -26,19 +26,35 @@ from transformDesign import transformDesignVerbose
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
 
-def generateCmake(buildType="Release"):
+def generateCmake(*args, **kwargs):
 	"""Generates CMake header lists in various directories, and then calls cmake.
 	
 	Keyword arguments:
 	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""	
-	transformDesignVerbose("AddressSpace" + os.path.sep + "designToGeneratedCmakeAddressSpace.xslt",
-			       "AddressSpace" + os.path.sep + "cmake_generated.cmake",
-			       0, astyleRun=False)
-	transformDesignVerbose("Device" + os.path.sep + "designToGeneratedCmakeDevice.xslt",
-			       "Device" + os.path.sep + "generated" + os.path.sep + "cmake_header.cmake",
-			       0, astyleRun=False)
+	if len(args) < 2:
+		buildType = 'Release'
+	else:
+		buildType = args[0]
+		
+	transformDesignVerbose(
+		os.path.join("AddressSpace", "designToGeneratedCmakeAddressSpace.xslt"),
+		os.path.join("AddressSpace", "cmake_generated.cmake"),
+		0, 
+		astyleRun=False, 
+		additionalParam="projectBinaryDir={0}".format(kwargs['projectBinaryDir'] ))
+	
+	transformDesignVerbose(
+		os.path.join("Device", "designToGeneratedCmakeDevice.xslt"),
+		os.path.join("Device", "generated", "cmake_header.cmake"),
+		0, 
+		astyleRun=False,
+		additionalParam="projectBinaryDir={0}".format(kwargs['projectBinaryDir'] ))
 	print("Build type ["+buildType+"]")
+
+        print("New thing: out of source build.")
+        os.mkdir('build')
+        os.chdir('build')
 
 	print("Calling CMake")
 	if platform.system() == "Windows":
@@ -47,5 +63,5 @@ def generateCmake(buildType="Release"):
 					     getCommand("cmake"))
 	elif platform.system() == "Linux":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-                                              "."],
+                                              "../"],
 					     getCommand("cmake"))

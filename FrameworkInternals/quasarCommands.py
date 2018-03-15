@@ -28,7 +28,9 @@ from runDoxygen import runDoxygen
 from externalToolCheck import checkExternalDependencies
 from optionalModules import enableModule, disableModule, listModules, listEnabledModules, removeModules, removeModule
 
-# format is: [command name], callable
+# format is: [command name], callable, for_users
+# where for_users is True for non-internal commands
+
 commands = [
 	[['generate','cmake_headers'], generateCmake, False],   # This one takes variable number of params
 	[['prepare_build'], generateCmake, True],   #
@@ -60,8 +62,8 @@ commands = [
 	[['disable_module'], disableModule, True],
 	[['list_modules'], listModules, True],
 	[['list_enabled_modules'], listEnabledModules, True],
-        [['build_config'], build_config, True],
-        [['set_build_config'], set_build_config, True]
+    [['build_config'], build_config, True],
+    [['set_build_config'], set_build_config, True]
 	]
 	
 def printCommandList():

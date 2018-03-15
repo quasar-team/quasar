@@ -44,8 +44,9 @@ include_directories (
 	${OPCUA_TOOLKIT_PATH}/include/xmlparser
 	${OPCUA_TOOLKIT_PATH}/include/uapki
 	${BOOST_PATH_HEADERS}
-	${PROJECT_SOURCE_DIR}/Device/generated
-	${PROJECT_SOURCE_DIR}/Configuration
+	${PROJECT_BINARY_DIR}/Device/generated
+	${PROJECT_SOURCE_DIR}/Configuration  # this is to cover Configurator.h
+	${PROJECT_BINARY_DIR}/Configuration
 	${SERVER_INCLUDE_DIRECTORIES}
 	)
 
@@ -88,7 +89,7 @@ set(MODULES_OBJECTS)
 set(MODULE_INCLUDES)
 foreach(module ${SERVER_MODULES})
     FILE(GLOB SUBMODULE_INCLUDES ${PROJECT_SOURCE_DIR}/${module}/*/include)
-    set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${SUBMODULE_INCLUDES}) 
+    set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${PROJECT_BINARY_DIR}/${module}/include ${SUBMODULE_INCLUDES}) 
 endforeach(module)
 foreach(include ${MODULE_INCLUDES})
     include_directories(${include})

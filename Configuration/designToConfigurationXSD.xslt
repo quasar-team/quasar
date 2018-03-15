@@ -25,10 +25,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 xmlns:d="http://cern.ch/quasar/Design"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
-	<xsl:output indent="yes" method="xml"></xsl:output>
+	<xsl:output indent="yes" method="xml"/>
+	<xsl:param name="metaXsdPath"/>
+	
 	<xsl:template name="dataTypeToXsdType">
 	<xsl:param name="dataType"/>
-	
 	<xsl:choose>
 	<xsl:when test="$dataType='UaString'">xs:string</xsl:when>
 	<xsl:when test="$dataType='OpcUa_SByte'">xs:byte</xsl:when>
@@ -136,7 +137,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	xmlns:xi="http://www.w3.org/2003/XInclude"
 	elementFormDefault="qualified">
 	
-	<xi:include href="../Meta/config/Meta.xsd" xpointer="xmlns(xs=http://www.w3.org/2001/XMLSchema) xpointer(/xs:schema/node())">
+	<xi:include href="{$metaXsdPath}" xpointer="xmlns(xs=http://www.w3.org/2001/XMLSchema) xpointer(/xs:schema/node())">
 	</xi:include>
 	
 	<xs:complexType name="REGEXPR">
