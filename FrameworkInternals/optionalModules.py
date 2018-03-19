@@ -22,7 +22,7 @@ import os
 import subprocess
 import platform
 from glob import glob
-from distutils.version import StrictVersion
+from pkg_resources import parse_version
 from shutil import copy, rmtree
 import json
 import version_control_interface
@@ -161,7 +161,7 @@ def enableModule(moduleName, tag="master", serverString=""):
 		print "Error reading version info from Design/quasarVersion.txt"
 		return False
 	moduleMinVersion = moduleInfo[moduleName]["minVersion"]
-	if StrictVersion(quasarVersion) >= StrictVersion(moduleMinVersion):
+	if parse_version(quasarVersion) >= parse_version(moduleMinVersion):
 		print "Module "+moduleName+" required version "+moduleMinVersion+" is compatible with installed quasar version "+quasarVersion
 	else:
 		print "Cannot enable module "+moduleName+". Minimum required version "+moduleMinVersion+" is newer than installed quasar version "+quasarVersion
