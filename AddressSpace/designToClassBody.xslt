@@ -508,6 +508,11 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> ( std::vector &lt;<xsl:value-of select="@dataType"/> &gt; &amp; r) const 
 {
 	// get the variant, extract the array corresponding to the type and put it into the vector
+	
+	// force value rank to 1-dim arrays, to allow NULL get
+    // m_testCacheVariable_read->setValueRank( 1 );
+    m_<xsl:value-of select="@name"/>-&gt;setValueRank( 1 );
+ 
 	UaVariant v ( * (m_<xsl:value-of select="@name"/>-&gt;value (/* session */ 0).value())) ;
 	if ( !v.isArray() ){
  	   	PRINT("ERROR: get " &lt;&lt; " <xsl:value-of select="@name"/> "&lt;&lt; " runtime array not found " );
