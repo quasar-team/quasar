@@ -36,7 +36,7 @@ Certificate* Certificate::Instance( )
 }
 
 Certificate::Certificate( string certfn, string privkeyfn, enum behaviour_t beh  )
-:m_certfn(certfn), m_privkeyfn(privkeyfn), m_behaviour(beh), m_ssl(NULL), m_time_end(NULL), m_status(STATUS_UNKNOWN), m_remaining_validity_in_seconds(0)
+:m_certfn(certfn), m_privkeyfn(privkeyfn), m_behaviour(beh), m_ssl(NULL), m_time_end(0), m_status(STATUS_UNKNOWN), m_remaining_validity_in_seconds(0)
 {
 	setTypeDER();
 
