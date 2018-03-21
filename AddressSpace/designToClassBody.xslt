@@ -510,7 +510,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 	// get the variant, extract the array corresponding to the type and put it into the vector
 	UaVariant v ( * (m_<xsl:value-of select="@name"/>-&gt;value (/* session */ 0).value())) ;
 	if ( !v.isArray() ){
-	   	PRINT("ERROR: get " &lt;&lt; this->getDeviceLink()->getFullName() &lt;&lt; " <xsl:value-of select="@name"/> "&lt;&lt; " runtime array not found " );
+ 	   	PRINT("ERROR: get " &lt;&lt; " <xsl:value-of select="@name"/> "&lt;&lt; " runtime array not found " );
         return( OpcUa_BadIndexRangeNoData );
 	} 
 	<xsl:choose>
