@@ -62,7 +62,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:choose>
     	<xsl:when test="d:array">
 			// source variable read array signature
-			vector&lt;<xsl:value-of select="@dataType"/>&gt; value;
+			std::vector&lt;<xsl:value-of select="@dataType"/>&gt; value;
 		</xsl:when>
     	<xsl:otherwise>
     		// source variable read scalar signature
@@ -199,7 +199,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:choose>
     	<xsl:when test="d:array">
 			// source variable write array signature
-			vector&lt;<xsl:value-of select="@dataType"/>&gt; value;
+			std::vector&lt;<xsl:value-of select="@dataType"/>&gt; value;
 		</xsl:when>
     	<xsl:otherwise>
     		// source variable write scalar signature

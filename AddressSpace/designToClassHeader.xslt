@@ -60,7 +60,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	<!-- also for arrays, where we use our own signature function generator -->
 	<xsl:template name="cachevariables_setgettersarray"> 
-	UaStatus get<xsl:value-of select="fnc:capFirst(@name)"/> ( vector &lt; <xsl:value-of select="@dataType"/> &gt; &amp;) const ;
+	UaStatus get<xsl:value-of select="fnc:capFirst(@name)"/> ( std::vector &lt; <xsl:value-of select="@dataType"/> &gt; &amp;) const ;
 	UaStatus <xsl:value-of select="fnc:varSetterArray(@name, @dataType, 'true')"/> ;
 		
 	<xsl:choose>

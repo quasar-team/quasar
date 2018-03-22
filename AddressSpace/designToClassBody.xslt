@@ -196,7 +196,7 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
  			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: exiting..." &lt;&lt; std::endl; 
  			   	exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
  		   	}
- 		   	vector &lt;<xsl:value-of select="@dataType"/>&gt; vect;
+ 		   	std::vector &lt;<xsl:value-of select="@dataType"/>&gt; vect;
  		   	<xsl:choose>
 			<xsl:when test="@dataType='UaString'">
  		   	for ( int i = 0; i &lt; dim; i++ ){
@@ -617,8 +617,8 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 				// cache delegated: must distinguish between scalar and array
 				<xsl:choose>
 					<xsl:when test="d:array">
-					// cache delegated string point1: code which extracts the vector of strings
-					// from te UaVariant, via a conversion to an UaStringArray. Then we just call
+					// code which extracts the vector of strings
+					// from the UaVariant, via a conversion to an UaStringArray. Then we just call
 					// the (delegated) device method giving the vector as argument
 					std::vector&lt;UaString&gt; v_value;
 					
@@ -632,8 +632,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 					</xsl:choose>
 					
 					</xsl:when>
-					<xsl:otherwise>
-					// cache delegated string point1: scalar 
+					<xsl:otherwise> 
 					UaString v_value;
 					v_value = v.toString();
 					</xsl:otherwise>

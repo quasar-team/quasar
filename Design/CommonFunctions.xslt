@@ -98,7 +98,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 <xsl:choose>
 <xsl:when test="$dataType='OpcUa_Double' or $dataType='OpcUa_Float' or $dataType='OpcUa_UInt32' or $dataType='OpcUa_Int32' or $dataType='OpcUa_UInt64' or $dataType='OpcUa_Int64' or $dataType='OpcUa_Boolean'">
 <!-- array signature, need fnc:vectorOpen() and friend to make xsl/Xpath happy -->
-<xsl:value-of select="concat('set',fnc:capFirst($name),' (vector ',fnc:vectorOpen(),$dataType,fnc:vectorClose(),' value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+<xsl:value-of select="concat('set',fnc:capFirst($name),' (std::vector ',fnc:vectorOpen(),$dataType,fnc:vectorClose(),' value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
 
 </xsl:when>
 <xsl:when test="$dataType='null'">
@@ -107,7 +107,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 </xsl:when>
 <xsl:otherwise>
 <!-- use as API the vector<type> or the UaVariant ? --> 
-<xsl:value-of select="concat('set',fnc:capFirst($name),' (vector ',fnc:vectorOpen(),$dataType,fnc:vectorClose(),'  value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+<xsl:value-of select="concat('set',fnc:capFirst($name),' (std::vector ',fnc:vectorOpen(),$dataType,fnc:vectorClose(),'  value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
 <!-- 
 <xsl:value-of select="concat('set',fnc:capFirst($name),' (UaVariant, value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
 -->
