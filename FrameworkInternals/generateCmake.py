@@ -26,26 +26,41 @@ from transformDesign import transformDesignVerbose
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
 
-def generateCmake(buildType="Release"):
+def generateCmake(projectSourceDir, projectBinaryDir,buildType="Release"):
 	"""Generates CMake header lists in various directories, and then calls cmake.
 	
 	Keyword arguments:
 	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""	
-	transformDesignVerbose("AddressSpace" + os.path.sep + "designToGeneratedCmakeAddressSpace.xslt",
-			       "AddressSpace" + os.path.sep + "cmake_generated.cmake",
-			       0, astyleRun=False)
-	transformDesignVerbose("Device" + os.path.sep + "designToGeneratedCmakeDevice.xslt",
-			       "Device" + os.path.sep + "generated" + os.path.sep + "cmake_header.cmake",
-			       0, astyleRun=False)
+		
+	transformDesignVerbose(
+		os.path.join("AddressSpace", "designToGeneratedCmakeAddressSpace.xslt"),
+		os.path.join("AddressSpace", "cmake_generated.cmake"),
+		0, 
+		astyleRun=False, 
+		additionalParam="projectBinaryDir={0}".format(projectBinaryDir ))
+	
+	transformDesignVerbose(
+		os.path.join("Device", "designToGeneratedCmakeDevice.xslt"),
+		os.path.join("Device", "generated", "cmake_header.cmake"),
+		0, 
+		astyleRun=False,
+		additionalParam="projectBinaryDir={0}".format(projectBinaryDir ))
+
+        
 	print("Build type ["+buildType+"]")
+	
+	if not os.path.isdir(projectBinaryDir):
+		print("PROJECT_BINARY_DIR {0} doesn't exist -- creating it.".format(projectBinaryDir))
+		os.mkdir(projectBinaryDir)
+	os.chdir(projectBinaryDir)
 
 	print("Calling CMake")
 	if platform.system() == "Windows":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-					      "-G", "Visual Studio 12 Win64", "."],
+					      "-G", "Visual Studio 12 Win64", projectSourceDir],
 					     getCommand("cmake"))
 	elif platform.system() == "Linux":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-                                              "."],
+                                              projectSourceDir],
 					     getCommand("cmake"))

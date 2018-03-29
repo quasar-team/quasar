@@ -20,6 +20,10 @@
 
 project(opc_ua)
 cmake_minimum_required(VERSION 2.8)
+
+message("PROJECT_SOURCE_DIR= ${PROJECT_SOURCE_DIR}")
+message("PROJECT_BINARY_DIR= ${PROJECT_BINARY_DIR}")
+
 add_definitions(
 	-DSUPPORT_XML_CONFIG 
 )
@@ -44,8 +48,9 @@ include_directories (
 	${OPCUA_TOOLKIT_PATH}/include/xmlparser
 	${OPCUA_TOOLKIT_PATH}/include/uapki
 	${BOOST_PATH_HEADERS}
-	${PROJECT_SOURCE_DIR}/Device/generated
-	${PROJECT_SOURCE_DIR}/Configuration
+	${PROJECT_BINARY_DIR}/Device/generated
+	${PROJECT_SOURCE_DIR}/Configuration  # this is to cover Configurator.h
+	${PROJECT_BINARY_DIR}/Configuration
 	${SERVER_INCLUDE_DIRECTORIES}
 	)
 
@@ -88,7 +93,7 @@ set(MODULES_OBJECTS)
 set(MODULE_INCLUDES)
 foreach(module ${SERVER_MODULES})
     FILE(GLOB SUBMODULE_INCLUDES ${PROJECT_SOURCE_DIR}/${module}/*/include)
-    set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${SUBMODULE_INCLUDES}) 
+    set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${PROJECT_BINARY_DIR}/${module}/include ${SUBMODULE_INCLUDES}) 
 endforeach(module)
 foreach(include ${MODULE_INCLUDES})
     include_directories(${include})
@@ -102,15 +107,18 @@ endforeach(module)
 
 
 add_custom_command(
-    OUTPUT ${PROJECT_SOURCE_DIR}/Design/validated.tmp
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Design
-    COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/quasar.py validate_design
-    COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_SOURCE_DIR}/Design/validated.tmp
+    OUTPUT ${PROJECT_BINARY_DIR}/Design/validated.tmp
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/quasar.py validate_design --project_binary_dir ${PROJECT_BINARY_DIR}
+    COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_BINARY_DIR}/Design/validated.tmp
     DEPENDS ${DESIGN_FILE}   
     )
-add_custom_target(validateDesign DEPENDS  ${PROJECT_SOURCE_DIR}/Design/validated.tmp )
+add_custom_target(validateDesign DEPENDS  ${PROJECT_BINARY_DIR}/Design/validated.tmp )
 
-add_custom_target(dep ALL COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device ) 
+add_custom_target(dep ALL 
+        COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device 
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        ) 
 
 link_directories(
 	${OPCUA_TOOLKIT_PATH}/lib

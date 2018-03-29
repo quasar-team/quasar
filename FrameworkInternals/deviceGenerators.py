@@ -25,26 +25,27 @@ from lxml import etree
 from manage_files import get_list_classes
 
 devicePath = "Device" + os.path.sep
-def generateRoot():	
-	"""Generates the files DRoot.h and DRoot.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = "include" + os.path.sep + "DRoot.h"
-	transformDesignVerbose(devicePath + "designToRootHeader.xslt", devicePath + output, 0, astyleRun=True)
-	output = "src" + os.path.sep + "DRoot.cpp"
-	transformDesignVerbose(devicePath + "designToRootBody.xslt", devicePath + output,0, astyleRun=True)
 
-def generateBaseClass(classname):
+def generateRoot(projectBinaryDir):	
+	"""Generates the files DRoot.h and DRoot.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
+	output = os.path.join(projectBinaryDir, devicePath, "include", "DRoot.h")
+	transformDesignVerbose(devicePath + "designToRootHeader.xslt", output, 0, astyleRun=True)
+	output = os.path.join(projectBinaryDir, devicePath, "src", "DRoot.cpp")
+	transformDesignVerbose(devicePath + "designToRootBody.xslt", output, 0, astyleRun=True)
+
+def generateBaseClass(projectBinaryDir, classname):
 	"""Generates the files Base_D<classname>.h and Base_D<classname>.cpp. This method is called automatically by cmake, it does not need to be called by the user.
 	
 	Keyword arguments:
 	classname -- the name of the device, which this class will be associated to.
 	"""
-	output = "generated/Base_D" + classname + ".h"
-	transformDesignVerbose(devicePath + "designToDeviceBaseHeader.xslt", devicePath + output, 0, astyleRun=True, additionalParam="className=" + classname)
+	output = os.path.join(projectBinaryDir, devicePath, "generated", "Base_D{0}.h".format(classname))
+	transformDesignVerbose(devicePath + "designToDeviceBaseHeader.xslt", output, 0, astyleRun=True, additionalParam="className=" + classname)
 		
-	output = "generated/Base_D" + classname + ".cpp"
-	transformDesignVerbose(devicePath + "designToDeviceBaseBody.xslt", devicePath + output, 0, astyleRun=True, additionalParam="className=" + classname)
+	output = os.path.join(projectBinaryDir, devicePath, "generated", "Base_D{0}.cpp".format(classname))
+	transformDesignVerbose(devicePath + "designToDeviceBaseBody.xslt", output, 0, astyleRun=True, additionalParam="className=" + classname)
 	
-def generateDeviceClass(*classList):
+def generateDeviceClass(projectBinaryDir, *classList):
 	"""Generates the files D<classname>.h and D<classname>.cpp. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.
 	
 	Keyword arguments:
@@ -58,11 +59,11 @@ def generateDeviceClass(*classList):
 		return generateAllDevices()		
 	classList = [x for x in classList if x is not None]#Remove nones from the list
 	for c in classList:#generate all the specified device classes
-		output = "include/D" + c + ".h"
-		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, 1, astyleRun=True, additionalParam="className=" + c)
+		output = os.path.join(devicePath, "include", "D{0}.h".format(c))
+		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", output, 1, astyleRun=True, additionalParam="className=" + c)
 			
-		output = "src/D" + c + ".cpp"
-		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, astyleRun=True, additionalParam="className=" + c)
+		output = os.path.join(devicePath, "src", "D{0}.cpp".format(c))
+		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", output, 1, astyleRun=True, additionalParam="className=" + c)
 	
 def generateAllDevices():
 	"""Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
