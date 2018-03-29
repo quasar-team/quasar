@@ -21,23 +21,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 import sys
 import subprocess
-
-def extract_argument(input, key):
-	""" If key is present in input, will remove it and the following element from the list. 
-		Returns a tuple of the output list (i.e. after removal of two elements) and the value of the element (i.e. the second of the two) """ 
-	if key in input:
-		pos = input.index(key)
-		output = input
-		output.pop(pos)
-		value = output.pop(pos)
-		return (output, value)
-	else:  # nothing to do, argument not present
-		return (input, None)
-
-def extract_common_arguments(input):
-	""" Will parse some common arguments and remove them from the input list """
-	(input, project_binary_dir) = extract_argument(input, '--project_binary_dir')
-	return (input, project_binary_dir)
+import inspect
 
 internalFolders = ["AddressSpace", "Configuration", "Design", "Device", "FrameworkInternals", "Server", "LogIt", "Meta"]
 initialDir = os.getcwd()
@@ -48,34 +32,55 @@ if(currentFolder in internalFolders):
 	os.chdir("../")
 sys.path.insert(0, './FrameworkInternals')
 
-from quasarCommands import printCommandList
+from quasarCommands import printCommandList, extract_common_arguments
 from quasarCommands import getCommands
 
-(args, project_binary_dir) = extract_common_arguments(sys.argv)
+# args starts from the command name (e.g. 'build') and skips the common arguments (e.g. 'project_binary_dir')
+(args, project_binary_dir) = extract_common_arguments(sys.argv[1:])  # 1: to skip the script name given by the operating system
 if project_binary_dir is None:
 	project_binary_dir = os.getcwd()
 
-if len(args) < 2:
+if len(args) < 1:
         print 'The script was run without specifying what to do. Here are available commands:'
         printCommandList()
         sys.exit(1)
 
-try:
-	commands = getCommands()
-	matched_command = filter(lambda x: x[0] == args[1:1+len(x[0])], commands)[0]
-except IndexError:
-	print 'Sorry, no such command. These are available:'
-	printCommandList()
-	sys.exit(1)
+        
+matched_commands = filter(lambda x: x[0] == args[0:len(x[0])], getCommands())
+if len(matched_commands)>1:
+        raise Exception ('It was ambigious to determine the command to run.')
+if len(matched_commands)<1:
+       	print 'Sorry, no such command. These are available:'
+       	printCommandList()
+       	sys.exit(1)
+matched_command = matched_commands[0]
+
 
 if '-h' in sys.argv or '--help' in sys.argv:
 	help(matched_command[1])
 	sys.exit(0)
-else:
-        try:
-                args = sys.argv[1+len(matched_command[0]):]
-                matched_command[1]( *args, projectBinaryDir=project_binary_dir )  # pack arguments after the last chunk of the command                
-        except Exception as e:
+
+
+command_invocation_length = len(matched_command[0])
+real_args = args[command_invocation_length:]
+
+function_arg_spec = inspect.getargspec( matched_command[1] ).args # inspect the arguments of callable
+pass_args = []
+if 'projectBinaryDir' in function_arg_spec:
+	if function_arg_spec.index('projectBinaryDir') != 0:
+		raise Exception('projectBinaryDir, if present, must be the very first argument')
+   	pass_args.append(project_binary_dir)
+
+if inspect.getargspec( matched_command[1] ).varargs is None:
+        # with varargs, such protection obviously makes no sense
+        if len(real_args) > len(function_arg_spec):
+            raise Exception('Error: Too many arguments for the chosen command')
+
+pass_args.extend(args[len(matched_command[0]):])
+
+try:
+        matched_command[1]( *pass_args )  # pack arguments after the last chunk of the command
+except Exception as e:
                 print 'Failed because: '+str(e)+'.\nHint: look at the lines above, answer might be there.'
                 sys.exit(1)
-	sys.exit(0)
+sys.exit(0)

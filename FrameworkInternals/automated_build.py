@@ -74,7 +74,7 @@ def set_build_config(arg1, projectBinaryDir):
         else:
                 write_build_config_selector(arg1)
 
-def automatedBuild(buildType="Release"):
+def automatedBuild(projectBinaryDir, buildType="Release"):
 	"""Method that generates the cmake headers, and after that calls make/msbuild to compile your server.
 	
 	Keyword arguments:
