@@ -33,7 +33,7 @@ def generateRoot(projectBinaryDir):
 	output = os.path.join(projectBinaryDir, devicePath, "src", "DRoot.cpp")
 	transformDesignVerbose(devicePath + "designToRootBody.xslt", output, 0, astyleRun=True)
 
-def generateBaseClass(classname, projectBinaryDir):
+def generateBaseClass(projectBinaryDir, classname):
 	"""Generates the files Base_D<classname>.h and Base_D<classname>.cpp. This method is called automatically by cmake, it does not need to be called by the user.
 	
 	Keyword arguments:
@@ -45,8 +45,7 @@ def generateBaseClass(classname, projectBinaryDir):
 	output = os.path.join(projectBinaryDir, devicePath, "generated", "Base_D{0}.cpp".format(classname))
 	transformDesignVerbose(devicePath + "designToDeviceBaseBody.xslt", output, 0, astyleRun=True, additionalParam="className=" + classname)
 	
-def generateDeviceClass(*classList, **kwargs):
-	projectBinaryDir = kwargs['projectBinaryDir']
+def generateDeviceClass(projectBinaryDir, *classList):
 	"""Generates the files D<classname>.h and D<classname>.cpp. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.
 	
 	Keyword arguments:
@@ -60,11 +59,11 @@ def generateDeviceClass(*classList, **kwargs):
 		return generateAllDevices()		
 	classList = [x for x in classList if x is not None]#Remove nones from the list
 	for c in classList:#generate all the specified device classes
-		output = os.path.join(projectBinaryDir, devicePath, "include", "D{0}.h".format(c))
+		output = os.path.join(devicePath, "include", "D{0}.h".format(c))
 		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", output, 1, astyleRun=True, additionalParam="className=" + c)
 			
-		output = os.path.join(projectBinaryDir, devicePath, "src", "D{0}.cpp".format(c))
-		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, astyleRun=True, additionalParam="className=" + c)
+		output = os.path.join(devicePath, "src", "D{0}.cpp".format(c))
+		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", output, 1, astyleRun=True, additionalParam="className=" + c)
 	
 def generateAllDevices():
 	"""Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""

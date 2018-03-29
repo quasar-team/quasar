@@ -68,13 +68,12 @@ def build_config():
                 print 'Build config is not chosen yet. Please run "quasar.py set_build_config <path_to_the_build_config>"'
 
 def set_build_config(arg1, projectBinaryDir):
-	raise Exception ("this is broken -- fix projectBinaryDir")
         if arg1 is None:
                 print 'Please provide the argument'
         else:
                 write_build_config_selector(arg1)
 
-def automatedBuild(projectBinaryDir, buildType="Release"):
+def automatedBuild(projectSourceDir=None, projectBinaryDir=None, buildType="Release"):
 	"""Method that generates the cmake headers, and after that calls make/msbuild to compile your server.
 	
 	Keyword arguments:
@@ -83,7 +82,7 @@ def automatedBuild(projectBinaryDir, buildType="Release"):
         if not buildType in ["Release","Debug"]:
                 raise Exception ("Only Release or Debug is accepted as the parameter. "
                                  "If you are used to passing build config through here, note this version of quasar has separate command to do that: build_config")
-	generateCmake(buildType)			
+	generateCmake(projectSourceDir, projectBinaryDir, buildType)			
 			
 	print('Calling make/msbuild')
 	if platform.system() == "Windows":

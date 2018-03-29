@@ -28,13 +28,6 @@ from commandMap import getCommand
 import astyleSubstitute
 import subprocess
 
-# args:
-# $1    xslt transform filename
-# $2	output filename
-# $3	if 1, will prevent from overwriting output filename, running merge-tool
-# $4	if true, will run astyle on generated file
-# $5	additional params to the transform
-
 def transformDesignVerbose(xsltTransformation, outputFile, overwriteProtection, astyleRun=False, additionalParam=None):
 	"""Prints information and then calls transformDesign
 	

@@ -29,7 +29,7 @@ def generateSourceVariables(projectBinaryDir):
 	output = os.path.join(projectBinaryDir, "AddressSpace", "src", "SourceVariables.cpp")
 	transformDesignVerbose(asPath + "designToSourceVariablesBody.xslt", output,0, astyleRun=True)
 
-def generateASClass(classname, projectBinaryDir):
+def generateASClass(projectBinaryDir, classname):
 	"""Generates the files AS<classname>.h and AS<classname>.cpp. This method is called automatically by cmake, it does not need to be called by the user.
 	
 	Keyword arguments:

@@ -22,15 +22,10 @@ import os
 import sys
 import subprocess
 import inspect
+import traceback
 
-internalFolders = ["AddressSpace", "Configuration", "Design", "Device", "FrameworkInternals", "Server", "LogIt", "Meta"]
-initialDir = os.getcwd()
-splittedPath = initialDir.split(os.path.sep)
-splittedPathLength = len(splittedPath)
-currentFolder = splittedPath[splittedPathLength - 1]
-if(currentFolder in internalFolders):
-	os.chdir("../")
-sys.path.insert(0, './FrameworkInternals')
+this_script_path = os.path.abspath(sys.argv[0])
+sys.path.insert(0, os.path.join(os.path.dirname(this_script_path), 'FrameworkInternals'))
 
 from quasarCommands import printCommandList, extract_common_arguments
 from quasarCommands import getCommands
@@ -66,10 +61,20 @@ real_args = args[command_invocation_length:]
 
 function_arg_spec = inspect.getargspec( matched_command[1] ).args # inspect the arguments of callable
 pass_args = []
-if 'projectBinaryDir' in function_arg_spec:
-	if function_arg_spec.index('projectBinaryDir') != 0:
-		raise Exception('projectBinaryDir, if present, must be the very first argument')
-   	pass_args.append(project_binary_dir)
+
+order_of_extra_arguments = ['projectSourceDir', 'projectBinaryDir']
+extra_arguments = {
+	'projectSourceDir' : os.path.dirname(this_script_path),
+	'projectBinaryDir' : project_binary_dir
+	}
+last_checked_argument = -1
+for extra_argument in order_of_extra_arguments:
+	if extra_argument in function_arg_spec:
+		if function_arg_spec.index(extra_argument) < last_checked_argument:
+			raise Exception ('Order of special arguments is wrong in the function signature')
+		else:
+			last_checked_argument = function_arg_spec.index(extra_argument)
+		pass_args.append( extra_arguments[extra_argument] )
 
 if inspect.getargspec( matched_command[1] ).varargs is None:
         # with varargs, such protection obviously makes no sense
@@ -82,5 +87,6 @@ try:
         matched_command[1]( *pass_args )  # pack arguments after the last chunk of the command
 except Exception as e:
                 print 'Failed because: '+str(e)+'.\nHint: look at the lines above, answer might be there.'
+                traceback.print_exc()
                 sys.exit(1)
 sys.exit(0)

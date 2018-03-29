@@ -28,8 +28,8 @@ from commandMap import getCommand
 configPath = "Configuration" + os.path.sep	
 def generateConfiguration(projectBinaryDir):
 	"""Generates the file Configuration.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
-	outputFile = os.path.join(projectBinaryDir, 'Configuration', 'Configuration.xsd')
-	cleanedOutputFile = os.path.join(projectBinaryDir, 'Configuration', 'Configuration.xsd.new')
+	outputFile = os.path.join(projectBinaryDir,'Configuration', 'Configuration.xsd')
+	cleanedOutputFile = os.path.join(projectBinaryDir,'Configuration', 'Configuration.xsd.new')
 	transformationFile = os.path.join(configPath, "designToConfigurationXSD.xslt")
 	transformDesignVerbose(transformationFile, outputFile, 0, astyleRun=False, additionalParam="metaXsdPath={0}".format(os.path.join(os.getcwd(),"Meta","config","Meta.xsd")) )
 	print("Calling xmllint to modify " + outputFile)
