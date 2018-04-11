@@ -123,7 +123,7 @@ ArrayTools::~ArrayTools() {}
 		UaString uaString = (*(value[ i ].toOpcUaString()));
         uaString.detach( &ua[i] ); 		// basically does: ua[ i ] = value[ i ];
 	}
-    v.setStringArray( ua, /* detach */ true  );
+    v.setStringArray( ua, /* detach */ false  );
 }
 
 
