@@ -181,31 +181,26 @@ UaVariant v;
 	<xsl:choose>
 	<xsl:when test="d:array">
 	// found array signature: have to put the vector into the variant
-	{ // scope
-			OpcUa_Int32 valueRank = 1; // only support 1-dim arrays 
-			UaUInt32Array arrayDimensions;    
-			int dim = config.<xsl:value-of select="@name" />().value().size();
+	{ // scope 
+			unsigned int dim = config.<xsl:value-of select="@name" />().value().size();
 			
  		   	// make sure the design size constraints are respected during runtime
-			int min = <xsl:value-of select="@name"/>_minimumSize();
-			int max = <xsl:value-of select="@name"/>_maximumSize();
+			unsigned int min = <xsl:value-of select="@name"/>_minimumSize();
+			unsigned int max = <xsl:value-of select="@name"/>_maximumSize();
  		    if ( dim &lt; min || dim &gt; max )
  		    {
- 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: config <xsl:value-of select="@name" /> array dim= " &lt;&lt; dim &lt;&lt; " out of designed bounds (Design.xml) !"&lt;&lt; std::endl; 
- 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: bounds of <xsl:value-of select="@name" /> are min= " &lt;&lt; min &lt;&lt; " max= "&lt;&lt; max &lt;&lt; std::endl; 
- 			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: exiting..." &lt;&lt; std::endl; 
- 			   	exit(-1); // hard one , but can't return( OpcUa_BadOutOfRange ) in constructor;
+ 		    	throw_runtime_error_with_origin("Size of configuration data supplied to the constructor is out of bounds. Size is "+boost::lexical_cast&lt;std::string&gt;(dim)+" and bounds are ["+boost::lexical_cast&lt;std::string&gt;(min)+","+boost::lexical_cast&lt;std::string&gt;(max)+"]");
  		   	}
  		   	std::vector &lt;<xsl:value-of select="@dataType"/>&gt; vect;
  		   	<xsl:choose>
 				<xsl:when test="@dataType='UaString'">
-	 		   	for ( int i = 0; i &lt; dim; i++ )
+	 		   	for ( unsigned int i = 0; i &lt; dim; i++ )
 	 		   	{
 					vect.push_back( <xsl:value-of select="@dataType"/>( config.<xsl:value-of select="@name" />().value()[ i ].c_str() ));
 				}
 				</xsl:when>
 				<xsl:otherwise>
-	 		   	for ( int i = 0; i &lt; dim; i++ )
+	 		   	for ( unsigned int i = 0; i &lt; dim; i++ )
 	 		   	{
 					vect.push_back( <xsl:value-of select="@dataType"/>( config.<xsl:value-of select="@name" />().value()[ i ] ));
 				}
@@ -221,9 +216,7 @@ UaVariant v;
 				ArrayTools::convertVectorToUaVariant( vect, v );
 				</xsl:otherwise>
 			</xsl:choose>
-			v.arrayDimensions( arrayDimensions );
-			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
-			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+			m_<xsl:value-of select="@name"/>-&gt;setValueRank( 1 );
 			m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId(<xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0) );
 			m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);			
 
@@ -479,8 +472,8 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
  	v.arrayDimensions( arrayDimensions );
 	
 	m_<xsl:value-of select="$baseName"/>-&gt;setValueRank( valueRank );
-        m_<xsl:value-of select="$baseName"/>-&gt;setArrayDimensions( arrayDimensions );	
-        m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId(<xsl:value-of select="fnc:dataTypeToBuiltinType($baseType)"/>, 0) );
+    m_<xsl:value-of select="$baseName"/>-&gt;setArrayDimensions( arrayDimensions );	
+    m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId(<xsl:value-of select="fnc:dataTypeToBuiltinType($baseType)"/>, 0) );
 	return m_<xsl:value-of select="$baseName"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
 }
 	</xsl:for-each> <!-- array element -->
@@ -841,7 +834,11 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
     <xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToClassBody.xslt','Piotr Nikiel')"/>
 	#include &lt;iostream&gt;
 	#include &lt;climits&gt;
+	
+	#include &lt;boost/lexical_cast.hpp&gt;
+	
 	#include &lt;ArrayTools.h&gt;
+	#include &lt;Utils.h&gt;
 
 	
 	<xsl:if test="not(/d:design/d:class[@name=$className])">
