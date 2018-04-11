@@ -26,8 +26,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 xmlns:d="http://cern.ch/quasar/Design"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
 	<xsl:output indent="yes" method="xml"></xsl:output>
-	<xsl:template name="dataTypeToXsdType">
-	<xsl:param name="dataType"/>
+<xsl:template name="dataTypeToXsdType">
+	<xsl:param name="dataType"/>	
 	
 	<xsl:choose>
 	<xsl:when test="$dataType='UaString'">xs:string</xsl:when>
@@ -47,10 +47,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:otherwise><xsl:message terminate="yes">ERROR: unknown type <xsl:value-of select="$dataType"/></xsl:message></xsl:otherwise>
 	</xsl:choose>
 	
-	</xsl:template>
+</xsl:template>
 
-	<xsl:template match="d:class">	
+
+<xsl:template match="d:class">	
 	<!--  for every class we create a complexType -->
+	<xsl:variable name="myclassname" select="@name"/>		
 	<xsl:element name="xs:complexType">
 	<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 
@@ -65,9 +67,83 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:for-each select="d:hasobjects[@instantiateUsing='configuration']">
 		<xs:element name="{@class}" type="tns:{@class}"  />
 		</xsl:for-each>
-
-
 	</xs:choice>
+		<!-- here we go through all the config entries and filter out the ones which are arrays. 
+		they become elements. -->
+		<xsl:for-each select="child::d:configentry">
+		<xsl:choose>
+			<xsl:when test="d:array">
+			<!-- look for the array base types and declare specific array types accordingly -->
+			<xs:element name="{@name}" type="tns:{$myclassname}_{@name}_{@dataType}_configArrayType">  
+			</xs:element>
+			</xsl:when>
+			
+		</xsl:choose>
+		</xsl:for-each>
+	
+	
+	
+		<!-- here we go through all cachevariables which are populated
+		by configuration and filter out the ones which are arrays
+		to make them elements with complex type and not attributes 
+		The bounds are checked during runtime, and size is dynamical -->
+		<xsl:for-each select="child::d:cachevariable">
+		<xsl:if test="@initializeWith='configuration'">
+		<xsl:choose>
+		<xsl:when test="d:array">
+
+		<!-- look for the array base types and give different element 
+		complex types accordingly -->
+		<xsl:choose>
+		<xsl:when test="@dataType='OpcUa_Boolean'">
+			<xs:element name="{@name}" type="tns:BoolArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Byte'">
+			<xs:element name="{@name}" type="tns:ByteArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_SByte'">
+			<xs:element name="{@name}" type="tns:SByteArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Int16'">
+			<xs:element name="{@name}" type="tns:Int16ArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_UInt16'">
+			<xs:element name="{@name}" type="tns:UInt16ArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Int32'">
+			<xs:element name="{@name}" type="tns:Int32ArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_UInt32'">
+			<xs:element name="{@name}" type="tns:UInt32ArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Int64'">
+			<xs:element name="{@name}" type="tns:Int64ArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_UInt64'">
+			<xs:element name="{@name}" type="tns:UInt64ArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Float'">
+			<xs:element name="{@name}" type="tns:FloatArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='OpcUa_Double'">
+			<xs:element name="{@name}" type="tns:DoubleArrayType">  </xs:element>
+		</xsl:when>
+		<xsl:when test="@dataType='UaString'">
+			<xs:element name="{@name}" type="tns:StringArrayType">  </xs:element>
+		</xsl:when>
+		
+		</xsl:choose>
+
+<!-- base array type 
+<xs:element name="{@dataType}"></xs:element>
+-->
+
+
+		</xsl:when>
+		</xsl:choose>
+		</xsl:if>
+		</xsl:for-each>
+		
 	</xs:sequence>
 	<!-- name of the object of this class is mandatory and not configurable. -->
 	<xs:attribute name="name" type="xs:string" use="required"/>
@@ -75,6 +151,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	<xsl:for-each select="child::d:cachevariable">
 		<xsl:if test="@initializeWith='configuration'">
+		<xsl:choose>
+		<xsl:when test="d:array">
+		<!-- array cache var: these are elements and not attributes, so that we can use
+		complex types. Do not generate them as attributes here therefore -->			
+		</xsl:when>
+		<xsl:otherwise>
+	    <!-- scalar cache var as attribute -->
+				
 			<!--  <xs:attribute name="{@name}" type="{@xsdType}" use="required"/>-->
 			<xsl:element name="xs:attribute">
 				<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
@@ -92,15 +176,27 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				<xsl:value-of select="d:documentation"/>
 				</xsl:element>
 				</xsl:element>
-				</xsl:if>
-				
+				</xsl:if>	
 			</xsl:element>
+		</xsl:otherwise>
+		</xsl:choose>
+			
 		</xsl:if>
 	</xsl:for-each>
 
 	<!-- also config entries shall create attributes in xsd -->
 	<xsl:for-each select="d:configentry">
-		<xsl:element name="xs:attribute">
+	<xsl:choose>
+		<xsl:when test="d:array">
+		<!-- we have a config entry array, and this is needed in the xsd as an 
+		element and not an attribute here. Each array has different bounds and 
+		different base type. Therefore we need to generate one specific xsd-type for 
+		each configuration entry !  
+		-->
+		</xsl:when>
+		<xsl:otherwise>
+		<!-- we have a config entry scalar, which is an attribute -->
+			<xsl:element name="xs:attribute">
 			<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 			<xsl:attribute name="use">required</xsl:attribute>
 			<xsl:attribute name="type">
@@ -119,18 +215,15 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			</xsl:if>
 			
 		</xsl:element>
+		</xsl:otherwise>
+	</xsl:choose>
 	</xsl:for-each>	
-
-	
 	</xsl:element>
-	
+</xsl:template>
+<!-- template class end -->
 
 	
-	
-	</xsl:template>
-
-	
-	<xsl:template match="/">
+<xsl:template match="/">
 	<xs:schema targetNamespace="http://cern.ch/quasar/Configuration" 
 	xmlns:tns="http://cern.ch/quasar/Configuration" 
 	xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -139,6 +232,166 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xi:include href="../Meta/config/Meta.xsd" xpointer="xmlns(xs=http://www.w3.org/2001/XMLSchema) xpointer(/xs:schema/node())">
 	</xi:include>
 	
+				
+    <!-- for all these array types we should generate fixed array bounds here to 
+    be safe, from Design.xml.  -->
+	<xs:complexType name="BoolArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:boolean"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ByteArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:byte"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SByteArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:int"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Int16ArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:short"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UInt16ArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:int"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Int32ArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:int"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UInt32ArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:long"></xs:element>
+    		<!-- use next bigger xs type as container -->
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Int64ArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:long"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UInt64ArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:long"></xs:element>
+    		<!-- strictly speaking this is a fishy fix, but xs types are poorer than C++ types anyway and compromises have to be made.
+    		nevertheless the signedness is just a type rule, and the user can cast a signed to an unsigned herself. This will
+    		matter for nanoseconds timestamps obvioulsy where 64bit unsigned ints are needed --> 
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FloatArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:float"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DoubleArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:double"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StringArrayType">
+    	<xs:sequence>
+    		<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="value" type="xs:string"></xs:element>
+    		</xs:choice>
+    	</xs:sequence>
+	</xs:complexType>
+
+	<!-- generate specific array types for each config variable 
+	  <xs:complexType name="DoubleArrayType">
+      <xs:sequence>
+         <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="value" type="xs:double"/>
+         </xs:choice>
+      </xs:sequence>
+      </xs:complexType>
+ 	-->
+ <xsl:for-each select="/d:design/d:class">
+	<xsl:variable name="myclassname" select="@name"/>		
+	<xsl:for-each select="d:configentry">
+		<xsl:variable name="mytype" select="@dataType"/>		
+		
+		<!-- create specific array types for each config array -->
+		<xsl:if test="d:array">
+		<xs:complexType name="{$myclassname}_{@name}_{@dataType}_configArrayType">
+		<xs:sequence>
+		<xsl:for-each select="d:array">
+			<xs:choice minOccurs="{@minimumSize}" maxOccurs="{@maximumSize}">
+			<xsl:choose>
+			<xsl:when test="$mytype='OpcUa_Boolean'">
+				<xs:element name="value" type="xs:boolean"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='OpcUa_Byte'">
+				<xs:element name="value" type="xs:byte"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='OpcUa_SByte'">
+				<xs:element name="value" type="xs:int"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='OpcUa_Int16'">
+				<xs:element name="value" type="xs:short"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='OpcUa_UInt16'">
+				<xs:element name="value" type="xs:int"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='OpcUa_Int32'">
+				<xs:element name="value" type="xs:int"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='OpcUa_UInt32'">
+				<xs:element name="value" type="xs:long"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='OpcUa_Int64'">
+				<xs:element name="value" type="xs:long"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='OpcUa_UInt64'">
+				<xs:element name="value" type="xs:long"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='OpcUa_Float'">
+				<xs:element name="value" type="xs:float"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='OpcUa_Double'">
+				<xs:element name="value" type="xs:double"></xs:element>
+			</xsl:when>
+			<xsl:when test="$mytype='UaString'">
+				<xs:element name="value" type="xs:string"></xs:element>
+			</xsl:when>
+			</xsl:choose>
+            </xs:choice>
+		</xsl:for-each>
+		</xs:sequence>
+		</xs:complexType>
+		</xsl:if>
+		
+	</xsl:for-each>
+</xsl:for-each>
+
+
 	<xs:complexType name="REGEXPR">
 		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="value" type="xs:string" use="required" />
@@ -166,6 +419,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xs:element name="configuration" type="tns:Configuration" />
 	
 	</xs:schema>
-	</xsl:template>
+</xsl:template>
 
 </xsl:transform>
