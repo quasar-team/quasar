@@ -35,10 +35,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:template name="cachevariables_delegates">
 		<xsl:if test="@addressSpaceWrite='delegated'">
 			/* Note: never directly call this function. */
-			<!--  get rid of it 
-			<xsl:value-of select="fnc:delegateWrite(@name,fnc:DClassName($className),'body')" />
-			-->
-			UaStatus <xsl:value-of select="fnc:DClassName($className)"/>::write<xsl:value-of select="fnc:capFirst(@name)"/> ( const <xsl:value-of select="@dataType"/> &amp; v)
+			<xsl:choose>
+			<xsl:when test="d:array">
+				UaStatus <xsl:value-of select="fnc:DClassName($className)"/>::write<xsl:value-of select="fnc:capFirst(@name)"/> ( const std::vector&lt;<xsl:value-of select="@dataType"/>&gt; &amp; v)
+			</xsl:when>
+			<xsl:otherwise>
+				UaStatus <xsl:value-of select="fnc:DClassName($className)"/>::write<xsl:value-of select="fnc:capFirst(@name)"/> ( const <xsl:value-of select="@dataType"/> &amp; v)
+			</xsl:otherwise>
+			</xsl:choose>
 			{
 			return OpcUa_BadNotImplemented;
 			}

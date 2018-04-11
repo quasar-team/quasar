@@ -26,6 +26,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#define throw_runtime_error_with_origin(MSG) throw std::runtime_error(std::string("At ")+__FILE__+":"+Utils::toString(__LINE__)+" "+MSG)
+
 class Utils
 {
 public:

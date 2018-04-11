@@ -32,8 +32,14 @@
 		<xsl:if test="@addressSpaceWrite='delegated'">
 			/* Note: never directly call this function. */
 
-			
-			UaStatus write<xsl:value-of select="fnc:capFirst(@name)"/> ( const <xsl:value-of select="@dataType"/> &amp; v);
+			<xsl:choose>
+			<xsl:when test="d:array">
+				UaStatus write<xsl:value-of select="fnc:capFirst(@name)"/> ( const std::vector&lt;<xsl:value-of select="@dataType"/>&gt; &amp; v);
+			</xsl:when>
+			<xsl:otherwise>
+				UaStatus write<xsl:value-of select="fnc:capFirst(@name)"/> ( const <xsl:value-of select="@dataType"/> &amp; v);
+			</xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 	</xsl:template>
 

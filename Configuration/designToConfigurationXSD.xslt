@@ -54,7 +54,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 <xsl:template match="d:class">	
 	<!--  for every class we create a complexType -->
-	<xsl:variable name="myclassname" select="@name"/>		
 	<xsl:element name="xs:complexType">
 	<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 
@@ -93,7 +92,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		    			</xs:sequence>
 	    		</xs:complexType>
 			</xs:element>
-		</xsl:if>S
+		</xsl:if>
 	</xsl:for-each>
 	
 		<xsl:for-each select="child::d:cachevariable">
