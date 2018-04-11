@@ -107,9 +107,10 @@ elementFormDefault="qualified">
     </complexType>
 
     <complexType name="CacheVariable">
-    	<choice>
+    	<all>
     		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
-    	</choice>
+    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+    	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="addressSpaceWrite"
     		type="tns:CacheVariableAddressSpaceWrite" use="required">
@@ -374,6 +375,18 @@ elementFormDefault="qualified">
     	<restriction base="string"></restriction>
     </simpleType>
 
+ 	
+ 	<simpleType name="OneToMaxLimits">
+   		<restriction base="integer">
+      	<minInclusive value="0"/>
+      	<maxInclusive value="104857600"/>
+   		</restriction>
+	</simpleType>
+	
+	<complexType name="Array">
+      	<attribute name="minimumSize" type="tns:OneToMaxLimits"></attribute>
+ 	 	<attribute name="maximumSize" type="tns:OneToMaxLimits"></attribute>
+    </complexType>
     <complexType name="DeviceLogic">
     	<sequence>
     		<element name="mutex" type="tns:DeviceLogicMutex" minOccurs="0" maxOccurs="1"></element>

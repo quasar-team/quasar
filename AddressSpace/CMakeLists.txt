@@ -35,6 +35,7 @@ add_library (AddressSpace OBJECT
     src/ASNodeManager.cpp
     src/ASSourceVariableIoManager.cpp
     src/SourceVariables.cpp
+    src/ArrayTools.cpp
     ${ADDRESSSPACE_CLASSES}
 
 	)

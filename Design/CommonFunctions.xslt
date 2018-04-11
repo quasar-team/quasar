@@ -80,6 +80,24 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 </xsl:choose>
 </xsl:function>
 
+<xsl:function name="fnc:varSetterArray">
+<xsl:param name="name"/>
+<xsl:param name="dataType"/>
+<xsl:param name="forHeader"/>
+
+<xsl:variable name="srcTime">const UaDateTime &amp; srcTime <xsl:if test="$forHeader='true'">= UaDateTime::now()</xsl:if></xsl:variable>
+<xsl:choose>
+<xsl:when test="$dataType='null'">
+<!-- skip data argument for null setter -->
+<xsl:value-of select="concat('setNull',fnc:capFirst($name),' (OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+</xsl:when>
+
+<xsl:otherwise>
+<xsl:value-of select="concat('set',fnc:capFirst($name),' (const std::vector &amp; &lt;',$dataType,'&gt; value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+</xsl:otherwise>
+</xsl:choose>
+</xsl:function>
+
 <xsl:function name="fnc:delegateWriteName">
 <xsl:param name="name"/>
 write<xsl:value-of select="fnc:capFirst($name)"/> 
