@@ -150,9 +150,9 @@ UaVariant v;
 
 
 <xsl:for-each select="d:cachevariable">
-<xsl:if test="@nullPolicy='nullForbidden'">
-m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0 )); // assumption: BuiltInTypeId matches numeric address of the type in namespace0
-</xsl:if>
+	<xsl:if test="@nullPolicy='nullForbidden'">
+	m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0 )); // assumption: BuiltInTypeId matches numeric address of the type in namespace0
+	</xsl:if>
 <xsl:choose>
 	<xsl:when test="@initializeWith='valueAndStatus'">
 		<xsl:choose>
@@ -189,7 +189,8 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
  		   	// make sure the design size constraints are respected during runtime
 			int min = <xsl:value-of select="@name"/>_minimumSize();
 			int max = <xsl:value-of select="@name"/>_maximumSize();
- 		    if ( dim &lt; min || dim &gt; max ){
+ 		    if ( dim &lt; min || dim &gt; max )
+ 		    {
  			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: config <xsl:value-of select="@name" /> array dim= " &lt;&lt; dim &lt;&lt; " out of designed bounds (Design.xml) !"&lt;&lt; std::endl; 
  			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: bounds of <xsl:value-of select="@name" /> are min= " &lt;&lt; min &lt;&lt; " max= "&lt;&lt; max &lt;&lt; std::endl; 
  			   	std::cout &lt;&lt; __FILE__ &lt;&lt; " " &lt;&lt; __LINE__ &lt;&lt; " ERROR: AS constructor: exiting..." &lt;&lt; std::endl; 
@@ -197,31 +198,33 @@ m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select=
  		   	}
  		   	std::vector &lt;<xsl:value-of select="@dataType"/>&gt; vect;
  		   	<xsl:choose>
-			<xsl:when test="@dataType='UaString'">
- 		   	for ( int i = 0; i &lt; dim; i++ ){
-				vect.push_back( <xsl:value-of select="@dataType"/>( config.<xsl:value-of select="@name" />().value()[ i ].c_str() ));
-			}
-			</xsl:when>
-			<xsl:otherwise>
- 		   	for ( int i = 0; i &lt; dim; i++ ){
-				vect.push_back( <xsl:value-of select="@dataType"/>( config.<xsl:value-of select="@name" />().value()[ i ] ));
-			}
-			</xsl:otherwise>
+				<xsl:when test="@dataType='UaString'">
+	 		   	for ( int i = 0; i &lt; dim; i++ )
+	 		   	{
+					vect.push_back( <xsl:value-of select="@dataType"/>( config.<xsl:value-of select="@name" />().value()[ i ].c_str() ));
+				}
+				</xsl:when>
+				<xsl:otherwise>
+	 		   	for ( int i = 0; i &lt; dim; i++ )
+	 		   	{
+					vect.push_back( <xsl:value-of select="@dataType"/>( config.<xsl:value-of select="@name" />().value()[ i ] ));
+				}
+				</xsl:otherwise>
 			</xsl:choose>
 			
 			UaVariant v;
 			<xsl:choose>
-			<xsl:when test="@dataType='OpcUa_Byte'">
-			ArrayTools::convertVectorToUaVariant( vect, v, true ); // cheat overloading
-			</xsl:when>
-			<xsl:otherwise>
-			ArrayTools::convertVectorToUaVariant( vect, v );
-			</xsl:otherwise>
+				<xsl:when test="@dataType='OpcUa_Byte'">
+				ArrayTools::convertVectorToUaVariant( vect, v, true ); // cheat overloading
+				</xsl:when>
+				<xsl:otherwise>
+				ArrayTools::convertVectorToUaVariant( vect, v );
+				</xsl:otherwise>
 			</xsl:choose>
 			v.arrayDimensions( arrayDimensions );
 			m_<xsl:value-of select="@name"/>-&gt;setValueRank( valueRank );
-    		        m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
-			m_<xsl:value-of select="@name"/>-&gt;setDataType( <xsl:value-of select="fnc:dataTypeToOpcNodeId(@dataType)"/> );
+			m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions( arrayDimensions );
+			m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId(<xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0) );
 			m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);			
 
 	} // scope
@@ -477,7 +480,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 	
 	m_<xsl:value-of select="$baseName"/>-&gt;setValueRank( valueRank );
         m_<xsl:value-of select="$baseName"/>-&gt;setArrayDimensions( arrayDimensions );	
-        m_<xsl:value-of select="$baseName"/>-&gt;setDataType( <xsl:value-of select="fnc:dataTypeToOpcNodeId($baseType)"/> );
+        m_<xsl:value-of select="$baseName"/>-&gt;setDataType( UaNodeId(<xsl:value-of select="fnc:dataTypeToBuiltinType($baseType)"/>, 0) );
 	return m_<xsl:value-of select="$baseName"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
 }
 	</xsl:for-each> <!-- array element -->
@@ -545,8 +548,15 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 		<xsl:otherwise>return v.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/> ( r ); </xsl:otherwise>
 	</xsl:choose>
 }
+</xsl:otherwise>
+</xsl:choose>
 
 <xsl:if test="@nullPolicy='nullForbidden'">
+<xsl:choose>
+<xsl:when test="d:array">
+<xsl:message terminate="no">not implemented! --------------------------</xsl:message>
+</xsl:when>
+<xsl:otherwise>
 	/* short getter (possible because this variable will never be null) */
 <xsl:value-of select="@dataType"/><xsl:text> </xsl:text><xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of select="fnc:capFirst(@name)"/> () const
 {
@@ -558,6 +568,8 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 	</xsl:choose>
 	return v_value;
 }
+</xsl:otherwise>
+</xsl:choose>
 </xsl:if>
 
 <xsl:if test="@nullPolicy='nullAllowed'">
@@ -829,6 +841,7 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
     <xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToClassBody.xslt','Piotr Nikiel')"/>
 	#include &lt;iostream&gt;
 	#include &lt;climits&gt;
+	#include &lt;ArrayTools.h&gt;
 
 	
 	<xsl:if test="not(/d:design/d:class[@name=$className])">

@@ -93,7 +93,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 </xsl:when>
 
 <xsl:otherwise>
-<xsl:value-of select="concat('set',fnc:capFirst($name),' (const std::vector &amp; &lt;',$dataType,'&gt; value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+<xsl:value-of select="concat('set',fnc:capFirst($name),' (const std::vector &lt;',$dataType,'&gt; &amp; value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
 </xsl:otherwise>
 </xsl:choose>
 </xsl:function>
