@@ -541,7 +541,14 @@ std::vector&lt;<xsl:value-of select="@dataType"/>&gt; <xsl:value-of select="fnc:
 {
 	UaVariant variant (* m_<xsl:value-of select="@name"/>-&gt;value (0).value() );
 	std::vector&lt;<xsl:value-of select="@dataType"/>&gt; vector;
+	<xsl:choose>
+	<xsl:when test="@dataType='OpcUa_Byte'">
+	ArrayTools::convertUaVariantToVector( variant, vector, true /*cheat overloading*/ ); // improve this mechanism ....
+	</xsl:when>
+	<xsl:otherwise>
 	ArrayTools::convertUaVariantToVector( variant, vector );
+	</xsl:otherwise>
+	</xsl:choose>
 	return vector;
 }	
 
