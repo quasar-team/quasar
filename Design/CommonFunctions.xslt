@@ -239,7 +239,7 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <xsl:when test="$dataType='OpcUa_UInt64'">setUInt64</xsl:when>
 <xsl:when test="$dataType='OpcUa_Boolean'">setBool</xsl:when>
 <xsl:when test="$dataType='UaString'">setString</xsl:when>
-<xsl:when test="$dataType='UaByteString'">setByteString</xsl:when>
+<xsl:when test="$dataType='UaByteString'"><xsl:message terminate="yes">UaByteString has a non trivial setter requiring 2nd argument to be given.</xsl:message></xsl:when>
 <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
 </xsl:choose>
 </xsl:function>

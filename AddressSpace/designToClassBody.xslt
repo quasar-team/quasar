@@ -474,10 +474,24 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
 <xsl:otherwise>
 	<!-- found scalar signature -->
 UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetter(@name,@dataType,'false')"/>
-{ 
-	UaVariant v = value;
-	v.<xsl:value-of select="fnc:dataTypeToVariantSetter(@dataType)"/>( value );
-	return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
+{
+<xsl:choose>
+	<xsl:when test="@dataType='UaVariant'">
+		return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (value, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
+	</xsl:when>
+	<xsl:otherwise>
+		UaVariant v;
+		<xsl:choose>
+			<xsl:when test="@dataType='UaByteString'">
+				v.setByteString(const_cast&lt;UaByteString &amp;&gt;(value), /*detach*/ OpcUa_False ); // this const_case should be safe because we don't detach the value
+			</xsl:when>
+			<xsl:otherwise>
+				v.<xsl:value-of select="fnc:dataTypeToVariantSetter(@dataType)"/>( value );
+			</xsl:otherwise>
+		</xsl:choose>
+		return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
+	</xsl:otherwise>
+</xsl:choose>	
 }
 </xsl:otherwise> 
 </xsl:choose>
