@@ -38,7 +38,15 @@ xmlns:d="http://cern.ch/quasar/Design"
 xmlns:fnc="http://cern.ch/quasar/MyFunctions"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
 
-
+<xsl:template name="validateArraySize">
+<xsl:param name="className"/>
+<xsl:param name="variableName"/>
+	<xsl:if test="d:array/@minimumSize and d:array/@maximumSize">
+		<xsl:if test="d:array/@minimumSize > d:array/@maximumSize">
+			<xsl:message terminate="yes">ERROR (at class=<xsl:value-of select="$className"/> variable=<xsl:value-of select="$variableName"/>) Both minimumSize and maximumSize given but minimumSize is larger than maximumSize. </xsl:message>
+		</xsl:if>
+	</xsl:if>
+</xsl:template>
 
 <xsl:template name="cachevariable">
 <xsl:param name="className"/>
@@ -51,6 +59,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	</xsl:if>
 	<xsl:if test="@dataType='UaVariant' and @initialValue">
 		<xsl:message terminate="yes">ERROR (at class='<xsl:value-of select="$className"/>' variable='<xsl:value-of select="@name"/>'): these settings are invalid. You can't specify initialValue for UaVariant dataType (reason: quasar won't be able to deduce type). </xsl:message>
+	</xsl:if>
+	<xsl:if test="d:array">
+		<xsl:call-template name="validateArraySize">
+		<xsl:with-param name="className"><xsl:value-of select="$className"/></xsl:with-param>
+		<xsl:with-param name="variableName"><xsl:value-of select="@name"/></xsl:with-param>
+		</xsl:call-template>
 	</xsl:if>
 </xsl:template>
 

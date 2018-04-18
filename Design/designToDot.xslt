@@ -73,7 +73,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				&lt;td align="left" width="0"&gt;<xsl:if test="$detailLevel>=3">&lt;font point-size="16"&gt;<xsl:value-of select="fnc:getArrowForCacheVariable(.)"/>&lt;/font&gt;</xsl:if>&lt;/td&gt;
 				&lt;td align="left" width="0"&gt;<xsl:if test="$detailLevel>=1">&lt;font point-size="10" color="blue" &gt;CV<xsl:if test="@isKey='true'">,K</xsl:if>&lt;/font&gt;</xsl:if>&lt;/td&gt;
 				&lt;td align="left" &gt;<xsl:value-of select="@name"/>&lt;/td&gt;
-				&lt;td align="left" &gt;: <xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/>&lt;/td&gt;
+				&lt;td align="left" &gt;: <xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/><xsl:if test="d:array"> [ ]</xsl:if>&lt;/td&gt;
 				&lt;/tr&gt;
 			</xsl:for-each>  	
 			
