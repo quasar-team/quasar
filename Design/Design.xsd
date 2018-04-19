@@ -351,11 +351,10 @@ elementFormDefault="qualified">
     </simpleType>
     
     <complexType name="ConfigEntry">
-    	<choice>
-    		<element name="documentation" type="tns:Documentation"
-    			maxOccurs="1" minOccurs="0">
-    		</element>
-    	</choice>
+        <all>
+    		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
+    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+    	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:ConfigEntryDataType"
     		use="required">
