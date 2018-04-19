@@ -195,7 +195,7 @@ UaVariant v;
 		<xsl:choose>
 		<xsl:when test="d:array">
 			<xsl:if test="@initialValue">
-				<xsl:message terminate="yes">An array can't be initialized with initialValue initializer.</xsl:message>
+				<xsl:message terminate="yes">ERROR (at class=<xsl:value-of select="$className"/> variable=<xsl:value-of select="@name"/>): An array can't be initialized with initialValue initializer.</xsl:message>
 			</xsl:if>
 			m_<xsl:value-of select="@name"/>-&gt;setValueRank( 1 );
 		</xsl:when>
