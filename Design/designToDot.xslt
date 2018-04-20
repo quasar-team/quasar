@@ -109,9 +109,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	   		    <xsl:for-each select="d:method">
 			      <!-- don't indent the lines below: you will break the graphical layout -->
 			      &lt;tr&gt;
+			      &lt;td align="left" width="0"&gt;&lt;/td&gt;
 			      &lt;td align="left" width="4"&gt;<xsl:if test="$detailLevel>=1">&lt;font point-size="10" color="blue" &gt;M&lt;/font&gt;</xsl:if>&lt;/td&gt;
-			      &lt;td align="left"&gt;<xsl:value-of select="@name"/>( <xsl:for-each select="d:argument"><xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/><xsl:if test="position() &lt; count(../d:argument)">,</xsl:if></xsl:for-each> )&lt;/td&gt;
-			      &lt;td align="left" &gt;: <xsl:choose><xsl:when test="count(d:returnvalue) > 0"><xsl:for-each select="d:returnvalue"><xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/><xsl:if test="position() &lt; count(../d:returnvalue)">,</xsl:if></xsl:for-each></xsl:when><xsl:otherwise>void</xsl:otherwise></xsl:choose>&lt;/td&gt;  
+			      &lt;td align="left"&gt;<xsl:value-of select="@name"/>( <xsl:for-each select="d:argument"><xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/><xsl:if test="d:array"> [ ]</xsl:if><xsl:if test="position() &lt; count(../d:argument)">,</xsl:if></xsl:for-each> )&lt;/td&gt;
+			      &lt;td align="left" &gt;: <xsl:choose><xsl:when test="count(d:returnvalue) > 0"><xsl:for-each select="d:returnvalue"><xsl:value-of select="fnc:simplifyQuasarType(@dataType)"/><xsl:if test="d:array"> [ ]</xsl:if><xsl:if test="position() &lt; count(../d:returnvalue)">,</xsl:if></xsl:for-each></xsl:when><xsl:otherwise>void</xsl:otherwise></xsl:choose>&lt;/td&gt;  
 			      &lt;/tr&gt;	
 			    </xsl:for-each> 			    
 			  </xsl:otherwise>
