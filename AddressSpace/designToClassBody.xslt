@@ -31,6 +31,43 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	 <xsl:param name="className"/>
 	 	<xsl:param name="xsltFileName"/>
 
+<xsl:function name="fnc:convertVectorToUaVariant">
+	<!-- This template optimizes invocation of convertVectorToUaVariant which, 
+		unfortunately, can't be overloaded for all supported types -->
+	<xsl:param name="input" />
+	<xsl:param name="output" />
+	<xsl:param name="dataType" />
+	<xsl:choose>
+		<xsl:when test="$dataType='OpcUa_Byte'">
+			ArrayTools::convertByteVectorToUaVariant( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
+		</xsl:when>
+		<xsl:when test="$dataType='OpcUa_Boolean'">
+			ArrayTools::convertBooleanVectorToUaVariant( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );		
+		</xsl:when>
+		<xsl:otherwise>
+			ArrayTools::convertVectorToUaVariant( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:function>
+
+<xsl:function name="fnc:convertUaVariantToVector">
+	<!-- This template optimizes invocation of convertVectorToUaVariant which, 
+		unfortunately, can't be overloaded for all supported types -->
+	<xsl:param name="input" />
+	<xsl:param name="output" />
+	<xsl:param name="dataType" />
+	<xsl:choose>
+		<xsl:when test="$dataType='OpcUa_Byte'">
+			ArrayTools::convertUaVariantToByteVector( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
+		</xsl:when>
+		<xsl:when test="$dataType='OpcUa_Boolean'">
+			ArrayTools::convertUaVariantToBooleanVector( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
+		</xsl:when>
+		<xsl:otherwise>
+			ArrayTools::convertUaVariantToVector( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:function>
 	
 		<xsl:template name="classBody">
 		  <xsl:variable name="singleVariableNode"><xsl:if test="/d:design/d:class[@name=$className]/@singleVariableNode='true'">true</xsl:if></xsl:variable>
@@ -156,6 +193,14 @@ UaVariant v;
 <xsl:choose>
 	<xsl:when test="@initializeWith='valueAndStatus'">
 		<xsl:choose>
+		<xsl:when test="d:array">
+			<xsl:if test="@initialValue">
+				<xsl:message terminate="yes">ERROR (at class=<xsl:value-of select="$className"/> variable=<xsl:value-of select="@name"/>): An array can't be initialized with initialValue initializer.</xsl:message>
+			</xsl:if>
+			m_<xsl:value-of select="@name"/>-&gt;setValueRank( 1 );
+		</xsl:when>
+		<xsl:otherwise> <!-- not an array -->
+				<xsl:choose>
 			<xsl:when test="@initialValue">
 				v.<xsl:value-of select="fnc:dataTypeToVariantSetter(@dataType)"/>
 				<xsl:choose>
@@ -175,6 +220,9 @@ UaVariant v;
 		m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue(UaVariant( v ),
 		<xsl:if test="not(@initialStatus)"><xsl:message terminate="yes">For valueAndStatus initializer initialStatus must be given.(at class='<xsl:value-of select="$className"/>' variable='<xsl:value-of select="@name"/>')</xsl:message></xsl:if> 
 		<xsl:value-of select="@initialStatus"/>, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
+		</xsl:otherwise>
+		</xsl:choose>
+
 	</xsl:when>
 	<xsl:when test="@initializeWith='configuration'">
 	
@@ -194,28 +242,21 @@ UaVariant v;
  		   	std::vector &lt;<xsl:value-of select="@dataType"/>&gt; vect;
  		   	<xsl:choose>
 				<xsl:when test="@dataType='UaString'">
-	 		   	for ( unsigned int i = 0; i &lt; dim; i++ )
-	 		   	{
-					vect.push_back( <xsl:value-of select="@dataType"/>( config.<xsl:value-of select="@name" />().value()[ i ].c_str() ));
-				}
+				vect.assign(dim, UaString());
+				std::transform( 
+					config.<xsl:value-of select="@name" />().value().begin(), 
+					config.<xsl:value-of select="@name" />().value().end(), 
+					vect.begin(), 
+					[](const std::string&amp; x){ return x.c_str(); }  );
+
 				</xsl:when>
 				<xsl:otherwise>
-	 		   	for ( unsigned int i = 0; i &lt; dim; i++ )
-	 		   	{
-					vect.push_back( <xsl:value-of select="@dataType"/>( config.<xsl:value-of select="@name" />().value()[ i ] ));
-				}
+				vect = config.<xsl:value-of select="@name" />().value();
 				</xsl:otherwise>
 			</xsl:choose>
 			
 			UaVariant v;
-			<xsl:choose>
-				<xsl:when test="@dataType='OpcUa_Byte'">
-				ArrayTools::convertVectorToUaVariant( vect, v, true ); // cheat overloading
-				</xsl:when>
-				<xsl:otherwise>
-				ArrayTools::convertVectorToUaVariant( vect, v );
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:value-of select="fnc:convertVectorToUaVariant('vect', 'v', @dataType)"/>
 			m_<xsl:value-of select="@name"/>-&gt;setValueRank( 1 );
 			m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId(<xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0) );
 			m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);			
@@ -376,14 +417,14 @@ AS<xsl:value-of select="@name"/>::~AS<xsl:value-of select="@name"/> ()
 
 <!--  we have to see the attributes inside the array element -->
 <xsl:variable name="variableDataType" select= "@dataType"/>
-<xsl:variable name="baseName" select= "@name"/>
+<xsl:variable name="variableName" select= "@name"/>
 
 <xsl:choose>
 <xsl:when test="d:array">
 	<!-- found array signature -->
 	<xsl:for-each select="d:array">
 		<!-- also generate methods for min and max size -->
-OpcUa_UInt32 <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$baseName"/>_minimumSize()
+OpcUa_UInt32 <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$variableName"/>_minimumSize()
 { 
 	<xsl:choose>
 	<xsl:when test="@minimumSize">
@@ -394,7 +435,7 @@ OpcUa_UInt32 <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of
 	</xsl:otherwise>
 	</xsl:choose>
 }
-OpcUa_UInt32 <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$baseName"/>_maximumSize()
+OpcUa_UInt32 <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="$variableName"/>_maximumSize()
 { 
 	<xsl:choose>
 	<xsl:when test="@maximumSize">
@@ -407,45 +448,10 @@ OpcUa_UInt32 <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of
 }
 	
 <!-- the following code is a bit xslt heavy-handed but at least it is clear ;-) -->
-UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetterArray($baseName,$variableDataType,'false')"/>
+UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:varSetterArray($variableName,$variableDataType,'false')"/>
 { 
-	<!-- optional min/max attributes. If they are not present, define own technically motivated limits -->
-
-	<xsl:variable name="xmin">0</xsl:variable>
-	<xsl:variable name="xmax">INT_MAX</xsl:variable>
-	<xsl:choose>
-	<xsl:when test="@minimumSize">
-		// setter: found designed minimumSize attribute
-		unsigned int min = <xsl:value-of select= "@minimumSize"/>;
-	</xsl:when>
-	<xsl:otherwise>
-		// setter: no min attribute,  take tech limit
-		unsigned int min = <xsl:value-of select= "$xmin"/>;
-	</xsl:otherwise>
-	</xsl:choose>
-
-	<xsl:choose>
-	<xsl:when test="@maximumSize">
-		// setter: found designed maximumSize attribute
-		unsigned int max = <xsl:value-of select= "@maximumSize"/>;
-	</xsl:when>
-	<xsl:otherwise>
-		// setter: no max attribute,  take tech limit
-		unsigned int max = <xsl:value-of select= "$xmax"/>;
-	</xsl:otherwise>
-	</xsl:choose>
-
-
-	<xsl:if test="@minimumSize &gt; @maximumSize">
-	<xsl:message terminate="yes">
-		Illegal array boundaries: minimumSize= <xsl:value-of select= "@minimumSize"/> can not be greater than maximumSize= <xsl:value-of select= "@maximumSize"/>!
-	</xsl:message>
-	</xsl:if>
-	<xsl:if test="@minimumSize &lt; 0">
-	<xsl:message terminate="yes">
-		Illegal array boundaries: minimumSize= <xsl:value-of select= "@minimumSize"/> can not be smaller than minimumSize= <xsl:value-of select= "@minimumSize"/>!
-	</xsl:message>
-	</xsl:if>
+	unsigned int min = <xsl:value-of select="$variableName"/>_minimumSize();
+	unsigned int max = <xsl:value-of select="$variableName"/>_maximumSize();
  
     // make sure the design size constraints are respected during runtime
     OpcUa_UInt32 dim = value.size();   
@@ -456,17 +462,8 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of sel
     } 
 	 	
  	UaVariant v;
- 	
- 	<xsl:choose>
-	 	<xsl:when test="$variableDataType = 'OpcUa_Byte'">
-	 	ArrayTools::convertVectorToUaVariant( value, v, true ); // cheat overloading
-	 	</xsl:when>
-	 	<xsl:otherwise>
-	 	ArrayTools::convertVectorToUaVariant( value, v );
-	 	</xsl:otherwise>
- 	</xsl:choose>
-	
-	return m_<xsl:value-of select="$baseName"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
+ 	<xsl:value-of select="fnc:convertVectorToUaVariant('value', 'v', $variableDataType)"/>
+	return m_<xsl:value-of select="$variableName"/>-&gt;setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
 }
 	</xsl:for-each> <!-- array element -->
 </xsl:when> <!-- test array -->
@@ -496,14 +493,7 @@ UaStatus <xsl:value-of select="fnc:ASClassName($className)"/>::get<xsl:value-of 
 	{
         return OpcUa_BadIndexRangeNoData;
 	} 
-	<xsl:choose>
-	<xsl:when test="@dataType='OpcUa_Byte'">
-	ArrayTools::convertUaVariantToVector( v, r, true );
- 	</xsl:when>
-	<xsl:otherwise>
-	ArrayTools::convertUaVariantToVector( v, r );
-	</xsl:otherwise>
-	</xsl:choose>
+	<xsl:value-of select="fnc:convertUaVariantToVector('v', 'r', @dataType)"/>
     return OpcUa_Good;
 }
 
@@ -541,14 +531,7 @@ std::vector&lt;<xsl:value-of select="@dataType"/>&gt; <xsl:value-of select="fnc:
 {
 	UaVariant variant (* m_<xsl:value-of select="@name"/>-&gt;value (0).value() );
 	std::vector&lt;<xsl:value-of select="@dataType"/>&gt; vector;
-	<xsl:choose>
-	<xsl:when test="@dataType='OpcUa_Byte'">
-	ArrayTools::convertUaVariantToVector( variant, vector, true /*cheat overloading*/ ); // improve this mechanism ....
-	</xsl:when>
-	<xsl:otherwise>
-	ArrayTools::convertUaVariantToVector( variant, vector );
-	</xsl:otherwise>
-	</xsl:choose>
+	<xsl:value-of select="fnc:convertUaVariantToVector('variant', 'vector', @dataType)"/>
 	return vector;
 }	
 
@@ -617,26 +600,15 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 				// cache delegated: must distinguish between scalar and array
 				<xsl:choose>
 					<xsl:when test="d:array">
-					// code which extracts the vector of strings
-					// from the UaVariant, via a conversion to an UaStringArray. Then we just call
-					// the (delegated) device method giving the vector as argument
 					std::vector&lt;UaString&gt; v_value;
-					
-					<xsl:choose>
-					<xsl:when test="@dataType='OpcUa_Byte'">
-					ArrayTools::convertUaVariantToVector( v, v_value, true );
- 					</xsl:when>
-					<xsl:otherwise>
-					ArrayTools::convertUaVariantToVector( v, v_value );
-					</xsl:otherwise>
-					</xsl:choose>
-					
+					<xsl:value-of select="fnc:convertUaVariantToVector('v', 'v_value', @dataType)"/>					
 					</xsl:when>
 					<xsl:otherwise> 
 					UaString v_value;
 					v_value = v.toString();
 					</xsl:otherwise>
 				</xsl:choose>
+				
 					
 				</xsl:when>
 				<xsl:when test="@dataType='UaVariant'">
@@ -646,17 +618,7 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 					<xsl:choose>
 					<xsl:when test="d:array">
 					std::vector&lt;<xsl:value-of select="@dataType" />&gt; v_value;
-					// call the array method to fill the vector
-					// no size check for a change, since methods are written by the user anyway
-					<xsl:choose>
-					<xsl:when test="@dataType='OpcUa_Byte'">
-					ArrayTools::convertUaVariantToVector( v, v_value, true );
- 					</xsl:when>
-					<xsl:otherwise>
-					ArrayTools::convertUaVariantToVector( v, v_value );
-					</xsl:otherwise>
-					</xsl:choose>
-
+					<xsl:value-of select="fnc:convertUaVariantToVector('v', 'v_value', @dataType)"/>
     				</xsl:when>
 					<xsl:otherwise>
 					// scalar
