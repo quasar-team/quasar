@@ -123,7 +123,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		
 	</xs:sequence>
 	<!-- name of the object of this class is mandatory and not configurable. -->
-	<xs:attribute name="name" type="xs:string" use="required"/>
+	<xs:attribute name="name" type="tns:ObjectName" use="required"/>
 	<!-- now go over all cache-variables that shall be initialized from config file -->
 	
 	<xsl:for-each select="child::d:cachevariable">
@@ -200,6 +200,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	<xi:include href="../Meta/config/Meta.xsd" xpointer="xmlns(xs=http://www.w3.org/2001/XMLSchema) xpointer(/xs:schema/node())">
 	</xi:include>
+	
+	<xs:simpleType name="ObjectName">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="REGEXPR">
 		<xs:attribute name="name" type="xs:string" use="required" />
