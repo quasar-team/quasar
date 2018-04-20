@@ -23,45 +23,45 @@
 #define QUASAR_COMMON_SRC_ARRAYUTILS_H_
 
 #include <vector>
-
-#include <opcua_baseobjecttype.h>
-#include <opcua_basedatavariabletype.h>
+#include <uavariant.h>
 
 namespace AddressSpace
 {
 
+/* Note: Boolean and Byte converters are not done through overloading because in the UASDK they both resolve to the same primitive type (unsigned char). */
 
-class ArrayTools {
-public:
-	ArrayTools();
-	virtual ~ArrayTools();
+namespace ArrayTools
+{
 
-	static void convertVectorToUaVariant( std::vector <OpcUa_Boolean>  value, UaVariant &v );
-	static void convertVectorToUaVariant( std::vector <OpcUa_Byte>  value, UaVariant &v, bool dummy ); // cheat overloading
-	static void convertVectorToUaVariant( std::vector <OpcUa_SByte>  value, UaVariant &v  );
-	static void convertVectorToUaVariant( std::vector <OpcUa_Int16>  value, UaVariant &v  );
-	static void convertVectorToUaVariant( std::vector <OpcUa_UInt16> value, UaVariant &v  );
-	static void convertVectorToUaVariant( std::vector <OpcUa_Int32>  value , UaVariant &v );
-	static void convertVectorToUaVariant( std::vector <OpcUa_UInt32> value , UaVariant &v );
-	static void convertVectorToUaVariant( std::vector <OpcUa_Int64>  value, UaVariant &v  );
-	static void convertVectorToUaVariant( std::vector <OpcUa_UInt64> value, UaVariant &v  );
-	static void convertVectorToUaVariant( std::vector <OpcUa_Float>  value , UaVariant &v );
-	static void convertVectorToUaVariant( std::vector <OpcUa_Double> value, UaVariant &v  );
-	static void convertVectorToUaVariant( std::vector <UaString>     value , UaVariant &v );
 
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Boolean> &vect );
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Byte> &vect, bool dummy ); // cheat overloading
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_SByte> &vect );
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Int16> &vect );
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_UInt16> &vect );
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Int32> &vect );
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_UInt32> &vect );
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Int64> &vect );
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_UInt64> &vect );
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Float> &vect );
-	static void convertUaVariantToVector(  UaVariant v, std::vector <OpcUa_Double> &vect );
-	static void convertUaVariantToVector(  UaVariant v, std::vector <UaString> &vect );
-};
+	void convertBooleanVectorToUaVariant( const std::vector<OpcUa_Boolean>& input, UaVariant& output );
+	void convertByteVectorToUaVariant( const std::vector<OpcUa_Byte>& input, UaVariant& output);
+	void convertVectorToUaVariant( const std::vector <OpcUa_SByte>& input, UaVariant& output  );
+	void convertVectorToUaVariant( const std::vector <OpcUa_Int16>& input, UaVariant& output  );
+	void convertVectorToUaVariant( const std::vector <OpcUa_UInt16>& input, UaVariant& output  );
+	void convertVectorToUaVariant( const std::vector <OpcUa_Int32>& input, UaVariant& output );
+	void convertVectorToUaVariant( const std::vector <OpcUa_UInt32>& input, UaVariant& output );
+	void convertVectorToUaVariant( const std::vector <OpcUa_Int64>& input, UaVariant& output  );
+	void convertVectorToUaVariant( const std::vector <OpcUa_UInt64>& input, UaVariant& output  );
+	void convertVectorToUaVariant( const std::vector <OpcUa_Float>& input, UaVariant& output );
+	void convertVectorToUaVariant( const std::vector <OpcUa_Double>& input, UaVariant& output  );
+	void convertVectorToUaVariant( const std::vector <UaString>& input, UaVariant& output );
+
+	UaStatus convertUaVariantToBooleanVector( const UaVariant& input, std::vector <OpcUa_Boolean> &vect );
+	UaStatus convertUaVariantToByteVector( const UaVariant& input, std::vector <OpcUa_Byte> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_SByte> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Int16> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_UInt16> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Int32> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_UInt32> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Int64> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_UInt64> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Float> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Double> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaString> &vect );
+
+	std::vector<std::string> convertStdStringsToUaStrings( const std::vector<std::string>& input );
+}
 
 }
 #endif /* QUASAR_COMMON_SRC_ARRAYUTILS_H_ */

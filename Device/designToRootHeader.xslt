@@ -35,6 +35,8 @@
 	#include &lt;opcua_platformdefs.h&gt;
 	
 	#include &lt;vector&gt;
+	#include &lt;string&gt;
+	
 	namespace Device
 	{
 	
@@ -83,6 +85,8 @@
 		</xsl:for-each>
 		
 		/* Here you can put your custom code, e.g. for browsing objects which are children of root elements */
+		
+		std::string getFullName () const { return "[ROOT]"; }
 		
 	private:
 		static DRoot *m_instance; /* it's a singleton class */
