@@ -1,8 +1,8 @@
 /* © Copyright CERN, 2018.  All rights not expressly granted are reserved.
- * ArrayTools.cpp 
+ * ArrayTools.cpp
  *
  *  Created on: Jan 15, 2018
- *      Author: mludwig 
+ *      Author: mludwig
  *      Author: Piotr Nikiel
  *
  *  This file is part of Quasar.
@@ -23,7 +23,11 @@
 #include <ArrayTools.h>
 #include <algorithm>
 
-using namespace AddressSpace;
+namespace AddressSpace
+{
+
+namespace ArrayTools
+{
 
 template<typename Type, typename ArrayType>
 static void vectorToUaVariant( const std::vector<Type>& input, UaVariant& output, void (UaVariant::*setterFunction)(ArrayType& array, OpcUa_Boolean detach) )
@@ -35,12 +39,12 @@ static void vectorToUaVariant( const std::vector<Type>& input, UaVariant& output
     (output.*setterFunction)(array, /*detach*/ OpcUa_False);
 }
 
-/* static */ void ArrayTools::convertBooleanVectorToUaVariant( const std::vector<OpcUa_Boolean>& input, UaVariant& output )
+void convertBooleanVectorToUaVariant( const std::vector<OpcUa_Boolean>& input, UaVariant& output )
 {
     vectorToUaVariant (input, output, &UaVariant::setBoolArray);
 }
 
-/* static */ void ArrayTools::convertByteVectorToUaVariant( const std::vector <OpcUa_Byte>& input, UaVariant &output )
+void convertByteVectorToUaVariant( const std::vector <OpcUa_Byte>& input, UaVariant &output )
 {
     UaByteArray array;
     if (input.size() > 0)
@@ -50,52 +54,52 @@ static void vectorToUaVariant( const std::vector<Type>& input, UaVariant& output
     output.setByteArray(array, /*detach*/ OpcUa_False);
 }
 
-/* static */ void ArrayTools::convertVectorToUaVariant( const std::vector <OpcUa_SByte>& input, UaVariant &output )
+void convertVectorToUaVariant( const std::vector <OpcUa_SByte>& input, UaVariant &output )
 {
     vectorToUaVariant (input, output, &UaVariant::setSByteArray);
 }
 
-/* static */ void ArrayTools::convertVectorToUaVariant( const std::vector <OpcUa_Int16>& input, UaVariant &output )
+void convertVectorToUaVariant( const std::vector <OpcUa_Int16>& input, UaVariant &output )
 {
     vectorToUaVariant (input, output, &UaVariant::setInt16Array);
 }
 
-/* static */ void ArrayTools::convertVectorToUaVariant( const std::vector <OpcUa_UInt16>& input, UaVariant &output )
+void convertVectorToUaVariant( const std::vector <OpcUa_UInt16>& input, UaVariant &output )
 {
     vectorToUaVariant (input, output, &UaVariant::setUInt16Array);
 }
 
-/* static */ void ArrayTools::convertVectorToUaVariant( const std::vector <OpcUa_Int32>& input, UaVariant &output )
+void convertVectorToUaVariant( const std::vector <OpcUa_Int32>& input, UaVariant &output )
 {
     vectorToUaVariant (input, output, &UaVariant::setInt32Array);
 }
 
-/* static */ void ArrayTools::convertVectorToUaVariant( const std::vector <OpcUa_UInt32>& input, UaVariant &output )
+void convertVectorToUaVariant( const std::vector <OpcUa_UInt32>& input, UaVariant &output )
 {
     vectorToUaVariant (input, output, &UaVariant::setUInt32Array);
 }
 
-/* static */ void ArrayTools::convertVectorToUaVariant( const std::vector <OpcUa_Int64>& input, UaVariant &output )
+void convertVectorToUaVariant( const std::vector <OpcUa_Int64>& input, UaVariant &output )
 {
     vectorToUaVariant (input, output, &UaVariant::setInt64Array);
 }
 
-/* static */ void ArrayTools::convertVectorToUaVariant( const std::vector <OpcUa_UInt64>& input, UaVariant &output  )
+void convertVectorToUaVariant( const std::vector <OpcUa_UInt64>& input, UaVariant &output  )
 {
     vectorToUaVariant (input, output, &UaVariant::setUInt64Array);
 }
 
-/* static */ void ArrayTools::convertVectorToUaVariant( const std::vector <OpcUa_Float>& input, UaVariant &output  )
+void convertVectorToUaVariant( const std::vector <OpcUa_Float>& input, UaVariant &output  )
 {
     vectorToUaVariant (input, output, &UaVariant::setFloatArray);
 }
 
-/* static */ void ArrayTools::convertVectorToUaVariant( const std::vector <OpcUa_Double>& input, UaVariant &output )
+void convertVectorToUaVariant( const std::vector <OpcUa_Double>& input, UaVariant &output )
 {
     vectorToUaVariant (input, output, &UaVariant::setDoubleArray);
 }
 
-/* static */ void ArrayTools::convertVectorToUaVariant( const std::vector <UaString>& input, UaVariant& output)
+void convertVectorToUaVariant( const std::vector <UaString>& input, UaVariant& output)
 {
     UaStringArray array;
     array.create( input.size() );
@@ -107,7 +111,7 @@ static void vectorToUaVariant( const std::vector<Type>& input, UaVariant& output
 }
 
 template<typename Type, typename ArrayType>
-static UaStatus uaVariantToVector( const UaVariant& input, std::vector<Type>& output, OpcUa_StatusCode (UaVariant::*getterFunction)(ArrayType& array) const )
+static  UaStatus uaVariantToVector( const UaVariant& input, std::vector<Type>& output, OpcUa_StatusCode (UaVariant::*getterFunction)(ArrayType& array) const )
 {
     ArrayType array;
     UaStatus status = (input.*getterFunction)(array);
@@ -119,12 +123,12 @@ static UaStatus uaVariantToVector( const UaVariant& input, std::vector<Type>& ou
     return OpcUa_Good;
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToBooleanVector( const UaVariant& input, std::vector <OpcUa_Boolean> &output )
+UaStatus convertUaVariantToBooleanVector( const UaVariant& input, std::vector <OpcUa_Boolean> &output )
 {
     return uaVariantToVector(input, output, &UaVariant::toBoolArray);
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToByteVector( const UaVariant& input, std::vector <OpcUa_Byte> &output )
+UaStatus convertUaVariantToByteVector( const UaVariant& input, std::vector <OpcUa_Byte> &output )
 {
     UaByteArray array;
     UaStatus status = input.toByteArray(array);
@@ -135,59 +139,64 @@ static UaStatus uaVariantToVector( const UaVariant& input, std::vector<Type>& ou
     return OpcUa_Good;
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_SByte> &output )
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_SByte> &output )
 {
     return uaVariantToVector(input, output, &UaVariant::toSByteArray);
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Int16> &output )
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Int16> &output )
 {
     return uaVariantToVector(input, output, &UaVariant::toInt16Array);
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_UInt16> &output )
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_UInt16> &output )
 {
     return uaVariantToVector(input, output, &UaVariant::toUInt16Array);
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Int32> &output )
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Int32> &output )
 {
     return uaVariantToVector(input, output, &UaVariant::toInt32Array);
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_UInt32> &output )
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_UInt32> &output )
 {
     return uaVariantToVector(input, output, &UaVariant::toUInt32Array);
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Int64> &output )
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Int64> &output )
 {
     return uaVariantToVector(input, output, &UaVariant::toInt64Array);
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_UInt64> &output )
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_UInt64> &output )
 {
     return uaVariantToVector(input, output, &UaVariant::toUInt64Array);
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Float> &output )
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Float> &output )
 {
     return uaVariantToVector(input, output, &UaVariant::toFloatArray);
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Double> &output )
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Double> &output )
 {
     return uaVariantToVector(input, output, &UaVariant::toDoubleArray);
 }
 
-/* static */ UaStatus ArrayTools::convertUaVariantToVector( const UaVariant& input, std::vector <UaString> &output )
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaString> &output )
 {
     return uaVariantToVector<UaString, UaStringArray>(input, output, &UaVariant::toStringArray);
 }
 
-std::vector<std::string> ArrayTools::convertStdStringsToUaStrings( const std::vector<std::string>& input )
+std::vector<std::string> convertStdStringsToUaStrings( const std::vector<std::string>& input )
 {
     std::vector<std::string> output (input.size());
-    std::transform( input.begin(), input.end(), output.begin(), [](const std::string& x){ return x.c_str(); }  );
+    std::transform( input.begin(), input.end(), output.begin(), [](const std::string& x) {
+        return x.c_str();
+    }  );
     return output;
+}
+
+}
 }
