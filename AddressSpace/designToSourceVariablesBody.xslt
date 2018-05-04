@@ -38,7 +38,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:param name="className"/>
 	<xsl:param name="variableName"/>
 	
-	class IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="$variableName"/> : public UaThreadPoolJob
+	class IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="$variableName"/> : public Quasar::ThreadPoolJob
 	{
 		public:
 		IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="$variableName"/> (
@@ -133,7 +133,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:template  name="WriteJob">
 	<xsl:param name="className"/>
 	
-	class IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> : public UaThreadPoolJob
+	class IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> : public Quasar::ThreadPoolJob
 	{
 		public:
 		IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> (
@@ -268,6 +268,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	#include &lt;iostream&gt;
 	#include &lt;stdexcept&gt;
 	#include &lt;LogIt.h&gt;
+    #include &lt;QuasarThreadPool.h&gt;
 	
 	<xsl:for-each select="/d:design/d:class">
 	<xsl:if test="count(d:sourcevariable)>0">
@@ -285,11 +286,11 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	/* The thread pool should be initialized by Meta while reading the config file, using function: 
 	    SourceVariables_initSourceVariablesThreadPool */
-	static UaThreadPool *sourceVariableThreads = 0; 
+	static Quasar::ThreadPool *sourceVariableThreads = 0; 
 	void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads, unsigned int maxThreads)
 	{
 	    LOG(Log::DBG) &lt;&lt; "Initializing source variables thread pool to min=" &lt;&lt; minThreads  &lt;&lt; " max=" &lt;&lt; maxThreads &lt;&lt; " threads";
-		sourceVariableThreads = new UaThreadPool (minThreads, maxThreads);
+		sourceVariableThreads = new Quasar::ThreadPool (maxThreads, /*jobs*/30000);
 	}
 
 
@@ -341,7 +342,8 @@ UaStatus SourceVariables_spawnIoJobRead (
 				callbackHandle,
 				parentNode
 				); 
-				sourceVariableThreads-&gt;addJob (job);
+				UaStatus s = sourceVariableThreads-&gt;addJob (job);
+                LOG(Log::WRN) &lt;&lt; s.toString().toUtf8();
 				</xsl:when>
 				<xsl:when test="@addressSpaceRead='synchronous'">
 				IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> job (
