@@ -400,6 +400,7 @@ elementFormDefault="qualified">
     			minOccurs="0" maxOccurs="unbounded">
     		</element>
     		<element name="returnvalue" type="tns:MethodReturnValue" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
     	</sequence>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     </complexType>
