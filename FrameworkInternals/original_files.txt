@@ -44,9 +44,11 @@ File CMakeLists.txt                         must_exist,must_be_versioned,install
 Directory Common/include install=create
 File ASUtils.h                              must_exist,must_be_versioned,md5=check,install=ask_to_merge 
 File Utils.h                                must_exist,must_be_versioned,install=ask_to_merge
+File QuasarThreadPool.h			    must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Common/src install=create
-File ASUtils.cpp                            must_exist,must_be_versioned,md5=check,install=ask_to_merge 
+File ASUtils.cpp                            must_exist,must_be_versioned,md5=check,install=ask_to_merge
+File QuasarThreadPool.cpp		    must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Configuration install=create
 File CMakeLists.txt                         must_exist,must_be_versioned, md5=check, install=overwrite
