@@ -351,8 +351,11 @@ UaStatus SourceVariables_spawnIoJobRead (
 				parentNode
 				); 
 				UaStatus s = sourceVariableThreads-&gt;addJob (job);
-                LOG(Log::WRN) &lt;&lt; s.toString().toUtf8();
-				</xsl:when>
+                if (!s.isGood)
+                {
+                    LOG(Log::ERR) &lt;&lt; "While addJob(): " &lt;&lt; s.toString().toUtf8();
+				}
+                </xsl:when>
 				<xsl:when test="@addressSpaceRead='synchronous'">
 				IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> job (
 				callback,
@@ -408,7 +411,11 @@ UaStatus SourceVariables_spawnIoJobRead (
 				parentNode,
 				pWriteValue
 				); 
-				sourceVariableThreads-&gt;addJob (job);
+				UaStatus s = sourceVariableThreads-&gt;addJob (job);
+                if (!s.isGood)
+                {
+                    LOG(Log::ERR) &lt;&lt; "While addJob(): " &lt;&lt; s.toString().toUtf8();
+                }
 				</xsl:when>
 				<xsl:when test="@addressSpaceWrite='synchronous'">
 				
