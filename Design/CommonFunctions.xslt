@@ -256,11 +256,18 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <!-- When the type is of POD type, just returns the type, otherwise adds a const reference. Should be used to generate argument passing into custom code.  -->
 <xsl:function name="fnc:fixDataTypePassingMethod">
 <xsl:param name="dataType"/>
-<xsl:choose>
-<xsl:when test="$dataType='UaString' or $dataType='UaByteString' or $dataType='UaVariant'">const <xsl:value-of select="$dataType"/> &amp; </xsl:when>
-<xsl:otherwise><xsl:value-of select="$dataType"/></xsl:otherwise>
-</xsl:choose>
-
+<xsl:param name="isArray"/>
+    <xsl:choose>
+        <xsl:when test="$isArray">
+            const std::vector&lt;<xsl:value-of select="$dataType"/>&gt; &amp;
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:choose>
+            <xsl:when test="$dataType='UaString' or $dataType='UaByteString' or $dataType='UaVariant'">const <xsl:value-of select="$dataType"/> &amp; </xsl:when>
+            <xsl:otherwise><xsl:value-of select="$dataType"/></xsl:otherwise>
+            </xsl:choose>
+        </xsl:otherwise>
+    </xsl:choose>
 </xsl:function>
 
 <!-- This returns true if given hasObjects relations points to a singleton, that is, exactly 1 object -->
@@ -343,6 +350,34 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
     
  */
 
+</xsl:function>
+
+<xsl:function name="fnc:quasarDataTypeToCppType">
+<!-- Note: quasar data type (i.e. what you put into Design.xml as the data type) corresponds to Cpp types in case of scalars. 
+This function also supports arrays -->
+<xsl:param name="dataType"/>
+<xsl:param name="isArray"/>
+<xsl:if test="$isArray">std::vector&lt;</xsl:if><xsl:value-of select="$dataType"/><xsl:if test="$isArray">&gt;</xsl:if>
+</xsl:function>
+
+<xsl:function name="fnc:quasarDataTypeToUaArrayType">
+    <xsl:param name="dataType"/>
+    <xsl:choose>
+        <xsl:when test="$dataType='OpcUa_Double'">UaDoubleArray</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Float'">UaFloatArray</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Byte'">UaByteArray</xsl:when>
+        <xsl:when test="$dataType='OpcUa_SByte'">UaSByteArray</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Int16'">UaInt16Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_UInt16'">UaUInt16Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Int32'">UaInt32Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_UInt32'">UaUInt32Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Int64'">UaInt64Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_UInt64'">UaUInt64Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Boolean'">UaBoolArray</xsl:when>
+        <xsl:when test="$dataType='UaByteString'">UaByteStringArray</xsl:when>
+        <xsl:when test="$dataType='UaString'">UaStringArray</xsl:when>
+        <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
+    </xsl:choose>
 </xsl:function>
  
 </xsl:transform>
