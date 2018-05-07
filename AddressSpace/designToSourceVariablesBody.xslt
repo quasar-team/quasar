@@ -287,12 +287,20 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	/* The thread pool should be initialized by Meta while reading the config file, using function: 
 	    SourceVariables_initSourceVariablesThreadPool */
 	static Quasar::ThreadPool *sourceVariableThreads = 0; 
-	void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads, unsigned int maxThreads)
+	void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads, unsigned int maxThreads, unsigned int maxJobs)
 	{
-	    LOG(Log::DBG) &lt;&lt; "Initializing source variables thread pool to min=" &lt;&lt; minThreads  &lt;&lt; " max=" &lt;&lt; maxThreads &lt;&lt; " threads";
-		sourceVariableThreads = new Quasar::ThreadPool (maxThreads, /*jobs*/30000);
+	    LOG(Log::DBG) &lt;&lt; "Initializing source variables thread pool to min=" &lt;&lt; minThreads  &lt;&lt; " max=" &lt;&lt; maxThreads &lt;&lt; " threads maxJobs=" &lt;&lt; " jobs";
+		sourceVariableThreads = new Quasar::ThreadPool (maxThreads, maxJobs);
 	}
 
+    void SourceVariables_destroySourceVariablesThreadPool ()
+    {
+        if (sourceVariableThreads)
+        {
+            delete sourceVariableThreads;
+            sourceVariableThreads = nullptr;
+        }
+    }
 
 		<xsl:for-each select="/d:design/d:class">
 		<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>

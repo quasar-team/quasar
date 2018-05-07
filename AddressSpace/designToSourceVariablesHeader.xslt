@@ -68,7 +68,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	</xsl:for-each>
 	};
 	
-	void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads=0, unsigned int maxThreads=10);
+	void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads=0, unsigned int maxThreads=10, unsigned int maxJobs=1000);
+    void SourceVariables_destroySourceVariablesThreadPool ();
 	
 	UaStatus SourceVariables_spawnIoJobRead (
 		ASSourceVariableJobId jobId,

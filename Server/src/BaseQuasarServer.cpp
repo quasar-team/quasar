@@ -70,6 +70,7 @@ BaseQuasarServer::BaseQuasarServer() :
 BaseQuasarServer::~BaseQuasarServer()
 {
     LOG(Log::TRC) << "Entered BaseQuasarServer dtr.";
+    AddressSpace::SourceVariables_destroySourceVariablesThreadPool ();
     shutdownEnvironment();
 }
 

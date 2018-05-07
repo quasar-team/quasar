@@ -63,13 +63,15 @@ void ThreadPool::work()
 
 UaStatus ThreadPool::addJob (ThreadPoolJob* job)
 {
-    std::lock_guard<std::mutex>lock (m_accessLock);
-    if (m_pendingJobs.size() >= m_maxJobs)
     {
-        LOG(Log::ERR) << "The threadpool is already full, cant add new jobs. Enlarge the threadpool";
-        return OpcUa_BadResourceUnavailable;
+        std::lock_guard<std::mutex>lock (m_accessLock);
+        if (m_pendingJobs.size() >= m_maxJobs)
+        {
+            LOG(Log::ERR) << "The threadpool is already full, cant add new jobs. Enlarge the threadpool";
+            return OpcUa_BadResourceUnavailable;
+        }
+        m_pendingJobs.push_back(job);
     }
-    m_pendingJobs.push_back(job);
     m_conditionVariable.notify_one();
     LOG(Log::TRC) << "Added new job to threadpool, current number of jobs is:" << m_pendingJobs.size();
     return OpcUa_Good;
