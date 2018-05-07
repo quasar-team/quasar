@@ -351,7 +351,7 @@ UaStatus SourceVariables_spawnIoJobRead (
 				parentNode
 				); 
 				UaStatus s = sourceVariableThreads-&gt;addJob (job);
-                if (!s.isGood)
+                if (!s.isGood())
                 {
                     LOG(Log::ERR) &lt;&lt; "While addJob(): " &lt;&lt; s.toString().toUtf8();
 				}
@@ -412,7 +412,7 @@ UaStatus SourceVariables_spawnIoJobRead (
 				pWriteValue
 				); 
 				UaStatus s = sourceVariableThreads-&gt;addJob (job);
-                if (!s.isGood)
+                if (!s.isGood())
                 {
                     LOG(Log::ERR) &lt;&lt; "While addJob(): " &lt;&lt; s.toString().toUtf8();
                 }
