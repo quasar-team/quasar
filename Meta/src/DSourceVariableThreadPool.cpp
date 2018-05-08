@@ -58,11 +58,11 @@ namespace Device
 // 2222222222222222222222222222222222222222222222222222222222222222222222222
 
 /* sample ctr */
-DSourceVariableThreadPool::DSourceVariableThreadPool (const size_t& min, const size_t& max)
+DSourceVariableThreadPool::DSourceVariableThreadPool (const size_t& min, const size_t& max, const size_t& maxJobs)
 :Base_DSourceVariableThreadPool()
 {
   #ifndef BACKEND_OPEN62541
-    AddressSpace::SourceVariables_initSourceVariablesThreadPool (min, max);
+    AddressSpace::SourceVariables_initSourceVariablesThreadPool (min, max, maxJobs);
   #endif
 }
 

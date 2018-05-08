@@ -351,11 +351,10 @@ elementFormDefault="qualified">
     </simpleType>
     
     <complexType name="ConfigEntry">
-    	<choice>
-    		<element name="documentation" type="tns:Documentation"
-    			maxOccurs="1" minOccurs="0">
-    		</element>
-    	</choice>
+        <all>
+    		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
+    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+    	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:ConfigEntryDataType"
     		use="required">
@@ -396,16 +395,15 @@ elementFormDefault="qualified">
     <complexType name="DeviceLogicMutex"></complexType>
 
     <complexType name="Method">
-    	<sequence>
-    		<element name="argument" type="tns:MethodArgument"
-    			minOccurs="0" maxOccurs="unbounded">
-    		</element>
-    		<element name="returnvalue" type="tns:MethodReturnValue" minOccurs="0" maxOccurs="unbounded"></element>
+        <sequence>
+            <element name="argument" type="tns:MethodArgument" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="returnvalue" type="tns:MethodReturnValue" minOccurs="0" maxOccurs="unbounded"></element>
             <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
-    	</sequence>
-    	<attribute name="name" type="tns:VariableName" use="required"></attribute>
+        </sequence>
+        <attribute name="name" type="tns:VariableName" use="required"></attribute>
+        <attribute name="executionContext" type="tns:MethodExecutionContext" use="required"></attribute>
     </complexType>
-    
+
     <complexType name="MethodArgument">
     	<sequence>
     		<element name="array" type="tns:Array" minOccurs="0" maxOccurs="1"></element>
@@ -423,4 +421,11 @@ elementFormDefault="qualified">
     	</attribute>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     </complexType>
+    
+    <simpleType name="MethodExecutionContext">
+        <restriction base="string">
+            <enumeration value="synchronous"></enumeration>
+            <enumeration value="asynchronous"></enumeration>
+        </restriction>
+    </simpleType>
 </schema>

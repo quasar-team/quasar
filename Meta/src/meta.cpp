@@ -161,7 +161,7 @@ void configureSourceVariableThreadPool(const Configuration::SourceVariableThread
 {
     AddressSpace::ASSourceVariableThreadPool *asSourceVariableThreadPool = new AddressSpace::ASSourceVariableThreadPool(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_SOURCEVARIABLESTHREADPOOL), nm, config.minThreads(), config.maxThreads());
 
-    Device::DSourceVariableThreadPool* dSourceVariableThreadPool = new Device::DSourceVariableThreadPool(config.minThreads(), config.maxThreads());
+    Device::DSourceVariableThreadPool* dSourceVariableThreadPool = new Device::DSourceVariableThreadPool(config.minThreads(), config.maxThreads(), config.maxJobs());
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dSourceVariableThreadPool, asSourceVariableThreadPool);
 }
 
@@ -219,7 +219,8 @@ const Configuration::SourceVariableThreadPool getSourceVariableThreadPoolConfig(
 		LOG(Log::INF) << "no StandardMetaData.SourceVariableThreadPool configuration found in the configuration file, configuring StandardMetaData.SourceVariableThreadPool with default values";
 		unsigned int min = 1;
 		unsigned int max = 10;
-		return Configuration::SourceVariableThreadPool(min, max);
+		unsigned int jobs = 1000;
+		return Configuration::SourceVariableThreadPool(min, max, jobs);
 	}
 }
 

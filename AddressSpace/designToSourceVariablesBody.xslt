@@ -301,6 +301,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
             sourceVariableThreads = nullptr;
         }
     }
+    
+        Quasar::ThreadPool* SourceVariable_getThreadPool () { return sourceVariableThreads; }
 
 		<xsl:for-each select="/d:design/d:class">
 		<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>

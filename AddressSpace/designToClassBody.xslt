@@ -725,7 +725,9 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 			const UaVariantArray&amp;  inputArguments) 
 	{
 
-	  
+	    if (inputArguments.length() != <xsl:value-of select="count(d:argument)"/>)
+            return OpcUa_BadArgumentsMissing;
+      
 	    <xsl:for-each select="d:argument">
             <xsl:variable name="argumentIndex"><xsl:value-of select="position()-1"/></xsl:variable>
 	    	<!-- TODO: implement strict checking? -->
@@ -755,13 +757,19 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
                 </xsl:otherwise>
             </xsl:choose>
 
-
 	    </xsl:for-each>
+        
+        <xsl:if test="@executionContext='asynchronous'">
+
+        
+        SourceVariable_getThreadPool()-&gt;addJob(  [this,callbackHandle,pCallback<xsl:for-each select="d:argument">,arg_<xsl:value-of select="@name"/></xsl:for-each>](){
+        </xsl:if>
 	    
 	    <xsl:for-each select="d:returnvalue">
 	    	<xsl:value-of select="fnc:quasarDataTypeToCppType(@dataType,d:array)"/> rv_<xsl:value-of select="@name"/> ;
 	    </xsl:for-each>
 	    
+
 	    UaStatus stat = getDeviceLink()-&gt;call<xsl:value-of select="fnc:capFirst(@name)"/> (
 	    <xsl:for-each select="d:argument">
 	    	arg_<xsl:value-of select="@name"/><xsl:if test="position() &lt; (count(../d:argument)+count(../d:returnvalue))">,</xsl:if>
@@ -806,6 +814,13 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	    
 	    pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, stat );
 	    return OpcUa_Good;
+  
+        <xsl:if test="@executionContext='asynchronous'">
+        });
+        return OpcUa_Good;
+        </xsl:if>
+        
+
 	}
 	</xsl:for-each>
 </xsl:if>

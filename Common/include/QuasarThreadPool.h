@@ -48,6 +48,7 @@ public:
     ~ThreadPool ();
 
     UaStatus addJob (ThreadPoolJob* job);
+    UaStatus addJob (const std::function<void()>& functor);
 
 private:
     void work();
