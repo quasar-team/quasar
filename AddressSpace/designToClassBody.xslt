@@ -31,43 +31,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	 <xsl:param name="className"/>
 	 	<xsl:param name="xsltFileName"/>
 
-<xsl:function name="fnc:convertVectorToUaVariant">
-	<!-- This template optimizes invocation of convertVectorToUaVariant which, 
-		unfortunately, can't be overloaded for all supported types -->
-	<xsl:param name="input" />
-	<xsl:param name="output" />
-	<xsl:param name="dataType" />
-	<xsl:choose>
-		<xsl:when test="$dataType='OpcUa_Byte'">
-			ArrayTools::convertByteVectorToUaVariant( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
-		</xsl:when>
-		<xsl:when test="$dataType='OpcUa_Boolean'">
-			ArrayTools::convertBooleanVectorToUaVariant( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );		
-		</xsl:when>
-		<xsl:otherwise>
-			ArrayTools::convertVectorToUaVariant( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:function>
-
-<xsl:function name="fnc:convertUaVariantToVector">
-	<!-- This template optimizes invocation of convertVectorToUaVariant which, 
-		unfortunately, can't be overloaded for all supported types -->
-	<xsl:param name="input" />
-	<xsl:param name="output" />
-	<xsl:param name="dataType" />
-	<xsl:choose>
-		<xsl:when test="$dataType='OpcUa_Byte'">
-			ArrayTools::convertUaVariantToByteVector( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
-		</xsl:when>
-		<xsl:when test="$dataType='OpcUa_Boolean'">
-			ArrayTools::convertUaVariantToBooleanVector( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
-		</xsl:when>
-		<xsl:otherwise>
-			ArrayTools::convertUaVariantToVector( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:function>
 	
 		<xsl:template name="classBody">
 		  <xsl:variable name="singleVariableNode"><xsl:if test="/d:design/d:class[@name=$className]/@singleVariableNode='true'">true</xsl:if></xsl:variable>
