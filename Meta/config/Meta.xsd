@@ -61,6 +61,7 @@
     <xs:complexType name="SourceVariableThreadPool">
       <xs:attribute name="minThreads" use="required" type="xs:unsignedInt"/>
       <xs:attribute name="maxThreads" use="required" type="xs:unsignedInt"/>
+      <xs:attribute name="maxJobs" use="required" type="xs:unsignedInt"/>
    </xs:complexType>   
 
 	<xs:simpleType name="logLevelIdentifier">
