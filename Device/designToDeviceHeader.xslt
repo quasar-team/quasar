@@ -63,11 +63,11 @@
 	<xsl:template name="method_handler">
 		UaStatus call<xsl:value-of select="fnc:capFirst(@name)"/> ( 
 		<xsl:for-each select="d:argument">
-			<xsl:value-of select="fnc:fixDataTypePassingMethod(@dataType)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/><xsl:if test="position() &lt; (count(../d:argument)+count(../d:returnvalue))">,</xsl:if><xsl:text>
+			<xsl:value-of select="fnc:fixDataTypePassingMethod(@dataType,d:array)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/><xsl:if test="position() &lt; (count(../d:argument)+count(../d:returnvalue))">,</xsl:if><xsl:text>
 			</xsl:text>
 		</xsl:for-each>
 		<xsl:for-each select="d:returnvalue">
-			<xsl:value-of select="@dataType"/> &amp; <xsl:value-of select="@name"/><xsl:if test="position() &lt; count(../d:returnvalue)">,
+			<xsl:value-of select="fnc:quasarDataTypeToCppType(@dataType,d:array)"/> &amp; <xsl:value-of select="@name"/><xsl:if test="position() &lt; count(../d:returnvalue)">,
 			</xsl:if>
 		</xsl:for-each>
 		) ;

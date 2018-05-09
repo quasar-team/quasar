@@ -351,10 +351,11 @@ elementFormDefault="qualified">
     </simpleType>
     
     <complexType name="ConfigEntry">
-        <all>
-    		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
-    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
-    	</all>
+    	<choice>
+    		<element name="documentation" type="tns:Documentation"
+    			maxOccurs="1" minOccurs="0">
+    		</element>
+    	</choice>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:ConfigEntryDataType"
     		use="required">
@@ -406,11 +407,17 @@ elementFormDefault="qualified">
     </complexType>
     
     <complexType name="MethodArgument">
+    	<sequence>
+    		<element name="array" type="tns:Array" minOccurs="0" maxOccurs="1"></element>
+    	</sequence>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:VariableDataType" use="required"></attribute>
     </complexType>
 
     <complexType name="MethodReturnValue">
+        <sequence>
+            <element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+        </sequence>
     	<attribute name="dataType" type="tns:VariableDataType"
     		use="required">
     	</attribute>

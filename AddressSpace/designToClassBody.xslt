@@ -342,7 +342,11 @@ unsigned int argCounter = 0;
 
 	{
 		UaUInt32Array dimensions;
-		prop-&gt;setArgument( argCounter, UaString("<xsl:value-of select="@name"/>"), UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0), -1, dimensions, UaLocalizedText("en_US", "<xsl:value-of select="@name"/>") );
+		OpcUa_Int32 valueRank = -1; // scalar by default
+		<xsl:if test="d:array">
+			valueRank = 1;
+		</xsl:if>
+		prop-&gt;setArgument( argCounter, UaString("<xsl:value-of select="@name"/>"), UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0), valueRank, dimensions, UaLocalizedText("en_US", "<xsl:value-of select="@name"/>") );
 	}
 
     
@@ -369,7 +373,11 @@ UaPropertyMethodArgument * propReturn = new UaPropertyMethodArgument (
 	<xsl:for-each select="d:returnvalue">
 	{
 		UaUInt32Array dimensions;
-		propReturn-&gt;setArgument( <xsl:value-of select="position()-1"/>, UaString("<xsl:value-of select="@name"/>"), UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0), -1, dimensions, UaLocalizedText("en_US", "<xsl:value-of select="@name"/>") );
+		OpcUa_Int32 valueRank = -1; // scalar by default
+		<xsl:if test="d:array">
+			valueRank = 1;
+		</xsl:if>
+		propReturn-&gt;setArgument( <xsl:value-of select="position()-1"/>, UaString("<xsl:value-of select="@name"/>"), UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0), valueRank, dimensions, UaLocalizedText("en_US", "<xsl:value-of select="@name"/>") );
 	}	
 	</xsl:for-each>
 	
@@ -719,26 +727,39 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 
 	  
 	    <xsl:for-each select="d:argument">
+            <xsl:variable name="argumentIndex"><xsl:value-of select="position()-1"/></xsl:variable>
 	    	<!-- TODO: implement strict checking? -->
-	    	<xsl:value-of select="@dataType"/> arg_<xsl:value-of select="@name"/> ;
-	    	<xsl:choose>
-	    	<xsl:when test="@dataType='UaString'"> 
-	    	
-	    	arg_<xsl:value-of select="@name"/> = (UaVariant(inputArguments[<xsl:value-of select="position()-1"/>])).toString();   
-	    	</xsl:when>
-	    	<xsl:when test="@dataType='UaVariant'">
-	    	arg_<xsl:value-of select="@name"/> = inputArguments[<xsl:value-of select="position()-1"/>];
-	    	</xsl:when>
-	    	<xsl:otherwise>
-	    	if ((UaVariant(inputArguments[<xsl:value-of select="position()-1"/>])).<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/>( arg_<xsl:value-of select="@name"/> ) != OpcUa_Good )
-	    		return OpcUa_BadDataEncodingInvalid; 
-	    	</xsl:otherwise>
-	    	</xsl:choose>
+	    	<xsl:value-of select="fnc:quasarDataTypeToCppType(@dataType,d:array)"/> arg_<xsl:value-of select="@name"/> ;
+            <xsl:choose>
+                <xsl:when test="d:array">
+                    {
+                        <xsl:variable name="input">inputArguments[<xsl:value-of select="$argumentIndex"/>]</xsl:variable>
+                        UaStatus conversionStatus = <xsl:value-of select="fnc:convertUaVariantToVector($input,concat('arg_',@name),@dataType)"/>
+                        if (!conversionStatus.isGood())
+                            return conversionStatus;
+                    }
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:choose>
+                        <xsl:when test="@dataType='UaString'">  
+                        arg_<xsl:value-of select="@name"/> = (UaVariant(inputArguments[<xsl:value-of select="position()-1"/>])).toString();   
+                        </xsl:when>
+                        <xsl:when test="@dataType='UaVariant'">
+                        arg_<xsl:value-of select="@name"/> = inputArguments[<xsl:value-of select="position()-1"/>];
+                        </xsl:when>
+                        <xsl:otherwise>
+                        if ((UaVariant(inputArguments[<xsl:value-of select="position()-1"/>])).<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/>( arg_<xsl:value-of select="@name"/> ) != OpcUa_Good )
+                            return OpcUa_BadDataEncodingInvalid; 
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:otherwise>
+            </xsl:choose>
+
 
 	    </xsl:for-each>
 	    
 	    <xsl:for-each select="d:returnvalue">
-	    	<xsl:value-of select="@dataType"/> rv_<xsl:value-of select="@name"/> ;
+	    	<xsl:value-of select="fnc:quasarDataTypeToCppType(@dataType,d:array)"/> rv_<xsl:value-of select="@name"/> ;
 	    </xsl:for-each>
 	    
 	    UaStatus stat = getDeviceLink()-&gt;call<xsl:value-of select="fnc:capFirst(@name)"/> (
@@ -757,18 +778,27 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	    UaVariant helper;
 	    outputArguments.create( <xsl:value-of select="count(d:returnvalue)"/> );
 	    <xsl:for-each select="d:returnvalue">
-	    	<xsl:choose>
-	    		<xsl:when test="@dataType='OpcUa_Boolean'">
-	    		    <!--  we do this because OpcUa_Boolean decays to char and not C++ bool. -->
-	    			helper.setBool( rv_<xsl:value-of select="@name"/> );
-	    		</xsl:when>
-	    		<xsl:when test="@dataType='UaByteString'">
-	    			helper.setByteString( rv_<xsl:value-of select="@name"/>, /*detach*/false );
-	    		</xsl:when>
-	    		<xsl:otherwise>
-	    			helper = rv_<xsl:value-of select="@name"/>;
-	    		</xsl:otherwise>
-	    	</xsl:choose>
+        <xsl:choose>
+            <xsl:when test="d:array">
+                <xsl:variable name="input">rv_<xsl:value-of select="@name"/></xsl:variable>
+                <xsl:value-of select="fnc:convertVectorToUaVariant($input,'helper',@dataType)"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:choose>
+                    <xsl:when test="@dataType='OpcUa_Boolean'">
+                        <!--  we do this because OpcUa_Boolean decays to char and not C++ bool. -->
+                        helper.setBool( rv_<xsl:value-of select="@name"/> );
+                    </xsl:when>
+                    <xsl:when test="@dataType='UaByteString'">
+                        helper.setByteString( rv_<xsl:value-of select="@name"/>, /*detach*/false );
+                    </xsl:when>
+                    <xsl:otherwise>
+                        helper = rv_<xsl:value-of select="@name"/>;
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:otherwise>
+        </xsl:choose>
+
 	    	
 	    	helper.copyTo( &amp;outputArguments[<xsl:value-of select="position()-1"/>] );
 	    </xsl:for-each>
