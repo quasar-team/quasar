@@ -26,6 +26,7 @@
 #include <vector>
 #include <thread>
 #include <list>
+#include <queue>
 #include <condition_variable>
 
 #include <statuscode.h>
@@ -39,6 +40,8 @@ public:
     virtual ~ThreadPoolJob() {};
 
     virtual void execute() = 0;
+
+    virtual std::string describe() const = 0;
 };
 
 class ThreadPool
@@ -56,7 +59,7 @@ private:
     std::mutex m_accessLock;
     bool m_quit;
     std::vector<std::thread> m_workers;
-    std::list<ThreadPoolJob*> m_pendingJobs;
+    std::queue<ThreadPoolJob*, std::list<ThreadPoolJob*> > m_pendingJobs;
 
     const unsigned int m_maxJobs;
 

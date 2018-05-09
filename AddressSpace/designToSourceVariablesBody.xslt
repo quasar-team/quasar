@@ -121,6 +121,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			LOG(Log::DBG) &lt;&lt; "After finishRead status:" &lt;&lt; s.toString().toUtf8() &lt;&lt; endl;
 			
 		}
+        virtual std::string describe() const
+        {
+            return std::string("read sourcevariable <xsl:value-of select="$variableName"/> of object ") + m_parentObjectNode-&gt;nodeId().toString().toUtf8();
+        }
 		private:
 			IOManagerCallback *m_callback;
 			OpcUa_UInt32 m_hTransaction;
@@ -246,6 +250,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			LOG(Log::TRC) &lt;&lt; "After finishWrite status:" &lt;&lt; s.toString().toUtf8() &lt;&lt; endl;
 			
 		}
+        virtual std::string describe() const
+        {
+            return std::string("write sourcevariable <xsl:value-of select="$variableName"/> of object ") + m_parentObjectNode-&gt;nodeId().toString().toUtf8();
+        }
 		private:
 			IOManagerCallback *m_callback;
 			OpcUa_UInt32 m_hTransaction;
