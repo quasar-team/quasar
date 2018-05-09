@@ -136,11 +136,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	<xsl:template  name="WriteJob">
 	<xsl:param name="className"/>
+    <xsl:param name="variableName"/>
 	
-	class IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> : public Quasar::ThreadPoolJob
+	class IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="$variableName"/> : public Quasar::ThreadPoolJob
 	{
 		public:
-		IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> (
+		IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="$variableName"/> (
 			IOManagerCallback *callback,
 			OpcUa_UInt32 hTransaction,
 			OpcUa_UInt32 callbackHandle,
@@ -325,7 +326,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:if test="@addressSpaceWrite='asynchronous' or @addressSpaceWrite='synchronous'">
 			<xsl:call-template name="WriteJob">
 			<xsl:with-param name="className"><xsl:value-of select="$className"/></xsl:with-param>
-
+            <xsl:with-param name="variableName"><xsl:value-of select="@name"/></xsl:with-param>
 			</xsl:call-template>
 
 			</xsl:if>
