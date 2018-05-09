@@ -732,6 +732,12 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	    	<xsl:value-of select="fnc:quasarDataTypeToCppType(@dataType,d:array)"/> rv_<xsl:value-of select="@name"/> ;
 	    </xsl:for-each>
 	    
+        UaStatusCodeArray       inputArgumentResults;
+        UaDiagnosticInfos       inputArgumentDiag;
+        UaVariantArray          outputArguments;
+        
+        try
+        {
 
 	    UaStatus stat = getDeviceLink()-&gt;call<xsl:value-of select="fnc:capFirst(@name)"/> (
 	    <xsl:for-each select="d:argument">
@@ -741,9 +747,7 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	    	rv_<xsl:value-of select="@name"/><xsl:if test="position() &lt; count(../d:returnvalue)">,</xsl:if>
 	    </xsl:for-each>
 	    );
-	    UaStatusCodeArray   	inputArgumentResults;
-	    UaDiagnosticInfos   	inputArgumentDiag;
-	    UaVariantArray       	outputArguments;
+
 	    
 	    <xsl:if test="d:returnvalue">
 	    UaVariant helper;
@@ -776,10 +780,19 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	    </xsl:if>
 	    
 	    pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, stat );
-	    return OpcUa_Good;
+	    return (OpcUa_StatusCode)OpcUa_Good;
+        
+        }
+        catch (std::exception&amp; e)
+        {
+            LOG(Log::ERR) &lt;&lt; "method call of method <xsl:value-of select="@name"/> thrown an exception (should have been handled in the method body...): " &lt;&lt; e.what();
+            UaStatus badStatus = OpcUa_BadInternalError;
+            pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );
+            return OpcUa_BadInternalError;
+        }
   
         <xsl:if test="@executionContext='asynchronous'">
-        });
+        }, std::string("method call of method <xsl:value-of select="@name"/> on object ")+this-&gt;nodeId().toString().toUtf8());
         return OpcUa_Good;
         </xsl:if>
         

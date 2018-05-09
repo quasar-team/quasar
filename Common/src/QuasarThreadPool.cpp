@@ -100,18 +100,24 @@ UaStatus ThreadPool::addJob (ThreadPoolJob* job)
     return OpcUa_Good;
 }
 
-UaStatus ThreadPool::addJob (const std::function<void()>& functor)
+UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::string& description)
 {
     class StdFunctionJob: public ThreadPoolJob
     {
     public:
-        StdFunctionJob ( const std::function<void()>& functor ) : m_functor(functor) {}
+        StdFunctionJob (
+                const std::function<void()>& functor,
+                const std::string& description) :
+                    m_functor(functor),
+                    m_description(description) {}
         virtual void execute() { m_functor(); }
+        virtual std::string describe() const { return m_description; }
     private:
         const std::function<void()> m_functor;
+        const std::string m_description;
 
     };
-    StdFunctionJob *job = new StdFunctionJob (functor);
+    StdFunctionJob *job = new StdFunctionJob (functor, description);
     return this->addJob (job);
 }
 
