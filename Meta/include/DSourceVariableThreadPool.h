@@ -48,7 +48,7 @@ class
 
 public:
     /* sample constructor */
-    explicit DSourceVariableThreadPool (const size_t& min, const size_t& max);
+    explicit DSourceVariableThreadPool (const size_t& min, const size_t& max, const size_t& maxJobs);
     /* sample dtr */
     ~DSourceVariableThreadPool ();
 
