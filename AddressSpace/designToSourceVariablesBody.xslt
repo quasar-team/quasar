@@ -269,25 +269,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:template match="/">	
 	<xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToSourceVariablesBody.xslt','Piotr Nikiel')"/>    
 
-	#ifndef BACKEND_OPEN62541
-
-
-	#include &lt;iomanager.h&gt;
 	#include &lt;SourceVariables.h&gt;
-	#include &lt;iostream&gt;
-	#include &lt;stdexcept&gt;
 	#include &lt;LogIt.h&gt;
-    #include &lt;QuasarThreadPool.h&gt;
-	
-	<xsl:for-each select="/d:design/d:class">
-	<xsl:if test="count(d:sourcevariable)>0">
-	#include &lt;<xsl:value-of select="fnc:ASClassName(@name)"/>.h&gt;
-	<xsl:if test="fnc:classHasDeviceLogic(/,@name)">
-	#include &lt;<xsl:value-of select="fnc:DClassName(@name)"/>.h&gt;
-	</xsl:if>
-	</xsl:if>
-	</xsl:for-each>
-	
 	using namespace std;
 
 	namespace AddressSpace
@@ -309,9 +292,33 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
             delete sourceVariableThreads;
             sourceVariableThreads = nullptr;
         }
-    }
-    
-        Quasar::ThreadPool* SourceVariable_getThreadPool () { return sourceVariableThreads; }
+}
+}
+	
+	#ifndef BACKEND_OPEN62541
+
+
+	#include &lt;iomanager.h&gt;
+	
+	#include &lt;iostream&gt;
+	#include &lt;stdexcept&gt;
+
+    #include &lt;QuasarThreadPool.h&gt;
+	
+	<xsl:for-each select="/d:design/d:class">
+	<xsl:if test="count(d:sourcevariable)>0">
+	#include &lt;<xsl:value-of select="fnc:ASClassName(@name)"/>.h&gt;
+	<xsl:if test="fnc:classHasDeviceLogic(/,@name)">
+	#include &lt;<xsl:value-of select="fnc:DClassName(@name)"/>.h&gt;
+	</xsl:if>
+	</xsl:if>
+	</xsl:for-each>
+	
+
+
+	namespace AddressSpace
+	{
+
 
 		<xsl:for-each select="/d:design/d:class">
 		<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
