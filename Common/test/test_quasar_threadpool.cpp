@@ -24,6 +24,7 @@ public:
             x *= 1.00000001;
         std::cout << "Finishing job, output=" << x << std::endl;
     }
+    virtual std::string describe() const { return ""; }
 };
 
 // check if the CPU load scales to 300% (if you have at least 3 cores)

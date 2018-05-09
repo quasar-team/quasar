@@ -38,11 +38,20 @@ ThreadPool::ThreadPool (unsigned int maxThreads, unsigned int maxJobs):
 
 ThreadPool::~ThreadPool ()
 {
-    LOG(Log::TRC) << "Stopping threadpool";
+    LOG(Log::INF) << "Stopping threadpool - this might take some time.";
     m_quit = true;
     m_conditionVariable.notify_all();
-    std::for_each( m_workers.begin(), m_workers.end(), [](std::thread &t){t.join();} );
-    LOG(Log::TRC) << "Stopped the threadpool";
+    for (std::thread &t : m_workers)
+        t.join();
+    LOG(Log::INF) << "Stopped the threadpool";
+    // all threads are stopped now, but are all jobs flushed?
+    while (!m_pendingJobs.empty())
+    {
+        ThreadPoolJob* job = m_pendingJobs.front();
+        m_pendingJobs.pop();
+        LOG(Log::WRN) << "Removing unfinished job: " << job->describe();
+        delete job;
+    }
 }
 
 void ThreadPool::work()
@@ -50,10 +59,10 @@ void ThreadPool::work()
     while (!m_quit)
     {
         std::unique_lock<std::mutex>lock (m_accessLock);
-        if (m_pendingJobs.size()>0)
+        if (! m_pendingJobs.empty())
         {
             ThreadPoolJob *job = m_pendingJobs.front();
-            m_pendingJobs.pop_front();
+            m_pendingJobs.pop();
             unsigned int size = m_pendingJobs.size();
             lock.unlock();
             LOG(Log::TRC) << "Removed job from the threadpool, current number of jobs is:" << size;
@@ -63,7 +72,7 @@ void ThreadPool::work()
             }
             catch (...)
             {
-                LOG(Log::ERR) << "Job has thrown an unhandled exception.";
+                LOG(Log::ERR) << "Job '" << job->describe() << "' has thrown an unhandled exception. The job description was '" + job->describe() + "'";
             }
 
             delete job;
@@ -81,10 +90,10 @@ UaStatus ThreadPool::addJob (ThreadPoolJob* job)
         std::lock_guard<std::mutex>lock (m_accessLock);
         if (m_pendingJobs.size() >= m_maxJobs)
         {
-            LOG(Log::ERR) << "The threadpool is already full, cant add new jobs. Enlarge the threadpool";
+            LOG(Log::ERR) << "The threadpool is already full (it has limit of " << m_maxJobs << " jobs. Cant add new jobs. Enlarge the threadpool";
             return OpcUa_BadResourceUnavailable;
         }
-        m_pendingJobs.push_back(job);
+        m_pendingJobs.push(job);
     }
     m_conditionVariable.notify_one();
     LOG(Log::TRC) << "Added new job to threadpool, current number of jobs is:" << m_pendingJobs.size();
