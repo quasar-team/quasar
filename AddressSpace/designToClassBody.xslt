@@ -722,7 +722,7 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 
 	    </xsl:for-each>
         
-        <xsl:if test="@executionContext='asynchronous'">
+        <xsl:if test="@executionSynchronicity='asynchronous'">
 
         
         SourceVariable_getThreadPool()-&gt;addJob(  [this,callbackHandle,pCallback<xsl:for-each select="d:argument">,arg_<xsl:value-of select="@name"/></xsl:for-each>](){
@@ -791,7 +791,7 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
             return OpcUa_BadInternalError;
         }
   
-        <xsl:if test="@executionContext='asynchronous'">
+        <xsl:if test="@executionSynchronicity='asynchronous'">
         }, std::string("method call of method <xsl:value-of select="@name"/> on object ")+this-&gt;nodeId().toString().toUtf8());
         return OpcUa_Good;
         </xsl:if>

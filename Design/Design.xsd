@@ -401,7 +401,7 @@ elementFormDefault="qualified">
             <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
         </sequence>
         <attribute name="name" type="tns:VariableName" use="required"></attribute>
-        <attribute name="executionContext" type="tns:MethodExecutionContext" use="required"></attribute>
+        <attribute name="executionSynchronicity" type="tns:MethodExecutionSynchronicity" use="required"></attribute>
     </complexType>
 
     <complexType name="MethodArgument">
@@ -422,7 +422,7 @@ elementFormDefault="qualified">
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     </complexType>
     
-    <simpleType name="MethodExecutionContext">
+    <simpleType name="MethodExecutionSynchronicity">
         <restriction base="string">
             <enumeration value="synchronous"></enumeration>
             <enumeration value="asynchronous"></enumeration>
