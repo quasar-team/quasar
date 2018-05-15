@@ -723,9 +723,11 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	    </xsl:for-each>
         
         <xsl:if test="@executionSynchronicity='asynchronous'">
-
+        #ifdef BACKEND_OPEN62541
+        #error asynchronous method execution is not available for open62541 backend
+        #endif
         
-        SourceVariable_getThreadPool()-&gt;addJob(  [this,callbackHandle,pCallback<xsl:for-each select="d:argument">,arg_<xsl:value-of select="@name"/></xsl:for-each>](){
+        AddressSpace::SourceVariables_getThreadPool()-&gt;addJob(  [this,callbackHandle,pCallback<xsl:for-each select="d:argument">,arg_<xsl:value-of select="@name"/></xsl:for-each>](){
         </xsl:if>
 	    
 	    <xsl:for-each select="d:returnvalue">
@@ -841,6 +843,7 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	#include &lt;ArrayTools.h&gt;
 	#include &lt;Utils.h&gt;
 
+    #include &lt;SourceVariables.h&gt;
 	
 	<xsl:if test="not(/d:design/d:class[@name=$className])">
 		<xsl:message terminate="yes">Class not found.</xsl:message>

@@ -46,7 +46,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	{
 	void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads=0, unsigned int maxThreads=10, unsigned int maxJobs=1000);
 	void SourceVariables_destroySourceVariablesThreadPool ();
-	Quasar::ThreadPool* SourceVariable_getThreadPool ();
+	Quasar::ThreadPool* SourceVariables_getThreadPool ();
 	}
 	
 	#ifndef BACKEND_OPEN62541

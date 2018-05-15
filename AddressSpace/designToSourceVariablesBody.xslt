@@ -293,6 +293,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
             sourceVariableThreads = nullptr;
         }
 }
+
+Quasar::ThreadPool* SourceVariables_getThreadPool () { return sourceVariableThreads; }
 }
 	
 	#ifndef BACKEND_OPEN62541
