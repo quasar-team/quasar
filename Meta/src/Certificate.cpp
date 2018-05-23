@@ -5,6 +5,8 @@
  *      Author: mludwig
  */
 
+using namespace std;
+
 #include <iomanip>
 
 #include <Certificate.h>
@@ -30,7 +32,7 @@ Certificate* Certificate::Instance( )
 {
 	if(!_pInstance)
 	{
-		LOG(Log::WRN) << "No Certificate singleton instance has been instantiated, programming error. Returning [NULL]";
+		throw std::logic_error("No Certificate singleton instance has been instantiated, programming error.");
 	}
 	return _pInstance;
 }
@@ -169,9 +171,11 @@ int Certificate::remainingSecs( void ) const
 
 // validity format is here:
 // https://github.com/openssl/openssl/commit/f48b83b4fb7d6689584cf25f61ca63a4891f5b11
-time_t Certificate::_timeASN1toTIME_T( ASN1_TIME* time ){
-	// struct tm t;
-	string str = string( (const char *) time->data );
+time_t Certificate::_timeASN1toTIME_T( ASN1_TIME* time )
+{
+	struct tm t;
+	memset( (void*)&t, 0, sizeof t);
+	string str ( (const char *) time->data );
 	size_t i = 0;
 	/*
 	    OPCServerCertificate.cpp 150 str= 160822103554Z
