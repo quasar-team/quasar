@@ -84,7 +84,8 @@ private:
 	std::time_t m_time_end;
 	status_t m_status;
 
-	int64_t m_remaining_validity_in_seconds;
+	 struct tm t;
+	 int64_t m_remaining_validity_in_seconds;
 };
 
 #endif /* META_SRC_CERTIFICATE_H_ */
