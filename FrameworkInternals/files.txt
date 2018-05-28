@@ -45,7 +45,7 @@ File QuasarThreadPool.cpp must_exist,must_be_versioned,md5=124a51ad46e6c7b14a06a
 Directory Configuration install=create,
 File CMakeLists.txt must_exist,must_be_versioned,md5=15f7436cb7116ad6d454f837ffb784fa,install=overwrite,
 File Configurator.h must_exist,must_be_versioned,md5=aac016866cd9471e18629ef7e79b9713,install=overwrite,
-File designToConfigurationXSD.xslt must_exist,must_be_versioned,md5=0b22eb24ab75f80bf268b2626f0b713b,install=overwrite,
+File designToConfigurationXSD.xslt must_exist,must_be_versioned,md5=56e7531f3cbdf44ac99728b754f46619,install=overwrite,
 File designToConfigurator.xslt must_exist,must_be_versioned,md5=d06fd6f5b3b397a9147fcbfdcb566802,install=overwrite,
 File designToConfigValidator.xslt must_exist,must_be_versioned,md5=b6edf95852f56fdc77807a4e5bf6bc29,install=overwrite,
 File generateConfiguration.sh install=dont_touch,deprecated,
