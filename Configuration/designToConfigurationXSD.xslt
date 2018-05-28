@@ -71,7 +71,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	</xs:choice>
 	<!-- here we go through all the config entries and filter out the ones which are arrays. 
 	they become elements. -->
-	<xsl:for-each select="child::d:configentry">
+	<xsl:for-each select="d:configentry | d:cachevariable">
 		<xsl:if test="d:array">
 			<xsl:variable name="minimumSize">
 				<xsl:choose>
@@ -94,33 +94,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			</xs:element>
 		</xsl:if>
 	</xsl:for-each>
-	
-		<xsl:for-each select="child::d:cachevariable">
-			<xsl:if test="@initializeWith='configuration'">
-				<xsl:if test="d:array">
-					<xsl:variable name="minimumSize">
-						<xsl:choose>
-							<xsl:when test="d:array/@minimumSize"><xsl:value-of select="d:array/@minimumSize"/></xsl:when>
-							<xsl:otherwise>0</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
-					<xsl:variable name="maximumSize">
-						<xsl:choose>
-							<xsl:when test="d:array/@maximumSize"><xsl:value-of select="d:array/@maximumSize"/></xsl:when>
-							<xsl:otherwise>unbounded</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>			
-					<xs:element name="{@name}">
-						<xs:complexType>
-				    			<xs:sequence minOccurs="{$minimumSize}" maxOccurs="{$maximumSize}">
-					    			<xs:element name="value" type="{fnc:dataTypeToXsdType(@dataType)}"/>
-				    			</xs:sequence>
-			    		</xs:complexType>
-					</xs:element>
-				</xsl:if>
-			</xsl:if>	
-		</xsl:for-each>
-		
+    	
 	</xs:sequence>
 	<!-- name of the object of this class is mandatory and not configurable. -->
 	<xs:attribute name="name" type="tns:ObjectName" use="required"/>
