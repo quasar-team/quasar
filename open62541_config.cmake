@@ -48,7 +48,12 @@ include_directories( open62541-compat/open62541 )
 #-----
 #As of 03-Sep-2015 I see no FindXerces or whatever in our Cmake 2.8 installation, so no find_package can be user...
 # TODO perhaps also take it from environment if requested
-SET( XML_LIBS "-lxerces-c -lssl" ) 
+SET( XML_LIBS "-lxerces-c" ) 
+
+#-----
+#Quasar server libs
+#-----
+SET( QUASAR_SERVER_LIBS "-lssl -lcrypto -lpthread" )
 
 #-----
 #General settings
