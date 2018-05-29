@@ -27,6 +27,7 @@
 
 
 
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
@@ -38,9 +39,11 @@
 
 
 
+
               backward incompatibilites</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>JIRA
+
 
 
 
@@ -66,7 +69,17 @@
             called "executionSynchronicity". Please pick "synchronous"
             for the old behaviour. Picking asynchronous will execute a
             method in a separate context, as per OPCUA-1034.<br>
-          </td>
+            <br>
+            On some systems (e.g. Ubuntu) the following addition in your
+            custom build config might be necessary:<br>
+            <br>
+            <span class="blob-code-inner"><span class="pl-c1">SET</span>(
+              QUASAR_SERVER_LIBS <span class="pl-s">"-lssl -lcrypto
+                -lpthread"</span> )<br>
+              <br>
+              otherwise you might get a message about unmet link
+              dependency to libpthread.<br>
+            </span> </td>
           <td valign="top">New Feature<br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1033">OPCUA-1033</a>]
