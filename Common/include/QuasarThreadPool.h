@@ -28,6 +28,7 @@
 #include <list>
 #include <queue>
 #include <condition_variable>
+#include <functional>
 
 #include <statuscode.h>
 
