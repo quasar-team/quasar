@@ -60,7 +60,10 @@ SET( QUASAR_SERVER_LIBS "-lssl -lcrypto -lpthread" )
 #-----
 
 # TODO: split between Win / MSVC, perhaps MSVC has different notation for these
-add_definitions(-Wall -Wno-deprecated -std=gnu++0x -Wno-literal-suffix) 
+add_definitions(-Wall -Wno-deprecated  ) 
+
+# We need some C++11
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-literal-suffix" )
 
 # 62xxx no uatrace
 set (LOGIT_HAS_UATRACE FALSE)
