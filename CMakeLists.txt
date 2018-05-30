@@ -100,10 +100,18 @@ foreach(include ${MODULE_INCLUDES})
 endforeach(include)
 
 # add all module directories and add module objects
-foreach(module ${SERVER_MODULES})
+set(MODULES_IN_SOURCE_DIR ${NATIVE_SERVER_MODULES} ${CUSTOM_SERVER_MODULES})
+foreach(module ${MODULES_IN_SOURCE_DIR})
     add_subdirectory( ${module} )
-	set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
+    set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
 endforeach(module)
+
+foreach(module ${OPTIONAL_SERVER_MODULES})    
+    add_subdirectory( ${PROJECT_BINARY_DIR}/${module} ${PROJECT_BINARY_DIR}/${module} )  # listed twice, 1st is SOURCE_DIR 2nd is BINARY_DIR
+    set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
+endforeach(module)
+
+
 
 
 add_custom_command(
@@ -142,3 +150,8 @@ target_link_libraries ( ${EXECUTABLE}
 	${OPCUA_TOOLKIT_LIBS}
 	${SERVER_LINK_LIBRARIES}
 )
+
+if(EXISTS ${PROJECT_SOURCE_DIR}/CMakeEpilogue.cmake)
+	  MESSAGE("CMakeEpilogue found")
+	  include (${PROJECT_SOURCE_DIR}/CMakeEpilogue.cmake)
+endif(EXISTS ${PROJECT_SOURCE_DIR}/CMakeEpilogue.cmake)
