@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+  </head>
+  <body>
+    Quasar + Yocto: How to<br>
+    <br>
+    Author: Piotr Nikiel<br>
+    Date: 30-05-2018<br>
+    <br>
+    <h1>Introduction</h1>
+    <br>
+    This rather short how-to explains how to integrate a Quasar-based
+    OPC-UA server with Yocto.<br>
+    <br>
+    Prerequisites:<br>
+    <ul>
+      <li>familiarity with Quasar: creating Quasar projects, working
+        with Design, attaching custom code, storing them on git.
+        Experience with writing build config files for Quasar (involving
+        cross-compiler toolchain) is a plus.</li>
+      <li>familiarity with Yocto: building images for qemu and/or real
+        hardware, deploying layers and recipes.</li>
+    </ul>
+    <h1>The terminology</h1>
+    Note that I used my personal paths:<br>
+    <ul>
+      <li>~/gitProjects/quasar<br>
+        is where I have my quasar repo (i.e. a git clone from
+        https://github.com/quasar-team/quasar). I will call it <b>quasar
+          repo</b>.<br>
+      </li>
+      <li>~/gitProjects/poky<br>
+        is where I have my reference Yocto distribution (krogoth
+        version). I cloned it from Yocto git repo. I will call it <b>poky
+          repo</b>.<br>
+      </li>
+      <li>~/gitProjects/poky-quasar<br>
+        is where I will have my Quasar-based OPC-UA server project. I
+        will call it <b>project repo</b>.<br>
+      </li>
+    </ul>
+    <h1>The procedure</h1>
+    <h2>1. Create new Quasar project<br>
+    </h2>
+    From quasar repo:<br>
+    <br>
+    <pre>./quasar.py create_project ~/gitProjects/poky-quasar</pre>
+    <br>
+    <h2>2. Put your new Quasar project under git version control</h2>
+    <br>
+    cd ~/gitProjects/poky-quasar
+    <br>
+    git init .<br>
+    git add *<br>
+    git commit -m 'Initial commit'<br>
+    <br>
+    <br>
+    <br>
+    <br>
+  </body>
+</html>
