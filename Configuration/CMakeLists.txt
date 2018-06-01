@@ -30,7 +30,7 @@ add_custom_command(OUTPUT Configuration.cxx Configuration.hxx
 	DEPENDS Configuration.xsd
 )
 
-add_custom_target(Configuration.hxx DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Configuration.hxx)
+add_custom_target(Configuration.hxx_GENERATED DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Configuration.hxx)
 
 add_custom_command(OUTPUT Configurator.cpp	
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

@@ -42,4 +42,4 @@ add_library (AddressSpace OBJECT
 	
 
 add_custom_target(AddressSpaceGeneratedHeaders DEPENDS ${ADDRESSSPACE_HEADERS} include/ASInformationModel.h include/SourceVariables.h)
-add_dependencies (AddressSpace AddressSpaceGeneratedHeaders DeviceGeneratedHeaders Configuration.hxx)
+add_dependencies (AddressSpace AddressSpaceGeneratedHeaders DeviceGeneratedHeaders Configuration.hxx_GENERATED )
