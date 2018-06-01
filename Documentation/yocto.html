@@ -1,8 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-
-    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <meta http-equiv="content-type" content="text/html;
+      charset=windows-1252">
+    <title>How to build quasar-based OPC-UA servers under Yocto</title>
+    <style>
+	div {background-color: #ddddff; width: 50%; font-family: monospace; font-size: 14; margin-bottom: 2%}
+    </style>
   </head>
   <body>
     Quasar + Yocto: How to<br>
@@ -30,11 +34,64 @@
       <li>~/gitProjects/quasar<br>
         is where I have my quasar repo (i.e. a git clone from
         https://github.com/quasar-team/quasar). I will call it <b>quasar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           repo</b>.<br>
       </li>
       <li>~/gitProjects/poky<br>
         is where I have my reference Yocto distribution (krogoth
         version). I cloned it from Yocto git repo. I will call it <b>poky
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           repo</b>.<br>
       </li>
       <li>~/gitProjects/poky-quasar<br>
@@ -43,22 +100,102 @@
       </li>
     </ul>
     <h1>The procedure</h1>
-    <h2>1. Create new Quasar project<br>
+    <h2>1. Create a new Quasar project<br>
     </h2>
     From quasar repo:<br>
-    <br>
-    <pre>./quasar.py create_project ~/gitProjects/poky-quasar</pre>
-    <br>
+    <div> ./quasar.py create_project ~/gitProjects/poky-quasar </div>
     <h2>2. Put your new Quasar project under git version control</h2>
+    <div> cd ~/gitProjects/poky-quasar <br>
+      git init .<br>
+      git add *<br>
+      git commit -m 'Initial commit'<br>
+    </div>
+    <h2> 3. Copy the reference build config from quasar repo, select it
+      and store it</h2>
+    From project repo:<br>
+    <div> cp
+      ~/gitProjects/quasar/Extra/yocto/yocto_open62541_config.cmake .<br>
+      git add yocto_open62541_config.cmake<br>
+      ./quasar.py set_build_config yocto_open62541_config.cmake <br>
+      git commit -a -m 'Added build config' </div>
+    <h2>4. Generate CMake headers and store them</h2>
+    From project repo:<br>
+    <div> ./quasar.py generate cmake_headers<br>
+      git add AddressSpace/cmake_generated.cmake <br>
+      git add Device/generated/cmake_header.cmake <br>
+      git commit -m 'Added CMake headers'<br>
+    </div>
+    Comment: this step is normally done behind the scenes by quasar when
+    its usual entry point (quasar.py) is used rather than plain CMake.<br>
     <br>
-    cd ~/gitProjects/poky-quasar
+    <h2>5. Enable open62541-compat module</h2>
+    From project repo:<br>
     <br>
-    git init .<br>
-    git add *<br>
-    git commit -m 'Initial commit'<br>
+    <div> ./quasar.py enable_module open62541-compat <font
+        color="#ff0000">pnikiel-yocto-fix</font><br>
+      git add FrameworkInternals/EnabledModules/open62541-compat.*<br>
+      git commit -m 'Stored open62541-compat'<br>
+    </div>
+    <h2>6. Check if project builds for your host system</h2>
+    <br>
+    Comment: this step is not necessary per se but it will help to
+    ensure that things are fine so far.<br>
+    From project repo:<br>
+    <div> ./quasar.py build </div>
+    If you see:<br>
+    [100%] Built target OpcUaServer<br>
+    among the last lines of output then you're good.<br>
+    <br>
+    <h2>7. Create a branch in Yocto reference distribution for your
+      developments</h2>
+    Comment: you might skip this step if you are not starting from
+    'ground zero'.<br>
+    From poky repo:<br>
+    <br>
+    <div> git branch my-yocto-dev<br>
+      git checkout my-yocto-dev </div>
+    <br>
+    <h2> 8. Source Yocto's oe-init-build-env&nbsp;</h2>
+    From poky repo:<br>
+    <div> . oe-init-build-env </div>
+    <h2> 9. Create a new Yocto layer for your quasar OPC-UA server(s)</h2>
+    From poky repo:
+    <div> yocto-layer create meta-quasar-servers </div>
+    And then add the new layer to the list of layers to be taken into
+    account by your current build directory (which most often will be
+    'build' inside poky repo, unless you used some custom settings). You
+    have to append layer's path into build/conf/bblayers.conf<br>
+    <br>
+    <h2> 10. Deploy the Yocto recipe for your OPC-UA server</h2>
+    <br>
+    From meta-quasar-servers which you created inside poky repo:<br>
+    <div>
+      mkdir recipes-opcua-servers<br>
+      cd recipes-opcua-servers<br>
+      mkdir opcua-servers<br>
+      cd opcua-servers<br>
+    </div>
+    And copy my-opcua-server.bb from quasar repo / Extra / yocto. <br>
+    This is an example recipe which you&nbsp; might base on.<br>
+    <b>Note:</b> don't put underscore ( _ ) sign as a part of your
+    recipe name, it serves as a delimeter between various fields of
+    recipe filename. Prefer hyphens ( - ). <br>
+    <br>
+    <h2>11. Fix the path in the my-opcua-server recipe</h2>
+    <br>
+    The source path have to point to where your actual git repository of
+    the project is.<br>
     <br>
     <br>
+    <h2>12. Deploy xsd Yocto recipe (if not provided by anything else)</h2>
     <br>
+    Out of standard Quasar dependencies, xsd is the only one not covered
+    by the default layers.<br>
+    If you don't provide xsd via other recipes of your system (which is
+    most likely to happen when you are starting with Yocto) take the
+    recipe from our repo like in the previous point.<br>
+    <br>
+    13. <br>
     <br>
   </body>
 </html>
