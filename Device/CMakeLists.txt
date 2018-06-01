@@ -37,5 +37,5 @@ add_library (Device OBJECT
 	
 )
     
-add_dependencies (Device Configuration.hxx AddressSpaceGeneratedHeaders DeviceBase )
+add_dependencies (Device Configuration.hxx_GENERATED AddressSpaceGeneratedHeaders DeviceBase )
 

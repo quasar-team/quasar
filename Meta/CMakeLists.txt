@@ -20,4 +20,4 @@ file(GLOB META_SRCS src/*.cpp)
 
 add_library (Meta OBJECT ${META_SRCS})
 
-add_dependencies (Meta Configuration.hxx AddressSpace)
+add_dependencies (Meta Configuration.hxx_GENERATED AddressSpace)

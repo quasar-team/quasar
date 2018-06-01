@@ -30,7 +30,7 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configuration.cxx 
 	DEPENDS ${PROJECT_BINARY_DIR}/Configuration/Configuration.xsd
 )
 
-add_custom_target(Configuration.hxx DEPENDS ${PROJECT_BINARY_DIR}/Configuration/Configuration.hxx )
+add_custom_target(Configuration.hxx_GENERATED DEPENDS ${PROJECT_BINARY_DIR}/Configuration/Configuration.hxx )
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configurator.cpp	
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
