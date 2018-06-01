@@ -75,6 +75,7 @@
 
 
 
+
           repo</b>.<br>
       </li>
       <li>~/gitProjects/poky<br>
@@ -106,15 +107,21 @@
     <h2> 3. Copy the reference build config from quasar repo, select it
       and store it</h2>
     From project repo:<br>
-    <div> cp
+    <div>cp
       ~/gitProjects/quasar/Extra/yocto/yocto_open62541_config.cmake .<br>
       git add yocto_open62541_config.cmake<br>
       ./quasar.py set_build_config yocto_open62541_config.cmake <br>
       git commit -a -m 'Added build config'<br>
     </div>
-    4. Add CMake epilogue with install statements<br>
+    <h2> 4. Add CMake epilogue with install statements</h2>
     <br>
-    <br>
+    We need to instruct CMake which files to install on the target. This
+    can be done by copying CMakeEpilogue.cmake from us and storing it in
+    your project repo:<br>
+    <div>cp ~/gitProjects/quasar/Extra/yocto/CMakeEpilogue.cmake .<br>
+      git add CMakeEpilogue.cmake<br>
+      git commit -a -m 'Added the epilogue'
+    </div>
     <h2>5. Generate CMake headers and store them</h2>
     From project repo:<br>
     <div> ./quasar.py generate cmake_headers<br>
@@ -241,16 +248,20 @@
     <br>
     /home/pnikiel/gitProjects/poky/build/tmp/sysroots/x86_64-linux/usr/bin/qemu-system-i386
 
+
     -kernel
     /home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/bzImage-qemux86.bin
+
 
     -net nic,model=virtio -net
     tap,vlan=0,ifname=tap0,script=no,downscript=no -cpu qemu32 -drive
     file=/home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/core-image-minimal-qemux86-20180601101954.rootfs.ext4,if=virtio,format=raw
 
+
     -show-cursor -usb -usbdevice tablet -vga vmware -no-reboot -m 256
     -serial mon:vc -serial null -append "vga=0
     uvesafb.mode_option=640x480-32 root=/dev/vda rw mem=256M ip=<b>192.168.7.2</b>::192.168.7.1:255.255.255.0
+
 
     oprofile.timer=1 rootfstype=ext4 "<br>
     <br>
