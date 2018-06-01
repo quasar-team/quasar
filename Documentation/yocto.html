@@ -70,29 +70,17 @@
 
 
 
+
+
+
+
+
           repo</b>.<br>
       </li>
       <li>~/gitProjects/poky<br>
-        is where I have my reference Yocto distribution (krogoth
-        version). I cloned it from Yocto git repo. I will call it <b>poky
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          repo</b>.<br>
+        is where I have my reference Yocto distribution usually called
+        poky (in this manual it was in the krogoth version). I cloned it
+        from Yocto git repo. I will call it <b>poky repo</b>.<br>
       </li>
       <li>~/gitProjects/poky-quasar<br>
         is where I will have my Quasar-based OPC-UA server project. I
@@ -100,6 +88,11 @@
       </li>
     </ul>
     <h1>The procedure</h1>
+    <h2>0. Make sure you're using the Quasar branch with Yocto support<br>
+    </h2>
+    <p>From quasar repo:<br>
+    </p>
+    <div> git checkout OPCUA-1016_yocto_quasar </div>
     <h2>1. Create a new Quasar project<br>
     </h2>
     From quasar repo:<br>
@@ -169,8 +162,7 @@
     <h2> 10. Deploy the Yocto recipe for your OPC-UA server</h2>
     <br>
     From meta-quasar-servers which you created inside poky repo:<br>
-    <div>
-      mkdir recipes-opcua-servers<br>
+    <div> mkdir recipes-opcua-servers<br>
       cd recipes-opcua-servers<br>
       mkdir opcua-servers<br>
       cd opcua-servers<br>
@@ -184,8 +176,8 @@
     <h2>11. Fix the path in the my-opcua-server recipe</h2>
     <br>
     The source path have to point to where your actual git repository of
-    the project is.<br>
-    <br>
+    the project is (and we assumed in point 2 that it is a local one.<br>
+    The variable to edit is called <b>SRC_URI</b><br>
     <br>
     <h2>12. Deploy xsd Yocto recipe (if not provided by anything else)</h2>
     <br>
@@ -195,7 +187,73 @@
     most likely to happen when you are starting with Yocto) take the
     recipe from our repo like in the previous point.<br>
     <br>
-    13. <br>
+    <h2> 13. Add your OPC-UA server artifacts to be installed on the
+      target image</h2>
+    <br>
+    From poky repo, edit your build/conf/local.conf and add the
+    following statement in the end:<br>
+    <br>
+    IMAGE_INSTALL_append = " my-opcua-server"<br>
+    <br>
+    Note that the space character after double-quote is intentional.<br>
+    <br>
+    <h2>14. Build the minimal image</h2>
+    At this stage, you could execute from poky/build directory:<br>
+    <br>
+    <div> bitbake core-image-minimal<br>
+    </div>
+    You can also build only the OPC-UA server:<br>
+    <br>
+    <div> bitbake my-opcua-server<br>
+    </div>
+    <b>Note</b> since you're familiar with Yocto basics then you know
+    that the first time you run it, it might take few hours and ~30-40
+    GBs of disk space!<br>
+    <br>
+    <h2>15. Run the minimal image in qemu</h2>
+    From poky/build directory:<br>
+    <br>
+    <div> runqemu qemux86 core-image-minimal<br>
+    </div>
+    You should see your operating system bootin in qemu.<br>
+    <br>
+    <h2>16. Run the OPC-UA server</h2>
+    Once you see login prompt in qemu, login as root.<br>
+    Then:<br>
+    <br>
+    <div> cd /opt/QuasarServer<br>
+      ./OpcUaServer<br>
+    </div>
+    <br>
+    <b>Note: if you see an error that Configuration.xsd can't be found,
+      just edit (vi) the config file making sure that Configuration.xsd
+      has no path prefix</b>.<br>
+    <br>
+    <h2>17. Connect to the OPC-UA server using UaExpert</h2>
+    <br>
+    QEMU normally opens a bridge network interface between the host
+    machine and the simulated target. In my case I see it when starting
+    qemu (point 15) - look at the part in bold:<br>
+    <br>
+    /home/pnikiel/gitProjects/poky/build/tmp/sysroots/x86_64-linux/usr/bin/qemu-system-i386
+
+    -kernel
+    /home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/bzImage-qemux86.bin
+
+    -net nic,model=virtio -net
+    tap,vlan=0,ifname=tap0,script=no,downscript=no -cpu qemu32 -drive
+    file=/home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/core-image-minimal-qemux86-20180601101954.rootfs.ext4,if=virtio,format=raw
+
+    -show-cursor -usb -usbdevice tablet -vga vmware -no-reboot -m 256
+    -serial mon:vc -serial null -append "vga=0
+    uvesafb.mode_option=640x480-32 root=/dev/vda rw mem=256M ip=<b>192.168.7.2</b>::192.168.7.1:255.255.255.0
+
+    oprofile.timer=1 rootfstype=ext4 "<br>
+    <br>
+    You can therefore open UaExpert and connect to the endpoint at
+    192.168.7.2:4841.<br>
+    <br>
+    <br>
     <br>
   </body>
 </html>
