@@ -106,7 +106,7 @@ add_custom_command(
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Design
     COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/quasar.py validate_design
     COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_SOURCE_DIR}/Design/validated.tmp
-    DEPENDS ${DESIGN_FILE}   
+    DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/Design/Design.xsd  
     )
 add_custom_target(validateDesign DEPENDS  ${PROJECT_SOURCE_DIR}/Design/validated.tmp )
 
