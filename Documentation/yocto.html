@@ -6,6 +6,14 @@
     <title>How to build quasar-based OPC-UA servers under Yocto</title>
     <style>
 	div {background-color: #ddddff; width: 50%; font-family: monospace; font-size: 14; margin-bottom: 2%}
+
+	h1 {
+		counter-reset: h2counter;
+	}
+	h2:before {
+		content: counter(h2counter) ". " ; 
+		counter-increment: h2counter;
+		}
     </style>
   </head>
   <body>
@@ -76,6 +84,18 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           repo</b>.<br>
       </li>
       <li>~/gitProjects/poky<br>
@@ -89,50 +109,62 @@
       </li>
     </ul>
     <h1>The procedure</h1>
-    <h2>0. Make sure you're using the Quasar branch with Yocto support<br>
+    <h2>Make sure you're using the Quasar branch with Yocto support<br>
     </h2>
     <p>From quasar repo:<br>
     </p>
     <div> git checkout OPCUA-1016_yocto_quasar </div>
-    <h2>1. Create a new Quasar project<br>
+    <h2>Create a new Quasar project<br>
     </h2>
     From quasar repo:<br>
     <div> ./quasar.py create_project ~/gitProjects/poky-quasar </div>
-    <h2>2. Put your new Quasar project under git version control</h2>
+    <h2>Put your new Quasar project under git version control</h2>
     <div> cd ~/gitProjects/poky-quasar <br>
       git init .<br>
       git add *<br>
       git commit -m 'Initial commit'<br>
     </div>
-    <h2> 3. Copy the reference build config from quasar repo, select it
-      and store it</h2>
+    <h2> Copy the reference build config from quasar repo, select it and
+      store it</h2>
     From project repo:<br>
     <div>cp
       ~/gitProjects/quasar/Extra/yocto/yocto_open62541_config.cmake .<br>
-      git add yocto_open62541_config.cmake<br>
+      git add yocto_open62541_config.cmake
+      FrameworkInternals/build_config_selector.cmake<br>
       ./quasar.py set_build_config yocto_open62541_config.cmake <br>
       git commit -a -m 'Added build config'<br>
     </div>
-    <h2> 4. Add CMake epilogue with install statements</h2>
+    <h2> Add CMake epilogue with install statements</h2>
     <br>
     We need to instruct CMake which files to install on the target. This
     can be done by copying CMakeEpilogue.cmake from us and storing it in
     your project repo:<br>
     <div>cp ~/gitProjects/quasar/Extra/yocto/CMakeEpilogue.cmake .<br>
       git add CMakeEpilogue.cmake<br>
-      git commit -a -m 'Added the epilogue'
-    </div>
-    <h2>5. Generate CMake headers and store them</h2>
+      git commit -a -m 'Added the epilogue' </div>
+    <h2>Generate CMake headers and store them</h2>
     From project repo:<br>
     <div> ./quasar.py generate cmake_headers<br>
-      git add AddressSpace/cmake_generated.cmake <br>
-      git add Device/generated/cmake_header.cmake <br>
+      git add AddressSpace/cmake_generated.cmake -f<br>
+      git add Device/generated/cmake_header.cmake -f<br>
       git commit -m 'Added CMake headers'<br>
     </div>
     Comment: this step is normally done behind the scenes by quasar when
-    its usual entry point (quasar.py) is used rather than plain CMake.<br>
+    its usual entry point (quasar.py) is used rather than plain CMake. <b>That's
+
+
+
+
+
+
+
+
+
+
+
+      why -f (force) is used.</b><br>
     <br>
-    <h2>6. Enable open62541-compat module</h2>
+    <h2>Enable open62541-compat module</h2>
     From project repo:<br>
     <br>
     <div> ./quasar.py enable_module open62541-compat <font
@@ -140,7 +172,7 @@
       git add FrameworkInternals/EnabledModules/open62541-compat.*<br>
       git commit -m 'Stored open62541-compat'<br>
     </div>
-    <h2>7. Check if project builds for your host system</h2>
+    <h2>Check if project builds for your host system</h2>
     <br>
     Comment: this step is not necessary per se but it will help to
     ensure that things are fine so far.<br>
@@ -150,7 +182,7 @@
     [100%] Built target OpcUaServer<br>
     among the last lines of output then you're good.<br>
     <br>
-    <h2>8. Create a branch in Yocto reference distribution for your
+    <h2>Create a branch in Yocto reference distribution for your
       developments</h2>
     Comment: you might skip this step if you are not starting from
     'ground zero'.<br>
@@ -159,18 +191,24 @@
     <div> git branch my-yocto-dev<br>
       git checkout my-yocto-dev </div>
     <br>
-    <h2> 9. Source Yocto's oe-init-build-env&nbsp;</h2>
+    <h2> Source Yocto's oe-init-build-env&nbsp;</h2>
     From poky repo:<br>
     <div> . oe-init-build-env </div>
-    <h2> 10. Create a new Yocto layer for your quasar OPC-UA server(s)</h2>
-    From poky repo:
-    <div> yocto-layer create meta-quasar-servers </div>
-    And then add the new layer to the list of layers to be taken into
-    account by your current build directory (which most often will be
-    'build' inside poky repo, unless you used some custom settings). You
-    have to append layer's path into build/conf/bblayers.conf<br>
+    <h2>Build core-image-minimal (in case it's your first Yocto build)</h2>
+    <p>This step will most likely cost you few hours to execute - but
+      it's the one-time investment you have to take. <br>
+      Yocto will pull all the dependencies and build basic things (the
+      compiler, some basic OS image etc.<br>
+      From poky/build dir:</p>
+    <div> bitbake core-image-minimal </div>
+    <h2>Create a new Yocto layer for your quasar OPC-UA server(s)</h2>
+    From poky repo: <br>
+    <div> bitbake-layers create-layer meta-quasar-servers<br>
+      cd build<br>
+      bitbake-layers add-layer ../meta-quasar-servers<br>
+    </div>
     <br>
-    <h2> 11. Deploy the Yocto recipe for your OPC-UA server</h2>
+    <h2> Deploy the Yocto recipe for your OPC-UA server</h2>
     <br>
     From meta-quasar-servers which you created inside poky repo:<br>
     <div> mkdir recipes-opcua-servers<br>
@@ -184,22 +222,40 @@
     recipe name, it serves as a delimeter between various fields of
     recipe filename. Prefer hyphens ( - ). <br>
     <br>
-    <h2>12. Fix the path in the my-opcua-server recipe</h2>
+    <h2>Fix the path in the my-opcua-server recipe</h2>
     <br>
     The source path have to point to where your actual git repository of
     the project is (and we assumed in point 2 that it is a local one).<br>
     The variable to edit is called <b>SRC_URI</b><br>
     <br>
-    <h2>13. Deploy xsd Yocto recipe (if not provided by anything else)</h2>
+    <h2>Deploy xsd Yocto recipe (if not provided by anything else)</h2>
     <br>
-    Out of standard Quasar dependencies, xsd is the only one not covered
+    Out of standard Quasar dependencies, xsd is one of those not covered
     by the default layers.<br>
     If you don't provide xsd via other recipes of your system (which is
     most likely to happen when you are starting with Yocto) take the
     recipe from our repo like in the previous point.<br>
     <br>
-    <h2> 14. Add your OPC-UA server artifacts to be installed on the
-      target image</h2>
+    <h2>Deploy meta-openembedded layer to get some required Python
+      modules</h2>
+    In poky repository:<br>
+    <br>
+    For Yocto sumo:<br>
+    <div> git clone git://git.openembedded.org/meta-openembedded -b sumo
+      --depth=1<br>
+      cd build<br>
+      bitbake-layers add-layer ../meta-openembedded/meta-oe<br>
+      bitbake-layers add-layer ../meta-openembedded/meta-python<br>
+    </div>
+    For Yocto krogoth:<br>
+    <div> git clone git://git.openembedded.org/meta-openembedded -b
+      krogoth --depth=1<br>
+      cd build<br>
+      bitbake-layers add-layer ../meta-openembedded/meta-oe<br>
+      bitbake-layers add-layer ../meta-openembedded/meta-python<br>
+    </div>
+    <h2> Add your OPC-UA server artifacts to be installed on the target
+      image</h2>
     <br>
     From poky repo, edit your build/conf/local.conf and add the
     following statement in the end:<br>
@@ -208,7 +264,7 @@
     <br>
     Note that the space character after double-quote is intentional.<br>
     <br>
-    <h2>15. Build the minimal image</h2>
+    <h2>Build the minimal image</h2>
     At this stage, you could execute from poky/build directory:<br>
     <br>
     <div> bitbake core-image-minimal<br>
@@ -217,18 +273,14 @@
     <br>
     <div> bitbake my-opcua-server<br>
     </div>
-    <b>Note</b> since you're familiar with Yocto basics then you know
-    that the first time you run it, it might take few hours and ~30-40
-    GBs of disk space!<br>
-    <br>
-    <h2>16. Run the minimal image in qemu</h2>
+    <h2>Run the minimal image in qemu</h2>
     From poky/build directory:<br>
     <br>
     <div> runqemu qemux86 core-image-minimal<br>
     </div>
     You should see your operating system bootin in qemu.<br>
     <br>
-    <h2>17. Run the OPC-UA server</h2>
+    <h2>Run the OPC-UA server</h2>
     Once you see login prompt in qemu, login as root.<br>
     Then:<br>
     <br>
@@ -240,7 +292,7 @@
       just edit (vi) the config file making sure that Configuration.xsd
       has no path prefix</b>.<br>
     <br>
-    <h2>18. Connect to the OPC-UA server using UaExpert</h2>
+    <h2>Connect to the OPC-UA server using UaExpert</h2>
     <br>
     QEMU normally opens a bridge network interface between the host
     machine and the simulated target. In my case I see it when starting
@@ -249,8 +301,32 @@
     /home/pnikiel/gitProjects/poky/build/tmp/sysroots/x86_64-linux/usr/bin/qemu-system-i386
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     -kernel
     /home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/bzImage-qemux86.bin
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     -net nic,model=virtio -net
@@ -258,9 +334,33 @@
     file=/home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/core-image-minimal-qemux86-20180601101954.rootfs.ext4,if=virtio,format=raw
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     -show-cursor -usb -usbdevice tablet -vga vmware -no-reboot -m 256
     -serial mon:vc -serial null -append "vga=0
     uvesafb.mode_option=640x480-32 root=/dev/vda rw mem=256M ip=<b>192.168.7.2</b>::192.168.7.1:255.255.255.0
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     oprofile.timer=1 rootfstype=ext4 "<br>
