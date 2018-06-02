@@ -6,7 +6,7 @@
 # your responsibility to verify that the values are complete and correct.
 # Author: Piotr Nikiel <piotr.nikiel@cern.ch>
 
-DEPENDS = "boost python python-lxml-native xsd xerces-c "
+DEPENDS = "boost python python-lxml-native xsd xerces-c openjdk-8-native"
 
 FILES_${PN} = "\
 	    /opt/QuasarServer/OpcUaServer \

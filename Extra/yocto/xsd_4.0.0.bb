@@ -25,7 +25,7 @@ LICENSE = "GPL-2.0"
 LIC_FILES_CHKSUM = "file://xsd/LICENSE;md5=79e31466c4d9f3a85f2f987c11ebcd83"
 
 DEPENDS = ""
-DEPENDS_virtclass-native = "xerces-c-native xsd-dev"
+DEPENDS_virtclass-native = "xerces-c xsd-dev"
 BBCLASSEXTEND = "native"
 
 PROVIDES += "${PN}-dev ${PN}-dev-native"
