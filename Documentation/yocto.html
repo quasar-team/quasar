@@ -96,6 +96,8 @@
 
 
 
+
+
           repo</b>.<br>
       </li>
       <li>~/gitProjects/poky<br>
@@ -151,6 +153,8 @@
     </div>
     Comment: this step is normally done behind the scenes by quasar when
     its usual entry point (quasar.py) is used rather than plain CMake. <b>That's
+
+
 
 
 
@@ -254,6 +258,16 @@
       bitbake-layers add-layer ../meta-openembedded/meta-oe<br>
       bitbake-layers add-layer ../meta-openembedded/meta-python<br>
     </div>
+    <h2>Deploy meta-java layer to provide native JRE (required by
+      Quasar)</h2>
+    <p>From poky/build (replace sumo below if you have another revision
+      of poky):<br>
+    </p>
+    <div> git clone <a href="git://git.yoctoproject.org/meta-java">git://git.yoctoproject.org/meta-java</a>
+      -b sumo<br>
+      cd build<br>
+      bitbake-layers add-layer ../meta-java<br>
+    </div>
     <h2> Add your OPC-UA server artifacts to be installed on the target
       image</h2>
     <br>
@@ -313,8 +327,12 @@
 
 
 
+
+
     -kernel
     /home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/bzImage-qemux86.bin
+
+
 
 
 
@@ -346,9 +364,13 @@
 
 
 
+
+
     -show-cursor -usb -usbdevice tablet -vga vmware -no-reboot -m 256
     -serial mon:vc -serial null -append "vga=0
     uvesafb.mode_option=640x480-32 root=/dev/vda rw mem=256M ip=<b>192.168.7.2</b>::192.168.7.1:255.255.255.0
+
+
 
 
 
