@@ -6,7 +6,8 @@
 # your responsibility to verify that the values are complete and correct.
 # Author: Piotr Nikiel <piotr.nikiel@cern.ch>
 
-DEPENDS = "boost python python-lxml-native xsd xerces-c openjdk-8-native"
+DEPENDS = "boost python python-lxml-native xsd xerces-c" 
+
 
 FILES_${PN} = "\
 	    /opt/QuasarServer/OpcUaServer \
@@ -26,3 +27,4 @@ inherit cmake pythonnative
 # Specify any options you want to pass to cmake using EXTRA_OECMAKE:
 EXTRA_OECMAKE = "-DCMAKE_INSTALL_PREFIX=/opt/QuasarServer"
 
+export PATH = "$PATH:/usr/bin"
