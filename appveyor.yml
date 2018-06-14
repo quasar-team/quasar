@@ -4,15 +4,6 @@ image: Visual Studio 2017
 build:
   verbosity: normal
 
-notifications:
-  - provider: Email
-  to:
-  - ben.farnham@cern.ch
-  subject: quasar windows build status changed
-  on_build_success: false
-  on_build_failure: true
-  on_build_status_changed: true        
-
 # Operating system (build VM template)
 os: Windows Server 2012
 platform: x64
