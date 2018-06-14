@@ -13,8 +13,9 @@ configuration: Release
 install:
   - ps : python --version
   - ps : python -m pip install lxml
-  - ps : python -m pip install pysvn
+
   - ps : choco --version
+  - ps : choco install --yes git
   - ps : choco install --yes astyle
   
   - ps : choco install --yes nuget.commandline
