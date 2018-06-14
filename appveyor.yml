@@ -1,5 +1,17 @@
 # version format
 version: 1.0.{build}
+image: Visual Studio 2017
+build:
+  verbosity: normal
+
+notifications:
+  - provider: Email
+  to:
+  - ben.farnham@cern.ch
+  subject: quasar windows build status changed
+  on_build_success: false
+  on_build_failure: true
+  on_build_status_changed: true        
 
 # Operating system (build VM template)
 os: Windows Server 2012
@@ -8,14 +20,16 @@ configuration: Release
 
 # scripts that run after cloning repository
 install:
-  - cmd : git clone https://github.com/quasar-team/quasar-validation-ci.git
-  - cmd : python quasar-validation-ci/CI/setup-windows-dependencies.py
-  - cmd : dir
-  - cmd : type setLocalPath.bat
-  - cmd : CALL setLocalPath.bat
-
-build_script:
-  - cmd : SET 
+  - ps : python --version
+  - ps : python -m pip install lxml
+  - ps : python -m pip install pysvn
+  - ps : choco --version
+  - ps : choco install --yes astyle
+  
+  - ps : choco install --yes nuget.commandline
+  - ps : nuget install xerces-c-static
+  - ps : nuget install boost-vc141
+  - ps : nuget install openssl-vc141
 
 # open6 specific operations
   - cmd : python quasar.py enable_module open62541-compat
