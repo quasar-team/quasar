@@ -172,37 +172,38 @@ def enableModule(moduleName, tag="master", serverString=""):
 	if not _checkTagExists(moduleInfo[moduleName]["url"], tag): return
 
 	baseDirectory = os.getcwd()
-	fwInternalsDir = baseDirectory + os.path.sep + "FrameworkInternals"
-	os.chdir(fwInternalsDir)
+	fwInternalsDir = os.path.join(baseDirectory, "FrameworkInternals")
+        enabledModulesDir = os.path.join(fwInternalsDir, "EnabledModules")
 
 	# Check first if module is maybe already present with different version
 	#
-	tagFileName = "EnabledModules/"+moduleName+".tag"
+	tagFile = os.path.join(fwInternalsDir, "EnabledModules", moduleName+".tag")
 	oldTag = ""
-	if os.path.exists(tagFileName): oldTag = open(tagFileName).read()
+	if os.path.exists(tagFile): oldTag = open(tagFile).read()
 	if oldTag and oldTag!=tag:
 		print "Old version of "+moduleName+" exists ("+oldTag+"). Removing it first..."
 		os.chdir(baseDirectory)
 		if not removeModule(moduleName):
 			print "Module not enabled, correct above errors first."
 			return
-		os.chdir(fwInternalsDir)
 
 	# actually enable
 	#
-	if not os.path.isdir("EnabledModules"): os.mkdir("EnabledModules")
+        enabledModulesDir = os.path.join(fwInternalsDir, "EnabledModules")
+        quasarModulesDir =  os.path.join(fwInternalsDir,"quasar-modules")
+	if not os.path.isdir(enabledModulesDir): os.mkdir(enabledModulesDir)
 	# FIXME: check if previous tag exists and possibly needs update
 	try:
-		for file in glob("quasar-modules/"+moduleName+".*"):
-			copy(file, "EnabledModules/")
+		for file in glob( os.path.join(quasarModulesDir, moduleName+".*")):
+			copy(file, enabledModulesDir)
 		# change URL if non-default server is specified
 		if serverString:
 			url = _getModuleUrl(moduleName, serverString="")
-			urlFileName = "EnabledModules/"+moduleName+".url"
+			urlFileName =  os.path.join(enabledModulesDir, moduleName+".url")
 			open(urlFileName, "w").write(url)
 		# add tag
-		if os.path.exists(tagFileName): os.remove(tagFileName)
-		file = open(tagFileName, "w")
+		if os.path.exists(tagFile): os.remove(tagFile)
+		file = open(tagFile, "w")
 		file.write(tag)
 	except Exception, ex:
 		print "Failed to set up module files in FrameworkInternals/EnabledModules/ :", ex
@@ -210,13 +211,22 @@ def enableModule(moduleName, tag="master", serverString=""):
 
         print("Created module files. Adding them to your version control system to store the selection.")
         try:
-                vci = version_control_interface.VersionControlInterface(baseDirectory + os.path.sep)
+                print "1 "+enabledModulesDir
+                vci = version_control_interface.VersionControlInterface(baseDirectory)
+                print 2
                 module_description_files = ['.url', '.tag', '.minVersion']
+                print 3
                 for suffix in module_description_files:
-                        full_path = os.getcwd() + os.path.sep + 'FrameworkInternals' + os.path.sep + 'EnabledModules' + os.path.sep + moduleName + suffix
+                        print "4 "+os.getcwd()
+                        full_path = os.path.join(enabledModulesDir, moduleName + suffix)
+                        print "5 "+full_path
                         if not vci.is_versioned(full_path):
+                                print "6 adding ["+full_path+"] to vci"
                                 vci.add_to_vc(full_path)
+                                print 7
+                print 8
                 print('Your selection got remembered in the VCS. Dont forget to commit the changes.')
+                print 9
         except Exception as e:
                 print('Unable to store your module selection because: '+str(e)+'. Note that module description files were created so you can add them to the VCS yourself')
         
