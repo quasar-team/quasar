@@ -83,7 +83,7 @@ def _getModuleInfo(serverString="", forceFetch=False):
 		os.mkdir("quasar-modules")
 	os.chdir("quasar-modules")
 	print("Checking out module list from "+serverString)
-	os.system("pwd")
+	print(os.getcwd())
 	if os.path.exists(".git") and not forceFetch:
 		try:
 			subprocess.call("git pull origin master", shell=True)
