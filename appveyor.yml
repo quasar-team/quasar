@@ -12,13 +12,11 @@ configuration: Release
 # scripts that run after cloning repository
 install:
   - ps : Write-Output "Installing python packages..."
-  - ps : python --version
   - ps : python -m pip install lxml
   - ps : Write-Output "Installed python packages"
 
   # use chocolatey wherever possible
   - ps : Write-Output "Installing chocolatey packages..."
-  - ps : choco --version
   - ps : choco install --yes git
   - ps : choco install --yes astyle
   - ps : choco install --yes xsltproc # provides xmllint 
@@ -44,7 +42,6 @@ install:
         else
         {
           Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsdcxx.exe";
-          xsdcxx --version;
         }
   - ps : Write-Output "Installed xsdcxx"
 
