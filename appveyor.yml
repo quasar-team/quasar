@@ -24,11 +24,16 @@ install:
   - ps : Write-Output "Installed chocolatey packages"
 
   # if no chocolatey package available use nuget (often the case for libs)
-  - ps : Write-Output "Installing nuget packages..."
-  - ps : nuget install xerces-c-static
-  - ps : nuget install boost-vc141
-  - ps : nuget install openssl-vc141
-  - ps : Write-Output "Installed nuget packages"
+  - ps : Write-Output "Installing nuget packages to [windows-lib-dependencies]"
+  - ps : if(Test-Path .\windows-lib-dependencies)
+         {
+          Remove-Item .\windows-lib-dependencies -Force -Recurse
+         }
+         New-Item -ItemType Directory -Force -Path .\windows-lib-dependencies
+  - ps : nuget install xerces-c-static -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
+  - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
+  - ps : nuget install openssl-vc141 -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
+  - ps : Write-Output "Installed nuget packages to [windows-lib-dependencies]"
 
   # no chocolatey, no nuget ? Do it manually 
   - ps : Write-Output "Installing xsdcxx..."
