@@ -43,8 +43,8 @@ install:
         }
         else
         {
-          Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsd.exe" -Destination C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsdcxx.exe
-          xsdcxx --version
+          Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsd.exe" -Destination C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsdcxx.exe;
+          xsdcxx --version;
         }
 - ps : Write-Output "Installed xsdcxx"        
 
