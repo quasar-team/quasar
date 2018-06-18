@@ -47,7 +47,7 @@ install:
          }
          else
          {
-          Write-Error "Failed to locate installed xsdcxx binary file, required for generating C++ handler code from XSD schema";
+          Write-Output "ERROR! Failed to locate installed xsdcxx binary file, required for generating C++ handler code from XSD schema";
           Exit 1;
          }
   - ps : Write-Output "Installed xsdcxx"
@@ -69,8 +69,8 @@ install:
          }
          else
          {
-          Write-Error "There was a problem building QUASAR; The script will now terminate." ;
-          Exit ;
+          Write-Output "ERROR! There was a problem building QUASAR; The script will now terminate." ;
+          Exit 1;
          }
 
 # uncomment to block VM deletion for investigating broken builds.
