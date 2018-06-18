@@ -25,7 +25,7 @@ install:
 
   # if no chocolatey package available use nuget (often the case for libs)
   - ps : Write-Output "Installing nuget packages to [windows-lib-dependencies]"
-  - ps : if(Test-Path .\windows-lib-dependencies)
+  - ps : if(Test-Path nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies)
          {
           Remove-Item .\windows-lib-dependencies -Force -Recurse
          }
@@ -37,8 +37,8 @@ install:
 
   # no chocolatey, no nuget ? Do it manually 
   - ps : Write-Output "Installing xsdcxx..."
-  - ps : wget https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi -OutFile C:\temp\xsd-4.0.msi
-  - ps : msiexec /i C:\temp\xsd-4.0.msi /quiet /qn /norestart /log C:\temp\xsd-install.log
+  - ps : wget https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi -OutFile .\windows-lib-dependencies\xsd-4.0.msi
+  - ps : msiexec /i .\windows-lib-dependencies\xsd-4.0.msi /quiet /qn /norestart /log .\windows-lib-dependencies\xsd-install.log
   - ps : if(-Not Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsd.exe")
         {
           Write-Error "Failed to locate installed xsdcxx binary file, required for generating C++ handler code from XSD schema";
@@ -46,6 +46,7 @@ install:
         }
         else
         {
+          Write-Output "Must change xsd.exe to xsdcxx.exe to avoid clash with built-in windows xsd.exe (on some systems)";
           Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsdcxx.exe";
         }
   - ps : Write-Output "Installed xsdcxx"
