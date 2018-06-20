@@ -1,7 +1,7 @@
 # version format
 version: 1.0.{build}
 image: Visual Studio 2017
-clone_folder: C:\workspace\OPC-UA
+clone_folder: C:\workspace\OPC-UA\quasar\
 build:
   verbosity: normal
 notifications:
@@ -56,7 +56,6 @@ install:
           Exit 1;
          }
   - ps : Write-Output "Installed xsdcxx"
-
 
 # open6 specific operations
   - cmd : python quasar.py enable_module open62541-compat

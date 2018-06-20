@@ -11,12 +11,35 @@ message(STATUS "environment vars: BOOST_HOME [$ENV{BOOST_HOME}] CODE_SYNTHESYS_X
 #-------
 #Boost
 #-------
-if( NOT DEFINED ENV{BOOST_HOME} )
-	message(FATAL_ERROR "environment variable BOOST_HOME not defined - please set this to a 64bit boost installation")
-else()	
-	SET( BOOST_PATH_HEADERS $ENV{BOOST_HOME}/include )
-	SET( BOOST_PATH_LIBS $ENV{BOOST_HOME}/lib	 )
+message(STATUS "starting the quest for boost, relevant environment variables: BOOST_PATH_HEADERS [$ENV{BOOST_PATH_HEADERS}] BOOST_PATH_LIBS [$ENV{BOOST_PATH_LIBS}] BOOST_HOME [$ENV{BOOST_HOME}]")
+
+# headers path
+if(DEFINED ENV{BOOST_PATH_HEADERS})
+	SET( BOOST_PATH_HEADERS $ENV{BOOST_PATH_HEADERS} )
+	message(STATUS "using BOOST_PATH_HEADERS from environment BOOST_PATH_HEADERS [$BOOST_PATH_HEADERS]")
+else()
+	if( DEFINED ENV{BOOST_HOME} )
+		SET( BOOST_PATH_HEADERS $ENV{BOOST_HOME}/include )
+		message(STATUS "using BOOST_PATH_HEADERS from environment BOOST_HOME [$BOOST_HOME] -> BOOST_PATH_HEADERS [$BOOST_PATH_HEADERS]")
+	endif()
 endif()
+
+# libs path
+if(DEFINED ENV{BOOST_PATH_LIBS})
+	SET( BOOST_PATH_LIBS $ENV{BOOST_PATH_LIBS} )
+	message(STATUS "using BOOST_PATH_LIBS from environment BOOST_PATH_LIBS [$BOOST_PATH_LIBS]")
+else()
+	if( DEFINED ENV{BOOST_HOME} )
+		SET( BOOST_PATH_LIBS $ENV{BOOST_HOME}/lib )
+		message(STATUS "using BOOST_PATH_LIBS from environment BOOST_HOME [$BOOST_HOME] -> BOOST_PATH_LIBS [$BOOST_PATH_LIBS]")
+	endif()
+endif()
+
+# final check
+if( NOT BOOST_PATH_HEADERS OR NOT BOOST_PATH_LIBS )
+	message( FATAL_ERROR "unable to determine boost headers and library paths from environment variables BOOST_PATH_HEADERS [$ENV{BOOST_PATH_HEADERS}] BOOST_PATH_LIBS [$ENV{BOOST_PATH_LIBS}] BOOST_HOME [$ENV{BOOST_HOME}]")
+endif()
+
 message(STATUS "BOOST - include [${BOOST_PATH_HEADERS}] libs [${BOOST_PATH_LIBS}]")
 
 if(NOT TARGET libboostprogramoptions)
@@ -31,15 +54,15 @@ if(NOT TARGET libboostfilesystem)
 	add_library(libboostfilesystem STATIC IMPORTED)
 	set_property(TARGET libboostfilesystem PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_66_0_filesystem-vc141-mt-x64-1_66.lib)
 endif()
-if(NOT TARGET libboostchrono) 
+if(NOT TARGET libboostchrono)
 	add_library(libboostchrono STATIC IMPORTED)
 	set_property(TARGET libboostchrono PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_66_0_chrono-vc141-mt-x64-1_66.lib)
 endif()
-if(NOT TARGET libboostdatetime) 
+if(NOT TARGET libboostdatetime)
 	add_library(libboostdatetime STATIC IMPORTED)
 	set_property(TARGET libboostdatetime PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_66_0_date_time-vc141-mt-x64-1_66.lib)
 endif()
-if(NOT TARGET libboostthread) 
+if(NOT TARGET libboostthread)
 	add_library(libboostthread STATIC IMPORTED)
 	set_property(TARGET libboostthread PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/libboost_1_66_0_thread-vc141-mt-x64-1_66.lib)
 endif()
@@ -77,7 +100,7 @@ else()
 	$ENV{CODE_SYNTHESYS_XSD}/include
 	)
 endif()
-		
+
 
 #----
 #OPENSSL
@@ -119,15 +142,15 @@ message(STATUS "Lib XML 2 path [${LIBXML2_PATH}]" )
 #----
 #OPENSSL
 #----
-if(NOT TARGET custlibopenssl) 
+if(NOT TARGET custlibopenssl)
 	add_library(custlibopenssl STATIC IMPORTED)
 	set_property(TARGET custlibopenssl PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/openssl.lib)
 endif()
-if(NOT TARGET custlibssl) 
+if(NOT TARGET custlibssl)
 	add_library(custlibssl STATIC IMPORTED)
 	set_property(TARGET custlibssl PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/libssl.lib)
 endif()
-if(NOT TARGET custlibcrypto) 
+if(NOT TARGET custlibcrypto)
 	add_library(custlibcrypto STATIC IMPORTED)
 	set_property(TARGET custlibcrypto PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/libcrypto.lib)
 endif()
@@ -137,13 +160,13 @@ SET( OPENSSL_LIBS custlibopenssl custlibssl custlibcrypto )
 #-----
 #XML Libs
 #-----
-if(NOT TARGET libxercesc) 
+if(NOT TARGET libxercesc)
 	add_library(libxercesc STATIC IMPORTED)
-	set_property(TARGET libxercesc PROPERTY IMPORTED_LOCATION ${XERCESC_PATH}/VC10/Release/xerces-c_3.lib)		
+	set_property(TARGET libxercesc PROPERTY IMPORTED_LOCATION ${XERCESC_PATH}/VC10/Release/xerces-c_3.lib)
 endif()
-if(NOT TARGET custlibxml) 
+if(NOT TARGET custlibxml)
 	add_library(custlibxml STATIC IMPORTED)
-	set_property(TARGET custlibxml PROPERTY IMPORTED_LOCATION ${LIBXML2_PATH}/libxml2.lib)	
+	set_property(TARGET custlibxml PROPERTY IMPORTED_LOCATION ${LIBXML2_PATH}/libxml2.lib)
 endif()
 
 
