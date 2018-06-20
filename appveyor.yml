@@ -57,20 +57,20 @@ install:
          }
   - ps : Write-Output "Installed xsdcxx"
 
-# set environment variables
+  # set environment variables
   - ps :  [Environment]::SetEnvironmentVariable("BOOST_PATH_HEADERS", "C:\workspace\OPC-UA\quasar\windows-lib-dependencies\boost\lib\native\include", "Machine")
   - ps :  [Environment]::SetEnvironmentVariable("BOOST_PATH_LIBS", "C:\workspace\OPC-UA\quasar\windows-lib-dependencies\boost", "Machine")
   - ps :  [Environment]::SetEnvironmentVariable("CODE_SYNTHESYS_XSD", "C:\Program Files (x86)\CodeSynthesis XSD 4.0", "Machine")
   - ps :  [Environment]::SetEnvironmentVariable("OPENSSL", "C:\workspace\OPC-UA\quasar\windows-lib-dependencies\openssl-vc141\build\native", "Machine")
   - ps :  [Environment]::SetEnvironmentVariable("XERCESC", "C:\workspace\OPC-UA\quasar\windows-lib-dependencies\xerces-c-static\build\native", "Machine")
 
-# open6 specific operations
+  # open6 specific operations
   - cmd : python quasar.py set_build_config open6_win_configuration.cmake
   - cmd : python quasar.py enable_module open62541-compat
   - cmd : python quasar.py prepare_build Release
   - cmd : cd open62541-compat && python prepare.py && cd ..
 
-# start build
+  # start build
   - cmd : echo "Calling build...(note always returns 0 to mask any internal msbuild errors - exe is checked below)"
   - cmd : python quasar.py build Release && exit 0
   - cmd : echo "build complete!"
