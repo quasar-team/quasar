@@ -19,7 +19,7 @@ install:
   - ps : Write-Output "Installing chocolatey packages..."
   - ps : choco install --yes git
   - ps : choco install --yes astyle
-  - ps : choco install --yes xsltproc # provides xmllint 
+  - ps : choco install --yes xsltproc # provides xmllint
   - ps : choco install --yes nuget.commandline
   - ps : Write-Output "Installed chocolatey packages"
 
@@ -36,14 +36,14 @@ install:
   - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
   - ps : Write-Output "Installed nuget packages to [windows-lib-dependencies]"
 
-  # no chocolatey, no nuget ? Do it manually 
+  # no chocolatey, no nuget ? Do it manually
   - ps : Write-Output "Installing xsdcxx..."
-  - ps : wget https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi -OutFile .\windows-lib-dependencies\xsd-4.0.msi
-  - ps : msiexec /i .\windows-lib-dependencies\xsd-4.0.msi /quiet /qn /norestart /log .\windows-lib-dependencies\xsd-install.log
+  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile ".\windows-lib-dependencies\xsd-4.0.msi"
+  - ps : Start-Process .\windows-lib-dependencies\xsd-4.0.msi -Wait -ArgumentList /quiet
   - ps : if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
          {
           Write-Output "Must change xsd.exe to xsdcxx.exe to avoid clash with built-in windows xsd.exe (on some systems)";
-          Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsdcxx.exe";          
+          Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsdcxx.exe";
          }
          else
          {
