@@ -13,6 +13,13 @@ notifications:
   on_build_failure: false
   on_build_status_changed: true
 
+environment:
+  BOOST_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\boost\\lib\native\\include"
+  BOOST_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\boost"
+  CODE_SYNTHESYS_XSD: "C:\\Program Files (x86)\\CodeSynthesis XSD 4.0"
+  OPENSSL: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\openssl-vc141\\build\\native"
+  XERCESC: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\xerces-c-static\\build\\native"
+
 # scripts that run after cloning repository
 install:
   - ps : Write-Output "Installing python packages..."
@@ -56,13 +63,6 @@ install:
           Exit 1;
          }
   - ps : Write-Output "Installed xsdcxx"
-
-  # set environment variables
-  - ps :  [Environment]::SetEnvironmentVariable("BOOST_PATH_HEADERS", "C:\workspace\OPC-UA\quasar\windows-lib-dependencies\boost\lib\native\include", "Machine")
-  - ps :  [Environment]::SetEnvironmentVariable("BOOST_PATH_LIBS", "C:\workspace\OPC-UA\quasar\windows-lib-dependencies\boost", "Machine")
-  - ps :  [Environment]::SetEnvironmentVariable("CODE_SYNTHESYS_XSD", "C:\Program Files (x86)\CodeSynthesis XSD 4.0", "Machine")
-  - ps :  [Environment]::SetEnvironmentVariable("OPENSSL", "C:\workspace\OPC-UA\quasar\windows-lib-dependencies\openssl-vc141\build\native", "Machine")
-  - ps :  [Environment]::SetEnvironmentVariable("XERCESC", "C:\workspace\OPC-UA\quasar\windows-lib-dependencies\xerces-c-static\build\native", "Machine")
 
   # open6 specific operations
   - cmd : python quasar.py set_build_config open6_win_configuration.cmake
