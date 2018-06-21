@@ -23,7 +23,7 @@ environment:
 # scripts that run after cloning repository
 install:
   - ps : Write-Output "Installing python packages..."
-  - ps : python -m pip install lxml
+  - ps : python -m pip install lxml=3.4.4 # specific version is important
   - ps : python -m pip install pygit2
   - ps : Write-Output "Installed python packages"
 
