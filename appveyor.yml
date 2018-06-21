@@ -15,7 +15,7 @@ notifications:
 
 environment:
   BOOST_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\boost\\lib\\native\\include"
-  BOOST_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\boost"
+  BOOST_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies"
   CODE_SYNTHESYS_XSD: "C:\\Program Files (x86)\\CodeSynthesis XSD 4.0"
   OPENSSL: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\openssl-vc141\\build\\native"
   XERCESC: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\xerces-c-static\\build\\native"
