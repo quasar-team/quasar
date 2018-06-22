@@ -92,4 +92,6 @@ def automatedBuild(buildType="Release"):
 			print("Build process error. Exception: [" + str(e) + "]")
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
-		subprocessWithImprovedErrors("make -j `nproc`", getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
+		process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
+		out, err = process.communicate()
+		subprocessWithImprovedErrors([getCommand("make"), "-j" + str(int(out))], getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
