@@ -16,9 +16,13 @@ notifications:
 environment:
   BOOST_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\boost\\lib\\native\\include"
   BOOST_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies"
-  CODE_SYNTHESYS_XSD: "C:\\Program Files (x86)\\CodeSynthesis XSD 4.0"
-  OPENSSL: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\openssl-vc141\\build\\native"
-  XERCESC: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\xerces-c-static\\build\\native"
+  CODE_SYNTHESYS_XSD_PATH_HEADERS: "C:\\Program Files (x86)\\CodeSynthesis XSD 4.0\\include"
+  LIBXML2_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\libxml2\\build\\native\\include"
+  LIBXML2_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\libxml2\\build\\native\\lib\\v110\\x64\\Release\\static\\cdecl"
+  OPENSSL_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\openssl-vc141-static-x86_64\\build\\native\\include"
+  OPENSSL_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\openssl-vc141-static-x86_64\\build\\native\\lib\x64\\static\\Release"
+  XERCESC_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\xercesc\\build\\native\\include"
+  XERCESC_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar\\windows-lib-dependencies\\xercesc\\build\\native\\lib\\x64\\v110\\Release"
 
 # scripts that run after cloning repository
 install:
@@ -44,7 +48,8 @@ install:
          }
          New-Item -ItemType Directory -Force -Path .\windows-lib-dependencies
   - ps : nuget install xerces-c-static -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
-  - ps : nuget install openssl-vc141 -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
+  - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
+  - ps : nuget install libxml2  -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
   - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
   - ps : Write-Output "Installed nuget packages to [windows-lib-dependencies]"
 

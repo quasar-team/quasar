@@ -92,95 +92,79 @@ MESSAGE( STATUS "LogIt build options: stdout [${LOGIT_HAS_STDOUTLOG}] boost [${L
 #-----
 #CodeSynthesys XSD
 #-----
-if( NOT DEFINED ENV{CODE_SYNTHESYS_XSD} )
-	message(WARNING "environment variable CODE_SYNTHESYS_XSD not defined - using default location [C:/Program Files (x86)/CodeSynthesis XSD 4.0]")
-	include_directories(
-	"C:/Program Files (x86)/CodeSynthesis XSD 4.0/include"
-	)
+if( NOT DEFINED ENV{CODE_SYNTHESYS_XSD_PATH_HEADERS} )
+	message( FATAL_ERROR "unable to determine Code Synthesis headers from environment variables CODE_SYNTHESYS_XSD_PATH_HEADERS [$ENV{CODE_SYNTHESYS_XSD_PATH_HEADERS}]")
 else()
-	message(STATUS "Using environment variable for CODE_SYNTHESYS_XSD adding include [$ENV{CODE_SYNTHESYS_XSD}/include]")
-	include_directories(
-	$ENV{CODE_SYNTHESYS_XSD}/include
-	)
+	message(STATUS "Using environment variable for CODE_SYNTHESYS_XSD_PATH_HEADERS [$ENV{CODE_SYNTHESYS_XSD_PATH_HEADERS}")
 endif()
-
+include_directories($ENV{CODE_SYNTHESYS_XSD_PATH_HEADERS})
 
 #----
 #OPENSSL
 #----
-if( NOT DEFINED ENV{OPENSSL} )
-	message(WARNING "environment variable OPENSSL not defined - using default location [C:/OpenSSL-Win64]")
-	SET(OPENSSL_PATH "C:/OpenSSL-Win64")
+if( NOT DEFINED ENV{OPENSSL_PATH_HEADERS} OR NOT DEFINED ENV{OPENSSL_PATH_LIBS} )
+	message( FATAL_ERROR "unable to determine openssl headers and library paths from environment variables OPENSSL_PATH_HEADERS [$ENV{OPENSSL_PATH_HEADERS}] OPENSSL_PATH_LIBS [$ENV{OPENSSL_PATH_LIBS}]")
 else()
-	SET(OPENSSL_PATH $ENV{OPENSSL})
+	message( STATUS "using openssl headers [$ENV{OPENSSL_PATH_HEADERS}] libs [$ENV{OPENSSL_PATH_LIBS}]")
 endif()
-
-include_directories(
-	${OPENSSL_PATH}/include
-)
-message(STATUS "Open SSL path [${OPENSSL_PATH}]" )
+include_directories($ENV{OPENSSL_PATH_HEADERS})
 
 #----
 #XERCESC
 #----
-if( NOT DEFINED ENV{XERCESC} )
-	message(WARNING "environment variable XERCESC not defined - using default location [C:/3rdPartySoftware/xerces-c-3.1.2/Build/Win64]")
-	SET(XERCESC_PATH "C:/3rdPartySoftware/xerces-c-3.1.2/Build/Win64")
+if( NOT DEFINED ENV{XERCESC_PATH_HEADERS} OR NOT DEFINED ENV{XERCESC_PATH_LIBS} )
+	message( FATAL_ERROR "unable to determine xerces-c headers and library paths from environment variables XERCESC_PATH_HEADERS [$ENV{XERCESC_PATH_HEADERS}] XERCESC_PATH_LIBS [$ENV{XERCESC_PATH_LIBS}]")
 else()
-	SET(XERCESC_PATH $ENV{XERCESC})
+	message( STATUS "using xerces-c headers and library paths from environment variables XERCESC_PATH_HEADERS [$ENV{XERCESC_PATH_HEADERS}] XERCESC_PATH_LIBS [$ENV{XERCESC_PATH_LIBS}]")
 endif()
-message(STATUS "Xerces-c path [${XERCESC_PATH}]" )
+include_directories($ENV{XERCESC_PATH_HEADERS})
 
 #----
 #LIBXML2
 #----
-if( NOT DEFINED ENV{LIBXML2} )
-	message(WARNING "environment variable LIBXML2 not defined - using default location [C:/3rdPartySoftware/libxml2/v2.7.8_64BIT/BUILD]")
-	SET(LIBXML2_PATH "C:/3rdPartySoftware/libxml2/v2.7.8_64BIT/BUILD/VS2013")
+if( NOT DEFINED ENV{LIBXML2_PATH_HEADERS} OR NOT DEFINED ENV{LIBXML2_PATH_LIBS})
+	message( FATAL_ERROR "unable to determine libxml2 headers and library paths from environment variables LIBXML2_PATH_HEADERS [$ENV{LIBXML2_PATH_HEADERS}] LIBXML2_PATH_LIBS [$ENV{LIBXML2_PATH_LIBS}]")
 else()
-	SET(LIBXML2_PATH $ENV{LIBXML2})
+	message( STATUS " using libxml2 headers and library paths from environment variables LIBXML2_PATH_HEADERS [$ENV{LIBXML2_PATH_HEADERS}] LIBXML2_PATH_LIBS [$ENV{LIBXML2_PATH_LIBS}]")
 endif()
-message(STATUS "Lib XML 2 path [${LIBXML2_PATH}]" )
+include_directories($ENV{LIBXML2_HEADERS})
 
 #----
 #OPENSSL
 #----
-if(NOT TARGET custlibopenssl)
-	add_library(custlibopenssl STATIC IMPORTED)
-	set_property(TARGET custlibopenssl PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/openssl.lib)
+if(NOT TARGET libopenssl)
+	add_library(libopenssl STATIC IMPORTED)
+	set_property(TARGET libopenssl PROPERTY IMPORTED_LOCATION $ENV{OPENSSL_PATH_LIBS}/openssl.lib)
 endif()
-if(NOT TARGET custlibssl)
-	add_library(custlibssl STATIC IMPORTED)
-	set_property(TARGET custlibssl PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/libssl.lib)
+if(NOT TARGET libssl)
+	add_library(libssl STATIC IMPORTED)
+	set_property(TARGET libssl PROPERTY IMPORTED_LOCATION $ENV{OPENSSL_PATH_LIBS}/libssl.lib)
 endif()
-if(NOT TARGET custlibcrypto)
-	add_library(custlibcrypto STATIC IMPORTED)
-	set_property(TARGET custlibcrypto PROPERTY IMPORTED_LOCATION ${OPENSSL_PATH}/lib/libcrypto.lib)
+if(NOT TARGET libcrypto)
+	add_library(libcrypto STATIC IMPORTED)
+	set_property(TARGET libcrypto PROPERTY IMPORTED_LOCATION $ENV{OPENSSL_PATH_LIBS}/libcrypto.lib)
 endif()
 
-SET( OPENSSL_LIBS custlibopenssl custlibssl custlibcrypto )
+SET( OPENSSL_LIBS_ALL libopenssl libssl libcrypto )
 
 #-----
 #XML Libs
 #-----
 if(NOT TARGET libxercesc)
 	add_library(libxercesc STATIC IMPORTED)
-	set_property(TARGET libxercesc PROPERTY IMPORTED_LOCATION ${XERCESC_PATH}/VC10/Release/xerces-c_3.lib)
+	set_property(TARGET libxercesc PROPERTY IMPORTED_LOCATION $ENV{XERCESC_PATH_LIBS}/xerces-c_3.lib)
 endif()
-if(NOT TARGET custlibxml)
-	add_library(custlibxml STATIC IMPORTED)
-	set_property(TARGET custlibxml PROPERTY IMPORTED_LOCATION ${LIBXML2_PATH}/libxml2.lib)
+if(NOT TARGET libxml2)
+	add_library(libxml2 STATIC IMPORTED)
+	set_property(TARGET libxml2 PROPERTY IMPORTED_LOCATION $ENV{LIBXML2_PATH_LIBS}/libxml2.lib)
 endif()
 
-
-SET( XML_LIBS Rpcrt4 crypt32 ws2_32 libxercesc custlibxml ${OPENSSL_LIBS} )
+SET( XML_LIBS Rpcrt4 crypt32 ws2_32 libxercesc libxml2 ${OPENSSL_LIBS_ALL} )
 
 #-----
 #GoogleTest
 #-----
-include_directories(
-	${PROJECT_SOURCE_DIR}/GoogleTest/gtest/src/gtest/include
-)
+include_directories( ${PROJECT_SOURCE_DIR}/GoogleTest/gtest/src/gtest/include )
 
 #------
 #OPCUA
