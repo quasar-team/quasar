@@ -176,12 +176,12 @@ include_directories (${PROJECT_SOURCE_DIR}/open62541-compat/open62541)
 
 if(NOT TARGET open62541release)
 	add_library(open62541release STATIC IMPORTED)
-	set_property(TARGET open62541release PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Release/open62541.lib)
+	set_property(TARGET open62541release PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/Release/open62541.lib)
 endif()
 
 if(NOT TARGET open62541debug)
 	add_library(open62541debug STATIC IMPORTED)
-	set_property(TARGET open62541debug PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/build/Debug/open62541.lib)
+	set_property(TARGET open62541debug PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/Debug/open62541.lib)
 endif()
 
 SET( OPCUA_TOOLKIT_LIBS_RELEASE open62541release )
