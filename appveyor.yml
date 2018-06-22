@@ -20,7 +20,7 @@ environment:
   LIBXML2_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\libxml2\\build\\native\\include"
   LIBXML2_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\libxml2\\build\\native\\lib\\v110\\x64\\Release\\static\\cdecl"
   OPENSSL_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\openssl-vc141-static-x86_64\\build\\native\\include"
-  OPENSSL_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\openssl-vc141-static-x86_64\\build\\native\\lib\x64\\static\\Release"
+  OPENSSL_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\openssl-vc141-static-x86_64\\build\\native\\lib\\x64\\static\\Release"
   XERCESC_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\xercesc\\build\\native\\include"
   XERCESC_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\xercesc\\build\\native\\lib\\x64\\v110\\Release"
 
