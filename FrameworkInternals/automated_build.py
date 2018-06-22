@@ -74,30 +74,22 @@ def set_build_config(arg1):
                 write_build_config_selector(arg1)
 
 def automatedBuild(buildType="Release"):
-	"""Method that generates the cmake headers, and after that calls make/msbuild to compile your server.
-	
+	"""Method that generates the cmake headers, and after that calls make/vis-studio to compile your server.
+
 	Keyword arguments:
 	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
-	"""	
+	"""
         if not buildType in ["Release","Debug"]:
                 raise Exception ("Only Release or Debug is accepted as the parameter. "
                                  "If you are used to passing build config through here, note this version of quasar has separate command to do that: build_config")
-	generateCmake(buildType)			
-			
-	print('Calling make/msbuild')
+	generateCmake(buildType)
+
+	print("Calling build, type ["+buildType+"]...")
 	if platform.system() == "Windows":
-		print('Calling visual studio vcvarsall to set the environment')
-		print(getCommand("vcvarsall") + ' amd64')
-		subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
-		print('msbuild ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType)
 		try:
-			subprocessWithImprovedErrors( "\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /clp:ErrorsOnly /property:Platform=x64;Configuration=' + buildType, "visual studio msbuild")
+			subprocessWithImprovedErrors( "cmake --build . --target ALL_BUILD --config "+buildType, 'visual studio build')
 		except Exception, e:
 			print("Build process error. Exception: [" + str(e) + "]")
 	elif platform.system() == "Linux":
 		print('make -j$(nproc)')
-		#we call process nproc and store its output
-		process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
-		out, err = process.communicate()
-		#this output is used for calling make
-		subprocessWithImprovedErrors([getCommand("make"), "-j" + str(int(out))], getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
+		subprocessWithImprovedErrors("make -j `nproc`", getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
