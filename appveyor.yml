@@ -47,7 +47,7 @@ install:
           Remove-Item .\windows-lib-dependencies -Force -Recurse;
          }
          New-Item -ItemType Directory -Force -Path .\windows-lib-dependencies
-  - ps : nuget install xerces-c-static -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
+  - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
   - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
   - ps : nuget install libxml2  -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
   - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory .\windows-lib-dependencies
