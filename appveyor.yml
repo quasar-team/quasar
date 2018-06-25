@@ -14,19 +14,16 @@ notifications:
   on_build_status_changed: true
 
 environment:
-  PATH: $(PATH); "C:\\Program Files (x86)\\CodeSynthesis XSD 4.0\\bin"
-  BOOST_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\boost\\lib\\native\\include"
-  BOOST_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies"
-  CODE_SYNTHESYS_XSD_PATH_HEADERS: "C:\\Program Files (x86)\\CodeSynthesis XSD 4.0\\include"
-  LIBXML2_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\libxml2\\build\\native\\include"
-  LIBXML2_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\libxml2\\build\\native\\lib\\v110\\x64\\Release\\static\\cdecl"
-  OPENSSL_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\openssl-vc141-static-x86_64\\build\\native\\include"
-  OPENSSL_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\openssl-vc141-static-x86_64\\build\\native\\lib\\x64\\static\\Release"
-  XERCESC_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\xercesc\\build\\native\\include"
-  XERCESC_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\xercesc\\build\\native\\lib\\x64\\v110\\Release"
+  WINDOWS_DEPENDENCIES_DIR: C:\workspace\OPC-UA\quasar-windows-dependencies\
+  ENVIRONMENT_SETTINGS_FILE: $env:WINDOWS_DEPENDENCIES_DIR\env.ps1
 
 # scripts that run after cloning repository
 install:
+  - ps : |
+         Write-Output "Cleaning and recreating windows dependencies dir ${WINDOWS_DEPENDENCIES_DIR}"
+         Remove-Item $env:WINDOWS_DEPENDENCIES_DIR -Force -Recurse;
+         New-Item -ItemType Directory -Force -Path $env:WINDOWS_DEPENDENCIES_DIR
+
   - ps : Write-Output "Installing python packages..."
   - ps : python -m pip install lxml==3.4.4 # specific version is important
   - ps : python -m pip install pygit2
@@ -41,24 +38,17 @@ install:
   - ps : Write-Output "Installed chocolatey packages"
 
   # if no chocolatey package available use nuget (often the case for libs)
-  - ps : Write-Output "Installing nuget packages to [C:\workspace\OPC-UA\quasar-windows-dependencies]"
-  - ps : |
-         if(Test-Path C:\workspace\OPC-UA\quasar-windows-dependencies)
-         {
-          Write-Output "removing existing C:\workspace\OPC-UA\quasar-windows-dependencies";
-          Remove-Item C:\workspace\OPC-UA\quasar-windows-dependencies -Force -Recurse;
-         }
-         New-Item -ItemType Directory -Force -Path C:\workspace\OPC-UA\quasar-windows-dependencies
-  - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory C:\workspace\OPC-UA\quasar-windows-dependencies
-  - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory C:\workspace\OPC-UA\quasar-windows-dependencies
-  - ps : nuget install libxml2  -NonInteractive -ExcludeVersion -OutputDirectory C:\workspace\OPC-UA\quasar-windows-dependencies
-  - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory C:\workspace\OPC-UA\quasar-windows-dependencies
-  - ps : Write-Output "Installed nuget packages to [C:\workspace\OPC-UA\quasar-windows-dependencies]"
+  - ps : Write-Output "Installing nuget packages to [$env:WINDOWS_DEPENDENCIES_DIR]"
+  - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory $env:WINDOWS_DEPENDENCIES_DIR
+  - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory $env:WINDOWS_DEPENDENCIES_DIR
+  - ps : nuget install libxml2  -NonInteractive -ExcludeVersion -OutputDirectory $env:WINDOWS_DEPENDENCIES_DIR
+  - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory $env:WINDOWS_DEPENDENCIES_DIR
+  - ps : Write-Output "Installed nuget packages to [$env:WINDOWS_DEPENDENCIES_DIR]"
 
   # no chocolatey, no nuget ? Do it manually
   - ps : Write-Output "Installing xsdcxx..."
-  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "C:\workspace\OPC-UA\quasar-windows-dependencies\xsd-4.0.msi"
-  - ps : Start-Process C:\workspace\OPC-UA\quasar-windows-dependencies\xsd-4.0.msi -Wait -ArgumentList /quiet
+  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "$env:WINDOWS_DEPENDENCIES_DIR\xsd-4.0.msi"
+  - ps : Start-Process $env:WINDOWS_DEPENDENCIES_DIR\xsd-4.0.msi -Wait -ArgumentList /quiet
   - ps : |
          if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
          {
@@ -71,6 +61,26 @@ install:
           Exit 1;
          }
   - ps : Write-Output "Installed xsdcxx"
+
+  #
+  # create the environment into a runnable environment file, then run it
+  #
+  - ps : |
+         Write-Output "Writing environment settings to file [$env:ENVIRONMENT_SETTINGS_FILE]"
+         echo '[System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH+";C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+         echo '[System.Environment]::SetEnvironmentVariable("BOOST_PATH_HEADERS", "$env:WINDOWS_DEPENDENCIES_DIR\boost\lib\native\include", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+         echo '[System.Environment]::SetEnvironmentVariable("BOOST_PATH_LIBS", "$env:WINDOWS_DEPENDENCIES_DIR", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+         echo '[System.Environment]::SetEnvironmentVariable("CODE_SYNTHESYS_XSD_PATH_HEADERS", "C:\Program Files (x86)\CodeSynthesis XSD 4.0\include", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+         echo '[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_HEADERS", "$env:WINDOWS_DEPENDENCIES_DIR\libxml2\build\native\include", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+         echo '[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_LIBS", "$env:WINDOWS_DEPENDENCIES_DIR\libxml2\build\native\lib\v110\x64\Release\static\cdecl", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+         echo '[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_HEADERS", "$env:WINDOWS_DEPENDENCIES_DIR\openssl-vc141-static-x86_64\build\native\include", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+         echo '[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_LIBS", "$env:WINDOWS_DEPENDENCIES_DIR\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+         echo '[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_HEADERS", "$env:WINDOWS_DEPENDENCIES_DIR\xercesc\build\native\include", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+         echo '[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_LIBS", "$env:WINDOWS_DEPENDENCIES_DIR\xercesc\build\native\lib\x64\v110\Release", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+  - ps : |
+         Write-Output "Setting windows dependency paths using runnable settings file [$env:ENVIRONMENT_SETTINGS_FILE]"
+         $env:ENVIRONMENT_SETTINGS_FILE
+
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
   - cmd : set
