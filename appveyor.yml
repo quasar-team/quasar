@@ -24,6 +24,7 @@ environment:
   OPENSSL_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\openssl-vc141-static-x86_64\\build\\native\\lib\\x64\\static\\Release"
   XERCESC_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\xercesc\\build\\native\\include"
   XERCESC_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\xercesc\\build\\native\\lib\\x64\\v110\\Release"
+  - ps : gci env:
 
 # scripts that run after cloning repository
 install:
@@ -71,10 +72,11 @@ install:
   - ps : Write-Output "Installed xsdcxx"
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
-  - ps : python quasar.py set_build_config open6_win_configuration.cmake
-  - ps : python quasar.py enable_module open62541-compat
-  - ps : python quasar.py prepare_build Release
-  - ps : python quasar.py build Release
+  - cmd : set
+  - cmd : python quasar.py set_build_config open6_win_configuration.cmake
+  - cmd : python quasar.py enable_module open62541-compat
+  - cmd : python quasar.py prepare_build Release
+  - cmd : python quasar.py build Release
 
   - ps : Write-Output "Build completed!"
   - ps : if(Test-Path bin/OpcUaServer.exe)
