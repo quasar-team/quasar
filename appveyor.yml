@@ -14,7 +14,6 @@ notifications:
   on_build_status_changed: true
 
 environment:
-  - ps : "[Environment]::SetEnvironmentVariable("myY", "la la", "User")"
   PATH: $(PATH); "C:\\Program Files (x86)\\CodeSynthesis XSD 4.0\\bin"
   BOOST_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\boost\\lib\\native\\include"
   BOOST_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies"
@@ -25,7 +24,6 @@ environment:
   OPENSSL_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\openssl-vc141-static-x86_64\\build\\native\\lib\\x64\\static\\Release"
   XERCESC_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\xercesc\\build\\native\\include"
   XERCESC_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\xercesc\\build\\native\\lib\\x64\\v110\\Release"
-  - ps : "gci env:"
 
 # scripts that run after cloning repository
 install:
@@ -44,7 +42,8 @@ install:
 
   # if no chocolatey package available use nuget (often the case for libs)
   - ps : Write-Output "Installing nuget packages to [C:\workspace\OPC-UA\quasar-windows-dependencies]"
-  - ps : if(Test-Path C:\workspace\OPC-UA\quasar-windows-dependencies)
+  - ps : |
+         if(Test-Path C:\workspace\OPC-UA\quasar-windows-dependencies)
          {
           Write-Output "removing existing C:\workspace\OPC-UA\quasar-windows-dependencies";
           Remove-Item C:\workspace\OPC-UA\quasar-windows-dependencies -Force -Recurse;
@@ -60,7 +59,8 @@ install:
   - ps : Write-Output "Installing xsdcxx..."
   - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "C:\workspace\OPC-UA\quasar-windows-dependencies\xsd-4.0.msi"
   - ps : Start-Process C:\workspace\OPC-UA\quasar-windows-dependencies\xsd-4.0.msi -Wait -ArgumentList /quiet
-  - ps : if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
+  - ps : |
+         if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
          {
           Write-Output "Must change xsd.exe to xsdcxx.exe to avoid clash with built-in windows xsd.exe (on some systems)";
           Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsdcxx.exe";
@@ -80,7 +80,8 @@ install:
   - cmd : python quasar.py build Release
 
   - ps : Write-Output "Build completed!"
-  - ps : if(Test-Path bin/OpcUaServer.exe)
+  - ps : |
+         if(Test-Path bin/OpcUaServer.exe)
          {
           Write-Output "Succesfully Built QUASAR." ;
          }
