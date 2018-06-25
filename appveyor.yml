@@ -34,10 +34,10 @@ install:
 
   # use chocolatey wherever possible
   - ps : Write-Output "Installing chocolatey packages..."
-  - ps : choco install --yes git
-  - ps : choco install --yes astyle
-  - ps : choco install --yes xsltproc # provides xmllint
-  - ps : choco install --yes nuget.commandline
+  - ps : choco install --yes --limit-output git
+  - ps : choco install --yes --limit-output astyle
+  - ps : choco install --yes --limit-output xsltproc # provides xmllint
+  - ps : choco install --yes --limit-output nuget.commandline
   - ps : Write-Output "Installed chocolatey packages"
 
   # if no chocolatey package available use nuget (often the case for libs)
@@ -71,10 +71,10 @@ install:
   - ps : Write-Output "Installed xsdcxx"
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
-  - cmd : python quasar.py set_build_config open6_win_configuration.cmake
-  - cmd : python quasar.py enable_module open62541-compat
-  - cmd : python quasar.py prepare_build Release
-  - cmd : python quasar.py build Release
+  - ps : python quasar.py set_build_config open6_win_configuration.cmake
+  - ps : python quasar.py enable_module open62541-compat
+  - ps : python quasar.py prepare_build Release
+  - ps : python quasar.py build Release
 
   - ps : Write-Output "Build completed!"
   - ps : if(Test-Path bin/OpcUaServer.exe)
