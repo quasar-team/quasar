@@ -14,6 +14,7 @@ notifications:
   on_build_status_changed: true
 
 environment:
+  - ps : "[Environment]::SetEnvironmentVariable("myY", "la la", "User")"
   PATH: $(PATH); "C:\\Program Files (x86)\\CodeSynthesis XSD 4.0\\bin"
   BOOST_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\boost\\lib\\native\\include"
   BOOST_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies"
@@ -24,7 +25,7 @@ environment:
   OPENSSL_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\openssl-vc141-static-x86_64\\build\\native\\lib\\x64\\static\\Release"
   XERCESC_PATH_HEADERS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\xercesc\\build\\native\\include"
   XERCESC_PATH_LIBS: "C:\\workspace\\OPC-UA\\quasar-windows-dependencies\\xercesc\\build\\native\\lib\\x64\\v110\\Release"
-  - ps : gci env:
+  - ps : "gci env:"
 
 # scripts that run after cloning repository
 install:
