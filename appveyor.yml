@@ -48,7 +48,7 @@ install:
   # no chocolatey, no nuget ? Do it manually
   - ps : Write-Output "Installing xsdcxx..."
   - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "$env:WINDOWS_DEPENDENCIES_DIR\xsd-4.0.msi"
-  - ps : Start-Process $env:WINDOWS_DEPENDENCIES_DIR\xsd-4.0.msi -Wait -ArgumentList /quiet
+  - ps : Start-Process "$env:WINDOWS_DEPENDENCIES_DIR\xsd-4.0.msi" -Wait -ArgumentList /quiet
   - ps : |
          if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
          {
@@ -80,7 +80,6 @@ install:
   - ps : |
          Write-Output "Setting windows dependency paths using runnable settings file [$env:ENVIRONMENT_SETTINGS_FILE]"
          $env:ENVIRONMENT_SETTINGS_FILE
-
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
   - cmd : set
