@@ -90,8 +90,8 @@ install:
          Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\xercesc\build\native\lib\x64\v110\Release", "Machine")')
          Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('Write-Output "set complete!"')
   - ps : |
-         Write-Output "Setting windows dependency paths using runnable settings file: "${env:ENVIRONMENT_SETTINGS_FILE}""
-         "${env:ENVIRONMENT_SETTINGS_FILE}"
+         Write-Output "Setting windows dependency paths using runnable settings file: ${env:ENVIRONMENT_SETTINGS_FILE}"
+         Start-Process "Powershell -File ${env:ENVIRONMENT_SETTINGS_FILE}" -Wait -ArgumentList /quiet
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
   - cmd : set
