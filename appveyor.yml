@@ -15,7 +15,7 @@ notifications:
 
 environment:
   WINDOWS_DEPENDENCIES_DIR: C:\workspace\OPC-UA\quasar-windows-dependencies
-  ENVIRONMENT_SETTINGS_FILE: $env:WINDOWS_DEPENDENCIES_DIR\env.ps1
+  ENVIRONMENT_SETTINGS_FILE: C:\workspace\OPC-UA\quasar-windows-dependencies\env.ps1
 
 # scripts that run after cloning repository
 install:
