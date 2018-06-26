@@ -20,8 +20,11 @@ environment:
 # scripts that run after cloning repository
 install:
   - ps : |
-         Write-Output "Cleaning and recreating windows dependencies dir ${WINDOWS_DEPENDENCIES_DIR}"
-         Remove-Item $env:WINDOWS_DEPENDENCIES_DIR -Force -Recurse;
+         Write-Output "Cleaning and recreating windows dependencies dir: ${WINDOWS_DEPENDENCIES_DIR}"
+         if(Test-Path $env:WINDOWS_DEPENDENCIES_DIR)
+         {
+           Remove-Item $env:WINDOWS_DEPENDENCIES_DIR -Force -Recurse;
+         }
          New-Item -ItemType Directory -Force -Path $env:WINDOWS_DEPENDENCIES_DIR
 
   - ps : Write-Output "Installing python packages..."
@@ -66,19 +69,26 @@ install:
   # create the environment into a runnable environment file, then run it
   #
   - ps : |
-         Write-Output "Writing environment settings to file [$env:ENVIRONMENT_SETTINGS_FILE]"
-         echo '[System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH+";C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
-         echo '[System.Environment]::SetEnvironmentVariable("BOOST_PATH_HEADERS", "$env:WINDOWS_DEPENDENCIES_DIR\boost\lib\native\include", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
-         echo '[System.Environment]::SetEnvironmentVariable("BOOST_PATH_LIBS", "$env:WINDOWS_DEPENDENCIES_DIR", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
-         echo '[System.Environment]::SetEnvironmentVariable("CODE_SYNTHESYS_XSD_PATH_HEADERS", "C:\Program Files (x86)\CodeSynthesis XSD 4.0\include", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
-         echo '[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_HEADERS", "$env:WINDOWS_DEPENDENCIES_DIR\libxml2\build\native\include", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
-         echo '[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_LIBS", "$env:WINDOWS_DEPENDENCIES_DIR\libxml2\build\native\lib\v110\x64\Release\static\cdecl", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
-         echo '[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_HEADERS", "$env:WINDOWS_DEPENDENCIES_DIR\openssl-vc141-static-x86_64\build\native\include", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
-         echo '[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_LIBS", "$env:WINDOWS_DEPENDENCIES_DIR\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
-         echo '[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_HEADERS", "$env:WINDOWS_DEPENDENCIES_DIR\xercesc\build\native\include", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
-         echo '[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_LIBS", "$env:WINDOWS_DEPENDENCIES_DIR\xercesc\build\native\lib\x64\v110\Release", "Machine")' | out-file -encoding ASCII $env:ENVIRONMENT_SETTINGS_FILE
+         Write-Output "Cleaning existing environment settings file: $env:ENVIRONMENT_SETTINGS_FILE"
+         if(Test-Path $env:ENVIRONMENT_SETTINGS_FILE)
+         {
+           Remove-Item $env:ENVIRONMENT_SETTINGS_FILE
+         }
+         New-Item -ItemType File -Force -Path $env:ENVIRONMENT_SETTINGS_FILE
   - ps : |
-         Write-Output "Setting windows dependency paths using runnable settings file [$env:ENVIRONMENT_SETTINGS_FILE]"
+         Write-Output "Writing environment settings to file: $env:ENVIRONMENT_SETTINGS_FILE"
+         Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("PATH", $env:PATH+";C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin", "Machine")')
+         Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("CODE_SYNTHESYS_XSD_PATH_HEADERS", "C:\Program Files (x86)\CodeSynthesis XSD 4.0\include", "Machine")')
+         Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("BOOST_PATH_HEADERS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\boost\lib\native\include", "Machine")')
+         Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("BOOST_PATH_LIBS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\", "Machine")')
+         Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_HEADERS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\libxml2\build\native\include", "Machine")')
+         Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_LIBS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\libxml2\build\native\lib\v110\x64\Release\static\cdecl", "Machine")')
+         Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_HEADERS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\openssl-vc141-static-x86_64\build\native\include", "Machine")')
+         Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_LIBS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release", "Machine")')
+         Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_HEADERS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\xercesc\build\native\include", "Machine")')
+         Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_LIBS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\xercesc\build\native\lib\x64\v110\Release", "Machine")')
+  - ps : |
+         Write-Output "Setting windows dependency paths using runnable settings file: $env:ENVIRONMENT_SETTINGS_FILE"
          $env:ENVIRONMENT_SETTINGS_FILE
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
