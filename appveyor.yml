@@ -94,6 +94,7 @@ install:
          cd "${env:WINDOWS_DEPENDENCIES_DIR}"
          .\env.ps1
          Start-Sleep -m 1000
+         C:\workspace\OPC-UA\quasar\
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
   - cmd : set
