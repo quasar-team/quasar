@@ -74,7 +74,7 @@ install:
          {
            Remove-Item $env:ENVIRONMENT_SETTINGS_FILE
          }
-         New-Item -ItemType "file" -Path "$env:ENVIRONMENT_SETTINGS_FILE"
+         New-Item -ItemType "file" -Path "${env:ENVIRONMENT_SETTINGS_FILE}"
   - ps : |
          Write-Output "Writing environment settings to file: $env:ENVIRONMENT_SETTINGS_FILE"
          Add-Content $env:ENVIRONMENT_SETTINGS_FILE ('[System.Environment]::SetEnvironmentVariable("PATH", $env:PATH+";C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin", "Machine")')
