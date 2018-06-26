@@ -20,12 +20,12 @@ environment:
 # scripts that run after cloning repository
 install:
   - ps : |
-         Write-Output "Cleaning and recreating windows dependencies dir: ${WINDOWS_DEPENDENCIES_DIR}"
-         if(Test-Path $env:WINDOWS_DEPENDENCIES_DIR)
+         Write-Output "Cleaning and recreating windows dependencies dir: ${env:WINDOWS_DEPENDENCIES_DIR}"
+         if(Test-Path "${env:WINDOWS_DEPENDENCIES_DIR}")
          {
-           Remove-Item $env:WINDOWS_DEPENDENCIES_DIR -Force -Recurse;
+           Remove-Item "${env:WINDOWS_DEPENDENCIES_DIR}" -Force -Recurse;
          }
-         New-Item -ItemType Directory -Force -Path $env:WINDOWS_DEPENDENCIES_DIR
+         New-Item -ItemType Directory -Force -Path "${env:WINDOWS_DEPENDENCIES_DIR}"
 
   - ps : Write-Output "Installing python packages..."
   - ps : python -m pip install lxml==3.4.4 # specific version is important
@@ -41,17 +41,17 @@ install:
   - ps : Write-Output "Installed chocolatey packages"
 
   # if no chocolatey package available use nuget (often the case for libs)
-  - ps : Write-Output "Installing nuget packages to $env:WINDOWS_DEPENDENCIES_DIR"
-#  - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory $env:WINDOWS_DEPENDENCIES_DIR
-#  - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory $env:WINDOWS_DEPENDENCIES_DIR
-#  - ps : nuget install libxml2  -NonInteractive -ExcludeVersion -OutputDirectory $env:WINDOWS_DEPENDENCIES_DIR
-#  - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory $env:WINDOWS_DEPENDENCIES_DIR
-#  - ps : Write-Output "Installed nuget packages to [$env:WINDOWS_DEPENDENCIES_DIR]"
+  - ps : Write-Output "Installing nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : nuget install libxml2  -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : Write-Output "Installed nuget packages to "${env:WINDOWS_DEPENDENCIES_DIR}"
 
   # no chocolatey, no nuget ? Do it manually
   - ps : Write-Output "Installing xsdcxx..."
-  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "$env:WINDOWS_DEPENDENCIES_DIR\xsd-4.0.msi"
-  - ps : Start-Process "$env:WINDOWS_DEPENDENCIES_DIR\xsd-4.0.msi" -Wait -ArgumentList /quiet
+  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi"
+  - ps : Start-Process "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi" -Wait -ArgumentList /quiet
   - ps : |
          if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
          {
@@ -79,14 +79,14 @@ install:
          Write-Output "Writing environment settings to file: ${env:ENVIRONMENT_SETTINGS_FILE}"
          Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("PATH", $env:PATH+";C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin", "Machine")')
          Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("CODE_SYNTHESYS_XSD_PATH_HEADERS", "C:\Program Files (x86)\CodeSynthesis XSD 4.0\include", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("BOOST_PATH_HEADERS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\boost\lib\native\include", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("BOOST_PATH_LIBS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_HEADERS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\libxml2\build\native\include", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_LIBS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\libxml2\build\native\lib\v110\x64\Release\static\cdecl", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_HEADERS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\openssl-vc141-static-x86_64\build\native\include", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_LIBS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_HEADERS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\xercesc\build\native\include", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_LIBS", "'+$env:WINDOWS_DEPENDENCIES_DIR+'\xercesc\build\native\lib\x64\v110\Release", "Machine")')
+         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("BOOST_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\boost\lib\native\include", "Machine")')
+         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("BOOST_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'", "Machine")')
+         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\libxml2\build\native\include", "Machine")')
+         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\libxml2\build\native\lib\v110\x64\Release\static\cdecl", "Machine")')
+         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\openssl-vc141-static-x86_64\build\native\include", "Machine")')
+         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release", "Machine")')
+         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\xercesc\build\native\include", "Machine")')
+         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\xercesc\build\native\lib\x64\v110\Release", "Machine")')
   - ps : |
          Write-Output "Setting windows dependency paths using runnable settings file: "${env:ENVIRONMENT_SETTINGS_FILE}""
          "${env:ENVIRONMENT_SETTINGS_FILE}"
