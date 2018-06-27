@@ -53,7 +53,7 @@ install:
   # nuget: package manager for installing libs
   - ps : Write-Output "Installing nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : nuget install xercesc openssl-vc141-static-x86_64 libxml2 boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
-  - ps : Write-Output "Installed nuget packages to "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : Write-Output "Installed nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
 
   # code synthesis stuff has no managed package: manual install
   - ps : Write-Output "Installing xsdcxx..."
