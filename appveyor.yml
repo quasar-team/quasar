@@ -99,9 +99,6 @@ after_build:
           Exit 1;
          }
 
-artifacts:
-  - path : ..\quasar-test-project\bin\OpcUaServer.exe # has to be relative, cannot use QUASAR_TEST_PROJECT_DIR
-
 # uncomment to block VM deletion for investigating broken builds.
 #on_finish:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
