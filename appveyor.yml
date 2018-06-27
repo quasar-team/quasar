@@ -41,58 +41,59 @@ install:
          New-Item -ItemType Directory -Force -Path "${env:WINDOWS_DEPENDENCIES_DIR}"
 
   - ps : Write-Output "Installing python packages..."
-  - cmd : python -m pip install lxml==3.4.4 # specific version is important
-  - cmd : python -m pip install pygit2
+  - ps : python -m pip install lxml==3.4.4 # specific version is important
+  - ps : python -m pip install pygit2
   - ps : Write-Output "Installed python packages"
+  - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py
 
   # chocolatey: package manager for installing applications
-  - ps : Write-Output "Installing chocolatey packages..."
-  - ps : choco install git astyle xsltproc nuget.commandline --yes --limit-output # xsltproc provides xmllint
-  - ps : Write-Output "Installed chocolatey packages"
+#  - ps : Write-Output "Installing chocolatey packages..."
+#  - ps : choco install git astyle xsltproc nuget.commandline --yes --limit-output # xsltproc provides xmllint
+#  - ps : Write-Output "Installed chocolatey packages"
 
   # nuget: package manager for installing libs
-  - ps : Write-Output "Installing nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
-  - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
-  - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
-  - ps : nuget install libxml2 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
-  - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
-  - ps : Write-Output "Installed nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : Write-Output "Installing nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : nuget install libxml2 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+#  - ps : Write-Output "Installed nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
 
   # code synthesis stuff has no managed package: manual install
-  - ps : Write-Output "Installing xsdcxx..."
-  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi"
-  - ps : Start-Process "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi" -Wait -ArgumentList /quiet
-  - ps : |
-         if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
-         {
-           Write-Output "Must change xsd.exe to xsdcxx.exe to avoid clash with built-in windows xsd.exe (on some systems)";
-           Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsdcxx.exe";
-         }
-         else
-         {
-           Write-Output "ERROR! Failed to locate installed xsdcxx binary file, required for generating C++ handler code from XSD schema";
-           Exit 1;
-         }
-  - ps : Write-Output "Installed xsdcxx"
+#  - ps : Write-Output "Installing xsdcxx..."
+#  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi"
+#  - ps : Start-Process "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi" -Wait -ArgumentList /quiet
+#  - ps : |
+#         if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
+#         {
+#           Write-Output "Must change xsd.exe to xsdcxx.exe to avoid clash with built-in windows xsd.exe (on some systems)";
+#           Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsdcxx.exe";
+#         }
+#         else
+#         {
+#           Write-Output "ERROR! Failed to locate installed xsdcxx binary file, required for generating C++ handler code from XSD schema";
+#           Exit 1;
+#         }
+#  - ps : Write-Output "Installed xsdcxx"
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
-  - cmd : python quasar.py set_build_config open6_win_configuration.cmake
-  - cmd : python quasar.py enable_module open62541-compat reinstate-windows-build-with-better-package-management
-  - cmd : python quasar.py prepare_build Release
-  - cmd : python quasar.py build Release
-
-  - ps : Write-Output "Build completed!"
-  - ps : |
-         if(Test-Path bin/OpcUaServer.exe)
-         {
-          Write-Output "Succesfully Built QUASAR." ;
-         }
-         else
-         {
-          Write-Output "ERROR! There was a problem building QUASAR; The script will now terminate." ;
-          Exit 1;
-         }
+#  - cmd : python quasar.py set_build_config open6_win_configuration.cmake
+#  - cmd : python quasar.py enable_module open62541-compat reinstate-windows-build-with-better-package-management
+#  - cmd : python quasar.py prepare_build Release
+#  - cmd : python quasar.py build Release
+#
+#  - ps : Write-Output "Build completed!"
+#  - ps : |
+#         if(Test-Path bin/OpcUaServer.exe)
+#         {
+#          Write-Output "Succesfully Built QUASAR." ;
+#         }
+#         else
+#         {
+#          Write-Output "ERROR! There was a problem building QUASAR; The script will now terminate." ;
+#          Exit 1;
+#         }
 
 # uncomment to block VM deletion for investigating broken builds.
-#on_finish:
-#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
