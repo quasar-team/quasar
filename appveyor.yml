@@ -89,18 +89,18 @@ build_script:
 after_build:
   - ps : Write-Output "Build completed!"
   - ps : |
-         if(Test-Path "${env:WINDOWS_DEPENDENCIES_DIR}\bin\OpcUaServer.exe)
+         if(Test-Path "${env:QUASAR_TEST_PROJECT_DIR}\bin\OpcUaServer.exe")
          {
-          Write-Output "Succesfully Built QUASAR test project: ${env:WINDOWS_DEPENDENCIES_DIR}" ;
+          Write-Output "Succesfully Built QUASAR test project: ${env:QUASAR_TEST_PROJECT_DIR}" ;
          }
          else
          {
-          Write-Output "ERROR! The script will terminate. There was a problem building QUASAR test project - ${env:WINDOWS_DEPENDENCIES_DIR}";
+          Write-Output "ERROR! The script will terminate. There was a problem building QUASAR test project - ${env:QUASAR_TEST_PROJECT_DIR}";
           Exit 1;
          }
 
 artifacts:
-  - path : ..\quasar-test-project\bin\OpcUaServer.exe
+  - path : ..\quasar-test-project\bin\OpcUaServer.exe # has to be relative, cannot use QUASAR_TEST_PROJECT_DIR
 
 # uncomment to block VM deletion for investigating broken builds.
 #on_finish:
