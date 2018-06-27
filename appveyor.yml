@@ -47,10 +47,10 @@ install:
 
   # use chocolatey wherever possible
   - ps : Write-Output "Installing chocolatey packages..."
-#  - ps : choco install --yes --limit-output git
-#  - ps : choco install --yes --limit-output astyle
-#  - ps : choco install --yes --limit-output xsltproc # provides xmllint
-#  - ps : choco install --yes --limit-output nuget.commandline
+  - ps : choco install --yes --limit-output git
+  - ps : choco install --yes --limit-output astyle
+  - ps : choco install --yes --limit-output xsltproc # provides xmllint
+  - ps : choco install --yes --limit-output nuget.commandline
   - ps : Write-Output "Installed chocolatey packages"
 
   # if no chocolatey package available use nuget (often the case for libs)
