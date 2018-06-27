@@ -19,8 +19,8 @@ environment:
   CODE_SYNTHESYS_XSD_PATH_HEADERS: C:\Program Files (x86)\CodeSynthesis XSD 4.0\include
   BOOST_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\boost\lib\native\include
   BOOST_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)
-  LIBXML2_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\libxml2\build\native\include
-  LIBXML2_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\libxml2\build\native\lib\v110\x64\Release\static\cdecl
+#  LIBXML2_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\libxml2\build\native\include
+#  LIBXML2_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\libxml2\build\native\lib\v110\x64\Release\static\cdecl
   OPENSSL_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\openssl-vc141-static-x86_64\build\native\include
   OPENSSL_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release
   XERCESC_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\include
@@ -55,7 +55,7 @@ install:
   - ps : Write-Output "Installing nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
-  - ps : nuget install libxml2 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  #- ps : nuget install libxml2 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : Write-Output "Installed nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
 

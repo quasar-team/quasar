@@ -122,12 +122,12 @@ include_directories($ENV{XERCESC_PATH_HEADERS})
 #----
 #LIBXML2
 #----
-if( NOT DEFINED ENV{LIBXML2_PATH_HEADERS} OR NOT DEFINED ENV{LIBXML2_PATH_LIBS})
-	message( FATAL_ERROR "unable to determine libxml2 headers and library paths from environment variables LIBXML2_PATH_HEADERS [$ENV{LIBXML2_PATH_HEADERS}] LIBXML2_PATH_LIBS [$ENV{LIBXML2_PATH_LIBS}]")
-else()
-	message( STATUS " using libxml2 headers and library paths from environment variables LIBXML2_PATH_HEADERS [$ENV{LIBXML2_PATH_HEADERS}] LIBXML2_PATH_LIBS [$ENV{LIBXML2_PATH_LIBS}]")
-endif()
-include_directories($ENV{LIBXML2_HEADERS})
+#if( NOT DEFINED ENV{LIBXML2_PATH_HEADERS} OR NOT DEFINED ENV{LIBXML2_PATH_LIBS})
+#	message( FATAL_ERROR "unable to determine libxml2 headers and library paths from environment variables LIBXML2_PATH_HEADERS [$ENV{LIBXML2_PATH_HEADERS}] LIBXML2_PATH_LIBS [$ENV{LIBXML2_PATH_LIBS}]")
+#else()
+#	message( STATUS " using libxml2 headers and library paths from environment variables LIBXML2_PATH_HEADERS [$ENV{LIBXML2_PATH_HEADERS}] LIBXML2_PATH_LIBS [$ENV{LIBXML2_PATH_LIBS}]")
+#endif()
+#include_directories($ENV{LIBXML2_HEADERS})
 
 #----
 #OPENSSL
@@ -159,7 +159,8 @@ if(NOT TARGET libxml2)
 	set_property(TARGET libxml2 PROPERTY IMPORTED_LOCATION $ENV{LIBXML2_PATH_LIBS}/libxml2.lib)
 endif()
 
-SET( XML_LIBS Rpcrt4 crypt32 ws2_32 libxercesc libxml2 ${OPENSSL_LIBS_ALL} )
+#SET( XML_LIBS Rpcrt4 crypt32 ws2_32 libxercesc libxml2 ${OPENSSL_LIBS_ALL} )
+SET( XML_LIBS Rpcrt4 crypt32 ws2_32 libxercesc ${OPENSSL_LIBS_ALL} )
 
 #-----
 #GoogleTest
