@@ -94,7 +94,7 @@ after_build:
          }
 
 artifacts:
-  - path : C:\workspace\OPC-UA\quasar\bin\OpcUaServer.exe
+  - path : bin\OpcUaServer.exe
 
 # uncomment to block VM deletion for investigating broken builds.
 #on_finish:
