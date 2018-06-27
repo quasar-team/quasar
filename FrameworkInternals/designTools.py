@@ -90,8 +90,7 @@ def createDiagram(detailLevel=0):
 	Keyword arguments:
 	detailLevel -- Detail level of the diagram. If it is not present, 0 will be assumed
 	"""
-	if detailLevel == "":
-		detailLevel = 0
+
 	output = "Design.dot"
 	transformDesignVerbose(designPath + "designToDot.xslt", designPath + output, 0, astyleRun=False, additionalParam="detailLevel=" + str(detailLevel))
 	print("Generating pdf diagram with dot.")
