@@ -14,8 +14,21 @@ notifications:
   on_build_status_changed: true
 
 environment:
+  PATH: C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;$(PATH)
   WINDOWS_DEPENDENCIES_DIR: C:\workspace\OPC-UA\quasar-windows-dependencies
-  ENVIRONMENT_SETTINGS_FILE: C:\workspace\OPC-UA\quasar-windows-dependencies\env.ps1
+  CODE_SYNTHESYS_XSD_PATH_HEADERS: C:\Program Files (x86)\CodeSynthesis XSD 4.0\include
+  BOOST_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\boost\lib\native\include
+  BOOST_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)
+  LIBXML2_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\libxml2\build\native\include
+  LIBXML2_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\libxml2\build\native\lib\v110\x64\Release\static\cdecl
+  OPENSSL_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\openssl-vc141-static-x86_64\build\native\include
+  OPENSSL_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release
+  XERCESC_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\include
+  XERCESC_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\lib\x64\v110\Release
+   #
+   # Set environment variables in powershell using command
+   #   [System.Environment]::SetEnvironmentVariable("VAR", "C:/target/path", "Machine")')
+   #
 
 # scripts that run after cloning repository
 install:
@@ -28,9 +41,9 @@ install:
          New-Item -ItemType Directory -Force -Path "${env:WINDOWS_DEPENDENCIES_DIR}"
 
   - ps : Write-Output "Installing python packages..."
-  - ps : python -m pip install lxml==3.4.4 # specific version is important
-  - ps : python -m pip install pygit2
-  - ps : Write-Output "Installed python packages"
+#  - ps : python -m pip install lxml==3.4.4 # specific version is important
+#  - ps : python -m pip install pygit2
+#  - ps : Write-Output "Installed python packages"
 
   # use chocolatey wherever possible
   - ps : Write-Output "Installing chocolatey packages..."
@@ -49,52 +62,52 @@ install:
 #  - ps : Write-Output "Installed nuget packages to "${env:WINDOWS_DEPENDENCIES_DIR}"
 
   # no chocolatey, no nuget ? Do it manually
-  - ps : Write-Output "Installing xsdcxx..."
-  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi"
-  - ps : Start-Process "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi" -Wait -ArgumentList /quiet
-  - ps : |
-         if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
-         {
-           Write-Output "Must change xsd.exe to xsdcxx.exe to avoid clash with built-in windows xsd.exe (on some systems)";
-           Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsdcxx.exe";
-         }
-         else
-         {
-           Write-Output "ERROR! Failed to locate installed xsdcxx binary file, required for generating C++ handler code from XSD schema";
-           Exit 1;
-         }
-  - ps : Write-Output "Installed xsdcxx"
+#  - ps : Write-Output "Installing xsdcxx..."
+#  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi"
+#  - ps : Start-Process "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi" -Wait -ArgumentList /quiet
+#  - ps : |
+#         if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
+#         {
+#           Write-Output "Must change xsd.exe to xsdcxx.exe to avoid clash with built-in windows xsd.exe (on some systems)";
+#           Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsdcxx.exe";
+#         }
+#         else
+#         {
+#           Write-Output "ERROR! Failed to locate installed xsdcxx binary file, required for generating C++ handler code from XSD schema";
+#           Exit 1;
+#         }
+#  - ps : Write-Output "Installed xsdcxx"
 
   #
   # create the environment into a runnable environment file, then run it
   #
-  - ps : |
+#  - ps : |
          Write-Output "Cleaning existing environment settings file: "${env:ENVIRONMENT_SETTINGS_FILE}""
          if(Test-Path "${env:ENVIRONMENT_SETTINGS_FILE}")
          {
            Remove-Item "${env:ENVIRONMENT_SETTINGS_FILE}"
          }
          New-Item -ItemType "file" -Path "${env:WINDOWS_DEPENDENCIES_DIR}" -Name "env.ps1"
-  - ps : |
-         Write-Output "Writing environment settings to file: ${env:ENVIRONMENT_SETTINGS_FILE}"
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('Write-Output "starting set..."')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("PATH", $env:PATH+";C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("CODE_SYNTHESYS_XSD_PATH_HEADERS", "C:\Program Files (x86)\CodeSynthesis XSD 4.0\include", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("BOOST_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\boost\lib\native\include", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("BOOST_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\libxml2\build\native\include", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\libxml2\build\native\lib\v110\x64\Release\static\cdecl", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\openssl-vc141-static-x86_64\build\native\include", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\xercesc\build\native\include", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\xercesc\build\native\lib\x64\v110\Release", "Machine")')
-         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('Write-Output "set complete!"')
-  - ps : |
-         Write-Output "Setting windows dependency paths using runnable settings file: ${env:ENVIRONMENT_SETTINGS_FILE}"
-         cd "${env:WINDOWS_DEPENDENCIES_DIR}"
-         .\env.ps1
-         Start-Sleep -m 1000
-         cd C:\workspace\OPC-UA\quasar\
+#  - ps : |
+#         Write-Output "Writing environment settings to file: ${env:ENVIRONMENT_SETTINGS_FILE}"
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('Write-Output "starting set..."')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("PATH", $env:PATH+";C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin", "Machine")')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("CODE_SYNTHESYS_XSD_PATH_HEADERS", "C:\Program Files (x86)\CodeSynthesis XSD 4.0\include", "Machine")')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("BOOST_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\boost\lib\native\include", "Machine")')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("BOOST_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'", "Machine")')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\libxml2\build\native\include", "Machine")')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("LIBXML2_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\libxml2\build\native\lib\v110\x64\Release\static\cdecl", "Machine")')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\openssl-vc141-static-x86_64\build\native\include", "Machine")')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("OPENSSL_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release", "Machine")')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_HEADERS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\xercesc\build\native\include", "Machine")')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('[System.Environment]::SetEnvironmentVariable("XERCESC_PATH_LIBS", "'+${env:WINDOWS_DEPENDENCIES_DIR}+'\xercesc\build\native\lib\x64\v110\Release", "Machine")')
+#         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('Write-Output "set complete!"')
+#  - ps : |
+#         Write-Output "Setting windows dependency paths using runnable settings file: ${env:ENVIRONMENT_SETTINGS_FILE}"
+#         cd "${env:WINDOWS_DEPENDENCIES_DIR}"
+#         .\env.ps1
+#         Start-Sleep -m 1000
+#         cd C:\workspace\OPC-UA\quasar\
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
   - cmd : set
