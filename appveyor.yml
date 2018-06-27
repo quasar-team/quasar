@@ -41,8 +41,8 @@ install:
          New-Item -ItemType Directory -Force -Path "${env:WINDOWS_DEPENDENCIES_DIR}"
 
   - ps : Write-Output "Installing python packages..."
-  - ps : python -m pip install lxml==3.4.4 # specific version is important
-  - ps : python -m pip install pygit2
+  - cmd : python -m pip install lxml==3.4.4 # specific version is important
+  - cmd : python -m pip install pygit2
   - ps : Write-Output "Installed python packages"
 
   # chocolatey: package manager for installing applications
