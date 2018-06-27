@@ -77,7 +77,7 @@ install:
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
   - cmd : python quasar.py set_build_config open6_win_configuration.cmake
-  - cmd : python quasar.py enable_module open62541-compat
+  - cmd : python quasar.py enable_module open62541-compat reinstate-windows-build-with-better-package-management
   - cmd : python quasar.py prepare_build Release
   - cmd : python quasar.py build Release
 
@@ -94,5 +94,5 @@ install:
          }
 
 # uncomment to block VM deletion for investigating broken builds.
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
