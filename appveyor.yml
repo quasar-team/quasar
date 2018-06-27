@@ -111,9 +111,9 @@ install:
 
   # start build, note optional module open62541-compat required: provides OPC-UA back-end
   - ps : Start-Process "python" -Wait -ArgumentList "quasar.py set_build_config open6_win_configuration.cmake"
-  - cmd : python quasar.py enable_module open62541-compat
-  - cmd : python quasar.py prepare_build Release
-  - cmd : python quasar.py build Release
+  - ps : Start-Process "python" -Wait -ArgumentList "quasar.py enable_module open62541-compat"
+  - ps : Start-Process "python" -Wait -ArgumentList "quasar.py prepare_build Release
+  - ps : Start-Process "python" -Wait -ArgumentList "quasar.py build Release"
 
   - ps : Write-Output "Build completed!"
   - ps : |
