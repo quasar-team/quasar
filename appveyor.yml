@@ -82,12 +82,12 @@ install:
   # create the environment into a runnable environment file, then run it
   #
 #  - ps : |
-         Write-Output "Cleaning existing environment settings file: "${env:ENVIRONMENT_SETTINGS_FILE}""
-         if(Test-Path "${env:ENVIRONMENT_SETTINGS_FILE}")
-         {
-           Remove-Item "${env:ENVIRONMENT_SETTINGS_FILE}"
-         }
-         New-Item -ItemType "file" -Path "${env:WINDOWS_DEPENDENCIES_DIR}" -Name "env.ps1"
+#         Write-Output "Cleaning existing environment settings file: "${env:ENVIRONMENT_SETTINGS_FILE}""
+#         if(Test-Path "${env:ENVIRONMENT_SETTINGS_FILE}")
+#         {
+#           Remove-Item "${env:ENVIRONMENT_SETTINGS_FILE}"
+#         }
+#         New-Item -ItemType "file" -Path "${env:WINDOWS_DEPENDENCIES_DIR}" -Name "env.ps1"
 #  - ps : |
 #         Write-Output "Writing environment settings to file: ${env:ENVIRONMENT_SETTINGS_FILE}"
 #         Add-Content "${env:ENVIRONMENT_SETTINGS_FILE}" ('Write-Output "starting set..."')
