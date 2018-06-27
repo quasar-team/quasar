@@ -41,9 +41,9 @@ install:
          New-Item -ItemType Directory -Force -Path "${env:WINDOWS_DEPENDENCIES_DIR}"
 
   - ps : Write-Output "Installing python packages..."
-#  - ps : python -m pip install lxml==3.4.4 # specific version is important
-#  - ps : python -m pip install pygit2
-#  - ps : Write-Output "Installed python packages"
+  - ps : python -m pip install lxml==3.4.4 # specific version is important
+  - ps : python -m pip install pygit2
+  - ps : Write-Output "Installed python packages"
 
   # use chocolatey wherever possible
   - ps : Write-Output "Installing chocolatey packages..."
@@ -62,21 +62,21 @@ install:
 #  - ps : Write-Output "Installed nuget packages to "${env:WINDOWS_DEPENDENCIES_DIR}"
 
   # no chocolatey, no nuget ? Do it manually
-#  - ps : Write-Output "Installing xsdcxx..."
-#  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi"
-#  - ps : Start-Process "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi" -Wait -ArgumentList /quiet
-#  - ps : |
-#         if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
-#         {
-#           Write-Output "Must change xsd.exe to xsdcxx.exe to avoid clash with built-in windows xsd.exe (on some systems)";
-#           Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsdcxx.exe";
-#         }
-#         else
-#         {
-#           Write-Output "ERROR! Failed to locate installed xsdcxx binary file, required for generating C++ handler code from XSD schema";
-#           Exit 1;
-#         }
-#  - ps : Write-Output "Installed xsdcxx"
+  - ps : Write-Output "Installing xsdcxx..."
+  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi"
+  - ps : Start-Process "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi" -Wait -ArgumentList /quiet
+  - ps : |
+         if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
+         {
+           Write-Output "Must change xsd.exe to xsdcxx.exe to avoid clash with built-in windows xsd.exe (on some systems)";
+           Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsdcxx.exe";
+         }
+         else
+         {
+           Write-Output "ERROR! Failed to locate installed xsdcxx binary file, required for generating C++ handler code from XSD schema";
+           Exit 1;
+         }
+  - ps : Write-Output "Installed xsdcxx"
 
   #
   # create the environment into a runnable environment file, then run it
