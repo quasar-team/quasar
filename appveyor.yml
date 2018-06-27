@@ -16,6 +16,7 @@ notifications:
 environment:
   PATH: C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;C:\ProgramData\chocolatey\bin\xmllint;$(PATH)
   WINDOWS_DEPENDENCIES_DIR: C:\workspace\OPC-UA\quasar-windows-dependencies
+  QUASAR_TEST_PROJECT_DIR: C:\workspace\OPC-UA\quasar-test-project
   CODE_SYNTHESYS_XSD_PATH_HEADERS: C:\Program Files (x86)\CodeSynthesis XSD 4.0\include
   BOOST_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\boost\lib\native\include
   BOOST_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)
@@ -75,6 +76,11 @@ install:
   - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py # checks to see if required python libs are OK.
 
 build_script:
+  - cmd : python quasar.py create_project %QUASAR_TEST_PROJECT_DIR%
+  - cmd : copy open6_win_configuration.cmake %QUASAR_TEST_PROJECT_DIR%
+  - cmd : cd %QUASAR_TEST_PROJECT_DIR%
+  - cmd : dir %QUASAR_TEST_PROJECT_DIR%
+
   - cmd : python quasar.py set_build_config open6_win_configuration.cmake
   - cmd : python quasar.py enable_module open62541-compat reinstate-windows-build-with-better-package-management
   - cmd : python quasar.py prepare_build Release
@@ -83,18 +89,18 @@ build_script:
 after_build:
   - ps : Write-Output "Build completed!"
   - ps : |
-         if(Test-Path bin/OpcUaServer.exe)
+         if(Test-Path "${env:WINDOWS_DEPENDENCIES_DIR}\bin\OpcUaServer.exe)
          {
-          Write-Output "Succesfully Built QUASAR." ;
+          Write-Output "Succesfully Built QUASAR test project: ${env:WINDOWS_DEPENDENCIES_DIR}" ;
          }
          else
          {
-          Write-Output "ERROR! There was a problem building QUASAR; The script will now terminate." ;
+          Write-Output "ERROR! The script will terminate. There was a problem building QUASAR test project - ${env:WINDOWS_DEPENDENCIES_DIR}";
           Exit 1;
          }
 
 artifacts:
-  - path : bin\OpcUaServer.exe
+  - path : ..\quasar-test-project\bin\OpcUaServer.exe
 
 # uncomment to block VM deletion for investigating broken builds.
 #on_finish:

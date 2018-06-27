@@ -141,7 +141,7 @@ def _checkTagExists(url, tag): # works for tags or branchess
 def enableModule(moduleName, tag="master", serverString=""):
 	"""Enables optional module. Module URL and required quasar version is downloaded from github.
 	   Module download is done later at cmake configure stage.
-	
+
 	Keyword arguments:
 	moduleName   -- name of the optional module
 	tag          -- tag/branch to checkout, if not specified, master branch is used
@@ -211,36 +211,25 @@ def enableModule(moduleName, tag="master", serverString=""):
 
         print("Created module files. Adding them to your version control system to store the selection.")
         try:
-                print "1 "+enabledModulesDir
                 vci = version_control_interface.VersionControlInterface(baseDirectory)
-                print 2
                 module_description_files = ['.url', '.tag', '.minVersion']
-                print 3
                 for suffix in module_description_files:
-                        print "4 "+os.getcwd()
                         full_path = os.path.join(enabledModulesDir, moduleName + suffix)
-                        print "5 "+full_path
                         if not vci.is_versioned(full_path):
-                                print "6 adding ["+full_path+"] to vci"
                                 vci.add_to_vc(full_path)
-                                print 7
-                print 8
                 print('Your selection got remembered in the VCS. Dont forget to commit the changes.')
-                print 9
         except Exception as e:
                 print('Unable to store your module selection because: '+str(e)+'. Note that module description files were created so you can add them to the VCS yourself')
-        
-	os.chdir(baseDirectory)
 
-	
+	os.chdir(baseDirectory)
 	return True
 
 def disableModule(moduleName):
 	"""Disables optional module. Module files will be deleted.
-	
+
 	Keyword arguments:
 	moduleName -- name of the optional module
-	"""	
+	"""
 
 	if not os.path.exists("FrameworkInternals/EnabledModules/"+moduleName+".url"):
 		print "Error, module "+moduleName+" seems not installed!"
@@ -263,8 +252,8 @@ def disableModule(moduleName):
                 print('Your selection got remembered in the VCS. Dont forget to commit the changes.')
         except Exception as e:
                 print('Unable to store your module selection because: '+str(e)+'. Note that module description files were removed in your working directory.')
-        
-        
+
+
 	print("Remove module code if existing...")
 	removeModule(moduleName)
 
@@ -272,7 +261,7 @@ def disableModule(moduleName):
 
 def removeModule(module):
 	"""Removes optional module files without disabling it. Upon prepare_build or build the module will be freshly fetched.
-	
+
 	Keyword arguments:
 	moduleName -- name of the optional module
 	"""
