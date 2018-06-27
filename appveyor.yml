@@ -41,7 +41,7 @@ install:
          New-Item -ItemType Directory -Force -Path "${env:WINDOWS_DEPENDENCIES_DIR}"
 
   - ps : Write-Output "Installing python packages..."
-  - ps : python -m pip STATIC_DEPS=true install lxml==3.4.4 # specific version is important
+  - ps : python -m pip install lxml==3.6.0 # specific version is important
   - ps : python -m pip install pygit2
   - ps : Write-Output "Installed python packages"
   - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py
