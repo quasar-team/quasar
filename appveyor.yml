@@ -33,12 +33,12 @@ environment:
 # scripts that run after cloning repository
 install:
   - ps : |
-         Write-Output "Cleaning and recreating windows dependencies dir: $(WINDOWS_DEPENDENCIES_DIR)"
-         if(Test-Path $(WINDOWS_DEPENDENCIES_DIR))
+         Write-Output "Cleaning and recreating windows dependencies dir: ${env:WINDOWS_DEPENDENCIES_DIR}"
+         if(Test-Path "${env:WINDOWS_DEPENDENCIES_DIR}")
          {
-           Remove-Item $(WINDOWS_DEPENDENCIES_DIR) -Force -Recurse;
+           Remove-Item "${env:WINDOWS_DEPENDENCIES_DIR}" -Force -Recurse;
          }
-         New-Item -ItemType Directory -Force -Path $(WINDOWS_DEPENDENCIES_DIR)
+         New-Item -ItemType Directory -Force -Path "${env:WINDOWS_DEPENDENCIES_DIR}"
 
   - ps : Write-Output "Installing python packages..."
 #  - ps : python -m pip install lxml==3.4.4 # specific version is important
