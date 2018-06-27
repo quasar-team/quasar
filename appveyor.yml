@@ -19,8 +19,6 @@ environment:
   CODE_SYNTHESYS_XSD_PATH_HEADERS: C:\Program Files (x86)\CodeSynthesis XSD 4.0\include
   BOOST_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\boost\lib\native\include
   BOOST_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)
-#  LIBXML2_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\libxml2\build\native\include
-#  LIBXML2_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\libxml2\build\native\lib\v110\x64\Release\static\cdecl
   OPENSSL_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\openssl-vc141-static-x86_64\build\native\include
   OPENSSL_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release
   XERCESC_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\include
@@ -30,8 +28,8 @@ environment:
   #   [System.Environment]::SetEnvironmentVariable("VAR", "C:/target/path", "Machine")')
   #
 
-# scripts that run after cloning repository
 install:
+  # delete and recreate clean directory for windows dependencies.
   - ps : |
          Write-Output "Cleaning and recreating windows dependencies dir: ${env:WINDOWS_DEPENDENCIES_DIR}"
          if(Test-Path "${env:WINDOWS_DEPENDENCIES_DIR}")
@@ -39,12 +37,6 @@ install:
            Remove-Item "${env:WINDOWS_DEPENDENCIES_DIR}" -Force -Recurse;
          }
          New-Item -ItemType Directory -Force -Path "${env:WINDOWS_DEPENDENCIES_DIR}"
-
-  - ps : Write-Output "Installing python packages..."
-  - ps : python -m pip install lxml==3.6.0 # specific version is important
-  - ps : python -m pip install pygit2
-  - ps : Write-Output "Installed python packages"
-  - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py
 
   # chocolatey: package manager for installing applications
   - ps : Write-Output "Installing chocolatey packages..."
@@ -55,7 +47,6 @@ install:
   - ps : Write-Output "Installing nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
-  #- ps : nuget install libxml2 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : nuget install boost-vc141 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : Write-Output "Installed nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
 
@@ -76,12 +67,20 @@ install:
          }
   - ps : Write-Output "Installed xsdcxx"
 
-  # start build, note optional module open62541-compat required: provides OPC-UA back-end
+  # python libraries
+  - ps : Write-Output "Installing python packages..."
+  - ps : python -m pip install lxml==3.6.0 # specific version is important
+  - ps : python -m pip install pygit2
+  - ps : Write-Output "Installed python packages"
+  - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py # checks to see if required python libs are OK.
+
+build_script:
   - cmd : python quasar.py set_build_config open6_win_configuration.cmake
   - cmd : python quasar.py enable_module open62541-compat reinstate-windows-build-with-better-package-management
   - cmd : python quasar.py prepare_build Release
   - cmd : python quasar.py build Release
 
+after_build:
   - ps : Write-Output "Build completed!"
   - ps : |
          if(Test-Path bin/OpcUaServer.exe)
@@ -93,6 +92,9 @@ install:
           Write-Output "ERROR! There was a problem building QUASAR; The script will now terminate." ;
           Exit 1;
          }
+
+artifacts:
+  - path : C:\workspace\OPC-UA\quasar\bin\OpcUaServer.exe
 
 # uncomment to block VM deletion for investigating broken builds.
 #on_finish:

@@ -3,10 +3,7 @@
 # The purpose of this file is to set default parameters in case no build configuration file (aka toolchain) was specified.
 
 # The approach is to satisfy the requirements as much as possible.
-
 message("using build configuration from enice_win_configuration.cmake")
-message(STATUS "environment vars: BOOST_HOME [$ENV{BOOST_HOME}] CODE_SYNTHESYS_XSD [$ENV{CODE_SYNTHESYS_XSD}] OPENSSL [$ENV{OPENSSL}] XERCESC [$ENV{XERCESC}] LIBXML2[$ENV{LIBXML2}]")
-
 
 #-------
 #Boost
@@ -78,7 +75,6 @@ if(NOT TARGET libboostlogsetup)
 	set_property(TARGET libboostlogsetup PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_log_setup-vc141/lib/native/libboost_log_setup-vc141-mt-x64-1_67.lib)
 endif()
 
-#set( BOOST_LIBS libboost_system-vc141-mt-x64-1_57 libboost_program_options-vc141-mt-x64-1_57 libboost_thread-vc141-mt-x64-1_57 libboost_date_time-vc141-mt-x64-1_57 libboost_chrono-vc141-mt-x64-1_57 libboost_regex-vc141-mt-x64-1_57 -lrt)
 set( BOOST_LIBS  libboostlogsetup libboostlog libboostsystem libboostfilesystem libboostthread libboostprogramoptions libboostchrono libboostdatetime -lrt)
 
 #-----
@@ -120,16 +116,6 @@ endif()
 include_directories($ENV{XERCESC_PATH_HEADERS})
 
 #----
-#LIBXML2
-#----
-#if( NOT DEFINED ENV{LIBXML2_PATH_HEADERS} OR NOT DEFINED ENV{LIBXML2_PATH_LIBS})
-#	message( FATAL_ERROR "unable to determine libxml2 headers and library paths from environment variables LIBXML2_PATH_HEADERS [$ENV{LIBXML2_PATH_HEADERS}] LIBXML2_PATH_LIBS [$ENV{LIBXML2_PATH_LIBS}]")
-#else()
-#	message( STATUS " using libxml2 headers and library paths from environment variables LIBXML2_PATH_HEADERS [$ENV{LIBXML2_PATH_HEADERS}] LIBXML2_PATH_LIBS [$ENV{LIBXML2_PATH_LIBS}]")
-#endif()
-#include_directories($ENV{LIBXML2_HEADERS})
-
-#----
 #OPENSSL
 #----
 if(NOT TARGET libopenssl)
@@ -159,7 +145,6 @@ if(NOT TARGET libxml2)
 	set_property(TARGET libxml2 PROPERTY IMPORTED_LOCATION $ENV{LIBXML2_PATH_LIBS}/libxml2.lib)
 endif()
 
-#SET( XML_LIBS Rpcrt4 crypt32 ws2_32 libxercesc libxml2 ${OPENSSL_LIBS_ALL} )
 SET( XML_LIBS Rpcrt4 crypt32 ws2_32 libxercesc ${OPENSSL_LIBS_ALL} )
 
 #-----
