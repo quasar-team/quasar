@@ -99,6 +99,7 @@
 
 
 
+
           repo</b>.<br>
       </li>
       <li>~/gitProjects/poky<br>
@@ -132,9 +133,9 @@
     From project repo:<br>
     <div>cp
       ~/gitProjects/quasar/Extra/yocto/yocto_open62541_config.cmake .<br>
+      ./quasar.py set_build_config yocto_open62541_config.cmake<br>
       git add yocto_open62541_config.cmake
       FrameworkInternals/build_config_selector.cmake<br>
-      ./quasar.py set_build_config yocto_open62541_config.cmake <br>
       git commit -a -m 'Added build config'<br>
     </div>
     <h2> Add CMake epilogue with install statements</h2>
@@ -154,6 +155,7 @@
     </div>
     Comment: this step is normally done behind the scenes by quasar when
     its usual entry point (quasar.py) is used rather than plain CMake. <b>That's
+
 
 
 
@@ -322,8 +324,10 @@
 
 
 
+
     -kernel
     /home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/bzImage-qemux86.bin
+
 
 
 
@@ -361,9 +365,11 @@
 
 
 
+
     -show-cursor -usb -usbdevice tablet -vga vmware -no-reboot -m 256
     -serial mon:vc -serial null -append "vga=0
     uvesafb.mode_option=640x480-32 root=/dev/vda rw mem=256M ip=<b>192.168.7.2</b>::192.168.7.1:255.255.255.0
+
 
 
 
