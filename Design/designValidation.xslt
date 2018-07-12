@@ -66,6 +66,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:with-param name="variableName"><xsl:value-of select="@name"/></xsl:with-param>
 		</xsl:call-template>
 	</xsl:if>
+    <xsl:if test="d:array and @isKey">
+        <xsl:message terminate="yes">ERROR: There's no support for isKey for arrays. Fix your design.</xsl:message>
+    </xsl:if>
 </xsl:template>
 
 <xsl:template match="d:class">
