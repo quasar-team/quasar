@@ -1,19 +1,5 @@
-# Recipe created by recipetool
-# This is the basis of a recipe and may need further editing in order to be fully functional.
-# (Feel free to remove these comments when editing.)
-#
-# WARNING: the following LICENSE and LIC_FILES_CHKSUM values are best guesses - it is
-# your responsibility to verify that the values are complete and correct.
 # Author: Piotr Nikiel <piotr.nikiel@cern.ch>
-
-DEPENDS = "boost python python-lxml-native xsd xerces-c" 
-
-
-FILES_${PN} = "\
-	    /opt/QuasarServer/OpcUaServer \
-	    /opt/QuasarServer/config.xml \
- 	    /opt/QuasarServer/Configuration.xsd\
-	    "
+# Author: Giordon Stark
 
 LICENSE = "LGPL"
 LIC_FILES_CHKSUM = "file://LICENSE.TXT;md5=e94f6920e0f51ea34f43be88dc810edc"
@@ -24,7 +10,16 @@ S = "${WORKDIR}/git"
 
 inherit cmake pythonnative
 
-# Specify any options you want to pass to cmake using EXTRA_OECMAKE:
-EXTRA_OECMAKE = "-DCMAKE_INSTALL_PREFIX=/opt/QuasarServer"
+DEPENDS = "boost python-lxml-native xsd-native xerces-c" 
 
-export PATH = "$PATH:/usr/bin"
+
+# install it correctly, manually
+do_install() {
+   # install configuration files to /etc/quasar/*
+  install -d ${D}${sysconfdir}/quasar/
+  install -m 0755 ${B}/Configuration/Configuration.xsd ${D}${sysconfdir}/quasar/
+  install -m 0755 ${S}/bin/config.xml ${D}${sysconfdir}/quasar/
+  # install binary to /usr/bin
+  install -d ${D}${bindir}/
+  install -m 0755 ${B}/bin/OpcUaServer ${D}${bindir}/
+}
