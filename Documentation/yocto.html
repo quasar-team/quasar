@@ -20,7 +20,7 @@
     Quasar + Yocto: How to<br>
     <br>
     Author: Piotr Nikiel<br>
-    Date: 30-05-2018<br>
+    Date: 19-07-2018<br>
     <br>
     <h1>Introduction</h1>
     <br>
@@ -42,6 +42,7 @@
       <li>~/gitProjects/quasar<br>
         is where I have my quasar repo (i.e. a git clone from
         https://github.com/quasar-team/quasar). I will call it <b>quasar
+
 
 
 
@@ -170,8 +171,21 @@
 
 
 
-      why -f (force) is used.</b><br>
+
+      why -f (force) is used.<br>
+      <br>
+    </b>
+    <h2>Force to use host machine JRE</h2>
+    From project repo, replace value for key "java" in
+    FrameworkInternals/commandMap.py to point directly to your host
+    system JRE, for example for CentOS 7 or Ubuntu it would be:<br>
     <br>
+    "java":"/usr/bin/java",<br>
+    <br>
+    Comment: we know that this bends Yocto policy a bit but at the time
+    of writing (July 2018) we could not get to build OpenJDK Native in
+    Yocto without GNU Classpath which seems not mature enough to run the
+    Saxon XSLT processor.<br>
     <h2>Enable open62541-compat module</h2>
     From project repo:<br>
     <br>
@@ -325,8 +339,10 @@
 
 
 
+
     -kernel
     /home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/bzImage-qemux86.bin
+
 
 
 
@@ -366,9 +382,11 @@
 
 
 
+
     -show-cursor -usb -usbdevice tablet -vga vmware -no-reboot -m 256
     -serial mon:vc -serial null -append "vga=0
     uvesafb.mode_option=640x480-32 root=/dev/vda rw mem=256M ip=<b>192.168.7.2</b>::192.168.7.1:255.255.255.0
+
 
 
 
