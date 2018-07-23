@@ -37,6 +37,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 xmlns:d="http://cern.ch/quasar/Design"
 xmlns:fnc="http://cern.ch/quasar/MyFunctions"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
+<xsl:include href="../Design/CommonFunctions.xslt" />
 
 <xsl:template name="validateArraySize">
 <xsl:param name="className"/>
@@ -66,6 +67,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:with-param name="variableName"><xsl:value-of select="@name"/></xsl:with-param>
 		</xsl:call-template>
 	</xsl:if>
+    <xsl:if test="@isKey">
+		<xsl:if test="fnc:classHasDeviceLogic(/,$className)!='true'">
+				<xsl:message terminate="yes">ERROR: Class '<xsl:value-of select="$className"/>' hasnt got device logic - isKey can't be used</xsl:message>
+		</xsl:if>
+    </xsl:if>
+    <xsl:if test="d:array and @isKey">
+        <xsl:message terminate="yes">ERROR: There's no support for isKey for arrays. Fix your design.</xsl:message>
+    </xsl:if>
 </xsl:template>
 
 <xsl:template match="d:class">
