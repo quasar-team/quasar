@@ -46,10 +46,10 @@ def checkExecutableExists(executableKeyName, doesNotExistErrorMessage, executabl
 
 def checkJava():
 	checkExecutableExists('java', 'Java can be downloaded in https://www.java.com/en/download/')
-	
+
 def checkAstyle():
 	checkExecutableExists('astyle', 'Astyle can be downloaded in http://astyle.sourceforge.net/')
-	
+
 def checkKdiff3():
 		if platform.system() == "Linux":
 			return checkExecutableExists('diff', 'kdiff3 can be downloaded in http://kdiff3.sourceforge.net/', '--help')
@@ -66,26 +66,12 @@ def checkKdiff3():
 
 def checkCMake():
 	checkExecutableExists('cmake', 'CMake can be downloaded in https://cmake.org/')
-		
+
 def checkCompiler():
 	if platform.system() == "Linux":
 		checkExecutableExists('make', 'Please, install the package make using the package manager of your distribution.')
-		return checkExecutableExists('gcc', 'Please, install the package gcc using the package manager of your distribution.', '--help')
-	#if the system is a windows machine then:
-	if os.path.isfile(getCommand('vcvarsall')):
-		printIfVerbose("vcvarsall.bat does exist")
-	else:		
-		raise Exception("vcvarsall.bat cannot be found in the default path [" + getCommand('vcvarsall') + "]. Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
-	try:
-		returnCode = subprocess.call("\"" + getCommand('vcvarsall') + "\"" + ' amd64 && ' + getCommand('msbuild') + ' /h', shell=True, stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-		if returnCode == 0:
-			printIfVerbose("msbuild does exist")
-		else:
-			raise Exception("msbuild cannot be properly executed after calling vcvarsall.bat . Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
-	except:
-		raise Exception("msbuild cannot be properly executed after calling vcvarsall.bat . Maybe Visual Studio 2013 is not installed, or there is a problem with your installation. ")
-		
-			
+		return checkExecutableExists('gcc', 'Please, install the package gcc using the package manager of your distribution.', '--help')	
+
 def checkXMLLint():
 	checkExecutableExists('xmllint', 'XML Lint can be downloaded in http://xmlsoft.org/', '--version')
 
@@ -96,7 +82,7 @@ def checkGraphViz():
 #Non compulsory dependancy (Needed for generating documentation, but QUASAR will perfectly work without DoxyGen)
 def checkDoxyGen():
 	checkExecutableExists('doxygen', 'DoxyGen can be downloaded in http://www.stack.nl/~dimitri/doxygen/', '--version')
-	
+
 def tryDependency(functionCheck, critical=True):
 	try:
 		functionCheck()
@@ -116,18 +102,18 @@ def checkExternalDependencies():
 	tryDependency(checkAstyle)
 	tryDependency(checkGraphViz, False)
 	tryDependency(checkDoxyGen, False)
-		
+
 def subprocessWithImprovedErrors(subprocessCommand, dependencyName, validReturnCodes=[0]):
 	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions caught.
-	
+
 	Keyword arguments:
 	subprocessCommand -- String or list of strings that will be given to subprocess
 	dependencyName -- parameterless name of the command, just for error loging purposes
 	validReturnCodes -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
-	"""	
+	"""
 	try:
 		returnCode = subprocess.call(subprocessCommand)
-	except OSError as e:		
+	except OSError as e:
 		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
 	except Exception, e:
 		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
@@ -136,19 +122,19 @@ def subprocessWithImprovedErrors(subprocessCommand, dependencyName, validReturnC
 
 def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, dependencyName, validReturnCodes=[0]):
 	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions catched, and then pipes the output of the process to the given file
-	
+
 	Keyword arguments:
 	subprocessCommand -- String or list of strings that will be given to subprocess
 	dependencyName -- parameterless name of the command, just for error loging purposes
 	outputFile -- file where the std out of the process will be written into
 	validReturnCodes -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
-	"""	
+	"""
 	try:
 		with open(outputFile,"wb") as out:
 			process = subprocess.Popen(subprocessCommand, stdout=out)
 			streamdata = process.communicate()
 			returnCode = process.returncode
-	except OSError as e:		
+	except OSError as e:
 		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
 	except Exception, e:
 		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
