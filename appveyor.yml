@@ -1,42 +1,104 @@
 # version format
 version: 1.0.{build}
+image: Visual Studio 2017
+clone_folder: C:\workspace\OPC-UA\quasar\
+build:
+  verbosity: normal
+notifications:
+- provider: Email
+  to:
+  - quasar-developers@cern.ch
+  subject: quasar windows build status changed
+  on_build_success: false
+  on_build_failure: false
+  on_build_status_changed: true
 
-# Operating system (build VM template)
-os: Windows Server 2012
-platform: x64
-configuration: Release
+environment:
+  PATH: C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;C:\ProgramData\chocolatey\bin\xmllint;$(PATH)
+  WINDOWS_DEPENDENCIES_DIR: C:\workspace\OPC-UA\quasar-windows-dependencies
+  QUASAR_TEST_PROJECT_DIR: C:\workspace\OPC-UA\quasar-test-project
+  CODE_SYNTHESYS_XSD_PATH_HEADERS: C:\Program Files (x86)\CodeSynthesis XSD 4.0\include
+  BOOST_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\boost\lib\native\include
+  BOOST_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)
+  OPENSSL_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\openssl-vc141-static-x86_64\build\native\include
+  OPENSSL_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release
+  XERCESC_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\include
+  XERCESC_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\lib\x64\v110\Release
+  #
+  # Set environment variables in powershell using command
+  #   [System.Environment]::SetEnvironmentVariable("VAR", "C:/target/path", "Machine")')
+  #
 
-# scripts that run after cloning repository
 install:
-  - cmd : git clone https://github.com/quasar-team/quasar-validation-ci.git
-  - cmd : python quasar-validation-ci/CI/setup-windows-dependencies.py
-  - cmd : dir
-  - cmd : type setLocalPath.bat
-  - cmd : CALL setLocalPath.bat
-
-build_script:
-  - cmd : SET 
-
-# open6 specific operations
-  - cmd : python quasar.py enable_module open62541-compat
-  - cmd : python quasar.py set_build_config open6_win_configuration.cmake
-  - cmd : python quasar.py prepare_build Release
-  - cmd : cd open62541-compat && python prepare.py && cd ..
-
-# start build
-  - cmd : echo "Calling build...(note always returns 0 to mask any internal msbuild errors - exe is checked below)"
-  - cmd : python quasar.py build Release && exit 0
-  - cmd : echo "build complete!"
-  - ps : if(Test-Path bin/OpcUaServer.exe)
+  # delete and recreate clean directory for windows dependencies.
+  - ps : |
+         Write-Output "Cleaning and recreating windows dependencies dir: ${env:WINDOWS_DEPENDENCIES_DIR}"
+         if(Test-Path "${env:WINDOWS_DEPENDENCIES_DIR}")
          {
-          Write-Output "Succesfully Built QUASAR." ;
+           Remove-Item "${env:WINDOWS_DEPENDENCIES_DIR}" -Force -Recurse;
+         }
+         New-Item -ItemType Directory -Force -Path "${env:WINDOWS_DEPENDENCIES_DIR}"
+
+  # chocolatey: package manager for installing applications
+  - ps : Write-Output "Installing chocolatey packages..."
+  - ps : choco install git astyle xsltproc nuget.commandline --yes --limit-output # xsltproc provides xmllint
+  - ps : Write-Output "Installed chocolatey packages"
+
+  # nuget: package manager for installing libs
+  - ps : Write-Output "Installing nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install boost-vc141 -Version 1.67.0 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : Write-Output "Installed nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
+
+  # code synthesis stuff has no managed package: manual install
+  - ps : Write-Output "Installing xsdcxx..."
+  - ps : Invoke-WebRequest "https://codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi" -OutFile "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi"
+  - ps : Start-Process "${env:WINDOWS_DEPENDENCIES_DIR}\xsd-4.0.msi" -Wait -ArgumentList /quiet
+  - ps : |
+         if(Test-Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe")
+         {
+           Write-Output "Must change xsd.exe to xsdcxx.exe to avoid clash with built-in windows xsd.exe (on some systems)";
+           Copy-Item -Path "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -Destination "C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsdcxx.exe";
          }
          else
          {
-          Write-Error "There was a problem building QUASAR; The script will now terminate." ;
-          Exit ;
+           Write-Output "ERROR! Failed to locate installed xsdcxx binary file, required for generating C++ handler code from XSD schema";
+           Exit 1;
+         }
+  - ps : Write-Output "Installed xsdcxx"
+
+  # python libraries
+  - ps : Write-Output "Installing python packages..."
+  - ps : python -m pip install lxml==3.6.0 # specific version is important
+  - ps : python -m pip install pygit2
+  - ps : Write-Output "Installed python packages"
+  - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py # checks to see if required python libs are OK.
+
+build_script:
+  - cmd : python quasar.py create_project %QUASAR_TEST_PROJECT_DIR%
+  - cmd : copy open6_win_configuration.cmake %QUASAR_TEST_PROJECT_DIR%
+  - cmd : cd %QUASAR_TEST_PROJECT_DIR%
+  - cmd : dir %QUASAR_TEST_PROJECT_DIR%
+
+  - cmd : python quasar.py set_build_config open6_win_configuration.cmake
+  - cmd : python quasar.py enable_module open62541-compat
+  - cmd : python quasar.py prepare_build Release
+  - cmd : python quasar.py build Release
+
+after_build:
+  - ps : Write-Output "Build completed!"
+  - ps : |
+         if(Test-Path "${env:QUASAR_TEST_PROJECT_DIR}\bin\OpcUaServer.exe")
+         {
+          Write-Output "Succesfully Built QUASAR test project: ${env:QUASAR_TEST_PROJECT_DIR}" ;
+         }
+         else
+         {
+          Write-Output "ERROR! The script will terminate. There was a problem building QUASAR test project - ${env:QUASAR_TEST_PROJECT_DIR}";
+          Exit 1;
          }
 
 # uncomment to block VM deletion for investigating broken builds.
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
