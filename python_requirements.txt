@@ -1,0 +1,5 @@
+# this file can be passed to python package manager to collect the requirements
+# e.g.:
+# pip install -r python_requirements.txt
+lxml==3.2.1
+pygit2==0.26.0

@@ -90,4 +90,7 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
 					os.remove(originalOutputFile)
 				os.rename(outputFile, originalOutputFile)
 	except Exception, e:
+		if os.path.isfile(outputFile):
+			print "Removing partially generated file: {0}".format(outputFile)
+			os.remove(outputFile)  # sometimes the output of XSLT processor is partial...
 		raise Exception ("There was a problem generating file [" + outputFile + "]; Exception: [" + str(e) + "]")

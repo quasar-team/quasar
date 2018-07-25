@@ -23,8 +23,6 @@
 #include <openssl/x509_vfy.h>
 #include <openssl/asn1.h>
 
-using namespace std;
-
 /// load
 class Certificate {
 public:
@@ -42,17 +40,17 @@ public:
 	const static std::string DEFAULT_PUBLIC_CERT_FILENAME;
 	const static std::string DEFAULT_PRIVATE_CERT_FILENAME;
 
-	static Certificate* Instance( string certfn, string privkeyfn, enum behaviour_t beh );
+	static Certificate* Instance( std::string certfn, std::string privkeyfn, enum behaviour_t beh );
 	static Certificate* Instance( );
 
 	virtual ~Certificate();
 	int init( void );
-	string remainingTime( void );
+	std::string remainingTime( void );
 	void setTypeDER( void ) { m_type = SSL_FILETYPE_ASN1; }
 	void setTypePEM( void ) { m_type = SSL_FILETYPE_PEM; }
 
 private:
-	Certificate( string certfn, string privkeyfn, enum behaviour_t beh  );	// singleton
+	Certificate( std::string certfn, std::string privkeyfn, enum behaviour_t beh  );	// singleton
 	Certificate( Certificate const&);                            // copy constructor absent (i.e. cannot call it - linker will fail).
 	Certificate& operator=(Certificate const&);  		// assignment operator absent (i.e. cannot call it - linker will fail).
 	static Certificate* _pInstance;
@@ -75,8 +73,8 @@ private:
 	int validateCertificateFilename(const std::string& certificateFilename) const;
 	time_t _timeASN1toTIME_T( ASN1_TIME* time );
 
-	const string m_certfn;
-	const string m_privkeyfn;
+	const std::string m_certfn;
+	const std::string m_privkeyfn;
 	const behaviour_t m_behaviour;
 	int m_type;
 
@@ -84,7 +82,8 @@ private:
 	std::time_t m_time_end;
 	status_t m_status;
 
-	int64_t m_remaining_validity_in_seconds;
+	 struct tm t;
+	 int64_t m_remaining_validity_in_seconds;
 };
 
 #endif /* META_SRC_CERTIFICATE_H_ */

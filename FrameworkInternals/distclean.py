@@ -41,17 +41,17 @@ def deleteFileRecursively( topdir, target ):
 		for name in files:
 			if name == target:
 				try:
-					os.remove(os.path.join(dirpath, name))					
+					os.remove(os.path.join(dirpath, name))
 				except OSError:
 					pass
 	return;
-	
+
 def deleteExtensionRecursively( topdir, target ):
 	for dirpath, dirnames, files in os.walk(topdir):
 		for name in files:
 			if name.endswith(target):
 				try:
-					os.remove(os.path.join(dirpath, name))					
+					os.remove(os.path.join(dirpath, name))
 				except OSError:
 					pass
 	return;
@@ -64,15 +64,11 @@ def distClean(*args, **kwargs):
 	If parameter --orig is specified, the generated files ending with the extension .orig will also be cleared.	
 	"""
 	if platform.system() == "Windows":
-		print('Calling visual studio vcvarsall to set the environment')
-		print(getCommand("vcvarsall") + ' amd64')
-		subprocessWithImprovedErrors("\"" + getCommand("vcvarsall") + '\" amd64', "visual studio vcvarsall.bat")
-
-		print('Calling msbuild clean')
-		print('msbuild ALL_BUILD.vcxproj /t:Clean')
-		subprocessWithImprovedErrors("\"" + getCommand("vcvarsall") + '\" amd64 && ' + getCommand("msbuild") + ' ALL_BUILD.vcxproj /t:Clean', "visual studio msbuild", [0, 1])
+		cleanCommand = "cmake --build . --target clean --config "
+		subprocessWithImprovedErrors(cleanCommand+"Release", "cleaning visual studio release build")
+		subprocessWithImprovedErrors(cleanCommand+"Debug", "cleaning visual studio debug build")
 	elif platform.system() == "Linux":
-		subprocessWithImprovedErrors([getCommand('make'), 'clean'], getCommand("make"))	
+		subprocessWithImprovedErrors([getCommand('make'), 'clean'], getCommand("make"))
 	print('Deleting generated files and directories')
 	deleteFolderRecursively('.', 'CMakeFiles')
 	deleteFolderRecursively('.', 'Win32')

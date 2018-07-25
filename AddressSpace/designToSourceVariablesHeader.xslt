@@ -40,12 +40,21 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToSourceVariablesHeader.xslt','Piotr Nikiel')"/>    
 	#ifndef __IOMANAGERS_H__
 	#define __IOMANAGERS_H__
-
+	
+	#include &lt;QuasarThreadPool.h&gt;
+	namespace AddressSpace
+	{
+	void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads=0, unsigned int maxThreads=10, unsigned int maxJobs=1000);
+	void SourceVariables_destroySourceVariablesThreadPool ();
+	Quasar::ThreadPool* SourceVariables_getThreadPool ();
+	}
+	
 	#ifndef BACKEND_OPEN62541
 	
 	#include &lt;iomanager.h&gt;
 	#include &lt;uathreadpool.h&gt;
 	#include &lt;uabasenodes.h&gt;
+
 
 	namespace AddressSpace
 	{
@@ -68,7 +77,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	</xsl:for-each>
 	};
 	
-	void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads=0, unsigned int maxThreads=10);
 	
 	UaStatus SourceVariables_spawnIoJobRead (
 		ASSourceVariableJobId jobId,

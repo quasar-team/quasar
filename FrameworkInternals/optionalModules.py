@@ -83,7 +83,7 @@ def _getModuleInfo(serverString="", forceFetch=False):
 		os.mkdir("quasar-modules")
 	os.chdir("quasar-modules")
 	print("Checking out module list from "+serverString)
-	os.system("pwd")
+	os.getcwd()
 	if os.path.exists(".git") and not forceFetch:
 		try:
 			subprocess.call("git pull origin master", shell=True)
@@ -141,7 +141,7 @@ def _checkTagExists(url, tag): # works for tags or branchess
 def enableModule(moduleName, tag="master", serverString=""):
 	"""Enables optional module. Module URL and required quasar version is downloaded from github.
 	   Module download is done later at cmake configure stage.
-	
+
 	Keyword arguments:
 	moduleName   -- name of the optional module
 	tag          -- tag/branch to checkout, if not specified, master branch is used
@@ -219,18 +219,18 @@ def enableModule(moduleName, tag="master", serverString=""):
                 print('Your selection got remembered in the VCS. Dont forget to commit the changes.')
         except Exception as e:
                 print('Unable to store your module selection because: '+str(e)+'. Note that module description files were created so you can add them to the VCS yourself')
-        
+
 	os.chdir(baseDirectory)
 
-	
+
 	return True
 
 def disableModule(moduleName):
 	"""Disables optional module. Module files will be deleted.
-	
+
 	Keyword arguments:
 	moduleName -- name of the optional module
-	"""	
+	"""
 
 	if not os.path.exists("FrameworkInternals/EnabledModules/"+moduleName+".url"):
 		print "Error, module "+moduleName+" seems not installed!"
@@ -253,8 +253,8 @@ def disableModule(moduleName):
                 print('Your selection got remembered in the VCS. Dont forget to commit the changes.')
         except Exception as e:
                 print('Unable to store your module selection because: '+str(e)+'. Note that module description files were removed in your working directory.')
-        
-        
+
+
 	print("Remove module code if existing...")
 	removeModule(moduleName)
 
@@ -262,7 +262,7 @@ def disableModule(moduleName):
 
 def removeModule(module):
 	"""Removes optional module files without disabling it. Upon prepare_build or build the module will be freshly fetched.
-	
+
 	Keyword arguments:
 	moduleName -- name of the optional module
 	"""

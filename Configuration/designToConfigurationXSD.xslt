@@ -24,12 +24,14 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 xmlns:d="http://cern.ch/quasar/Design"
+xmlns:fnc="http://cern.ch/quasar/Functions"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
 	<xsl:output indent="yes" method="xml"/>
 	<xsl:param name="metaXsdPath"/>
 	
-	<xsl:template name="dataTypeToXsdType">
-	<xsl:param name="dataType"/>
+<xsl:function name="fnc:dataTypeToXsdType">
+	<xsl:param name="dataType"/>	
+	
 	<xsl:choose>
 	<xsl:when test="$dataType='UaString'">xs:string</xsl:when>
 	<xsl:when test="$dataType='OpcUa_SByte'">xs:byte</xsl:when>
@@ -48,9 +50,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:otherwise><xsl:message terminate="yes">ERROR: unknown type <xsl:value-of select="$dataType"/></xsl:message></xsl:otherwise>
 	</xsl:choose>
 	
-	</xsl:template>
+</xsl:function>
 
-	<xsl:template match="d:class">	
+
+<xsl:template match="d:class">	
 	<!--  for every class we create a complexType -->
 	<xsl:element name="xs:complexType">
 	<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
@@ -69,22 +72,52 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 
 	</xs:choice>
+	<!-- here we go through all the config entries and filter out the ones which are arrays. 
+	they become elements. -->
+	<xsl:for-each select="d:configentry | d:cachevariable">
+		<xsl:if test="d:array">
+			<xsl:variable name="minimumSize">
+				<xsl:choose>
+					<xsl:when test="d:array/@minimumSize"><xsl:value-of select="d:array/@minimumSize"/></xsl:when>
+					<xsl:otherwise>0</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="maximumSize">
+				<xsl:choose>
+					<xsl:when test="d:array/@maximumSize"><xsl:value-of select="d:array/@maximumSize"/></xsl:when>
+					<xsl:otherwise>unbounded</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>			
+			<xs:element name="{@name}">
+				<xs:complexType>
+		    			<xs:sequence minOccurs="{$minimumSize}" maxOccurs="{$maximumSize}">
+			    			<xs:element name="value" type="{fnc:dataTypeToXsdType(@dataType)}"/>
+		    			</xs:sequence>
+	    		</xs:complexType>
+			</xs:element>
+		</xsl:if>
+	</xsl:for-each>
+    	
 	</xs:sequence>
 	<!-- name of the object of this class is mandatory and not configurable. -->
-	<xs:attribute name="name" type="xs:string" use="required"/>
+	<xs:attribute name="name" type="tns:ObjectName" use="required"/>
 	<!-- now go over all cache-variables that shall be initialized from config file -->
 	
 	<xsl:for-each select="child::d:cachevariable">
 		<xsl:if test="@initializeWith='configuration'">
+		<xsl:choose>
+		<xsl:when test="d:array">
+		<!-- array cache var: these are elements and not attributes, so that we can use
+		complex types. Do not generate them as attributes here therefore -->			
+		</xsl:when>
+		<xsl:otherwise>
+	    <!-- scalar cache var as attribute -->
+				
 			<!--  <xs:attribute name="{@name}" type="{@xsdType}" use="required"/>-->
 			<xsl:element name="xs:attribute">
 				<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 				<xsl:attribute name="use">required</xsl:attribute>
-				<xsl:attribute name="type">
-				<xsl:call-template name="dataTypeToXsdType">
-				<xsl:with-param name="dataType" select="@dataType"/>
-				</xsl:call-template>
-				</xsl:attribute>
+				<xsl:attribute name="type"><xsl:value-of select="fnc:dataTypeToXsdType(@dataType)"/></xsl:attribute>
 			
 				<!-- OPCUA-458 Try carrying documentation over from Design file to Configuration schema -->
 				<xsl:if test="d:documentation">
@@ -93,22 +126,30 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				<xsl:value-of select="d:documentation"/>
 				</xsl:element>
 				</xsl:element>
-				</xsl:if>
-				
+				</xsl:if>	
 			</xsl:element>
+		</xsl:otherwise>
+		</xsl:choose>
+			
 		</xsl:if>
 	</xsl:for-each>
 
 	<!-- also config entries shall create attributes in xsd -->
 	<xsl:for-each select="d:configentry">
-		<xsl:element name="xs:attribute">
+	<xsl:choose>
+		<xsl:when test="d:array">
+		<!-- we have a config entry array, and this is needed in the xsd as an 
+		element and not an attribute here. Each array has different bounds and 
+		different base type. Therefore we need to generate one specific xsd-type for 
+		each configuration entry !  
+		-->
+		</xsl:when>
+		<xsl:otherwise>
+		<!-- we have a config entry scalar, which is an attribute -->
+			<xsl:element name="xs:attribute">
 			<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 			<xsl:attribute name="use">required</xsl:attribute>
-			<xsl:attribute name="type">
-			<xsl:call-template name="dataTypeToXsdType">
-			<xsl:with-param name="dataType" select="@dataType"/>
-			</xsl:call-template>
-			</xsl:attribute>
+			<xsl:attribute name="type"><xsl:value-of select="fnc:dataTypeToXsdType(@dataType)"/></xsl:attribute>
 			
 			<!-- OPCUA-458 Try carrying documentation over from Design file to Configuration schema -->
 			<xsl:if test="d:documentation">
@@ -120,18 +161,17 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			</xsl:if>
 			
 		</xsl:element>
+		</xsl:otherwise>
+	</xsl:choose>
 	</xsl:for-each>	
 
 	
 	</xsl:element>
-	
+</xsl:template>
+<!-- template class end -->
 
 	
-	
-	</xsl:template>
-
-	
-	<xsl:template match="/">
+<xsl:template match="/">
 	<xs:schema targetNamespace="http://cern.ch/quasar/Configuration" 
 	xmlns:tns="http://cern.ch/quasar/Configuration" 
 	xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -139,6 +179,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	<xi:include href="{$metaXsdPath}" xpointer="xmlns(xs=http://www.w3.org/2001/XMLSchema) xpointer(/xs:schema/node())">
 	</xi:include>
+	
+	<xs:simpleType name="ObjectName">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="REGEXPR">
 		<xs:attribute name="name" type="xs:string" use="required" />
@@ -167,6 +213,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xs:element name="configuration" type="tns:Configuration" />
 	
 	</xs:schema>
-	</xsl:template>
+</xsl:template>
 
 </xsl:transform>
