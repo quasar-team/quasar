@@ -34,7 +34,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/AddressSpace/include/<xsl:value-of select="fnc:ASClassName(@name)"/>.h ${PROJECT_SOURCE_DIR}/AddressSpace/src/<xsl:value-of select="fnc:ASClassName(@name)"/>.cpp 
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 	COMMAND python quasar.py generate asclass <xsl:value-of select="@name"/>
-	DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/designToClassHeader.xslt ${PROJECT_SOURCE_DIR}/AddressSpace/designToClassBody.xslt Configuration.hxx validateDesign
+	DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/designToClassHeader.xslt ${PROJECT_SOURCE_DIR}/AddressSpace/designToClassBody.xslt Configuration.hxx_GENERATED validateDesign
 	)	
 	
 	</xsl:template>

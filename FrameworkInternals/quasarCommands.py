@@ -13,12 +13,7 @@ from manage_files import mfDesignVsDevice
 from deviceGenerators import generateRoot
 from deviceGenerators import generateBaseClass
 from deviceGenerators import generateDeviceClass
-from addressSpaceGenerators import generateASClass
-from addressSpaceGenerators import generateInformationModel
-from addressSpaceGenerators import generateSourceVariables
 from configurationGenerators import generateConfiguration
-from configurationGenerators import generateConfigurator
-from configurationGenerators import generateConfigValidator
 from designTools import validateDesign
 from designTools import formatDesign
 from designTools import upgradeDesign
@@ -27,6 +22,7 @@ from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
 from externalToolCheck import checkExternalDependencies
 from optionalModules import enableModule, disableModule, listModules, listEnabledModules, removeModules, removeModule
+from transformDesign import transformByKey, TransformKeys
 
 # format is: [command name], callable
 commands = [
@@ -35,12 +31,12 @@ commands = [
 	[['generate','root'], generateRoot, False],		 # This takes none - check
 	[['generate','base'], generateBaseClass, False],	 # 1 argument. Check that this works OK only for 1 arg
 	[['generate','device'], generateDeviceClass, True],
-	[['generate','source_variables'], generateSourceVariables, False],
-	[['generate','info_model'], generateInformationModel, False],
-	[['generate','asclass'], generateASClass, False],
-	[['generate','config_xsd'], generateConfiguration, False],
-	[['generate','config_cpp'], generateConfigurator, False],
-	[['generate','config_validator'], generateConfigValidator, False],
+	[['generate','source_variables'], lambda: transformByKey([TransformKeys.AS_SOURCEVARIABLES_H, TransformKeys.AS_SOURCEVARIABLES_CPP]), False],
+	[['generate','info_model'],       lambda: transformByKey([TransformKeys.AS_INFOMODEL_H, TransformKeys.AS_INFOMODEL_CPP]), False],
+	[['generate','asclass'],          lambda className: transformByKey([TransformKeys.AS_CLASS_H, TransformKeys.AS_CLASS_CPP], {'className':className}), False],
+	[['generate','config_xsd'],       generateConfiguration, False],
+	[['generate','config_cpp'],       lambda: transformByKey(TransformKeys.CONFIGURATOR), False],
+	[['generate','config_validator'], lambda: transformByKey(TransformKeys.CONFIG_VALIDATOR), False],
 	[['generate','honkytonk'], generateHonkyTonk, True],
 	[['generate','diagram'], createDiagram, True],
 	[['check_consistency'], mfCheckConsistency, True],
