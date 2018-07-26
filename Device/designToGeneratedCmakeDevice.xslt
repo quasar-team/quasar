@@ -34,7 +34,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.h ${PROJECT_SOURCE_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.cpp 
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 	COMMAND python quasar.py generate base <xsl:value-of select="@name"/>
-	DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/quasar.py ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseHeader.xslt Configuration.hxx validateDesign ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseBody.xslt
+	DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/quasar.py ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseHeader.xslt Configuration.hxx_GENERATED validateDesign ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseBody.xslt
 	)	
 	
 	
