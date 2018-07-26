@@ -13,7 +13,7 @@ script:
      echo '********************************************************************' ;
      echo branch $TRAVIS_BRANCH ;
      echo '********************************************************************' ;
-     pip install -r python_requirements.txt
+     python -m pip install -r python_requirements.txt
      git clone https://github.com/quasar-team/quasar.git ;
      cd quasar ;
      git checkout $TRAVIS_BRANCH ;
