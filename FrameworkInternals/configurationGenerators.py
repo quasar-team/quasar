@@ -35,3 +35,12 @@ def generateConfiguration():
         os.path.join('Configuration','Configuration.xsd'), 
         getCommand("xmllint"))
 
+# def generateConfigurator():
+#     """Generates the file Configurator.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
+#     output = "Configurator.cpp"
+#     transformDesignVerbose(configPath + "designToConfigurator.xslt", configPath + output, 0, astyleRun=True)
+    
+# def generateConfigValidator():
+#     """Generates the file ConfigValidator.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
+#     output = "ConfigValidator.cpp"
+#     transformDesignVerbose(configPath + "designToConfigValidator.xslt", configPath + output, 0, astyleRun=True)            

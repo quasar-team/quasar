@@ -25,24 +25,6 @@ from lxml import etree
 from manage_files import get_list_classes
 
 devicePath = "Device" + os.path.sep
-def generateRoot():	
-	"""Generates the files DRoot.h and DRoot.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = "include" + os.path.sep + "DRoot.h"
-	transformDesignVerbose(devicePath + "designToRootHeader.xslt", devicePath + output, 0, astyleRun=True)
-	output = "src" + os.path.sep + "DRoot.cpp"
-	transformDesignVerbose(devicePath + "designToRootBody.xslt", devicePath + output,0, astyleRun=True)
-
-def generateBaseClass(classname):
-	"""Generates the files Base_D<classname>.h and Base_D<classname>.cpp. This method is called automatically by cmake, it does not need to be called by the user.
-	
-	Keyword arguments:
-	classname -- the name of the device, which this class will be associated to.
-	"""
-	output = "generated/Base_D" + classname + ".h"
-	transformDesignVerbose(devicePath + "designToDeviceBaseHeader.xslt", devicePath + output, 0, astyleRun=True, additionalParam="className=" + classname)
-		
-	output = "generated/Base_D" + classname + ".cpp"
-	transformDesignVerbose(devicePath + "designToDeviceBaseBody.xslt", devicePath + output, 0, astyleRun=True, additionalParam="className=" + classname)
 	
 def generateDeviceClass(*classList):
 	"""Generates the files D<classname>.h and D<classname>.cpp. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.

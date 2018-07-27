@@ -10,15 +10,12 @@ from manage_files import mfInstall
 from manage_files import mfSetupSvnIgnore
 from manage_files import mfCheckSvnIgnore
 from manage_files import mfDesignVsDevice
-from deviceGenerators import generateRoot
-from deviceGenerators import generateBaseClass
 from deviceGenerators import generateDeviceClass
 from configurationGenerators import generateConfiguration
 from designTools import validateDesign
 from designTools import formatDesign
 from designTools import upgradeDesign
 from designTools import createDiagram
-from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
 from externalToolCheck import checkExternalDependencies
 from optionalModules import enableModule, disableModule, listModules, listEnabledModules, removeModules, removeModule
@@ -28,8 +25,8 @@ from transformDesign import transformByKey, TransformKeys
 commands = [
 	[['generate','cmake_headers'], generateCmake, False],   # This one takes variable number of params
 	[['prepare_build'], generateCmake, True],   #
-	[['generate','root'], generateRoot, False],		 # This takes none - check
-	[['generate','base'], generateBaseClass, False],	 # 1 argument. Check that this works OK only for 1 arg
+	[['generate','root'],             lambda: transformByKey([TransformKeys.D_ROOT_H, TransformKeys.D_ROOT_CPP]), False],		 # This takes none - check
+	[['generate','base'],             lambda className: transformByKey([TransformKeys.D_BASE_H, TransformKeys.D_BASE_CPP], {'className':className}), False],	 # 1 argument. Check that this works OK only for 1 arg
 	[['generate','device'], generateDeviceClass, True],
 	[['generate','source_variables'], lambda: transformByKey([TransformKeys.AS_SOURCEVARIABLES_H, TransformKeys.AS_SOURCEVARIABLES_CPP]), False],
 	[['generate','info_model'],       lambda: transformByKey([TransformKeys.AS_INFOMODEL_H, TransformKeys.AS_INFOMODEL_CPP]), False],
@@ -37,7 +34,7 @@ commands = [
 	[['generate','config_xsd'],       generateConfiguration, False],
 	[['generate','config_cpp'],       lambda: transformByKey(TransformKeys.CONFIGURATOR), False],
 	[['generate','config_validator'], lambda: transformByKey(TransformKeys.CONFIG_VALIDATOR), False],
-	[['generate','honkytonk'], generateHonkyTonk, True],
+	[['generate','honkytonk'],        lambda: transformByKey(TransformKeys.HONKYTONK), True],
 	[['generate','diagram'], createDiagram, True],
 	[['check_consistency'], mfCheckConsistency, True],
 	[['setup_svn_ignore'], mfSetupSvnIgnore, True],

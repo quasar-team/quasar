@@ -22,7 +22,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 import platform
 import shutil
-from transformDesign import transformDesignVerbose
+from transformDesign import transformDesignVerbose, transformByKey, TransformKeys, getTransformOutput
 from externalToolCheck import subprocessWithImprovedErrors
 from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
 from commandMap import getCommand
@@ -41,8 +41,7 @@ def validateDesign():
 		subprocessWithImprovedErrors([getCommand("xmllint"), "--noout", "--schema", designPath + designXSD, designPath + designXML], getCommand("xmllint"))
 		# 2nd line of validation -- including XSLT
 		print("2nd line of check -- more advanced checks using XSLT processor")
-		output = "validationOutput.removeme"
-		transformDesignVerbose(designPath + "designValidation.xslt", designPath + output, 0, astyleRun=False)
+		transformByKey(TransformKeys.DESIGN_VALIDATION )
 	except Exception, e:
 		raise Exception ("There was a problem validating the file [" + designXML + "]; Exception: [" + str(e) + "]")
 
@@ -71,15 +70,16 @@ def upgradeDesign(additionalParam):
 	print("Formatting your design file ...")
 	formatDesign()
 	
-	output = "Design.xml.upgraded"
-	transformDesignVerbose(designPath + "designToUpgradedDesign.xslt", designPath + output, 0, astyleRun=False, additionalParam=additionalParam)
+	transformByKey(TransformKeys.UPGRADE_DESIGN, {'whatToDo':additionalParam})
 	
 	print("Formatting the upgraded file ")
+	output = getTransformOutput(TransformKeys.UPGRADE_DESIGN)
+	# TODO: we shouldn't keep this function as twice
 	formatedOutput = output + ".formatted"
 	if platform.system() == "Windows":
-		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), designPath + output], designPath + formatedOutput, getCommand("xmllint"))
+		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), output], designPath + formatedOutput, getCommand("xmllint"))
 	elif platform.system() == "Linux":
-		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", designPath + output], designPath + formatedOutput, getCommand("xmllint"))
+		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", output], designPath + formatedOutput, getCommand("xmllint"))
 		
 	print("Now running merge-tool. Please merge the upgraded changed")
 	subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, designPath + formatedOutput], getCommand("diff"))

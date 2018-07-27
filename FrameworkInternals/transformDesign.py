@@ -47,20 +47,32 @@ class TransformKeys(enum.Enum):
     CREATE_DIAGRAM_DOT = 12
     D_ROOT_H = 13
     D_ROOT_CPP = 14
+    D_BASE_H = 15
+    D_BASE_CPP = 16
+    D_DEVICE_H = 17
+    D_DEVICE_CPP = 18
+    HONKYTONK = 19
     
     
 
 QuasarTransforms = [
-    #(0)key                                 (1)where XSLT is                                    (2)output                                       (3)c++format    (4)ov-prot    (5)additional params
-    [TransformKeys.AS_SOURCEVARIABLES_H,    'AddressSpace/designToSourceVariablesHeader.xslt',  'AddressSpace/include/SourceVariables.h',       True,           False,        None],
-    [TransformKeys.AS_SOURCEVARIABLES_CPP,  'AddressSpace/designToSourceVariablesBody.xslt',    'AddressSpace/src/SourceVariables.cpp',         True,           False,        None],
-    [TransformKeys.AS_CLASS_H,              'AddressSpace/designToClassHeader.xslt',            'AddressSpace/include/AS{className}.h',         True,           False,        'className={className}'],
-    [TransformKeys.AS_CLASS_CPP,            'AddressSpace/designToClassBody.xslt',              'AddressSpace/src/AS{className}.cpp',           True,           False,        'className={className}'],
-    [TransformKeys.AS_INFOMODEL_H,          'AddressSpace/designToInformationModelHeader.xslt', 'AddressSpace/include/ASInformationModel.h',    True,           False,        None],
-    [TransformKeys.AS_INFOMODEL_CPP,        'AddressSpace/designToInformationModelBody.xslt',   'AddressSpace/src/ASInformationModel.cpp',      True,           False,        None],
-    [TransformKeys.CONFIGURATION_XSD,       'Configuration/designToConfigurationXSD.xslt',      'Configuration/Configuration-noxinclude.xsd',   False,          False,        None],
-    [TransformKeys.CONFIGURATOR,            'Configuration/designToConfigurator.xslt',          'Configuration/Configurator.cpp',               True,           False,        None],
-    [TransformKeys.CONFIG_VALIDATOR,        'Configuration/designToConfigValidator.xslt',       'Configuration/ConfigValidator.cpp',            True,           False,        None]
+    #(0)key                                 (1)where XSLT is                                    (2)output                                       (3) output to   (4)c++format    (5)ov-prot    (6)additional params
+    [TransformKeys.AS_SOURCEVARIABLES_H,    'AddressSpace/designToSourceVariablesHeader.xslt',  'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
+    [TransformKeys.AS_SOURCEVARIABLES_CPP,  'AddressSpace/designToSourceVariablesBody.xslt',    'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
+    [TransformKeys.AS_CLASS_H,              'AddressSpace/designToClassHeader.xslt',            'AddressSpace/include/AS{className}.h',         'B',            True,           False,        'className={className}'],
+    [TransformKeys.AS_CLASS_CPP,            'AddressSpace/designToClassBody.xslt',              'AddressSpace/src/AS{className}.cpp',           'B',            True,           False,        'className={className}'],
+    [TransformKeys.AS_INFOMODEL_H,          'AddressSpace/designToInformationModelHeader.xslt', 'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
+    [TransformKeys.AS_INFOMODEL_CPP,        'AddressSpace/designToInformationModelBody.xslt',   'AddressSpace/src/ASInformationModel.cpp',      'B',            True,           False,        None],
+    [TransformKeys.CONFIGURATION_XSD,       'Configuration/designToConfigurationXSD.xslt',      'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        None],
+    [TransformKeys.CONFIGURATOR,            'Configuration/designToConfigurator.xslt',          'Configuration/Configurator.cpp',               'B',            True,           False,        None],
+    [TransformKeys.CONFIG_VALIDATOR,        'Configuration/designToConfigValidator.xslt',       'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
+    [TransformKeys.DESIGN_VALIDATION,       'Design/designValidation.xslt',                     'Design/validationOutput.removeme',             'B',            False,          False,        None],
+    [TransformKeys.UPGRADE_DESIGN,			'Design/designToUpgradedDesign.xslt',				'Design/Design.xml.upgraded',					'S',			False,			False,		  '{whatToDo}'],
+    [TransformKeys.D_ROOT_H,                'Device/designToRootHeader.xslt',                   'Device/include/DRoot.h',                       'B',            True,           False,        None],
+    [TransformKeys.D_ROOT_CPP,              'Device/designToRootBody.xslt',                     'Device/src/DRoot.cpp',                         'B',            True,           False,        None],
+    [TransformKeys.D_BASE_H,                'Device/designToDeviceBaseHeader.xslt',             'Device/generated/Base_D{className}.h',         'B',            True,           False,        'className={className}'],
+    [TransformKeys.D_BASE_CPP,              'Device/designToDeviceBaseBody.xslt',               'Device/generated/Base_D{className}.cpp',       'B',            True,           False,        'className={className}'],
+    [TransformKeys.HONKYTONK,               'Extra/designToHonkyTonk.xslt',                     'Extra/honkyTonky.cc',                          'S',            True,           False,        None]
     ]
 
 
@@ -146,7 +158,7 @@ def transformByKey (keys, supplementaryData={}):
         transformDesignVerbose(
             xsltTransformation = transformSpec[1], 
             outputFile = transformSpec[2].format(**supplementaryData), 
-            overwriteProtection = transformSpec[4], 
-            astyleRun = transformSpec[3], 
-            additionalParam = transformSpec[5].format(**supplementaryData) if transformSpec[5] is not None else None
+            overwriteProtection = transformSpec[5], 
+            astyleRun = transformSpec[4], 
+            additionalParam = transformSpec[6].format(**supplementaryData) if transformSpec[6] is not None else None
             )
