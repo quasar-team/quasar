@@ -10,7 +10,7 @@ from manage_files import mfInstall
 from manage_files import mfSetupSvnIgnore
 from manage_files import mfCheckSvnIgnore
 from manage_files import mfDesignVsDevice
-from deviceGenerators import generateDeviceClass
+from deviceGenerators import generateDeviceClass, generateAllDevices
 from configurationGenerators import generateConfiguration
 from designTools import validateDesign
 from designTools import formatDesign
@@ -26,8 +26,9 @@ commands = [
 	[['generate','cmake_headers'], generateCmake, False],   # This one takes variable number of params
 	[['prepare_build'], generateCmake, True],   #
 	[['generate','root'],             lambda: transformByKey([TransformKeys.D_ROOT_H, TransformKeys.D_ROOT_CPP]), False],		 # This takes none - check
-	[['generate','base'],             lambda className: transformByKey([TransformKeys.D_BASE_H, TransformKeys.D_BASE_CPP], {'className':className}), False],	 # 1 argument. Check that this works OK only for 1 arg
-	[['generate','device'], generateDeviceClass, True],
+	[['generate','base'],             lambda className: transformByKey([TransformKeys.D_BASE_H, TransformKeys.D_BASE_CPP], {'className':className}), False],
+	[['generate','device','--all'],   generateAllDevices],
+	[['generate','device'],           generateDeviceClass, True],
 	[['generate','source_variables'], lambda: transformByKey([TransformKeys.AS_SOURCEVARIABLES_H, TransformKeys.AS_SOURCEVARIABLES_CPP]), False],
 	[['generate','info_model'],       lambda: transformByKey([TransformKeys.AS_INFOMODEL_H, TransformKeys.AS_INFOMODEL_CPP]), False],
 	[['generate','asclass'],          lambda className: transformByKey([TransformKeys.AS_CLASS_H, TransformKeys.AS_CLASS_CPP], {'className':className}), False],

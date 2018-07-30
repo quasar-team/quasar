@@ -20,12 +20,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-import shutil
-from transformDesign import transformDesignVerbose, TransformKeys, transformByKey, getTransformOutput
+from transformDesign import TransformKeys, transformByKey, getTransformOutput
 from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
 from commandMap import getCommand
-
-configPath = "Configuration" + os.path.sep    
+  
 def generateConfiguration():
     """Generates the file Configuration.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
     transformByKey( TransformKeys.CONFIGURATION_XSD )
@@ -34,13 +32,3 @@ def generateConfiguration():
         [getCommand("xmllint"), "--xinclude", getTransformOutput(TransformKeys.CONFIGURATION_XSD)], 
         os.path.join('Configuration','Configuration.xsd'), 
         getCommand("xmllint"))
-
-# def generateConfigurator():
-#     """Generates the file Configurator.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-#     output = "Configurator.cpp"
-#     transformDesignVerbose(configPath + "designToConfigurator.xslt", configPath + output, 0, astyleRun=True)
-    
-# def generateConfigValidator():
-#     """Generates the file ConfigValidator.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
-#     output = "ConfigValidator.cpp"
-#     transformDesignVerbose(configPath + "designToConfigValidator.xslt", configPath + output, 0, astyleRun=True)            

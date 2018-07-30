@@ -34,6 +34,7 @@ sys.path.insert(0, './FrameworkInternals')
 
 from quasarCommands import printCommandList
 from quasarCommands import getCommands
+from externalToolCheck import WrongReturnValue
 
 if len(sys.argv) < 2:
         print 'The script was run without specifying what to do. Here are available commands:'
@@ -52,9 +53,8 @@ if '-h' in sys.argv or '--help' in sys.argv:
 	help(matched_command[1])
 	sys.exit(0)
 else:
-	try:
+	try:  # we print exceptions from external tools, but internal ones we want to have with stack trace or PDB capability
 		args = sys.argv[1+len(matched_command[0]):]
 		matched_command[1]( *args )  # pack arguments after the last chunk of the command				
-	except Exception as e:
-		print 'Failed because: '+str(e)+'.\nHint: look at the lines above, answer might be there.'
-		raise
+	except WrongReturnValue as e:
+		print str(e)

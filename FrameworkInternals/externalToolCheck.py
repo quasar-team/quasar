@@ -4,6 +4,7 @@
 externalToolCheck.py
 
 @author:     Damian Abalo Miron <damian.abalo@cern.ch>
+@author:	 Piotr Nikiel
 
 @copyright:  2016 CERN
 
@@ -17,17 +18,20 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 @contact:    quasar-developers@cern.ch
 '''
-
 import os
-import os.path
 import platform
-import sys
 import subprocess
 from subprocess import Popen
-import filecmp
 from commandMap import getCommand
 
 VERBOSE = 1
+
+class WrongReturnValue(Exception):
+	def __init__(self, tool, return_value):
+		Exception.__init__(self, 'WrongReturnValue: tool {tool} returned {rv}'.format(
+			tool=tool, 
+			rv=str(return_value)
+			))
 
 def printIfVerbose(msg):
 	if VERBOSE > 0:
@@ -117,8 +121,8 @@ def subprocessWithImprovedErrors(subprocessCommand, dependencyName, validReturnC
 		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
 	except Exception, e:
 		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
-	if(returnCode not in validReturnCodes):
-		raise Exception("Application returned bad return code when trying to execute the program [" + dependencyName + "]. Return code: [" + str(returnCode) + "]")
+	if returnCode not in validReturnCodes:
+		raise WrongReturnValue(dependencyName, returnCode)
 
 def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, dependencyName, validReturnCodes=[0]):
 	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions catched, and then pipes the output of the process to the given file
