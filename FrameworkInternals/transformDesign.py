@@ -55,11 +55,20 @@ class TransformKeys(enum.Enum):
     AS_CMAKE = 20
     D_CMAKE = 21
     
-    
+# column IDs
+@enum.unique
+class FieldIds(enum.Enum):
+    KEY = 0
+    XSLT_PATH = 1
+    OUT_PATH = 2 
+    SOURCE_OR_BINARY = 3   
+    CPP_FORMAT = 4
+    OVERWRITE_PROT = 5
+    ADDITIONAL_PARAM = 6
     
 
 QuasarTransforms = [
-    #(0)key                                 (1)where XSLT is                                        (2)output                                       (3) output to   (4)c++format    (5)ov-prot    (6)additional params
+    #(0)key                                 (1)where XSLT is                                        (2)output                                       (3) source or b (4)c++format    (5)ov-prot    (6)additional params
     [TransformKeys.AS_SOURCEVARIABLES_H,    'AddressSpace/designToSourceVariablesHeader.xslt',      'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
     [TransformKeys.AS_SOURCEVARIABLES_CPP,  'AddressSpace/designToSourceVariablesBody.xslt',        'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
     [TransformKeys.AS_CLASS_H,              'AddressSpace/designToClassHeader.xslt',                'AddressSpace/include/AS{className}.h',         'B',            True,           False,        'className={className}'],
@@ -72,6 +81,7 @@ QuasarTransforms = [
     [TransformKeys.CONFIG_VALIDATOR,        'Configuration/designToConfigValidator.xslt',           'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
     [TransformKeys.DESIGN_VALIDATION,       'Design/designValidation.xslt',                         'Design/validationOutput.removeme',             'B',            False,          False,        None],
     [TransformKeys.UPGRADE_DESIGN,          'Design/designToUpgradedDesign.xslt',                   'Design/Design.xml.upgraded',                   'S',            False,          False,        '{whatToDo}'],
+    [TransformKeys.CREATE_DIAGRAM_DOT,      'Design/designToDot.xslt',                              'Design/Design.dot',                            'B',            False,          False,        'detailLevel={detailLevel}'],
     [TransformKeys.D_ROOT_H,                'Device/designToRootHeader.xslt',                       'Device/include/DRoot.h',                       'B',            True,           False,        None],
     [TransformKeys.D_ROOT_CPP,              'Device/designToRootBody.xslt',                         'Device/src/DRoot.cpp',                         'B',            True,           False,        None],
     [TransformKeys.D_BASE_H,                'Device/designToDeviceBaseHeader.xslt',                 'Device/generated/Base_D{className}.h',         'B',            True,           False,        'className={className}'],
@@ -93,12 +103,12 @@ def transformDesignVerbose(xsltTransformation, outputFile, overwriteProtection, 
 def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleRun, additionalParam=None):
     """Generates a file, applying an xslt transform to Design.xml This is done calling saxon9he.jar
     
-	Keyword arguments:
-	xsltTransformation   -- xslt file where the transformation is defined
-	outputFile		   -- name of the file to be generated
-	overwriteProtection  -- if True, will prevent from overwriting output filename, running merge-tool
-	astyleRun			-- if True, will run astyle on generated file
-	additionalParam	  -- Optional extra param to be passed e.g. to XSLT transform.
+    Keyword arguments:
+    xsltTransformation   -- xslt file where the transformation is defined
+    outputFile           -- name of the file to be generated
+    overwriteProtection  -- if True, will prevent from overwriting output filename, running merge-tool
+    astyleRun            -- if True, will run astyle on generated file
+    additionalParam      -- Optional extra param to be passed e.g. to XSLT transform.
     """
     
     # files
@@ -135,15 +145,17 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
                 if os.path.isfile(originalOutputFile):
                     os.remove(originalOutputFile)
                 os.rename(outputFile, originalOutputFile)
-    except Exception, e:
+    except Exception:
         if os.path.isfile(outputFile):
             print "Removing partially generated file: {0}".format(outputFile)
             os.remove(outputFile)  # sometimes the output of XSLT processor is partial...
         raise
 
-def getTransformOutput (key):
-    " TODO: make formatting with supplementary data"
-    return filter(lambda x: x[0]==key, QuasarTransforms)[0][2]
+def getTransformSpecByKey(key):
+    return filter(lambda x: x[FieldIds.KEY.value]==key, QuasarTransforms)[0]
+
+def getTransformOutput (key, supplementaryData={}):
+    return getTransformSpecByKey(key)[FieldIds.OUT_PATH.value].format(**supplementaryData)
     
 def transformByKey (keys, supplementaryData={}):
     """ Works both for a single key as well as a list of keys """
@@ -151,11 +163,12 @@ def transformByKey (keys, supplementaryData={}):
         for key in keys:
             transformByKey(key, supplementaryData)
     else:           
-        transformSpec = filter(lambda x: x[0]==keys, QuasarTransforms)[0]  # TODO: replace 0 with KEY_ID
+        transformSpec = getTransformSpecByKey(keys)
         transformDesignVerbose(
-            xsltTransformation = transformSpec[1], 
-            outputFile = transformSpec[2].format(**supplementaryData), 
-            overwriteProtection = transformSpec[5], 
-            astyleRun = transformSpec[4], 
-            additionalParam = transformSpec[6].format(**supplementaryData) if transformSpec[6] is not None else None
+            xsltTransformation = transformSpec[FieldIds.XSLT_PATH.value], 
+            outputFile = getTransformOutput(keys, supplementaryData), 
+            overwriteProtection = transformSpec[FieldIds.OVERWRITE_PROT.value], 
+            astyleRun = transformSpec[FieldIds.CPP_FORMAT.value], 
+            additionalParam = transformSpec[FieldIds.ADDITIONAL_PARAM.value].format(
+				**supplementaryData) if transformSpec[FieldIds.ADDITIONAL_PARAM.value] is not None else None
             )

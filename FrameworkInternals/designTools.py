@@ -92,8 +92,7 @@ def createDiagram(detailLevel=0):
 	"""
 	if detailLevel == "":
 		detailLevel = 0
-	output = "Design.dot"
-	transformDesignVerbose(designPath + "designToDot.xslt", designPath + output, 0, astyleRun=False, additionalParam="detailLevel=" + str(detailLevel))
+	transformByKey(TransformKeys.CREATE_DIAGRAM_DOT, {'detailLevel':detailLevel})
 	print("Generating pdf diagram with dot.")
-	subprocessWithImprovedErrors([getCommand("graphviz"), "-Tpdf", "-o", designPath + "diagram.pdf", designPath + "Design.dot"], "GraphViz (dot)")
+	subprocessWithImprovedErrors([getCommand("graphviz"), "-Tpdf", "-o", designPath + "diagram.pdf", getTransformOutput(TransformKeys.CREATE_DIAGRAM_DOT)], "GraphViz (dot)")
 			

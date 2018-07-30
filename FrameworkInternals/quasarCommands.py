@@ -6,9 +6,7 @@ from install_framework import createProject
 from install_framework import upgradeProject
 from manage_files import mfCheckConsistency
 from manage_files import mfCreateRelease
-from manage_files import mfInstall
 from manage_files import mfSetupSvnIgnore
-from manage_files import mfCheckSvnIgnore
 from manage_files import mfDesignVsDevice
 from deviceGenerators import generateDeviceClass, generateAllDevices
 from configurationGenerators import generateConfiguration
@@ -27,7 +25,7 @@ commands = [
 	[['prepare_build'], generateCmake, True],   #
 	[['generate','root'],             lambda: transformByKey([TransformKeys.D_ROOT_H, TransformKeys.D_ROOT_CPP]), False],		 # This takes none - check
 	[['generate','base'],             lambda className: transformByKey([TransformKeys.D_BASE_H, TransformKeys.D_BASE_CPP], {'className':className}), False],
-	[['generate','device','--all'],   generateAllDevices],
+	[['generate','device','--all'],   generateAllDevices, True],
 	[['generate','device'],           generateDeviceClass, True],
 	[['generate','source_variables'], lambda: transformByKey([TransformKeys.AS_SOURCEVARIABLES_H, TransformKeys.AS_SOURCEVARIABLES_CPP]), False],
 	[['generate','info_model'],       lambda: transformByKey([TransformKeys.AS_INFOMODEL_H, TransformKeys.AS_INFOMODEL_CPP]), False],
@@ -66,7 +64,7 @@ def getCommands():
 	return commands
 
 def getCommandFromFunction(function):
-        matching = filter(lambda x: x[1] == function, commands)
-        if len(matching) != 1:
-                return ''
-        return ' '.join(matching[0][0])
+    matching = filter(lambda x: x[1] == function, commands)
+    if len(matching) != 1:
+        return ''
+    return ' '.join(matching[0][0])
