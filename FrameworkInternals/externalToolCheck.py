@@ -23,15 +23,10 @@ import platform
 import subprocess
 from subprocess import Popen
 from commandMap import getCommand
+from quasarExceptions import WrongReturnValue
 
 VERBOSE = 1
 
-class WrongReturnValue(Exception):
-	def __init__(self, tool, return_value):
-		Exception.__init__(self, 'WrongReturnValue: tool {tool} returned {rv}'.format(
-			tool=tool, 
-			rv=str(return_value)
-			))
 
 def printIfVerbose(msg):
 	if VERBOSE > 0:
@@ -142,5 +137,5 @@ def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, 
 		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
 	except Exception, e:
 		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
-	if(returnCode not in validReturnCodes):
+	if returnCode not in validReturnCodes:
 		raise Exception("Application returned bad return code when trying to execute the program [" + dependencyName + "]. Return code: [" + str(returnCode) + "]")

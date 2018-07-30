@@ -22,7 +22,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 import platform
 import shutil
-from transformDesign import transformDesignVerbose, transformByKey, TransformKeys, getTransformOutput
+from transformDesign import transformByKey, TransformKeys, getTransformOutput
 from externalToolCheck import subprocessWithImprovedErrors
 from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
 from commandMap import getCommand
@@ -45,6 +45,12 @@ def validateDesign():
 	except Exception, e:
 		raise Exception ("There was a problem validating the file [" + designXML + "]; Exception: [" + str(e) + "]")
 
+def formatXml(inFileName, outFileName):
+	if platform.system() == "Windows":
+		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), inFileName], outFileName, getCommand("xmllint"))
+	elif platform.system() == "Linux":
+		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", inFileName], outFileName, getCommand("xmllint"))
+
 def formatDesign():
 	"""Formats design.xml. This is done to have always the same indentation format. The formatting is done in a separate file, in case something goes wrong, and then copied over."""
 	backupName = designXML + ".backup"
@@ -54,13 +60,7 @@ def formatDesign():
 	shutil.copyfile(designPath + designXML, designPath + backupName)
 
 	print("Formatting the file " + designXML + "using the tool XMLlint. The result will be saved in " + tempName)
-	try:
-		if platform.system() == "Windows":
-			subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), designPath + designXML], designPath + tempName, getCommand("xmllint"))
-		elif platform.system() == "Linux":
-			subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", designPath + designXML], designPath + tempName, getCommand("xmllint"))
-	except Exception, e:
-		raise Exception ("There was a problem formatting the file [" + designXML + "]; Exception: [" + str(e) + "]")
+	formatXml(designPath + designXML, designPath + tempName)
 		
 	print("Copying the formated file  " + tempName + " into the name of " + designXML)
 	shutil.copyfile(designPath + tempName, designPath + designXML)
@@ -69,20 +69,17 @@ def upgradeDesign(additionalParam):
 	"""Method for adjusting Design.xml for a new Design.xsd when updating to a new version of the Framework"""
 	print("Formatting your design file ...")
 	formatDesign()
-	
+
 	transformByKey(TransformKeys.UPGRADE_DESIGN, {'whatToDo':additionalParam})
 	
 	print("Formatting the upgraded file ")
-	output = getTransformOutput(TransformKeys.UPGRADE_DESIGN)
-	# TODO: we shouldn't keep this function as twice
-	formatedOutput = output + ".formatted"
-	if platform.system() == "Windows":
-		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), output], designPath + formatedOutput, getCommand("xmllint"))
-	elif platform.system() == "Linux":
-		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", output], designPath + formatedOutput, getCommand("xmllint"))
-		
+	upgradedNonFormatted = getTransformOutput(TransformKeys.UPGRADE_DESIGN)
+	upgradedFormatted = upgradedNonFormatted + ".formatted"
+	
+	formatXml(upgradedNonFormatted, upgradedFormatted)
+	
 	print("Now running merge-tool. Please merge the upgraded changed")
-	subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, designPath + formatedOutput], getCommand("diff"))
+	subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, upgradedFormatted], getCommand("diff"))
 	
 def createDiagram(detailLevel=0):
 	"""Creates an UML diagram based on the classes of the server.

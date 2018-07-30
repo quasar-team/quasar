@@ -34,7 +34,7 @@ sys.path.insert(0, './FrameworkInternals')
 
 from quasarCommands import printCommandList
 from quasarCommands import getCommands
-from externalToolCheck import WrongReturnValue
+from quasarExceptions import WrongReturnValue, WrongArguments
 
 if len(sys.argv) < 2:
         print 'The script was run without specifying what to do. Here are available commands:'
@@ -56,5 +56,5 @@ else:
 	try:  # we print exceptions from external tools, but internal ones we want to have with stack trace or PDB capability
 		args = sys.argv[1+len(matched_command[0]):]
 		matched_command[1]( *args )  # pack arguments after the last chunk of the command				
-	except WrongReturnValue as e:
+	except (WrongReturnValue, WrongArguments) as e:
 		print str(e)

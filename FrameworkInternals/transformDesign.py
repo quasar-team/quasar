@@ -92,8 +92,6 @@ QuasarTransforms = [
     [TransformKeys.HONKYTONK,               'Extra/designToHonkyTonk.xslt',                         'Extra/honkyTonky.cc',                          'S',            True,           False,        None]
     ]
 
-
-# TODO: overwriteProtection make true/false
 def transformDesignVerbose(xsltTransformation, outputFile, overwriteProtection, astyleRun=False, additionalParam=None):
     """Just a verbose wrapper around transformDesign, for arguments description see transformDesign below """
     print("Using the transform [" + xsltTransformation + "] to generate the file [" + outputFile + "] {0}"

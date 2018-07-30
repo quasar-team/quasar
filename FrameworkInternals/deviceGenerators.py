@@ -22,7 +22,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 from transformDesign import TransformKeys, transformByKey
 from manage_files import get_list_classes
-
+from quasarExceptions import WrongArguments
 
 def generateOneDeviceClass(className):
 	transformByKey([TransformKeys.D_DEVICE_H, TransformKeys.D_DEVICE_CPP], {'className':className})
@@ -34,7 +34,7 @@ def generateDeviceClass(*classList):
 	classname -- the name of the device, which this class will be associated to. You can specify several classes (up to 10), separated by spaces or just --all to regenerate all device classes.
 	"""
 	if len(classList) < 1:
-		raise Exception("BadArguments: need at least one arg for this") # TODO Another exception
+		raise WrongArguments("need at least one arg for this")
 
 	for aClass in classList:
 		generateOneDeviceClass(aClass)
