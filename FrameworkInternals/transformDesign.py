@@ -63,12 +63,12 @@ class FieldIds(enum.Enum):
     OUT_PATH = 2 
     SOURCE_OR_BINARY = 3   
     CPP_FORMAT = 4
-    OVERWRITE_PROT = 5
+    REQUIRES_MERGE = 5
     ADDITIONAL_PARAM = 6
     
 
 QuasarTransforms = [
-    #(0)key                                 (1)where XSLT is                                        (2)output                                       (3) source or b (4)c++format    (5)ov-prot    (6)additional params
+    #(0)key                                 (1)where XSLT is                                        (2)output                                       (3) source or b (4)c++format    (5)req merge  (6)additional params
     [TransformKeys.AS_SOURCEVARIABLES_H,    'AddressSpace/designToSourceVariablesHeader.xslt',      'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
     [TransformKeys.AS_SOURCEVARIABLES_CPP,  'AddressSpace/designToSourceVariablesBody.xslt',        'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
     [TransformKeys.AS_CLASS_H,              'AddressSpace/designToClassHeader.xslt',                'AddressSpace/include/AS{className}.h',         'B',            True,           False,        'className={className}'],
@@ -92,19 +92,19 @@ QuasarTransforms = [
     [TransformKeys.HONKYTONK,               'Extra/designToHonkyTonk.xslt',                         'Extra/honkyTonky.cc',                          'S',            True,           False,        None]
     ]
 
-def transformDesignVerbose(xsltTransformation, outputFile, overwriteProtection, astyleRun=False, additionalParam=None):
+def transformDesignVerbose(xsltTransformation, outputFile, requiresMerge, astyleRun=False, additionalParam=None):
     """Just a verbose wrapper around transformDesign, for arguments description see transformDesign below """
     print("Using the transform [" + xsltTransformation + "] to generate the file [" + outputFile + "] {0}"
 		.format('additionalParam=[{0}]'.format(additionalParam) if additionalParam is not None else ''))
-    return transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleRun, additionalParam)
+    return transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, additionalParam)
 
-def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleRun, additionalParam=None):
+def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, additionalParam=None):
     """Generates a file, applying an xslt transform to Design.xml This is done calling saxon9he.jar
     
     Keyword arguments:
     xsltTransformation   -- xslt file where the transformation is defined
     outputFile           -- name of the file to be generated
-    overwriteProtection  -- if True, will prevent from overwriting output filename, running merge-tool
+    requiresMerge        -- if True, will prevent from overwriting output filename, running merge-tool
     astyleRun            -- if True, will run astyle on generated file
     additionalParam      -- Optional extra param to be passed e.g. to XSLT transform.
     """
@@ -112,7 +112,7 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
     # files
     XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + getCommand('saxon')
     DESIGN_XML = '.' + os.path.sep + 'Design' + os.path.sep + 'Design.xml'
-    if overwriteProtection:
+    if requiresMerge:
         originalOutputFile = outputFile
         outputFile = outputFile + '.generated'
     try:
@@ -135,7 +135,7 @@ def transformDesign(xsltTransformation, outputFile, overwriteProtection, astyleR
 
             
 
-        if overwriteProtection:
+        if requiresMerge:
             # If the file existed previously and it is different from the old one we run kdiff3
             if (os.path.isfile(originalOutputFile)) and (filecmp.cmp(originalOutputFile, outputFile) == False):
                 subprocessWithImprovedErrors([getCommand('diff'), "-o", originalOutputFile, originalOutputFile, outputFile], getCommand("diff"), [0, 1])  # 1 is a valid return, since it means that the user quitted without saving the merge, and this is still ok.
@@ -165,7 +165,7 @@ def transformByKey (keys, supplementaryData={}):
         transformDesignVerbose(
             xsltTransformation = transformSpec[FieldIds.XSLT_PATH.value], 
             outputFile = getTransformOutput(keys, supplementaryData), 
-            overwriteProtection = transformSpec[FieldIds.OVERWRITE_PROT.value], 
+            requiresMerge = transformSpec[FieldIds.REQUIRES_MERGE.value], 
             astyleRun = transformSpec[FieldIds.CPP_FORMAT.value], 
             additionalParam = transformSpec[FieldIds.ADDITIONAL_PARAM.value].format(
 				**supplementaryData) if transformSpec[FieldIds.ADDITIONAL_PARAM.value] is not None else None
