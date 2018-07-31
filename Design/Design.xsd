@@ -124,13 +124,6 @@ elementFormDefault="qualified">
      		</documentation>
     		</annotation>
     	</attribute>
-    	<attribute name="makeSetGet" type="boolean" use="optional">
-      		<annotation>
-    		<documentation>
-    		This attribute is deprecated and will be removed soon.
-     		</documentation>
-    		</annotation>  	
-    	</attribute>
     	<attribute name="dataType" type="tns:VariableDataType"
     		use="required">
     	</attribute>
