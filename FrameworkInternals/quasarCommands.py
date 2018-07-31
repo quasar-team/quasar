@@ -6,42 +6,34 @@ from install_framework import createProject
 from install_framework import upgradeProject
 from manage_files import mfCheckConsistency
 from manage_files import mfCreateRelease
-from manage_files import mfInstall
 from manage_files import mfSetupSvnIgnore
-from manage_files import mfCheckSvnIgnore
 from manage_files import mfDesignVsDevice
-from deviceGenerators import generateRoot
-from deviceGenerators import generateBaseClass
-from deviceGenerators import generateDeviceClass
-from addressSpaceGenerators import generateASClass
-from addressSpaceGenerators import generateInformationModel
-from addressSpaceGenerators import generateSourceVariables
+from deviceGenerators import generateDeviceClass, generateAllDevices
 from configurationGenerators import generateConfiguration
-from configurationGenerators import generateConfigurator
-from configurationGenerators import generateConfigValidator
 from designTools import validateDesign
 from designTools import formatDesign
 from designTools import upgradeDesign
 from designTools import createDiagram
-from generateHonkyTonk import generateHonkyTonk
 from runDoxygen import runDoxygen
 from externalToolCheck import checkExternalDependencies
 from optionalModules import enableModule, disableModule, listModules, listEnabledModules, removeModules, removeModule
+from transformDesign import transformByKey, TransformKeys
 
 # format is: [command name], callable
 commands = [
 	[['generate','cmake_headers'], generateCmake, False],   # This one takes variable number of params
 	[['prepare_build'], generateCmake, True],   #
-	[['generate','root'], generateRoot, False],		 # This takes none - check
-	[['generate','base'], generateBaseClass, False],	 # 1 argument. Check that this works OK only for 1 arg
-	[['generate','device'], generateDeviceClass, True],
-	[['generate','source_variables'], generateSourceVariables, False],
-	[['generate','info_model'], generateInformationModel, False],
-	[['generate','asclass'], generateASClass, False],
-	[['generate','config_xsd'], generateConfiguration, False],
-	[['generate','config_cpp'], generateConfigurator, False],
-	[['generate','config_validator'], generateConfigValidator, False],
-	[['generate','honkytonk'], generateHonkyTonk, True],
+	[['generate','root'],             lambda: transformByKey([TransformKeys.D_ROOT_H, TransformKeys.D_ROOT_CPP]), False],		 # This takes none - check
+	[['generate','base'],             lambda className: transformByKey([TransformKeys.D_BASE_H, TransformKeys.D_BASE_CPP], {'className':className}), False],
+	[['generate','device','--all'],   generateAllDevices, True],
+	[['generate','device'],           generateDeviceClass, True],
+	[['generate','source_variables'], lambda: transformByKey([TransformKeys.AS_SOURCEVARIABLES_H, TransformKeys.AS_SOURCEVARIABLES_CPP]), False],
+	[['generate','info_model'],       lambda: transformByKey([TransformKeys.AS_INFOMODEL_H, TransformKeys.AS_INFOMODEL_CPP]), False],
+	[['generate','asclass'],          lambda className: transformByKey([TransformKeys.AS_CLASS_H, TransformKeys.AS_CLASS_CPP], {'className':className}), False],
+	[['generate','config_xsd'],       generateConfiguration, False],
+	[['generate','config_cpp'],       lambda: transformByKey(TransformKeys.CONFIGURATOR), False],
+	[['generate','config_validator'], lambda: transformByKey(TransformKeys.CONFIG_VALIDATOR), False],
+	[['generate','honkytonk'],        lambda: transformByKey(TransformKeys.HONKYTONK), True],
 	[['generate','diagram'], createDiagram, True],
 	[['check_consistency'], mfCheckConsistency, True],
 	[['setup_svn_ignore'], mfSetupSvnIgnore, True],
@@ -72,7 +64,7 @@ def getCommands():
 	return commands
 
 def getCommandFromFunction(function):
-        matching = filter(lambda x: x[1] == function, commands)
-        if len(matching) != 1:
-                return ''
-        return ' '.join(matching[0][0])
+    matching = filter(lambda x: x[1] == function, commands)
+    if len(matching) != 1:
+        return ''
+    return ' '.join(matching[0][0])

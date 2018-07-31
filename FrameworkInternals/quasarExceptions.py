@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # encoding: utf-8
 '''
-configurationGenerators.py
+quasarExceptions.py
 
-@author:     Damian Abalo Miron <damian.abalo@cern.ch>
 @author:     Piotr Nikiel <piotr@nikiel.info>
 
-@copyright:  2015 CERN
+@copyright:  2018 CERN
 
 @license:
-Copyright (c) 2015, CERN, Universidad de Oviedo.
+Copyright (c) 2018, CERN
 All rights reserved.
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -19,16 +18,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 @contact:    quasar-developers@cern.ch
 '''
 
-import os
-from transformDesign import TransformKeys, transformByKey, getTransformOutput
-from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
-from commandMap import getCommand
-  
-def generateConfiguration():
-    """Generates the file Configuration.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
-    transformByKey( TransformKeys.CONFIGURATION_XSD )
-    print("Calling xmllint to process XInclude ")
-    subprocessWithImprovedErrorsPipeOutputToFile(
-        [getCommand("xmllint"), "--xinclude", getTransformOutput(TransformKeys.CONFIGURATION_XSD)], 
-        os.path.join('Configuration','Configuration.xsd'), 
-        getCommand("xmllint"))
+class WrongArguments(Exception):
+	def __init__(self, desc):
+		Exception.__init__(self, desc)
+		
+class WrongReturnValue(Exception):
+	def __init__(self, tool, return_value):
+		Exception.__init__(self, 'WrongReturnValue: tool {tool} returned {rv}'.format(
+			tool=tool, 
+			rv=str(return_value)
+			))

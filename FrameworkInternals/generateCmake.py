@@ -22,7 +22,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 import sys
 import platform
-from transformDesign import transformDesignVerbose
+from transformDesign import TransformKeys, transformByKey
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
 
@@ -32,12 +32,8 @@ def generateCmake(buildType="Release"):
 	Keyword arguments:
 	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""	
-	transformDesignVerbose("AddressSpace" + os.path.sep + "designToGeneratedCmakeAddressSpace.xslt",
-			       "AddressSpace" + os.path.sep + "cmake_generated.cmake",
-			       0, astyleRun=False)
-	transformDesignVerbose("Device" + os.path.sep + "designToGeneratedCmakeDevice.xslt",
-			       "Device" + os.path.sep + "generated" + os.path.sep + "cmake_header.cmake",
-			       0, astyleRun=False)
+	transformByKey(TransformKeys.AS_CMAKE)
+	transformByKey(TransformKeys.D_CMAKE)
 	print("Build type ["+buildType+"]")
 
 	print("Calling CMake")

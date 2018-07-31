@@ -20,29 +20,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
-from transformDesign import transformDesignVerbose
-from lxml import etree 
+from transformDesign import TransformKeys, transformByKey
 from manage_files import get_list_classes
+from quasarExceptions import WrongArguments
 
-devicePath = "Device" + os.path.sep
-def generateRoot():	
-	"""Generates the files DRoot.h and DRoot.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = "include" + os.path.sep + "DRoot.h"
-	transformDesignVerbose(devicePath + "designToRootHeader.xslt", devicePath + output, 0, astyleRun=True)
-	output = "src" + os.path.sep + "DRoot.cpp"
-	transformDesignVerbose(devicePath + "designToRootBody.xslt", devicePath + output,0, astyleRun=True)
-
-def generateBaseClass(classname):
-	"""Generates the files Base_D<classname>.h and Base_D<classname>.cpp. This method is called automatically by cmake, it does not need to be called by the user.
-	
-	Keyword arguments:
-	classname -- the name of the device, which this class will be associated to.
-	"""
-	output = "generated/Base_D" + classname + ".h"
-	transformDesignVerbose(devicePath + "designToDeviceBaseHeader.xslt", devicePath + output, 0, astyleRun=True, additionalParam="className=" + classname)
-		
-	output = "generated/Base_D" + classname + ".cpp"
-	transformDesignVerbose(devicePath + "designToDeviceBaseBody.xslt", devicePath + output, 0, astyleRun=True, additionalParam="className=" + classname)
+def generateOneDeviceClass(className):
+	transformByKey([TransformKeys.D_DEVICE_H, TransformKeys.D_DEVICE_CPP], {'className':className})
 	
 def generateDeviceClass(*classList):
 	"""Generates the files D<classname>.h and D<classname>.cpp. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.
@@ -50,28 +33,15 @@ def generateDeviceClass(*classList):
 	Keyword arguments:
 	classname -- the name of the device, which this class will be associated to. You can specify several classes (up to 10), separated by spaces or just --all to regenerate all device classes.
 	"""
-	if(len(classList) == 0):
-		print("Please, provide the name of the class you wish to generate")
-		return
-	
-	if classList[0] == '--all':
-		return generateAllDevices()		
-	classList = [x for x in classList if x is not None]#Remove nones from the list
-	for c in classList:#generate all the specified device classes
-		output = "include/D" + c + ".h"
-		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, 1, astyleRun=True, additionalParam="className=" + c)
-			
-		output = "src/D" + c + ".cpp"
-		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, astyleRun=True, additionalParam="className=" + c)
+	if len(classList) < 1:
+		raise WrongArguments("need at least one arg for this")
+
+	for aClass in classList:
+		generateOneDeviceClass(aClass)
 	
 def generateAllDevices():
 	"""Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
 	project_directory = os.getcwd()		
-	classes = get_list_classes(project_directory+os.path.sep+"Design"+os.path.sep+"Design.xml")
-	for tuple in classes:
-		classname = tuple['name']
-		output = "include/D" + classname + ".h"
-		transformDesignVerbose(devicePath + "designToDeviceHeader.xslt", devicePath + output, 1, astyleRun=True, additionalParam="className=" + classname)
-			
-		output = "src/D" + classname + ".cpp"
-		transformDesignVerbose(devicePath + "designToDeviceBody.xslt", devicePath + output, 1, astyleRun=True, additionalParam="className=" + classname)
+	classes = get_list_classes(project_directory+os.path.sep+"Design"+os.path.sep+"Design.xml")  # TODO wrong - we should have a function returning it
+	for aClass in classes:
+		generateOneDeviceClass(aClass['name'])

@@ -15,8 +15,10 @@ Redistribution and use in source and binary forms, with or without modification,
 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@contact:    damian.abalo@cern.ch
+@contact:    quasar-developers@cern.ch
 '''
+
+
 
 import os
 import sys
@@ -32,6 +34,7 @@ sys.path.insert(0, './FrameworkInternals')
 
 from quasarCommands import printCommandList
 from quasarCommands import getCommands
+from quasarExceptions import WrongReturnValue, WrongArguments
 
 if len(sys.argv) < 2:
         print 'The script was run without specifying what to do. Here are available commands:'
@@ -50,10 +53,8 @@ if '-h' in sys.argv or '--help' in sys.argv:
 	help(matched_command[1])
 	sys.exit(0)
 else:
-        try:
-                args = sys.argv[1+len(matched_command[0]):]
-                matched_command[1]( *args )  # pack arguments after the last chunk of the command                
-        except Exception as e:
-                print 'Failed because: '+str(e)+'.\nHint: look at the lines above, answer might be there.'
-                sys.exit(1)
-	sys.exit(0)
+	try:  # we print exceptions from external tools, but internal ones we want to have with stack trace or PDB capability
+		args = sys.argv[1+len(matched_command[0]):]
+		matched_command[1]( *args )  # pack arguments after the last chunk of the command				
+	except (WrongReturnValue, WrongArguments) as e:
+		print str(e)

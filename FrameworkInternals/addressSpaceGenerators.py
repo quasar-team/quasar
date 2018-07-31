@@ -19,32 +19,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 @contact:    quasar-developers@cern.ch
 '''
 
-import os
-from transformDesign import transformDesignVerbose
-asPath = "AddressSpace" + os.path.sep
-def generateSourceVariables():
-	"""Generates the files SourceVariables.h and SourceVariables.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = "include/SourceVariables.h"
-	transformDesignVerbose(asPath + "designToSourceVariablesHeader.xslt", asPath + output, 0, astyleRun=True)
-	output = "src/SourceVariables.cpp"
-	transformDesignVerbose(asPath + "designToSourceVariablesBody.xslt", asPath + output,0, astyleRun=True)
 
-def generateASClass(classname):
-	"""Generates the files AS<classname>.h and AS<classname>.cpp. This method is called automatically by cmake, it does not need to be called by the user.
-	
-	Keyword arguments:
-	classname -- the name of the device, which this class will be associated to.
-	"""
-	output = "include/AS" + classname + ".h"
-	transformDesignVerbose(asPath + "designToClassHeader.xslt", asPath + output, 0, astyleRun=True, additionalParam="className=" + classname)
-		
-	output = "src/AS" + classname + ".cpp"
-	transformDesignVerbose(asPath + "designToClassBody.xslt", asPath + output, 0, astyleRun=True, additionalParam="className=" + classname)
-	
-def generateInformationModel():
-	"""Generates the files ASInformationModel.h and ASInformationModel.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = "include/ASInformationModel.h"
-	transformDesignVerbose(asPath + "designToInformationModelHeader.xslt", asPath + output, 0, astyleRun=True)
-	output = "src/ASInformationModel.cpp"
-	transformDesignVerbose(asPath + "designToInformationModelBody.xslt", asPath + output,0, astyleRun=True)
-			
