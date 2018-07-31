@@ -27,7 +27,6 @@ xmlns:d="http://cern.ch/quasar/Design"
 xmlns:fnc="http://cern.ch/quasar/MyFunctions"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
 <xsl:include href="../Design/CommonFunctions.xslt" />
-<xsl:param name="remove_makeSetGet" required="no"/>
 <xsl:param name="add_nullPolicy" required="no"/>
 <xsl:param name="convert_to_hasDeviceLogic" required="no"/>
 
@@ -42,11 +41,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:template match="d:cachevariable">
 	<xsl:copy>
 		<xsl:for-each select="@*">
-		<xsl:if test="$remove_makeSetGet='' or ($remove_makeSetGet='yes' and name()!='makeSetGet')">
-				<xsl:copy>
-				    <xsl:apply-templates select="@*|node()"/>
-				</xsl:copy>
-			</xsl:if>
+			<xsl:copy>
+			    <xsl:apply-templates select="@*|node()"/>
+			</xsl:copy>
 		</xsl:for-each>
 		
 		<xsl:if test="$add_nullPolicy!='' and not(@nullPolicy)">
@@ -91,16 +88,13 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	<xsl:template match="/">
 	<!-- do some checks on input params -->
-	<xsl:if test="$remove_makeSetGet!='' and $remove_makeSetGet!='yes'">
-		<xsl:message terminate="yes">Param 'remove_makeSetGet' can be either empty or 'yes'; no other values allowed. [given value is <xsl:value-of select="$remove_makeSetGet"/>]</xsl:message>
-	</xsl:if>
 	
 	<xsl:if test="$add_nullPolicy!='' and $add_nullPolicy!='nullAllowed' and $add_nullPolicy!='nullForbidden'">
 		<xsl:message terminate="yes">Param 'add_nullPolicy' can be either empty or 'nullAllowed' or 'nullForbidden'; no other values allowed. [given value is <xsl:value-of select="$add_nullPolicy"/>]</xsl:message>
 	</xsl:if>
 	
 	<xsl:if test="$convert_to_hasDeviceLogic!='' and $convert_to_hasDeviceLogic!='yes'">
-	   <xsl:message terminate="yes">Param 'convert_to_hasDeviceLogic' can be either empty or 'yes'; no other values allowed. [given value is <xsl:value-of select="$remove_makeSetGet"/>]</xsl:message>
+	   <xsl:message terminate="yes">Param 'convert_to_hasDeviceLogic' can be either empty or 'yes'; no other values allowed. [given value is <xsl:value-of select="$convert_to_hasDeviceLogic"/>]</xsl:message>
 	</xsl:if>
 	
 	<xsl:apply-templates/>

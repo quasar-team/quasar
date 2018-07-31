@@ -51,10 +51,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 <xsl:template name="cachevariable">
 <xsl:param name="className"/>
-	<xsl:if test="@makeSetGet">
-		<!-- task: OPCUA-120 setters/getters should be always generated, this option should go deprecated -->
-		<xsl:message>WARNING (at class='<xsl:value-of select="$className"/>' variable='<xsl:value-of select="@name"/>'): makeSetGet attribute of d:cachevariable is deprecated since GenericOpcUaServer-0.93 and considered always true. Please suppress this attribute from your design file. (Hint: you can use upgradeDesign.sh tool for that)</xsl:message>
-	</xsl:if>
 	<xsl:if test="@nullPolicy!='nullAllowed' and @initializeWith!='configuration' and not(@initialValue)">
 		<xsl:message terminate="yes">ERROR (at class='<xsl:value-of select="$className"/>' variable='<xsl:value-of select="@name"/>'): these settings are invalid. When nullPolicy doesn't allow NULL, for valueAndStatus initializer you have to have initialValue attribute. </xsl:message>
 	</xsl:if>
