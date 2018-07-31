@@ -11,9 +11,9 @@ before_install:
 script:
  - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c "
      echo '********************************************************************' ;
-     echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-TRAVIS_BRANCH} ;
+     echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
      echo '********************************************************************' ;
-     git clone -b ${TRAVIS_PULL_REQUEST_BRANCH:-TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+     git clone -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
      cd quasar ;
      python quasar.py enable_module open62541-compat ;
      python quasar.py set_build_config open62541_config.cmake ;
