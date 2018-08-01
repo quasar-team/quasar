@@ -50,8 +50,8 @@ def makeContext():
 	* projectBinaryDirectory
 	etc ... """
 	context = {}
-	context['projectSourceDir'] = os.getcwd()  # this is wrong of course but could do for the moment
-	context['projectBinaryDir'] = project_binary_dir  # this is wrong too as it should be taken from the arguments
+	context['projectSourceDir'] = os.getcwd()  # TODO: port the "this_script" logic from Yocto branch 
+	context['projectBinaryDir'] = project_binary_dir  
 	return context
 
 if len(args) < 1:
