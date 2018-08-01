@@ -162,9 +162,11 @@ def transformByKey (keys, supplementaryData={}):
             transformByKey(key, supplementaryData)
     else:           
         transformSpec = getTransformSpecByKey(keys)
+        outputDir = supplementaryData['context']['projectBinaryDir'] if transformSpec[FieldIds.SOURCE_OR_BINARY.value] == 'B' else supplementaryData['context']['projectSourceDir']
+        outputFile = os.path.join(outputDir, getTransformOutput(keys, supplementaryData))
         transformDesignVerbose(
             xsltTransformation = transformSpec[FieldIds.XSLT_PATH.value], 
-            outputFile = getTransformOutput(keys, supplementaryData), 
+            outputFile = outputFile, 
             requiresMerge = transformSpec[FieldIds.REQUIRES_MERGE.value], 
             astyleRun = transformSpec[FieldIds.CPP_FORMAT.value], 
             additionalParam = transformSpec[FieldIds.ADDITIONAL_PARAM.value].format(
