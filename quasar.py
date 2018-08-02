@@ -24,6 +24,7 @@ import os
 import sys
 import subprocess
 import inspect
+import webbrowser
 
 internalFolders = ["AddressSpace", "Configuration", "Design", "Device", "FrameworkInternals", "Server", "LogIt", "Meta"]
 initialDir = os.getcwd()
@@ -68,7 +69,11 @@ except IndexError:
 	sys.exit(1)
 
 if '-h' in args or '--help' in args:
-	help(matched_command[1])
+	anchor = '_'.join(matched_command[0])
+	print 'Will open quasarCommands.html for anchor {0}'.format(anchor)
+	webbrowser.open("file:///{htmlPath}#{anchor}".format(
+		htmlPath=os.path.join(os.getcwd(),'Documentation','quasarCommands.html'),
+		anchor=anchor))
 	sys.exit(0)
 else:
 	try:  # we print exceptions from external tools, but internal ones we want to have with stack trace or PDB capability

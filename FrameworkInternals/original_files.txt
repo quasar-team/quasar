@@ -120,6 +120,7 @@ File DesignManual.html                      must_exist,must_be_versioned,md5=che
 File UserDefinedRuntimeConfigurationModification.html  must_exist,must_be_versioned,install=overwrite
 File UserDefinedCommandLineParameters.html             must_exist,must_be_versioned,install=overwrite
 File AlternativeBackends.html               must_exist,must_be_versioned,install=overwrite
+File quasarCommands.html		    must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Documentation/images install=create
 File quasar_engine_small_smooth_square_128x128.png must_exist,must_be_versioned,md5=check,install=overwrite
