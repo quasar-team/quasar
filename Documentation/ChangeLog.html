@@ -29,9 +29,11 @@
 
 
 
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
 
 
 
@@ -55,21 +57,56 @@
 
 
 
+
               Release notes</strong><br>
           </td>
         </tr>
         <tr>
           <td valign="top">1.2.5<br>
           </td>
-          <td valign="top"><br>
+          <td valign="top">This is mostly a service release bringing
+            significant simplifications in internal quasar scripting for
+            features to come in future.<br>
           </td>
           <td valign="top">The CMake target to generate
             Configuration.hxx has been renamed to
             Configuration.hxx_GENERATED .<br>
             If you used this target e.g. for add_dependencies()
             statement then you should follow the change accordingly.<br>
+            <br>
+            Please also note that @makeSetGet attribute of
+            cachevariables finally disappears at it has been deprecated
+            since 2014.<br>
           </td>
-          <td valign="top"><br>
+          <td valign="top">Bug<br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1036">OPCUA-1036</a>]
+                - isKey doesn't work without device logic and with
+                arrays</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1061">OPCUA-1061</a>]
+                - Target Configuration.hxx confuses the ninja build
+                system, rename it</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1103">OPCUA-1103</a>]
+                - Return code of a quasar server is zero despite an
+                exception caught in BaseQuasarServer</li>
+            </ul>
+            <br>
+            Task<br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1097">OPCUA-1097</a>]
+                - Expose device logic mutex via getLock()</li>
+            </ul>
+            <br>
+            Improvement<br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1106">OPCUA-1106</a>]
+                - Simplify Python scripting for running Quasar code
+                generation</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1107">OPCUA-1107</a>]
+                - remove @makeSetGet</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1111">OPCUA-1111</a>]
+                - Embedded commands help into quasarCommands.html</li>
+            </ul>
           </td>
         </tr>
         <tr>
