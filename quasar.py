@@ -23,6 +23,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import os
 import sys
 import subprocess
+import inspect
 import webbrowser
 
 internalFolders = ["AddressSpace", "Configuration", "Design", "Device", "FrameworkInternals", "Server", "LogIt", "Meta"]
@@ -35,23 +36,39 @@ if(currentFolder in internalFolders):
 sys.path.insert(0, './FrameworkInternals')
 
 from quasarCommands import printCommandList
-from quasarCommands import getCommands
+from quasarCommands import getCommands, extract_common_arguments
 from quasarExceptions import WrongReturnValue, WrongArguments
 
-if len(sys.argv) < 2:
+# args starts from the command name (e.g. 'build') and skips the common arguments (e.g. 'project_binary_dir')
+(args, project_binary_dir) = extract_common_arguments(sys.argv[1:])  # 1: to skip the script name given by the operating system
+if project_binary_dir is None:
+        project_binary_dir = os.getcwd()
+
+def makeContext():
+	"""Generates a dictionary specifying the context.
+	A context contains information necessary for build like:
+	* projectSourceDirectory,
+	* projectBinaryDirectory
+	etc ... """
+	context = {}
+	context['projectSourceDir'] = os.getcwd()  # TODO: port the "this_script" logic from Yocto branch 
+	context['projectBinaryDir'] = project_binary_dir  
+	return context
+
+if len(args) < 1:
         print 'The script was run without specifying what to do. Here are available commands:'
         printCommandList()
         sys.exit(1)
 
 try:
 	commands = getCommands()
-	matched_command = filter(lambda x: x[0] == sys.argv[1:1+len(x[0])], commands)[0]
+	matched_command = filter(lambda x: x[0] == args[:len(x[0])], commands)[0]
 except IndexError:
 	print 'Sorry, no such command. These are available:'
 	printCommandList()
 	sys.exit(1)
 
-if '-h' in sys.argv or '--help' in sys.argv:
+if '-h' in args or '--help' in args:
 	anchor = '_'.join(matched_command[0])
 	print 'Will open quasarCommands.html for anchor {0}'.format(anchor)
 	webbrowser.open("file:///{htmlPath}#{anchor}".format(
@@ -60,7 +77,12 @@ if '-h' in sys.argv or '--help' in sys.argv:
 	sys.exit(0)
 else:
 	try:  # we print exceptions from external tools, but internal ones we want to have with stack trace or PDB capability
-		args = sys.argv[1+len(matched_command[0]):]
-		matched_command[1]( *args )  # pack arguments after the last chunk of the command				
+		args = args[len(matched_command[0]):]
+		callee = matched_command[1]
+		# TODO throw WrongArguments here if not enough args
+		if 'context' in inspect.getargspec(callee).args:
+			callee( makeContext(), *args )  # pack arguments after the last chunk of the command	
+		else:
+			callee( *args )						
 	except (WrongReturnValue, WrongArguments) as e:
 		print str(e)

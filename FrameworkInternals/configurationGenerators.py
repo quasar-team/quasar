@@ -24,9 +24,9 @@ from transformDesign import TransformKeys, transformByKey, getTransformOutput
 from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
 from commandMap import getCommand
   
-def generateConfiguration():
+def generateConfiguration(context):
     """Generates the file Configuration.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
-    transformByKey( TransformKeys.CONFIGURATION_XSD )
+    transformByKey( TransformKeys.CONFIGURATION_XSD, {'context':context} )
     print("Calling xmllint to process XInclude ")
     subprocessWithImprovedErrorsPipeOutputToFile(
         [getCommand("xmllint"), "--xinclude", getTransformOutput(TransformKeys.CONFIGURATION_XSD)], 

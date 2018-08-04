@@ -26,14 +26,14 @@ from transformDesign import TransformKeys, transformByKey
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
 
-def generateCmake(buildType="Release"):
+def generateCmake(context, buildType="Release"):
 	"""Generates CMake header lists in various directories, and then calls cmake.
 	
 	Keyword arguments:
 	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""	
-	transformByKey(TransformKeys.AS_CMAKE)
-	transformByKey(TransformKeys.D_CMAKE)
+	transformByKey(TransformKeys.AS_CMAKE, {'context':context})
+	transformByKey(TransformKeys.D_CMAKE, {'context':context})
 	print("Build type ["+buildType+"]")
 
 	print("Calling CMake")

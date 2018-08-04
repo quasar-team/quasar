@@ -24,10 +24,10 @@ from transformDesign import TransformKeys, transformByKey
 from manage_files import get_list_classes
 from quasarExceptions import WrongArguments
 
-def generateOneDeviceClass(className):
-	transformByKey([TransformKeys.D_DEVICE_H, TransformKeys.D_DEVICE_CPP], {'className':className})
+def generateOneDeviceClass(context, className):
+	transformByKey([TransformKeys.D_DEVICE_H, TransformKeys.D_DEVICE_CPP], {'context':context, 'className':className})
 	
-def generateDeviceClass(*classList):
+def generateDeviceClass(context, *classList):
 	"""Generates the files D<classname>.h and D<classname>.cpp. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.
 	
 	Keyword arguments:
@@ -37,7 +37,7 @@ def generateDeviceClass(*classList):
 		raise WrongArguments("need at least one arg for this")
 
 	for aClass in classList:
-		generateOneDeviceClass(aClass)
+		generateOneDeviceClass(context, aClass)
 	
 def generateAllDevices():
 	"""Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
