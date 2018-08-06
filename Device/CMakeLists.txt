@@ -16,7 +16,7 @@
 
 # Author: Piotr Nikiel <piotr@nikiel.info>
 
-include(${PROJECT_BINARY_DIR}/generated/cmake_header.cmake)
+include(${PROJECT_BINARY_DIR}/Device/generated/cmake_header.cmake)
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/include/DRoot.h ${PROJECT_BINARY_DIR}/Device/src/DRoot.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
