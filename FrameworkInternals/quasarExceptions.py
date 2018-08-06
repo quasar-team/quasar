@@ -28,3 +28,7 @@ class WrongReturnValue(Exception):
 			tool=tool, 
 			rv=str(return_value)
 			))
+		
+class Mistake(Exception):
+	def __init__(self, desc):
+		Exception.__init__(self, desc)
