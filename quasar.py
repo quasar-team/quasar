@@ -26,14 +26,8 @@ import subprocess
 import inspect
 import webbrowser
 
-internalFolders = ["AddressSpace", "Configuration", "Design", "Device", "FrameworkInternals", "Server", "LogIt", "Meta"]
-initialDir = os.getcwd()
-splittedPath = initialDir.split(os.path.sep)
-splittedPathLength = len(splittedPath)
-currentFolder = splittedPath[splittedPathLength - 1]
-if(currentFolder in internalFolders):
-	os.chdir("../")
-sys.path.insert(0, './FrameworkInternals')
+this_script_path = os.path.abspath(sys.argv[0])
+sys.path.insert(0, os.path.join(os.path.dirname(this_script_path), 'FrameworkInternals'))
 
 from quasarCommands import printCommandList
 from quasarCommands import getCommands, extract_common_arguments
@@ -51,7 +45,7 @@ def makeContext():
 	* projectBinaryDirectory
 	etc ... """
 	context = {}
-	context['projectSourceDir'] = os.getcwd()  # TODO: port the "this_script" logic from Yocto branch 
+	context['projectSourceDir'] = os.path.dirname(this_script_path)
 	context['projectBinaryDir'] = project_binary_dir  
 	return context
 

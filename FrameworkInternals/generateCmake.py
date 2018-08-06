@@ -35,13 +35,19 @@ def generateCmake(context, buildType="Release"):
 	transformByKey(TransformKeys.AS_CMAKE, {'context':context})
 	transformByKey(TransformKeys.D_CMAKE, {'context':context})
 	print("Build type ["+buildType+"]")
+	projectSourceDir = context['projectSourceDir']
+	projectBinaryDir = context['projectBinaryDir']
+	if not os.path.isdir(projectBinaryDir):
+		print("PROJECT_BINARY_DIR {0} doesn't exist -- creating it.".format(projectBinaryDir))
+		os.mkdir(projectBinaryDir)
+	os.chdir(projectBinaryDir)
 
 	print("Calling CMake")
 	if platform.system() == "Windows":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-					      "-G", "Visual Studio 15 2017 Win64", "."],
+					      "-G", "Visual Studio 15 2017 Win64", projectSourceDir],
 					     getCommand("cmake"))
 	elif platform.system() == "Linux":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-                                              "."],
+                                              projectSourceDir],
 					     getCommand("cmake"))
