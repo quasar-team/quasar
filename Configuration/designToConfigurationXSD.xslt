@@ -146,7 +146,35 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:element name="xs:attribute">
 			<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 			<xsl:attribute name="use">required</xsl:attribute>
+            <xsl:if test="not(d:restriction)">
 			<xsl:attribute name="type"><xsl:value-of select="fnc:dataTypeToXsdType(@dataType)"/></xsl:attribute>
+            </xsl:if>
+            
+            <xsl:if test="d:restriction">
+            <xsl:element name="xs:simpleType">
+            <xsl:element name="xs:restriction">
+            
+            <xsl:attribute name="base"><xsl:value-of select="fnc:dataTypeToXsdType(@dataType)"/></xsl:attribute>
+            
+            <xsl:for-each select="d:restriction/d:restrictionByPattern">
+                <xsl:element name="xs:pattern">
+                    <xsl:attribute name="value">
+                        <xsl:value-of select="@pattern"/>
+                    </xsl:attribute>
+                </xsl:element>
+            </xsl:for-each>
+            
+            <xsl:for-each select="d:restriction/d:restrictionByEnumeration/d:enumerationValue">
+                <xsl:element name="xs:enumeration">
+                    <xsl:attribute name="value">
+                        <xsl:value-of select="@value"/>
+                    </xsl:attribute>
+                </xsl:element>
+            </xsl:for-each>
+            
+            </xsl:element>
+            </xsl:element>
+            </xsl:if>
 			
 			<!-- OPCUA-458 Try carrying documentation over from Design file to Configuration schema -->
 			<xsl:if test="d:documentation">
