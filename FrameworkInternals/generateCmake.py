@@ -25,6 +25,7 @@ import platform
 from transformDesign import TransformKeys, transformByKey
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
+from quasarExceptions import Mistake
 
 def generateCmake(context, buildType="Release"):
 	"""Generates CMake header lists in various directories, and then calls cmake.
@@ -32,16 +33,29 @@ def generateCmake(context, buildType="Release"):
 	Keyword arguments:
 	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""	
+	if not context['projectSourceDir'] == context['projectBinaryDir']: # out-of-source build
+		if os.path.isfile(os.path.join(context['projectSourceDir'], 'CMakeCache.txt')):
+			raise Mistake('User mistake? CMakeCache.txt exists in source directory; '+
+						  'that will prevent CMake to make a successful out-of-source build. '+
+						  'Remove CMakeCache.txt (or attempt "quasar.py clean" and retry') 
+		
+		
 	transformByKey(TransformKeys.AS_CMAKE, {'context':context})
 	transformByKey(TransformKeys.D_CMAKE, {'context':context})
 	print("Build type ["+buildType+"]")
+	projectSourceDir = context['projectSourceDir']
+	projectBinaryDir = context['projectBinaryDir']
+	if not os.path.isdir(projectBinaryDir):
+		print("PROJECT_BINARY_DIR {0} doesn't exist -- creating it.".format(projectBinaryDir))
+		os.mkdir(projectBinaryDir)
+	os.chdir(projectBinaryDir)
 
 	print("Calling CMake")
 	if platform.system() == "Windows":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-					      "-G", "Visual Studio 15 2017 Win64", "."],
+					      "-G", "Visual Studio 15 2017 Win64", projectSourceDir],
 					     getCommand("cmake"))
 	elif platform.system() == "Linux":
 		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-                                              "."],
+                                              projectSourceDir],
 					     getCommand("cmake"))

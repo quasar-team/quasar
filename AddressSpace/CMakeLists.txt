@@ -16,19 +16,19 @@
 
 # Author: Piotr Nikiel <piotr@nikiel.info>
 
-include(cmake_generated.cmake)
+include(${PROJECT_BINARY_DIR}/AddressSpace/cmake_generated.cmake)
 
-	add_custom_command(OUTPUT include/ASInformationModel.h src/ASInformationModel.cpp
-	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-	COMMAND ${PYTHON_COMMAND} quasar.py generate info_model
-	DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/designToInformationModelHeader.xslt ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/designToInformationModelBody.xslt 
-	)
-	
-	add_custom_command(OUTPUT src/SourceVariables.cpp include/SourceVariables.h
-	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-	COMMAND ${PYTHON_COMMAND} quasar.py generate source_variables
-	DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/designToSourceVariablesBody.xslt  ${PROJECT_SOURCE_DIR}/AddressSpace/designToSourceVariablesHeader.xslt DeviceBase
-	)
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/include/ASInformationModel.h ${PROJECT_BINARY_DIR}/AddressSpace/src/ASInformationModel.cpp
+WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+COMMAND ${PYTHON_COMMAND} quasar.py generate info_model --project_binary_dir ${PROJECT_BINARY_DIR}
+DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/designToInformationModelHeader.xslt ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/designToInformationModelBody.xslt 
+)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/src/SourceVariables.cpp ${PROJECT_BINARY_DIR}/AddressSpace/include/SourceVariables.h
+WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+COMMAND ${PYTHON_COMMAND} quasar.py generate source_variables --project_binary_dir ${PROJECT_BINARY_DIR}
+DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/designToSourceVariablesBody.xslt  ${PROJECT_SOURCE_DIR}/AddressSpace/designToSourceVariablesHeader.xslt DeviceBase
+)
 
 add_library (AddressSpace OBJECT
     src/ASInformationModel.cpp

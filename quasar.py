@@ -26,18 +26,12 @@ import subprocess
 import inspect
 import webbrowser
 
-internalFolders = ["AddressSpace", "Configuration", "Design", "Device", "FrameworkInternals", "Server", "LogIt", "Meta"]
-initialDir = os.getcwd()
-splittedPath = initialDir.split(os.path.sep)
-splittedPathLength = len(splittedPath)
-currentFolder = splittedPath[splittedPathLength - 1]
-if(currentFolder in internalFolders):
-	os.chdir("../")
-sys.path.insert(0, './FrameworkInternals')
+this_script_path = os.path.abspath(sys.argv[0])
+sys.path.insert(0, os.path.join(os.path.dirname(this_script_path), 'FrameworkInternals'))
 
 from quasarCommands import printCommandList
 from quasarCommands import getCommands, extract_common_arguments
-from quasarExceptions import WrongReturnValue, WrongArguments
+from quasarExceptions import WrongReturnValue, WrongArguments, Mistake
 
 # args starts from the command name (e.g. 'build') and skips the common arguments (e.g. 'project_binary_dir')
 (args, project_binary_dir) = extract_common_arguments(sys.argv[1:])  # 1: to skip the script name given by the operating system
@@ -51,7 +45,7 @@ def makeContext():
 	* projectBinaryDirectory
 	etc ... """
 	context = {}
-	context['projectSourceDir'] = os.getcwd()  # TODO: port the "this_script" logic from Yocto branch 
+	context['projectSourceDir'] = os.path.dirname(this_script_path)
 	context['projectBinaryDir'] = project_binary_dir  
 	return context
 
@@ -84,5 +78,5 @@ else:
 			callee( makeContext(), *args )  # pack arguments after the last chunk of the command	
 		else:
 			callee( *args )						
-	except (WrongReturnValue, WrongArguments) as e:
+	except (WrongReturnValue, WrongArguments, Mistake) as e:
 		print str(e)

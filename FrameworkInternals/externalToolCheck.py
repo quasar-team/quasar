@@ -124,10 +124,14 @@ def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, 
 
 	Keyword arguments:
 	subprocessCommand -- String or list of strings that will be given to subprocess
-	dependencyName -- parameterless name of the command, just for error loging purposes
-	outputFile -- file where the std out of the process will be written into
-	validReturnCodes -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
+	dependencyName    -- parameterless name of the command, just for error loging purposes
+	outputFile        -- file where the std out of the process will be written into
+	validReturnCodes  -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
 	"""
+	print 'Calling {tool} with args {args} with output to file {out}'.format(
+		tool=dependencyName,
+		args=' '.join(subprocessCommand),
+		out=outputFile)
 	try:
 		with open(outputFile,"wb") as out:
 			process = subprocess.Popen(subprocessCommand, stdout=out)
@@ -138,4 +142,4 @@ def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, 
 	except Exception, e:
 		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
 	if returnCode not in validReturnCodes:
-		raise Exception("Application returned bad return code when trying to execute the program [" + dependencyName + "]. Return code: [" + str(returnCode) + "]")
+		raise WrongReturnValue(dependencyName, returnCode)

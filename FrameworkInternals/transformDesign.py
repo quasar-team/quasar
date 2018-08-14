@@ -76,7 +76,7 @@ QuasarTransforms = [
     [TransformKeys.AS_INFOMODEL_H,          'AddressSpace/designToInformationModelHeader.xslt',     'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
     [TransformKeys.AS_INFOMODEL_CPP,        'AddressSpace/designToInformationModelBody.xslt',       'AddressSpace/src/ASInformationModel.cpp',      'B',            True,           False,        None],
     [TransformKeys.AS_CMAKE,                'AddressSpace/designToGeneratedCmakeAddressSpace.xslt', 'AddressSpace/cmake_generated.cmake',           'B',            False,          False,        None],
-    [TransformKeys.CONFIGURATION_XSD,       'Configuration/designToConfigurationXSD.xslt',          'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        None],
+    [TransformKeys.CONFIGURATION_XSD,       'Configuration/designToConfigurationXSD.xslt',          'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        'metaXsdPath={metaXsdPath}'],
     [TransformKeys.CONFIGURATOR,            'Configuration/designToConfigurator.xslt',              'Configuration/Configurator.cpp',               'B',            True,           False,        None],
     [TransformKeys.CONFIG_VALIDATOR,        'Configuration/designToConfigValidator.xslt',           'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
     [TransformKeys.DESIGN_VALIDATION,       'Design/designValidation.xslt',                         'Design/validationOutput.removeme',             'B',            False,          False,        None],
@@ -153,7 +153,11 @@ def getTransformSpecByKey(key):
     return filter(lambda x: x[FieldIds.KEY.value]==key, QuasarTransforms)[0]
 
 def getTransformOutput (key, supplementaryData={}):
-    return getTransformSpecByKey(key)[FieldIds.OUT_PATH.value].format(**supplementaryData)
+    """Returns absolute path to the output of transform identified by key 'key'"""
+    transformSpec = getTransformSpecByKey(key)
+    outputDir = supplementaryData['context']['projectBinaryDir'] if transformSpec[FieldIds.SOURCE_OR_BINARY.value] == 'B' else supplementaryData['context']['projectSourceDir']
+    outputFileRaw = transformSpec[FieldIds.OUT_PATH.value].format(**supplementaryData)
+    return os.path.join(outputDir, outputFileRaw)
     
 def transformByKey (keys, supplementaryData={}):
     """ Works both for a single key as well as a list of keys """
@@ -163,7 +167,7 @@ def transformByKey (keys, supplementaryData={}):
     else:           
         transformSpec = getTransformSpecByKey(keys)
         outputDir = supplementaryData['context']['projectBinaryDir'] if transformSpec[FieldIds.SOURCE_OR_BINARY.value] == 'B' else supplementaryData['context']['projectSourceDir']
-        outputFile = os.path.join(outputDir, getTransformOutput(keys, supplementaryData))
+        outputFile = getTransformOutput(keys, supplementaryData)
         transformDesignVerbose(
             xsltTransformation = transformSpec[FieldIds.XSLT_PATH.value], 
             outputFile = outputFile, 

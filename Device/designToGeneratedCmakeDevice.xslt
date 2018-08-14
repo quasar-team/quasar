@@ -31,9 +31,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:include href="../Design/CommonFunctions.xslt" />
 	<xsl:template name="commands">
 	
-	add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.h ${PROJECT_SOURCE_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.cpp 
+	add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.h ${PROJECT_BINARY_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.cpp 
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-	COMMAND python quasar.py generate base <xsl:value-of select="@name"/>
+	COMMAND python quasar.py generate base <xsl:value-of select="@name"/> --project_binary_dir ${PROJECT_BINARY_DIR}
 	DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/quasar.py ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseHeader.xslt Configuration.hxx_GENERATED validateDesign ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseBody.xslt
 	)	
 	
@@ -46,11 +46,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	<xsl:template match="/">
 	
-	add_custom_command(OUTPUT include/DRoot.h src/DRoot.cpp
-	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-	COMMAND python quasar.py generate root
-	DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/quasar.py validateDesign designToRootHeader.xslt designToRootBody.xslt
-	)
+
 	
 	<xsl:for-each select="/d:design/d:class">
 	<xsl:call-template name="commands"/>

@@ -26,9 +26,10 @@ from commandMap import getCommand
   
 def generateConfiguration(context):
     """Generates the file Configuration.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
-    transformByKey( TransformKeys.CONFIGURATION_XSD, {'context':context} )
-    print("Calling xmllint to process XInclude ")
+    transformByKey( TransformKeys.CONFIGURATION_XSD, {
+        'context':context,
+        'metaXsdPath':os.path.join(context['projectSourceDir'],'Meta','config','Meta.xsd').replace('\\','/') } )
     subprocessWithImprovedErrorsPipeOutputToFile(
-        [getCommand("xmllint"), "--xinclude", getTransformOutput(TransformKeys.CONFIGURATION_XSD)], 
-        os.path.join('Configuration','Configuration.xsd'), 
+        [getCommand("xmllint"), "--xinclude", getTransformOutput(TransformKeys.CONFIGURATION_XSD, {'context':context})], 
+        os.path.join(context['projectBinaryDir'],'Configuration','Configuration.xsd'), 
         getCommand("xmllint"))
