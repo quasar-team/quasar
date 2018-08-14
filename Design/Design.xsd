@@ -110,6 +110,7 @@ elementFormDefault="qualified">
     	<all>
     		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
     		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+            <element name="configRestriction" type="tns:ConfigRestriction" minOccurs="0" maxOccurs="1"></element>
     	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="addressSpaceWrite"
@@ -345,10 +346,11 @@ elementFormDefault="qualified">
     
     <complexType name="ConfigEntry">
         <all>
-    		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
-    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
-    	</all>
-    	<attribute name="name" type="tns:VariableName" use="required"></attribute>
+            <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
+            <element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+            <element name="configRestriction" type="tns:ConfigRestriction" minOccurs="0" maxOccurs="1"></element>
+        </all>
+        <attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:ConfigEntryDataType"
     		use="required">
     	</attribute>
@@ -421,4 +423,25 @@ elementFormDefault="qualified">
             <enumeration value="asynchronous"></enumeration>
         </restriction>
     </simpleType>
+
+    <complexType name="ConfigRestriction">
+        <all>
+            <element name="restrictionByPattern" type="tns:RestrictionByPattern" maxOccurs="1" minOccurs="0"></element>
+            <element name="restrictionByEnumeration" type="tns:RestrictionByEnumeration" minOccurs="0" maxOccurs="1"></element>
+        </all>
+    </complexType>
+
+    <complexType name="RestrictionByPattern">
+        <attribute name="pattern" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="RestrictionByEnumeration">
+        <sequence minOccurs="0" maxOccurs="unbounded">
+            <element name="enumerationValue" type="tns:EnumerationValue"></element>
+        </sequence>
+    </complexType>
+    
+    <complexType name="EnumerationValue">
+        <attribute name="value" type="string" use="required"></attribute>
+    </complexType>
 </schema>
