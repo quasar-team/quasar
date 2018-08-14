@@ -110,6 +110,7 @@ elementFormDefault="qualified">
     	<all>
     		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
     		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+            <element name="configRestriction" type="tns:ConfigRestriction" minOccurs="0" maxOccurs="1"></element>
     	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="addressSpaceWrite"
@@ -347,7 +348,7 @@ elementFormDefault="qualified">
         <all>
             <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
             <element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
-            <element name="restriction" type="tns:ConfigRestriction" minOccurs="0" maxOccurs="1"></element>
+            <element name="configRestriction" type="tns:ConfigRestriction" minOccurs="0" maxOccurs="1"></element>
         </all>
         <attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:ConfigEntryDataType"
