@@ -59,6 +59,7 @@ File designToConfigValidator.xslt           must_exist,must_be_versioned, md5=ch
 File generateConfiguration.sh               deprecated,install=dont_touch
 File generateConfigurator.sh                deprecated,install=dont_touch
 File generateConfigValidator.sh             deprecated,install=dont_touch
+File designToConfigDocumentationHtml.xslt   must_exist,must_be_versioned, md5=check, install=overwrite 
 
 
 Directory Design install=create
