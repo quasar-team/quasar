@@ -78,7 +78,7 @@ def upgradeDesign(additionalParam):
 	print("Now running merge-tool. Please merge the upgraded changed")
 	subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, upgradedFormatted], getCommand("diff"))
 	
-def createDiagram(detailLevel=0):
+def createDiagram(context, detailLevel=0):
 	"""Creates an UML diagram based on the classes of the server.
 	
 	Keyword arguments:
@@ -86,7 +86,7 @@ def createDiagram(detailLevel=0):
 	"""
 	if detailLevel == "":
 		detailLevel = 0
-	transformByKey(TransformKeys.CREATE_DIAGRAM_DOT, {'detailLevel':detailLevel})
+	transformByKey(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context, 'detailLevel':detailLevel})
 	print("Generating pdf diagram with dot.")
-	subprocessWithImprovedErrors([getCommand("graphviz"), "-Tpdf", "-o", designPath + "diagram.pdf", getTransformOutput(TransformKeys.CREATE_DIAGRAM_DOT)], "GraphViz (dot)")
+	subprocessWithImprovedErrors([getCommand("graphviz"), "-Tpdf", "-o", designPath + "diagram.pdf", getTransformOutput(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context})], "GraphViz (dot)")
 			
