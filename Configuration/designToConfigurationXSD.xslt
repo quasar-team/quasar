@@ -74,16 +74,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     </xsl:element>
 </xsl:template>
 
-<xsl:template name="configRestrictionForScalar">
-<xsl:choose>
-    <xsl:when test="not(d:configRestriction)">
-        <xsl:attribute name="type"><xsl:value-of select="fnc:dataTypeToXsdType(@dataType)"/></xsl:attribute>
-    </xsl:when>
-    <xsl:otherwise>
-        <xsl:call-template name="configRestrictionGeneric"/>
-    </xsl:otherwise>
-</xsl:choose>
-</xsl:template>
 
 
 <xsl:template match="d:class">	
@@ -158,7 +148,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 				<xsl:attribute name="use">required</xsl:attribute>
 				
-                <xsl:call-template name="configRestrictionForScalar"/>
+                <xsl:if test="not(d:configRestriction)">
+                    <xsl:attribute name="type"><xsl:value-of select="fnc:dataTypeToXsdType(@dataType)"/></xsl:attribute>
+                </xsl:if>
 			
 				<!-- OPCUA-458 Try carrying documentation over from Design file to Configuration schema -->
 				<xsl:if test="d:documentation">
@@ -167,7 +159,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				<xsl:value-of select="d:documentation"/>
 				</xsl:element>
 				</xsl:element>
-				</xsl:if>	
+				</xsl:if>
+                
+                <xsl:if test="d:configRestriction">
+                    <xsl:call-template name="configRestrictionGeneric"/>
+                </xsl:if>
+                	
 			</xsl:element>
 		</xsl:otherwise>
 		</xsl:choose>
@@ -190,8 +187,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:element name="xs:attribute">
 			<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 			<xsl:attribute name="use">required</xsl:attribute>
+            <xsl:if test="not(d:configRestriction)">
+                <xsl:attribute name="type"><xsl:value-of select="fnc:dataTypeToXsdType(@dataType)"/></xsl:attribute>
+            </xsl:if>
             
-            <xsl:call-template name="configRestrictionForScalar"/>
 			
 			<!-- OPCUA-458 Try carrying documentation over from Design file to Configuration schema -->
 			<xsl:if test="d:documentation">
@@ -201,6 +200,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			</xsl:element>
 			</xsl:element>
 			</xsl:if>
+            
+            <xsl:if test="d:configRestriction">
+                <xsl:call-template name="configRestrictionGeneric"/>
+            </xsl:if>
 			
 		</xsl:element>
 		</xsl:otherwise>
