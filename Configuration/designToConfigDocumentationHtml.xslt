@@ -20,6 +20,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     </xsl:for-each>
     
     <xsl:for-each select="/d:design/d:class">
+    <xsl:sort select="@name"/>
     <a id="class_{@name}"><h2><xsl:value-of select="@name"/></h2></a>
     <xsl:if test="d:documentation">
         <div style="background-color:#eeeeff"><font color="blue">DOC</font><xsl:text> </xsl:text>
