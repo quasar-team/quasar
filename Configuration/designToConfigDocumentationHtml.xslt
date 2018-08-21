@@ -11,7 +11,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     
     <html>
     
-    <h1>Configuration documentation for your Quasar server</h1>
+    <h1>Configuration documentation for <xsl:value-of select="/d:design/@projectShortName"/></h1>
     
     
     Jump to:
@@ -31,16 +31,29 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     
     <xsl:choose>
         <xsl:when test="d:configentry | d:cachevariable[@initializeWith='configuration']">
-        Configuration attributes:
+        Configuration attributes (all mandatory):
         <ul>
         <xsl:for-each select="d:configentry | d:cachevariable[@initializeWith='configuration']">
             <li>
-                <xsl:value-of select="@name"/>
+                <b><xsl:value-of select="@name"/></b> (<xsl:value-of select="@dataType"/>)
                 <xsl:if test="d:documentation">
                     <div style="background-color:#eeeeff"><font color="blue">DOC</font><xsl:text> </xsl:text>
                     <xsl:copy-of select="d:documentation"/>
                     </div>
                 </xsl:if>
+                <xsl:if test="d:configRestriction">
+                    <div style="background-color: #ffefef"><font color="red">Value restrictions</font>
+                    <xsl:if test="d:configRestriction/d:restrictionByPattern"><br/>Pattern: <code><xsl:value-of select="d:configRestriction/d:restrictionByPattern/@pattern"/></code></xsl:if>
+                    <xsl:if test="d:configRestriction/d:restrictionByEnumeration">
+                        <br/>
+                        Enumeration: 
+                        <xsl:for-each select="d:configRestriction/d:restrictionByEnumeration/d:enumerationValue">
+                            <code><xsl:value-of select="@value"/></code><xsl:if test="position() &lt; count(../d:enumerationValue)">|</xsl:if>
+                        </xsl:for-each>
+                    </xsl:if>
+                    </div>
+                </xsl:if>
+                <br/>
             </li>
         </xsl:for-each>
         </ul>
