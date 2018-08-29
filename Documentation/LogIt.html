@@ -1,0 +1,57 @@
+<!-- © Copyright CERN and Universidad de Oviedo, 2018.                             -->
+<!-- All rights not expressly granted are reserved.                                -->
+<!-- This file is part of Quasar.                                                  -->
+<!--                                                                               -->
+<!-- Quasar is free software: you can redistribute it and/or modify                -->     
+<!-- it under the terms of the GNU Lesser General Public Licence as published by   -->     
+<!-- the Free Software Foundation, either version 3 of the Licence.                -->     
+<!-- Quasar is distributed in the hope that it will be useful,                     -->     
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of                -->     
+<!--                                                                               -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 -->
+<!-- GNU Lesser General Public Licence for more details.                           -->
+<!--                                                                               -->
+<!-- You should have received a copy of the GNU Lesser General Public License      -->
+<!-- along with Quasar.  If not, see <http://www.gnu.org/licenses/>                -->
+<!--                                                                               -->
+<!-- Created:   Aug 2018                                                           -->
+<!-- Authors:                                                                      -->
+<!--   Ben Farnham <ben.farnham@cern.ch>                                           -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	  <link href="css/shCore.css" rel="stylesheet" type="text/css" />
+  <link href="css/shThemeDefault.css" rel="stylesheet" type="text/css" />
+	<title>Logging in quasar servers</title>
+</head>
+<body>
+
+<h1>LogIt</h1>
+Logging in quasar is handled by the LogIt component. For instructions on how to use LogIt generally, i.e. how to log specific messages from a quasar server please refer to the <a href="https://github.com/quasar-team/LogIt">LogIt repository</a>. 
+
+<h1>Configuring LogIt in a Quasar Server</h1>
+As described above, the general means of logging via LogIt is documented <a href="https://github.com/quasar-team/LogIt">here</a>. However, you will need to configure LogIt in your quasar server - this section describes the hooks etc. provided by quasar where you, the developer, are expected to insert configuration code.
+<br><br>
+Please read about <a href="https://github.com/quasar-team/LogIt#components">LogIt components</a>. It's not long or complicated and you need to know about them.
+<br><br>
+Presumably, the quasar server you write will perform tasks at runtime relating to different aspects. Examples may include accepting input (e.g. handling OPC-UA client item writes and method calls), sending commands to hardware (e.g. calling some 3rd party API) and handling disconnection/reconnection. The general idea of LogIt components is that each aspect has a dedicated logging component, the benefit of this is that LogIt allows you to raise and lower the logging <a href="https://github.com/quasar-team/LogIt#verbosity">verbosity</a>a> of components at runtime in order to tune your server's logging according to the aspect you are interested in.
+<br><br>
+Note: You, the quasar server developer, defines the components and decides whether log messages are considered TRACE, WARNING etc.
+<br><br>
+<h2>To Configure LogIt in a quasar server</h2>
+The class QuasarServer is created in your project with a hook method for you to override with the LogIt component IDs specific to your server.
+<!-- HTML generated using hilite.me -->
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #888888">// file: QuasarServer.h</span>
+<span style="color: #008800; font-weight: bold">virtual</span> <span style="color: #333399; font-weight: bold">void</span> <span style="color: #0066BB; font-weight: bold">initializeLogIt</span>();
+
+<span style="color: #888888">// file: QuasarServer.cpp</span>
+<span style="color: #333399; font-weight: bold">void</span> QuasarServer<span style="color: #333333">::</span>initializeLogIt()
+</pre></div>
+
+
+
+
+<h1>Expert Users: Dealing with LogIt as a Git Submodule</h1>
+Note that LogIt is its own independent component (it is used outside of quasar). So, the quasar repository does not have 
+</body></html>
