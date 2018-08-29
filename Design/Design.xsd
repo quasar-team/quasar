@@ -431,6 +431,7 @@ elementFormDefault="qualified">
         <all>
             <element name="restrictionByPattern" type="tns:RestrictionByPattern" maxOccurs="1" minOccurs="0"></element>
             <element name="restrictionByEnumeration" type="tns:RestrictionByEnumeration" minOccurs="0" maxOccurs="1"></element>
+            <element name="restrictionByBounds" type="tns:RestrictionByBounds" minOccurs="0" maxOccurs="1"></element>
         </all>
     </complexType>
 
@@ -447,4 +448,12 @@ elementFormDefault="qualified">
     <complexType name="EnumerationValue">
         <attribute name="value" type="string" use="required"></attribute>
     </complexType>
+
+    <complexType name="RestrictionByBounds">
+        <attribute name="minExclusive" type="double" use="optional"/>
+        <attribute name="minInclusive" type="double" use="optional"/>
+        <attribute name="maxExclusive" type="double" use="optional"/>
+        <attribute name="maxInclusive" type="double" use="optional"/>
+    </complexType>
+    
 </schema>
