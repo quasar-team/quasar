@@ -1,7 +1,7 @@
 # quasar
 Quick opcUA Server generAtion fRamework
 
-NOTE: Clone quasar with the _--recursive_ flag. Required since quasar uses source code from other git repositories (specifically: (LogIt)[https://github.com/quasar-team/LogIt] is a (git submodule)[https://git-scm.com/docs/gitsubmodules])
+NOTE: Clone quasar with the _--recursive_ flag. Required since quasar uses source code from other git repositories (specifically: [LogIt](https://github.com/quasar-team/LogIt) is a [git submodule](https://git-scm.com/docs/gitsubmodules))
 ```bash
 git clone --recursive https://github.com/quasar-team/quasar
 ```
