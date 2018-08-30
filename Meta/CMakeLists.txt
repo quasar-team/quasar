@@ -16,6 +16,12 @@
 
 # Author: Benjamin Farnham <benjamin.farnham@cern.ch>
 
+project(Meta CXX)
+cmake_minimum_required(VERSION 2.8)
+
+set (CMAKE_CXX_STANDARD 11) # works for CMake v3.1+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") #for older CMake versions
+
 file(GLOB META_SRCS src/*.cpp)
 
 add_library (Meta OBJECT ${META_SRCS})
