@@ -80,3 +80,4 @@ else:
 			callee( *args )						
 	except (WrongReturnValue, WrongArguments, Mistake) as e:
 		print str(e)
+		sys.exit(1)

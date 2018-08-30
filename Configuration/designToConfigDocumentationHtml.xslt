@@ -7,6 +7,17 @@ xmlns:fnc="http://cern.ch/quasar/Functions"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
     <xsl:output indent="yes" method="xml"/>
     
+    <xsl:function name="fnc:boundRestrictionTypeToSymbol">
+    <xsl:param name="restrictionType"/>
+    <xsl:choose>
+    <xsl:when test="$restrictionType='minExclusive'">&gt;</xsl:when>
+    <xsl:when test="$restrictionType='minInclusive'">&gt;=</xsl:when>
+    <xsl:when test="$restrictionType='maxInclusive'">&lt;=</xsl:when>
+    <xsl:when test="$restrictionType='maxExclusive'">&lt;</xsl:when>
+    <xsl:otherwise><xsl:message terminate="yes">Type unsupported: <xsl:value-of select="$restrictionType"/></xsl:message></xsl:otherwise>
+    </xsl:choose>
+    </xsl:function>
+    
     <xsl:template match="/">
     
     <html>
@@ -49,6 +60,20 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
                         Enumeration: 
                         <xsl:for-each select="d:configRestriction/d:restrictionByEnumeration/d:enumerationValue">
                             <code><xsl:value-of select="@value"/></code><xsl:if test="position() &lt; count(../d:enumerationValue)">|</xsl:if>
+                        </xsl:for-each>
+                    </xsl:if>
+                    <xsl:if test="d:configRestriction/d:restrictionByBounds">
+                        <br/>
+                        Bounds:
+                        <xsl:variable name="fieldName"><xsl:value-of select="@name"/></xsl:variable>
+                        <xsl:for-each select="d:configRestriction/d:restrictionByBounds/@*">
+                            <xsl:sort select="name()" order="descending" />
+                            <code>
+                            <xsl:if test="position() > 1"> AND </xsl:if>
+                            <xsl:value-of select="$fieldName"/>
+                            <xsl:value-of select="fnc:boundRestrictionTypeToSymbol(name())"/>
+                            <xsl:value-of select="."/>
+                            </code>
                         </xsl:for-each>
                     </xsl:if>
                     </div>
