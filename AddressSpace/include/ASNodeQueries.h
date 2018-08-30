@@ -148,7 +148,7 @@ namespace AddressSpace
         {
             unsigned int nMatched=0;
 #ifdef BACKEND_OPEN62541
-      BOOST_FOREACH( const UaNode::ReferencedTarget &target, *(startNode->referencedTargets()) )
+    for(const UaNode::ReferencedTarget &target : *(startNode->referencedTargets()) )
 	{
 	  nMatched = nMatched + findAllByRegex(nm, target.target, nodeClass, expression, storage);
 	}
