@@ -82,10 +82,10 @@ const string getComponentLogLevelFromConfig(const Log::LogComponentHandle& compo
  * This function ensures that:
  * 1) all specified component log levels are registered in the server (to prevent config file typos, etc)
  * 2) that all specified component log levels are present at most once (to not have conflicting levels)
- *
- * @return true, when component log levels are sane, false otherwise
+ * @throw std::runtime_error if the logging component level settings are not sane
+ * @return void
  */
-bool validateComponentLogLevels( const Configuration::ComponentLogLevels& logLevels )
+void validateComponentLogLevels( const Configuration::ComponentLogLevels& logLevels )
 {
 	std::list<std::string> checkedComponentNames;
 	const std::map<Log::LogComponentHandle, std::string> registeredComponents = Log::getComponentLogsList();
@@ -96,20 +96,22 @@ bool validateComponentLogLevels( const Configuration::ComponentLogLevels& logLev
 		/* 1) validate the component is registered - query its id based on name */
 		if (Log::getComponentHandle(name) == Log::INVALID_HANDLE)
 		{
-			std::cout << "Component Log Level name [" << name << "] is unknown (not registered)." << std::endl;
-			return false;
+			std::ostringstream err;
+			err << "Component Log Level name [" << name << "] is unknown (not registered).";
+			std::cerr << err.str() << std::endl;
+			throw std::runtime_error(err.str());
 		}
 
 		/* 2) check for duplicates */
 		if (std::find(checkedComponentNames.begin(), checkedComponentNames.end(), name) != checkedComponentNames.end())
 		{
-			std::cout << "Component Log Level name [" << name << "] is given more than once. " << std::endl;
-			return false;
+			std::ostringstream err;
+			err << "Component Log Level name [" << name << "] is given more than once.";
+			std::cerr << err.str() << std::endl;
+			throw std::runtime_error(err.str());
 		}
 		checkedComponentNames.push_back( name );
 	}
-
-	return true;
 }
 
 const Configuration::ComponentLogLevels getComponentLogLevels(const Configuration::Log & config)
@@ -261,8 +263,7 @@ void configureLog(const Configuration::Log & config, AddressSpace::ASNodeManager
 
     configureGeneralLogLevel(getGeneralLogLevelFromConfig(config), nm, asLog);
     const Configuration::ComponentLogLevels componentLogLevels = getComponentLogLevels(config);
-    if (!validateComponentLogLevels(componentLogLevels))
-    	abort(); // TODO: Ben: pass the information back in more human way, perhaps?
+	validateComponentLogLevels(componentLogLevels);
     configureComponentLogLevels(componentLogLevels, nm, asLog);
 }
 
