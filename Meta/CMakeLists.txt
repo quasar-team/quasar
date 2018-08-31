@@ -16,6 +16,8 @@
 
 # Author: Benjamin Farnham <benjamin.farnham@cern.ch>
 
+project(Meta CXX)
+
 file(GLOB META_SRCS src/*.cpp)
 
 add_library (Meta OBJECT ${META_SRCS})

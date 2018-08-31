@@ -1,4 +1,4 @@
-# © Copyright CERN, 2015. All rights not expressly granted are reserved. 
+﻿# © Copyright CERN, 2015. All rights not expressly granted are reserved. 
 # 
 # This file lists files of Quasar which should be installed in the target project.
 # Please note that files.txt is a derivative of this file, which replaces md5=check with the result of md5 check.
@@ -285,24 +285,26 @@ Directory LogIt/include install=create,
 File BoostRotatingFileLog.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File ComponentAttributes.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogIt.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogItShared_WinDllExportMacroDefn.h  install=dont_touch,deprecated 
+File LogItInstance.h  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItStaticDefinitions.h must_exist,must_be_versioned,install=overwrite,md5=check
 File LogLevels.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogRecord.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogSinkInterface.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogSinks.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File StdOutLog.h  must_exist,must_be_versioned,install=overwrite,md5=check
 File UaTraceSink.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogItInstance.h  must_exist,must_be_versioned,install=overwrite,md5=check
+
 
 Directory LogIt/src install=create,
 File BoostRotatingFileLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File ComponentAttributes.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogIt.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItInstance.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogLevels.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogRecord.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File LogSinks.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File StdOutLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File UaTraceSink.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogItInstance.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
+
 
 
