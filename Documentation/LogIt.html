@@ -135,7 +135,13 @@ Release versions of quasar should use only tagged versions (i.e. releases) of Lo
 <br><br>
 </body></html>
 <h2>Changing the Version of LogIt Quasar Uses</h2>
-So, let's say there's a new LogIt version -a LogIt tag- that quasar should be using. According to <a href="https://stackoverflow.com/questions/1777854/git-submodules-specify-a-branch-tag">this content</a>, the procedure for updating the LogIt submodule to the next tag is
+So, let's say there's a new LogIt version -a LogIt tag- that quasar should be using. There are 2 stages to updating to the new version
+<ul>
+  <li>If LogIt uses new source files then update file <em>FrameworkInternals/original_files.txt</em> to reflect the modified source file list.
+  <li>Update the submodule tag. Described below</li>
+</ul>
+
+According to <a href="https://stackoverflow.com/questions/1777854/git-submodules-specify-a-branch-tag">this content</a>, the procedure for updating the LogIt submodule to the next tag is
 <!-- HTML generated using hilite.me -->
 <div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #007020">cd </span>LogIt
 git checkout vNewTag
