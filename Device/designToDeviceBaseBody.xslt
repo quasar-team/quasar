@@ -68,7 +68,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:for-each select="d:hasobjects">
 			<xsl:variable name="childClassName"><xsl:value-of select="@class"/></xsl:variable>
 			<xsl:if test="fnc:classHasDeviceLogic(/,$childClassName)='true'">
-			BOOST_FOREACH( <xsl:value-of select="fnc:DClassName(@class)"/> *d, m_<xsl:value-of select="@class"/>s )
+			for( <xsl:value-of select="fnc:DClassName(@class)"/> *d : m_<xsl:value-of select="@class"/>s )
 			{
 				objectCounter += d->unlinkAllChildren();
 			}
@@ -86,7 +86,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		
 		<xsl:value-of select="fnc:DClassName($class)"/> * <xsl:value-of select="fnc:Base_DClassName($className)"/>::get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const
 		{
-			BOOST_FOREACH( <xsl:value-of select="fnc:DClassName($class)"/> *test, m_<xsl:value-of select="$class"/>s )
+			for( <xsl:value-of select="fnc:DClassName($class)"/> *test : m_<xsl:value-of select="$class"/>s )
 			{
 				if (test-&gt;<xsl:value-of select="@name"/>() == key)
 					return test;
@@ -99,7 +99,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		
 		<xsl:value-of select="fnc:DClassName($class)"/> * <xsl:value-of select="fnc:Base_DClassName($className)"/>::get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (<xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const
 		{
-			BOOST_FOREACH( <xsl:value-of select="fnc:DClassName($class)"/> *test, m_<xsl:value-of select="$class"/>s )
+			for( <xsl:value-of select="fnc:DClassName($class)"/> *test : m_<xsl:value-of select="$class"/>s )
 			{
 				if (test-&gt;<xsl:value-of select="@name"/>() == key)
 					return test;
@@ -150,7 +150,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:for-each select="/d:design/d:class[@name=$className]/d:hasobjects">
 			<xsl:variable name="containedClass"><xsl:value-of select="@class"/></xsl:variable>
 			<xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
-			BOOST_FOREACH( <xsl:value-of select="fnc:DClassName(@class)"/> *d, m_<xsl:value-of select="@class"/>s )
+			for( <xsl:value-of select="fnc:DClassName(@class)"/> *d : m_<xsl:value-of select="@class"/>s )
 			{
 				delete d;
 			}
@@ -170,8 +170,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		</xsl:if>
 	 	<xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToDeviceBaseBody.xslt','Piotr Nikiel')"/>
 
-		
-#include &lt;boost/foreach.hpp&gt;		
 		
 #include &lt;Configuration.hxx&gt;
 
