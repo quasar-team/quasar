@@ -162,8 +162,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:value-of select="fnc:headerStubGenerated(/,'using transform designToDeviceBody.xslt','Piotr Nikiel')"/>
 
 		
-#include &lt;boost/foreach.hpp&gt;		
-		
 #include &lt;Configuration.hxx&gt;
 
 #include &lt;<xsl:value-of select="fnc:DClassName($className)"/>.h&gt;

@@ -34,7 +34,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:param name="parentDevice"/>
 	<xsl:param name="configuration" />
 
-	BOOST_FOREACH( Device::<xsl:value-of select="fnc:DClassName(@class)"/> *d<xsl:value-of select="fnc:DClassName(@class)"/> , <xsl:value-of select="$parentDevice"/>-&gt;<xsl:value-of select="lower-case(@class)"/>s())
+	for( Device::<xsl:value-of select="fnc:DClassName(@class)"/> *d<xsl:value-of select="fnc:DClassName(@class)"/> : <xsl:value-of select="$parentDevice"/>-&gt;<xsl:value-of select="lower-case(@class)"/>s())
 		{
 
 			<xsl:variable name="class" select="@class"/>
@@ -89,8 +89,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:template match="/">	
 	#include &lt;stdlib.h&gt;
 	#include &lt;DRoot.h&gt;
-	
-	#include &lt;boost/foreach.hpp&gt;
 	
 	<xsl:for-each select="/d:design/d:class">
 	<xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">

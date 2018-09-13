@@ -33,7 +33,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	 	<xsl:template match="/">
 	 	 <xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToRootBody.xslt','Piotr Nikiel')"/>
 	 	#include &lt;iostream&gt;
-	 	#include &lt;boost/foreach.hpp&gt;
 		#include &lt;DRoot.h&gt;
 		#include &lt;ASUtils.h&gt;
 		
@@ -70,7 +69,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
             <xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
              {
              auto objects = <xsl:value-of select="fnc:Base_DClassName(@name)"/>::orphanedObjects ();
-             BOOST_FOREACH( <xsl:value-of select="fnc:DClassName(@name)"/>* object, objects )
+             for( <xsl:value-of select="fnc:DClassName(@name)"/>* object : objects )
              {
                   delete object;
                   
@@ -105,7 +104,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
 			 {
 			 auto objects = <xsl:value-of select="fnc:DClassName(@name)"/>::orphanedObjects ();
-			 BOOST_FOREACH( <xsl:value-of select="fnc:DClassName(@name)"/>* object, objects )
+			 for( <xsl:value-of select="fnc:DClassName(@name)"/>* object : objects )
 			 {
 			      objectCounter += object->unlinkAllChildren();
 			 }
@@ -128,7 +127,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		</xsl:choose>
 		key) const
 		{
-			BOOST_FOREACH( <xsl:value-of select="fnc:DClassName($class)"/> *test, m_children<xsl:value-of select="$class"/> )
+			for( <xsl:value-of select="fnc:DClassName($class)"/> *test : m_children<xsl:value-of select="$class"/> )
 			{
 				if (test-&gt;<xsl:value-of select="@name"/>() == key)
 					return test;
