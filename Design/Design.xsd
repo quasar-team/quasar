@@ -259,6 +259,9 @@ elementFormDefault="qualified">
     </simpleType>
 
     <complexType name="SourceVariable">
+        <sequence>
+          <element name="documentation" type="tns:Documentation" minOccurs="0" maxOccurs="1"/>
+	</sequence>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:VariableDataType"
     		use="required">
