@@ -597,7 +597,7 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 					
 				</xsl:when>
 				<xsl:when test="@dataType='UaVariant'">
-					v_value = *dataValue.value();
+					UaVariant v_value = *dataValue.value();
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:choose>
