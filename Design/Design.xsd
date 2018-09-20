@@ -259,6 +259,9 @@ elementFormDefault="qualified">
     </simpleType>
 
     <complexType name="SourceVariable">
+        <sequence>
+          <element name="documentation" type="tns:Documentation" minOccurs="0" maxOccurs="1"/>
+	</sequence>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:VariableDataType"
     		use="required">
@@ -405,6 +408,7 @@ elementFormDefault="qualified">
     <complexType name="MethodArgument">
     	<sequence>
     		<element name="array" type="tns:Array" minOccurs="0" maxOccurs="1"></element>
+            <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
     	</sequence>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:VariableDataType" use="required"></attribute>
@@ -413,6 +417,7 @@ elementFormDefault="qualified">
     <complexType name="MethodReturnValue">
         <sequence>
             <element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+            <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
         </sequence>
     	<attribute name="dataType" type="tns:VariableDataType"
     		use="required">
