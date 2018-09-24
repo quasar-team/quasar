@@ -310,7 +310,7 @@ Quasar::ThreadPool* SourceVariables_getThreadPool () { return sourceVariableThre
 	<xsl:for-each select="/d:design/d:class">
 	<xsl:if test="count(d:sourcevariable)>0">
 	#include &lt;<xsl:value-of select="fnc:ASClassName(@name)"/>.h&gt;
-	<xsl:if test="fnc:classHasDeviceLogic(/,@name)">
+	<xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
 	#include &lt;<xsl:value-of select="fnc:DClassName(@name)"/>.h&gt;
 	</xsl:if>
 	</xsl:if>
