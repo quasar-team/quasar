@@ -34,6 +34,7 @@ commands = [
 	[['generate','config_cpp'],       lambda context: transformByKey(TransformKeys.CONFIGURATOR, {'context':context}), False],
 	[['generate','config_validator'], lambda context: transformByKey(TransformKeys.CONFIG_VALIDATOR, {'context':context}), False],
 	[['generate','config_doc'],       lambda context: transformByKey(TransformKeys.CONFIG_DOCUMENTATION, {'context':context}), True],
+	[['generate','as_doc'],           lambda context: transformByKey(TransformKeys.AS_DOCUMENTATION, {'context':context}), True],
 	[['generate','honkytonk'],        lambda context: transformByKey(TransformKeys.HONKYTONK, {'context':context}), True],
 	[['generate','diagram'],          createDiagram, True],
 	[['check_consistency'], mfCheckConsistency, True],
