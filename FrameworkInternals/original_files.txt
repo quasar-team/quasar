@@ -1,4 +1,4 @@
-﻿# © Copyright CERN, 2015. All rights not expressly granted are reserved. 
+# © Copyright CERN, 2015. All rights not expressly granted are reserved. 
 # 
 # This file lists files of Quasar which should be installed in the target project.
 # Please note that files.txt is a derivative of this file, which replaces md5=check with the result of md5 check.
@@ -16,7 +16,7 @@ File generateInformationModelBody.sh          deprecated,install=dont_touch
 File generateInformationModelHeader.sh        deprecated,install=dont_touch
 File generateSourceVariables.sh               deprecated,install=dont_touch
 File designToGeneratedCmakeAddressSpace.xslt  must_exist,must_be_versioned,md5=check,install=overwrite
-
+File designToAddressSpaceDocHtml.xslt         must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory AddressSpace/include install=create
 File ASDelegatingMethod.h                   must_exist,must_be_versioned,md5=check,install=overwrite
