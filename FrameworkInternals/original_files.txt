@@ -59,6 +59,7 @@ File designToConfigValidator.xslt           must_exist,must_be_versioned, md5=ch
 File generateConfiguration.sh               deprecated,install=dont_touch
 File generateConfigurator.sh                deprecated,install=dont_touch
 File generateConfigValidator.sh             deprecated,install=dont_touch
+File designToConfigDocumentationHtml.xslt   must_exist,must_be_versioned, md5=check, install=overwrite 
 
 
 Directory Design install=create
@@ -120,6 +121,7 @@ File DesignManual.html                      must_exist,must_be_versioned,md5=che
 File UserDefinedRuntimeConfigurationModification.html  must_exist,must_be_versioned,install=overwrite
 File UserDefinedCommandLineParameters.html             must_exist,must_be_versioned,install=overwrite
 File AlternativeBackends.html               must_exist,must_be_versioned,install=overwrite
+File quasarCommands.html		    must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Documentation/images install=create
 File quasar_engine_small_smooth_square_128x128.png must_exist,must_be_versioned,md5=check,install=overwrite
@@ -153,6 +155,7 @@ File commandMap.py							must_exist,must_be_versioned,md5=check,install=overwrit
 File quasarCommands.py						must_exist,must_be_versioned,md5=check,install=overwrite
 File OptionalModule.cmake                   must_exist,must_be_versioned,md5=check,install=overwrite,
 File astyleSubstitute.py                    must_exist,must_be_versioned,md5=check,install=overwrite,
+File quasarExceptions.py               	    must_exist,must_be_versioned,md5=check,install=overwrite,
 
 Directory RPM install=create
 

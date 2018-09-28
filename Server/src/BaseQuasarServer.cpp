@@ -135,6 +135,8 @@ int BaseQuasarServer::serverRun(
 
     m_pServer->addNodeManager(m_nodeManager);
 
+    int serverReturnCode = 0;
+
     try
     {
         const int startServerReturn = m_pServer->start();
@@ -148,6 +150,7 @@ int BaseQuasarServer::serverRun(
     catch (const std::exception &e)
     {
         LOG(Log::ERR) << "Exception caught in BaseQuasarServer::serverRun:  [" << e.what() << "]";
+        serverReturnCode = 1;
     }
     AddressSpace::SourceVariables_destroySourceVariablesThreadPool ();
     shutdown();  // this is typically overridden by the developer
@@ -163,7 +166,7 @@ int BaseQuasarServer::serverRun(
         m_pServer = NULL;
     }
 
-    return 0;
+    return serverReturnCode;
 }
 
 std::string BaseQuasarServer::getApplicationPath() const

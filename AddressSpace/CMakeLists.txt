@@ -16,7 +16,7 @@
 
 # Author: Piotr Nikiel <piotr@nikiel.info>
 
-include(cmake_generated.cmake)
+include(${PROJECT_BINARY_DIR}/AddressSpace/cmake_generated.cmake)
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/include/ASInformationModel.h ${PROJECT_BINARY_DIR}/AddressSpace/src/ASInformationModel.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

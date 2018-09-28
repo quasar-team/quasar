@@ -170,11 +170,19 @@
 https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br>
         Once installed, install Eclipse add-ons for XML editors</li>
       <li>Issue this to install software from the official CC7 RPM
-        repos:<br>
+        repos:
+        <meta http-equiv="content-type" content="text/html;
+          charset=UTF-8">
+        <br>
         sudo yum install gcc-c++ gdb boost-devel boost-regex
         boost-program-options boost-signals jre cmake kdiff3 graphviz
         valgrind doxygen rpm-build subversion xsd openssl-devel
-        libxml2-devel xerces-c-devel </li>
+        libxml2-devel xerces-c-devel python2-pip libgit2 libgit2-devel</li>
+      <li>Deploy Python's pygit2 (recommended)<br>
+        WARNING: the version of pygit2 should match the version of
+        libgit2-devel! At the time of writing it was 0.26.4<br>
+        sudo pip install pygit2==0.26.4<br>
+      </li>
       <li>If you have access to the UA SDK, install it (the evaluation
         version works fine). Quasar should work with UA SDK versions
         1.3.2 up to 1.5.5. If you don't have the UA SDK, you can run

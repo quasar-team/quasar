@@ -37,6 +37,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 xmlns:d="http://cern.ch/quasar/Design"
 xmlns:fnc="http://cern.ch/quasar/MyFunctions"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
+<xsl:include href="../Design/CommonFunctions.xslt" />
 
 <xsl:template name="validateArraySize">
 <xsl:param name="className"/>
@@ -50,10 +51,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 <xsl:template name="cachevariable">
 <xsl:param name="className"/>
-	<xsl:if test="@makeSetGet">
-		<!-- task: OPCUA-120 setters/getters should be always generated, this option should go deprecated -->
-		<xsl:message>WARNING (at class='<xsl:value-of select="$className"/>' variable='<xsl:value-of select="@name"/>'): makeSetGet attribute of d:cachevariable is deprecated since GenericOpcUaServer-0.93 and considered always true. Please suppress this attribute from your design file. (Hint: you can use upgradeDesign.sh tool for that)</xsl:message>
-	</xsl:if>
 	<xsl:if test="@nullPolicy!='nullAllowed' and @initializeWith!='configuration' and not(@initialValue)">
 		<xsl:message terminate="yes">ERROR (at class='<xsl:value-of select="$className"/>' variable='<xsl:value-of select="@name"/>'): these settings are invalid. When nullPolicy doesn't allow NULL, for valueAndStatus initializer you have to have initialValue attribute. </xsl:message>
 	</xsl:if>
@@ -66,6 +63,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:with-param name="variableName"><xsl:value-of select="@name"/></xsl:with-param>
 		</xsl:call-template>
 	</xsl:if>
+    <xsl:if test="@isKey">
+		<xsl:if test="fnc:classHasDeviceLogic(/,$className)!='true'">
+				<xsl:message terminate="yes">ERROR: Class '<xsl:value-of select="$className"/>' hasnt got device logic - isKey can't be used</xsl:message>
+		</xsl:if>
+    </xsl:if>
+    <xsl:if test="d:array and @isKey">
+        <xsl:message terminate="yes">ERROR: There's no support for isKey for arrays. Fix your design.</xsl:message>
+    </xsl:if>
 </xsl:template>
 
 <xsl:template match="d:class">

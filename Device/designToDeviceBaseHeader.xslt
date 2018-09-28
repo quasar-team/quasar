@@ -115,6 +115,7 @@
 		<xsl:if test="fnc:classDeviceLogicHasMutex(/,$className)='true'">
 		void lock () { m_lock.lock(); }
 		void unlock () { m_lock.unlock(); }
+        boost::mutex &amp; getLock () { return m_lock; }
 		</xsl:if>
 		
 		/* variable-wise locks */

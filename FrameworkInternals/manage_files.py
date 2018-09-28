@@ -467,9 +467,10 @@ def mfCheckConsistency(param=None):
 	else:
 		print "No problems found."
 		
-def mfCreateRelease():
+def mfCreateRelease(context):
 	"""Upgrades files.txt with the contents of original_files.txt. Expert command, only to be used by developers of the framework when creating a new release"""
-	directories = load_file('FrameworkInternals' + os.path.sep + 'original_files.txt', os.getcwd())
+        os.chdir(context['projectSourceDir'])
+	directories = load_file(os.path.join('FrameworkInternals','original_files.txt'), os.getcwd())
 	create_release(directories)
 
 def mfInstall(sourceDirectory, targetDirectory):

@@ -99,6 +99,7 @@ elementFormDefault="qualified">
     				<element name="configentry" type="tns:ConfigEntry" />
     			</choice>
     		</sequence>
+            <element name="documentation" type="tns:Documentation" minOccurs="0" maxOccurs="1"></element>
     	</sequence>
 
 
@@ -108,8 +109,9 @@ elementFormDefault="qualified">
 
     <complexType name="CacheVariable">
     	<all>
-    		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
+    		<element name="documentation" type="tns:Documentation" minOccurs="0" maxOccurs="1"></element>
     		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+            <element name="configRestriction" type="tns:ConfigRestriction" minOccurs="0" maxOccurs="1"></element>
     	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="addressSpaceWrite"
@@ -123,13 +125,6 @@ elementFormDefault="qualified">
     		Note also that handler generated with "delegated" will be executed from the network thread, so it is not supposed to be blocking. For blocking handlers it is better to consider SourceVariable.
      		</documentation>
     		</annotation>
-    	</attribute>
-    	<attribute name="makeSetGet" type="boolean" use="optional">
-      		<annotation>
-    		<documentation>
-    		This attribute is deprecated and will be removed soon.
-     		</documentation>
-    		</annotation>  	
     	</attribute>
     	<attribute name="dataType" type="tns:VariableDataType"
     		use="required">
@@ -352,10 +347,11 @@ elementFormDefault="qualified">
     
     <complexType name="ConfigEntry">
         <all>
-    		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
-    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
-    	</all>
-    	<attribute name="name" type="tns:VariableName" use="required"></attribute>
+            <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
+            <element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+            <element name="configRestriction" type="tns:ConfigRestriction" minOccurs="0" maxOccurs="1"></element>
+        </all>
+        <attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:ConfigEntryDataType"
     		use="required">
     	</attribute>
@@ -370,9 +366,11 @@ elementFormDefault="qualified">
     	</restriction>
     </simpleType>
 
-    <simpleType name="Documentation">
-    	<restriction base="string"></restriction>
-    </simpleType>
+    <complexType name="Documentation" mixed="true">
+        <sequence>
+            <any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+        </sequence>
+    </complexType>
 
  	
  	<simpleType name="ArraySizeLimits">
@@ -428,4 +426,25 @@ elementFormDefault="qualified">
             <enumeration value="asynchronous"></enumeration>
         </restriction>
     </simpleType>
+
+    <complexType name="ConfigRestriction">
+        <all>
+            <element name="restrictionByPattern" type="tns:RestrictionByPattern" maxOccurs="1" minOccurs="0"></element>
+            <element name="restrictionByEnumeration" type="tns:RestrictionByEnumeration" minOccurs="0" maxOccurs="1"></element>
+        </all>
+    </complexType>
+
+    <complexType name="RestrictionByPattern">
+        <attribute name="pattern" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="RestrictionByEnumeration">
+        <sequence minOccurs="0" maxOccurs="unbounded">
+            <element name="enumerationValue" type="tns:EnumerationValue"></element>
+        </sequence>
+    </complexType>
+    
+    <complexType name="EnumerationValue">
+        <attribute name="value" type="string" use="required"></attribute>
+    </complexType>
 </schema>

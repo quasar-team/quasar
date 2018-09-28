@@ -19,32 +19,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 @contact:    quasar-developers@cern.ch
 '''
 
-import os
-from transformDesign import transformDesignVerbose
-asPath = "AddressSpace" + os.path.sep
-def generateSourceVariables(projectBinaryDir):
-	"""Generates the files SourceVariables.h and SourceVariables.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = os.path.join(projectBinaryDir, "AddressSpace", "include", "SourceVariables.h")
-	transformDesignVerbose(asPath + "designToSourceVariablesHeader.xslt", output, 0, astyleRun=True)
-	output = os.path.join(projectBinaryDir, "AddressSpace", "src", "SourceVariables.cpp")
-	transformDesignVerbose(asPath + "designToSourceVariablesBody.xslt", output,0, astyleRun=True)
 
-def generateASClass(projectBinaryDir, classname):
-	"""Generates the files AS<classname>.h and AS<classname>.cpp. This method is called automatically by cmake, it does not need to be called by the user.
-	
-	Keyword arguments:
-	classname -- the name of the device, which this class will be associated to.
-	"""
-	output = os.path.join(projectBinaryDir, "AddressSpace", "include", "AS{0}.h".format(classname))
-	transformDesignVerbose(asPath + "designToClassHeader.xslt", output, 0, astyleRun=True, additionalParam="className=" + classname)
-		
-	output = os.path.join(projectBinaryDir, "AddressSpace", "src", "AS{0}.cpp".format(classname))	
-	transformDesignVerbose(asPath + "designToClassBody.xslt", output, 0, astyleRun=True, additionalParam="className=" + classname)
-	
-def generateInformationModel(projectBinaryDir):
-	"""Generates the files ASInformationModel.h and ASInformationModel.cpp. This method is called automatically by cmake, it does not need to be called by the user."""
-	output = os.path.join(projectBinaryDir,"AddressSpace","include","ASInformationModel.h")
-	transformDesignVerbose(asPath + "designToInformationModelHeader.xslt", output, 0, astyleRun=True)
-	output = os.path.join(projectBinaryDir,"AddressSpace","src","ASInformationModel.cpp")
-	transformDesignVerbose(asPath + "designToInformationModelBody.xslt", output, 0, astyleRun=True)
-			

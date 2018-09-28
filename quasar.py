@@ -18,75 +18,65 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 @contact:    quasar-developers@cern.ch
 '''
 
+
+
 import os
 import sys
 import subprocess
 import inspect
-import traceback
+import webbrowser
 
 this_script_path = os.path.abspath(sys.argv[0])
 sys.path.insert(0, os.path.join(os.path.dirname(this_script_path), 'FrameworkInternals'))
 
-from quasarCommands import printCommandList, extract_common_arguments
-from quasarCommands import getCommands
+from quasarCommands import printCommandList
+from quasarCommands import getCommands, extract_common_arguments
+from quasarExceptions import WrongReturnValue, WrongArguments, Mistake
 
 # args starts from the command name (e.g. 'build') and skips the common arguments (e.g. 'project_binary_dir')
 (args, project_binary_dir) = extract_common_arguments(sys.argv[1:])  # 1: to skip the script name given by the operating system
 if project_binary_dir is None:
-	project_binary_dir = os.getcwd()
+        project_binary_dir = os.getcwd()
+
+def makeContext():
+	"""Generates a dictionary specifying the context.
+	A context contains information necessary for build like:
+	* projectSourceDirectory,
+	* projectBinaryDirectory
+	etc ... """
+	context = {}
+	context['projectSourceDir'] = os.path.dirname(this_script_path)
+	context['projectBinaryDir'] = project_binary_dir  
+	return context
 
 if len(args) < 1:
         print 'The script was run without specifying what to do. Here are available commands:'
         printCommandList()
         sys.exit(1)
 
-        
-matched_commands = filter(lambda x: x[0] == args[0:len(x[0])], getCommands())
-if len(matched_commands)>1:
-        raise Exception ('It was ambigious to determine the command to run.')
-if len(matched_commands)<1:
-       	print 'Sorry, no such command. These are available:'
-       	printCommandList()
-       	sys.exit(1)
-matched_command = matched_commands[0]
-
-
-if '-h' in sys.argv or '--help' in sys.argv:
-	help(matched_command[1])
-	sys.exit(0)
-
-
-command_invocation_length = len(matched_command[0])
-real_args = args[command_invocation_length:]
-
-function_arg_spec = inspect.getargspec( matched_command[1] ).args # inspect the arguments of callable
-pass_args = []
-
-order_of_extra_arguments = ['projectSourceDir', 'projectBinaryDir']
-extra_arguments = {
-	'projectSourceDir' : os.path.dirname(this_script_path),
-	'projectBinaryDir' : project_binary_dir
-	}
-last_checked_argument = -1
-for extra_argument in order_of_extra_arguments:
-	if extra_argument in function_arg_spec:
-		if function_arg_spec.index(extra_argument) < last_checked_argument:
-			raise Exception ('Order of special arguments is wrong in the function signature')
-		else:
-			last_checked_argument = function_arg_spec.index(extra_argument)
-		pass_args.append( extra_arguments[extra_argument] )
-
-if inspect.getargspec( matched_command[1] ).varargs is None:
-        # with varargs, such protection obviously makes no sense
-        if len(real_args) > len(function_arg_spec):
-            raise Exception('Error: Too many arguments for the chosen command')
-
-pass_args.extend(args[len(matched_command[0]):])
-
 try:
-        matched_command[1]( *pass_args )  # pack arguments after the last chunk of the command
-except Exception as e:
-                print 'Failed because: '+str(e)+'.\nHint: look at the lines above, answer might be there.'
-                traceback.print_exc()
-                sys.exit(1)
-sys.exit(0)
+	commands = getCommands()
+	matched_command = filter(lambda x: x[0] == args[:len(x[0])], commands)[0]
+except IndexError:
+	print 'Sorry, no such command. These are available:'
+	printCommandList()
+	sys.exit(1)
+
+if '-h' in args or '--help' in args:
+	anchor = '_'.join(matched_command[0])
+	print 'Will open quasarCommands.html for anchor {0}'.format(anchor)
+	webbrowser.open("file:///{htmlPath}#{anchor}".format(
+		htmlPath=os.path.join(os.getcwd(),'Documentation','quasarCommands.html'),
+		anchor=anchor))
+	sys.exit(0)
+else:
+	try:  # we print exceptions from external tools, but internal ones we want to have with stack trace or PDB capability
+		args = args[len(matched_command[0]):]
+		callee = matched_command[1]
+		# TODO throw WrongArguments here if not enough args
+		if 'context' in inspect.getargspec(callee).args:
+			callee( makeContext(), *args )  # pack arguments after the last chunk of the command	
+		else:
+			callee( *args )						
+	except (WrongReturnValue, WrongArguments, Mistake) as e:
+		print str(e)

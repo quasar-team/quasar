@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>quasar.py command help</title>
+  </head>
+  <body>
+    <h1>quasar.py command help</h1>
+    <h2><a name="build"></a>build (TODO this description is complete
+      crap)<br>
+    </h2>
+    <p>Method that generates the cmake headers, and after that calls
+      make/vis-studio to compile your server.<br>
+      <br>
+      Keyword arguments:<br>
+      buildType -- Optional parameter to specify Debug or Release build.
+      If it is not specified it will default to Release.<br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="build_config"></a>build_config</h2>
+    <p>&nbsp;&nbsp;&nbsp; Prints the currently chosen build
+      configuration file.<br>
+      TODO: see also "set_build_config"<br>
+      <br>
+    </p>
+    <h2><a name="check_consistency"></a>check_consistency</h2>
+    <p>&nbsp;&nbsp;&nbsp; Checks the consistency of the project,
+      checking that all the files that must exist do exist, everything
+      is in svn and the md5 keys are correct.<br>
+      The following classes of errors might be reported:<br>
+    </p>
+    <ul>
+      <li>checksum error of an internal quasar file (TODO description),</li>
+      <li>file not committed in the version control system,</li>
+      <li>file missing</li>
+    </ul>
+    <p><br>
+    </p>
+    <h2><a name="clean"></a>clean</h2>
+    <p>If you do in-source builds (the default), you can clean your
+      repository from the build artifacts and temporary files.\<br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="create_project"></a>create_project</h2>
+    <p>&nbsp;&nbsp;&nbsp; Installs the framework in a given directory.
+      If the directory doesn't exist, it gets created<br>
+      &nbsp;&nbsp;&nbsp; <br>
+      &nbsp;&nbsp;&nbsp; Keyword arguments:<br>
+      &nbsp;&nbsp;&nbsp; destination -- The target directory where the
+      framework will be installed or upgraded<br>
+      <br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="create_release"></a>create_release</h2>
+    <p><br>
+    </p>
+    <p>&nbsp;&nbsp;&nbsp; Upgrades files.txt with the contents of
+      original_files.txt. Expert command, only to be used by developers
+      of the framework when creating a new release.<br>
+      This command is strictly reserved to the quasar heads and it won't
+      work in a typical user environment.<br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="design_vs_device"></a>design_vs_device</h2>
+    <p>&nbsp;&nbsp;&nbsp; Checks if the device files are outdated (By
+      comparing with design), and hence if they should be regenerated.<br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="doxygen"></a>doxygen</h2>
+    <p>&nbsp;&nbsp;&nbsp; Runs doxygen in the documentation folder,
+      making the tool generate documentation for the server
+      automatically.<br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="enable_module"></a>enable_module</h2>
+    <p>&nbsp;&nbsp;&nbsp; Enables optional module. Module URL and
+      required quasar version is downloaded from github.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Module download is done later
+      at cmake configure stage.<br>
+      &nbsp;&nbsp;&nbsp; <br>
+      &nbsp;&nbsp;&nbsp; Keyword arguments:<br>
+      &nbsp;&nbsp;&nbsp; moduleName&nbsp;&nbsp; -- name of the optional
+      module<br>
+      &nbsp;&nbsp;&nbsp;
+      tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --
+      tag/branch to checkout, if not specified, master branch is used<br>
+      &nbsp;&nbsp;&nbsp; serverString -- default git server is
+      "https://github.com", specify custom if necessary, e.g.
+      "ssh://git@gitlab.cern.ch:7999"</p>
+    <p><br>
+    </p>
+    <h2><a name="disable_module"></a>disable_module</h2>
+    <p>&nbsp;&nbsp;&nbsp; Disables optional module. Module files will be
+      deleted.<br>
+      &nbsp;&nbsp;&nbsp; <br>
+      &nbsp;&nbsp;&nbsp; Keyword arguments:<br>
+      &nbsp;&nbsp;&nbsp; moduleName -- name of the optional module<br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="external_tool_check"></a>external_tool_check</h2>
+    <p>&nbsp;&nbsp;&nbsp; Checks all of QUASAR dependencies to see if
+      everything is setup as expected, and prints apropiate messages to
+      point out what is missing.<br>
+    </p>
+    <h2><a name="format_design"></a>format_design</h2>
+    <p>&nbsp;&nbsp;&nbsp; Formats design.xml. This is done to have
+      always the same indentation format. The formatting is done in a
+      separate file, in case something goes wrong, and then copied over.<br>
+      <br>
+    </p>
+    <h2><a name="generate_asclass"></a>generate asclass</h2>
+    <p>&nbsp;&nbsp;&nbsp; Generates the files AS&lt;classname&gt;.h and
+      AS&lt;classname&gt;.cpp. This method is called automatically by
+      cmake, it does not need to be called by the user.<br>
+      &nbsp;&nbsp;&nbsp; <br>
+      &nbsp;&nbsp;&nbsp; Keyword arguments:<br>
+      &nbsp;&nbsp;&nbsp; classname -- the name of the device, which this
+      class will be associated to.<br>
+    </p>
+    <h2><a name="generate_base"></a>generate base</h2>
+    <p>&nbsp;&nbsp;&nbsp; Generates the files Base_D&lt;classname&gt;.h
+      and Base_D&lt;classname&gt;.cpp. This method is called
+      automatically by cmake, it does not need to be called by the user.<br>
+      &nbsp;&nbsp;&nbsp; <br>
+      &nbsp;&nbsp;&nbsp; Keyword arguments:<br>
+      &nbsp;&nbsp;&nbsp; classname -- the name of the device, which this
+      class will be associated to.<br>
+    </p>
+    <h2><a name="generate_cmake_headers"></a>generate cmake_headers</h2>
+    <p>Generates CMake header lists in various directories, and then
+      calls cmake.<br>
+      <br>
+      Keyword arguments:<br>
+      buildType -- Optional parameter to specify Debug or Release build.
+      If it is not specified it will default to Release.</p>
+    <h2><a name="generate_config_cpp"></a>generate config_cpp</h2>
+    <p>Generates the file Configurator.cpp. This method is called
+      automatically by cmake, it does not need to be called by the user.<br>
+    </p>
+    <p></p>
+    <h2><a name="generate_config_doc"></a>generate config_doc</h2>
+    <p>Generates documentation of the Configuration Schema. <br>
+      Such a documentation is a HTML document with description of all
+      fields that might appear in the configuration.<br>
+    </p>
+    <h2><a name="generate_config_xsd"></a>generate config_xsd</h2>
+    <p>Generates the file Configuration.xsd. This method is called
+      automatically by cmake, it does not need to be called by the user.<br>
+    </p>
+    <h2><a name="generate_config_validator"></a>generate
+      config_validator</h2>
+    <p>&nbsp;&nbsp;&nbsp; Generates the file ConfigValidator.xsd. This
+      method is called automatically by cmake, it does not need to be
+      called by the user.<br>
+    </p>
+    <h2><a name="generate_device"></a>generate device</h2>
+    <p>&nbsp;&nbsp;&nbsp; Generates the files D&lt;classname&gt;.h and
+      D&lt;classname&gt;.cpp. This method needs to be called by the
+      user, as this is the class where the device logic is, so a manual
+      merge will be needed.<br>
+      &nbsp;&nbsp;&nbsp; <br>
+      &nbsp;&nbsp;&nbsp; Keyword arguments:<br>
+      &nbsp;&nbsp;&nbsp; classname -- the name of the device, which this
+      class will be associated to. You can specify several classes (up
+      to 10), separated by spaces or just --all to regenerate all device
+      classes.<br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="generate_device_--all"></a>generate device --all</h2>
+    <p>Equal to "generate device" (above) run with all classes with
+      device logic from the Design.<br>
+    </p>
+    <h2><a name="generate_diagram"></a>generate diagram</h2>
+    &nbsp;&nbsp;&nbsp; Creates an UML diagram based on the classes of
+    the server.<br>
+    &nbsp;&nbsp;&nbsp; <br>
+    &nbsp;&nbsp;&nbsp; Keyword arguments:<br>
+    &nbsp;&nbsp;&nbsp; detailLevel -- Detail level of the diagram. If it
+    is not present, 0 will be assumed<br>
+    <br>
+    <h2><a name="generate_honkytonk"></a>generate honkytonk</h2>
+    <p>Generates honkyTonky.cc, a special class intended for testing
+      your namespace with simulated (random) values.<br>
+    </p>
+    <h2><a name="generate_info_model"></a>generate info_model</h2>
+    <p>&nbsp;Generates the files ASInformationModel.h and
+      ASInformationModel.cpp. This method is called automatically by
+      cmake, it does not need to be called by the user.<br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="generate_source_variables"></a> generate
+      source_variables</h2>
+    <h2> </h2>
+    <p>&nbsp;&nbsp;&nbsp; Generates the files SourceVariables.h and
+      SourceVariables.cpp. This method is called automatically by cmake,
+      it does not need to be called by the user</p>
+    <h2><a name="generate_root"></a>generate root</h2>
+    <p>Generates the files DRoot.h and DRoot.cpp. This method is called
+      automatically by cmake, it does not need to be called by the user.<br>
+      <br>
+    </p>
+    <h2><br>
+      <a name="list_enabled_modules"></a>list_enabled_modules</h2>
+    <p>List registered module URLs<br>
+      <br>
+    </p>
+    <h2><br>
+      <a name="list_modules"></a>list_modules</h2>
+    <p>&nbsp;&nbsp;&nbsp; Prints list of modules available on git
+      server.<br>
+    </p>
+    <h2><br>
+      <a name="prepare_build"></a>prepare_build</h2>
+    <p>&nbsp;&nbsp;&nbsp; Generates CMake header lists in various
+      directories, and then calls cmake.<br>
+      &nbsp;&nbsp;&nbsp; <br>
+      &nbsp;&nbsp;&nbsp; Keyword arguments:<br>
+      &nbsp;&nbsp;&nbsp; buildType -- Optional parameter to specify
+      Debug or Release build. If it is not specified it will default to
+      Release.<br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="set_build_config"></a>set_build_config</h2>
+    <p>Sets the new build config. A build config file is a cmake file
+      which specified the following aspects:<br>
+      <br>
+    </p>
+    <ul>
+      <li>the kind of the OPC-UA backend chosen (e.g. UASDK or
+        open62541),</li>
+      <li>the paths to the OPC-UA backend headers and libs,</li>
+      <li>boost libraries</li>
+      <li>...</li>
+    </ul>
+    <p>TODO: see also "build_config" (above).<br>
+    </p>
+    <h2><a name="setup_svn_ignore"></a>setup_svn_ignore</h2>
+    If you use SVN as your version control system, it setups the
+    .svnignore file, so the generated files will be ignored in your svn
+    repository.<br>
+    <br>
+    <h2><a name="upgrade_design"></a>upgrade_design</h2>
+    Method for adjusting Design.xml for a new Design.xsd when updating
+    to a new version of the Framework<br>
+    <h2><a name="upgrade_project"></a>upgrade_project</h2>
+    <p>&nbsp;&nbsp;&nbsp; Upgrades the framework in a given directory<br>
+      &nbsp;&nbsp;&nbsp; <br>
+      &nbsp;&nbsp;&nbsp; Keyword arguments:<br>
+      &nbsp;&nbsp;&nbsp; destination -- The target directory where the
+      framework will be installed or upgraded<br>
+    </p>
+    <p><br>
+    </p>
+    <h2><a name="validate_design"></a>validate_design</h2>
+    <p>Checks design.xml against Design.xsd, and after that performs
+      some additional checks (defined in designValidation.xslt)<br>
+      <br>
+    </p>
+  </body>
+</html>
