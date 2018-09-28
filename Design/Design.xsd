@@ -107,9 +107,10 @@ elementFormDefault="qualified">
     </complexType>
 
     <complexType name="CacheVariable">
-    	<choice>
+    	<all>
     		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
-    	</choice>
+    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+    	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="addressSpaceWrite"
     		type="tns:CacheVariableAddressSpaceWrite" use="required">
@@ -350,11 +351,10 @@ elementFormDefault="qualified">
     </simpleType>
     
     <complexType name="ConfigEntry">
-    	<choice>
-    		<element name="documentation" type="tns:Documentation"
-    			maxOccurs="1" minOccurs="0">
-    		</element>
-    	</choice>
+        <all>
+    		<element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
+    		<element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+    	</all>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:ConfigEntryDataType"
     		use="required">
@@ -374,6 +374,18 @@ elementFormDefault="qualified">
     	<restriction base="string"></restriction>
     </simpleType>
 
+ 	
+ 	<simpleType name="ArraySizeLimits">
+   		<restriction base="unsignedInt">
+	      	<minInclusive value="0"/>
+	      	<maxInclusive value="104857600"/>
+   		</restriction>
+	</simpleType>
+	
+	<complexType name="Array">
+      	<attribute name="minimumSize" type="tns:ArraySizeLimits"></attribute>
+ 	 	<attribute name="maximumSize" type="tns:ArraySizeLimits"></attribute>
+    </complexType>
     <complexType name="DeviceLogic">
     	<sequence>
     		<element name="mutex" type="tns:DeviceLogicMutex" minOccurs="0" maxOccurs="1"></element>
@@ -383,24 +395,37 @@ elementFormDefault="qualified">
     <complexType name="DeviceLogicMutex"></complexType>
 
     <complexType name="Method">
-    	<sequence>
-    		<element name="argument" type="tns:MethodArgument"
-    			minOccurs="0" maxOccurs="unbounded">
-    		</element>
-    		<element name="returnvalue" type="tns:MethodReturnValue" minOccurs="0" maxOccurs="unbounded"></element>
-    	</sequence>
-    	<attribute name="name" type="tns:VariableName" use="required"></attribute>
+        <sequence>
+            <element name="argument" type="tns:MethodArgument" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="returnvalue" type="tns:MethodReturnValue" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
+        </sequence>
+        <attribute name="name" type="tns:VariableName" use="required"></attribute>
+        <attribute name="executionSynchronicity" type="tns:MethodExecutionSynchronicity" use="required"></attribute>
     </complexType>
-    
+
     <complexType name="MethodArgument">
+    	<sequence>
+    		<element name="array" type="tns:Array" minOccurs="0" maxOccurs="1"></element>
+    	</sequence>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     	<attribute name="dataType" type="tns:VariableDataType" use="required"></attribute>
     </complexType>
 
     <complexType name="MethodReturnValue">
+        <sequence>
+            <element name="array" type="tns:Array" maxOccurs="1" minOccurs="0"></element>
+        </sequence>
     	<attribute name="dataType" type="tns:VariableDataType"
     		use="required">
     	</attribute>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     </complexType>
+    
+    <simpleType name="MethodExecutionSynchronicity">
+        <restriction base="string">
+            <enumeration value="synchronous"></enumeration>
+            <enumeration value="asynchronous"></enumeration>
+        </restriction>
+    </simpleType>
 </schema>

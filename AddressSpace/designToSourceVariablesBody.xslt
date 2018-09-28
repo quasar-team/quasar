@@ -38,7 +38,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:param name="className"/>
 	<xsl:param name="variableName"/>
 	
-	class IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="$variableName"/> : public UaThreadPoolJob
+	class IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="$variableName"/> : public Quasar::ThreadPoolJob
 	{
 		public:
 		IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="$variableName"/> (
@@ -121,6 +121,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			LOG(Log::DBG) &lt;&lt; "After finishRead status:" &lt;&lt; s.toString().toUtf8() &lt;&lt; endl;
 			
 		}
+        virtual std::string describe() const
+        {
+            return std::string("read sourcevariable <xsl:value-of select="$variableName"/> of object ") + m_parentObjectNode-&gt;nodeId().toString().toUtf8();
+        }
 		private:
 			IOManagerCallback *m_callback;
 			OpcUa_UInt32 m_hTransaction;
@@ -132,11 +136,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	<xsl:template  name="WriteJob">
 	<xsl:param name="className"/>
+    <xsl:param name="variableName"/>
 	
-	class IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> : public UaThreadPoolJob
+	class IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="$variableName"/> : public Quasar::ThreadPoolJob
 	{
 		public:
-		IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> (
+		IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="$variableName"/> (
 			IOManagerCallback *callback,
 			OpcUa_UInt32 hTransaction,
 			OpcUa_UInt32 callbackHandle,
@@ -246,6 +251,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			LOG(Log::TRC) &lt;&lt; "After finishWrite status:" &lt;&lt; s.toString().toUtf8() &lt;&lt; endl;
 			
 		}
+        virtual std::string describe() const
+        {
+            return std::string("write sourcevariable <xsl:value-of select="$variableName"/> of object ") + m_parentObjectNode-&gt;nodeId().toString().toUtf8();
+        }
 		private:
 			IOManagerCallback *m_callback;
 			OpcUa_UInt32 m_hTransaction;
@@ -260,14 +269,43 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:template match="/">	
 	<xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToSourceVariablesBody.xslt','Piotr Nikiel')"/>    
 
+	#include &lt;SourceVariables.h&gt;
+	#include &lt;LogIt.h&gt;
+	using namespace std;
+
+	namespace AddressSpace
+	{
+
+	/* The thread pool should be initialized by Meta while reading the config file, using function: 
+	    SourceVariables_initSourceVariablesThreadPool */
+	static Quasar::ThreadPool *sourceVariableThreads = 0; 
+	void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads, unsigned int maxThreads, unsigned int maxJobs)
+	{
+	    LOG(Log::DBG) &lt;&lt; "Initializing source variables thread pool to min=" &lt;&lt; minThreads  &lt;&lt; " max=" &lt;&lt; maxThreads &lt;&lt; " threads maxJobs=" &lt;&lt; " jobs";
+		sourceVariableThreads = new Quasar::ThreadPool (maxThreads, maxJobs);
+	}
+
+    void SourceVariables_destroySourceVariablesThreadPool ()
+    {
+        if (sourceVariableThreads)
+        {
+            delete sourceVariableThreads;
+            sourceVariableThreads = nullptr;
+        }
+}
+
+Quasar::ThreadPool* SourceVariables_getThreadPool () { return sourceVariableThreads; }
+}
+	
 	#ifndef BACKEND_OPEN62541
 
 
 	#include &lt;iomanager.h&gt;
-	#include &lt;SourceVariables.h&gt;
+	
 	#include &lt;iostream&gt;
 	#include &lt;stdexcept&gt;
-	#include &lt;LogIt.h&gt;
+
+    #include &lt;QuasarThreadPool.h&gt;
 	
 	<xsl:for-each select="/d:design/d:class">
 	<xsl:if test="count(d:sourcevariable)>0">
@@ -278,19 +316,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	</xsl:if>
 	</xsl:for-each>
 	
-	using namespace std;
+
 
 	namespace AddressSpace
 	{
-
-	/* The thread pool should be initialized by Meta while reading the config file, using function: 
-	    SourceVariables_initSourceVariablesThreadPool */
-	static UaThreadPool *sourceVariableThreads = 0; 
-	void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads, unsigned int maxThreads)
-	{
-	    LOG(Log::DBG) &lt;&lt; "Initializing source variables thread pool to min=" &lt;&lt; minThreads  &lt;&lt; " max=" &lt;&lt; maxThreads &lt;&lt; " threads";
-		sourceVariableThreads = new UaThreadPool (minThreads, maxThreads);
-	}
 
 
 		<xsl:for-each select="/d:design/d:class">
@@ -306,7 +335,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:if test="@addressSpaceWrite='asynchronous' or @addressSpaceWrite='synchronous'">
 			<xsl:call-template name="WriteJob">
 			<xsl:with-param name="className"><xsl:value-of select="$className"/></xsl:with-param>
-
+            <xsl:with-param name="variableName"><xsl:value-of select="@name"/></xsl:with-param>
 			</xsl:call-template>
 
 			</xsl:if>
@@ -341,8 +370,12 @@ UaStatus SourceVariables_spawnIoJobRead (
 				callbackHandle,
 				parentNode
 				); 
-				sourceVariableThreads-&gt;addJob (job);
-				</xsl:when>
+				UaStatus s = sourceVariableThreads-&gt;addJob (job);
+                if (!s.isGood())
+                {
+                    LOG(Log::ERR) &lt;&lt; "While addJob(): " &lt;&lt; s.toString().toUtf8();
+				}
+                </xsl:when>
 				<xsl:when test="@addressSpaceRead='synchronous'">
 				IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> job (
 				callback,
@@ -398,7 +431,11 @@ UaStatus SourceVariables_spawnIoJobRead (
 				parentNode,
 				pWriteValue
 				); 
-				sourceVariableThreads-&gt;addJob (job);
+				UaStatus s = sourceVariableThreads-&gt;addJob (job);
+                if (!s.isGood())
+                {
+                    LOG(Log::ERR) &lt;&lt; "While addJob(): " &lt;&lt; s.toString().toUtf8();
+                }
 				</xsl:when>
 				<xsl:when test="@addressSpaceWrite='synchronous'">
 				

@@ -115,11 +115,19 @@ endforeach(module)
 
 
 add_custom_command(
+<<<<<<< HEAD
     OUTPUT ${PROJECT_BINARY_DIR}/Design/validated.tmp
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/quasar.py validate_design --project_binary_dir ${PROJECT_BINARY_DIR}
     COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_BINARY_DIR}/Design/validated.tmp
     DEPENDS ${DESIGN_FILE}   
+=======
+    OUTPUT ${PROJECT_SOURCE_DIR}/Design/validated.tmp
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Design
+    COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/quasar.py validate_design
+    COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_SOURCE_DIR}/Design/validated.tmp
+    DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/Design/Design.xsd  
+>>>>>>> v1.2.4
     )
 add_custom_target(validateDesign DEPENDS  ${PROJECT_BINARY_DIR}/Design/validated.tmp )
 
@@ -148,6 +156,7 @@ target_link_libraries ( ${EXECUTABLE}
 	${BOOST_LIBS}
 	${XML_LIBS}
 	${OPCUA_TOOLKIT_LIBS}
+	${QUASAR_SERVER_LIBS}
 	${SERVER_LINK_LIBRARIES}
 )
 

@@ -24,7 +24,7 @@ else(DEFINED ENV{BOOST_PATH_HEADERS})
     SET( BOOST_PATH_HEADERS "" )
     SET( BOOST_PATH_LIBS "" )
     if( NOT DEFINED ENV{BOOST_LIBS} )
-      SET( BOOST_LIBS "-lboost_program_options-mt -lboost_thread-mt" )
+      SET( BOOST_LIBS "-lboost_program_options-mt -lboost_thread-mt -lpthread" )
     else()
       SET( BOOST_LIBS $ENV{BOOST_LIBS} )
     endif()
@@ -48,14 +48,22 @@ include_directories( open62541-compat/open62541 )
 #-----
 #As of 03-Sep-2015 I see no FindXerces or whatever in our Cmake 2.8 installation, so no find_package can be user...
 # TODO perhaps also take it from environment if requested
-SET( XML_LIBS "-lxerces-c -lssl" ) 
+SET( XML_LIBS "-lxerces-c" ) 
+
+#-----
+#Quasar server libs
+#-----
+SET( QUASAR_SERVER_LIBS "-lssl -lcrypto -lpthread" )
 
 #-----
 #General settings
 #-----
 
 # TODO: split between Win / MSVC, perhaps MSVC has different notation for these
-add_definitions(-Wall -Wno-deprecated -std=gnu++0x -Wno-literal-suffix) 
+add_definitions(-Wall -Wno-deprecated  ) 
+
+# We need some C++11
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-literal-suffix" )
 
 # 62xxx no uatrace
 set (LOGIT_HAS_UATRACE FALSE)

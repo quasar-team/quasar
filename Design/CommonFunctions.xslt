@@ -80,6 +80,24 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 </xsl:choose>
 </xsl:function>
 
+<xsl:function name="fnc:varSetterArray">
+<xsl:param name="name"/>
+<xsl:param name="dataType"/>
+<xsl:param name="forHeader"/>
+
+<xsl:variable name="srcTime">const UaDateTime &amp; srcTime <xsl:if test="$forHeader='true'">= UaDateTime::now()</xsl:if></xsl:variable>
+<xsl:choose>
+<xsl:when test="$dataType='null'">
+<!-- skip data argument for null setter -->
+<xsl:value-of select="concat('setNull',fnc:capFirst($name),' (OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+</xsl:when>
+
+<xsl:otherwise>
+<xsl:value-of select="concat('set',fnc:capFirst($name),' (const std::vector &lt;',$dataType,'&gt; &amp; value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
+</xsl:otherwise>
+</xsl:choose>
+</xsl:function>
+
 <xsl:function name="fnc:delegateWriteName">
 <xsl:param name="name"/>
 write<xsl:value-of select="fnc:capFirst($name)"/> 
@@ -221,7 +239,7 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <xsl:when test="$dataType='OpcUa_UInt64'">setUInt64</xsl:when>
 <xsl:when test="$dataType='OpcUa_Boolean'">setBool</xsl:when>
 <xsl:when test="$dataType='UaString'">setString</xsl:when>
-<xsl:when test="$dataType='UaByteString'">setByteString</xsl:when>
+<xsl:when test="$dataType='UaByteString'"><xsl:message terminate="yes">UaByteString has a non trivial setter requiring 2nd argument to be given.</xsl:message></xsl:when>
 <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
 </xsl:choose>
 </xsl:function>
@@ -238,11 +256,18 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <!-- When the type is of POD type, just returns the type, otherwise adds a const reference. Should be used to generate argument passing into custom code.  -->
 <xsl:function name="fnc:fixDataTypePassingMethod">
 <xsl:param name="dataType"/>
-<xsl:choose>
-<xsl:when test="$dataType='UaString' or $dataType='UaByteString' or $dataType='UaVariant'">const <xsl:value-of select="$dataType"/> &amp; </xsl:when>
-<xsl:otherwise><xsl:value-of select="$dataType"/></xsl:otherwise>
-</xsl:choose>
-
+<xsl:param name="isArray"/>
+    <xsl:choose>
+        <xsl:when test="$isArray">
+            const std::vector&lt;<xsl:value-of select="$dataType"/>&gt; &amp;
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:choose>
+            <xsl:when test="$dataType='UaString' or $dataType='UaByteString' or $dataType='UaVariant'">const <xsl:value-of select="$dataType"/> &amp; </xsl:when>
+            <xsl:otherwise><xsl:value-of select="$dataType"/></xsl:otherwise>
+            </xsl:choose>
+        </xsl:otherwise>
+    </xsl:choose>
 </xsl:function>
 
 <!-- This returns true if given hasObjects relations points to a singleton, that is, exactly 1 object -->
@@ -326,5 +351,72 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
  */
 
 </xsl:function>
- 
+
+<xsl:function name="fnc:quasarDataTypeToCppType">
+<!-- Note: quasar data type (i.e. what you put into Design.xml as the data type) corresponds to Cpp types in case of scalars. 
+This function also supports arrays -->
+<xsl:param name="dataType"/>
+<xsl:param name="isArray"/>
+<xsl:if test="$isArray">std::vector&lt;</xsl:if><xsl:value-of select="$dataType"/><xsl:if test="$isArray">&gt;</xsl:if>
+</xsl:function>
+
+<xsl:function name="fnc:quasarDataTypeToUaArrayType">
+    <xsl:param name="dataType"/>
+    <xsl:choose>
+        <xsl:when test="$dataType='OpcUa_Double'">UaDoubleArray</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Float'">UaFloatArray</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Byte'">UaByteArray</xsl:when>
+        <xsl:when test="$dataType='OpcUa_SByte'">UaSByteArray</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Int16'">UaInt16Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_UInt16'">UaUInt16Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Int32'">UaInt32Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_UInt32'">UaUInt32Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Int64'">UaInt64Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_UInt64'">UaUInt64Array</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Boolean'">UaBoolArray</xsl:when>
+        <xsl:when test="$dataType='UaByteString'">UaByteStringArray</xsl:when>
+        <xsl:when test="$dataType='UaString'">UaStringArray</xsl:when>
+        <xsl:otherwise><xsl:message terminate="yes">Sorry, this dataType='<xsl:value-of select="$dataType"/>' is unknown.</xsl:message></xsl:otherwise>
+    </xsl:choose>
+</xsl:function>
+
+<xsl:function name="fnc:convertVectorToUaVariant">
+	<!-- This template optimizes invocation of convertVectorToUaVariant which, 
+		unfortunately, can't be overloaded for all supported types -->
+	<xsl:param name="input" />
+	<xsl:param name="output" />
+	<xsl:param name="dataType" />
+	<xsl:choose>
+		<xsl:when test="$dataType='OpcUa_Byte'">
+			ArrayTools::convertByteVectorToUaVariant( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
+		</xsl:when>
+		<xsl:when test="$dataType='OpcUa_Boolean'">
+			ArrayTools::convertBooleanVectorToUaVariant( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );		
+		</xsl:when>
+		<xsl:otherwise>
+			ArrayTools::convertVectorToUaVariant( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:function>
+
+<xsl:function name="fnc:convertUaVariantToVector">
+	<!-- This template optimizes invocation of convertVectorToUaVariant which, 
+		unfortunately, can't be overloaded for all supported types -->
+	<xsl:param name="input" />
+	<xsl:param name="output" />
+	<xsl:param name="dataType" />
+	<xsl:choose>
+		<xsl:when test="$dataType='OpcUa_Byte'">
+			ArrayTools::convertUaVariantToByteVector( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
+		</xsl:when>
+		<xsl:when test="$dataType='OpcUa_Boolean'">
+			ArrayTools::convertUaVariantToBooleanVector( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
+		</xsl:when>
+		<xsl:otherwise>
+			ArrayTools::convertUaVariantToVector( <xsl:value-of select="$input"/>, <xsl:value-of select="$output"/> );
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:function>
+
+
 </xsl:transform>

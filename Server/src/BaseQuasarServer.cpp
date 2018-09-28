@@ -149,7 +149,7 @@ int BaseQuasarServer::serverRun(
     {
         LOG(Log::ERR) << "Exception caught in BaseQuasarServer::serverRun:  [" << e.what() << "]";
     }
-
+    AddressSpace::SourceVariables_destroySourceVariablesThreadPool ();
     shutdown();  // this is typically overridden by the developer
 
     unlinkAllDevices(m_nodeManager);
