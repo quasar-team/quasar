@@ -104,6 +104,7 @@ set(MODULES_IN_SOURCE_DIR ${NATIVE_SERVER_MODULES} ${CUSTOM_SERVER_MODULES})
 foreach(module ${MODULES_IN_SOURCE_DIR})
     add_subdirectory( ${module} )
     set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
+    add_dependencies( ${module} quasar_opcua_backend_is_ready )
 endforeach(module)
 
 foreach(module ${OPTIONAL_SERVER_MODULES})    
@@ -115,19 +116,11 @@ endforeach(module)
 
 
 add_custom_command(
-<<<<<<< HEAD
     OUTPUT ${PROJECT_BINARY_DIR}/Design/validated.tmp
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/quasar.py validate_design --project_binary_dir ${PROJECT_BINARY_DIR}
     COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_BINARY_DIR}/Design/validated.tmp
     DEPENDS ${DESIGN_FILE}   
-=======
-    OUTPUT ${PROJECT_SOURCE_DIR}/Design/validated.tmp
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Design
-    COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/quasar.py validate_design
-    COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_SOURCE_DIR}/Design/validated.tmp
-    DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/Design/Design.xsd  
->>>>>>> v1.2.4
     )
 add_custom_target(validateDesign DEPENDS  ${PROJECT_BINARY_DIR}/Design/validated.tmp )
 
