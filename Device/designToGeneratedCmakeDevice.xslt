@@ -29,7 +29,6 @@ xmlns:fnc="http://cern.ch/quasar/MyFunctions"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
 	<xsl:output method="text"></xsl:output>
 	<xsl:include href="../Design/CommonFunctions.xslt" />
-	<xsl:param name="projectBinaryDir"/>
 	<xsl:template name="commands">
 	
 	add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.h ${PROJECT_BINARY_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.cpp 
