@@ -16,7 +16,7 @@
 
 # Author: Piotr Nikiel <piotr@nikiel.info>
 
-# QUASAR_PURE_CMAKE_BUILD should evaluate to true whenever plain CMake is the entry point, like in Yocto
+# QUASAR_PURE_CMAKE_BUILD should evaluate to true whenever plain CMake is the entry point, like in Yocto, PetaLinux etc...
 if(${QUASAR_PURE_CMAKE_BUILD})
 	include(${PROJECT_SOURCE_DIR}/AddressSpace/cmake_generated.cmake)
 else(${QUASAR_PURE_CMAKE_BUILD})
