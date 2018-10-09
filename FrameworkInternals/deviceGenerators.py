@@ -39,9 +39,8 @@ def generateDeviceClass(context, *classList):
 	for aClass in classList:
 		generateOneDeviceClass(context, aClass)
 	
-def generateAllDevices():
+def generateAllDevices(context):
 	"""Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
-	project_directory = os.getcwd()		
-	classes = get_list_classes(project_directory+os.path.sep+"Design"+os.path.sep+"Design.xml")  # TODO wrong - we should have a function returning it
+	classes = get_list_classes(os.path.join(context['projectSourceDir'],'Design','Design.xml'))
 	for aClass in classes:
-		generateOneDeviceClass(aClass['name'])
+		generateOneDeviceClass(context, aClass['name'])

@@ -28,8 +28,8 @@
 
 namespace Device
 {
-DComponentLogLevel::DComponentLogLevel (const uint32_t& loggingComponentId, const std::string& logLevel)
-:Base_DComponentLogLevel(), m_loggingComponentId(loggingComponentId), m_loggingComponentName(Log::componentIdToString(m_loggingComponentId))
+DComponentLogLevel::DComponentLogLevel (const Log::LogComponentHandle& componentHandle, const std::string& logLevel)
+:Base_DComponentLogLevel(), m_loggingComponentId(componentHandle), m_loggingComponentName(Log::getComponentName(componentHandle))
 {
 	writeLogLevel(logLevel.c_str());
 }

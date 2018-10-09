@@ -43,7 +43,7 @@ namespace Device
 class DComponentLogLevel : public Base_DComponentLogLevel
 {
 public:
-    explicit DComponentLogLevel ( const uint32_t& loggingComponentId, const std::string& logLevel);
+    explicit DComponentLogLevel ( const Log::LogComponentHandle& componentHandle, const std::string& logLevel);
     ~DComponentLogLevel ();
 
     UaStatus writeLogLevel ( const UaString & v);
@@ -53,7 +53,7 @@ private:
     DComponentLogLevel( const DComponentLogLevel & );
     DComponentLogLevel& operator=(const DComponentLogLevel &other);
 
-    const uint32_t m_loggingComponentId;
+    const Log::LogComponentHandle m_loggingComponentId;
     const std::string m_loggingComponentName;
 };
 

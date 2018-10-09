@@ -47,7 +47,6 @@
 #include <shutdown.h>
 #include <SourceVariables.h>
 #include <meta.h>
-#include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 

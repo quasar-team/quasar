@@ -56,7 +56,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:param name="containingClass" />
 	<xsl:choose>
 	<xsl:when test="@instantiateUsing='configuration'">
-	BOOST_FOREACH(const Configuration::<xsl:value-of select="@class"/> &amp; <xsl:value-of select="@class"/>config, <xsl:value-of select="$configuration"/>.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>())
+	for (const Configuration::<xsl:value-of select="@class"/> &amp; <xsl:value-of select="@class"/>config : <xsl:value-of select="$configuration"/>.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>())
 	<!-- this funny thing with adding 1 above is when a class has hasObjects towards itself- xsdcxx then renames access method with 1 at the end in order not to confuse it with the constructor -->
 		{
 			<xsl:variable name="containedClass"><xsl:value-of select="@class"/></xsl:variable>
@@ -189,7 +189,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	<xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToConfigurator.xslt','Piotr Nikiel')"/>
 	#include &lt;iostream&gt;
-	#include &lt;boost/foreach.hpp&gt;
 	
 	#include &lt;ASUtils.h&gt;
 	#include &lt;ASInformationModel.h&gt;
@@ -261,7 +260,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	catch (xsd::cxx::tree::parsing&lt;char&gt; &amp;exception)
 	{
         LOG(Log::ERR) &lt;&lt; "Configuration: Failed when trying to open the configuration, with general error message: " &lt;&lt; exception.what();
-		BOOST_FOREACH( const xsd::cxx::tree::error&lt;char&gt; &amp;error, exception.diagnostics() )
+		for( const xsd::cxx::tree::error&lt;char&gt; &amp;error : exception.diagnostics() )
 		{
 			LOG(Log::ERR) &lt;&lt; "Configuration: Problem at " &lt;&lt; error.id() &lt;&lt; ":" &lt;&lt; error.line() &lt;&lt; ": " &lt;&lt; error.message();
 		}
@@ -323,7 +322,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			std::string pattern (".*");
 			AddressSpace::findAllObjectsByPatternInNodeManager&lt;AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/>&gt; (nm, pattern, objects);
 			totalObjectsNumber += objects.size();
-			BOOST_FOREACH(AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/> *a, objects)
+			for (AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/> *a : objects)
 			{
 				a-&gt;unlinkDevice();
 			}

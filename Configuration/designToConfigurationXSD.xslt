@@ -70,6 +70,20 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
                 </xsl:attribute>
                 </xsl:element>
             </xsl:for-each>
+            <xsl:for-each select="d:configRestriction/d:restrictionByBounds">
+                <xsl:if test="@minInclusive">
+                    <xs:minInclusive value="{@minInclusive}"/>
+                </xsl:if>
+                <xsl:if test="@maxInclusive">
+                    <xs:maxInclusive value="{@maxInclusive}"/>
+                </xsl:if>
+                <xsl:if test="@minExclusive">
+                    <xs:minExclusive value="{@minExclusive}"/>
+                </xsl:if>
+                <xsl:if test="@maxExclusive">
+                    <xs:maxExclusive value="{@maxExclusive}"/>
+                </xsl:if>
+            </xsl:for-each>
         </xsl:element>
     </xsl:element>
 </xsl:template>

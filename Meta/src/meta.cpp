@@ -24,7 +24,6 @@
 #include <sstream>
 #include <iostream>
 #include <list>
-#include <boost/foreach.hpp>
 
 #include <LogIt.h>
 #include <LogLevels.h>
@@ -54,20 +53,28 @@
 
 using std::string;
 
-const string getComponentLogLevelFromConfig(const ComponentAttributes& component, const Configuration::ComponentLogLevels& config)
+const string getComponentLogLevelFromConfig(const Log::LogComponentHandle& componentHandle, const Configuration::ComponentLogLevels& config)
 {
-	string result = Log::logLevelToString(component.getLevel());
+	// find current level from LogIt (i.e. as default)
+	Log::LOG_LEVEL level;
+	if (!getComponentLogLevel(componentHandle, level))
+	{
+		LOG(Log::ERR) << "logging component handle ["<<componentHandle<<"] name ["<< Log::getComponentName(componentHandle) <<"] has no associated log level (returning [UNKNOWN!]): This should not happen - most likely a quasar programming error";
+		return "UNKNOWN!";
+	}
+	string result = Log::logLevelToString(level);
 
-	BOOST_FOREACH(const Configuration::ComponentLogLevel & componentLogLevelConfig, config.ComponentLogLevel())
+	// find level in configuration
+	for(const Configuration::ComponentLogLevel & componentLogLevelConfig : config.ComponentLogLevel())
 	{
 		const string configuredComponentName = componentLogLevelConfig.componentName();
-		if(component.getName() == configuredComponentName)
+		if(configuredComponentName == Log::getComponentName(componentHandle))
 		{
 			result = componentLogLevelConfig.logLevel();
 		}
 	}
 
-	LOG(Log::INF) << "configuration for logging component ["<<component.getName()<<"] using value ["<<result<<"]";
+	LOG(Log::INF) << "configuration for logging component  handle [" << componentHandle << "] name [" << Log::getComponentName(componentHandle) << "] using value ["<<result<<"]";
 	return result;
 }
 
@@ -75,50 +82,36 @@ const string getComponentLogLevelFromConfig(const ComponentAttributes& component
  * This function ensures that:
  * 1) all specified component log levels are registered in the server (to prevent config file typos, etc)
  * 2) that all specified component log levels are present at most once (to not have conflicting levels)
- *
- * @return true, when component log levels are sane, false otherwise
+ * @throw std::runtime_error if the logging component level settings are not sane
+ * @return void
  */
-bool validateComponentLogLevels( const Configuration::ComponentLogLevels& logLevels )
+void validateComponentLogLevels( const Configuration::ComponentLogLevels& logLevels )
 {
 	std::list<std::string> checkedComponentNames;
-	const std::list<ComponentAttributes> registeredComponents (Log::getComponentLogsList());
-	BOOST_FOREACH( const Configuration::ComponentLogLevel &logLevel, logLevels.ComponentLogLevel() )
+	const std::map<Log::LogComponentHandle, std::string> registeredComponents = Log::getComponentLogsList();
+	for( const Configuration::ComponentLogLevel &logLevel: logLevels.ComponentLogLevel() )
 	{
 		std::string name (logLevel.componentName());
 
-		/* 1) validate that the component is registered by querying its id basing on name */
-//      this nice lambda code works only with fully C++11 compatbicle compiler...
-//		std::find_if( components.begin(), components.end(),
-//				[name](ComponentAttributes &ca){ return name == ca.getName(); }
-//		);
-
-		// have to use sth gcc 4.4.7 compatible
-		bool found = false;
-		BOOST_FOREACH( const ComponentAttributes& ca, registeredComponents)
+		/* 1) validate the component is registered - query its id based on name */
+		if (Log::getComponentHandle(name) == Log::INVALID_HANDLE)
 		{
-			if (name == ca.getName())
-			{
-				found = true;
-				break;
-			}
-		}
-		if (!found)
-		{
-			std::cout << "Component Log Level named '" << name << "' is unknown (not registered)." << std::endl;
-			return false;
+			std::ostringstream err;
+			err << "Component Log Level name [" << name << "] is unknown (not registered).";
+			std::cerr << err.str() << std::endl;
+			throw std::runtime_error(err.str());
 		}
 
-		/* 2) now check for duplicates */
+		/* 2) check for duplicates */
 		if (std::find(checkedComponentNames.begin(), checkedComponentNames.end(), name) != checkedComponentNames.end())
 		{
-			std::cout << "Component Log Level named '" << name << "' is given more than once. " << std::endl;
-			return false;
+			std::ostringstream err;
+			err << "Component Log Level name [" << name << "] is given more than once.";
+			std::cerr << err.str() << std::endl;
+			throw std::runtime_error(err.str());
 		}
 		checkedComponentNames.push_back( name );
-
 	}
-
-	return true;
 }
 
 const Configuration::ComponentLogLevels getComponentLogLevels(const Configuration::Log & config)
@@ -185,11 +178,11 @@ void configureServer(const Configuration::Server& config, AddressSpace::ASNodeMa
     dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
 }
 
-void configureComponentLogLevel(const ComponentAttributes& component, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
+void configureComponentLogLevel(const Log::LogComponentHandle& componentHandle, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
 {
-    AddressSpace::ASComponentLogLevel *asComponentLogLevel = new AddressSpace::ASComponentLogLevel(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVEL), nm, component.getName(), logLevel);
+    AddressSpace::ASComponentLogLevel *asComponentLogLevel = new AddressSpace::ASComponentLogLevel(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVEL), nm, Log::getComponentName(componentHandle), logLevel);
 
-    Device::DComponentLogLevel* dComponentLogLevel = new Device::DComponentLogLevel (component.getId(), logLevel);
+    Device::DComponentLogLevel* dComponentLogLevel = new Device::DComponentLogLevel (componentHandle, logLevel);
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dComponentLogLevel, asComponentLogLevel);
 }
 
@@ -256,10 +249,11 @@ void configureComponentLogLevels(const Configuration::ComponentLogLevels& config
 {
     AddressSpace::ASComponentLogLevels* asComponentLogLevels = new AddressSpace::ASComponentLogLevels(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVELS), nm);
 
-    BOOST_FOREACH(const ComponentAttributes& component, Log::getComponentLogsList())
+	for(const auto& componentMapEntry : Log::getComponentLogsList())
     {
-    	const string componentLogLevel = getComponentLogLevelFromConfig(component, config);
-    	configureComponentLogLevel(component, componentLogLevel, nm, asComponentLogLevels);
+		const Log::LogComponentHandle& componentHandle = componentMapEntry.first;
+    	const string componentLogLevel = getComponentLogLevelFromConfig(componentHandle, config);
+    	configureComponentLogLevel(componentHandle, componentLogLevel, nm, asComponentLogLevels);
     }
 }
 
@@ -269,8 +263,7 @@ void configureLog(const Configuration::Log & config, AddressSpace::ASNodeManager
 
     configureGeneralLogLevel(getGeneralLogLevelFromConfig(config), nm, asLog);
     const Configuration::ComponentLogLevels componentLogLevels = getComponentLogLevels(config);
-    if (!validateComponentLogLevels(componentLogLevels))
-    	abort(); // TODO: Ben: pass the information back in more human way, perhaps?
+	validateComponentLogLevels(componentLogLevels);
     configureComponentLogLevels(componentLogLevels, nm, asLog);
 }
 
@@ -316,7 +309,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 		std::vector< AddressSpace::ASStandardMetaData * > objects;
 		std::string pattern (".*");
 		AddressSpace::findAllByPattern<AddressSpace::ASStandardMetaData> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		BOOST_FOREACH(AddressSpace::ASStandardMetaData *a, objects)
+		for(AddressSpace::ASStandardMetaData *a : objects)
 		{
 			a->unlinkDevice();
 		}
@@ -326,7 +319,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 		std::vector< AddressSpace::ASGeneralLogLevel * > objects;
 		std::string pattern (".*");
 		AddressSpace::findAllByPattern<AddressSpace::ASGeneralLogLevel> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		BOOST_FOREACH(AddressSpace::ASGeneralLogLevel *a, objects)
+		for(AddressSpace::ASGeneralLogLevel *a : objects)
 		{
 			a->unlinkDevice();
 		}
@@ -336,7 +329,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 		std::vector< AddressSpace::ASQuasar * > objects;
 		std::string pattern (".*");
 		AddressSpace::findAllByPattern<AddressSpace::ASQuasar> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		BOOST_FOREACH(AddressSpace::ASQuasar *a, objects)
+		for(AddressSpace::ASQuasar *a : objects)
 		{
 			a->unlinkDevice();
 		}
@@ -346,7 +339,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 		std::vector< AddressSpace::ASServer * > objects;
 		std::string pattern (".*");
 		AddressSpace::findAllByPattern<AddressSpace::ASServer> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		BOOST_FOREACH(AddressSpace::ASServer *a, objects)
+		for(AddressSpace::ASServer *a : objects)
 		{
 			a->unlinkDevice();
 		}
@@ -356,7 +349,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 		std::vector< AddressSpace::ASSourceVariableThreadPool * > objects;
 		std::string pattern (".*");
 		AddressSpace::findAllByPattern<AddressSpace::ASSourceVariableThreadPool> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		BOOST_FOREACH(AddressSpace::ASSourceVariableThreadPool *a, objects)
+		for(AddressSpace::ASSourceVariableThreadPool *a : objects)
 		{
 			a->unlinkDevice();
 		}
@@ -366,7 +359,7 @@ void destroyMeta (AddressSpace::ASNodeManager *nm)
 		std::vector< AddressSpace::ASComponentLogLevel * > objects;
 		std::string pattern (".*");
 		AddressSpace::findAllByPattern<AddressSpace::ASComponentLogLevel> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		BOOST_FOREACH(AddressSpace::ASComponentLogLevel *a, objects)
+		for(AddressSpace::ASComponentLogLevel *a : objects)
 		{
 			a->unlinkDevice();
 		}

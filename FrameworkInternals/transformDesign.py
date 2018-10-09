@@ -55,6 +55,7 @@ class TransformKeys(enum.Enum):
     AS_CMAKE = 20
     D_CMAKE = 21
     CONFIG_DOCUMENTATION = 22
+    AS_DOCUMENTATION = 23
     
 # column IDs
 @enum.unique
@@ -91,7 +92,8 @@ QuasarTransforms = [
     [TransformKeys.D_DEVICE_CPP,            'Device/designToDeviceBody.xslt',                       'Device/src/D{className}.cpp',                  'S',            True,           True,         'className={className}'],
     [TransformKeys.D_CMAKE,                 'Device/designToGeneratedCmakeDevice.xslt',             'Device/generated/cmake_header.cmake',          'B',            False,          False,        None],
     [TransformKeys.HONKYTONK,               'Extra/designToHonkyTonk.xslt',                         'Extra/honkyTonky.cc',                          'S',            True,           False,        None],
-    [TransformKeys.CONFIG_DOCUMENTATION,    'Configuration/designToConfigDocumentationHtml.xslt',   'Documentation/ConfigDocumentation.html',       'S',            False,          False,        None]
+    [TransformKeys.CONFIG_DOCUMENTATION,    'Configuration/designToConfigDocumentationHtml.xslt',   'Documentation/ConfigDocumentation.html',       'S',            False,          False,        None],
+    [TransformKeys.AS_DOCUMENTATION,        'AddressSpace/designToAddressSpaceDocHtml.xslt',        'Documentation/AddressSpaceDoc.html',           'S',            False,          False,        None]
     ]
 
 def transformDesignVerbose(xsltTransformation, outputFile, requiresMerge, astyleRun=False, additionalParam=None):

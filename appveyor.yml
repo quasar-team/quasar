@@ -30,6 +30,9 @@ environment:
   #
 
 install:
+  # initialize submodules (e.g. LogIt)
+  - git submodule update --init --recursive
+
   # delete and recreate clean directory for windows dependencies.
   - ps : |
          Write-Output "Cleaning and recreating windows dependencies dir: ${env:WINDOWS_DEPENDENCIES_DIR}"

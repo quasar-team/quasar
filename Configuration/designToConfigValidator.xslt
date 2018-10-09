@@ -61,7 +61,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		}
 	    </xsl:if>
 	    
-	    BOOST_FOREACH( Device::<xsl:value-of select="fnc:DClassName(@class)"/> *child, object-><xsl:value-of select="lower-case(@class)"/>s())
+	    for( Device::<xsl:value-of select="fnc:DClassName(@class)"/> *child : object-><xsl:value-of select="lower-case(@class)"/>s())
 	    {
 	        validate<xsl:value-of select="@class"/>( child );
 	    }    
@@ -104,7 +104,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:template match="/">
     <xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToConfigValidator.xslt','Piotr Nikiel')"/>
 	#include &lt;iostream&gt;
-	#include &lt;boost/foreach.hpp&gt;
 	
 	#include &lt;ASUtils.h&gt;
 	#include &lt;ASInformationModel.h&gt;
