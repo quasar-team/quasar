@@ -107,6 +107,7 @@ set(MODULES_IN_SOURCE_DIR ${NATIVE_SERVER_MODULES} ${CUSTOM_SERVER_MODULES})
 foreach(module ${MODULES_IN_SOURCE_DIR})
     add_subdirectory( ${module} )
     set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
+    add_dependencies( ${module} quasar_opcua_backend_is_ready )
 endforeach(module)
 
 foreach(module ${OPTIONAL_SERVER_MODULES})    

@@ -16,7 +16,12 @@
 
 # Author: Piotr Nikiel <piotr@nikiel.info>
 
-include(${PROJECT_BINARY_DIR}/AddressSpace/cmake_generated.cmake)
+# QUASAR_PURE_CMAKE_BUILD should evaluate to true whenever plain CMake is the entry point, like in Yocto
+if(${QUASAR_PURE_CMAKE_BUILD})
+	include(${PROJECT_SOURCE_DIR}/AddressSpace/cmake_generated.cmake)
+else(${QUASAR_PURE_CMAKE_BUILD})
+	include(${PROJECT_BINARY_DIR}/AddressSpace/cmake_generated.cmake)
+endif(${QUASAR_PURE_CMAKE_BUILD})
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/include/ASInformationModel.h ${PROJECT_BINARY_DIR}/AddressSpace/src/ASInformationModel.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

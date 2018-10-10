@@ -29,9 +29,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:output indent="yes" method="xml"/>
 	<xsl:param name="metaXsdPath"/>
 	
+	
 <xsl:function name="fnc:dataTypeToXsdType">
 	<xsl:param name="dataType"/>	
-	
 	<xsl:choose>
 	<xsl:when test="$dataType='UaString'">xs:string</xsl:when>
 	<xsl:when test="$dataType='OpcUa_SByte'">xs:byte</xsl:when>
