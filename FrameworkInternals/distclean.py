@@ -19,73 +19,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 @contact:    quasar-developers@cern.ch
 '''
 
-import os
-import sys
-import shutil
-import platform
-from commandMap import getCommand
-from externalToolCheck import subprocessWithImprovedErrors
 
-def deleteFolderRecursively( topdir, target ):
-	for dirpath, dirnames, files in os.walk(topdir):
-		for name in dirnames:
-			if name == target:
-				try:
-					shutil.rmtree(os.path.join(dirpath, name))
-				except OSError:
-					pass
-	return;
-
-def deleteFileRecursively( topdir, target ):
-	for dirpath, dirnames, files in os.walk(topdir):
-		for name in files:
-			if name == target:
-				try:
-					os.remove(os.path.join(dirpath, name))
-				except OSError:
-					pass
-	return;
-
-def deleteExtensionRecursively( topdir, target ):
-	for dirpath, dirnames, files in os.walk(topdir):
-		for name in files:
-			if name.endswith(target):
-				try:
-					os.remove(os.path.join(dirpath, name))
-				except OSError:
-					pass
-	return;
-
-def distClean(param=None):
+def distClean(context):
 	"""
-	Cleaning method. It first calls vis-studio/make clean and after that it will delete the leftover generated files in the Server.
-	If parameter --orig is specified, the generated files ending with the extension .orig will also be cleared.
+        Deprecated. Simply remove your build directory.
 	"""
-	if platform.system() == "Windows":
-		cleanCommand = "cmake --build . --target clean --config "
-		subprocessWithImprovedErrors(cleanCommand+"Release", "cleaning visual studio release build")
-		subprocessWithImprovedErrors(cleanCommand+"Debug", "cleaning visual studio debug build")
-	elif platform.system() == "Linux":
-		subprocessWithImprovedErrors([getCommand('make'), 'clean'], getCommand("make"))
-	print('Deleting generated files and directories')
-	deleteFolderRecursively('.', 'CMakeFiles')
-	deleteFolderRecursively('.', 'Win32')
-	deleteFolderRecursively('.', 'Debug')
-	deleteFolderRecursively('.', 'Release')
-	deleteFolderRecursively('.', 'x64')
-	deleteFolderRecursively('.', '*.dir')
-	deleteExtensionRecursively('.', 'vcxproj')
-	deleteExtensionRecursively('.', 'sln')
-	deleteExtensionRecursively('.', 'vcxproj.filters')
-	deleteExtensionRecursively('.', 'vcxproj.user')
-	deleteExtensionRecursively('.', 'sdf')
-	deleteExtensionRecursively('.', 'opensdf')
-	deleteFileRecursively('.', 'CMakeCache.txt')
-	deleteFileRecursively('.', 'Makefile')
-	deleteFileRecursively('.', 'cmake_install.cmake')
-	deleteFileRecursively('.', 'cmake_generated.cmake')
-	deleteFileRecursively('.', 'generated_files_list.cmake')
-	deleteExtensionRecursively('.', 'pyc')
-	if param == '--orig':
-		print('Removing .orig files')
-		deleteExtensionRecursively('.', 'orig')
+        print 'This method has been deprecated since quasar 1.3.0. Please simply remove (e.g. rm -Rf) your build directory.' 
