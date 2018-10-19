@@ -1,3 +1,19 @@
+# LICENSE:
+# Copyright (c) 2015, CERN
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS 
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
+# GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 # @author Damian Abalo
 # @date 03-Sep-2015
 # The purpose of this file is to set default parameters in case no build configuration file (aka toolchain) was specified.
@@ -158,16 +174,16 @@ include_directories( ${PROJECT_SOURCE_DIR}/GoogleTest/gtest/src/gtest/include )
 add_definitions( -DBACKEND_OPEN62541 )
 SET( OPCUA_TOOLKIT_PATH "" )
 
-include_directories (${PROJECT_SOURCE_DIR}/open62541-compat/open62541)
+include_directories (${PROJECT_BINARY_DIR}/open62541-compat/open62541)
 
 if(NOT TARGET open62541release)
 	add_library(open62541release STATIC IMPORTED)
-	set_property(TARGET open62541release PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/Release/open62541.lib)
+	set_property(TARGET open62541release PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/open62541-compat/open62541/Release/open62541.lib)
 endif()
 
 if(NOT TARGET open62541debug)
 	add_library(open62541debug STATIC IMPORTED)
-	set_property(TARGET open62541debug PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/open62541-compat/open62541/Debug/open62541.lib)
+	set_property(TARGET open62541debug PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/open62541-compat/open62541/Debug/open62541.lib)
 endif()
 
 SET( OPCUA_TOOLKIT_LIBS_RELEASE open62541release )
