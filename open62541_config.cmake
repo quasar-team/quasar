@@ -1,10 +1,37 @@
+# LICENSE:
+# Copyright (c) 2015, CERN
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS 
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
+# GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Author: Piotr Nikiel <piotr@nikiel.info>
+# Author: Ben Farnham
 # @author pnikiel
-# @date 03-Sep-2015
-# The purpose of this file is to set default parameters in case no build configuration file (aka toolchain) was specified.
+# @date May-2018
+# This file is a build config for quasar-based projects to use open62541 OPC-UA backend.
+# You can use it directly, or make a copy and adjust accordingly.
 
-# The approach is to satisfy the requirements as much as possible.
+#-----
+#General settings
+#-----
 
-message("No build configuration was specified. Assuming defaults from default_configuration.cmake")
+add_definitions(-Wall -Wno-deprecated) 
+
+# open62541-compat has no uatrace
+set (LOGIT_HAS_UATRACE FALSE)
+
+# need C++11
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
 
 #-------
 #Boost
@@ -39,9 +66,9 @@ message ("using BOOST_LIBS [${BOOST_LIBS}]")
 # No OPC-UA Toolkit: using Open62541-compat instead. It is referenced in BACKEND_MODULES below
 add_definitions( -DBACKEND_OPEN62541 )
 SET( OPCUA_TOOLKIT_PATH "" )
-SET( OPCUA_TOOLKIT_LIBS_RELEASE "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/libopen62541.a" -lrt)
-SET( OPCUA_TOOLKIT_LIBS_DEBUG "${PROJECT_SOURCE_DIR}/open62541-compat/open62541/libopen62541.a" -lrt)
-include_directories( open62541-compat/open62541 )
+SET( OPCUA_TOOLKIT_LIBS_RELEASE "${PROJECT_BINARY_DIR}/open62541-compat/open62541/libopen62541.a" -lrt -lpthread)
+SET( OPCUA_TOOLKIT_LIBS_DEBUG "${PROJECT_BINARY_DIR}/open62541-compat/open62541/libopen62541.a" -lrt -lpthread)
+include_directories( ${PROJECT_BINARY_DIR}/open62541-compat/open62541 )
 
 #-----
 #XML Libs
@@ -54,16 +81,3 @@ SET( XML_LIBS "-lxerces-c" )
 #Quasar server libs
 #-----
 SET( QUASAR_SERVER_LIBS "-lssl -lcrypto -lpthread" )
-
-#-----
-#General settings
-#-----
-
-# TODO: split between Win / MSVC, perhaps MSVC has different notation for these
-add_definitions(-Wall -Wno-deprecated  ) 
-
-# We need some C++11
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-literal-suffix" )
-
-# 62xxx no uatrace
-set (LOGIT_HAS_UATRACE FALSE)
