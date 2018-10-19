@@ -35,7 +35,7 @@ from quasarExceptions import WrongReturnValue, WrongArguments, Mistake
 
 # args starts from the command name (e.g. 'build') and skips the common arguments (e.g. 'project_binary_dir')
 (args, project_binary_dir) = extract_common_arguments(sys.argv[1:])  # 1: to skip the script name given by the operating system
-if project_binary_dir is None and 'build' in args:
+if project_binary_dir is None and ('build' in args or 'prepare_build' in args):
         project_binary_dir = os.path.join(os.getcwd(),'build')
         print 'Note: since quasar 1.3.0, by default, your build will be made in build/ directory.'
         print 'If you need in-source build, try:  ./quasar.py build --project_binary_dir . '    
