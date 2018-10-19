@@ -13,34 +13,49 @@
 # BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
 # GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+#
 # Author: Piotr Nikiel <piotr@nikiel.info>
+# @author pnikiel
+# @date May-2018
+# This file is a build config for a quasar-based project specially dedicated to Yocto/PetaLinux builds.
 
-# QUASAR_IS_CMAKE_BUILD_ENTRY_POINT should evaluate to true whenever plain CMake is the entry point, like in Yocto
-if(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
-	include(${PROJECT_SOURCE_DIR}/Device/generated/cmake_header.cmake)
-else(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
-	include(${PROJECT_BINARY_DIR}/Device/generated/cmake_header.cmake)
-endif(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
+#-----
+#General settings
+#-----
 
-add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/include/DRoot.h ${PROJECT_BINARY_DIR}/Device/src/DRoot.cpp
-WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-COMMAND python quasar.py generate root --project_binary_dir ${PROJECT_BINARY_DIR}
-DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/quasar.py validateDesign designToRootHeader.xslt designToRootBody.xslt
-)
+add_definitions(-Wall -Wno-deprecated) 
 
-add_library (Device OBJECT
+# open62541-compat has no uatrace
+set (LOGIT_HAS_UATRACE FALSE)
 
-    ${DEVICEBASE_GENERATED_FILES}
-    ${DEVICE_CLASSES}
-    
-    # Your custom Device logic code - begin. Skip classes! (They are declared
-    # in ${DEVICE_CLASSES) 
-    
-	
-    # Your custom Device logic code - end
-	
-)
-    
-add_dependencies (Device Configuration.hxx_GENERATED AddressSpaceGeneratedHeaders DeviceBase )
+# need C++11
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+
+set( QUASAR_IS_CMAKE_BUILD_ENTRY_POINT TRUE )
+
+#-------
+#Boost
+#-------
+# In a well configured Yocto project this should be OK
+SET( BOOST_LIBS "-lboost_program_options-mt -lboost_thread-mt -lboost_system-mt" )
+
+message ("using BOOST_LIBS [${BOOST_LIBS}]")
+
+#------
+#OPCUA
+#------
+
+# No OPC-UA Toolkit: using Open62541-compat instead. It is referenced in BACKEND_MODULES below
+add_definitions( -DBACKEND_OPEN62541 )
+SET( OPCUA_TOOLKIT_PATH "" )
+SET( OPCUA_TOOLKIT_LIBS_RELEASE "${PROJECT_BINARY_DIR}/open62541-compat/open62541/libopen62541.a" -lrt -lpthread)
+SET( OPCUA_TOOLKIT_LIBS_DEBUG "${PROJECT_BINARY_DIR}/open62541-compat/open62541/libopen62541.a" -lrt -lpthread)
+include_directories( ${PROJECT_BINARY_DIR}/open62541-compat/open62541 )
+
+#-----
+#XML Libs
+#-----
+#As of 03-Sep-2015 I see no FindXerces or whatever in our Cmake 2.8 installation, so no find_package can be user...
+# TODO perhaps also take it from environment if requested
+SET( XML_LIBS "-lxerces-c -lssl" ) 
 
