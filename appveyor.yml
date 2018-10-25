@@ -94,7 +94,7 @@ build_script:
 after_build:
   - ps : Write-Output "Build completed!"
   - ps : |
-         if(Test-Path "${env:QUASAR_TEST_PROJECT_DIR}\bin\OpcUaServer.exe")
+         if(Test-Path "${env:QUASAR_TEST_PROJECT_DIR}\build\bin\OpcUaServer.exe")
          {
           Write-Output "Succesfully Built QUASAR test project: ${env:QUASAR_TEST_PROJECT_DIR}" ;
          }
