@@ -13,7 +13,7 @@ script:
      echo '********************************************************************' ;
      echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
      echo '********************************************************************' ;
-     apt install python-enum34 ;
+     apt install python-enum34 cmake3 ;
      git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
      cd quasar ;
      python quasar.py enable_module open62541-compat ;
