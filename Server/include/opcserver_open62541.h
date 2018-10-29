@@ -40,8 +40,12 @@ private:
     ASNodeManager *m_nodemanager;
     std::string m_logFilePath;
 
+    #if UA_OPEN62541_VER_MINOR == 2
     UA_ServerConfig m_server_config;
     UA_ServerNetworkLayer m_server_network_layer;
+    #else
+    UA_ServerConfig* m_server_config;
+    #endif
     UA_Server *m_server;
     boost::thread m_open62541_server_thread;
 
