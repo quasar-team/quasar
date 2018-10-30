@@ -25,7 +25,7 @@ commandMap = {
 "java":"java",
 "astyle":"astyle",
 "diff":"kdiff3",
-"cmake":"cmake3",
+"cmake":"cmake",
 "make":"make",
 "gcc":"gcc",
 "xmllint":"xmllint",
