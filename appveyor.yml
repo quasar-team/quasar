@@ -81,6 +81,8 @@ install:
   - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py # checks to see if required python libs are OK.
 
 build_script:
+  - cmd : git config --global user.email "quasar-developers@cern.ch"
+  - cmd : git config --global user.name "Quasar Developer"
   - cmd : python quasar.py create_project %QUASAR_TEST_PROJECT_DIR%
   - cmd : copy open6_win_configuration.cmake %QUASAR_TEST_PROJECT_DIR%
   - cmd : cd %QUASAR_TEST_PROJECT_DIR%
