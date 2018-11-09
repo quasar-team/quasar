@@ -61,7 +61,7 @@ public:
         UaNodeId parentNodeId,
         const UaNodeId& typeNodeId,
         ASNodeManager *nm,
-        const Configuration::BuildInformation &config);
+        const std::string& host, const std::string& timestamp, const std::string commitID, const std::string& toolkitLibs);
 
 
 

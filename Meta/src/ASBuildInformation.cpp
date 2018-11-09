@@ -48,7 +48,7 @@ ASBuildInformation::ASBuildInformation (
     UaNodeId parentNodeId,
     const UaNodeId& typeNodeId,
     ASNodeManager *nm,
-    const Configuration::BuildInformation & config):
+	const std::string& host, const std::string& timestamp, const std::string commitID, const std::string& toolkitLibs):
     OpcUa::BaseObjectType (
         /*nodeId*/
         nm->makeChildNodeId(parentNodeId,"ASBuildInformation"), "ASBuildInformation", nm->getNameSpaceIndex(), nm),
@@ -65,7 +65,7 @@ ASBuildInformation::ASBuildInformation (
 
                  (nm->makeChildNodeId(
                       this->nodeId(),
-                      UaString("BuildHost")), UaString("BuildHost"), nm->getNameSpaceIndex(), UaVariant(),
+                      UaString("BuildHost")), UaString("BuildHost"), nm->getNameSpaceIndex(), UaVariant(UaString(host.c_str())),
 
                   OpcUa_AccessLevels_CurrentRead
                   , nm))
@@ -79,7 +79,7 @@ ASBuildInformation::ASBuildInformation (
 
                       (nm->makeChildNodeId(
                            this->nodeId(),
-                           UaString("BuildTimestamp")), UaString("BuildTimestamp"), nm->getNameSpaceIndex(), UaVariant(),
+                           UaString("BuildTimestamp")), UaString("BuildTimestamp"), nm->getNameSpaceIndex(), UaVariant(UaString(timestamp.c_str())),
 
                        OpcUa_AccessLevels_CurrentRead
                        , nm))
@@ -93,7 +93,7 @@ ASBuildInformation::ASBuildInformation (
 
                 (nm->makeChildNodeId(
                      this->nodeId(),
-                     UaString("CommitID")), UaString("CommitID"), nm->getNameSpaceIndex(), UaVariant(),
+                     UaString("CommitID")), UaString("CommitID"), nm->getNameSpaceIndex(), UaVariant(UaString(commitID.c_str())),
 
                  OpcUa_AccessLevels_CurrentRead
                  , nm))
@@ -107,7 +107,7 @@ ASBuildInformation::ASBuildInformation (
 
                    (nm->makeChildNodeId(
                         this->nodeId(),
-                        UaString("ToolkitLibs")), UaString("ToolkitLibs"), nm->getNameSpaceIndex(), UaVariant(),
+                        UaString("ToolkitLibs")), UaString("ToolkitLibs"), nm->getNameSpaceIndex(), UaVariant(UaString(toolkitLibs.c_str())),
 
                     OpcUa_AccessLevels_CurrentRead
                     , nm))
@@ -136,7 +136,7 @@ ASBuildInformation::ASBuildInformation (
     // found scalar signature: can simply load the variant with the scalar
     // fnc:dataTypeToVariantSetter(@dataType)
     v.setString (
-        config.BuildHost().c_str()
+        host.c_str()
     );
     m_BuildHost->setValue(/*pSession*/0, UaDataValue(UaVariant( v ), OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
 
@@ -157,7 +157,7 @@ ASBuildInformation::ASBuildInformation (
     // found scalar signature: can simply load the variant with the scalar
     // fnc:dataTypeToVariantSetter(@dataType)
     v.setString (
-        config.BuildTimestamp().c_str()
+        timestamp.c_str()
     );
     m_BuildTimestamp->setValue(/*pSession*/0, UaDataValue(UaVariant( v ), OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
 
@@ -178,7 +178,7 @@ ASBuildInformation::ASBuildInformation (
     // found scalar signature: can simply load the variant with the scalar
     // fnc:dataTypeToVariantSetter(@dataType)
     v.setString (
-        config.CommitID().c_str()
+        commitID.c_str()
     );
     m_CommitID->setValue(/*pSession*/0, UaDataValue(UaVariant( v ), OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
 
@@ -199,7 +199,7 @@ ASBuildInformation::ASBuildInformation (
     // found scalar signature: can simply load the variant with the scalar
     // fnc:dataTypeToVariantSetter(@dataType)
     v.setString (
-        config.ToolkitLibs().c_str()
+        toolkitLibs.c_str()
     );
     m_ToolkitLibs->setValue(/*pSession*/0, UaDataValue(UaVariant( v ), OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
 

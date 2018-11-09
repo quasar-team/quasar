@@ -46,6 +46,8 @@
 #include <ASComponentLogLevels.h>
 #include <ASSourceVariableThreadPool.h>
 #include <DSourceVariableThreadPool.h>
+#include <ASBuildInformation.h>
+#include <DBuildInformation.h>
 #include <ASQuasar.h>
 #include <DQuasar.h>
 #include <ASServer.h>
@@ -158,6 +160,14 @@ void configureSourceVariableThreadPool(const Configuration::SourceVariableThread
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dSourceVariableThreadPool, asSourceVariableThreadPool);
 }
 
+void configureBuildInformation(const Configuration::BuildInformation& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent)
+{
+	AddressSpace::ASBuildInformation *asBuildInformation = new AddressSpace::ASBuildInformation(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_BUILDINFORMATION), nm, string("A"), string("B"), string("C"), string("D"));
+
+    Device::DBuildInformation* dBuildInformation = new Device::DBuildInformation(string("AAA"), string("BBB"), string("CCC"), string("DDD"));
+    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dBuildInformation, asBuildInformation);
+}
+
 void configureQuasar(const Configuration::Quasar& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent, Device::DRoot * deviceParent)
 {
     AddressSpace::ASQuasar *asQuasar = new AddressSpace::ASQuasar(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_QUASAR), nm, config);
@@ -204,7 +214,7 @@ const Configuration::SourceVariableThreadPool getSourceVariableThreadPoolConfig(
 {
 	if( config.SourceVariableThreadPool().present() )
 	{
-		LOG(Log::INF) << "StandardMetaData.SourceVariableThreadPool configuration found in the configuration file, configuringStandardMetaData.SourceVariableThreadPool from the configuration file";
+		LOG(Log::INF) << "StandardMetaData.SourceVariableThreadPool configuration found in the configuration file, configuring StandardMetaData.SourceVariableThreadPool from the configuration file";
 		return config.SourceVariableThreadPool().get();
 	}
 	else
@@ -215,6 +225,15 @@ const Configuration::SourceVariableThreadPool getSourceVariableThreadPoolConfig(
 		unsigned int jobs = 1000;
 		return Configuration::SourceVariableThreadPool(min, max, jobs);
 	}
+}
+
+const Configuration::BuildInformation getBuildInformation()
+{
+	const string buildHost("WTF-host");
+	const string buildTimestamp("WTF-timestamp");
+	const string commitID("WTF-commit");
+	const string toolkitLibs("WTF-toolkitLibs");
+	return Configuration::BuildInformation(buildHost, buildTimestamp, commitID, toolkitLibs);
 }
 
 const Configuration::Quasar getQuasarConfig(const Configuration::StandardMetaData & config)
@@ -294,6 +313,7 @@ Device::DStandardMetaData* configureMeta( const Configuration::StandardMetaData 
     configureSourceVariableThreadPool(getSourceVariableThreadPoolConfig(config), nm, asMeta);
     configureQuasar(getQuasarConfig(config), nm, asMeta, parent);
 	configureServer(getServerConfig(config), nm, asMeta, parent);
+	configureBuildInformation(getBuildInformation(), nm, asMeta);
 	
     return dMeta;
 }

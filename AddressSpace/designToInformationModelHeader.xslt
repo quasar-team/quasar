@@ -56,7 +56,8 @@ namespace AddressSpace
 	AS_TYPE_COMPONENTLOGLEVEL,
 	AS_TYPE_COMPONENTLOGLEVELS,
 	AS_TYPE_QUASAR,
-	AS_TYPE_SERVER
+	AS_TYPE_SERVER,
+	AS_TYPE_BUILDINFORMATION
 	<xsl:for-each select="/d:design/d:class">
 		, <xsl:value-of select="fnc:typeNumericId(@name)"/>
 	</xsl:for-each>
