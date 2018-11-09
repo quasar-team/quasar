@@ -53,10 +53,7 @@ class
 
 public:
     /* sample constructor */
-    explicit DBuildInformation (
-        const Configuration::BuildInformation & config,
-        Parent_DBuildInformation * parent
-    ) ;
+    explicit DBuildInformation (const std::string& host, const std::string& timestamp, const std::string& commitID, const std::string& toolkitLibs) ;
     /* sample dtr */
     ~DBuildInformation ();
 

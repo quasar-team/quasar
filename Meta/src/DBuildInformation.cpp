@@ -59,15 +59,8 @@ namespace Device
 // 2222222222222222222222222222222222222222222222222222222222222222222222222
 
 /* sample ctr */
-DBuildInformation::DBuildInformation (
-    const Configuration::BuildInformation & config,
-    Parent_DBuildInformation * parent
-):
-    Base_DBuildInformation( config, parent)
-
-    /* fill up constructor initialization list here */
+DBuildInformation::DBuildInformation (const std::string& host, const std::string& timestamp, const std::string& commitID, const std::string& toolkitLibs)
 {
-    /* fill up constructor body here */
 }
 
 /* sample dtr */

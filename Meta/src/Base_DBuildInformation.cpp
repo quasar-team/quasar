@@ -38,7 +38,7 @@ namespace Device
 
 
 
-void Base_DBuildInformation::linkAddressSpace( AddressSpace::ASBuildInformation *addressSpaceLink, const std::string & stringAddress)
+void Base_DBuildInformation::linkAddressSpace( AddressSpace::ASBuildInformation *addressSpaceLink)
 {
     if (m_addressSpaceLink != 0)
     {
@@ -47,7 +47,6 @@ void Base_DBuildInformation::linkAddressSpace( AddressSpace::ASBuildInformation 
     }
     else
         m_addressSpaceLink = addressSpaceLink;
-    m_stringAddress.assign( stringAddress );
 }
 
 /* add/remove */
@@ -74,19 +73,9 @@ unsigned int Base_DBuildInformation::unlinkAllChildren ()
 
 
 /* Constructor */
-Base_DBuildInformation::Base_DBuildInformation (
-    const Configuration::BuildInformation & config,
-    Parent_DBuildInformation * parent
-):
-
-    m_parent(parent),
-    m_addressSpaceLink(0),
-    m_stringAddress("**NB**")
-
-
-{
-
-}
+Base_DBuildInformation::Base_DBuildInformation ()
+:m_addressSpaceLink(0)
+{}
 
 Base_DBuildInformation::~Base_DBuildInformation ()
 {

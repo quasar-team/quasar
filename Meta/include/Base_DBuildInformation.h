@@ -64,10 +64,7 @@ class
 
 public:
     /* Constructor */
-    explicit Base_DBuildInformation (
-        const Configuration::BuildInformation & config,
-        Parent_DBuildInformation * parent
-    ) ;
+    explicit Base_DBuildInformation () ;
 
 private:
     /* No copy constructors or assignment operators */
@@ -90,7 +87,7 @@ public:
     unsigned int unlinkAllChildren ();
 
 
-    void linkAddressSpace (AddressSpace::ASBuildInformation * as, const std::string & stringAddress);
+    void linkAddressSpace (AddressSpace::ASBuildInformation * as);
     AddressSpace::ASBuildInformation * getAddressSpaceLink () const {
         return m_addressSpaceLink;
     }
