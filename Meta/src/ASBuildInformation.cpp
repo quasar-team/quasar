@@ -51,7 +51,7 @@ ASBuildInformation::ASBuildInformation (
 	const std::string& host, const std::string& timestamp, const std::string commitID, const std::string& toolkitLibs):
     OpcUa::BaseObjectType (
         /*nodeId*/
-        nm->makeChildNodeId(parentNodeId,"ASBuildInformation"), "ASBuildInformation", nm->getNameSpaceIndex(), nm),
+        nm->makeChildNodeId(parentNodeId,"BuildInformation"), "BuildInformation", nm->getNameSpaceIndex(), nm),
     m_typeNodeId (typeNodeId)
 
 
