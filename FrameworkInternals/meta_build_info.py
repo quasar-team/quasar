@@ -35,7 +35,7 @@ def generateBuildHost(generatedFile):
 def generateCommitID(generatedFile):
 	commitID = "No commit ID found"
 	try:
-		project_root_path = os.path.realpath(__file__)+os.path.sep+'..'
+		project_root_path = os.path.dirname(os.path.realpath(__file__))+os.path.sep+'..'
 		commitID = version_control_interface.VersionControlInterface(project_root_path).get_latest_repo_commit()
 	except:
 		pass #ignore it	- just write default to file	   
