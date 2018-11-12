@@ -100,4 +100,15 @@ class VersionControlInterface:
         elif self.vcs_type is 'svn':
             self.svnClient.remove(file_path)
         else:
-            raise Exception('Internal quasar error')         
+            raise Exception('Internal quasar error')
+
+    def get_latest_repo_commit(self):
+        try:
+            if self.vcs_type is 'git':
+                return "WTF git commit ID"
+            elif elf.vcs_type is 'svn':
+                return "WTF SVN commit ID"
+        except:
+            pass #ignore it           
+        return "Failed to find commit ID"
+    

@@ -2,17 +2,17 @@ import os
 import socket
 import sys
 import argparse
+import version_control_interface
 from argparse import RawTextHelpFormatter
 from time import localtime, strftime
 
 def process_args():
 	print 'meta_build_info.py, processing command line args...'
-	parser = argparse.ArgumentParser(description="""meta_build_info.py generates build info. Requires 3 arg - the ABS path to the target generation directory (must already exist)""", formatter_class=RawTextHelpFormatter)
+	parser = argparse.ArgumentParser(description="""meta_build_info.py generates build info. Requires 2 args - the ABS path to the target generation directory (must already exist) and the toolkit """, formatter_class=RawTextHelpFormatter)
 	parser.add_argument('--target_generation_dir', required=True, help='absolute path to local directory where the build meta info will be generated')
-	parser.add_argument('--commit_ID', required=True, help='current git/SVN commit ID for the repository')
 	parser.add_argument('--toolkit_libs', required=True, help='which opc-ua toolkit libraries was this server built with')
 	args = parser.parse_args()
-	print 'generating to directory [{0}], commitID [{1}] toolkit libs [{2}]'.format(args.target_generation_dir, args.commit_ID, args.toolkit_libs)
+	print 'generating to directory [{0}], toolkit libs [{1}]'.format(args.target_generation_dir, args.toolkit_libs)
 	return args
 
 def open_generation_target_file(target_generation_dir):
@@ -32,7 +32,13 @@ def generateBuildHost(generatedFile):
 	build_host = socket.gethostname()
 	generatedFile.write('#define GEND_BUILD_HOST "{0}"\n'.format(build_host))
 
-def generateCommitID(generatedFile, commitID):
+def generateCommitID(generatedFile):
+	commitID = "No commit ID found"
+	try:
+		project_root_path = os.path.realpath(__file__)+os.path.sep+'..'
+		commitID = version_control_interface.VersionControlInterface(project_root_path).get_latest_repo_commit()
+	except:
+		pass #ignore it	- just write default to file	   
 	generatedFile.write('#define GEND_COMMIT_ID "{0}"\n'.format(commitID))
 
 def generateToolkitLibs(generatedFile, toolkitLibs):
@@ -43,7 +49,7 @@ args = process_args()
 generation_file = open_generation_target_file(args.target_generation_dir)
 generateBuildTime(generation_file)
 generateBuildHost(generation_file)
-generateCommitID(generation_file, args.commit_ID)
+generateCommitID(generation_file)
 generateToolkitLibs(generation_file, args.toolkit_libs)
 generation_file.close()
 print 'generated build meta info to file [{0}]'.format(generation_file)

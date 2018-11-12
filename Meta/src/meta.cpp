@@ -51,6 +51,7 @@
 #include <DQuasar.h>
 #include <ASServer.h>
 #include <DServer.h>
+#include "MetaBuildInfo.cpp"
 
 using std::string;
 
