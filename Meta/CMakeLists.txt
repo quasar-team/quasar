@@ -22,4 +22,17 @@ file(GLOB META_SRCS src/*.cpp)
 
 add_library (Meta OBJECT ${META_SRCS})
 
-add_dependencies (Meta Configuration.hxx_GENERATED AddressSpace)
+file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/generated)
+
+add_custom_target(runBuildInfoGeneratorPy ALL
+	DEPENDS alwaysRunBuildInfoGeneratorPy
+)
+
+add_custom_command(OUTPUT alwaysRunBuildInfoGeneratorPy # note output never actually created: ensures cmd always runs
+	COMMENT "generating meta build info definitions header using python script" 
+	WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+	DEPENDS ${CMAKE_CURRENT_LIST_DIR}/meta_build_info.py
+	COMMAND python ${CMAKE_CURRENT_LIST_DIR}/meta_build_info.py --target_generation_dir ${PROJECT_BINARY_DIR}/generated --commit_ID "TODO" --toolkit_libs "${OPCUA_TOOLKIT_LIBS} "
+)
+
+add_dependencies (Meta Configuration.hxx_GENERATED AddressSpace runBuildInfoGeneratorPy)
