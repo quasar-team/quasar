@@ -56,6 +56,12 @@ include_directories (
 	${PROJECT_BINARY_DIR}/Configuration
 	${SERVER_INCLUDE_DIRECTORIES}
 	)
+	
+if(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG} )
+else(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
+endif(${CMAKE_BUILD_TYPE} MATCHES Debug)	
 
 #
 # begin optional quasar modules
@@ -141,12 +147,6 @@ add_executable ( ${EXECUTABLE}
 	${MODULES_OBJECTS}
 	)
 set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
-
-if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG} )
-else(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
-endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 
 target_link_libraries ( ${EXECUTABLE}
 	${BOOST_LIBS}
