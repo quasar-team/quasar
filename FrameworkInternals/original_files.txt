@@ -150,6 +150,7 @@ File transformDesign.py						must_exist,must_be_versioned,md5=check,install=over
 File optionalModules.py                                         must_exist,must_be_versioned,md5=check,install=overwrite,
 File runDoxygen.py							must_exist,must_be_versioned,md5=check,install=overwrite
 File version_control_interface.py           must_exist,must_be_versioned,md5=check,install=overwrite
+File meta_build_info.py                     must_exist,must_be_versioned,md5=check,install=overwrite
 File externalToolCheck.py					must_exist,must_be_versioned,md5=check,install=overwrite
 File commandMap.py							must_exist,must_be_versioned,md5=check,install=overwrite
 File quasarCommands.py						must_exist,must_be_versioned,md5=check,install=overwrite
@@ -249,6 +250,10 @@ File DServer.h must_exist,must_be_versioned,install=overwrite,md5=check
 File Base_DQuasar.h must_exist,must_be_versioned,install=overwrite,md5=check
 File Base_DServer.h must_exist,must_be_versioned,install=overwrite,md5=check
 File Certificate.h must_exist,must_be_versioned,install=overwrite,md5=check
+File MetaBuildInfo.h must_exist,must_be_versioned,install=overwrite,md5=check
+File ASBuildInformation.h must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DBuildInformation.h must_exist,must_be_versioned,install=overwrite,md5=check
+File DBuildInformation.h must_exist,must_be_versioned,install=overwrite,md5=check
 
 Directory Meta/src install=create,
 File ASGeneralLogLevel.cpp must_exist,must_be_versioned,install=overwrite,md5=check
@@ -274,6 +279,10 @@ File DServer.cpp must_exist,must_be_versioned,install=overwrite,md5=check
 File Base_DQuasar.cpp must_exist,must_be_versioned,install=overwrite,md5=check
 File Base_DServer.cpp must_exist,must_be_versioned,install=overwrite,md5=check
 File Certificate.cpp must_exist,must_be_versioned,install=overwrite,md5=check
+File MetaBuildInfo.cpp must_exist,must_be_versioned,install=overwrite,md5=check
+File ASBuildInformation.cpp must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DBuildInformation.cpp must_exist,must_be_versioned,install=overwrite,md5=check
+File DBuildInformation.cpp must_exist,must_be_versioned,install=overwrite,md5=check
 
 Directory Meta/config install=create,
 File Meta.xsd must_exist,must_be_versioned,install=overwrite,md5=check
