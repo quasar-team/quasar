@@ -51,7 +51,7 @@
 #include <DQuasar.h>
 #include <ASServer.h>
 #include <DServer.h>
-#include "MetaBuildInfo.cpp"
+#include "MetaBuildInfo.h"
 
 using std::string;
 
@@ -234,10 +234,10 @@ const Configuration::SourceVariableThreadPool getSourceVariableThreadPoolConfig(
 
 const Configuration::BuildInformation getBuildInformation()
 {
-	const string buildHost("WTF-host");
-	const string buildTimestamp("WTF-timestamp");
-	const string commitID("WTF-commit");
-	const string toolkitLibs("WTF-toolkitLibs");
+	const string buildHost(BuildMetaInfo::getBuildHost());
+	const string buildTimestamp(BuildMetaInfo::getBuildTime());
+	const string commitID(BuildMetaInfo::getCommitID());
+	const string toolkitLibs(BuildMetaInfo::getToolkitLibs());
 	return Configuration::BuildInformation(buildHost, buildTimestamp, commitID, toolkitLibs);
 }
 
