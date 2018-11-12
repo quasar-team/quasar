@@ -112,5 +112,5 @@ class VersionControlInterface:
                 commitID = self.svnClient.info2(self.project_path)[0][1]['rev'].number
         except Exception as e:
             commitID = 'Exception: {}'.format(str(e))
-        return 'VCS type [{}] commit ID [${}]'.format(self.vcs_type, commitID) 
+        return 'VCS type [{}] commit ID [{}]'.format(self.vcs_type, commitID) 
     
