@@ -30,12 +30,12 @@
 Device::DStandardMetaData* configureMeta(Configuration::Configuration & config, AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId);
 void destroyMeta (AddressSpace::ASNodeManager *nm);
 
-template<typename TAddressSpaceType>
+template<typename AddressSpaceType>
 void unlinkAllAddressSpaceItems(AddressSpace::ASNodeManager *nm)
 {
-	std::vector< TAddressSpaceType* > objects;
-	AddressSpace::findAllByPattern<TAddressSpaceType> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, ".*", objects);
-	for(TAddressSpaceType *a : objects)
+	std::vector< AddressSpaceType* > objects;
+	AddressSpace::findAllByPattern<AddressSpaceType> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, ".*", objects);
+	for(AddressSpaceType *a : objects)
 	{
 		a->unlinkDevice();
 	}
