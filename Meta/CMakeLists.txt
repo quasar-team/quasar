@@ -41,7 +41,8 @@ add_custom_command(OUTPUT alwaysRunBuildInfoGeneratorPy # note output never actu
 	COMMENT "generating meta build info definitions header using python script" 
 	WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
 	DEPENDS ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/meta_build_info.py
-	COMMAND python ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/meta_build_info.py --target_generation_dir ${PROJECT_BINARY_DIR}/generated --toolkit_libs "${OPCUA_TOOLKIT_LIBS} "
+	COMMAND python ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/meta_build_info.py --target_generation_dir ${PROJECT_BINARY_DIR}/generated --toolkit_libs "${OPCUA_TOOLKIT_LIBS}"
+	VERBATIM
 )
 
 include_directories(${PROJECT_BINARY_DIR}/generated)
