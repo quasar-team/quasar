@@ -30,7 +30,6 @@
 			<xs:element name="Log" type="tns:Log" minOccurs="0" 	maxOccurs="1" />
 			<xs:element name="SourceVariableThreadPool" type="tns:SourceVariableThreadPool" minOccurs="0" 	maxOccurs="1" />
 			<xs:element name="Server" type="tns:Server" minOccurs="0" 	maxOccurs="1" />
-			<xs:element name="BuildInformation" type="tns:BuildInformation" minOccurs="0" 	maxOccurs="1" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -63,14 +62,7 @@
       <xs:attribute name="minThreads" use="required" type="xs:unsignedInt"/>
       <xs:attribute name="maxThreads" use="required" type="xs:unsignedInt"/>
       <xs:attribute name="maxJobs" use="required" type="xs:unsignedInt"/>
-   </xs:complexType>
-   
-    <xs:complexType name="BuildInformation">
-      <xs:attribute name="BuildHost" use="required" type="xs:string" />
-      <xs:attribute name="BuildTimestamp" use="required" type="xs:string" />
-      <xs:attribute name="CommitID" use="required" type="xs:string" />
-      <xs:attribute name="ToolkitLibs" use="required" type="xs:string" />
-   </xs:complexType>         
+   </xs:complexType>   
 
 	<xs:simpleType name="logLevelIdentifier">
 		<xs:restriction base="xs:string">

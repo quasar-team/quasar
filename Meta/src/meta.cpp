@@ -160,13 +160,14 @@ void configureSourceVariableThreadPool(const Configuration::SourceVariableThread
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dSourceVariableThreadPool, asSourceVariableThreadPool);
 }
 
-void configureBuildInformation(const Configuration::BuildInformation& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent)
+void configureBuildInformation(AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent)
 {
-	const string buildHost(config.BuildHost());
-	const string buildTimestamp(config.BuildTimestamp());
-	const string commitID(config.CommitID());
-	const string toolkitLibs(config.ToolkitLibs());
-	AddressSpace::ASBuildInformation *asBuildInformation = new AddressSpace::ASBuildInformation(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_BUILDINFORMATION), nm,
+    const string buildHost(BuildMetaInfo::getBuildHost());
+    const string buildTimestamp(BuildMetaInfo::getBuildTime());
+    const string commitID(BuildMetaInfo::getCommitID());
+    const string toolkitLibs(BuildMetaInfo::getToolkitLibs());
+
+    AddressSpace::ASBuildInformation *asBuildInformation = new AddressSpace::ASBuildInformation(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_BUILDINFORMATION), nm,
 			buildHost, buildTimestamp, commitID, toolkitLibs);
     Device::DBuildInformation* dBuildInformation = new Device::DBuildInformation(buildHost,
     		buildTimestamp, commitID, toolkitLibs);
@@ -230,15 +231,6 @@ const Configuration::SourceVariableThreadPool getSourceVariableThreadPoolConfig(
 		unsigned int jobs = 1000;
 		return Configuration::SourceVariableThreadPool(min, max, jobs);
 	}
-}
-
-const Configuration::BuildInformation getBuildInformation()
-{
-	const string buildHost(BuildMetaInfo::getBuildHost());
-	const string buildTimestamp(BuildMetaInfo::getBuildTime());
-	const string commitID(BuildMetaInfo::getCommitID());
-	const string toolkitLibs(BuildMetaInfo::getToolkitLibs());
-	return Configuration::BuildInformation(buildHost, buildTimestamp, commitID, toolkitLibs);
 }
 
 const Configuration::Quasar getQuasarConfig(const Configuration::StandardMetaData & config)
@@ -318,7 +310,7 @@ Device::DStandardMetaData* configureMeta( const Configuration::StandardMetaData 
     configureSourceVariableThreadPool(getSourceVariableThreadPoolConfig(config), nm, asMeta);
     configureQuasar(getQuasarConfig(config), nm, asMeta, parent);
 	configureServer(getServerConfig(config), nm, asMeta, parent);
-	configureBuildInformation(getBuildInformation(), nm, asMeta);
+	configureBuildInformation(nm, asMeta);
 	
     return dMeta;
 }
