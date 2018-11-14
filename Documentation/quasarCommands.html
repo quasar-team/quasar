@@ -254,6 +254,25 @@
     .svnignore file, so the generated files will be ignored in your svn
     repository.<br>
     <br>
+    <h2><a name="symlink_runtime_deps"></a>symlink_runtime_deps</h2>
+    <p>New in quasar 1.3.0.</p>
+    <p>When you build out-of-source (which is the default since quasar
+      1.3.0) your executable will be done in build/bin (the default) but
+      some files (like ServerConfig.xml) which are normally in bin/ will
+      be needed to run it.<br>
+      This convenience function can be run:<br>
+      <br>
+    </p>
+    <ul>
+      <li>with no arguments -&gt; symlinks ServerConfig.xml and
+        config*.xml</li>
+      <li>with one argument -&gt; symlinks whatever wildcard-matches the
+        argument, from bin/ in the source directory to bin/ in the build
+        directory<br>
+        (NOTE: don't forget to escape asterisk if you use it by
+        backslash!)<br>
+      </li>
+    </ul>
     <h2><a name="upgrade_design"></a>upgrade_design</h2>
     Method for adjusting Design.xml for a new Design.xsd when updating
     to a new version of the Framework<br>

@@ -506,11 +506,19 @@ def symlinkIfNotExists(src, dst):
 			raise e
 	
 	
-def setupBuildDirectory(context):
-	symlinkIfNotExists(
-		os.path.join(context['projectSourceDir'], 'bin', 'ServerConfig.xml'),
-		os.path.join(context['projectBinaryDir'], 'bin', 'ServerConfig.xml')) 
-	config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', 'config*.xml'))
-	for config_file in config_files:
-		symlinkIfNotExists(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
-	
+def symlinkRuntimeDeps(context, wildcard=None):
+	if wildcard is None:
+		yn = yes_or_no('No argument provided, will symlink ServerConfig.xml and all config*.xml files, OK?')
+		if yn == 'n':
+			return
+		symlinkIfNotExists(
+			os.path.join(context['projectSourceDir'], 'bin', 'ServerConfig.xml'),
+			os.path.join(context['projectBinaryDir'], 'bin', 'ServerConfig.xml')) 
+		config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', 'config*.xml'))
+		for config_file in config_files:
+			symlinkIfNotExists(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
+	else:
+		config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', wildcard))
+		print 'Matched {0} files'.format(len(config_files))
+		for config_file in config_files:
+			symlinkIfNotExists(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
