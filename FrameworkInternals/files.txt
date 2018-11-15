@@ -125,6 +125,7 @@ File transformDesign.py must_exist,must_be_versioned,md5=41ae25a90e42842c5b9de20
 File optionalModules.py must_exist,must_be_versioned,md5=90bd4cf7bb5301255cc388351a445a2b,install=overwrite,
 File runDoxygen.py must_exist,must_be_versioned,md5=7caee43cbcd7b1d115cb35da756f2434,install=overwrite,
 File version_control_interface.py must_exist,must_be_versioned,md5=1864e2d5c584cf58e18c8825c45a9efc,install=overwrite,
+File meta_build_info.py                     must_exist,must_be_versioned,md5=check,install=overwrite
 File externalToolCheck.py must_exist,must_be_versioned,md5=f797c1c32f3cecc16ea8ce55b29dfd70,install=overwrite,
 File commandMap.py must_exist,must_be_versioned,md5=6f459488d4900f073dbeacc7a6612bf9,install=overwrite,
 File quasarCommands.py must_exist,must_be_versioned,md5=4f418c4b9c61ba4a0575fd49d6d63df1,install=overwrite,
@@ -213,6 +214,10 @@ File DServer.h must_exist,must_be_versioned,md5=b9c3233da532d9a0798e30ba9743d919
 File Base_DQuasar.h must_exist,must_be_versioned,md5=d2721aa676a9a556f22f41fa8b147c38,install=overwrite,
 File Base_DServer.h must_exist,must_be_versioned,md5=658b4a5aa559136b2e04e0ae738c1adb,install=overwrite,
 File Certificate.h must_exist,must_be_versioned,md5=2fadf4126f0c50def33fb0d361028143,install=overwrite,
+File MetaBuildInfo.h must_exist,must_be_versioned,install=overwrite,md5=check
+File ASBuildInformation.h must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DBuildInformation.h must_exist,must_be_versioned,install=overwrite,md5=check
+File DBuildInformation.h must_exist,must_be_versioned,install=overwrite,md5=check
 Directory Meta/src install=create,
 File ASGeneralLogLevel.cpp must_exist,must_be_versioned,md5=c5db6c1c453c5f92c7f6ef0697a7fb78,install=overwrite,
 File ASStandardMetaData.cpp must_exist,must_be_versioned,md5=490cc78e6b805f1f31e65a909540d17e,install=overwrite,
@@ -237,6 +242,10 @@ File DServer.cpp must_exist,must_be_versioned,md5=348a52e73a376c9d4ec4d3b461dd92
 File Base_DQuasar.cpp must_exist,must_be_versioned,md5=f8681a977414681666c54229e2a1b610,install=overwrite,
 File Base_DServer.cpp must_exist,must_be_versioned,md5=56bbec0b1671d0bde2f823a83ff6c622,install=overwrite,
 File Certificate.cpp must_exist,must_be_versioned,md5=83e840290169608a050b779f733447dd,install=overwrite,
+File MetaBuildInfo.cpp must_exist,must_be_versioned,install=overwrite,md5=check
+File ASBuildInformation.cpp must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DBuildInformation.cpp must_exist,must_be_versioned,install=overwrite,md5=check
+File DBuildInformation.cpp must_exist,must_be_versioned,install=overwrite,md5=check
 Directory Meta/config install=create,
 File Meta.xsd must_exist,must_be_versioned,md5=e94a3e1e1c4284620f3986f1d2f15e8c,install=overwrite,
 Directory LogIt install=create,

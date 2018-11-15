@@ -28,9 +28,10 @@ magic_vcs_dir = {'git':'.git', 'svn':'.svn'}
 
 class VersionControlInterface:
     def __init__(self,project_path):
+        self.project_path = project_path
         magic_found_per_type = {}
         for vcs_type in known_vcs_types:
-            magic_found_per_type[vcs_type] = os.path.isdir(project_path + os.path.sep + magic_vcs_dir[vcs_type])
+            magic_found_per_type[vcs_type] = os.path.isdir(self.project_path + os.path.sep + magic_vcs_dir[vcs_type])
         #  see what vcs types were identified: preferably there should be exactly one
         magic_found = filter( lambda x: magic_found_per_type[x], magic_found_per_type )
         if len(magic_found) < 1:
@@ -44,7 +45,7 @@ class VersionControlInterface:
         try:
             if self.vcs_type is 'git':
                 import pygit2
-                self.repo = pygit2.Repository(project_path)
+                self.repo = pygit2.Repository(self.project_path)
             elif self.vcs_type is 'svn':
                 import pysvn
                 self.svnClient = pysvn.Client()
@@ -100,4 +101,16 @@ class VersionControlInterface:
         elif self.vcs_type is 'svn':
             self.svnClient.remove(file_path)
         else:
-            raise Exception('Internal quasar error')         
+            raise Exception('Internal quasar error')
+
+    def get_latest_repo_commit(self):
+        commitID = "Failed to find commitID"
+        try:
+            if self.vcs_type is 'git':
+                commitID = self.repo.describe()
+            elif self.vcs_type is 'svn':
+                commitID = self.svnClient.info2(self.project_path)[0][1]['rev'].number
+        except Exception as e:
+            commitID = 'Exception: {}'.format(str(e))
+        return 'VCS type [{}] commit ID [{}]'.format(self.vcs_type, commitID) 
+    

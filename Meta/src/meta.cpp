@@ -31,7 +31,6 @@
 #include <ASUtils.h>
 #include <ASInformationModel.h>
 #include <ASNodeManager.h>
-#include <ASNodeQueries.h>
 
 #include <MetaUtils.h>
 
@@ -46,10 +45,13 @@
 #include <ASComponentLogLevels.h>
 #include <ASSourceVariableThreadPool.h>
 #include <DSourceVariableThreadPool.h>
+#include <ASBuildInformation.h>
+#include <DBuildInformation.h>
 #include <ASQuasar.h>
 #include <DQuasar.h>
 #include <ASServer.h>
 #include <DServer.h>
+#include "MetaBuildInfo.h"
 
 using std::string;
 
@@ -158,6 +160,20 @@ void configureSourceVariableThreadPool(const Configuration::SourceVariableThread
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dSourceVariableThreadPool, asSourceVariableThreadPool);
 }
 
+void configureBuildInformation(AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent)
+{
+    const string buildHost(BuildMetaInfo::getBuildHost());
+    const string buildTimestamp(BuildMetaInfo::getBuildTime());
+    const string commitID(BuildMetaInfo::getCommitID());
+    const string toolkitLibs(BuildMetaInfo::getToolkitLibs());
+
+    AddressSpace::ASBuildInformation *asBuildInformation = new AddressSpace::ASBuildInformation(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_BUILDINFORMATION), nm,
+			buildHost, buildTimestamp, commitID, toolkitLibs);
+    Device::DBuildInformation* dBuildInformation = new Device::DBuildInformation(buildHost,
+    		buildTimestamp, commitID, toolkitLibs);
+    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dBuildInformation, asBuildInformation);
+}
+
 void configureQuasar(const Configuration::Quasar& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent, Device::DRoot * deviceParent)
 {
     AddressSpace::ASQuasar *asQuasar = new AddressSpace::ASQuasar(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_QUASAR), nm, config);
@@ -204,7 +220,7 @@ const Configuration::SourceVariableThreadPool getSourceVariableThreadPoolConfig(
 {
 	if( config.SourceVariableThreadPool().present() )
 	{
-		LOG(Log::INF) << "StandardMetaData.SourceVariableThreadPool configuration found in the configuration file, configuringStandardMetaData.SourceVariableThreadPool from the configuration file";
+		LOG(Log::INF) << "StandardMetaData.SourceVariableThreadPool configuration found in the configuration file, configuring StandardMetaData.SourceVariableThreadPool from the configuration file";
 		return config.SourceVariableThreadPool().get();
 	}
 	else
@@ -294,6 +310,7 @@ Device::DStandardMetaData* configureMeta( const Configuration::StandardMetaData 
     configureSourceVariableThreadPool(getSourceVariableThreadPoolConfig(config), nm, asMeta);
     configureQuasar(getQuasarConfig(config), nm, asMeta, parent);
 	configureServer(getServerConfig(config), nm, asMeta, parent);
+	configureBuildInformation(nm, asMeta);
 	
     return dMeta;
 }
@@ -305,64 +322,11 @@ Device::DStandardMetaData* configureMeta(Configuration::Configuration & config, 
 
 void destroyMeta (AddressSpace::ASNodeManager *nm)
 {
-	{
-		std::vector< AddressSpace::ASStandardMetaData * > objects;
-		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASStandardMetaData> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		for(AddressSpace::ASStandardMetaData *a : objects)
-		{
-			a->unlinkDevice();
-		}
-	}
-
-	{
-		std::vector< AddressSpace::ASGeneralLogLevel * > objects;
-		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASGeneralLogLevel> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		for(AddressSpace::ASGeneralLogLevel *a : objects)
-		{
-			a->unlinkDevice();
-		}
-	}
-	
-	{
-		std::vector< AddressSpace::ASQuasar * > objects;
-		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASQuasar> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		for(AddressSpace::ASQuasar *a : objects)
-		{
-			a->unlinkDevice();
-		}
-	}
-	
-	{
-		std::vector< AddressSpace::ASServer * > objects;
-		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASServer> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		for(AddressSpace::ASServer *a : objects)
-		{
-			a->unlinkDevice();
-		}
-	}
-
-	{
-		std::vector< AddressSpace::ASSourceVariableThreadPool * > objects;
-		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASSourceVariableThreadPool> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		for(AddressSpace::ASSourceVariableThreadPool *a : objects)
-		{
-			a->unlinkDevice();
-		}
-	}
-
-	{
-		std::vector< AddressSpace::ASComponentLogLevel * > objects;
-		std::string pattern (".*");
-		AddressSpace::findAllByPattern<AddressSpace::ASComponentLogLevel> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, pattern, objects);
-		for(AddressSpace::ASComponentLogLevel *a : objects)
-		{
-			a->unlinkDevice();
-		}
-	}
-
+	unlinkAllAddressSpaceItems<AddressSpace::ASStandardMetaData>(nm);
+	unlinkAllAddressSpaceItems<AddressSpace::ASGeneralLogLevel>(nm);
+	unlinkAllAddressSpaceItems<AddressSpace::ASComponentLogLevel>(nm);
+	unlinkAllAddressSpaceItems<AddressSpace::ASQuasar>(nm);
+	unlinkAllAddressSpaceItems<AddressSpace::ASServer>(nm);
+	unlinkAllAddressSpaceItems<AddressSpace::ASSourceVariableThreadPool>(nm);
+	unlinkAllAddressSpaceItems<AddressSpace::ASBuildInformation>(nm);
 }

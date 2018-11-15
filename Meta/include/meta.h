@@ -25,6 +25,18 @@
 #include <DRoot.h>
 #include <ASNodeManager.h>
 #include <DStandardMetaData.h>
+#include <ASNodeQueries.h>
 
 Device::DStandardMetaData* configureMeta(Configuration::Configuration & config, AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId);
 void destroyMeta (AddressSpace::ASNodeManager *nm);
+
+template<typename AddressSpaceType>
+void unlinkAllAddressSpaceItems(AddressSpace::ASNodeManager *nm)
+{
+	std::vector< AddressSpaceType* > objects;
+	AddressSpace::findAllByPattern<AddressSpaceType> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, ".*", objects);
+	for(AddressSpaceType *a : objects)
+	{
+		a->unlinkDevice();
+	}
+}

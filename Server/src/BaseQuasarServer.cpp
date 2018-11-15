@@ -57,6 +57,8 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp> 
 
+#include <MetaBuildInfo.h>
+
 using namespace std;
 using namespace boost::program_options;
 
@@ -247,7 +249,11 @@ int BaseQuasarServer::parseCommandLine(
     //Print version if needed
     if (printVersion)
     {
-        std::cout << VERSION_STR << std::endl;
+    	std::cout << VERSION_STR << std::endl << \
+    			"\t BuildHost: " << BuildMetaInfo::getBuildHost() << std::endl << \
+				"\t BuildTimestamp: " << BuildMetaInfo::getBuildTime() << std::endl << \
+				"\t CommitID: " << BuildMetaInfo::getCommitID() << std::endl << \
+				"\t ToolkitLibs: " << BuildMetaInfo::getToolkitLibs() << std::endl;
         if (isHelpOrVersion)
             *isHelpOrVersion = true;
         return 0;
