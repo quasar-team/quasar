@@ -16,8 +16,10 @@ Redistribution and use in source and binary forms, with or without modification,
 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@contact:    damian.abalo@cern.ch
+@contact:    quasar-developers@cern.ch
 '''
+
+import errno
 
 try:
 	import sys
@@ -35,6 +37,7 @@ try:
 	from lxml import etree  
 	
 	import shutil  # for copying files, etc
+	import glob
 
 
 except Exception as e:
@@ -491,3 +494,31 @@ def mfCheckSvnIgnore():
 def mfDesignVsDevice():
 	"""Checks if the device files are outdated (By comparing with design), and hence if they should be regenerated."""
 	design_vs_device(os.getcwd())
+	
+def symlinkIfNotExists(src, dst):
+	try:
+		os.symlink(src, dst)
+		print 'Symlinked {0} as {1}'.format(src, dst)
+	except OSError as e:
+		if e.errno == errno.EEXIST:
+			print 'Skipped {0} because: target already exists'.format(src)
+		else:
+			raise e
+	
+	
+def symlinkRuntimeDeps(context, wildcard=None):
+	if wildcard is None:
+		yn = yes_or_no('No argument provided, will symlink ServerConfig.xml and all config*.xml files, OK?')
+		if yn == 'n':
+			return
+		symlinkIfNotExists(
+			os.path.join(context['projectSourceDir'], 'bin', 'ServerConfig.xml'),
+			os.path.join(context['projectBinaryDir'], 'bin', 'ServerConfig.xml')) 
+		config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', 'config*.xml'))
+		for config_file in config_files:
+			symlinkIfNotExists(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
+	else:
+		config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', wildcard))
+		print 'Matched {0} files'.format(len(config_files))
+		for config_file in config_files:
+			symlinkIfNotExists(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))

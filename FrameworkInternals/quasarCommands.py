@@ -27,6 +27,7 @@ from manage_files import mfCheckConsistency
 from manage_files import mfCreateRelease
 from manage_files import mfSetupSvnIgnore
 from manage_files import mfDesignVsDevice
+from manage_files import symlinkRuntimeDeps
 from deviceGenerators import generateDeviceClass, generateAllDevices
 from configurationGenerators import generateConfiguration
 from designTools import validateDesign
@@ -76,7 +77,8 @@ commands = [
 	[['list_modules'], listModules, True],
 	[['list_enabled_modules'], listEnabledModules, True],
 	[['build_config'], build_config, True],
-	[['set_build_config'], set_build_config, True]
+	[['set_build_config'], set_build_config, True],
+	[['symlink_runtime_deps'],       symlinkRuntimeDeps, True]
 	]
 	
 def printCommandList():
