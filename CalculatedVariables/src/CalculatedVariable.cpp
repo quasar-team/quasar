@@ -7,6 +7,7 @@
 
 #include <CalculatedVariable.h>
 #include <LogIt.h>
+#include "../include/CalculatedVariablesEngine.h"
 
 
 namespace CalculatedVariables
@@ -34,8 +35,7 @@ CalculatedVariable::CalculatedVariable(
                                "abcdefghijklmnopqrstuvwxyz"\
                                "ABCDEFGHIJKLMNOPQRSTUVWXYZ.");
         m_parser.SetExpr(formula);
-        //TODO uncomment when added the engine
-        //m_parser.SetVarFactory(&Engine::onParserVariableRequest, /*user data*/ this);
+        m_parser.SetVarFactory(&Engine::parserVariableRequestHandler, /*user data*/ this);
         m_parser.Eval(); // this compiles the expression and does 1st evaluation
     }
     catch (const mu::Parser::exception_type &e)
@@ -44,7 +44,8 @@ CalculatedVariable::CalculatedVariable(
         throw std::runtime_error("Calculated item instantiation failed. Problem has been logged.");
     }
 
-    update();
+    UaDataValue dataValue(UaVariant(), OpcUa_BadWaitingForInitialData, UaDateTime::now(), UaDateTime::now());
+    this->setValue(nullptr, dataValue, OpcUa_False);
 
 }
 

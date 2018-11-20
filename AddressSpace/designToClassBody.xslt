@@ -264,6 +264,11 @@ if (!s.isGood())
 	m_<xsl:value-of select="@name"/>-&gt;assignHandler(this, &amp;<xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:delegateWriteName(@name)"/>);
 </xsl:if>
 
+<xsl:if test="@dataType='OpcUa_Double'">
+<!-- TODO this we should do wider, e.g. should accept also other numeric types -->
+    CalculatedVariables::Engine::registerVariableForCalculatedVariables( m_<xsl:value-of select="@name"/> );
+</xsl:if>
+
 </xsl:for-each>
 
 <xsl:for-each select="d:sourcevariable">
@@ -843,6 +848,7 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	#include &lt;ArrayTools.h&gt;
 	#include &lt;Utils.h&gt;
     #include &lt;ChangeNotifyingVariable.h&gt;
+    #include &lt;CalculatedVariablesEngine.h&gt;
 
     #include &lt;SourceVariables.h&gt;
 	

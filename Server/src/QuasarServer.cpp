@@ -63,6 +63,6 @@ void QuasarServer::shutdown()
 
 void QuasarServer::initializeLogIt()
 {
-	Log::initializeLogging();
-  LOG(Log::INF) << "Logging initialized.";
+	BaseQuasarServer::initializeLogIt();
+    LOG(Log::INF) << "Logging initialized.";
 }

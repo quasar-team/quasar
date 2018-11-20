@@ -58,6 +58,7 @@
 #include <boost/thread/thread.hpp> 
 
 #include <MetaBuildInfo.h>
+#include "../../CalculatedVariables/include/CalculatedVariablesEngine.h"
 
 using namespace std;
 using namespace boost::program_options;
@@ -280,12 +281,13 @@ int BaseQuasarServer::initializeEnvironment()
     const int ret = 0;
 #endif    
     initializeLogIt();
+    CalculatedVariables::Engine::initialize();
     return ret;
 }
 void BaseQuasarServer::initializeLogIt()
 {
     Log::initializeLogging();
-    LOG(Log::ERR) << "Testing logging ";
+    Log::registerLoggingComponent("CalcVars", Log::TRC);
 }
 void BaseQuasarServer::mainLoop()
 {
