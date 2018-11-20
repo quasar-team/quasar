@@ -97,11 +97,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	<xs:sequence>
 	<xs:choice minOccurs="0" maxOccurs="unbounded">
-		<xs:element name="item" type="tns:ITEM" >
-		</xs:element>
-		<xs:element name="regexpr" type="tns:REGEXPR" >
-		</xs:element>
-	
+		<xs:element name="CalculatedVariable" type="tns:CalculatedVariable" />
 
 		<xsl:for-each select="d:hasobjects[@instantiateUsing='configuration']">
 		<xs:element name="{@class}" type="tns:{@class}"  />
@@ -242,17 +238,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xs:minLength value="1"/>
 		</xs:restriction>
 	</xs:simpleType>
-	
-	<xs:complexType name="REGEXPR">
-		<xs:attribute name="name" type="xs:string" use="required" />
-		<xs:attribute name="value" type="xs:string" use="required" />
-	</xs:complexType>
 
-	<xs:complexType name="ITEM">
+	<xs:complexType name="CalculatedVariable">
 		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="value" type="xs:string" use="required" />
-		<xs:attribute name="when" type="xs:string" use="optional" />
-		<xs:attribute name="status" type="xs:string" use="optional" />
 	</xs:complexType>	
 	<xsl:apply-templates/>
 	

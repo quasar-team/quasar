@@ -65,7 +65,7 @@ m_<xsl:value-of select="@name"/> (new
 
 		<xsl:choose>
 		<xsl:when test="@addressSpaceWrite='delegated'">ASDelegatingVariable&lt;AS<xsl:value-of select="$className"/>&gt; </xsl:when>
-		<xsl:otherwise>OpcUa::BaseDataVariableType </xsl:otherwise>
+		<xsl:otherwise>ChangeNotifyingVariable</xsl:otherwise>
 		</xsl:choose>
 
 
@@ -842,6 +842,7 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	
 	#include &lt;ArrayTools.h&gt;
 	#include &lt;Utils.h&gt;
+    #include &lt;ChangeNotifyingVariable.h&gt;
 
     #include &lt;SourceVariables.h&gt;
 	
