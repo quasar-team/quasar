@@ -14,6 +14,8 @@
 namespace CalculatedVariables
 {
 
+class ParserVariable;
+
 class CalculatedVariable: public AddressSpace::ChangeNotifyingVariable
 {
 public:
@@ -28,8 +30,11 @@ public:
 
     void update();
 
+    void addDependentVariable(ParserVariable* variable) { m_parserVariables.push_back(variable); }
+
 private:
     mu::Parser m_parser;
+    std::list<ParserVariable*> m_parserVariables;
 
 };
 

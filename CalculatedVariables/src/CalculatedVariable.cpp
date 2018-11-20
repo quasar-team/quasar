@@ -5,9 +5,12 @@
  *      Author: pnikiel
  */
 
+#include <algorithm>
+
 #include <CalculatedVariable.h>
 #include <LogIt.h>
-#include "../include/CalculatedVariablesEngine.h"
+#include <CalculatedVariablesEngine.h>
+#include <CalculatedVariablesLogComponentId.h>
 
 
 namespace CalculatedVariables
@@ -40,7 +43,9 @@ CalculatedVariable::CalculatedVariable(
     }
     catch (const mu::Parser::exception_type &e)
     {
-        LOG(Log::ERR) << e.GetMsg();
+        LOG(Log::ERR, logComponentId) << "At CalculatedVariable " <<
+                this->nodeId().toString().toUtf8() << ": "
+                << e.GetExpr() << ": " << e.GetMsg();
         throw std::runtime_error("Calculated item instantiation failed. Problem has been logged.");
     }
 
@@ -51,9 +56,32 @@ CalculatedVariable::CalculatedVariable(
 
 void CalculatedVariable::update()
 {
+    LOG(Log::TRC, logComponentId) << "update() on " << this->nodeId().toString().toUtf8();
+    for (const ParserVariable* variable : m_parserVariables)
+    {
+        if (variable->state() != ParserVariable::State::Good)
+        {
+            OpcUa_StatusCode statusCode;
+            if (variable->state() == ParserVariable::State::WaitingInitialData)
+                statusCode = OpcUa_BadWaitingForInitialData;
+            else if (variable->state() == ParserVariable::State::Bad)
+                statusCode = OpcUa_Bad;
+            else
+            {
+                LOG(Log::ERR, logComponentId) << "Enum value not handled! Implement me! Or contact Piotr.";
+                statusCode = OpcUa_Bad;
+            }
+            UaDataValue dataValue(UaVariant(), statusCode, UaDateTime::now(), UaDateTime::now());
+            this->setValue(/*session*/nullptr, dataValue, OpcUa_False);
+            return;
+        }
+    }
+    // so looks like every dependent value was good...
+
     double updatedValue = m_parser.Eval();
     UaDataValue dataValue(UaVariant(updatedValue), OpcUa_Good, UaDateTime::now(), UaDateTime::now());
-    this->setValue(nullptr, dataValue, OpcUa_False);
+    this->setValue(/*session*/nullptr, dataValue, OpcUa_False);
+
 }
 
 }

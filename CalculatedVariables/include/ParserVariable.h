@@ -35,7 +35,9 @@ public:
 
     double value() const { return m_value; }
     double* valuePtr()  { return &m_value; }
-    void setValue(double v);
+    State state() const { return m_state; }
+
+    void setValue(double v, State state);
 
     //! Will match our address space counterpart address
     std::string name() const;

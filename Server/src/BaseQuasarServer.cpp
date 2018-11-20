@@ -58,7 +58,7 @@
 #include <boost/thread/thread.hpp> 
 
 #include <MetaBuildInfo.h>
-#include "../../CalculatedVariables/include/CalculatedVariablesEngine.h"
+#include <CalculatedVariablesEngine.h>
 
 using namespace std;
 using namespace boost::program_options;
