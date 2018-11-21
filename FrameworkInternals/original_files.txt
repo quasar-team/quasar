@@ -38,6 +38,28 @@ Directory bin install=create
 File ServerConfig.xml                       must_exist,must_be_versioned,install=copy_if_not_existing
 File config.xml	                            install=copy_if_not_existing 
 
+Directory CalculatedVariables install=create
+File CMakeLists.txt                         must_exist,must_be_versioned,md5=check,install=overwrite
+
+Directory CalculatedVariables/ext_components/muparser-amalgamated/include install=create
+File muParser.h                             must_exist,must_be_versioned,md5=check,install=overwrite
+
+Directory CalculatedVariables/ext_components/muparser-amalgamated/src install=create
+File muParser.cpp                           must_exist,must_be_versioned,md5=check,install=overwrite
+
+Directory CalculatedVariables/include install=create
+File CalculatedVariable.h                   must_exist,must_be_versioned,md5=check,install=overwrite
+File CalculatedVariablesChangeListener.h    must_exist,must_be_versioned,md5=check,install=overwrite
+File CalculatedVariablesEngine.h            must_exist,must_be_versioned,md5=check,install=overwrite
+File CalculatedVariablesLogComponentId.h    must_exist,must_be_versioned,md5=check,install=overwrite
+File ParserVariable.h                       must_exist,must_be_versioned,md5=check,install=overwrite
+
+Directory CalculatedVariables/src install=create
+File CalculatedVariable.cpp                 must_exist,must_be_versioned,md5=check,install=overwrite
+File CalculatedVariablesChangeListener.cpp  must_exist,must_be_versioned,md5=check,install=overwrite
+File CalculatedVariablesChangeListener.cpp  must_exist,must_be_versioned,md5=check,install=overwrite
+File ParserVariable.cpp                     must_exist,must_be_versioned,md5=check,install=overwrite
+
 Directory Common install=create
 File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge 
 
