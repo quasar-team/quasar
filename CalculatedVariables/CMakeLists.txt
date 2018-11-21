@@ -1,6 +1,6 @@
-include_directories(ext_components/muparser/include)
+include_directories(ext_components/muparser-amalgamated/include)
 
-file(GLOB muparser_srcs "ext_components/muparser/src/*.cpp" )
+file(GLOB muparser_srcs "ext_components/muparser-amalgamated/src/*.cpp" )
 
 add_library( 
     CalculatedVariables OBJECT 

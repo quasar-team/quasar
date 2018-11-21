@@ -179,7 +179,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
         for ( const Configuration::CalculatedVariable &amp; item : config.CalculatedVariable() )
         {
-            CalculatedVariablesEngine::instantiateCalculatedVariable (nm, asItem->nodeId(), item);   
+            Engine::instantiateCalculatedVariable (nm, asItem->nodeId(), item);   
         }
 		
 		<xsl:if test="fnc:classHasDeviceLogic(/,$class)='true'">

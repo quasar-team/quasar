@@ -418,5 +418,22 @@ This function also supports arrays -->
 	</xsl:choose>
 </xsl:function>
 
+<xsl:function name="fnc:isQuasarDataTypeNumeric">
+    <xsl:param name="dataType"/>
+    <xsl:choose>
+        <xsl:when test="$dataType='OpcUa_Byte'">true</xsl:when>
+        <xsl:when test="$dataType='OpcUa_SByte'">true</xsl:when>
+        <xsl:when test="$dataType='OpcUa_UInt16'">true</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Int16'">true</xsl:when>
+        <xsl:when test="$dataType='OpcUa_UInt32'">true</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Int32'">true</xsl:when>
+        <xsl:when test="$dataType='OpcUa_UInt64'">true</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Int64'">true</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Float'">true</xsl:when>
+        <xsl:when test="$dataType='OpcUa_Double'">true</xsl:when>
+        <xsl:otherwise>false</xsl:otherwise>
+    </xsl:choose>
+</xsl:function>
+
 
 </xsl:transform>
