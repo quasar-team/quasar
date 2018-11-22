@@ -22,6 +22,7 @@ CalculatedVariable::CalculatedVariable(
     OpcUa_UInt16       browseNameNameSpaceIndex,
     NodeManagerConfig* pNodeConfig,
     const std::string& formula,
+    bool               isBoolean,
     UaMutexRefCounted* pSharedMutex):
             AddressSpace::ChangeNotifyingVariable(
                     nodeId,
@@ -30,7 +31,8 @@ CalculatedVariable::CalculatedVariable(
                     UaVariant(),
                     OpcUa_AccessLevels_CurrentRead,
                     pNodeConfig,
-                    pSharedMutex)
+                    pSharedMutex),
+                    m_isBoolean(isBoolean)
 {
     try
     {
@@ -79,7 +81,12 @@ void CalculatedVariable::update()
     // so looks like every dependent value was good...
 
     double updatedValue = m_parser.Eval();
-    UaDataValue dataValue(UaVariant(updatedValue), OpcUa_Good, UaDateTime::now(), UaDateTime::now());
+    UaVariant variant;
+    if (m_isBoolean)
+        variant.setBool(updatedValue != 0);
+    else
+        variant.setDouble(updatedValue);
+    UaDataValue dataValue (variant, OpcUa_Good, UaDateTime::now(), UaDateTime::now());
     this->setValue(/*session*/nullptr, dataValue, OpcUa_False);
 
 }

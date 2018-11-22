@@ -61,7 +61,8 @@ void Engine::instantiateCalculatedVariable(
             config.name().c_str(),
             nm->getNameSpaceIndex(),
             nm,
-            config.value());
+            config.value(),
+            config.isBoolean());
 
     nm->addNodeAndReference( parentNodeId, calculatedVariable, OpcUaId_Organizes);
     if (config.initialValue().present())

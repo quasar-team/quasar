@@ -26,6 +26,7 @@ public:
         OpcUa_UInt16       browseNameNameSpaceIndex,
         NodeManagerConfig* pNodeConfig,
         const std::string& formula,
+        bool               isBoolean,
         UaMutexRefCounted* pSharedMutex = NULL);
 
     void update();
@@ -35,7 +36,7 @@ public:
 private:
     mu::Parser m_parser;
     std::list<ParserVariable*> m_parserVariables;
-
+    bool m_isBoolean;
 };
 
 }

@@ -243,6 +243,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="value" type="xs:string" use="required" />
         <xs:attribute name="initialValue" type="xs:double" use="optional" />
+        <xs:attribute name="isBoolean" type="xs:boolean" use="optional" default="false" />
 	</xs:complexType>	
 	<xsl:apply-templates/>
 	
