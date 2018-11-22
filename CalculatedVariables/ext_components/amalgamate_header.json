@@ -4,7 +4,8 @@
 	"sources": [
 	    "muParser.h",
 	    "muParserInt.h",
-	    "muParserTest.h"
+	    "muParserTest.h",
+	    "muParserDLL.h"
 	],
     "include_paths": [
 	"."
