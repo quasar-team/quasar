@@ -64,6 +64,15 @@ void Engine::instantiateCalculatedVariable(
             config.value());
 
     nm->addNodeAndReference( parentNodeId, calculatedVariable, OpcUaId_Organizes);
+    if (config.initialValue().present())
+    {
+        UaVariant variant (*config.initialValue());
+        calculatedVariable->setValue(
+                nullptr /*session*/,
+                UaDataValue(variant, OpcUa_Good, UaDateTime::now(), UaDateTime::now()),
+                OpcUa_False /*check access level*/
+                );
+    }
     registerVariableForCalculatedVariables(calculatedVariable);
     LOG(Log::TRC, logComponentId) << "Instantiated Calculated Variable: " << calculatedVariable->nodeId().toString().toUtf8();
 }

@@ -242,17 +242,24 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xs:complexType name="CalculatedVariable">
 		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="value" type="xs:string" use="required" />
+        <xs:attribute name="initialValue" type="xs:double" use="optional" />
 	</xs:complexType>	
 	<xsl:apply-templates/>
 	
 	<xs:complexType name="Configuration">
 		<xs:sequence>
-		    <xs:choice minOccurs="0" maxOccurs="1"><xs:element name="StandardMetaData" type="tns:StandardMetaData"></xs:element></xs:choice>
+		    <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element name="StandardMetaData" type="tns:StandardMetaData"/>
+            </xs:choice>
+            
 			<xs:choice minOccurs="0" maxOccurs="unbounded"  >
 				<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']">
 				<xs:element name="{@class}" type="tns:{@class}" />
 				</xsl:for-each>
 			</xs:choice>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="CalculatedVariable" type="tns:CalculatedVariable"/>
+            </xs:choice>
 		</xs:sequence>
 	</xs:complexType>	
 	

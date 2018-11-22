@@ -315,6 +315,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	}
 	</xsl:for-each>
 	</xsl:for-each>
+    
+    for ( const Configuration::CalculatedVariable &amp; item : theConfiguration-&gt;CalculatedVariable() )
+    {
+            Engine::instantiateCalculatedVariable (nm, rootNode, item);   
+    }
+    
 	return true;
 }
 
