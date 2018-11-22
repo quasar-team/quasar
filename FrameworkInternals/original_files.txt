@@ -41,6 +41,10 @@ File config.xml	                            install=copy_if_not_existing
 Directory CalculatedVariables install=create
 File CMakeLists.txt                         must_exist,must_be_versioned,md5=check,install=overwrite
 
+Directory CalculatedVariables/ext_components install=create
+
+Directory CalculatedVariables/ext_components/muparser-amalgamated install=create
+
 Directory CalculatedVariables/ext_components/muparser-amalgamated/include install=create
 File muParser.h                             must_exist,must_be_versioned,md5=check,install=overwrite
 
