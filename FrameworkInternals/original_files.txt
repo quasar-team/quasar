@@ -59,6 +59,7 @@ File CalculatedVariablesChangeListener.h    must_exist,must_be_versioned,md5=che
 File CalculatedVariablesEngine.h            must_exist,must_be_versioned,md5=check,install=overwrite
 File CalculatedVariablesLogComponentId.h    must_exist,must_be_versioned,md5=check,install=overwrite
 File ParserVariable.h                       must_exist,must_be_versioned,md5=check,install=overwrite
+File ParserVariableRequestUserData.h        must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory CalculatedVariables/src install=create
 File CalculatedVariable.cpp                 must_exist,must_be_versioned,md5=check,install=overwrite

@@ -5,7 +5,7 @@ file(GLOB muparser_srcs "ext_components/muparser-amalgamated/src/*.cpp" )
 add_definitions(-DMUPARSER_STATIC)
 
 add_library( 
-    CalculatedVariables OBJECT 
+    CalculatedVariables OBJECT  
     src/CalculatedVariable.cpp
     src/CalculatedVariablesEngine.cpp
     src/CalculatedVariablesChangeListener.cpp

@@ -11,7 +11,7 @@
 #include <LogIt.h>
 #include <CalculatedVariablesEngine.h>
 #include <CalculatedVariablesLogComponentId.h>
-
+#include <ParserVariableRequestUserData.h>
 
 namespace CalculatedVariables
 {
@@ -23,6 +23,8 @@ CalculatedVariable::CalculatedVariable(
     NodeManagerConfig* pNodeConfig,
     const std::string& formula,
     bool               isBoolean,
+    bool               hasStatusFormula,
+    const std::string& statusFormula,
     UaMutexRefCounted* pSharedMutex):
             AddressSpace::ChangeNotifyingVariable(
                     nodeId,
@@ -32,30 +34,22 @@ CalculatedVariable::CalculatedVariable(
                     OpcUa_AccessLevels_CurrentRead,
                     pNodeConfig,
                     pSharedMutex),
-                    m_isBoolean(isBoolean)
+                    m_isBoolean(isBoolean),
+                    m_hasStatusFormula(hasStatusFormula)
 {
-    try
-    {
-        m_parser.DefineNameChars("0123456789_"\
-                               "abcdefghijklmnopqrstuvwxyz"\
-                               "ABCDEFGHIJKLMNOPQRSTUVWXYZ.");
-        m_parser.SetExpr(formula);
-        m_parser.SetVarFactory(&Engine::parserVariableRequestHandler, /*user data*/ this);
-        m_parser.Eval(); // this compiles the expression and does 1st evaluation
-    }
-    catch (const mu::Parser::exception_type &e)
-    {
-        LOG(Log::ERR, logComponentId) << "At CalculatedVariable " <<
-                this->nodeId().toString().toUtf8() << ": "
-                << e.GetExpr() << ": " << e.GetMsg();
-        throw std::runtime_error("Calculated item instantiation failed. Problem has been logged.");
-    }
+    this->initializeParser(m_parser, formula, ParserVariableRequestUserData::Type::Value);
+    if (m_hasStatusFormula)
+        this->initializeParser(m_statusParser, statusFormula, ParserVariableRequestUserData::Type::Status);
 
     UaDataValue dataValue(UaVariant(), OpcUa_BadWaitingForInitialData, UaDateTime::now(), UaDateTime::now());
     this->setValue(nullptr, dataValue, OpcUa_False);
 
 }
 
+// this is called whenever value OR status variable bound to this variable has changed
+// validation rule: if any of value inputs is not good then propagate it and do not do new computation (publish NULL)
+// otherwise do the computation and publish status according to status formula (if some of status formula are wrong
+// then publish uncertain, otherwise publish good
 void CalculatedVariable::update()
 {
     LOG(Log::TRC, logComponentId) << "update() on " << this->nodeId().toString().toUtf8();
@@ -78,7 +72,16 @@ void CalculatedVariable::update()
             return;
         }
     }
-    // so looks like every dependent value was good...
+    // so looks like every dependent value was good... can perform the value calculation.
+    // now check what status formula (if used) evaluates to
+    UaStatus finalStatus = OpcUa_Good;
+    if (m_hasStatusFormula)
+    {
+        double status = m_statusParser.Eval();
+        LOG(Log::TRC, logComponentId) << "status evaluates to: " << status;
+        finalStatus = (status != 0) ? OpcUa_Good : OpcUa_Bad; // conversion of double to boolean logic
+    }
+
 
     double updatedValue = m_parser.Eval();
     UaVariant variant;
@@ -86,9 +89,36 @@ void CalculatedVariable::update()
         variant.setBool(updatedValue != 0);
     else
         variant.setDouble(updatedValue);
-    UaDataValue dataValue (variant, OpcUa_Good, UaDateTime::now(), UaDateTime::now());
+    UaDataValue dataValue (variant, finalStatus, UaDateTime::now(), UaDateTime::now());
+    LOG(Log::TRC, logComponentId) << finalStatus.toString().toUtf8();
     this->setValue(/*session*/nullptr, dataValue, OpcUa_False);
 
+}
+
+//! Initializes parser, handles potential muParser-relevant exceptions throwing std except in exchange
+void CalculatedVariable::initializeParser(
+        mu::Parser& parser,
+        const std::string& formula,
+        ParserVariableRequestUserData::Type formulaType)
+{
+    const std::string typeAsStr = formulaType == ParserVariableRequestUserData::Type::Value ? "value" : "status";
+    try
+    {
+        parser.DefineNameChars("0123456789_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.");
+        parser.SetExpr(formula);
+        ParserVariableRequestUserData userData;
+        userData.type = formulaType;
+        userData.requestor = this;
+        parser.SetVarFactory(&Engine::parserVariableRequestHandler, &userData );
+        parser.Eval(); // this compiles the expression and does 1st evaluation
+    }
+    catch(const mu::Parser::exception_type &e)
+    {
+        LOG(Log::ERR, logComponentId) << "At CalculatedVariable " <<
+                this->nodeId().toString().toUtf8() << " in " << typeAsStr << " formula : "
+                << e.GetExpr() << ": " << e.GetMsg();
+        throw std::runtime_error("Calculated item instantiation failed. Problem has been logged.");
+    }
 }
 
 }

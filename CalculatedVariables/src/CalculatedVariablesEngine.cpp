@@ -5,12 +5,16 @@
  *      Author: pnikiel
  */
 
+#include <ASNodeManager.h>
+#include <LogIt.h>
+
 #include <CalculatedVariable.h>
 #include <CalculatedVariablesLogComponentId.h>
 #include <CalculatedVariablesChangeListener.h>
-#include <ASNodeManager.h>
-#include <LogIt.h>
-#include "../include/CalculatedVariablesEngine.h"
+#include <CalculatedVariablesEngine.h>
+#include <ParserVariableRequestUserData.h>
+
+#include <Utils.h>
 
 namespace CalculatedVariables
 {
@@ -29,7 +33,8 @@ void Engine::registerVariableForCalculatedVariables(AddressSpace::ChangeNotifyin
 
 double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* name, void* userData)
 {
-    CalculatedVariable* requestor = static_cast<CalculatedVariable*> (userData);
+    ParserVariableRequestUserData* requestUserData = static_cast<ParserVariableRequestUserData*> (userData);
+    CalculatedVariable* requestor = requestUserData->requestor;
 
     LOG(Log::TRC, logComponentId) <<
             "muparser asks for this variable: " << name <<
@@ -45,7 +50,12 @@ double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* na
     }
     else
     {
-        requestor->addDependentVariable(&(*it));
+        if (requestUserData->type == ParserVariableRequestUserData::Type::Value)
+            requestor->addDependentVariableForValue(&(*it));
+        else if (requestUserData->type == ParserVariableRequestUserData::Type::Status)
+            requestor->addDependentVariableForStatus(&(*it));
+        else
+            throw_runtime_error_with_origin("Enum value not handled. Report to quasar-developers.");
         it->addNotifiedVariable(requestor);
         return it->valuePtr();
     }
@@ -62,7 +72,9 @@ void Engine::instantiateCalculatedVariable(
             nm->getNameSpaceIndex(),
             nm,
             config.value(),
-            config.isBoolean());
+            config.isBoolean(),
+            config.status().present(),
+            config.status().present() ? *config.status() : "");
 
     nm->addNodeAndReference( parentNodeId, calculatedVariable, OpcUaId_Organizes);
     if (config.initialValue().present())
