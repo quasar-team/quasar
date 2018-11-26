@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>CalculatedVariables</title>
+  </head>
+  <body>
+    Calculated Variables<br>
+    <br>
+    by: Piotr Nikiel, Oct-Nov 2018<br>
+    <br>
+    <h1>Preface</h1>
+    A lot of concepts and work done in context of quasar's
+    CalculatedVariables module has been inspired by V.Filimonov's
+    "CalculatedItems" concept in the CANopen OPC-UA server.<br>
+    I'd like to acknowledge his contribution as my inspiration (even
+    though the CalculatedVariables are designed entirely from scratch
+    and using different technologies).<br>
+    <h1>Rationale</h1>
+    <p>A quasar-based OPC-UA server is based on a model of a system it
+      is made for. This model is called a design. The model explains (in
+      terms of quasar classes, variables etc) what sources and sinks on
+      information the system can publish or digest.<br>
+    </p>
+    <p>Often it is practical to add supplementary sources of information
+      - like Calculated Variables - on top of what the model already
+      provides. The reasons for doing this are often the following:<br>
+    </p>
+    <ul>
+      <li>the system already provides information which is expressed in
+        quantities different than requested by users.<br>
+        Example: an OPC-UA server is built for a device which measures
+        period of a repetitive process, but the users prefer frequency
+        instead.<br>
+        Solution: a Calculated Variable might be added to the server
+        with a simple reciprocal (y=1/x) formula to compute frequency in
+        terms of period.</li>
+      <li>the system already provides information but in another unit. <br>
+      </li>
+      <li>the system provides raw (e.g. uncalibrated) information.<br>
+        Example: an OPC-UA server publishes data from Analog to Digital
+        Converter. This is raw information though.<br>
+        Solution: a Calculated Variable might be added to provide for
+        gain and offset calibration.</li>
+      <li>similarly to the example above, the ADC might have the value
+        from a conversion of e.g. a temperature sensor. A Calculated
+        Variable might be attached with a formula that recomputes the
+        ADC value (in volts) into temperature.</li>
+    </ul>
+    <h1>Design-based variables vs Calculated Variables<br>
+    </h1>
+    <table cellspacing="2" cellpadding="2" width="100%" border="1">
+      <tbody>
+        <tr>
+          <td valign="top"><b>Aspect</b><b><br>
+            </b></td>
+          <td valign="top"><b>Design-based variable</b><b><br>
+            </b><b>(cache-variable or source-variable)</b><br>
+          </td>
+          <td valign="top"><b>Calculated Variable</b><b><br>
+            </b></td>
+        </tr>
+        <tr>
+          <td valign="top">Instantiation<br>
+          </td>
+          <td valign="top">The variable always belongs to an object of a
+            quasar class which is defined by the model (Design).<br>
+            Therefore in fact it's the design which determines its type,
+            behaviour, limitations etc.<br>
+          </td>
+          <td valign="top">The variable is defined in the configuration
+            file which is loaded at runtime.<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Source of information<br>
+          </td>
+          <td valign="top">Comes from inside of the server, typically
+            from user supplied Device logic. Any method available by C++
+            programming can be used.<br>
+          </td>
+          <td valign="top">Is a result of an analytical expression
+            evaluation. The inputs to the expression can be constants
+            and other variables (including previously defined Calculated
+            Variables).<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Output type<br>
+          </td>
+          <td valign="top">Any supported by quasar, including arrays.<br>
+          </td>
+          <td valign="top">Double or boolean.<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Adding new variable per quasar class requires
+            recompilation?<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+          <td valign="top">No<br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h1>Feature list</h1>
+    <table cellspacing="2" cellpadding="2" border="1">
+      <tbody>
+        <tr>
+          <td valign="top"><b>Feature</b><br>
+          </td>
+          <td valign="top"><b>State</b><br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Supports all quasar numerical types<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Formulas with N inputs<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Good/Bad/WaitingForInitialData support<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Separate formula for status evaluation<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Support for delegated cache-variables<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Tracing in separate LogIt component<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">open62541 compatibility<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Initial value support<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Evaluation as boolean<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Atomic passing of value<br>
+          </td>
+          <td valign="top">Pending<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Formula templates<br>
+          </td>
+          <td valign="top">Future<br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><br>
+    </p>
+    <h1>Selection of expression parser</h1>
+    <p>There exist many open-source parsers potentially suitable for the
+      feature. At the time of writing, a good overview was present at <a
+href="https://github.com/ArashPartow/math-parser-benchmark-project">https://github.com/ArashPartow/math-parser-benchmark-project</a>
+      .<br>
+    </p>
+    <p>The author has evaluted three parsers from the list:<br>
+      <br>
+    </p>
+    <ul>
+      <li><a href="http://www.partow.net/programming/exprtk/">ExprTk</a><br>
+        It made an excellent overall impression. However, due to very
+        intensive use of templates, the compilation time has been
+        significant (i.e. its inclusion would triple(!!) the whole
+        compilation time of a simple quasar server). That unfavourable
+        property has made the quasar team to look for another solution.</li>
+      <li><a href="https://sourceforge.net/projects/atmsp/">ATMSP</a><br>
+        The initial code review has shown that the parser uses
+        setjmp()/longjmp() which has been considered unfavourable for
+        quasar servers.</li>
+      <li><a href="http://beltoforion.de/article.php?a=muparser">muParser</a><br>
+        muParser demonstrated decent performance while it has all the
+        features required by the Calculated Variables feature.<br>
+      </li>
+    </ul>
+    <h1>Overview of feature implementation</h1>
+    <p>An UML class diagram is presented below.<br>
+    </p>
+    <img src="CalculatedVariablesClassDiagram.png" alt="UML"
+      height="765" width="1098"><br>
+    <h2>Classes rationale</h2>
+    <ul>
+      <li>ChangeNotifyingVariable - can emit notifications whenever the
+        variable changed value. Applicable to any data type. Can be used
+        with multiple notification receivers. Can be used for
+        applications different than CalculatedVariables.</li>
+      <li>ParserVariable - stored current numeric variable value as a
+        plain double type, and therefore can be coupled as a mu::Parser
+        variable. (Sidenote: mu::Parser doesn't know anything about
+        OPC-UA and without such arrangement it wouldn't know how to
+        access a double from UaVariant, neither to know whether the
+        value is correct, etc.).</li>
+      <ul>
+        <li>notifyingVariable - is the pointer to a
+          ChangeNotifyingVariable which notifies this particular
+          ParserVariable on Change,</li>
+        <li>notifiedVariables - the list of all CalculatedVariables that
+          use this particular ParserVariable in formulas.</li>
+      </ul>
+      <li>CalculatedVariable - it's the OPC-UA variable defined by a
+        formula. It's a subclass of ChangeNotifyingVariable because its
+        output can in turn be used as an input to another Calculated
+        Variable (so it must be able to emit notifications on change).</li>
+      <li>Engine - puts all things together. It supplies methods for
+        usage in Configuration module:</li>
+      <ul>
+        <li>instantiateCalculatedVariable - called whenerver
+          CalculatedVariable() entry is found in the config file,</li>
+        <li>registerVariableForCalculatedVariables - called whenever any
+          cache-variable of suitable design properties (numeric and
+          scalar) is inserted into the OPC-UA address-space<br>
+        </li>
+      </ul>
+    </ul>
+    <h2>Overview of information flow</h2>
+    <ol>
+      <li>All cache-variables instantiated by quasar Configuration
+        module are of ChangeNotifyingVariable type or its subclasses.<br>
+      </li>
+      <li>When quasar Configuration determines that given cache-variable
+        variable looks suitable to be used as a formula input (i.e. is
+        numeric and it's scalar), it would add a ChangeListener and a
+        corresponding ParserVariable. The ChangeListener will (once
+        potentially invoked in future) call setValue() on given
+        ParserVariable. <br>
+      </li>
+      <li>When device logic or an OPC-UA client writes to a suitable
+        cache-variable, the setValue() of ParserVariable bound to the
+        cache-variable will be called. It will store the new value and
+        status in corresponding fields and then call update() on
+        relevant (i.e. those which use given parser variable as an
+        input) CalculatedVariable variables.&nbsp;</li>
+    </ol>
+  </body>
+</html>
