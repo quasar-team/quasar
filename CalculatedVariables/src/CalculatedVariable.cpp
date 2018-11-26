@@ -1,8 +1,22 @@
-/*
+/* © Copyright CERN, 2018.  All rights not expressly granted are reserved.
  * CalculatedVariable.cpp
  *
  *  Created on: 19 Nov 2018
  *      Author: pnikiel
+ *
+ *  This file is part of Quasar.
+ *
+ *  Quasar is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public Licence as published by
+ *  the Free Software Foundation, either version 3 of the Licence.
+ *
+ *  Quasar is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public Licence for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <algorithm>
@@ -37,7 +51,7 @@ CalculatedVariable::CalculatedVariable(
                     m_isBoolean(isBoolean),
                     m_hasStatusFormula(hasStatusFormula)
 {
-    this->initializeParser(m_parser, formula, ParserVariableRequestUserData::Type::Value);
+    this->initializeParser(m_valueParser, formula, ParserVariableRequestUserData::Type::Value);
     if (m_hasStatusFormula)
         this->initializeParser(m_statusParser, statusFormula, ParserVariableRequestUserData::Type::Status);
 
@@ -53,7 +67,7 @@ CalculatedVariable::CalculatedVariable(
 void CalculatedVariable::update()
 {
     LOG(Log::TRC, logComponentId) << "update() on " << this->nodeId().toString().toUtf8();
-    for (const ParserVariable* variable : m_parserVariables)
+    for (const ParserVariable* variable : m_valueVariables)
     {
         if (variable->state() != ParserVariable::State::Good)
         {
@@ -83,7 +97,7 @@ void CalculatedVariable::update()
     }
 
 
-    double updatedValue = m_parser.Eval();
+    double updatedValue = m_valueParser.Eval();
     UaVariant variant;
     if (m_isBoolean)
         variant.setBool(updatedValue != 0);
@@ -119,6 +133,20 @@ void CalculatedVariable::initializeParser(
                 << e.GetExpr() << ": " << e.GetMsg();
         throw std::runtime_error("Calculated item instantiation failed. Problem has been logged.");
     }
+}
+
+void CalculatedVariable::addDependentVariableForValue(ParserVariable* variable)
+{
+    /* Adding same variable twice wouldn't buy us anything */
+    if (std::find(m_valueVariables.begin(), m_valueVariables.end(), variable) == m_valueVariables.end())
+        m_valueVariables.push_back(variable);
+}
+
+void CalculatedVariable::addDependentVariableForStatus(ParserVariable* variable)
+{
+    /* Adding same variable twice wouldn't buy us anything */
+    if (std::find(m_statusVariables.begin(), m_statusVariables.end(), variable) == m_statusVariables.end())
+        m_statusVariables.push_back(variable);
 }
 
 }

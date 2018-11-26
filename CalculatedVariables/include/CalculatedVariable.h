@@ -1,8 +1,22 @@
-/*
+/* © Copyright CERN, 2018.  All rights not expressly granted are reserved.
  * CalculatedVariable.h
  *
  *  Created on: 19 Nov 2018
  *      Author: pnikiel
+ *
+ *  This file is part of Quasar.
+ *
+ *  Quasar is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public Licence as published by
+ *  the Free Software Foundation, either version 3 of the Licence.
+ *
+ *  Quasar is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public Licence for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef CALCULATEDVARIABLES_INCLUDE_CALCULATEDVARIABLE_H_
@@ -34,8 +48,8 @@ public:
 
     void update();
 
-    void addDependentVariableForValue(ParserVariable* variable) { m_parserVariables.push_back(variable); }
-    void addDependentVariableForStatus(ParserVariable* variable) { m_statusVariables.push_back(variable); }
+    void addDependentVariableForValue(ParserVariable* variable);
+    void addDependentVariableForStatus(ParserVariable* variable);
 
 private:
     void initializeParser(
@@ -44,8 +58,8 @@ private:
             ParserVariableRequestUserData::Type formulaType);
 
     /* Value-Formula part */
-    mu::Parser m_parser;
-    std::list<ParserVariable*> m_parserVariables;
+    mu::Parser m_valueParser;
+    std::list<ParserVariable*> m_valueVariables;
 
     //! True if the output should be boolean instead of double (e.g. when logical operators are used in formula)
     bool m_isBoolean;
