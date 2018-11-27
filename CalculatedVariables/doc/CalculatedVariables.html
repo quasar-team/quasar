@@ -168,9 +168,17 @@
           </td>
         </tr>
         <tr>
-          <td valign="top">Atomic passing of value<br>
+          <td valign="top">Atomic passing of value and status, thread
+            safety<br>
           </td>
-          <td valign="top">Pending<br>
+          <td valign="top">Yes<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Optimizing out variables not used in any
+            expression<br>
+          </td>
+          <td valign="top">Yes<br>
           </td>
         </tr>
         <tr>
@@ -213,7 +221,7 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
     </p>
     <img src="CalculatedVariablesClassDiagram.png" alt="UML"
       height="765" width="1098"><br>
-    <h2>Classes rationale</h2>
+    <h1>Classes rationale</h1>
     <ul>
       <li>ChangeNotifyingVariable - can emit notifications whenever the
         variable changed value. Applicable to any data type. Can be used
@@ -247,7 +255,7 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
         </li>
       </ul>
     </ul>
-    <h2>Overview of information flow</h2>
+    <h1>Overview of information flow</h1>
     <ol>
       <li>All cache-variables instantiated by quasar Configuration
         module are of ChangeNotifyingVariable type or its subclasses.<br>
@@ -264,7 +272,116 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
         cache-variable will be called. It will store the new value and
         status in corresponding fields and then call update() on
         relevant (i.e. those which use given parser variable as an
-        input) CalculatedVariable variables.&nbsp;</li>
+        input) CalculatedVariable variables. <br>
+      </li>
+    </ol>
+    <h1>Synchronization, re-entrance, multi-threading<br>
+    </h1>
+    <p>The CalculatedVariables module is closely tied to the
+      AddressSpace of a quasar-based server. <br>
+      For instance, the recalculation of an associated calculated
+      variable is done within the call to a setter of a variable that it
+      depends on. <br>
+    </p>
+    <p>It must be emphasized that AddressSpace is brutally
+      multi-threaded. At the same time, the following thread families
+      would be doing work on AddressSpace objects:<br>
+    </p>
+    <ul>
+      <li>sampling threads which sample current values of
+        cache-variables to which any client subscribes. Those threads
+        are run by chosen OPC-UA backend and their number is highly
+        dependent on backend's configuration (i.e. ServerConfig.xml) as
+        well as possibly on number of connected clients and the set of
+        data they subscribe to.</li>
+      <li>server's OPC-UA requests processing threads. Those threads are
+        run by chosen OPC-UA backend and similarily to sampling threads,
+        their number depends on many factors. Those threads process e.g.
+        Write service requests, so that an OPC-UA client can write to
+        given variable.</li>
+      <li>device logic (or other user threads). Those threads are
+        instantiated by server developers and configured by end-users.
+        They typically push data to the address-space.</li>
+    </ul>
+    <br>
+    In the context of Calculated Variables, there are two obvious
+    critical section types:<br>
+    <ul>
+      <li>possible calls to variable setters of the same variable coming
+        from different threads.<br>
+        The worries here are the following:</li>
+      <ul>
+        <li>there might be a clash in storage of value and status, as
+          both of them are necessary to perform the calculation and (to
+          author's knowledge) such an assignment is never atomic by
+          default. So a recalculation might take value stored by one
+          thread and status from another, or on a 32-bit machine (since
+          double is 64-bits) even take partially stored value.</li>
+        <li>it's not entirely clear if calls to mu::Parser::Eval are
+          re-entrant.</li>
+      </ul>
+      <li>possible concurrent calls from different threads to variable
+        setters of different variables which are used in the same
+        formula.<br>
+        The worries here are the following:</li>
+      <ul>
+        <li>the parser might attempt to use the value when it is being
+          assigned to (and that is not atomic)</li>
+        <li>it's not entirely clear if calls to mu::Parser::Eval are
+          re-entrant.</li>
+      </ul>
+    </ul>
+    <p>Having analyzed the problem and trying to propose a guaranteed
+      dead-lock free solution, the author proposes to form disjoint
+      subgraphs of the calculation graph and synchronize per each
+      subgraph.<br>
+    </p>
+    <p>Let's look at an example for which the calculation graph is like
+      in the picture below.<br>
+    </p>
+    <img src="SynchronizationExample.png" alt="Synchronization example"
+      height="364" width="614"><br>
+    PV stands for ParserVariable, those are all variables that can be
+    used as inputs in a CalculatedVariable formula.<br>
+    CV stands for CalculatedVariable. Note that every CV is also a PV
+    because the output of one formula can be used as an input to another
+    formula.<br>
+    <br>
+    <h2>Case 1: ignore CV4 (violet node and arrows)</h2>
+    Case 1 would happen if we defined the following Calculated Variables
+    in the config file (the particular operators - e.g. addition,
+    multiplication - do not matter):<br>
+    <br>
+    CV1 = PV1 + PV2<br>
+    CV2 = CV1*PV3 + PV2<br>
+    CV3 = 3.14 * PV4<br>
+    <br>
+    In this case the implementation will form two domains of mutual
+    exclusion (called synchronizers):<br>
+    <ul>
+      <li>1st one, which will provide exclusive access to setters of
+        PV1, PV2 and PV3 (e.g. if any thread would enter setter of any
+        of {PV1, PV2, PV3} all other threads willing to do the same
+        would need to wait)</li>
+      <li>2nd one, which will provide exclusive access to setter od PV4</li>
+    </ul>
+    <p>PV5 would not get a synchronizer because it's output is not used
+      by anything; in fact PV5 would be optimized out after the
+      configuration process is finished.<br>
+    </p>
+    <h2>Case 2: CV4 is added</h2>
+    Now let's add CV4 to the picture.<br>
+    <br>
+    This (apparently) small extension actually does change a lot in the
+    multi-threading schema: now one mutual exclusion domain gets formed
+    which covers all possible setters. <br>
+    Though such a scenario is rather unlikely to be seen, server
+    developers and users should be aware of this relation.<br>
+    <br>
+    <br>
+    <p><br>
+    </p>
+    <ol>
     </ol>
   </body>
 </html>
