@@ -54,8 +54,13 @@ public:
 
     //! userData should be the 'this' of a CalculatedVariable this is being requested
     static double* parserVariableRequestHandler(const char* name, void* userData);
+
+    static void printInstantiationStatistics ();
+
 private:
     static std::list <ParserVariable> s_parserVariables;
+    static size_t s_numSynchronizers;
+    static size_t s_numCalculatedVariables;
 };
 
 } /* namespace CalculatedVariables */

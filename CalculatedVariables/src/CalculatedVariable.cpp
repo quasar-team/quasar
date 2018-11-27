@@ -67,6 +67,7 @@ CalculatedVariable::CalculatedVariable(
 void CalculatedVariable::update()
 {
     LOG(Log::TRC, logComponentId) << "update() on " << this->nodeId().toString().toUtf8();
+
     for (const ParserVariable* variable : m_valueVariables)
     {
         if (variable->state() != ParserVariable::State::Good)

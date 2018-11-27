@@ -64,6 +64,30 @@ double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* na
     }
     else
     {
+        /* setup synchronization groups */
+        if (!it->synchronizer())
+        {
+            // ParserVariable *it hasn't got a synchronizer - it was not used in any formula before
+            // try to attach it to the synchronization group from either value or status variables of the
+            // CalculatedVariable we're processing
+            if (requestor->valueVariables().size() > 0)
+            {
+                it->synchronizer() = requestor->valueVariables().front()->synchronizer();
+                LOG(Log::INF, logComponentId) << "Attached synchronizer via value variables. Current use_count: " << it->synchronizer().use_count();
+            }
+            else if (requestor->statusVariables().size() > 0)
+            {
+                it->synchronizer() = requestor->statusVariables().front()->synchronizer();
+                LOG(Log::INF, logComponentId) << "Attached synchronizer via status variables. Current use_count: " << it->synchronizer().use_count();
+            }
+            else
+            {
+                LOG(Log::INF, logComponentId) << "Creating new synchronizer for variable:" << it->name();
+                it->synchronizer().reset(new Synchronizer);
+                ++s_numSynchronizers;
+            }
+        }
+
         if (requestUserData->type == ParserVariableRequestUserData::Type::Value)
             requestor->addDependentVariableForValue(&(*it));
         else if (requestUserData->type == ParserVariableRequestUserData::Type::Status)
@@ -101,11 +125,22 @@ void Engine::instantiateCalculatedVariable(
                 );
     }
     registerVariableForCalculatedVariables(calculatedVariable);
+    s_numCalculatedVariables++;
     LOG(Log::TRC, logComponentId) << "Instantiated Calculated Variable: " << calculatedVariable->nodeId().toString().toUtf8();
+}
+
+void Engine::printInstantiationStatistics()
+{
+    LOG(Log::INF, logComponentId) <<
+            " #ParserVariables: " << s_parserVariables.size() <<
+            " #CalculatedVariables: " << s_numCalculatedVariables <<
+            " #Synchronizers: " << s_numSynchronizers;
 }
 
 Log::LogComponentHandle logComponentId = Log::INVALID_HANDLE;
 std::list <ParserVariable> Engine::s_parserVariables;
+size_t Engine::s_numSynchronizers = 0;
+size_t Engine::s_numCalculatedVariables = 0;
 
 } /* namespace CalculatedVariables */
 

@@ -147,6 +147,7 @@ int BaseQuasarServer::serverRun(
             serverStartFailLogError(startServerReturn, m_pServer->getLogFilePath());
             return startServerReturn;
         }
+        CalculatedVariables::Engine::printInstantiationStatistics();
         mainLoop();
     }
     catch (const std::exception &e)

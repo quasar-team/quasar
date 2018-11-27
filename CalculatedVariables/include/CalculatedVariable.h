@@ -51,6 +51,9 @@ public:
     void addDependentVariableForValue(ParserVariable* variable);
     void addDependentVariableForStatus(ParserVariable* variable);
 
+    std::list<ParserVariable*>& valueVariables() { return m_valueVariables; }
+    std::list<ParserVariable*>& statusVariables() { return m_statusVariables; }
+
 private:
     void initializeParser(
             mu::Parser& parser,

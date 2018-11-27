@@ -26,6 +26,8 @@
 #include <ParserVariable.h>
 #include <CalculatedVariable.h>
 
+#include <boost/thread/lock_guard.hpp>
+
 namespace CalculatedVariables
 {
 
@@ -44,6 +46,14 @@ std::string ParserVariable::name() const
 
 void ParserVariable::setValue(double v, State state)
 {
+    if (m_synchronizer)
+        this->setValueSynchronized(v, state);
+    else
+        this->setValueNonSynchronized(v, state);
+}
+
+void ParserVariable::setValueNonSynchronized(double v, State state)
+{
     m_value = v;
     m_state = state;
     for (CalculatedVariable* notifiedVariable : m_notifiedVariables)
@@ -53,12 +63,27 @@ void ParserVariable::setValue(double v, State state)
     }
 }
 
+void ParserVariable::setValueSynchronized(double v, State state)
+{
+    boost::lock_guard<boost::mutex> lock (m_synchronizer->mutex());
+    this->setValueNonSynchronized(v, state);
+}
+
 void ParserVariable::addNotifiedVariable(CalculatedVariable* notifiedVariable)
 {
     LOG(Log::TRC, logComponentId) << "To ParseVariable bound to: " << name() << " adding notified variable: " << notifiedVariable->nodeId().toString().toUtf8();
+    if (notifiedVariable->valueVariables().size() > 0)
+    {
+
+    }
+    else
+        m_synchronizer.reset(new Synchronizer());
+
     m_notifiedVariables.push_back(notifiedVariable);
+
 }
 
-} /* namespace CalculatedVariables */
 
+
+} /* namespace CalculatedVariables */
 

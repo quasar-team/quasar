@@ -25,6 +25,8 @@
 #include <string>
 #include <list>
 
+#include <CalculatedVariablesSynchronizer.h>
+
 // forward-decls
 namespace AddressSpace
 {
@@ -60,6 +62,9 @@ public:
 
     const AddressSpace::ChangeNotifyingVariable* notifyingVariable() const { return m_notifyingVariable; }
 
+    SharedSynchronizer& synchronizer() { return m_synchronizer; }
+
+
 private:
     //! Ptr to our Address Space counterpart, will notify us on change
     const AddressSpace::ChangeNotifyingVariable* m_notifyingVariable;
@@ -71,6 +76,11 @@ private:
 
     //! List of all variables that should be recomputed in case this one changes value.
     std::list<CalculatedVariable*>         m_notifiedVariables;
+
+    SharedSynchronizer m_synchronizer;
+
+    void setValueNonSynchronized(double v, State state);
+    void setValueSynchronized(double v, State state);
 
 };
 
