@@ -137,10 +137,41 @@ void Engine::printInstantiationStatistics()
             " #Synchronizers: " << s_numSynchronizers;
 }
 
+/* This can be called at the end of instantiation step
+ * (when no new CalculatedVariables are expected to be thrown in).
+ *
+ */
+void Engine::optimize()
+{
+    size_t numOptimized = 0;
+    decltype(s_parserVariables)::iterator it;
+    for (it = std::begin(s_parserVariables); it!=std::end(s_parserVariables); it++)
+    {
+        if (it->notifiedVariables().size() == 0)
+        {
+            if (it->notifyingVariable()->changeListenerSize() == 1)
+            {
+                it->notifyingVariable()->removeAllChangeListeners();
+                it = s_parserVariables.erase(it);
+                numOptimized++;
+            }
+            else
+            {
+                LOG(Log::WRN, logComponentId) << "Need to selectively remove change listeners - not implemented. Skipping optimization for this ParserVariable.";
+                continue;
+            }
+        }
+    }
+    LOG(Log::INF, logComponentId) << "Optimized(suppresed) " << numOptimized << " ParserVariables not used in any formulas.";
+
+}
+
 Log::LogComponentHandle logComponentId = Log::INVALID_HANDLE;
 std::list <ParserVariable> Engine::s_parserVariables;
 size_t Engine::s_numSynchronizers = 0;
 size_t Engine::s_numCalculatedVariables = 0;
+
+
 
 } /* namespace CalculatedVariables */
 

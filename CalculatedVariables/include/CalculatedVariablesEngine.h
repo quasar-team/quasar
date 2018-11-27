@@ -57,6 +57,8 @@ public:
 
     static void printInstantiationStatistics ();
 
+    static void optimize ();
+
 private:
     static std::list <ParserVariable> s_parserVariables;
     static size_t s_numSynchronizers;

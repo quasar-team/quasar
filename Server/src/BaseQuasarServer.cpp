@@ -148,6 +148,8 @@ int BaseQuasarServer::serverRun(
             return startServerReturn;
         }
         CalculatedVariables::Engine::printInstantiationStatistics();
+        CalculatedVariables::Engine::optimize();
+        CalculatedVariables::Engine::printInstantiationStatistics();
         mainLoop();
     }
     catch (const std::exception &e)

@@ -59,15 +59,16 @@ public:
     std::string name() const;
 
     void addNotifiedVariable( CalculatedVariable* notifiedVariable );
+    std::list<CalculatedVariable*> notifiedVariables() { return m_notifiedVariables; }
 
-    const AddressSpace::ChangeNotifyingVariable* notifyingVariable() const { return m_notifyingVariable; }
+    AddressSpace::ChangeNotifyingVariable* notifyingVariable() { return m_notifyingVariable; }
 
     SharedSynchronizer& synchronizer() { return m_synchronizer; }
 
 
 private:
     //! Ptr to our Address Space counterpart, will notify us on change
-    const AddressSpace::ChangeNotifyingVariable* m_notifyingVariable;
+    AddressSpace::ChangeNotifyingVariable* const m_notifyingVariable;
 
     //! This is the current numerical value
     double                                 m_value;

@@ -52,6 +52,8 @@ public:
         OpcUa_Boolean checkAccessLevel);
 
     virtual void addChangeListener (OnChangeListener onChangeListener);
+    virtual size_t changeListenerSize () const { return m_changeListeners.size(); }
+    virtual void removeAllChangeListeners () { m_changeListeners.clear(); }
 
 private:
     std::list<OnChangeListener> m_changeListeners;
