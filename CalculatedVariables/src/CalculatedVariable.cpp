@@ -104,7 +104,7 @@ void CalculatedVariable::update()
         variant.setBool(updatedValue != 0);
     else
         variant.setDouble(updatedValue);
-    UaDataValue dataValue (variant, finalStatus, UaDateTime::now(), UaDateTime::now());
+    UaDataValue dataValue (variant, finalStatus.statusCode(), UaDateTime::now(), UaDateTime::now());
     LOG(Log::TRC, logComponentId) << finalStatus.toString().toUtf8();
     this->setValue(/*session*/nullptr, dataValue, OpcUa_False);
 
