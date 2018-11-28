@@ -3,23 +3,47 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>CalculatedVariables</title>
+    <style>
+
+body
+{
+counter-reset: h1counter;
+}
+
+h1:before {
+content: counter(h1counter) ". " ;
+counter-increment: h1counter;
+}
+
+h1 {
+counter-reset: h2counter;
+}
+
+h2:before {
+content: counter(h1counter) "." counter(h2counter) ". " ;
+counter-increment: h2counter;
+}
+
+</style>
   </head>
   <body>
-    <h1> Calculated Variables</h1>
+    <font size="+3">Calculated Variables</font><br>
     <br>
     by: Piotr Nikiel, Oct-Nov 2018<br>
     <br>
+    <h1>Overview and end-user documentation<br>
+    </h1>
     <h2>Preface</h2>
-    A lot of concepts and work done in context of quasar's
+    A lot of concepts and work done in the context of quasar's
     CalculatedVariables module has been inspired by V.Filimonov's
     "CalculatedItems" concept in the CANopen OPC-UA server.<br>
     I'd like to acknowledge his contribution as my inspiration (even
-    though the CalculatedVariables are designed entirely from scratch
-    and using different technologies).<br>
+    though the CalculatedVariables module is designed entirely from
+    scratch and using different concepts and technologies).<br>
     <h2>Rationale</h2>
     <p>A quasar-based OPC-UA server is based on a model of a system it
       is made for. This model is called a design. The model explains (in
-      terms of quasar classes, variables etc) what sources and sinks on
+      terms of quasar classes, variables etc.) what sources and sinks of
       information the system can publish or digest.<br>
     </p>
     <p>Often it is practical to add supplementary sources of information
@@ -191,13 +215,371 @@
     </table>
     <p><br>
     </p>
+    <h2>Operators and built-in functions</h2>
+    <p>A summary of functions, operators and constants which mu::Parser
+      supports is pasted here for reference.<br>
+    </p>
+    <p>Built-in functions<br>
+    </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <td><b>Name</b></td>
+          <td><b>Argc.</b></td>
+          <td><b>Explanation</b></td>
+        </tr>
+        <tr>
+          <td><code>sin</code></td>
+          <td class="centered">1</td>
+          <td>sine function</td>
+        </tr>
+        <tr>
+          <td><code>cos</code></td>
+          <td class="centered">1</td>
+          <td>cosine function</td>
+        </tr>
+        <tr>
+          <td><code>tan</code></td>
+          <td class="centered">1</td>
+          <td>tangens function</td>
+        </tr>
+        <tr>
+          <td><code>asin</code></td>
+          <td class="centered">1</td>
+          <td>arcus sine function</td>
+        </tr>
+        <tr>
+          <td><code>acos</code></td>
+          <td class="centered">1</td>
+          <td>arcus cosine function</td>
+        </tr>
+        <tr>
+          <td><code>atan</code></td>
+          <td class="centered">1</td>
+          <td>arcus tangens function</td>
+        </tr>
+        <tr>
+          <td><code>sinh</code></td>
+          <td class="centered">1</td>
+          <td>hyperbolic sine function</td>
+        </tr>
+        <tr>
+          <td><code>cosh</code></td>
+          <td class="centered">1</td>
+          <td>hyperbolic cosine</td>
+        </tr>
+        <tr>
+          <td><code>tanh</code></td>
+          <td class="centered">1</td>
+          <td>hyperbolic tangens function</td>
+        </tr>
+        <tr>
+          <td><code>asinh</code></td>
+          <td class="centered">1</td>
+          <td>hyperbolic arcus sine function</td>
+        </tr>
+        <tr>
+          <td><code>acosh</code></td>
+          <td class="centered">1</td>
+          <td>hyperbolic arcus tangens function</td>
+        </tr>
+        <tr>
+          <td><code>atanh</code></td>
+          <td class="centered">1</td>
+          <td>hyperbolic arcur tangens function</td>
+        </tr>
+        <tr>
+          <td><code>log2</code></td>
+          <td class="centered">1</td>
+          <td>logarithm to the base 2</td>
+        </tr>
+        <tr>
+          <td><code>log10</code></td>
+          <td class="centered">1</td>
+          <td>logarithm to the base 10</td>
+        </tr>
+        <tr>
+          <td><code>log</code></td>
+          <td class="centered">1</td>
+          <td>logarithm to base e (2.71828...)</td>
+        </tr>
+        <tr>
+          <td><code>ln</code></td>
+          <td class="centered">1</td>
+          <td>logarithm to base e (2.71828...)</td>
+        </tr>
+        <tr>
+          <td><code>exp</code></td>
+          <td class="centered">1</td>
+          <td>e raised to the power of x</td>
+        </tr>
+        <tr>
+          <td><code>sqrt</code></td>
+          <td class="centered">1</td>
+          <td>square root of a value</td>
+        </tr>
+        <tr>
+          <td><code>sign</code></td>
+          <td class="centered">1</td>
+          <td>sign function -1 if x&lt;0; 1 if x&gt;0</td>
+        </tr>
+        <tr>
+          <td><code>rint</code></td>
+          <td class="centered">1</td>
+          <td>round to nearest integer</td>
+        </tr>
+        <tr>
+          <td><code>abs</code></td>
+          <td class="centered">1</td>
+          <td>absolute value</td>
+        </tr>
+        <tr>
+          <td><code>min</code></td>
+          <td class="centered">var.</td>
+          <td>min of all arguments</td>
+        </tr>
+        <tr>
+          <td><code>max</code></td>
+          <td class="centered">var.</td>
+          <td>max of all arguments</td>
+        </tr>
+        <tr>
+          <td><code>sum</code></td>
+          <td class="centered">var.</td>
+          <td>sum of all arguments</td>
+        </tr>
+        <tr>
+          <td><code>avg</code></td>
+          <td class="centered">var.</td>
+          <td>mean value of all arguments<br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p> </p>
+    <br>
+    Built-in operators<br>
+    <br>
+    <br>
+    <table border="1">
+      <thead><tr>
+          <td><b>Operator</b></td>
+          <td><b>Description</b></td>
+          <td><b>Priority</b></td>
+        </tr>
+      </thead> <tbody>
+        <tr>
+          <td><code>=</code></td>
+          <td>assignement</td>
+          <td>-1</td>
+        </tr>
+        <tr>
+          <td><code>&amp;&amp;</code></td>
+          <td>logical and</td>
+          <td> 1</td>
+        </tr>
+        <tr>
+          <td><code>||</code></td>
+          <td>logical or</td>
+          <td> 2</td>
+        </tr>
+        <tr>
+          <td><code>&lt;=</code></td>
+          <td>less or equal</td>
+          <td> 4</td>
+        </tr>
+        <tr>
+          <td><code>&gt;=</code></td>
+          <td>greater or equal</td>
+          <td> 4</td>
+        </tr>
+        <tr>
+          <td><code>!=</code></td>
+          <td>not equal</td>
+          <td> 4</td>
+        </tr>
+        <tr>
+          <td><code>==</code></td>
+          <td>equal</td>
+          <td> 4</td>
+        </tr>
+        <tr>
+          <td><code>&gt;</code></td>
+          <td>greater than</td>
+          <td> 4</td>
+        </tr>
+        <tr>
+          <td><code>&lt;</code></td>
+          <td>less than</td>
+          <td> 4</td>
+        </tr>
+        <tr>
+          <td><code>+</code></td>
+          <td>addition</td>
+          <td> 5</td>
+        </tr>
+        <tr>
+          <td><code>-</code></td>
+          <td>subtraction</td>
+          <td> 5</td>
+        </tr>
+        <tr>
+          <td><code>*</code></td>
+          <td>multiplication</td>
+          <td> 6</td>
+        </tr>
+        <tr>
+          <td><code>/</code></td>
+          <td>division</td>
+          <td> 6</td>
+        </tr>
+        <tr>
+          <td><code>^</code></td>
+          <td>raise x to the power of y</td>
+          <td> 7<br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><br>
+      Common mathematical constants<br>
+      _pi, _e <br>
+    </p>
+    <h2>Configuration file schema regarding Calculated Variables<br>
+    </h2>
+    <p>The XML element type is called CalculatedVariable and it has the
+      following attributes:<br>
+    </p>
+    <table cellspacing="2" cellpadding="2" border="1">
+      <tbody>
+        <tr>
+          <td valign="top"><b>Name</b><b><br>
+            </b></td>
+          <td valign="top"><b>Obligatory?</b><b><br>
+            </b></td>
+          <td valign="top"><b>XSD Type</b><br>
+          </td>
+          <td valign="top"><b>Meaning</b><b><br>
+            </b></td>
+        </tr>
+        <tr>
+          <td valign="top">name<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+          <td valign="top">xs:string<br>
+          </td>
+          <td valign="top">Name of this calculated variable. Note that
+            the full address that this variable obtains will be the name
+            prefixed by the address of position in the Address Space
+            where the variable gets instantiated. <br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">value<br>
+          </td>
+          <td valign="top">Yes<br>
+          </td>
+          <td valign="top">xs:string<br>
+          </td>
+          <td valign="top">Value formula, that is: an analytical
+            expression used to evaluate value of this variable. Some
+            examples will be given below.<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">initialValue<br>
+          </td>
+          <td valign="top">No<br>
+          </td>
+          <td valign="top">xs:double<br>
+          </td>
+          <td valign="top">Initial value, i.e. the value that this
+            variable will hold BEFORE first evaluation happens (which
+            normally is when all formula ingredients receive the initial
+            update). If initialValue is not given then the variable will
+            hold NULL along BadWaitingForInitialData status.<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">isBoolean<br>
+          </td>
+          <td valign="top">No<br>
+          </td>
+          <td valign="top">xs:boolean<br>
+          </td>
+          <td valign="top">Evaluate and present as boolean. The final
+            result will be OpcUa_True if the calculation result is
+            non-zero.<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">status<br>
+          </td>
+          <td valign="top">No<br>
+          </td>
+          <td valign="top">xs:string<br>
+          </td>
+          <td valign="top">Status formula, that is: an analytical
+            expression used to evaluate OPC-UA status-code of this
+            variable. The status-code will be OpcUa_Good if the formula
+            evaluates to non-zero otherwise OpcUa_Bad. If status formula
+            is not used then by default the variable is OpcUa_Good when
+            all input arguments are in good status, or OpcUa_Bad
+            otherwise<br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>The XML element CalculatedVariable can be attached under any
+      quasar object declaration as well as on global scope.<br>
+    </p>
+    <h2>Examples<br>
+    </h2>
+    <h3>NTC sensors: converting resistance into temperature in Celsius
+      and Fahrenheit degrees<br>
+    </h3>
+    <p>Imagine that a device can measure resistance of a connected
+      resistor. If the resistor happens to be a NTC temperature probe,
+      then one can find the temperature in function of resistance:<br>
+    </p>
+    <p>T = T0 * B / (T0 * ln(R/R0) + B)<br>
+    </p>
+    <p>where T0 is typically 298.15K (that is, +25 deg C in Kelvin
+      degrees), B is the so called B constant of a NTC probe (often
+      3977K) and R0 is the resistance at T0.<br>
+      The variable in the example is R, and that is the cache-variable
+      that gets updated by your OPC-UA server device logic.<br>
+      Let's assume that the OPC-UA address of the variable is
+      NTC1.resistance <br>
+    </p>
+    <p>Therefore, anywhere below NTC1 declaration in your config file,
+      you can instantiate a CalculatedVariable that will recompute the
+      measured resistance into temperature expressed in Kelvin degrees.
+      In the example below we also add some CalculatedVariables to hold
+      B, T0 and R0 constants.<br>
+    </p>
+    <pre>&lt;CalculatedVariable name="T0" value="298.15"/&gt;<br>&lt;CalculatedVariable name="B" value="3977"/&gt;<br>&lt;CalculatedVariable name="R0" value="10E3"/&gt;<br>&lt;CalculatedVariable name="temperatureK" value="T0*B/(T0*ln(NTC1.resistance/R0)+B)" /&gt;</pre>
+    <p>We also add two Calculated Variables that will recomputer Kelvins
+      into Celsius degrees and Fahrenheit degrees:<br>
+    </p>
+    <pre>&lt;CalculatedVariable name="temperatureC" value="temperatureK-273.15"/&gt;<br>&lt;CalculatedVariable name="temperatureF" value="temperatureC*1.8+32"/&gt;<br>
+</pre>
+    <p>In addition, we can add a boolean variable which subjectively
+      indicates whether it's warm enough. It's an example of usage of
+      logical operators as well as isBoolean attribute:<br>
+    </p>
+    <pre>&lt;CalculatedVariable name="isWarmEnough" value="temperatureC &gt; 20" isBoolean="true" /&gt;<br></pre>
+    <p><br>
+    </p>
+    <h1>Advanced documentation for quasar developers</h1>
     <h2>Selection of expression parser</h2>
     <p>There exist many open-source parsers potentially suitable for the
       feature. At the time of writing, a good overview was present at <a
 href="https://github.com/ArashPartow/math-parser-benchmark-project">https://github.com/ArashPartow/math-parser-benchmark-project</a>
       .<br>
     </p>
-    <p>The author has evaluted three parsers from the list:<br>
+    <p>The author has evaluated three parsers from the list:<br>
       <br>
     </p>
     <ul>
@@ -227,7 +609,7 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
         variable changed value. Applicable to any data type. Can be used
         with multiple notification receivers. Can be used for
         applications different than CalculatedVariables.</li>
-      <li>ParserVariable - stored current numeric variable value as a
+      <li>ParserVariable - stores current numeric variable value as a
         plain double type, and therefore can be coupled as a mu::Parser
         variable. (Sidenote: mu::Parser doesn't know anything about
         OPC-UA and without such arrangement it wouldn't know how to
@@ -236,7 +618,7 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
       <ul>
         <li>notifyingVariable - is the pointer to a
           ChangeNotifyingVariable which notifies this particular
-          ParserVariable on Change,</li>
+          ParserVariable on change,</li>
         <li>notifiedVariables - the list of all CalculatedVariables that
           use this particular ParserVariable in formulas.</li>
       </ul>
@@ -295,7 +677,7 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
         well as possibly on number of connected clients and the set of
         data they subscribe to.</li>
       <li>server's OPC-UA requests processing threads. Those threads are
-        run by chosen OPC-UA backend and similarily to sampling threads,
+        run by chosen OPC-UA backend and similarly to sampling threads,
         their number depends on many factors. Those threads process e.g.
         Write service requests, so that an OPC-UA client can write to
         given variable.</li>
@@ -363,7 +745,7 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
         PV1, PV2 and PV3 (e.g. if any thread would enter setter of any
         of {PV1, PV2, PV3} all other threads willing to do the same
         would need to wait)</li>
-      <li>2nd one, which will provide exclusive access to setter od PV4</li>
+      <li>2nd one, which will provide exclusive access to setter of PV4</li>
     </ul>
     <p>PV5 would not get a synchronizer because it's output is not used
       by anything; in fact PV5 would be optimized out after the
@@ -378,7 +760,74 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
     Though such a scenario is rather unlikely to be seen, server
     developers and users should be aware of this relation.<br>
     <br>
-    <br>
+    <h2>Benchmarks</h2>
+    <p>Some benchmarks have been performed. The base has been pre-1.3.1
+      release of quasar. The benchmarks have been performed with UA-SDK
+      1.5.5 as the OPC-UA backend.<br>
+    </p>
+    <p>Aspect </p>
+    <table class="confluenceTable" border="1">
+      <tbody>
+        <tr>
+          <th class="confluenceTh"><br>
+          </th>
+          <th class="confluenceTh">quasar w/o Calculated Variables
+            support</th>
+          <th class="confluenceTh">quasar w Calculated Variables support<br>
+            (note: no Calc Vars declared!)</th>
+          <th class="confluenceTh">Diff</th>
+        </tr>
+        <tr>
+          <td class="confluenceTd">Build time of a simple, one-class
+            server</td>
+          <td class="confluenceTd">55s<br>
+            56s<br>
+            54s<br>
+            AVG = 55s</td>
+          <td class="confluenceTd">1m15s<br>
+            1m3s<br>
+            59s<br>
+            AVG = 65s</td>
+          <td class="confluenceTd">18% longer</td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">Build time of a complex server (here:
+            SCA)</td>
+          <td class="confluenceTd">4m15s</td>
+          <td class="confluenceTd">4m25s</td>
+          <td class="confluenceTd">3.9% longer</td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">Time to publish 100M random doubles
+            via a cache-variable</td>
+          <td class="confluenceTd">32793 ms<br>
+            32892 ms<br>
+            32623 ms<br>
+            AVG = 32768 ms</td>
+          <td class="confluenceTd">32917 ms<br>
+            33313 ms<br>
+            33460 ms<br>
+            AVG = 33230 ms</td>
+          <td class="confluenceTd">1.4% more overhead</td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">Valgrind info (publishing 1M random
+            doubles)</td>
+          <td class="confluenceTd">==6591== HEAP SUMMARY:<br>
+            ==6591== in use at exit: 27,753 bytes in 209 blocks<br>
+            ==6591== total heap usage: 1,031,151 allocs, 1,030,942
+            frees, 72,543,037 bytes allocated</td>
+          <td class="confluenceTd">==5861== HEAP SUMMARY:<br>
+            ==5861== in use at exit: 28,458 bytes in 213 blocks<br>
+            ==5861== total heap usage: 1,032,466 allocs, 1,032,253
+            frees, 75,191,342 bytes allocated</td>
+          <td class="confluenceTd">0.1% more allocs<br>
+            &nbsp;<br>
+            note "bytes allocated" has no relation to the actual size of
+            RSS memory of a running process!</td>
+        </tr>
+      </tbody>
+    </table>
     <p><br>
     </p>
     <ol>
