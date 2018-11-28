@@ -64,29 +64,69 @@ double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* na
     }
     else
     {
-        /* setup synchronization groups */
-        if (!it->synchronizer())
-        {
-            // ParserVariable *it hasn't got a synchronizer - it was not used in any formula before
-            // try to attach it to the synchronization group from either value or status variables of the
-            // CalculatedVariable we're processing
-            if (requestor->valueVariables().size() > 0)
-            {
-                it->synchronizer() = requestor->valueVariables().front()->synchronizer();
-                LOG(Log::INF, logComponentId) << "Attached synchronizer via value variables. Current use_count: " << it->synchronizer().use_count();
-            }
-            else if (requestor->statusVariables().size() > 0)
-            {
-                it->synchronizer() = requestor->statusVariables().front()->synchronizer();
-                LOG(Log::INF, logComponentId) << "Attached synchronizer via status variables. Current use_count: " << it->synchronizer().use_count();
+        CalculatedVariable* cv = dynamic_cast<CalculatedVariable*> (it->notifyingVariable());
+        // Is this the first variable that requestor requests?
+        if (requestor->valueVariables().size() + requestor->statusVariables().size() == 0)
+        { // yes it's the first one. if the PV which is being requested is bound to another CV then inherit the synchronization domain, otherwise created new one
+
+            if (!cv)
+            { // it's probably a plain ChangeNotifyingVariable so it doesn't have anything to inherit from.
+                if (it->synchronizer())
+                    throw_runtime_error_with_origin("logic-error: havent expected any synchronizer here");
+                it->synchronizer().reset(new Synchronizer());
+                ++s_numSynchronizers;
+                LOG(Log::TRC, logComponentId) << "Created new synchronization domain for PV " << it->name() << ": " << it->synchronizer().get();
             }
             else
             {
-                LOG(Log::INF, logComponentId) << "Creating new synchronizer for variable:" << it->name();
-                it->synchronizer().reset(new Synchronizer);
-                ++s_numSynchronizers;
+                if (it->synchronizer())
+                    throw_runtime_error_with_origin("logic-error: havent expected any synchronizer here");
+                LOG(Log::TRC, logComponentId) << "Trying to inherit synchronization domain for PV " << it->name() << " because it is bound to a CalculatedVariable";
+                if (cv->valueVariables().size() > 0) // we will inherit from value vars
+                    it->synchronizer() = cv->valueVariables().front()->synchronizer();
+                else if (cv->statusVariables().size() > 0) // we will inherit from status vars
+                    it->synchronizer() = cv->statusVariables().front()->synchronizer();
+                else
+                {
+                    // nothing to inherit from
+                    it->synchronizer().reset(new Synchronizer());
+                    ++s_numSynchronizers;
+                    LOG(Log::TRC, logComponentId) << "Impossible to inherit so created new synchronization domain for PV " << it->name() << ": " << it->synchronizer().get();
+                }
             }
         }
+        else
+        { // no it is not the  first variable that we're adding - likely we will need to merge synchronization domains
+            SharedSynchronizer source, target;
+            if (requestor->valueVariables().size()>0)
+                target = requestor->valueVariables().front()->synchronizer();
+            else
+                target = requestor->statusVariables().front()->synchronizer();
+            if (!cv)
+            { // it's probably a plain ChangeNotifyingVariable so just assign our synchronizer to it
+                if (it->synchronizer())
+                    throw_runtime_error_with_origin("logic-error: havent expected any synchronizer here");
+                it->synchronizer() = target;
+                LOG(Log::TRC, logComponentId) << "Assigned inherited synchro domain for: " << it->name() << ": " << it->synchronizer().get();
+            }
+            else
+            {
+                if (cv->valueVariables().size()>0)
+                    source = cv->valueVariables().front()->synchronizer();
+                else if (cv->statusVariables().size()>0)
+                    source = cv->statusVariables().front()->synchronizer();
+                else
+                    throw_runtime_error_with_origin("case not implemented");
+                // here we do real merge
+                for (ParserVariable& pv: s_parserVariables)
+                    if (pv.synchronizer() == source)
+                        pv.synchronizer() = target;
+                it->synchronizer() = target;
+                s_numSynchronizers--;
+                LOG(Log::TRC, logComponentId) << "Trying merging. it.synchronizer=" << it->synchronizer().get();
+            }
+        }
+
 
         if (requestUserData->type == ParserVariableRequestUserData::Type::Value)
             requestor->addDependentVariableForValue(&(*it));
@@ -131,6 +171,10 @@ void Engine::instantiateCalculatedVariable(
 
 void Engine::printInstantiationStatistics()
 {
+    for (ParserVariable& pv : s_parserVariables)
+    {
+        LOG(Log::TRC, logComponentId) << "PV: " << pv.name() << " synchronizer: " << pv.synchronizer();
+    }
     LOG(Log::INF, logComponentId) <<
             " #ParserVariables: " << s_parserVariables.size() <<
             " #CalculatedVariables: " << s_numCalculatedVariables <<
@@ -138,8 +182,9 @@ void Engine::printInstantiationStatistics()
 }
 
 /* This can be called at the end of instantiation step
- * (when no new CalculatedVariables are expected to be thrown in).
- *
+ * (when no new CalculatedVariables are expected to be added).
+ * It removes all ParserVariables that aren't used (and respective onChange callbacks)/
+ * It will likely boost performance and reduce memory usage.
  */
 void Engine::optimize()
 {

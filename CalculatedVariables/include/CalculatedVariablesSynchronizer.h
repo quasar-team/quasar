@@ -8,7 +8,7 @@
 #ifndef CALCULATEDVARIABLES_INCLUDE_CALCULATEDVARIABLESSYNCHRONIZER_H_
 #define CALCULATEDVARIABLES_INCLUDE_CALCULATEDVARIABLESSYNCHRONIZER_H_
 
-#include <boost/thread/mutex.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 
 namespace CalculatedVariables
 {
@@ -16,10 +16,10 @@ namespace CalculatedVariables
 class Synchronizer
 {
 public:
-    boost::mutex& mutex() { return m_mutex; }
+    boost::recursive_mutex& mutex() { return m_mutex; }
 
 private:
-    boost::mutex m_mutex;
+    boost::recursive_mutex m_mutex;
 };
 
 typedef std::shared_ptr<Synchronizer> SharedSynchronizer;

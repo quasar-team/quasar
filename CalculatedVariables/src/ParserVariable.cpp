@@ -65,20 +65,13 @@ void ParserVariable::setValueNonSynchronized(double v, State state)
 
 void ParserVariable::setValueSynchronized(double v, State state)
 {
-    boost::lock_guard<boost::mutex> lock (m_synchronizer->mutex());
+    boost::lock_guard<decltype(m_synchronizer->mutex())> lock (m_synchronizer->mutex());
     this->setValueNonSynchronized(v, state);
 }
 
 void ParserVariable::addNotifiedVariable(CalculatedVariable* notifiedVariable)
 {
     LOG(Log::TRC, logComponentId) << "To ParseVariable bound to: " << name() << " adding notified variable: " << notifiedVariable->nodeId().toString().toUtf8();
-    if (notifiedVariable->valueVariables().size() > 0)
-    {
-
-    }
-    else
-        m_synchronizer.reset(new Synchronizer());
-
     m_notifiedVariables.push_back(notifiedVariable);
 
 }

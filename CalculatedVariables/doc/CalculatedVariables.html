@@ -5,18 +5,18 @@
     <title>CalculatedVariables</title>
   </head>
   <body>
-    Calculated Variables<br>
+    <h1> Calculated Variables</h1>
     <br>
     by: Piotr Nikiel, Oct-Nov 2018<br>
     <br>
-    <h1>Preface</h1>
+    <h2>Preface</h2>
     A lot of concepts and work done in context of quasar's
     CalculatedVariables module has been inspired by V.Filimonov's
     "CalculatedItems" concept in the CANopen OPC-UA server.<br>
     I'd like to acknowledge his contribution as my inspiration (even
     though the CalculatedVariables are designed entirely from scratch
     and using different technologies).<br>
-    <h1>Rationale</h1>
+    <h2>Rationale</h2>
     <p>A quasar-based OPC-UA server is based on a model of a system it
       is made for. This model is called a design. The model explains (in
       terms of quasar classes, variables etc) what sources and sinks on
@@ -47,8 +47,8 @@
         Variable might be attached with a formula that recomputes the
         ADC value (in volts) into temperature.</li>
     </ul>
-    <h1>Design-based variables vs Calculated Variables<br>
-    </h1>
+    <h2>Design-based variables vs Calculated Variables<br>
+    </h2>
     <table cellspacing="2" cellpadding="2" width="100%" border="1">
       <tbody>
         <tr>
@@ -104,7 +104,7 @@
         </tr>
       </tbody>
     </table>
-    <h1>Feature list</h1>
+    <h2>Feature list</h2>
     <table cellspacing="2" cellpadding="2" border="1">
       <tbody>
         <tr>
@@ -191,7 +191,7 @@
     </table>
     <p><br>
     </p>
-    <h1>Selection of expression parser</h1>
+    <h2>Selection of expression parser</h2>
     <p>There exist many open-source parsers potentially suitable for the
       feature. At the time of writing, a good overview was present at <a
 href="https://github.com/ArashPartow/math-parser-benchmark-project">https://github.com/ArashPartow/math-parser-benchmark-project</a>
@@ -216,12 +216,12 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
         features required by the Calculated Variables feature.<br>
       </li>
     </ul>
-    <h1>Overview of feature implementation</h1>
+    <h2>Overview of feature implementation</h2>
     <p>An UML class diagram is presented below.<br>
     </p>
     <img src="CalculatedVariablesClassDiagram.png" alt="UML"
       height="765" width="1098"><br>
-    <h1>Classes rationale</h1>
+    <h2>Classes rationale</h2>
     <ul>
       <li>ChangeNotifyingVariable - can emit notifications whenever the
         variable changed value. Applicable to any data type. Can be used
@@ -255,7 +255,7 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
         </li>
       </ul>
     </ul>
-    <h1>Overview of information flow</h1>
+    <h2>Overview of information flow</h2>
     <ol>
       <li>All cache-variables instantiated by quasar Configuration
         module are of ChangeNotifyingVariable type or its subclasses.<br>
@@ -275,8 +275,8 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
         input) CalculatedVariable variables. <br>
       </li>
     </ol>
-    <h1>Synchronization, re-entrance, multi-threading<br>
-    </h1>
+    <h2>Synchronization, re-entrance, multi-threading<br>
+    </h2>
     <p>The CalculatedVariables module is closely tied to the
       AddressSpace of a quasar-based server. <br>
       For instance, the recalculation of an associated calculated
@@ -347,7 +347,7 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
     because the output of one formula can be used as an input to another
     formula.<br>
     <br>
-    <h2>Case 1: ignore CV4 (violet node and arrows)</h2>
+    <h3>Case 1: ignore CV4 (violet node and arrows)</h3>
     Case 1 would happen if we defined the following Calculated Variables
     in the config file (the particular operators - e.g. addition,
     multiplication - do not matter):<br>
@@ -369,7 +369,7 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
       by anything; in fact PV5 would be optimized out after the
       configuration process is finished.<br>
     </p>
-    <h2>Case 2: CV4 is added</h2>
+    <h3>Case 2: CV4 is added</h3>
     Now let's add CV4 to the picture.<br>
     <br>
     This (apparently) small extension actually does change a lot in the
