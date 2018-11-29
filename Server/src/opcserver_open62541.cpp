@@ -29,11 +29,13 @@ OpcServer::OpcServer():
 OpcServer::~OpcServer()
 {
     // UA_Server instance got deleted in stop()
+    #if UA_OPEN62541_VER_MINOR > 2
     if (m_server_config)
     {
         UA_ServerConfig_delete (m_server_config);
         m_server_config = nullptr;
     }
+    #endif
 }
 
 int OpcServer::setServerConfig(const UaString& configurationFile, const UaString& applicationPath)
