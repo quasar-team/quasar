@@ -29,6 +29,11 @@ OpcServer::OpcServer():
 OpcServer::~OpcServer()
 {
     // UA_Server instance got deleted in stop()
+    if (m_server_config)
+    {
+        UA_ServerConfig_delete (m_server_config);
+        m_server_config = nullptr;
+    }
 }
 
 int OpcServer::setServerConfig(const UaString& configurationFile, const UaString& applicationPath)
@@ -53,9 +58,9 @@ int OpcServer::setServerConfig(const UaString& configurationFile, const UaString
 int OpcServer::addNodeManager(ASNodeManager* pNodeManager)
 {
     if (!m_nodemanager)
-	m_nodemanager = pNodeManager;
+        m_nodemanager = pNodeManager;
     else
-	throw_runtime_error_with_origin("Sorry, only 1 NodeManager is supported.");
+        throw_runtime_error_with_origin("Sorry, only 1 NodeManager is supported.");
     return 0;
 }
 
@@ -69,7 +74,7 @@ int OpcServer::start()
 {
     m_server = UA_Server_new(m_server_config);
     if (!m_server)
-	throw_runtime_error_with_origin("UA_Server_new failed");
+        throw_runtime_error_with_origin("UA_Server_new failed");
     m_nodemanager->linkServer(m_server);
     m_nodemanager->afterStartUp();
     m_open62541_server_thread = boost::thread ( &OpcServer::runThread, this );
