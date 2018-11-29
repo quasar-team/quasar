@@ -147,9 +147,7 @@ int BaseQuasarServer::serverRun(
             serverStartFailLogError(startServerReturn, m_pServer->getLogFilePath());
             return startServerReturn;
         }
-        CalculatedVariables::Engine::printInstantiationStatistics();
-        CalculatedVariables::Engine::optimize();
-        CalculatedVariables::Engine::printInstantiationStatistics();
+
         mainLoop();
     }
     catch (const std::exception &e)
@@ -290,7 +288,7 @@ int BaseQuasarServer::initializeEnvironment()
 void BaseQuasarServer::initializeLogIt()
 {
     Log::initializeLogging();
-    Log::registerLoggingComponent("CalcVars", Log::TRC);
+    Log::registerLoggingComponent("CalcVars", Log::INF);
 }
 void BaseQuasarServer::mainLoop()
 {
@@ -345,7 +343,10 @@ UaStatus BaseQuasarServer::configurationInitializerHandler(const std::string& co
     if (!overridableConfigure(configFileName, nm))
         return OpcUa_Bad; // error is already printed in configure()
     validateDeviceTree();
-
+    CalculatedVariables::Engine::printInstantiationStatistics();
+    CalculatedVariables::Engine::optimize();
+    CalculatedVariables::Engine::setupSynchronization();
+    CalculatedVariables::Engine::printInstantiationStatistics();
     initialize();
     return OpcUa_Good;
 }

@@ -50,14 +50,19 @@ public:
             const Configuration::CalculatedVariable& config
             );
 
-    static void registerVariableForCalculatedVariables( AddressSpace::ChangeNotifyingVariable* variable);
+    static ParserVariable& registerVariableForCalculatedVariables( AddressSpace::ChangeNotifyingVariable* variable);
 
     //! userData should be the 'this' of a CalculatedVariable this is being requested
     static double* parserVariableRequestHandler(const char* name, void* userData);
 
     static void printInstantiationStatistics ();
 
+    static void setupSynchronization();
+
     static void optimize ();
+
+    //! Perform a dfs, each found node is bound to particular synchronization domain
+    static void dfsAndSetSynchronizer(ParserVariable& pv, SharedSynchronizer& synchronizer);
 
 private:
     static std::list <ParserVariable> s_parserVariables;

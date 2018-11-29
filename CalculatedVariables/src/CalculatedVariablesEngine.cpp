@@ -38,11 +38,12 @@ void Engine::initialize()
     logComponentId = Log::getComponentHandle("CalcVars");
 }
 
-void Engine::registerVariableForCalculatedVariables(AddressSpace::ChangeNotifyingVariable* variable)
+ParserVariable& Engine::registerVariableForCalculatedVariables(AddressSpace::ChangeNotifyingVariable* variable)
 {
     LOG(Log::TRC, logComponentId) << "Putting on list of ParserVariables: " << variable->nodeId().toString().toUtf8();
     s_parserVariables.emplace_back(variable);
     variable->addChangeListener(ChangeListener(s_parserVariables.back())); // using back() because we just added it a line above
+    return s_parserVariables.back();
 }
 
 double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* name, void* userData)
@@ -64,69 +65,6 @@ double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* na
     }
     else
     {
-        CalculatedVariable* cv = dynamic_cast<CalculatedVariable*> (it->notifyingVariable());
-        // Is this the first variable that requestor requests?
-        if (requestor->valueVariables().size() + requestor->statusVariables().size() == 0)
-        { // yes it's the first one. if the PV which is being requested is bound to another CV then inherit the synchronization domain, otherwise created new one
-
-            if (!cv)
-            { // it's probably a plain ChangeNotifyingVariable so it doesn't have anything to inherit from.
-                if (it->synchronizer())
-                    throw_runtime_error_with_origin("logic-error: havent expected any synchronizer here");
-                it->synchronizer().reset(new Synchronizer());
-                ++s_numSynchronizers;
-                LOG(Log::TRC, logComponentId) << "Created new synchronization domain for PV " << it->name() << ": " << it->synchronizer().get();
-            }
-            else
-            {
-                if (it->synchronizer())
-                    throw_runtime_error_with_origin("logic-error: havent expected any synchronizer here");
-                LOG(Log::TRC, logComponentId) << "Trying to inherit synchronization domain for PV " << it->name() << " because it is bound to a CalculatedVariable";
-                if (cv->valueVariables().size() > 0) // we will inherit from value vars
-                    it->synchronizer() = cv->valueVariables().front()->synchronizer();
-                else if (cv->statusVariables().size() > 0) // we will inherit from status vars
-                    it->synchronizer() = cv->statusVariables().front()->synchronizer();
-                else
-                {
-                    // nothing to inherit from
-                    it->synchronizer().reset(new Synchronizer());
-                    ++s_numSynchronizers;
-                    LOG(Log::TRC, logComponentId) << "Impossible to inherit so created new synchronization domain for PV " << it->name() << ": " << it->synchronizer().get();
-                }
-            }
-        }
-        else
-        { // no it is not the  first variable that we're adding - likely we will need to merge synchronization domains
-            SharedSynchronizer source, target;
-            if (requestor->valueVariables().size()>0)
-                target = requestor->valueVariables().front()->synchronizer();
-            else
-                target = requestor->statusVariables().front()->synchronizer();
-            if (!cv)
-            { // it's probably a plain ChangeNotifyingVariable so just assign our synchronizer to it
-                if (it->synchronizer())
-                    throw_runtime_error_with_origin("logic-error: havent expected any synchronizer here");
-                it->synchronizer() = target;
-                LOG(Log::TRC, logComponentId) << "Assigned inherited synchro domain for: " << it->name() << ": " << it->synchronizer().get();
-            }
-            else
-            {
-                if (cv->valueVariables().size()>0)
-                    source = cv->valueVariables().front()->synchronizer();
-                else if (cv->statusVariables().size()>0)
-                    source = cv->statusVariables().front()->synchronizer();
-                else
-                    throw_runtime_error_with_origin("case not implemented");
-                // here we do real merge
-                for (ParserVariable& pv: s_parserVariables)
-                    if (pv.synchronizer() == source)
-                        pv.synchronizer() = target;
-                it->synchronizer() = target;
-                s_numSynchronizers--;
-                LOG(Log::TRC, logComponentId) << "Trying merging. it.synchronizer=" << it->synchronizer().get();
-            }
-        }
-
 
         if (requestUserData->type == ParserVariableRequestUserData::Type::Value)
             requestor->addDependentVariableForValue(&(*it));
@@ -154,7 +92,13 @@ void Engine::instantiateCalculatedVariable(
             config.status().present(),
             config.status().present() ? *config.status() : "");
 
-    nm->addNodeAndReference( parentNodeId, calculatedVariable, OpcUaId_Organizes);
+    UaStatus status = nm->addNodeAndReference( parentNodeId, calculatedVariable, OpcUaId_Organizes);
+    if (!status.isGood())
+        throw_runtime_error_with_origin(std::string("While adding Calculated Variable to address space:")+status.toString().toUtf8());
+    ParserVariable& pv = registerVariableForCalculatedVariables(calculatedVariable);
+    pv.setIsConstant(calculatedVariable->isConstant());
+    calculatedVariable->setNotifiedVariable(&pv);
+
     if (config.initialValue().present())
     {
         UaVariant variant (*config.initialValue());
@@ -164,7 +108,9 @@ void Engine::instantiateCalculatedVariable(
                 OpcUa_False /*check access level*/
                 );
     }
-    registerVariableForCalculatedVariables(calculatedVariable);
+    else
+        calculatedVariable->update();
+
     s_numCalculatedVariables++;
     LOG(Log::TRC, logComponentId) << "Instantiated Calculated Variable: " << calculatedVariable->nodeId().toString().toUtf8();
 }
@@ -190,25 +136,86 @@ void Engine::optimize()
 {
     size_t numOptimized = 0;
     decltype(s_parserVariables)::iterator it;
-    for (it = std::begin(s_parserVariables); it!=std::end(s_parserVariables); it++)
+    for (it = std::begin(s_parserVariables); it!=std::end(s_parserVariables); )
     {
         if (it->notifiedVariables().size() == 0)
         {
-            if (it->notifyingVariable()->changeListenerSize() == 1)
+            if (it->notifyingVariable()->changeListenerSize() <= 1)
             {
                 it->notifyingVariable()->removeAllChangeListeners();
+                CalculatedVariable* cv = dynamic_cast<CalculatedVariable*> (it->notifyingVariable());
+                if (cv)
+                    cv->setNotifiedVariable(nullptr);
+                LOG(Log::TRC, logComponentId) << "Optimizing out: " << it->name();
                 it = s_parserVariables.erase(it);
                 numOptimized++;
-            }
-            else
-            {
-                LOG(Log::WRN, logComponentId) << "Need to selectively remove change listeners - not implemented. Skipping optimization for this ParserVariable.";
                 continue;
             }
+            else
+                LOG(Log::WRN, logComponentId) << "Need to selectively remove change listeners - not implemented. Skipping optimization for this ParserVariable.";
         }
+        it++;
     }
     LOG(Log::INF, logComponentId) << "Optimized(suppresed) " << numOptimized << " ParserVariables not used in any formulas.";
 
+}
+
+void Engine::dfsAndSetSynchronizer(ParserVariable& pv, SharedSynchronizer& synchronizer)
+{
+    LOG(Log::TRC, logComponentId) << "traverse pv adjacent: " << pv.name() << " new_s=" << pv.synchronizer();
+    pv.synchronizer() = synchronizer;
+    // first try going towards "ancestors" in the calculation graph
+    CalculatedVariable* notifyingCalculatedVariable = dynamic_cast<CalculatedVariable*> (pv.notifyingVariable());
+    if (notifyingCalculatedVariable)
+    {
+        for (ParserVariable* variable : notifyingCalculatedVariable->valueVariables())
+        {
+            if (!variable->synchronizer() && !variable->isConstant())
+                dfsAndSetSynchronizer(*variable, synchronizer);
+        }
+        for (ParserVariable* variable : notifyingCalculatedVariable->statusVariables())
+        {
+            if (!variable->synchronizer() && !variable->isConstant())
+                dfsAndSetSynchronizer(*variable, synchronizer);
+        }
+    }
+    // then try to go towards "descendants" in the calculation graph
+    for (CalculatedVariable* cv : pv.notifiedVariables())
+    {
+        if (cv->notifiedVariable())
+            if (! cv->notifiedVariable()->synchronizer() && !cv->notifiedVariable()->isConstant())
+                dfsAndSetSynchronizer(*cv->notifiedVariable(), synchronizer);
+    }
+}
+
+void Engine::setupSynchronization()
+{
+    LOG(Log::TRC, logComponentId) << "In setupSynchronization";
+    decltype(s_parserVariables)::reverse_iterator it;
+    for (it = s_parserVariables.rbegin(); it != s_parserVariables.rend(); it++)
+    {
+        if (it->notifiedVariables().size() < 1)
+        {
+            LOG(Log::TRC, logComponentId) << "Skipping PV because it notifies nothing: " << it->name();
+            continue;
+        }
+        if (it->synchronizer())
+        {
+            LOG(Log::TRC, logComponentId) << "Skipping PV because it already has synchronization domain: " << it->name();
+            continue;
+        }
+        if (it->isConstant())
+        {
+            LOG(Log::TRC, logComponentId) << "Skipping PV because it is constant. PV:" << it->name();
+            continue;
+        }
+        SharedSynchronizer synchronizer (new Synchronizer());
+        s_numSynchronizers++;
+        it->synchronizer() = synchronizer;
+        LOG(Log::TRC, logComponentId) << "Added new synchronizer to: " << it->name();
+        dfsAndSetSynchronizer(*it, synchronizer);
+
+    }
 }
 
 Log::LogComponentHandle logComponentId = Log::INVALID_HANDLE;

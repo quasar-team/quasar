@@ -65,6 +65,8 @@ public:
 
     SharedSynchronizer& synchronizer() { return m_synchronizer; }
 
+    bool isConstant() const { return m_isConstant; }
+    void setIsConstant(bool v) { m_isConstant = v; }
 
 private:
     //! Ptr to our Address Space counterpart, will notify us on change
@@ -79,6 +81,8 @@ private:
     std::list<CalculatedVariable*>         m_notifiedVariables;
 
     SharedSynchronizer m_synchronizer;
+
+    bool m_isConstant;
 
     void setValueNonSynchronized(double v, State state);
     void setValueSynchronized(double v, State state);

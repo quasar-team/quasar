@@ -49,7 +49,8 @@ CalculatedVariable::CalculatedVariable(
                     pNodeConfig,
                     pSharedMutex),
                     m_isBoolean(isBoolean),
-                    m_hasStatusFormula(hasStatusFormula)
+                    m_hasStatusFormula(hasStatusFormula),
+                    m_notifiedVariable(nullptr)
 {
     this->initializeParser(m_valueParser, formula, ParserVariableRequestUserData::Type::Value);
     if (m_hasStatusFormula)

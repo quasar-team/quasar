@@ -40,7 +40,9 @@ void CalculatedVariables::ChangeListener::operator ()(
         const UaDataValue&                     newValue)
 {
     LOG(Log::TRC, logComponentId) << "ChangeListener fired, fromWhere=" << fromWhere.nodeId().toString().toUtf8();
-    if (newValue.value())
+    if (newValue.statusCode() == OpcUa_BadWaitingForInitialData)
+        m_variable.setValue(0, ParserVariable::WaitingInitialData);
+    else if (newValue.value())
     {
         UaVariant variant (*newValue.value());
         OpcUa_Double value;

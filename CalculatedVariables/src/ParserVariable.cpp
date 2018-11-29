@@ -34,7 +34,8 @@ namespace CalculatedVariables
 ParserVariable::ParserVariable(AddressSpace::ChangeNotifyingVariable* notifyingVariable):
         m_notifyingVariable(notifyingVariable),
         m_value(0),
-        m_state(State::WaitingInitialData)
+        m_state(State::WaitingInitialData),
+        m_isConstant(false)
 {
     LOG(Log::TRC, logComponentId) << "Created ParserVariable for: " << name();
 }

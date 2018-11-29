@@ -54,6 +54,11 @@ public:
     std::list<ParserVariable*>& valueVariables() { return m_valueVariables; }
     std::list<ParserVariable*>& statusVariables() { return m_statusVariables; }
 
+    void setNotifiedVariable( ParserVariable* var) { m_notifiedVariable = var; }
+    ParserVariable* notifiedVariable() const { return m_notifiedVariable; }
+
+    bool isConstant () const { return m_valueVariables.size() + m_statusVariables.size() == 0; }
+
 private:
     void initializeParser(
             mu::Parser& parser,
@@ -72,6 +77,10 @@ private:
     mu::Parser m_statusParser;
     //! Points to ParserVariables which are used by statusFormula
     std::list<ParserVariable*> m_statusVariables;
+
+    //! Keeping this reference is necessary to efficiently construct synchronization graph
+    ParserVariable* m_notifiedVariable;
+
 };
 
 }
