@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://cern.ch/quasar/ServerConfig">
+         <!-- XML Schema Generated from XML Document on Thu Nov 29 2018 19:58:43 GMT+0100 (CET) -->
+         <!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+         <xs:element name="OpcServerConfig">
+               <xs:complexType>
+                     <xs:sequence>
+                           <xs:element name="UaServerConfig">
+                                 <xs:complexType>
+                                       <xs:sequence>
+                                             <xs:element name="MaxRequestAge" type="xs:int"></xs:element>
+                                             <xs:element name="MaxSessionCount" type="xs:int"></xs:element>
+                                             <xs:element name="MinSessionTimeout" type="xs:int"></xs:element>
+                                             <xs:element name="MaxSessionTimeout" type="xs:int"></xs:element>
+                                             <xs:element name="MaxBrowseContinuationPoints" type="xs:int"></xs:element>
+                                             <xs:element name="MaxHistoryContinuationPoints" type="xs:int"></xs:element>
+                                             <xs:element name="MinPublishingInterval" type="xs:int"></xs:element>
+                                             <xs:element name="MaxPublishingInterval" type="xs:int"></xs:element>
+                                             <xs:element name="MinKeepAliveInterval" type="xs:int"></xs:element>
+                                             <xs:element name="MinSubscriptionLifetime" type="xs:int"></xs:element>
+                                             <xs:element name="MaxSubscriptionLifetime" type="xs:int"></xs:element>
+                                             <xs:element name="MaxRetransmitionQueueSize" type="xs:int"></xs:element>
+                                             <xs:element name="MaxNotificationsPerPublish" type="xs:int"></xs:element>
+                                             <xs:element name="MaxDataQueueSize" type="xs:int"></xs:element>
+                                             <xs:element name="MaxEventQueueSize" type="xs:int"></xs:element>
+                                             <xs:element name="MaxSubscriptionCount" type="xs:int"></xs:element>
+                                             <xs:element name="MaxMonitoredItemCount" type="xs:int"></xs:element>
+                                             <xs:element name="MaxMonitoredItemPerSubscriptionCount" type="xs:int"></xs:element>
+                                             <xs:element name="AvailableLocaleIds">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="LocaleId" type="xs:string"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="AvailableServerProfiles">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="ServerProfileUri" maxOccurs="unbounded" type="xs:string"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="IsAuditActivated" type="xs:string"></xs:element>
+                                             <xs:element name="RedundancySettings">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="RedundancySupport" type="xs:string"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="MinSupportedSampleRate" type="xs:int"></xs:element>
+                                             <xs:element name="AvailableSamplingRates">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="SamplingRate" maxOccurs="unbounded" type="xs:int"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="ThreadPoolSettings">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="MinSizeTransactionManager" type="xs:int"></xs:element>
+                                                               <xs:element name="MaxSizeTransactionManager" type="xs:int"></xs:element>
+                                                               <xs:element name="MinSizeSubscriptionManager" type="xs:int"></xs:element>
+                                                               <xs:element name="MaxSizeSubscriptionManager" type="xs:int"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="ApplicationUri" type="xs:string"></xs:element>
+                                             <xs:element name="ManufacturerName" type="xs:string"></xs:element>
+                                             <xs:element name="ApplicationName" type="xs:string"></xs:element>
+                                             <xs:element name="SoftwareVersion" type="xs:string"></xs:element>
+                                             <xs:element name="BuildNumber" type="xs:int"></xs:element>
+                                             <xs:element name="ServerUri" type="xs:string"></xs:element>
+                                             <xs:element name="ServerName" type="xs:string"></xs:element>
+                                             <xs:element name="RejectedCertificatesDirectory" type="xs:string"></xs:element>
+                                             <xs:element name="UaEndpoint">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="SerializerType" type="xs:string"></xs:element>
+                                                               <xs:element name="Url" type="xs:string"></xs:element>
+                                                               <xs:element name="IsVisible" type="xs:string"></xs:element>
+                                                               <xs:element name="IsDiscoveryUrl" type="xs:string"></xs:element>
+                                                               <xs:element name="CertificateStore">
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="OpenSSLStore">
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="CertificateTrustListLocation" type="xs:string"></xs:element>
+                                                                                                   <xs:element name="CertificateRevocationListLocation" type="xs:string"></xs:element>
+                                                                                                   <xs:element name="ServerCertificate" type="xs:string"></xs:element>
+                                                                                                   <xs:element name="ServerPrivateKey" type="xs:string"></xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="GenerateCertificate" type="xs:string"></xs:element>
+                                                                                 <xs:element name="CertificateSettings">
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="CommonName" type="xs:string"></xs:element>
+                                                                                                   <xs:element name="Organization" type="xs:string"></xs:element>
+                                                                                                   <xs:element name="OrganizationUnit" type="xs:string"></xs:element>
+                                                                                                   <xs:element name="Locality" type="xs:string"></xs:element>
+                                                                                                   <xs:element name="State"></xs:element>
+                                                                                                   <xs:element name="Country" type="xs:string"></xs:element>
+                                                                                                   <xs:element name="YearsValidFor" type="xs:int"></xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="SecuritySetting" maxOccurs="unbounded">
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="SecurityPolicy" type="xs:string"></xs:element>
+                                                                                 <xs:element name="MessageSecurityMode" type="xs:string"></xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="UserIdentityTokens">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="EnableAnonymous" type="xs:string"></xs:element>
+                                                               <xs:element name="EnableUserPw" type="xs:string"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="DiscoveryRegistration">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="AutomaticCertificateExchange" type="xs:string"></xs:element>
+                                                               <xs:element name="DiscoveryServerCertificateFile" type="xs:string"></xs:element>
+                                                               <xs:element name="DiscoveryServerStoreName" type="xs:string"></xs:element>
+                                                               <xs:element name="DiscoveryServerCertificateName" type="xs:string"></xs:element>
+                                                               <xs:element name="RegistrationInterval" type="xs:int"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="Serializer">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="MaxAlloc" type="xs:int"></xs:element>
+                                                               <xs:element name="MaxStringLength" type="xs:int"></xs:element>
+                                                               <xs:element name="MaxByteStringLength" type="xs:int"></xs:element>
+                                                               <xs:element name="MaxArrayLength" type="xs:int"></xs:element>
+                                                               <xs:element name="MaxMessageSize" type="xs:int"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="StackThreadPoolSettings">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="Enabled" type="xs:string"></xs:element>
+                                                               <xs:element name="MinThreads" type="xs:int"></xs:element>
+                                                               <xs:element name="MaxThreads" type="xs:int"></xs:element>
+                                                               <xs:element name="MaxJobs" type="xs:int"></xs:element>
+                                                               <xs:element name="BlockOnAdd" type="xs:string"></xs:element>
+                                                               <xs:element name="Timeout" type="xs:int"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="Trace">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="UaStackTraceEnabled" type="xs:string"></xs:element>
+                                                               <xs:element name="UaStackTraceLevel" type="xs:string"></xs:element>
+                                                               <xs:element name="UaAppTraceEnabled" type="xs:string"></xs:element>
+                                                               <xs:element name="UaAppTraceLevel" type="xs:string"></xs:element>
+                                                               <xs:element name="UaAppTraceMaxEntries" type="xs:int"></xs:element>
+                                                               <xs:element name="UaAppTraceMaxBackup" type="xs:int"></xs:element>
+                                                               <xs:element name="UaAppTraceFile" type="xs:string"></xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                       </xs:sequence>
+                                 </xs:complexType>
+                           </xs:element>
+                           <xs:element name="General"></xs:element>
+                     </xs:sequence>        
+               </xs:complexType>
+         </xs:element>
+   </xs:schema>
+ </</<///sdsd

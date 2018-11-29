@@ -16,6 +16,16 @@
 
 # Author: Piotr Nikiel <piotr@nikiel.info>
 
+add_custom_target(create_dir_for_xsd_output ALL
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/Server/src
+        )
+
+add_custom_command(
+        OUTPUT ${PROJECT_BINARY_DIR}/Server/src/ServerConfig.cxx ${PROJECT_BINARY_DIR}/Server/src/ServerConfig.hxx
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/Server
+        COMMAND xsdcxx cxx-tree --namespace-map http://cern.ch/quasar/ServerConfig=ServerConfig --output-dir ${PROJECT_BINARY_DIR}/Server/src ${PROJECT_SOURCE_DIR}/Server/xsd/ServerConfig.xsd
+)
+
 add_library (Server OBJECT
 	src/main.cpp 
 	src/opcserver.cpp
@@ -25,6 +35,7 @@ add_library (Server OBJECT
 	src/QuasarServerCallback.cpp
 	src/BaseQuasarServer.cpp
 	src/QuasarServer.cpp
+	src/ServerConfig.cxx
 )
 # Ensure that this module is built as the very last one.
 add_dependencies( Server ${SERVER_MODULES} ) 

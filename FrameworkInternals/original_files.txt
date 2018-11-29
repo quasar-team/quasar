@@ -202,6 +202,9 @@ File opcserver.cpp                          must_exist,must_be_versioned,md5=che
 File opcserver_open62541.cpp		    must_exist,must_be_versioned,md5=check,install=overwrite
 File QuasarServerCallback.cpp               must_exist,must_be_versioned,md5=check,install=overwrite
 
+Directory Server/xsd install=create
+File ServerConfig.xsd                       must_exist,must_be_versioned,md5=check,install=overwrite
+
 Directory .
 File automated_build_linux.sh               deprecated,install=dont_touch
 File designToCmake.xslt                     deprecated,install=dont_touch
