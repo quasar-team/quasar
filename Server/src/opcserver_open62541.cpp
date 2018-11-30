@@ -1,16 +1,20 @@
 #ifdef BACKEND_OPEN62541
 
+#include <boost/regex.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include <opcserver_open62541.h>
 
 #include <LogIt.h>
 #include <stdexcept>
 #include <Utils.h>
 #include <shutdown.h>
+#include <ServerConfig.hxx>
 
 using namespace std;
 
 
-#define throw_runtime_error_with_origin(MSG) throw std::runtime_error(std::string("At ")+__FILE__+":"+Utils::toString(__LINE__)+" "+MSG)
+// #define throw_runtime_error_with_origin(MSG) throw std::runtime_error(std::string("At ")+__FILE__+":"+Utils::toString(__LINE__)+" "+MSG)
 
 OpcServer::OpcServer():
     m_nodemanager(0),
@@ -33,17 +37,47 @@ OpcServer::~OpcServer()
 
 int OpcServer::setServerConfig(const UaString& configurationFile, const UaString& applicationPath)
 {
-    LOG(Log::INF) << "Note: with open62541 backend, there isn't (yet) XML configuration loading. Assuming hardcoded server settings (endpoint's port, etc.)";
-    // NOTE: some basid settings are configured in ctr init list
-    // TODO: XML config reading
+    LOG(Log::WRN) << "Note: with open62541 backend, the ServerConfig loader is a new feature and most of your settings will be ignored. Please contribute to quasar.";
+    std::auto_ptr< ::ServerConfig::OpcServerConfig > serverConfig;
+    try
+    {
+        serverConfig = ServerConfig::OpcServerConfig_ (configurationFile.toUtf8());
+    }
+    catch (xsd::cxx::tree::parsing<char> &exception)
+    {
+        LOG(Log::ERR) << "ServerConfig loader: failed when trying to open the file, with general error message: " << exception.what();
+        for( const xsd::cxx::tree::error<char> &error : exception.diagnostics() )
+        {
+            LOG(Log::ERR) << "ServerConfig: Problem at " << error.id() << ":" << error.line() << ": " << error.message();
+        }
+        throw std::runtime_error("ServerConfig: failed to load ServerConfig. The exact problem description should have been logged.");
+
+    }
+
+    // minimum one endpoint is guaranteed by the XSD, but in case user declared more, refuse to continue
+    // TODO: implement multiple endpoints
+    const ServerConfig::UaServerConfig& uaServerConfig = serverConfig->UaServerConfig();
+
+    if (uaServerConfig.UaEndpoint().size() > 1)
+    {
+        throw_runtime_error_with_origin("No support for multiple UaEndpoint");
+    }
+
+    boost::regex endpointUrlRegex("^opc\\.tcp:\\/\\/\\[NodeName\\]:(?<port>\\d+)$");
+    boost::smatch matchResults;
+    std::string endpointUrl (uaServerConfig.UaEndpoint()[0].Url() );
+    bool matched = boost::regex_match( endpointUrl, matchResults, endpointUrlRegex );
+    if (!matched)
+        throw_runtime_error_with_origin("Can't parse UaEndpoint/Url, note its should look like 'opc.tcp://[NodeName]:4841' perhaps with different port number, yours is '"+endpointUrl+"'");
+    unsigned int endpointUrlPort = boost::lexical_cast<unsigned int>(matchResults["port"]);
 
     #if UA_OPEN62541_VER_MINOR == 2
     m_server_config = UA_ServerConfig_standard;
-    m_server_network_layer = UA_ServerNetworkLayerTCP(UA_ConnectionConfig_standard, 4841);
+    m_server_network_layer = UA_ServerNetworkLayerTCP(UA_ConnectionConfig_standard, endpointUrlPort);
     m_server_config.networkLayers = &m_server_network_layer;
     m_server_config.networkLayersSize = 1;
     #else
-    m_server_config = UA_ServerConfig_new_minimal(4841, /*certificate*/ nullptr);
+    m_server_config = UA_ServerConfig_new_minimal(endpointUrlPort, /*certificate*/ nullptr);
     #endif
 
 

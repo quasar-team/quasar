@@ -24,7 +24,10 @@ add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/Server/src/ServerConfig.cxx ${PROJECT_BINARY_DIR}/Server/src/ServerConfig.hxx
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/Server
         COMMAND xsdcxx cxx-tree --namespace-map http://cern.ch/quasar/ServerConfig=ServerConfig --output-dir ${PROJECT_BINARY_DIR}/Server/src ${PROJECT_SOURCE_DIR}/Server/xsd/ServerConfig.xsd
+        DEPENDS xsd/ServerConfig.xsd
 )
+
+include_directories(${PROJECT_BINARY_DIR}/Server/src)  # to find ServerConfig.hxx which is generated
 
 add_library (Server OBJECT
 	src/main.cpp 
