@@ -90,8 +90,12 @@ if(NOT TARGET libboostlogsetup)
 	add_library(libboostlogsetup STATIC IMPORTED)
 	set_property(TARGET libboostlogsetup PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_log_setup-vc141/lib/native/libboost_log_setup-vc141-mt-x64-1_67.lib)
 endif()
+if(NOT TARGET libboostregex)
+	add_library(libboostregex STATIC IMPORTED)
+	set_property(TARGET libboostregex PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_log_setup-vc141/lib/native/libboost_regex-vc141-mt-x64-1_67.lib)
+endif()
 
-set( BOOST_LIBS  libboostlogsetup libboostlog libboostsystem libboostfilesystem libboostthread libboostprogramoptions libboostchrono libboostdatetime -lrt)
+set( BOOST_LIBS  libboostlogsetup libboostlog libboostsystem libboostfilesystem libboostthread libboostprogramoptions libboostchrono libboostdatetime libboostregex -lrt)
 
 #-----
 # LogIt
