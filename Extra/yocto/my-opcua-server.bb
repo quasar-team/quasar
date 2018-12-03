@@ -10,7 +10,7 @@ S = "${WORKDIR}/git"
 
 inherit cmake pythonnative
 
-DEPENDS = "boost python-lxml-native xsd-native xerces-c python-enum34-native " 
+DEPENDS = "boost python-lxml-native xsd-native xerces-c python-enum34-native python-six-native " 
 
 
 # install it correctly, manually
