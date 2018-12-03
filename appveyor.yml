@@ -89,7 +89,7 @@ build_script:
   - cmd : dir %QUASAR_TEST_PROJECT_DIR%
 
   - cmd : python quasar.py set_build_config open6_win_configuration.cmake
-  - cmd : python quasar.py enable_module open62541-compat
+  - cmd : python quasar.py enable_module open62541-compat pmaster
   - cmd : python quasar.py prepare_build Release
   - cmd : python quasar.py build Release
 
