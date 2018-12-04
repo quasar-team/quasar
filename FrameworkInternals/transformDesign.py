@@ -112,7 +112,11 @@ def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, ad
     astyleRun            -- if True, will run astyle on generated file
     additionalParam      -- Optional extra param to be passed e.g. to XSLT transform.
     """
-    
+    if isinstance(additionalParam, str):
+    	additionalParam = [additionalParam] # compat mode for passing multiple additional params
+    elif additionalParam == None:
+    	additionalParam = []	
+    	
     # files
     XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + getCommand('saxon')
     DESIGN_XML = '.' + os.path.sep + 'Design' + os.path.sep + 'Design.xml'
@@ -121,10 +125,7 @@ def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, ad
         outputFile = outputFile + '.generated'
     try:
         # Do transformation
-        if additionalParam == None:        
-            subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile], getCommand("java"))        
-        else:
-            subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile, additionalParam], getCommand("java"))    
+        subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile] + additionalParam, getCommand("java"))    
 
         if astyleRun:
             try:

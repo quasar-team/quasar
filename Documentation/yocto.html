@@ -17,10 +17,11 @@
     </style>
   </head>
   <body>
-    Quasar + Yocto: How to<br>
+    <h1> Quasar + Yocto: How to (applies to PetaLinux, too)<br>
+    </h1>
     <br>
     Author: Piotr Nikiel<br>
-    Date: 28-09-2018<br>
+    Date: 03-Dec-2018<br>
     <br>
     <h1>Introduction</h1>
     <br>
@@ -56,6 +57,9 @@
       <li>~/gitProjects/quasar<br>
         is where I have my quasar repo (i.e. a git clone from
         https://github.com/quasar-team/quasar). I will call it <b>quasar
+
+
+
 
 
 
@@ -188,6 +192,9 @@
 
 
 
+
+
+
       why -f (force) is used.<br>
       <br>
     </b>
@@ -278,6 +285,31 @@
     For example, PetaLinux 2017.4 provides "enum34" without "native"
     extension. You can use our recipe to provide yourself with a fix.<br>
     <br>
+    <h2>Deploy pygit2 if you want to have your build stamp embedded in
+      the build (and available via address-space)</h2>
+    <br>
+    If pygit2 is available at the OPC-UA server build time then later
+    on, from the address-space as well as command line you'll be able to
+    check which project commit has been used to produce the executable.<br>
+    In case you don't have pygit2 via your Yocto/PetaLinux you can use
+    the recipe we prepared for you in the quasar/Extra/yocto directory.<br>
+    <br>
+    <h2>Fix python-six if necessary</h2>
+    In certain cases (e.g. PetaLinux 2017.4) we've found that python-six
+    recipe (required to build open62541 0.3+ which is an "automatic"
+    dependency of quasar) is broken by requiring python-io (which is an
+    embedded feature of Python thus doesn't need a separate recipe).<br>
+    If that is the case for you, you can copy python-six recipe from the
+    SDK (Yocto/PetaLinux) to your recipes-apps, remove python-io from
+    RDEPENDS and change the layer priority in order to overwrite the
+    broken recipe.<br>
+    The priority of a layer can be configured via layer.conf file, for
+    PetaLinux this normally will be in: <br>
+    <div> ./project-spec/meta-user/conf/layer.conf </div>
+    <br>
+    but you can generally look for it using:<br>
+    <div> grep -HnRsi BBFILE_PRIORITY . </div>
+    <br>
     <h2>Deploy meta-openembedded layer to get some required Python
       modules</h2>
     In poky repository:<br>
@@ -361,8 +393,14 @@
 
 
 
+
+
+
     -kernel
     /home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/bzImage-qemux86.bin
+
+
+
 
 
 
@@ -406,9 +444,15 @@
 
 
 
+
+
+
     -show-cursor -usb -usbdevice tablet -vga vmware -no-reboot -m 256
     -serial mon:vc -serial null -append "vga=0
     uvesafb.mode_option=640x480-32 root=/dev/vda rw mem=256M ip=<b>192.168.7.2</b>::192.168.7.1:255.255.255.0
+
+
+
 
 
 

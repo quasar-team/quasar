@@ -10,8 +10,9 @@ S = "${WORKDIR}/git"
 
 inherit cmake pythonnative
 
-DEPENDS = "boost python-lxml-native xsd-native xerces-c python-enum34-native " 
+DEPENDS = "boost python-lxml-native xsd-native xerces-c python-enum34-native python-six-native " 
 
+# add "pygit2-native python-cffi-native " to DEPENDS to properly provide embedding of git commit id
 
 # install it correctly, manually
 do_install() {
