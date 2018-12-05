@@ -25,7 +25,7 @@
 #include <string>
 #include <list>
 
-#include <CalculatedVariablesSynchronizer.h>
+#include <boost/thread/recursive_mutex.hpp>
 
 // forward-decls
 namespace AddressSpace
@@ -35,6 +35,10 @@ class ChangeNotifyingVariable;
 
 namespace CalculatedVariables
 {
+
+typedef boost::recursive_mutex Synchronizer;
+typedef std::shared_ptr<Synchronizer> SharedSynchronizer;
+
 class CalculatedVariable;
 
 class ParserVariable

@@ -66,7 +66,7 @@ void ParserVariable::setValueNonSynchronized(double v, State state)
 
 void ParserVariable::setValueSynchronized(double v, State state)
 {
-    boost::lock_guard<decltype(m_synchronizer->mutex())> lock (m_synchronizer->mutex());
+    boost::lock_guard<Synchronizer> lock (*m_synchronizer);
     this->setValueNonSynchronized(v, state);
 }
 

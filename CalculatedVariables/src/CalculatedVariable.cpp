@@ -95,7 +95,7 @@ void CalculatedVariable::update()
     {
         double status = m_statusParser.Eval();
         LOG(Log::TRC, logComponentId) << "status evaluates to: " << status;
-        finalStatus = (status != 0) ? OpcUa_Good : OpcUa_Bad; // conversion of double to boolean logic
+        finalStatus = (status != 0) ? OpcUa_Good : OpcUa_Bad; // conversion of double to OPC-UA status code
     }
 
 
