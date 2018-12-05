@@ -44,7 +44,7 @@ private:
     UA_ServerConfig m_server_config;
     UA_ServerNetworkLayer m_server_network_layer;
     #else
-    UA_ServerConfig* m_server_config;
+    std::unique_ptr<UA_ServerConfig, std::function<void(UA_ServerConfig*)> > m_server_config;
     #endif
     UA_Server *m_server;
     boost::thread m_open62541_server_thread;

@@ -18,7 +18,7 @@ OpcServer::OpcServer():
     m_server_config(UA_ServerConfig_standard),
     m_server_network_layer(UA_ServerNetworkLayerTCP(UA_ConnectionConfig_standard, 4841)),
     #else
-    m_server_config(nullptr),
+    m_server_config(nullptr, &UA_ServerConfig_delete),
     #endif
     m_server(0)
 {
@@ -27,15 +27,7 @@ OpcServer::OpcServer():
 
 /** Destruction. */
 OpcServer::~OpcServer()
-{
-    // UA_Server instance got deleted in stop()
-    #if UA_OPEN62541_VER_MINOR > 2
-    if (m_server_config)
-    {
-        UA_ServerConfig_delete (m_server_config);
-        m_server_config = nullptr;
-    }
-    #endif
+
 }
 
 int OpcServer::setServerConfig(const UaString& configurationFile, const UaString& applicationPath)
@@ -50,7 +42,7 @@ int OpcServer::setServerConfig(const UaString& configurationFile, const UaString
     m_server_config.networkLayers = &m_server_network_layer;
     m_server_config.networkLayersSize = 1;
     #else
-    m_server_config = UA_ServerConfig_new_minimal(4841, /*certificate*/ nullptr);
+    m_server_config.reset( UA_ServerConfig_new_minimal(4841, /*certificate*/ nullptr) );
     #endif
 
 
@@ -74,7 +66,7 @@ int OpcServer::createCertificate ()
 
 int OpcServer::start()
 {
-    m_server = UA_Server_new(m_server_config);
+    m_server = UA_Server_new(m_server_config.get());
     if (!m_server)
         throw_runtime_error_with_origin("UA_Server_new failed");
     m_nodemanager->linkServer(m_server);
