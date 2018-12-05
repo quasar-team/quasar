@@ -27,7 +27,7 @@ OpcServer::OpcServer():
 
 /** Destruction. */
 OpcServer::~OpcServer()
-
+{
 }
 
 int OpcServer::setServerConfig(const UaString& configurationFile, const UaString& applicationPath)
