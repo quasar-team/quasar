@@ -176,6 +176,11 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:with-param name="configuration">config</xsl:with-param>
 		</xsl:call-template>
 		</xsl:for-each>
+
+        for ( const Configuration::CalculatedVariable &amp; item : config.CalculatedVariable() )
+        {
+            Engine::instantiateCalculatedVariable (nm, asItem->nodeId(), item);   
+        }
 		
 		<xsl:if test="fnc:classHasDeviceLogic(/,$class)='true'">
 		return dItem;
@@ -198,10 +203,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	#include &lt;Configurator.h&gt;
 	#include &lt;Configuration.hxx&gt;
+    
+    #include &lt;CalculatedVariablesEngine.h&gt;
 
 	#include &lt;meta.h&gt;
 
 	#include &lt;LogIt.h&gt;
+    
+    using namespace CalculatedVariables;
 	
 <!-- *************************************************** -->
 <!-- HEADERS OF ALL DECLARED CLASSES ******************* -->
@@ -306,6 +315,12 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	}
 	</xsl:for-each>
 	</xsl:for-each>
+    
+    for ( const Configuration::CalculatedVariable &amp; item : theConfiguration-&gt;CalculatedVariable() )
+    {
+            Engine::instantiateCalculatedVariable (nm, rootNode, item);   
+    }
+    
 	return true;
 }
 

@@ -93,7 +93,7 @@ endforeach(moduleFile)
 # end quasar modules
 #
 
-set(NATIVE_SERVER_MODULES AddressSpace Configuration Common Server Device Meta LogIt)
+set(NATIVE_SERVER_MODULES AddressSpace Configuration Common Server Device Meta LogIt CalculatedVariables)
 set(SERVER_MODULES ${NATIVE_SERVER_MODULES} ${OPTIONAL_SERVER_MODULES} ${CUSTOM_SERVER_MODULES})
 set(OPTIONAL_MODULES_INCLUDES)
 set(MODULES_OBJECTS)

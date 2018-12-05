@@ -22,13 +22,13 @@
 #ifndef ASDELEGATINGVARIABLE_H_
 #define ASDELEGATINGVARIABLE_H_
 
-#include <opcua_basedatavariabletype.h>
+#include <ChangeNotifyingVariable.h>
 
 namespace AddressSpace
 {
 
 template<typename ObjectType>
-class ASDelegatingVariable: public OpcUa::BaseDataVariableType
+class ASDelegatingVariable: public ChangeNotifyingVariable
 
 {
 public:
@@ -41,7 +41,7 @@ public:
 	        OpcUa_Byte         accessLevel,
 	        NodeManagerConfig* pNodeConfig,
 	        UaMutexRefCounted* pSharedMutex = NULL):
-	        	OpcUa::BaseDataVariableType (nodeId, name, browseNameNameSpaceIndex, initialValue, accessLevel, pNodeConfig, pSharedMutex),
+	        	ChangeNotifyingVariable (nodeId, name, browseNameNameSpaceIndex, initialValue, accessLevel, pNodeConfig, pSharedMutex),
 	        	m_write(0),
 	        	m_object(0) {}
 	virtual ~ASDelegatingVariable () {};
@@ -50,16 +50,14 @@ public:
 	{
 		if (m_object && m_write && pSession!=0)
 		{
-			// TODO Consider whether we should update cache after that or not?
 			UaStatus status =  (m_object->*m_write) (pSession, dataValue, checkAccessLevel);
 			if (status.isGood())
-				OpcUa::BaseDataVariableType::setValue (pSession, dataValue, checkAccessLevel);
+				ChangeNotifyingVariable::setValue (pSession, dataValue, checkAccessLevel);
 			return status;
 		}
 		else
 		{
-			//cout << "This variable is not delegated" << endl;
-			return BaseDataVariableType::setValue(pSession, dataValue, checkAccessLevel);
+			return ChangeNotifyingVariable::setValue(pSession, dataValue, checkAccessLevel);
 		}
 	}
 	UaStatus assignHandler (ObjectType* object, UaStatus (ObjectType::*method)(Session*, const UaDataValue&, OpcUa_Boolean))

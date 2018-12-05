@@ -65,7 +65,7 @@ m_<xsl:value-of select="@name"/> (new
 
 		<xsl:choose>
 		<xsl:when test="@addressSpaceWrite='delegated'">ASDelegatingVariable&lt;AS<xsl:value-of select="$className"/>&gt; </xsl:when>
-		<xsl:otherwise>OpcUa::BaseDataVariableType </xsl:otherwise>
+		<xsl:otherwise>ChangeNotifyingVariable</xsl:otherwise>
 		</xsl:choose>
 
 
@@ -262,6 +262,10 @@ if (!s.isGood())
 
 <xsl:if test="@addressSpaceWrite='delegated'">
 	m_<xsl:value-of select="@name"/>-&gt;assignHandler(this, &amp;<xsl:value-of select="fnc:ASClassName($className)"/>::<xsl:value-of select="fnc:delegateWriteName(@name)"/>);
+</xsl:if>
+
+<xsl:if test="fnc:isQuasarDataTypeNumeric(@dataType)='true' and not(d:array)">
+    CalculatedVariables::Engine::registerVariableForCalculatedVariables( m_<xsl:value-of select="@name"/> );
 </xsl:if>
 
 </xsl:for-each>
@@ -842,6 +846,8 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	
 	#include &lt;ArrayTools.h&gt;
 	#include &lt;Utils.h&gt;
+    #include &lt;ChangeNotifyingVariable.h&gt;
+    #include &lt;CalculatedVariablesEngine.h&gt;
 
     #include &lt;SourceVariables.h&gt;
 	

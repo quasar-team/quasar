@@ -1,0 +1,14 @@
+{
+	"project": "muParser-header.h",
+	"target": "../muparser-amalgamated/include/muParser.h",
+	"sources": [
+	    "muParser.h",
+	    "muParserInt.h",
+	    "muParserTest.h",
+	    "muParserDLL.h"
+	],
+    "include_paths": [
+	"."
+	]
+}
+

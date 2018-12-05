@@ -185,7 +185,7 @@ private:
 		<xsl:for-each select="child::d:cachevariable">
 		<xsl:choose>
 		<xsl:when test="@addressSpaceWrite='delegated'">ASDelegatingVariable&lt;AS<xsl:value-of select="$className"/>&gt; </xsl:when>
-		<xsl:otherwise>OpcUa::BaseDataVariableType </xsl:otherwise>
+		<xsl:otherwise>ChangeNotifyingVariable </xsl:otherwise>
 		</xsl:choose>
 		* m_<xsl:value-of select="@name" />;
 		</xsl:for-each>
@@ -234,6 +234,8 @@ private:
 
 
 #include &lt;ASSourceVariable.h&gt;
+
+#include &lt;ChangeNotifyingVariable.h&gt;
 
 	<xsl:for-each select="/d:design/d:class[@name=$className]">
 	<xsl:call-template name="classHeader"/>

@@ -41,6 +41,7 @@ add_library (AddressSpace OBJECT
     src/ASSourceVariableIoManager.cpp
     src/SourceVariables.cpp
     src/ArrayTools.cpp
+    src/ChangeNotifyingVariable.cpp
     ${ADDRESSSPACE_CLASSES}
 
 	)

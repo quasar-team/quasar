@@ -58,6 +58,7 @@
 #include <boost/thread/thread.hpp> 
 
 #include <MetaBuildInfo.h>
+#include <CalculatedVariablesEngine.h>
 
 using namespace std;
 using namespace boost::program_options;
@@ -146,6 +147,7 @@ int BaseQuasarServer::serverRun(
             serverStartFailLogError(startServerReturn, m_pServer->getLogFilePath());
             return startServerReturn;
         }
+
         mainLoop();
     }
     catch (const std::exception &e)
@@ -280,12 +282,13 @@ int BaseQuasarServer::initializeEnvironment()
     const int ret = 0;
 #endif    
     initializeLogIt();
+    CalculatedVariables::Engine::initialize();
     return ret;
 }
 void BaseQuasarServer::initializeLogIt()
 {
     Log::initializeLogging();
-    LOG(Log::ERR) << "Testing logging ";
+    Log::registerLoggingComponent("CalcVars", Log::INF);
 }
 void BaseQuasarServer::mainLoop()
 {
@@ -340,7 +343,10 @@ UaStatus BaseQuasarServer::configurationInitializerHandler(const std::string& co
     if (!overridableConfigure(configFileName, nm))
         return OpcUa_Bad; // error is already printed in configure()
     validateDeviceTree();
-
+    CalculatedVariables::Engine::printInstantiationStatistics();
+    CalculatedVariables::Engine::optimize();
+    CalculatedVariables::Engine::setupSynchronization();
+    CalculatedVariables::Engine::printInstantiationStatistics();
     initialize();
     return OpcUa_Good;
 }

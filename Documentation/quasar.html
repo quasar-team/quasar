@@ -14,6 +14,7 @@
     <p>The <span style="color: #225498;font-size:150%;"><strong>q</strong></span>uick
 
 
+
       opc<span style="color: #225498;font-size:150%;"><strong>ua</strong>
         <strong>s</strong></span>erver gener<span style="color:
         #225498;font-size:150%;"><strong>a</strong></span>tion f<span
@@ -45,7 +46,8 @@
       </ul>
       <li>Piotr Nikiel (piotr.nikiel@cern.ch, piotr@nikiel.info):</li>
       <ul>
-        <li>Framework's concept and architecture</li>
+        <li>Framework's concept and architecture and code-generation<br>
+        </li>
         <li>Address Space, Device and Configuration generation (XSLTs,
           design files, scripts)</li>
         <li>CMake-based build system</li>
@@ -54,7 +56,8 @@
         <li>Documentation and screencasts</li>
         <li>Build configurations for Raspberry Pi, Zynq and MSVC10 on
           Wine</li>
-        <li>Yocto compatibility<br>
+        <li>Yocto and PetaLinux</li>
+        <li>CalculatedVariables<br>
         </li>
       </ul>
       <li>Stefan Schlenker (stefan.schlenker@cern.ch)</li>
@@ -243,15 +246,22 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
     modules from git and their required quasar versions.<br>
     <tt>./quasar.py list_enabled_modules</tt> List all modules enabled
     in the project and their versions.<br>
-
-    <h2>Logging</h2>
-    Logging in quasar servers is provided via the <a href="https://github.com/quasar-team/LogIt">LogIt</a> module.
     <br>
+    <h2>Calculated Variables</h2>
+    <p><a
+href="../CalculatedVariables/doc/CalculatedVariables.htmlCalculatedVariables.html">Developer
+        documentation of Calculated Variables</a><br>
+    </p>
+    <h2>Logging</h2>
+    Logging in quasar servers is provided via the <a
+      href="https://github.com/quasar-team/LogIt">LogIt</a> module. <br>
     <ul>
-      <li>Quasar specific documentation, targeted at quasar developers and quasar framework maintainers can be found <a href="LogIt.html">here</a></li>
-      <li>Generic LogIt documentation can be found <a href="https://github.com/quasar-team/LogIt">here</a></li>
+      <li>Quasar specific documentation, targeted at quasar developers
+        and quasar framework maintainers can be found <a
+          href="LogIt.html">here</a></li>
+      <li>Generic LogIt documentation can be found <a
+          href="https://github.com/quasar-team/LogIt">here</a></li>
     </ul>
-
     <h2>FAQ</h2>
     <ol>
       <li>How to build an executable with<span style="font-weight:
@@ -407,6 +417,7 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
         a static configuration.<br>
         This is also documented here: <a
           href="UserDefinedRuntimeConfigurationModification.html#persist">User
+
 
 
           Defined Runtime Configuration</a> <br>
