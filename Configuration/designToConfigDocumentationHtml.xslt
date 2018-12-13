@@ -3,8 +3,9 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 xmlns:d="http://cern.ch/quasar/Design"
-xmlns:fnc="http://cern.ch/quasar/Functions"
+xmlns:fnc="http://cern.ch/quasar/MyFunctions"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
+<xsl:include href="../Design/CommonFunctions.xslt" />
     <xsl:output indent="yes" method="xml"/>
     
     <xsl:function name="fnc:boundRestrictionTypeToSymbol">
@@ -27,11 +28,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     
     Jump to:
     <xsl:for-each select="/d:design/d:class">
-    <a href="#class_{@name}"><xsl:value-of select="@name"/></a><xsl:text> </xsl:text>
+        <xsl:if test="fnc:getCountParentClassesAndRootUsingConfiguration(/, @name)>=1">
+            <a href="#class_{@name}"><xsl:value-of select="@name"/></a><xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:for-each>
     
     <xsl:for-each select="/d:design/d:class">
     <xsl:sort select="@name"/>
+    <xsl:if test="fnc:getCountParentClassesAndRootUsingConfiguration(/, @name)>=1">
     <a id="class_{@name}"><h2><xsl:value-of select="@name"/></h2></a>
     <xsl:if test="d:documentation">
         <div style="background-color:#eeeeff"><font color="blue">DOC</font><xsl:text> </xsl:text>
@@ -91,14 +95,23 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     </xsl:choose>
     
     Possible children:
+    <a href="#class_CalculatedVariable">CalculatedVariable</a>
     <xsl:for-each select="d:hasobjects[@instantiateUsing='configuration']">
     <a href="#class_{@class}"><xsl:value-of select="@class"/></a>
     </xsl:for-each>
-    
+    </xsl:if>
     </xsl:for-each>
 
-
-    
+    <a id="class_CalculatedVariable"><h2>CalculatedVariable</h2></a>
+    A CalculatedVariable is a "synthetic" variable which is based on other "real" variables of the address-space.
+    You can declare a CalculatedVariable under any object in the configuration file.
+    The required attributes are:
+    <ul>
+        <li>name - will be the last part of the address</li>
+        <li>value - analytical formula used to calculate value of the variable. 
+        E.g. to calculate square of another variable with address x.y you should put <code>x.y^2</code></li>
+    </ul>
+    Detailed documentation of all features of CalculatedVariables is available in quasar Documentation.
     
     </html>
     

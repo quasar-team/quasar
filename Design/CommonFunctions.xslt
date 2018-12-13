@@ -145,6 +145,13 @@ ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select=
 <xsl:value-of select="count($xmlRoot/d:design/d:class/d:hasobjects[@class=$className])+count($xmlRoot/d:design/d:root/d:hasobjects[@class=$className])"/>
 </xsl:function>
 
+<!-- Like fnc:getCountParentClassesAndRoot but only with configuration-based instantiation -->
+<xsl:function name="fnc:getCountParentClassesAndRootUsingConfiguration">
+<xsl:param name="xmlRoot"/>
+<xsl:param name="className"/>
+<xsl:value-of select="count($xmlRoot/d:design/d:class/d:hasobjects[@class=$className and @instantiateUsing='configuration'])+count($xmlRoot/d:design/d:root/d:hasobjects[@class=$className and @instantiateUsing='configuration'])"/>
+</xsl:function>
+
 <!--  Get parent type name for given class. This only makes sense if value of getCountParentClassesAndRoot for this class is 1 -->
 <xsl:function name="fnc:getParentClass">
 	<xsl:param name="xmlRoot"/>
