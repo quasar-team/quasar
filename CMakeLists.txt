@@ -148,12 +148,6 @@ add_executable ( ${EXECUTABLE}
 	)
 set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
 
-if(BUILD_SERVER_SHARED_LIB)
-        set( SERVER_SHARED_LIB_TARGET "${EXECUTABLE}Object" )
-        add_library ( ${SERVER_SHARED_LIB_TARGET} SHARED ${MODULES_OBJECTS} )
-        set_target_properties( ${SERVER_SHARED_LIB_TARGET} PROPERTIES LIBRARY_OUTPUT_DIRECTORY bin/ )
-endif(BUILD_SERVER_SHARED_LIB)
-
 set(TARGET_LIBS
         ${BOOST_LIBS}
         ${XML_LIBS}
@@ -165,7 +159,10 @@ set(TARGET_LIBS
 target_link_libraries ( ${EXECUTABLE} ${TARGET_LIBS} )
 
 if(BUILD_SERVER_SHARED_LIB)
-        target_link_libraries( ${SERVER_SHARED_LIB_TARGET} ${TARGET_LIBS})
+        set( SERVER_SHARED_LIB_TARGET "${EXECUTABLE}Object" )
+        add_library ( ${SERVER_SHARED_LIB_TARGET} SHARED ${MODULES_OBJECTS} )
+        set_target_properties( ${SERVER_SHARED_LIB_TARGET} PROPERTIES LIBRARY_OUTPUT_DIRECTORY bin/ )
+	target_link_libraries( ${SERVER_SHARED_LIB_TARGET} ${TARGET_LIBS})
 endif(BUILD_SERVER_SHARED_LIB)
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/CMakeEpilogue.cmake)
