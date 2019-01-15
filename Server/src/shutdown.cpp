@@ -1,4 +1,3 @@
-//#ifndef BACKEND_OPEN62541
 /******************************************************************************
 ** Copyright (C) 2006-2011 Unified Automation GmbH. All Rights Reserved.
 ** Web: http://www.unifiedautomation.com
@@ -14,10 +13,6 @@
 ******************************************************************************/
 #include "shutdown.h"
 
-#ifndef BACKEND_OPEN62541
-#include "uaplatformlayer.h"
-#endif
-
 #include <stdio.h>
 #include <string.h>
 
@@ -28,11 +23,7 @@
 #  include <windows.h>
 # endif
 
-volatile unsigned int  g_ShutDown = 0;
-
-#ifdef BACKEND_OPEN62541
-UA_Boolean g_RunningFlag = 1;
-#endif
+OpcUa_Boolean g_RunningFlag = 1;
 
 
 #ifdef _WIN32_WCE
@@ -53,8 +44,13 @@ unsigned int ShutDownFlag()
     else return 0;
   #endif
 #else
-    return g_ShutDown;
+    return !g_RunningFlag;
 #endif
+}
+
+void ShutDown()
+{
+    g_RunningFlag = OpcUa_False;
 }
 
 /****************************************
@@ -67,10 +63,7 @@ unsigned int ShutDownFlag()
 void sig_int(int signo)
 {
     SHUTDOWN_TRACE("Received SIG_INT(%i) signal.\n", signo);
-    g_ShutDown = 1;
-    #ifdef BACKEND_OPEN62541
-    g_RunningFlag = 0;
-    #endif
+    ShutDown();
 }
 
 void RegisterSignalHandler()
@@ -183,4 +176,3 @@ char* getAppPath()
 
     return pszAppPath;
 }
-// #endif // BACKEND_OPEN62541

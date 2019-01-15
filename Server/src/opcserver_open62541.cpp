@@ -88,7 +88,7 @@ int OpcServer::stop(OpcUa_Int32 secondsTillShutdown, const UaLocalizedText& shut
 
 void OpcServer::runThread()
 {
-    UA_StatusCode retval = UA_Server_run(m_server, &g_RunningFlag);
+    UA_Server_run(m_server, &g_RunningFlag);
 }
 
 #endif //  BACKEND_OPEN62541

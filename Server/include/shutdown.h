@@ -16,6 +16,8 @@
 #ifndef __SHUTDOWN_H__
 #define __SHUTDOWN_H__
 
+#include <uavariant.h>
+
 #ifdef _WIN32
 #  ifdef _WIN32_WCE
 /* Windows CE */
@@ -49,13 +51,17 @@
 /* Call this on startup. */
 void RegisterSignalHandler();
 
-/* Use this to check if the shutdown flag is set. */
+/* Use this to check if the shutdown flag is set (i.e. the server should exit its 'main' loop and quit). */
 unsigned int ShutDownFlag();
 
-#ifdef BACKEND_OPEN62541
-#include <open62541.h>
-extern  UA_Boolean g_RunningFlag;
-#endif
+/* Call to make server shut down. Not relevant for 'ordinary' servers but required when a server is embedded
+ * into a Python process or so.
+ */
+void ShutDown();
+
+//! Need to keep it extern for usgae in opcserver_open62541.cpp, for instance.
+extern OpcUa_Boolean g_RunningFlag;
+
 
 /* Use this to get the application path created with new. Delete returned char array if not NULL. */
 char* getAppPath();
