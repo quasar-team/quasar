@@ -51,6 +51,10 @@ public:
     //Starts application. Parses command line arguments and then calls serverRun
     int startApplication(int argc, char *argv[]);
 
+    /** Enables to query nodes (AS objects) via external interfaces (e.g. if server is embedded in Python)
+    const-method here would be more appropriate (works for open6-compat) but UASDK has design flaw that getNode() is non-const */
+    AddressSpace::ASNodeManager* getNodeManager() { return m_nodeManager; }
+
 protected:
     //Reference to the OPC UA Server internal implementation    
     OpcServer* m_pServer;
