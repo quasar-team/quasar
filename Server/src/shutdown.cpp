@@ -23,7 +23,7 @@
 #  include <windows.h>
 # endif
 
-OpcUa_Boolean g_RunningFlag = 1;
+volatile OpcUa_Boolean g_RunningFlag = OpcUa_True;
 
 
 #ifdef _WIN32_WCE
