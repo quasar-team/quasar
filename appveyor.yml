@@ -74,7 +74,7 @@ install:
   # python libraries
   - ps : Write-Output "Installing python packages..."
   - ps : python -m pip install --upgrade pip
-  - ps : python -m pip install lxml==3.6.0 # specific version is important, THIS LINE IS BREAKING THE BUILD
+  - ps : python -W ignore -m pip install lxml==3.6.0 # specific version is important, THIS LINE IS BREAKING THE BUILD
   - ps : python -m pip install pygit2
   - ps : python -m pip install enum34
   - ps : Write-Output "Installed python packages"
