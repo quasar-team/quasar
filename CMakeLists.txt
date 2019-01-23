@@ -42,14 +42,7 @@ include( ProjectSettings.cmake )
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
-
-
 include_directories (
-	${OPCUA_TOOLKIT_PATH}/include/uastack
-	${OPCUA_TOOLKIT_PATH}/include/uabase
- 	${OPCUA_TOOLKIT_PATH}/include/uaserver
-	${OPCUA_TOOLKIT_PATH}/include/xmlparser
-	${OPCUA_TOOLKIT_PATH}/include/uapki
 	${BOOST_PATH_HEADERS}
 	${PROJECT_BINARY_DIR}/Device/generated
 	${PROJECT_SOURCE_DIR}/Configuration  # this is to cover Configurator.h
