@@ -14,13 +14,8 @@ using namespace std;
 
 OpcServer::OpcServer():
     m_nodemanager(0),
-    #if UA_OPEN62541_VER_MINOR == 2
-    m_server_config(UA_ServerConfig_standard),
-    m_server_network_layer(UA_ServerNetworkLayerTCP(UA_ConnectionConfig_standard, 4841)),
-    #else
     m_server_config(nullptr, &UA_ServerConfig_delete),
-    #endif
-    m_server(0)
+    m_server(nullptr)
 {
     //NOTE: UA_Server created later because it needs configuration (which is supplied later)
 }
@@ -36,16 +31,7 @@ int OpcServer::setServerConfig(const UaString& configurationFile, const UaString
     // NOTE: some basid settings are configured in ctr init list
     // TODO: XML config reading
 
-    #if UA_OPEN62541_VER_MINOR == 2
-    m_server_config = UA_ServerConfig_standard;
-    m_server_network_layer = UA_ServerNetworkLayerTCP(UA_ConnectionConfig_standard, 4841);
-    m_server_config.networkLayers = &m_server_network_layer;
-    m_server_config.networkLayersSize = 1;
-    #else
     m_server_config.reset( UA_ServerConfig_new_minimal(4841, /*certificate*/ nullptr) );
-    #endif
-
-
     return 0;
 }
 
