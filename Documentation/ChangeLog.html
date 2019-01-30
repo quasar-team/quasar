@@ -41,9 +41,11 @@
 
 
 
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
 
 
 
@@ -91,7 +93,29 @@
 
 
 
+
               Release notes</strong><br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">1.3.4<br>
+          </td>
+          <td valign="top"><br>
+          </td>
+          <td valign="top">If you UA SDK, please update your build
+            config files. You should add the following includes:<br>
+            <br>
+            include_directories (<br>
+            ${OPCUA_TOOLKIT_PATH}/include/uastack<br>
+            ${OPCUA_TOOLKIT_PATH}/include/uabase<br>
+            ${OPCUA_TOOLKIT_PATH}/include/uaserver<br>
+            ${OPCUA_TOOLKIT_PATH}/include/xmlparser<br>
+            ${OPCUA_TOOLKIT_PATH}/include/uapki<br>
+            )<br>
+            <br>
+            This is due to clean-up effort originating from OPCUA-1278.<br>
+          </td>
+          <td valign="top"><br>
           </td>
         </tr>
         <tr>
