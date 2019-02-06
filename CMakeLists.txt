@@ -37,10 +37,11 @@ else()
      message(FATAL_ERROR "Build configuration has not been chosen yet. Please run 'quasar.py set_build_config'")
 endif()
 
-# toolkit and boost link directories must be set BEFORE optional modules included (required for linking unit test binaries - i.e. built with googletest)
+# toolkit, boost and server link directories - specified in build_config 
 link_directories(
 	${OPCUA_TOOLKIT_PATH}/lib
 	${BOOST_PATH_LIBS}
+	${SERVER_LINK_DIRECTORIES}
 )
 
 include( ProjectSettings.cmake )
@@ -139,10 +140,6 @@ add_custom_target(dep ALL
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         ) 
 
-# add server link directories.
-link_directories(
-	${SERVER_LINK_DIRECTORIES}
-)
 add_executable ( ${EXECUTABLE}
 	${MODULES_OBJECTS}
 	)
