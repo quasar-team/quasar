@@ -87,14 +87,7 @@ def automatedBuild(context, buildType="Release"):
         if not buildType in ["Release","Debug"]:
                 raise Exception ("Only Release or Debug is accepted as the parameter. "
                                  "If you are used to passing build config through here, note this version of quasar has separate command to do that: build_config")
-	if os.path.isdir("./build"):
-		buildDirExists = True
-	else:
-		buildDirExists = False
 	generateCmake(context, buildType)
-	if buildDirExists == False:
-		print("Creating symlinks for xml files in the newly made build directory")
-		symlinkRuntimeDeps(context, '*.xml')
 
 	print("Calling build, type ["+buildType+"]...")
 	if platform.system() == "Windows":
