@@ -26,6 +26,7 @@ from transformDesign import TransformKeys, transformByKey
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
 from quasarExceptions import Mistake
+from manage_files import symlinkRuntimeDeps
 
 def generateCmake(context, buildType="Release"):
 	"""Generates CMake header lists in various directories, and then calls cmake.
@@ -39,15 +40,18 @@ def generateCmake(context, buildType="Release"):
 						  'that will prevent CMake to make a successful out-of-source build. '+
 						  'Remove CMakeCache.txt (or attempt "quasar.py clean" and retry') 
 		
-		
-	transformByKey(TransformKeys.AS_CMAKE, {'context':context})
-	transformByKey(TransformKeys.D_CMAKE, {'context':context})
-	print("Build type ["+buildType+"]")
 	projectSourceDir = context['projectSourceDir']
 	projectBinaryDir = context['projectBinaryDir']
 	if not os.path.isdir(projectBinaryDir):
 		print("PROJECT_BINARY_DIR {0} doesn't exist -- creating it.".format(projectBinaryDir))
 		os.mkdir(projectBinaryDir)
+		os.mkdir(os.path.join(projectBinaryDir, "bin"))
+		print("Creating symlinks for xml files in the build directory")
+		symlinkRuntimeDeps(context, '*.xml')
+	
+	transformByKey(TransformKeys.AS_CMAKE, {'context':context})
+	transformByKey(TransformKeys.D_CMAKE, {'context':context})
+	print("Build type ["+buildType+"]")
 	os.chdir(projectBinaryDir)
 
 	print("Calling CMake")
