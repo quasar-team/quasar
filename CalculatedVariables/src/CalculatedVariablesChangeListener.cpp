@@ -45,6 +45,13 @@ void CalculatedVariables::ChangeListener::operator ()(
     else if (newValue.value())
     {
         UaVariant variant (*newValue.value());
+        if (variant.isEmpty())
+        {
+            LOG(Log::DBG, logComponentId) << "Variant empty, probably storing NULL.";
+            m_variable.setValue(0, ParserVariable::State::Bad);
+        }
+        else
+        {
         OpcUa_Double value;
         if (variant.toDouble(value) == OpcUa_Good)
             {
@@ -55,6 +62,7 @@ void CalculatedVariables::ChangeListener::operator ()(
         {
                 LOG(Log::WRN, logComponentId) << "didnt manage to convert the value to double";
                 m_variable.setValue(0, ParserVariable::State::Bad);
+            }
         }
     }
     else
