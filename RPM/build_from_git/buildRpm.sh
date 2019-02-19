@@ -6,26 +6,40 @@
 
 rm -Rf checkout
 
+VERSION_STR="Built by quasar RPM builder for git, args given: $1 $2"
 
 REPO_PATH=github.com/.....   # Here you put your repo path
 
-
-VERSION_STR=  # Leave this empty
-
-if [ $# -ne 1 ]; then
+if [ $# -ne 2 ]; then
 	echo "Usage: "
-	echo "./buildRpm.sh <commit_id/tag/branch_id>"
+	echo "./buildRpm.sh --tag <tag name only numbers eg 1.2.3-4 >"
+	echo "or"
+	echo "./buildRpm.sh --branch <git branch>"
+	echo "Note: building from branches is only for development, because it is not uniquely identifiable. For distribution and production always build from tag."
 	exit -1
-
+elif [ $1 = "--tag" ]; then
+	echo "Building from tag: $2"
+	TAG=$2
+	TAG_ARRAY=(${TAG//-/ })
+	RPM_VERSION=${TAG_ARRAY[0]}
+	RPM_RELEASE=${TAG_ARRAY[1]}
+elif [ $1 = "--branch" ]; then
+	echo "Building from branch: $2"
+	RPM_VERSION=$2
+	RPM_RELEASE=0
+else
+	echo "--tag or --branch only allowed"
 fi
-RPM_VERSION=$1
-RPM_RELEASE=0
+
+if [ -z "$RPM_RELEASE" ]; then
+    RPM_RELEASE="0"
+fi 
+
 VERSION_ADDITIONAL="\nBuilt by: $USER on `date` on $HOSTNAME arch=`arch` "
 VERSION_STR="$VERSION_STR $VERSION_ADDITIONAL"
 
-git clone  $REPO_PATH checkout
+git clone $REPO_PATH --depth 1 -b $2  checkout
 cd checkout
-git checkout $1
 if [ $? -ne 0 ]; then
   exit 1
 fi
