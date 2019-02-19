@@ -38,9 +38,8 @@ fi
 VERSION_ADDITIONAL="\nBuilt by: $USER on `date` on $HOSTNAME arch=`arch` "
 VERSION_STR="$VERSION_STR $VERSION_ADDITIONAL"
 
-git clone  $REPO_PATH checkout
+git clone $REPO_PATH --depth 1 -b $2  checkout
 cd checkout
-git checkout $2
 if [ $? -ne 0 ]; then
   exit 1
 fi
