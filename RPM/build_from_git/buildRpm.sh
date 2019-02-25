@@ -24,8 +24,8 @@ elif [ $1 = "--tag" ]; then
 	RPM_VERSION=${TAG_ARRAY[0]}
 	RPM_RELEASE=${TAG_ARRAY[1]}
 elif [ $1 = "--branch" ]; then
-	echo "Building from branch: $2"
-	RPM_VERSION=$2
+        echo "Building from branch: $2"
+    	RPM_VERSION=$( echo "$2" | tr - _)  # replace dashes with undescrores (dashes are illegal in RPM version numbers)
 	RPM_RELEASE=0
 else
 	echo "--tag or --branch only allowed"
