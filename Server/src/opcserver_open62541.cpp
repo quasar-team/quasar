@@ -63,6 +63,8 @@ int OpcServer::start()
         LOG(Log::ERR) << "UA_Server_run_startup returned not-good, server can't start. Error was:" << UaStatus(status).toString().toUtf8();
         return -1;
     }
+    else
+        LOG(Log::INF) << "UA_Server_run_startup returned: " << UaStatus(status).toString().toUtf8() << ", continuing.";
     m_open62541_server_thread = boost::thread ( &OpcServer::runThread, this );
     return 0;
 
@@ -88,8 +90,10 @@ void OpcServer::runThread()
     UA_StatusCode status = UA_Server_run_shutdown(m_server);
     if (status != UA_STATUSCODE_GOOD)
     {
-        LOG(Log::ERR) << "UA_Server_run_shuttdown returned not-good. Error was:" << UaStatus(status).toString().toUtf8();
+        LOG(Log::ERR) << "UA_Server_run_shutdown returned not-good. Error was:" << UaStatus(status).toString().toUtf8();
     }
+    else
+        LOG(Log::INF) << "UA_Server_run_shutdown returned: " << UaStatus(status).toString().toUtf8();
 }
 
 #endif //  BACKEND_OPEN62541
