@@ -57,6 +57,14 @@ int OpcServer::start()
         throw_runtime_error_with_origin("UA_Server_new failed");
     m_nodemanager->linkServer(m_server);
     m_nodemanager->afterStartUp();
+    UA_StatusCode status = UA_Server_run_startup(m_server);
+    if (status != UA_STATUSCODE_GOOD)
+    {
+        LOG(Log::ERR) << "UA_Server_run_startup returned not-good, server can't start. Error was:" << UaStatus(status).toString().toUtf8();
+        return -1;
+    }
+    else
+        LOG(Log::INF) << "UA_Server_run_startup returned: " << UaStatus(status).toString().toUtf8() << ", continuing.";
     m_open62541_server_thread = boost::thread ( &OpcServer::runThread, this );
     return 0;
 
@@ -64,6 +72,7 @@ int OpcServer::start()
 
 int OpcServer::stop(OpcUa_Int32 secondsTillShutdown, const UaLocalizedText& shutdownReason)
 {
+    m_open62541_server_thread.join();
     delete m_nodemanager;
     m_nodemanager = 0;
     UA_Server_delete(m_server);
@@ -74,7 +83,17 @@ int OpcServer::stop(OpcUa_Int32 secondsTillShutdown, const UaLocalizedText& shut
 
 void OpcServer::runThread()
 {
-    UA_Server_run(m_server, &g_RunningFlag);
+    while (g_RunningFlag)
+    {
+        UA_Server_run_iterate(m_server, true);
+    }
+    UA_StatusCode status = UA_Server_run_shutdown(m_server);
+    if (status != UA_STATUSCODE_GOOD)
+    {
+        LOG(Log::ERR) << "UA_Server_run_shutdown returned not-good. Error was:" << UaStatus(status).toString().toUtf8();
+    }
+    else
+        LOG(Log::INF) << "UA_Server_run_shutdown returned: " << UaStatus(status).toString().toUtf8();
 }
 
 #endif //  BACKEND_OPEN62541
