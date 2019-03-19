@@ -174,7 +174,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			{
 				<xsl:choose>
 				<xsl:when test="@dataType='UaString'">
-				m_variant = value;
+				value = m_variant.toString();
 				</xsl:when>
 				<xsl:otherwise>
 				m_variant.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/> ( value );
@@ -260,7 +260,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			OpcUa_UInt32 m_hTransaction;
 			OpcUa_UInt32 m_callbackHandle;
 			const UaNode* m_parentObjectNode;
-			OpcUa_WriteValue* m_writeValue;
 			UaVariant m_variant;
 	};
 	
