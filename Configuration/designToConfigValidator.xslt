@@ -57,7 +57,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	    <xsl:if test="@maxOccurs">
 	    if ( size &gt; <xsl:value-of select="@maxOccurs"/>  )
 		{
-			throw std::runtime_error ("Configuration error: <xsl:value-of select="$containingClass"/> should have no more than <xsl:value-of select="@minOccurs"/><xsl:text> </xsl:text><xsl:value-of select="@class"/>, but it has "+Utils::toString(size) + " (for "+object-&gt;getFullName()+")");
+			throw std::runtime_error ("Configuration error: <xsl:value-of select="$containingClass"/> should have no more than <xsl:value-of select="@maxOccurs"/><xsl:text> </xsl:text><xsl:value-of select="@class"/>, but it has "+Utils::toString(size) + " (for "+object-&gt;getFullName()+")");
 		}
 	    </xsl:if>
 	    
