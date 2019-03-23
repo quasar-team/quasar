@@ -221,6 +221,9 @@ UaVariant v;
 			UaVariant v;
 			<xsl:value-of select="fnc:convertVectorToUaVariant('vect', 'v', @dataType)"/>
 			m_<xsl:value-of select="@name"/>-&gt;setValueRank( 1 );
+            UaUInt32Array arrayDimensions;
+            arrayDimensions.create(1);
+            m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions(arrayDimensions);
 			m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId(<xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0) );
 			m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);			
 
