@@ -162,7 +162,7 @@ def enableModule(moduleName, tag="master", serverString=""):
 		return False
 	moduleMinVersion = moduleInfo[moduleName]["minVersion"]
 	if parse_version(quasarVersion) >= parse_version(moduleMinVersion):
-		print "Module "+moduleName+" required version "+moduleMinVersion+" is compatible with installed quasar version "+quasarVersion
+		print "Module {0} tag {1} required version {2} is compatible with installed quasar version {3}".format(moduleName, tag, moduleMinVersion, quasarVersion)
 	else:
 		print "Cannot enable module "+moduleName+". Minimum required version "+moduleMinVersion+" is newer than installed quasar version "+quasarVersion
 		return False
