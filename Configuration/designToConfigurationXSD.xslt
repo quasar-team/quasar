@@ -105,7 +105,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	</xs:choice>
 	<!-- here we go through all the config entries and filter out the ones which are arrays. 
 	they become elements. -->
-	<xsl:for-each select="d:configentry | d:cachevariable">
+	<xsl:for-each select="d:configentry | d:cachevariable[@initializeWith='configuration']">
 		<xsl:if test="d:array">
 			<xsl:variable name="minimumSize">
 				<xsl:choose>
