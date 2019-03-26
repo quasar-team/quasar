@@ -196,7 +196,15 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<!-- we have a config entry scalar, which is an attribute -->
 			<xsl:element name="xs:attribute">
 			<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
-			<xsl:attribute name="use">required</xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="@defaultValue">
+                    <xsl:attribute name="use">optional</xsl:attribute>
+                    <xsl:attribute name="default"><xsl:value-of select="@defaultValue"/></xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="use">required</xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
             <xsl:if test="not(d:configRestriction)">
                 <xsl:attribute name="type"><xsl:value-of select="fnc:dataTypeToXsdType(@dataType)"/></xsl:attribute>
             </xsl:if>

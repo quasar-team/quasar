@@ -56,6 +56,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
                     <xsl:copy-of select="d:documentation"/>
                     </div>
                 </xsl:if>
+                <xsl:if test="@defaultValue">
+                    <div style="background-color: #efffef"><b>Default value:</b> <xsl:value-of select="@defaultValue"/></div>
+                </xsl:if>
                 <xsl:if test="d:configRestriction">
                     <div style="background-color: #ffefef"><font color="red">Value restrictions</font>
                     <xsl:if test="d:configRestriction/d:restrictionByPattern"><br/>Pattern: <code><xsl:value-of select="d:configRestriction/d:restrictionByPattern/@pattern"/></code></xsl:if>
