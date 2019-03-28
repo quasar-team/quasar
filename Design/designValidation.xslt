@@ -89,6 +89,16 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:with-param name="className"><xsl:value-of select="$className"/></xsl:with-param>
 		</xsl:call-template>
 	</xsl:for-each>
+    
+    <xsl:for-each select="d:configentry[@defaultValue]">
+        <xsl:if test="d:array">
+            <xsl:message terminate="yes">
+                ERROR (at class='<xsl:value-of select="$className"/>' configentry='<xsl:value-of select="@name"/>'):
+                defaultValue can not be used for array config-entries.
+            </xsl:message>
+        </xsl:if>
+    </xsl:for-each>
+    
 </xsl:template>
 
 

@@ -46,15 +46,23 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     
     <xsl:choose>
         <xsl:when test="d:configentry | d:cachevariable[@initializeWith='configuration']">
-        Configuration attributes (all mandatory):
+        Configuration attributes:
         <ul>
         <xsl:for-each select="d:configentry | d:cachevariable[@initializeWith='configuration']">
             <li>
                 <b><xsl:value-of select="@name"/></b> (<xsl:value-of select="@dataType"/>)
+                <xsl:choose>
+                    <xsl:when test="@defaultValue">optional (the default value shown below will be used if non-present)</xsl:when>
+                    <xsl:otherwise>mandatory</xsl:otherwise>
+                </xsl:choose>
+
                 <xsl:if test="d:documentation">
                     <div style="background-color:#eeeeff"><font color="blue">DOC</font><xsl:text> </xsl:text>
                     <xsl:copy-of select="d:documentation"/>
                     </div>
+                </xsl:if>
+                <xsl:if test="@defaultValue">
+                    <div style="background-color: #efffef"><b>Default value:</b> <xsl:value-of select="@defaultValue"/></div>
                 </xsl:if>
                 <xsl:if test="d:configRestriction">
                     <div style="background-color: #ffefef"><font color="red">Value restrictions</font>
