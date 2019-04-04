@@ -526,6 +526,7 @@ def symlinkIfNotExists(src, dst):
 			raise e		
 
 def symlinkRuntimeDeps(context, wildcard=None):
+	# for windows runtime deps are copied; this avoids requiring elevated privileges (windows symlink requires admin rights)
 	linkerFunction = copyIfNotExists if platform.system().lower() == 'windows' else symlinkIfNotExists
 	if wildcard is None:
 		yn = yes_or_no('No argument provided, will symlink ServerConfig.xml and all config*.xml files, OK?')
