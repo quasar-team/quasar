@@ -24,6 +24,7 @@ import errno
 try:
 	import sys
 	import os
+	import platform	
 	import os.path
 	import commands
 	import traceback
@@ -53,7 +54,9 @@ ask=False
 	
 def yes_or_no(question):
 	while True:
-		yn = raw_input(question+' type y or n; then enter   ')
+		print question+' type y or n; then enter   '
+		sys.stdout.flush()		
+		yn = raw_input()
 		if yn in ['y','n']:
 			return yn
 
@@ -494,7 +497,24 @@ def mfCheckSvnIgnore():
 def mfDesignVsDevice():
 	"""Checks if the device files are outdated (By comparing with design), and hence if they should be regenerated."""
 	design_vs_device(os.getcwd())
-    
+
+def copyIfNotExists(src, dst):
+	if not os.path.exists( os.path.dirname(dst) ):
+		print 'File [{0}] copy rejected - destination directory does not exist [{1}]'.format(os.path.basename(src), os.path.dirname(dst))
+		return
+
+	yepCopyFile = False
+	if not os.path.exists(dst):
+		yepCopyFile = True
+	else:
+		yepCopyFile = ( 'y' == yes_or_no('binary directory file [{0}] already exists, do you want to replace it with source directory file [{1}]? Contents *will* be overwritten.'.format(dst, src)) )
+
+	if yepCopyFile:
+		print 'Copying source directory file [{0}] to binary directory file {1}'.format(os.path.basename(src), dst)
+		shutil.copyfile(src, dst)
+	else:
+		print 'Skipped: copying source file [{0}]: copy rejected by user'.format(os.path.basename(src))
+
 def symlinkIfNotExists(src, dst):
 	try:
 		os.symlink(src, dst)
@@ -503,22 +523,23 @@ def symlinkIfNotExists(src, dst):
 		if e.errno == errno.EEXIST:
 			print 'Skipped {0} because: target already exists'.format(src)
 		else:
-			raise e
-	
-	
+			raise e		
+
 def symlinkRuntimeDeps(context, wildcard=None):
+	# for windows runtime deps are copied; this avoids requiring elevated privileges (windows symlink requires admin rights)
+	linkerFunction = copyIfNotExists if platform.system().lower() == 'windows' else symlinkIfNotExists
 	if wildcard is None:
 		yn = yes_or_no('No argument provided, will symlink ServerConfig.xml and all config*.xml files, OK?')
 		if yn == 'n':
 			return
-		symlinkIfNotExists(
+		linkerFunction(
 			os.path.join(context['projectSourceDir'], 'bin', 'ServerConfig.xml'),
 			os.path.join(context['projectBinaryDir'], 'bin', 'ServerConfig.xml')) 
 		config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', 'config*.xml'))
 		for config_file in config_files:
-			symlinkIfNotExists(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
+			linkerFunction(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
 	else:
 		config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', wildcard))
 		print 'Matched {0} files'.format(len(config_files))
 		for config_file in config_files:
-			symlinkIfNotExists(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
+			linkerFunction(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
