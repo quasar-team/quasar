@@ -174,7 +174,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			{
 				<xsl:choose>
 				<xsl:when test="@dataType='UaString'">
-				m_variant = value;
+				value = m_variant.toString();
 				</xsl:when>
 				<xsl:otherwise>
 				m_variant.<xsl:value-of select="fnc:dataTypeToVariantConverter(@dataType)"/> ( value );
@@ -260,7 +260,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			OpcUa_UInt32 m_hTransaction;
 			OpcUa_UInt32 m_callbackHandle;
 			const UaNode* m_parentObjectNode;
-			OpcUa_WriteValue* m_writeValue;
 			UaVariant m_variant;
 	};
 	
@@ -322,7 +321,7 @@ Quasar::ThreadPool* SourceVariables_getThreadPool () { return sourceVariableThre
 	{
 
 
-		<xsl:for-each select="/d:design/d:class">
+		<xsl:for-each select="/d:design/d:class[d:devicelogic]">
 		<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
 		<xsl:for-each select="d:sourcevariable">
 			<xsl:if test="@addressSpaceRead='asynchronous' or @addressSpaceRead='synchronous' ">
@@ -357,42 +356,52 @@ UaStatus SourceVariables_spawnIoJobRead (
 		<xsl:for-each select="/d:design/d:class">
 		<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
 		<xsl:for-each select="d:sourcevariable">
-			<xsl:if test="@addressSpaceRead='asynchronous' or @addressSpaceRead='synchronous'">
-			
-			case ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/>:
-			{
-				<xsl:choose>
-				<xsl:when test="@addressSpaceRead='asynchronous'">
-				IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> *job =
-				new IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> (
-				callback,
-				hTransaction,
-				callbackHandle,
-				parentNode
-				); 
-				UaStatus s = sourceVariableThreads-&gt;addJob (job);
-                if (!s.isGood())
-                {
-                    LOG(Log::ERR) &lt;&lt; "While addJob(): " &lt;&lt; s.toString().toUtf8();
-				}
+        case ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/>:
+            <xsl:choose>
+                <xsl:when test="fnc:classHasDeviceLogic(/,$className)!='true'">
+                    return OpcUa_BadNotImplemented; // because this class has no device logic
                 </xsl:when>
-				<xsl:when test="@addressSpaceRead='synchronous'">
-				IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> job (
-				callback,
-				hTransaction,
-				callbackHandle,
-				parentNode
-				); 
-				job.execute();
-				</xsl:when>
-				<xsl:otherwise>
-				<xsl:message terminate="yes">Something got wrong.</xsl:message>
-				</xsl:otherwise>
-				</xsl:choose>
-			}
-				return OpcUa_Good;
+                <xsl:otherwise>
+                    <xsl:if test="@addressSpaceRead='asynchronous' or @addressSpaceRead='synchronous'">      
+                        
+                        {
+                            <xsl:choose>
+                                <xsl:when test="@addressSpaceRead='asynchronous'">
+                                IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> *job =
+                                new IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> (
+                                callback,
+                                hTransaction,
+                                callbackHandle,
+                                parentNode
+                                ); 
+                                UaStatus s = sourceVariableThreads-&gt;addJob (job);
+                                if (!s.isGood())
+                                {
+                                    LOG(Log::ERR) &lt;&lt; "While addJob(): " &lt;&lt; s.toString().toUtf8();
+                                }
+                                return s;
+                                </xsl:when>
+                                <xsl:when test="@addressSpaceRead='synchronous'">
+                                IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> job (
+                                callback,
+                                hTransaction,
+                                callbackHandle,
+                                parentNode
+                                ); 
+                                job.execute();
+                                </xsl:when>
+                            <xsl:otherwise>
+                            <xsl:message terminate="yes">Something got wrong.</xsl:message>
+                            </xsl:otherwise>
+                            </xsl:choose>
+                        }
+                            return OpcUa_Good;
+            
+                        </xsl:if>
+                    
+                </xsl:otherwise>
+            </xsl:choose>
 
-			</xsl:if>
 		</xsl:for-each>
 		</xsl:for-each>
 					default:
@@ -416,49 +425,66 @@ UaStatus SourceVariables_spawnIoJobRead (
 		<xsl:for-each select="/d:design/d:class">
 		<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
 		<xsl:for-each select="d:sourcevariable">
-			<xsl:if test="@addressSpaceWrite='asynchronous' or @addressSpaceWrite='synchronous'">
+        
 			
+			<xsl:if test="@addressSpaceWrite!='forbidden'">
+          
 			case <xsl:value-of select="fnc:sourceVariableWriteJobId($className,@name)"/>:
-			{
-				<xsl:choose>
-				<xsl:when test="@addressSpaceWrite='asynchronous'">
-			
-				IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> *job =
-				new IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> (
-				callback,
-				hTransaction,
-				callbackHandle,
-				parentNode,
-				pWriteValue
-				); 
-				UaStatus s = sourceVariableThreads-&gt;addJob (job);
-                if (!s.isGood())
-                {
-                    LOG(Log::ERR) &lt;&lt; "While addJob(): " &lt;&lt; s.toString().toUtf8();
-                }
-				</xsl:when>
-				<xsl:when test="@addressSpaceWrite='synchronous'">
-				
-				IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> job (
-				callback,
-				hTransaction,
-				callbackHandle,
-				parentNode,
-				pWriteValue
-				); 
-				job.execute();
-				
-				</xsl:when>
-				<xsl:otherwise>
-				<xsl:message terminate="yes">Something got wrong.</xsl:message>
-				</xsl:otherwise>
-				</xsl:choose>
-				
-				
-			}
-				return OpcUa_Good;
+            <xsl:choose>
+                <xsl:when test="fnc:classHasDeviceLogic(/,$className)!='true'">
+                    return OpcUa_BadNotImplemented; // because this class has no device logic
+                </xsl:when>
 
-			</xsl:if>
+                <xsl:otherwise>
+                   {
+                    <xsl:if test="@addressSpaceWrite='asynchronous' or @addressSpaceWrite='synchronous'">
+                    <xsl:choose>
+                        <xsl:when test="@addressSpaceWrite='asynchronous'">
+                
+                        IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> *job =
+                        new IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> (
+                        callback,
+                        hTransaction,
+                        callbackHandle,
+                        parentNode,
+                        pWriteValue
+                        ); 
+                        UaStatus s = sourceVariableThreads-&gt;addJob (job);
+                        if (!s.isGood())
+                        {
+                            LOG(Log::ERR) &lt;&lt; "While addJob(): " &lt;&lt; s.toString().toUtf8();
+                        }
+                        return s;
+                        </xsl:when>
+                        <xsl:when test="@addressSpaceWrite='synchronous'">
+                        
+                        IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> job (
+                        callback,
+                        hTransaction,
+                        callbackHandle,
+                        parentNode,
+                        pWriteValue
+                        ); 
+                        job.execute();
+                        
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:message terminate="yes">Something got wrong.</xsl:message>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                
+                
+                   }
+                   return OpcUa_Good;
+
+            </xsl:if>
+                
+                </xsl:otherwise>
+            </xsl:choose>
+            
+            </xsl:if>
+			
+
 		</xsl:for-each>
 		</xsl:for-each>
 					default:
@@ -466,17 +492,7 @@ UaStatus SourceVariables_spawnIoJobRead (
 		}
 	}
 
-	<!-- Iterate for all sourcevariables -->
-	<xsl:for-each select="/d:design/d:class">
-	<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
-	<xsl:for-each select="d:sourcevariable">
-		<xsl:if test="@addressSpaceRead='asynchronous'">
-
-		</xsl:if>
-	</xsl:for-each>
-	</xsl:for-each>
-	
-	}
+    }
 
 	#endif // BACKEND_OPEN62541
 	

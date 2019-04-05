@@ -355,11 +355,10 @@ elementFormDefault="qualified">
             <element name="configRestriction" type="tns:ConfigRestriction" minOccurs="0" maxOccurs="1"></element>
         </all>
         <attribute name="name" type="tns:VariableName" use="required"></attribute>
-    	<attribute name="dataType" type="tns:ConfigEntryDataType"
-    		use="required">
-    	</attribute>
-    	<attribute name="isKey" type="boolean"></attribute>
-    	<attribute name="storedInDeviceObject" type="boolean" use="optional"></attribute>
+        <attribute name="dataType" type="tns:ConfigEntryDataType" use="required"></attribute>
+        <attribute name="isKey" type="boolean"></attribute>
+        <attribute name="storedInDeviceObject" type="boolean" use="optional"></attribute>
+        <attribute name="defaultValue" type="string" use="optional"></attribute>
     </complexType>
 
     <simpleType name="NullPolicy">

@@ -153,6 +153,14 @@ UaVariant v;
 	<xsl:if test="@nullPolicy='nullForbidden'">
 	m_<xsl:value-of select="@name"/>-&gt;setDataType(UaNodeId( <xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0 )); // assumption: BuiltInTypeId matches numeric address of the type in namespace0
 	</xsl:if>
+    <xsl:if test="d:array">
+        m_<xsl:value-of select="@name"/>-&gt;setValueRank( 1 );
+        {
+            UaUInt32Array arrayDimensions;
+            arrayDimensions.create(1);
+            m_<xsl:value-of select="@name"/>-&gt;setArrayDimensions(arrayDimensions);    
+        }
+    </xsl:if>
 <xsl:choose>
 	<xsl:when test="@initializeWith='valueAndStatus'">
 		<xsl:choose>
@@ -160,7 +168,7 @@ UaVariant v;
 			<xsl:if test="@initialValue">
 				<xsl:message terminate="yes">ERROR (at class=<xsl:value-of select="$className"/> variable=<xsl:value-of select="@name"/>): An array can't be initialized with initialValue initializer.</xsl:message>
 			</xsl:if>
-			m_<xsl:value-of select="@name"/>-&gt;setValueRank( 1 );
+			
 		</xsl:when>
 		<xsl:otherwise> <!-- not an array -->
 				<xsl:choose>
@@ -220,7 +228,6 @@ UaVariant v;
 			
 			UaVariant v;
 			<xsl:value-of select="fnc:convertVectorToUaVariant('vect', 'v', @dataType)"/>
-			m_<xsl:value-of select="@name"/>-&gt;setValueRank( 1 );
 			m_<xsl:value-of select="@name"/>-&gt;setDataType( UaNodeId(<xsl:value-of select="fnc:dataTypeToBuiltinType(@dataType)"/>, 0) );
 			m_<xsl:value-of select="@name"/>-&gt;setValue(/*pSession*/0, UaDataValue( v , OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);			
 

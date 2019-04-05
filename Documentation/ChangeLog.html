@@ -12,13 +12,16 @@
     <span style="color: rgb(34, 84, 152);">
       <h1>Changelog</h1>
     </span> <br>
-    <table style="text-align: left; width: 100%;" cellspacing="1"
-      cellpadding="4" border="0">
+    <table style="text-align: left; width: 100%;" border="0"
+      cellspacing="1" cellpadding="4">
       <tbody>
         <tr style="background-color: rgb(34, 84, 152);">
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Version</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Changes
+
+
+
 
 
 
@@ -68,6 +71,9 @@
 
 
 
+
+
+
               backward incompatibilites</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>JIRA
@@ -94,10 +100,13 @@
 
 
 
+
+
+
               Release notes</strong><br>
           </td>
         </tr>
-        <tr>
+        <tr style="background-color: rgb(191, 212, 237);">
           <td valign="top">1.3.4<br>
           </td>
           <td valign="top"><br>
@@ -115,7 +124,55 @@
             <br>
             This is due to clean-up effort originating from OPCUA-1278.<br>
           </td>
-          <td valign="top"><br>
+          <td valign="top">Bug<br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1353">OPCUA-1353</a>]
+                - Return value of UA_Server_run not taken into account</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1369">OPCUA-1369</a>]
+                - AS population fails for arrays for .open6 while .ua is
+                fine</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1370">OPCUA-1370</a>]
+                - SourceVariables asynchronous with type UaString is
+                misbehaving</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1371">OPCUA-1371</a>]
+                - Valid but non-compiling Design for source-variables on
+                class without Device Logic</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1376">OPCUA-1376</a>]
+                - Incorrect population of ArrayDimensions, forbids
+                arrays to be used with open62541 0.3</li>
+            </ul>
+            <br>
+            Task<br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-879">OPCUA-879</a>]
+                - Document Quasar build system</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1286">OPCUA-1286</a>]
+                - open62541-based server doesn't quit when the
+                initialization failed (e.g. network port was in use)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1302">OPCUA-1302</a>]
+                - Remove (already deprecated) support for open62541 0.2
+                in o6-compat</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1335">OPCUA-1335</a>]
+                - quasar RPM builder: various improvements</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1340">OPCUA-1340</a>]
+                - --create-certificate fails when server instance is
+                running (i.e. can't open new connections)</li>
+            </ul>
+            <br>
+            Improvement<br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1269">OPCUA-1269</a>]
+                - Try removing Configuration.hxx include in Base header
+                classes</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1278">OPCUA-1278</a>]
+                - Move backend specific header inclusions to relevant
+                build configs</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1321">OPCUA-1321</a>]
+                - Lower severity for Log message when NULL value can't
+                be taken for CalculatedVariable evaluation</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1375">OPCUA-1375</a>]
+                - Improve Optional Modules message</li>
+            </ul>
           </td>
         </tr>
         <tr>
