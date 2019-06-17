@@ -62,15 +62,15 @@ def formatDesign():
 	print("Copying the formated file  " + tempName + " into the name of " + designXML)
 	shutil.copyfile(designPath + tempName, designPath + designXML)
 	
-def upgradeDesign(additionalParam):
+def upgradeDesign(context, additionalParam):
 	"""Method for adjusting Design.xml for a new Design.xsd when updating to a new version of the Framework"""
 	print("Formatting your design file ...")
 	formatDesign()
 
-	transformByKey(TransformKeys.UPGRADE_DESIGN, {'whatToDo':additionalParam})
+	transformByKey(TransformKeys.UPGRADE_DESIGN, {'context':context, 'whatToDo':additionalParam})
 	
 	print("Formatting the upgraded file ")
-	upgradedNonFormatted = getTransformOutput(TransformKeys.UPGRADE_DESIGN)
+	upgradedNonFormatted = getTransformOutput(TransformKeys.UPGRADE_DESIGN, {'context':context} )
 	upgradedFormatted = upgradedNonFormatted + ".formatted"
 	
 	formatXml(upgradedNonFormatted, upgradedFormatted)
