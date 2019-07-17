@@ -94,9 +94,20 @@ private:
     Device::DRoot m_deviceRoot;
 
     //Starting point of the server, called by startApplication. Calls various other methods in the class, including mainLoop, which contains the mainLoop logic
-    int serverRun(const std::string& configFileName, bool onlyCreateCertificate, const std::string& opcUaBackendConfigurationFile );
+    int serverRun(
+            const std::string& configFileName,
+            bool onlyCreateCertificate,
+            const std::string& opcUaBackendConfigurationFile,
+            std::vector<std::string>& additionalNodeSets);
     //Parse command line arguments.
-    int parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName, std::string& opcUaBackendConfigurationFile);
+    int parseCommandLine(
+            int argc,
+            char *argv[],
+            bool *isHelpOrVersion,
+            bool *isCreateCertificateOnly,
+            std::string *configurationFileName,
+            std::string& opcUaBackendConfigurationFile,
+            std::vector<std::string>& additionalNodeSets);
     //initialize XML parser, logging and UA stack (in that order)
     int initializeEnvironment();
     //Cleans the server before exiting.

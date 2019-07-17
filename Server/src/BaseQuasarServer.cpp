@@ -59,6 +59,7 @@
 
 #include <MetaBuildInfo.h>
 #include <CalculatedVariablesEngine.h>
+#include <nodemanagernodesetxml.h>
 
 using namespace std;
 using namespace boost::program_options;
@@ -83,15 +84,26 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
     string configurationFileName = "config.xml";
     string opcUaBackendConfigFile; // default will come from parseCommandLine invocation
     bool isCreateCertificateOnly = false;
+    std::vector<std::string> additionalNodeSets;
 
-    int ret = parseCommandLine(argc, argv, &isHelpOrVersion, &isCreateCertificateOnly, &configurationFileName,
-            opcUaBackendConfigFile);
+    int ret = parseCommandLine(
+            argc,
+            argv,
+            &isHelpOrVersion,
+            &isCreateCertificateOnly,
+            &configurationFileName,
+            opcUaBackendConfigFile,
+            additionalNodeSets);
 
     if (ret != 0 || isHelpOrVersion) //If there was a problem parsing the arguments, or it was a help/version call, we finish the execution
         return ret;
     try
     {
-        ret = serverRun(configurationFileName, isCreateCertificateOnly, opcUaBackendConfigFile);
+        ret = serverRun(
+                configurationFileName,
+                isCreateCertificateOnly,
+                opcUaBackendConfigFile,
+                additionalNodeSets);
         LOG(Log::INF) << "OpcServerMain() exited with code [" << ret << "]";
         return ret;
     }
@@ -105,7 +117,8 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
 int BaseQuasarServer::serverRun(
         const std::string& configFileName,
         bool onlyCreateCertificate,
-        const std::string &opcUaBackendConfigurationFile)
+        const std::string &opcUaBackendConfigurationFile,
+        std::vector<std::string>& additionalNodeSets)
 {
     const std::string serverSettingsPath = getApplicationPath();
     const int initializeEnvironmentReturn = initializeEnvironment();
@@ -140,6 +153,25 @@ int BaseQuasarServer::serverRun(
             boost::bind(&BaseQuasarServer::configurationInitializerHandler, this, configFileName, m_nodeManager));
 
     m_pServer->addNodeManager(m_nodeManager);
+
+    // TODO: this should be a separate file, I think.
+    // TODO: this doesn't have proper file handling
+    for (std::string nodeSetFilePath : additionalNodeSets)
+    {
+        LOG(Log::INF) << "Loading additional NodeSet: " << nodeSetFilePath;
+        /* here we load all additional nodesets */
+        // XML UANodeSet file to load
+        UaString sNodesetFile(nodeSetFilePath.c_str());
+
+        UaNodeSetXmlParserUaNode* pXmlParser = new UaNodeSetXmlParserUaNode(
+                sNodesetFile,
+                nullptr/*pNodeManagerCreator*/,
+                nullptr/*pBaseNodeFactory*/,
+                nullptr/*UaXml manager*/);
+        // Add UANodeSet XML parser as module
+        m_pServer->addModule(pXmlParser);
+    }
+
 
     int serverReturnCode = 0;
 
@@ -206,7 +238,8 @@ int BaseQuasarServer::parseCommandLine(
         bool *isHelpOrVersion, 
         bool *isCreateCertificateOnly,
         std::string *configurationFileName, 
-        std::string& opcUaBackendConfigurationFile)
+        std::string& opcUaBackendConfigurationFile,
+        std::vector<std::string>& additionalNodeSets  )
 {
     bool createCertificateOnly = false;
     bool printVersion = false;
@@ -216,13 +249,14 @@ int BaseQuasarServer::parseCommandLine(
     std::string defaultOpcUaBackendConfigurationFile = this->getApplicationPath() + "/ServerConfig.xml";
 
     desc.add_options()
-            ("config_file", value<string>(), "A path to the config file")
+            ("config_file",          value<string>(), "A path to the config file")
             ("opcua_backend_config", value<string>(&opcUaBackendConfigurationFile)
-	         ->default_value(defaultOpcUaBackendConfigurationFile), 
+	           ->default_value(defaultOpcUaBackendConfigurationFile),
                  "(Optional) path to the OPC-UA settings file")
-            ("create_certificate", bool_switch(&createCertificateOnly), "Create new certificate and exit")
+            ("create_certificate",   bool_switch(&createCertificateOnly), "Create new certificate and exit")
+            ("import_nodeset",       value<vector<string>>(&additionalNodeSets)->multitoken(), "List of additional NodeSets (in XML format) to import" )
             ("help", "Print help")
-            ("version", bool_switch(&printVersion), "Print version and exit");
+            ("version",              bool_switch(&printVersion), "Print version and exit");
 
     positional_options_description p;
     p.add("config_file", 1);
