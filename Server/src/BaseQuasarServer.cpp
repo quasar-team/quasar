@@ -124,11 +124,15 @@ int BaseQuasarServer::serverRun(
     // Create and initialize server object
 
     m_pServer = new OpcServer;
-    m_pServer->setServerConfig(opcUaBackendConfigurationFile.c_str(), serverSettingsPath.c_str());
+    if (m_pServer->setServerConfig(opcUaBackendConfigurationFile.c_str(), serverSettingsPath.c_str()) != 0)
+    {
+        LOG(Log::ERR) << "setServerConfig() failed.";
+        return -1;
+    }
 
     if (onlyCreateCertificate)
     {
-        return m_pServer->createCertificate();
+        return m_pServer->createCertificate(opcUaBackendConfigurationFile.c_str(), serverSettingsPath.c_str());
     }
 
     m_nodeManager = new AddressSpace::ASNodeManager();

@@ -20,42 +20,27 @@
 #include "nodemanager.h"
 #include <string>
 #include "QuasarServerCallback.h"
+#include <uaserverapplication.h>
 
-class OpcServerPrivate;
-class UaServer;
-
-/** Main OPC Server object.
-  This class is a utility class managing all server SDK modules for common use cases in a simplified way. 
-  Enhanced users may replace this class with their own implementation to be able
-  to use derived classes to overwrite SDK functionality.
-  */
-class OpcServer
+class OpcServer: public UaServerApplication
 {
     UA_DISABLE_COPY(OpcServer);
 public:
     // construction / destruction
     OpcServer();
-    ~OpcServer();
+    virtual ~OpcServer();
 
-    // Methods used to initialize the server
-    int setServerConfig(const UaString& configurationFile, const UaString& applicationPath);
-    int setServerConfig(ServerConfig* pServerConfig);
-    int addNodeManager(NodeManager* pNodeManager);
-    int setCallback(OpcServerCallback* pOpcServerCallback);
     /* This is just to create a certificate and quit right away */
-    int createCertificate ();
+    int createCertificate (
+            const UaString& backendConfigFile,
+            const UaString& appPath);
 
     // Methods used to start and stop the server
     int start();
-    int stop(OpcUa_Int32 secondsTillShutdown, const UaLocalizedText& shutdownReason);
-
-    // Access to default node manager
-    NodeManagerConfig* getDefaultNodeManager();
 
     std::string getLogFilePath() { return m_logFilePath; }
 
 private:
-    OpcServerPrivate* d;
     std::string m_logFilePath;
     QuasarServerCallback* m_quasarCallback;
 };
