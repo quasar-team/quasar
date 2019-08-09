@@ -44,7 +44,7 @@ Session* QuasarServerCallback::createSession(OpcUa_Int32 sessionID, const UaNode
 
  UaStatus QuasarServerCallback::logonSessionUser(Session* pSession, UaUserIdentityToken* pUserIdentityToken)
 {
-	 pSession->activate(0, pUserIdentityToken, *(pSession->getLocalIds()));
+	 pSession->activate(0, pUserIdentityToken, pSession->getLocalIdArray());
 	return OpcUa_Good;
 }
 
