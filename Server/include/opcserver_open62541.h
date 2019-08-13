@@ -25,7 +25,9 @@ public:
     int addNodeManager(ASNodeManager* pNodeManager);
 //    int setCallback(OpcServerCallback* pOpcServerCallback);
     /* This is just to create a certificate and quit right away */
-    int createCertificate ();
+    int createCertificate (
+            const UaString& backendConfigFile,
+            const UaString& appPath);
 
     // Methods used to start and stop the server
     int start();

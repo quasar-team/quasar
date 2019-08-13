@@ -44,7 +44,9 @@ int OpcServer::addNodeManager(ASNodeManager* pNodeManager)
     return 0;
 }
 
-int OpcServer::createCertificate ()
+int OpcServer::createCertificate (
+        const UaString& backendConfigFile,
+        const UaString& appPath)
 {
     LOG(Log::ERR) << "Sorry, certificate creation is not supported(yet) with open62541 backend.";
     return -1;
