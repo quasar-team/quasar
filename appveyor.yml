@@ -105,6 +105,6 @@ after_build:
           Exit 1;
          }
 
-# uncomment to block VM deletion for investigating broken builds.
-#on_finish:
+# uncomment both lines below to block VM deletion for investigating broken builds.
+on_finish:
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
