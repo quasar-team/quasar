@@ -14,7 +14,6 @@ using namespace std;
 
 OpcServer::OpcServer():
     m_nodemanager(0),
-    m_server_config(nullptr, &UA_ServerConfig_delete),
     m_server(nullptr)
 {
     //NOTE: UA_Server created later because it needs configuration (which is supplied later)
@@ -30,8 +29,7 @@ int OpcServer::setServerConfig(const UaString& configurationFile, const UaString
     LOG(Log::INF) << "Note: with open62541 backend, there isn't (yet) XML configuration loading. Assuming hardcoded server settings (endpoint's port, etc.)";
     // NOTE: some basid settings are configured in ctr init list
     // TODO: XML config reading
-
-    m_server_config.reset( UA_ServerConfig_new_minimal(4841, /*certificate*/ nullptr) );
+    // TODO: currently with 1.0 we don't create server config anymore
     return 0;
 }
 
@@ -54,9 +52,11 @@ int OpcServer::createCertificate (
 
 int OpcServer::start()
 {
-    m_server = UA_Server_new(m_server_config.get());
+    m_server = UA_Server_new();
     if (!m_server)
         throw_runtime_error_with_origin("UA_Server_new failed");
+    UA_ServerConfig* config = UA_Server_getConfig(m_server);
+    UA_ServerConfig_setMinimal(config, 4841, nullptr);
     m_nodemanager->linkServer(m_server);
     m_nodemanager->afterStartUp();
     UA_StatusCode status = UA_Server_run_startup(m_server);
