@@ -39,23 +39,6 @@ ASServer::ASServer (
 
 
     ,
-    m_connectedClientCount (new
-
-                            OpcUa::BaseDataVariableType
-
-
-                            (nm->makeChildNodeId(this->nodeId(),UaString("connectedClientCount")), UaString("connectedClientCount"), nm->getNameSpaceIndex(), UaVariant(
-
-                                 OpcUa_UInt32( 0 )
-
-                             ),
-
-                             OpcUa_AccessLevels_CurrentRead
-                             , nm))
-
-
-
-    ,
 	m_remainingCertificateValidity (new
 
                             OpcUa::BaseDataVariableType
@@ -84,18 +67,6 @@ ASServer::ASServer (
     if (!s.isGood())
     {
         std::cout << "While addNodeAndReference from " << parentNodeId.toString().toUtf8() << " to " << this->nodeId().toString().toUtf8() << " : " << std::endl;
-        ASSERT_GOOD(s);
-    }
-
-    v.setUInt32(0);
-
-    m_connectedClientCount->setValue(/*pSession*/0, UaDataValue(UaVariant( v ),
-            OpcUa_Good, UaDateTime::now(), UaDateTime::now() ), /*check access level*/OpcUa_False);
-
-    s = nm->addNodeAndReference(this, m_connectedClientCount, OpcUaId_HasComponent);
-    if (!s.isGood())
-    {
-        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_connectedClientCount->nodeId().toString().toUtf8() << " : " << std::endl;
         ASSERT_GOOD(s);
     }
 
@@ -133,33 +104,6 @@ ASServer::~ASServer ()
 /* generate setters and getters (if requested) */
 
 
-UaStatus ASServer::setConnectedClientCount (const OpcUa_UInt32 value, OpcUa_StatusCode statusCode,const UaDateTime & srcTime )
-{
-    UaVariant v;
-
-    v.setUInt32( value );
-
-
-
-    return m_connectedClientCount->setValue (0, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/OpcUa_False  ) ;
-
-}
-
-UaStatus ASServer::getConnectedClientCount (OpcUa_UInt32 & r) const
-{
-    UaVariant v (* (m_connectedClientCount->value(/*session*/0).value()));
-    return v.toUInt32 ( r );
-}
-
-
-/* short getter (possible because this variable will never be null) */
-OpcUa_UInt32 ASServer::getConnectedClientCount () const
-{
-    UaVariant v (* m_connectedClientCount->value (0).value() );
-    OpcUa_UInt32 v_value;
-    v.toUInt32 ( v_value );
-    return v_value;
-}
 
 UaStatus ASServer::setRemainingCertificateValidity(const UaString& value, OpcUa_StatusCode statusCode,const UaDateTime & srcTime )
 {

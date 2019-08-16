@@ -22,15 +22,6 @@
  */
 #include "QuasarServerCallback.h"
 #include "MetaUtils.h"
-QuasarSession::QuasarSession(OpcUa_Int32 sessionID, const UaNodeId &authenticationToken) : UaSession(sessionID, authenticationToken)
-{
-	MetaUtils::increaseSessionCounter();
-}
-QuasarSession::~QuasarSession()
-{
-	MetaUtils::decreaseSessionCounter();
-}
-
 
 QuasarServerCallback::QuasarServerCallback()
 {
@@ -38,13 +29,13 @@ QuasarServerCallback::QuasarServerCallback()
 
 Session* QuasarServerCallback::createSession(OpcUa_Int32 sessionID, const UaNodeId &authenticationToken)
 {
-	return new QuasarSession(sessionID, authenticationToken);
+	return new UaSession(sessionID, authenticationToken);
 }
 
 
  UaStatus QuasarServerCallback::logonSessionUser(Session* pSession, UaUserIdentityToken* pUserIdentityToken)
 {
-	 pSession->activate(0, pUserIdentityToken, *(pSession->getLocalIds()));
+	 pSession->activate(0, pUserIdentityToken, pSession->getLocalIdArray());
 	return OpcUa_Good;
 }
 

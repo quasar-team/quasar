@@ -45,8 +45,6 @@ void linkHandlerObjectAndAddressSpaceNode(THandlerObject* handlerObject, TAddres
     handlerObject->linkAddressSpace( addressSpaceNode );
 }
 void setDServer(Device::DServer*);
-void increaseSessionCounter();
-void decreaseSessionCounter();
 
 std::string calculateRemainingCertificateValidity(void);
 

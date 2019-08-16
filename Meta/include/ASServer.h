@@ -65,13 +65,6 @@ public:
 
     /* setters and getters for variables */
 
-
-
-    UaStatus getConnectedClientCount (OpcUa_UInt32 &) const ;
-    UaStatus setConnectedClientCount (const OpcUa_UInt32 value, OpcUa_StatusCode statusCode,const UaDateTime & srcTime = UaDateTime::now()) ;
-    /* short getter (possible because nullPolicy=nullForbidden) */
-    OpcUa_UInt32 getConnectedClientCount () const;
-
     UaStatus getRemainingCertificateValidity(UaString &) const ;
     UaStatus setRemainingCertificateValidity(const UaString& value, OpcUa_StatusCode statusCode,const UaDateTime & srcTime = UaDateTime::now()) ;
     /* short getter (possible because nullPolicy=nullForbidden) */
@@ -99,8 +92,6 @@ public:
 private:
     UaNodeId m_typeNodeId;
     /* Variables */
-    OpcUa::BaseDataVariableType
-    * m_connectedClientCount;
     OpcUa::BaseDataVariableType
     * m_remainingCertificateValidity;
 
