@@ -61,13 +61,6 @@ public:
 	virtual UaServer* createUaServer() { return NULL; }
 };
 
-class QuasarSession : public UaSession
-{
-public:
-	QuasarSession(OpcUa_Int32 sessionID, const UaNodeId &authenticationToken);
-	virtual ~QuasarSession();
-};
-
 class QuasarServerCallback : public OpcServerCallback
 {
 private:

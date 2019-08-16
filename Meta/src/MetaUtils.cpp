@@ -24,7 +24,6 @@
 
 using std::string;
 
-unsigned int g_sessionCounter = 0;
 Device::DServer* g_dServer = 0;
 
 void MetaUtils::assertNodeAdded(const UaStatus& status, const UaNodeId& parentNodeId, const UaNodeId& childNodeId)
@@ -40,24 +39,6 @@ void MetaUtils::assertNodeAdded(const UaStatus& status, const UaNodeId& parentNo
 void MetaUtils::setDServer(Device::DServer* ser)
 {
 	g_dServer = ser;
-}
-
-void MetaUtils::increaseSessionCounter()
-{
-	g_sessionCounter ++;
-	if(g_dServer != 0)
-	{
-		g_dServer->updateConnectedClientCount(g_sessionCounter);
-	}
-}
-
-void MetaUtils::decreaseSessionCounter()
-{
-	g_sessionCounter --;
-	if(g_dServer != 0)
-	{
-		g_dServer->updateConnectedClientCount(g_sessionCounter);
-	}
 }
 
 string MetaUtils::calculateRemainingCertificateValidity(void)

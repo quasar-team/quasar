@@ -86,11 +86,6 @@ DServer::~DServer ()
 // 3     You can do whatever you want, but please be decent.               3
 // 3333333333333333333333333333333333333333333333333333333333333333333333333
 
-void DServer::updateConnectedClientCount(unsigned int count)
-{
-	getAddressSpaceLink()->setConnectedClientCount(count, OpcUa_Good);
-}
-
 void DServer::updateRemainingCertificateValidity(const std::string& remainingValidity)
 {
 	getAddressSpaceLink()->setRemainingCertificateValidity(remainingValidity.c_str(), OpcUa_Good);

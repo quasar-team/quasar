@@ -55,7 +55,6 @@ public:
                      ) ;
     /* sample dtr */
     ~DServer ();
-	void updateConnectedClientCount(unsigned int count);
 	void updateRemainingCertificateValidity(const std::string& remainingValidity);
 
 
