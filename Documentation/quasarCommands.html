@@ -184,12 +184,15 @@
       device logic from the Design.<br>
     </p>
     <h2><a name="generate_diagram"></a>generate diagram</h2>
-    &nbsp;&nbsp;&nbsp; Creates an UML diagram based on the classes of
-    the server.<br>
+    Creates a <i>quasar design diagram</i> for this project.<br>
     &nbsp;&nbsp;&nbsp; <br>
-    &nbsp;&nbsp;&nbsp; Keyword arguments:<br>
-    &nbsp;&nbsp;&nbsp; detailLevel -- Detail level of the diagram. If it
-    is not present, 0 will be assumed<br>
+    Syntax:<br>
+    quasar.py generate diagram [detailLevel] [mode]<br>
+    <br>
+    detailLevel is between 0 and 3, and it defaults to 0.<br>
+    mode defaults to "dot" which is the most hierarchical graphviz
+    operation mode. You can also try "fdp" and "circo", for mixed
+    results.<br>
     <br>
     <h2><a name="generate_honkytonk"></a>generate honkytonk</h2>
     <p>Generates honkyTonky.cc, a special class intended for testing
