@@ -30,6 +30,10 @@
 
 #include <Utils.h>
 
+#include <boost/regex.hpp>
+
+#include <regex>
+
 namespace CalculatedVariables
 {
 
@@ -77,17 +81,92 @@ double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* na
     }
 }
 
+
+std::string CalculatedVariables::Engine::applyFormula (
+        const Configuration::CalculatedVariable& config,
+        const std::string& parentObjectAddress
+        )
+{
+    // Note (Piotr): it's of course be preferred to use std::string::const_iterator here,
+    // but we need to be compatible with gcc 4.8 (CC7) and there C++11 std::string is not complete,
+    // e.g. without const_iterator support.
+    boost::regex cvSubstitutionRegex ("\\$([A-Za-z0-9_]+)(?:(?:\\()(\\S+)(?:\\)))?");
+    boost::match_results<std::string::iterator> matched;
+    std::string formulaInWork (config.value());
+    bool matchedAnything (false);
+    do
+    {
+        matchedAnything = boost::regex_search(
+                formulaInWork.begin(),
+                formulaInWork.end(),
+                matched,
+                cvSubstitutionRegex);
+        if (matchedAnything)
+        {
+            if (matched.size() < 2 || matched.size() > 3)
+                throw std::runtime_error("Unexpected parsing of regular expression "); // TODO improve it
+            std::string matchedAtom = matched[1];
+            if (matchedAtom == "_")
+            {
+                LOG(Log::INF, logComponentId) << "Before expanding $_, formulaInWork=" << formulaInWork;
+                std::string::iterator from = matched[0].first;
+                std::string::iterator to = matched[0].second;
+                formulaInWork.replace(from, to, parentObjectAddress);
+                LOG(Log::INF, logComponentId) << "After expanding $_, formulaInWork=" << formulaInWork;
+            }
+            else if (matchedAtom == "applyGenericFormula")
+            {
+                if (matched.size() != 3)
+                    throw_runtime_error_with_origin("$applyGenericFormula requires an argument");
+                std::string formulaId = matched[2];
+                LOG(Log::INF, logComponentId) << "Formula to expand is: " << formulaId;
+                try
+                {
+                    formulaInWork = s_genericFormulas.at(formulaId);
+                    LOG(Log::INF, logComponentId) << "Used formula " << formulaInWork << " in expansion";
+                }
+                catch (std::out_of_range &e)
+                {
+                    LOG(Log::ERR, logComponentId) << "Formula named " << formulaId << " was referenced but never declared.";
+                    throw std::runtime_error("applyGenericFormula error. The detailed error was logged to CalculatedVars LogIt component");
+                }
+            }
+            else
+                throw std::runtime_error("Invalid dollar expression: "+matched[0].str());
+        }
+    }
+    while (matchedAnything);
+
+    return formulaInWork;
+}
+
+void Engine::loadGenericFormulas (
+        const Configuration::Configuration::CalculatedVariableGenericFormula_sequence& config)
+{
+    for (const Configuration::CalculatedVariableGenericFormula& formula : config)
+    {
+        // TODO: make sure it's unique!
+        s_genericFormulas.emplace(formula.name(), formula.formula());
+    }
+}
+
 void Engine::instantiateCalculatedVariable(
         AddressSpace::ASNodeManager* nm,
         UaNodeId parentNodeId,
         const Configuration::CalculatedVariable& config)
 {
+    LOG(Log::INF) << "Engine::instantiateCalculatedVariable  parentNodeId=" << parentNodeId.toString().toUtf8() << " value="<<config.value();
+    // check if see any magic expression in the formula
+    std::string expandedFormula = applyFormula(
+            config,
+            parentNodeId.toString().toUtf8());
+
     CalculatedVariable* calculatedVariable = new CalculatedVariable(
             nm->makeChildNodeId(parentNodeId, config.name().c_str()),
             config.name().c_str(),
             nm->getNameSpaceIndex(),
             nm,
-            config.value(),
+            expandedFormula,
             config.isBoolean(),
             config.status().present(),
             config.status().present() ? *config.status() : "");
@@ -222,7 +301,7 @@ Log::LogComponentHandle logComponentId = Log::INVALID_HANDLE;
 std::list <ParserVariable> Engine::s_parserVariables;
 size_t Engine::s_numSynchronizers = 0;
 size_t Engine::s_numCalculatedVariables = 0;
-
+std::map<std::string, std::string> Engine::s_genericFormulas;
 
 
 } /* namespace CalculatedVariables */
