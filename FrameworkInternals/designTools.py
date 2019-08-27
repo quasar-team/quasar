@@ -78,15 +78,21 @@ def upgradeDesign(context, additionalParam):
 	print("Now running merge-tool. Please merge the upgraded changed")
 	subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, upgradedFormatted], getCommand("diff"))
 	
-def createDiagram(context, detailLevel=0):
+def createDiagram(context, detailLevel=0, mode='dot'):
 	"""Creates an UML diagram based on the classes of the server.
 	
 	Keyword arguments:
 	detailLevel -- Detail level of the diagram. If it is not present, 0 will be assumed
+        mode -- one of graph layout modes to be passed to graphviz
 	"""
-	if detailLevel == "":
-		detailLevel = 0
+        graphvizArgs = {
+                'dot':[],
+                'circo':['-Kcirco', '-Gsplines=true', '-Granksep=0.1', '-Gmindist=0', '-Goverlap=false', '-Gepsilon=0.00001'],
+                'fdp':['-Kfdp', '-Gsplines=true', '-Goverlap=false', '-Gepsilon=0.00001', '-GK=0.01', '-Gmaxiter=10000', '-Gstart=random']
+        }
+        print 'Using {0} as level of detail'.format(str(detailLevel))
+        print 'Using {0} as layout mode. Hint: from quasar 1.3.5, you can choose among: {1}, run with -h for help.'.format(mode, ','.join(graphvizArgs.keys()))
 	transformByKey(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context, 'detailLevel':detailLevel})
-	print("Generating pdf diagram with dot.")
-	subprocessWithImprovedErrors([getCommand("graphviz"), "-Tpdf", "-o", designPath + "diagram.pdf", getTransformOutput(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context})], "GraphViz (dot)")
+        args = ["-Tpdf", "-o", designPath + "diagram.pdf", getTransformOutput(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context})] + graphvizArgs[mode]
+	subprocessWithImprovedErrors([getCommand("graphviz")] + args , "GraphViz (dot)")
 			
