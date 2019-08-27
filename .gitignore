@@ -19,3 +19,4 @@ Makefile
 **/*.sdf
 **/generated/
 **/cmake_generated.cmake
+build/
