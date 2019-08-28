@@ -45,7 +45,15 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			else
 				m_addressSpaceLink = addressSpaceLink;	
 			m_stringAddress.assign( stringAddress );
-		}
+			}
+
+			AddressSpace::<xsl:value-of select="fnc:ASClassName($className)"/> * <xsl:value-of select="fnc:Base_DClassName(@name)"/>::getAddressSpaceLink () const
+			{
+			if (m_addressSpaceLink)
+			return m_addressSpaceLink;
+			else
+			throw std::logic_error("m_addressSpaceLink is nullptr! at:"+m_stringAddress);
+			}
 		
 		/* add/remove */
 		<xsl:for-each select="d:hasobjects">

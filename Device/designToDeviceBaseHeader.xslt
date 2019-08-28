@@ -70,7 +70,7 @@
 
 
 		void linkAddressSpace (AddressSpace::<xsl:value-of select="fnc:ASClassName($className)" /> * as, const std::string &amp; stringAddress);
-		AddressSpace::<xsl:value-of select="fnc:ASClassName($className)"/> * getAddressSpaceLink () const { return m_addressSpaceLink; }
+		AddressSpace::<xsl:value-of select="fnc:ASClassName($className)"/> * getAddressSpaceLink () const; 
 		
 		
 		/* find methods for children */
@@ -151,14 +151,11 @@
 		
 		Parent_<xsl:value-of select="fnc:DClassName($className)"/> * m_parent;
 	
-		public:	  // TODO: reconsider this! shoudln't be public!
 		AddressSpace::
 		<xsl:value-of select="fnc:ASClassName($className)" />
 		*m_addressSpaceLink;
 		
 
-
-		private:
 		std::string m_stringAddress;
 		<xsl:for-each select="d:hasobjects">
 		std::vector &lt; <xsl:value-of select="fnc:DClassName(@class)"/> * &gt; m_<xsl:value-of select="@class"/>s;
