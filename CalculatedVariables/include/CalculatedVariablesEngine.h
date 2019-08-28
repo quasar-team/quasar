@@ -64,7 +64,8 @@ public:
     //! Perform a dfs, each found node is bound to particular synchronization domain
     static void dfsAndSetSynchronizer(ParserVariable& pv, SharedSynchronizer& synchronizer);
 
-    static std::string applyFormula (
+    //! Resolves all dollar operators until a formuls is free of them.
+    static std::string elaborateFormula (
             const Configuration::CalculatedVariable& config,
             const std::string& parentObjectAddress
             );

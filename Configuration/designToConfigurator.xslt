@@ -275,11 +275,11 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		}
 	    throw std::runtime_error("Configuration: failed to load configuration. The exact problem description should have been logged.");
 	}
-	
+    
     CalculatedVariables::Engine::loadGenericFormulas(theConfiguration-&gt;CalculatedVariableGenericFormula());
 	
 
-	
+    
 	UaNodeId rootNode = UaNodeId(OpcUaId_ObjectsFolder, 0);
 	Device::DRoot *deviceRoot = Device::DRoot::getInstance();
 
