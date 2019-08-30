@@ -64,7 +64,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 			<xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
 			Device::<xsl:value-of select="fnc:DClassName($containedClass)"/>* newObject =
 			</xsl:if>
-			configure<xsl:value-of select="@class"/> (
+			configure (
 				<xsl:value-of select="@class"/>config,
 				nm,
 				<xsl:value-of select="$parentNodeId"/><xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">,
@@ -124,7 +124,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:when test="fnc:classHasDeviceLogic(/,$class)='true'">Device::<xsl:value-of select="fnc:DClassName($class)"/>*</xsl:when>
 	<xsl:otherwise>void</xsl:otherwise> 
 	</xsl:choose>
-	configure<xsl:value-of select="$class"/>( const Configuration::<xsl:value-of select="$class"/> &amp; config,
+	configure( const Configuration::<xsl:value-of select="$class"/>&amp; config,
 					AddressSpace::ASNodeManager *nm,
 					UaNodeId parentNodeId
 					<xsl:if test="fnc:classHasDeviceLogic(/,$class)='true'">
@@ -142,7 +142,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:when test="fnc:classHasDeviceLogic(/,$class)='true'">Device::<xsl:value-of select="fnc:DClassName($class)"/>*</xsl:when>
 	<xsl:otherwise>void</xsl:otherwise> 
 	</xsl:choose>
-	configure<xsl:value-of select="$class"/>( const Configuration::<xsl:value-of select="$class"/> &amp; config,
+	configure( const Configuration::<xsl:value-of select="$class"/>&amp; config,
 					AddressSpace::ASNodeManager *nm,
 					UaNodeId parentNodeId
 					<xsl:if test="fnc:classHasDeviceLogic(/,$class)='true'">
@@ -168,6 +168,30 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
  		
 		</xsl:if>
 		
+        std::map&lt;const xercesc::DOMNode*, const Configuration::CalculatedVariable &amp;&gt; childrenNodesToCalculatedVariable;
+        for ( auto &amp; cv : config.CalculatedVariable())
+          childrenNodesToCalculatedVariable.emplace (cv._node(), cv);
+        
+        <xsl:for-each select="/d:design/d:class[@name=$class]/d:hasobjects">
+        std::map&lt;const xercesc::DOMNode*, const Configuration::<xsl:value-of select="@class"/> &amp;&gt; childrenNodesTo<xsl:value-of select="@class"/>;
+        for ( auto &amp;childConfig : config.<xsl:value-of select="@class"/>())
+        childrenNodesTo<xsl:value-of select="@class"/>.emplace( childConfig._node(), childConfig );
+        </xsl:for-each>
+        
+        xercesc::DOMNodeList* childrenNodes = config._node()->getChildNodes();
+
+
+        for (size_t i = 0; i &lt; childrenNodes-&gt;getLength(); i++)
+        {
+            const xercesc::DOMNode* node = childrenNodes->item(i);
+            <xsl:for-each select="/d:design/d:class[@name=$class]/d:hasobjects">
+            if (configureByNode(node, childrenNodesTo<xsl:value-of select="@class"/>, nm, asItem->nodeId() )) continue;
+            </xsl:for-each>
+            if (configureByNode(node, childrenNodesToCalculatedVariable, nm, asItem->nodeId())) continue;
+            
+        }
+        
+        <!-- 
 		<xsl:for-each select="/d:design/d:class[@name=$class]/d:hasobjects">
 		<xsl:call-template name="hasObjects">
 		<xsl:with-param name="containingClass"><xsl:value-of select="$class"/></xsl:with-param>
@@ -176,11 +200,13 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		<xsl:with-param name="configuration">config</xsl:with-param>
 		</xsl:call-template>
 		</xsl:for-each>
-
+         -->
+        <!-- 
         for ( const Configuration::CalculatedVariable &amp; item : config.CalculatedVariable() )
         {
             Engine::instantiateCalculatedVariable (nm, asItem->nodeId(), item);   
         }
+         -->
 		
 		<xsl:if test="fnc:classHasDeviceLogic(/,$class)='true'">
 		return dItem;
@@ -193,8 +219,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:template match="/">
 
 	<xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToConfigurator.xslt','Piotr Nikiel')"/>
-	#include &lt;iostream&gt;
-	
+    #include &lt;xercesc/dom/DOMNodeList.hpp&gt;
+    
 	#include &lt;ASUtils.h&gt;
 	#include &lt;ASInformationModel.h&gt;
 	#include &lt;ASNodeQueries.h&gt;
@@ -222,6 +248,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	</xsl:if>
 	</xsl:for-each>
 	
+
 	<xsl:for-each select="/d:design/d:class">
 	<xsl:variable name="class"><xsl:value-of select="@name"/></xsl:variable>
 	<xsl:call-template name="configureHeader">
@@ -229,6 +256,33 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	</xsl:call-template>
 	</xsl:for-each>
 	
+    void configure(
+           const Configuration::CalculatedVariable&amp; config,
+           AddressSpace::ASNodeManager *nm,
+           UaNodeId parentNodeId)
+           {
+            Engine::instantiateCalculatedVariable (nm, parentNodeId, config);
+           }
+    
+        template&lt;typename ConfigType&gt;
+    bool configureByNode(
+        const xercesc::DOMNode* node,
+        std::map&lt;const xercesc::DOMNode*, const ConfigType&amp;&gt;&amp; map,
+        AddressSpace::ASNodeManager *nm,
+        UaNodeId parentNodeId)
+{
+    auto it = map.find (node);
+    if (it != map.end()) // found it
+    {
+        configure(it-&gt;second, nm, parentNodeId);
+        map.erase(it);
+        return true;
+    }
+    else
+        return false;
+}
+    
+    
 	<xsl:for-each select="/d:design/d:class">
 	<xsl:variable name="class"><xsl:value-of select="@name"/></xsl:variable>
 	<xsl:call-template name="configureObject">
@@ -264,7 +318,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	try
 	{
-	    theConfiguration = Configuration::configuration(fileName);
+	    theConfiguration = Configuration::configuration(fileName, ::xml_schema::flags::keep_dom);
 	} 
 	catch (xsd::cxx::tree::parsing&lt;char&gt; &amp;exception)
 	{
