@@ -253,7 +253,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
         <xs:attribute name="initialValue" type="xs:double" use="optional" />
         <xs:attribute name="isBoolean" type="xs:boolean" use="optional" default="false" />
         <xs:attribute name="status" type="xs:string" use="optional" />
+
 	</xs:complexType>	
+    
+    <xs:complexType name="CalculatedVariableGenericFormula">
+          <xs:attribute name="name" type="tns:ObjectName" use="required"/>
+          <xs:attribute name="formula" type="xs:string" use="required"/>
+    </xs:complexType>
+    
 	<xsl:apply-templates/>
 	
 	<xs:complexType name="Configuration">
@@ -261,7 +268,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		    <xs:choice minOccurs="0" maxOccurs="1">
                 <xs:element name="StandardMetaData" type="tns:StandardMetaData"/>
             </xs:choice>
-            
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="CalculatedVariableGenericFormula" type="tns:CalculatedVariableGenericFormula"/>
+            </xs:choice>
 			<xs:choice minOccurs="0" maxOccurs="unbounded"  >
 				<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']">
 				<xs:element name="{@class}" type="tns:{@class}" />

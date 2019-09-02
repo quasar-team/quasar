@@ -64,10 +64,20 @@ public:
     //! Perform a dfs, each found node is bound to particular synchronization domain
     static void dfsAndSetSynchronizer(ParserVariable& pv, SharedSynchronizer& synchronizer);
 
+    //! Resolves all dollar operators until a formuls is free of them.
+    static std::string elaborateFormula (
+            const Configuration::CalculatedVariable& config,
+            const std::string& parentObjectAddress
+            );
+
+    static void loadGenericFormulas (
+            const Configuration::Configuration::CalculatedVariableGenericFormula_sequence& config);
+
 private:
     static std::list <ParserVariable> s_parserVariables;
     static size_t s_numSynchronizers;
     static size_t s_numCalculatedVariables;
+    static std::map<std::string, std::string> s_genericFormulas;
 };
 
 } /* namespace CalculatedVariables */
