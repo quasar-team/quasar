@@ -285,11 +285,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	configureMeta( *theConfiguration.get(), nm, rootNode );	
 	if(!runConfigurationDecoration(*theConfiguration, configXmlDecoratorFunction)) return false;
-	
-    for ( const Configuration::CalculatedVariable &amp; constant : theConfiguration-&gt;Constant() )
-    {
-        Engine::instantiateCalculatedVariable (nm, rootNode, constant);
-    }
     
 	<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']">
 
