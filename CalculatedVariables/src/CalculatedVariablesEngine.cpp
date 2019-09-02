@@ -30,13 +30,15 @@
 
 #include <Utils.h>
 
-#include <boost/regex.hpp>
+#include <boost/xpressive/xpressive.hpp>
 
 #define LOG_AND_THROW_ERROR(FORMULA,ERROR) \
     { \
     LOG(Log::ERR, "CalcVars") << "When instantiating " << FORMULA << " error: " << ERROR; \
     throw std::runtime_error(ERROR); \
     }
+
+using namespace boost::xpressive;
 
 namespace CalculatedVariables
 {
@@ -102,14 +104,15 @@ std::string CalculatedVariables::Engine::elaborateFormula (
     // $xxxxxxxxx
     // $xxxxxxxxx(yyyyy)
     // Note: ?: is the non-captured group so in the end we get between 2 and 3 capture groups total.
-    boost::regex cvSubstitutionRegex ("\\$([A-Za-z0-9_]+)(?:(?:\\()(\\S+)(?:\\)))?");
+    basic_regex<std::string::iterator> cvSubstitutionRegex = basic_regex<std::string::iterator>::compile("\\$([A-Za-z0-9_]+)(?:(?:\\()(\\S+)(?:\\)))?");
 
-    boost::match_results<std::string::iterator> matched;
+    match_results<std::string::iterator> matched;
     std::string formulaInWork (config.value());
     bool matchedAnything (false);
     do
     {
-        matchedAnything = boost::regex_search(
+
+        matchedAnything = regex_search(
                 formulaInWork.begin(),
                 formulaInWork.end(),
                 matched,
