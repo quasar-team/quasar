@@ -21,8 +21,8 @@
     </h1>
     <br>
     Author: Piotr Nikiel<br>
-    Date: 03-Dec-2018<br>
-    <br>
+    Major revision date: 03-Dec-2018 <br>
+    Minor revision date: 03-Sep-2019<br>
     <h1>Introduction</h1>
     <br>
     This rather short how-to explains how to integrate a Quasar-based
@@ -120,6 +120,7 @@
 
 
 
+
           repo</b>.<br>
       </li>
       <li>~/gitProjects/poky<br>
@@ -135,9 +136,12 @@
     <h1>The procedure</h1>
     <h2>Make sure you're using the Quasar branch with Yocto support<br>
     </h2>
-    <p>From quasar repo:<br>
+    <p>Yocto and PetaLinux support should work in any released quasar
+      version from 1.3.0 on.<br>
+      From quasar repo:<br>
     </p>
-    <div> git checkout OPCUA-1016_yocto_quasar </div>
+    <div> git checkout v1.3.4<br>
+    </div>
     <h2>Create a new Quasar project<br>
     </h2>
     From quasar repo:<br>
@@ -195,6 +199,7 @@
 
 
 
+
       why -f (force) is used.<br>
       <br>
     </b>
@@ -210,10 +215,11 @@
     Yocto without GNU Classpath which seems not mature enough to run the
     Saxon XSLT processor.<br>
     <h2>Enable open62541-compat module</h2>
+    Note: you can also try other versions of open62541-compat; we can't
+    guarantee this document to be always up to date.<br>
     From project repo:<br>
     <br>
-    <div> ./quasar.py enable_module open62541-compat <font
-        color="#ff0000">pnikiel-yocto-fix</font><br>
+    <div> ./quasar.py enable_module open62541-compat v1.1.2<br>
       git add FrameworkInternals/EnabledModules/open62541-compat.*<br>
       git commit -m 'Stored open62541-compat'<br>
     </div>
@@ -396,8 +402,10 @@
 
 
 
+
     -kernel
     /home/pnikiel/gitProjects/poky/build/tmp/deploy/images/qemux86/bzImage-qemux86.bin
+
 
 
 
@@ -447,9 +455,11 @@
 
 
 
+
     -show-cursor -usb -usbdevice tablet -vga vmware -no-reboot -m 256
     -serial mon:vc -serial null -append "vga=0
     uvesafb.mode_option=640x480-32 root=/dev/vda rw mem=256M ip=<b>192.168.7.2</b>::192.168.7.1:255.255.255.0
+
 
 
 
