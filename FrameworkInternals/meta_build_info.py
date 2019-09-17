@@ -58,7 +58,7 @@ def generateCommitID(generatedFile, project_root_dir):
 		commitID = version_control_interface.VersionControlInterface(project_root_dir).get_latest_repo_commit()
         except Exception as e:
 		print 'generateCommitID failed, exception: {}'.format(str(e))
-	generatedFile.write('#define GEND_COMMIT_ID "{}"\n'.format(commitID))
+	generatedFile.write('#define GEND_COMMIT_ID "{}"\n'.format(commitID.replace('"', '\\"')))
 
 def generateToolkitLibs(generatedFile, toolkitLibs):
 	strippedLibs = toolkitLibs.replace("\\", "")

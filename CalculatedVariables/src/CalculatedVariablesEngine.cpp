@@ -30,6 +30,16 @@
 
 #include <Utils.h>
 
+#include <boost/xpressive/xpressive.hpp>
+
+#define LOG_AND_THROW_ERROR(FORMULA,ERROR) \
+    { \
+    LOG(Log::ERR, "CalcVars") << "When instantiating " << FORMULA << " error: " << ERROR; \
+    throw std::runtime_error(ERROR); \
+    }
+
+using namespace boost::xpressive;
+
 namespace CalculatedVariables
 {
 
@@ -77,17 +87,101 @@ double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* na
     }
 }
 
+std::string CalculatedVariables::Engine::elaborateFormula (
+        const Configuration::CalculatedVariable& config,
+        const std::string& parentObjectAddress
+        )
+{
+    // We use this one just to print some debug info.
+    const std::string thisFormulaAddress = parentObjectAddress+"."+config.name();
+
+    // Note (Piotr): it's of course be preferred to use std::string::const_iterator here,
+    // but we need to be compatible with gcc 4.8 (CC7) and there C++11 std::string is not complete,
+    // e.g. without const_iterator support.
+
+    // Comment for the regex below:
+    // Will match two "kinds" of expressions:
+    // $xxxxxxxxx
+    // $xxxxxxxxx(yyyyy)
+    // Note: ?: is the non-captured group so in the end we get between 2 and 3 capture groups total.
+    basic_regex<std::string::iterator> cvSubstitutionRegex = basic_regex<std::string::iterator>::compile("\\$([A-Za-z0-9_]+)(?:(?:\\()(\\S+)(?:\\)))?");
+
+    match_results<std::string::iterator> matched;
+    std::string formulaInWork (config.value());
+    bool matchedAnything (false);
+    do
+    {
+
+        matchedAnything = regex_search(
+                formulaInWork.begin(),
+                formulaInWork.end(),
+                matched,
+                cvSubstitutionRegex);
+        if (matchedAnything)
+        {
+            std::string operation = matched[1];
+            bool argumentPresent = matched[2].matched;
+            std::string argument = matched[2];
+            if (operation == "_")
+            {
+                if (argumentPresent)
+                    LOG_AND_THROW_ERROR(thisFormulaAddress, "$_ expression does not take arguments!");
+                LOG(Log::TRC, logComponentId) << "Before expanding $_, formulaInWork=" << formulaInWork;
+                formulaInWork.replace(/*from*/ matched[0].first, /*to*/ matched[0].second, parentObjectAddress);
+                LOG(Log::TRC, logComponentId) << "After expanding $_, formulaInWork=" << formulaInWork;
+            }
+            else if (operation == "applyGenericFormula")
+            {
+                if (!argumentPresent)
+                    LOG_AND_THROW_ERROR(thisFormulaAddress, "$applyGenericFormula expects a single argument -- formula id");
+                std::string formulaId = matched[2];
+                try
+                {
+                    formulaInWork = s_genericFormulas.at(formulaId);
+                }
+                catch (std::out_of_range &e)
+                    LOG_AND_THROW_ERROR(thisFormulaAddress, "Generic Formula id='"+formulaId+"' was referenced but never declared.");
+            }
+            else
+                LOG_AND_THROW_ERROR(thisFormulaAddress, "Invalid dollar expression: "+matched[0].str());
+        }
+    }
+    while (matchedAnything);
+
+    return formulaInWork;
+}
+
+void Engine::loadGenericFormulas (
+        const Configuration::Configuration::CalculatedVariableGenericFormula_sequence& config)
+{
+    for (const Configuration::CalculatedVariableGenericFormula& formula : config)
+    {
+        bool insertionHappened = s_genericFormulas.emplace(formula.name(), formula.formula()).second;
+        if (!insertionHappened)
+        {
+            // TODO: one day we could understand how to get line info
+            LOG(Log::ERR, logComponentId) << "Couldn't store generic formula with name='" << formula.name() << "', probably it was already defined!";
+            throw_runtime_error_with_origin("CalculatedVariables generic formulas error -- exact error was logged in the CalcVars LogIt");
+        }
+    }
+}
+
 void Engine::instantiateCalculatedVariable(
         AddressSpace::ASNodeManager* nm,
         UaNodeId parentNodeId,
         const Configuration::CalculatedVariable& config)
 {
+    // check if see any magic expression in the formula
+    std::string elaboratedFormula = elaborateFormula(
+            config,
+            parentNodeId.toString().toUtf8());
+
     CalculatedVariable* calculatedVariable = new CalculatedVariable(
             nm->makeChildNodeId(parentNodeId, config.name().c_str()),
             config.name().c_str(),
             nm->getNameSpaceIndex(),
             nm,
-            config.value(),
+            elaboratedFormula,
             config.isBoolean(),
             config.status().present(),
             config.status().present() ? *config.status() : "");
@@ -222,7 +316,7 @@ Log::LogComponentHandle logComponentId = Log::INVALID_HANDLE;
 std::list <ParserVariable> Engine::s_parserVariables;
 size_t Engine::s_numSynchronizers = 0;
 size_t Engine::s_numCalculatedVariables = 0;
-
+std::map<std::string, std::string> Engine::s_genericFormulas;
 
 
 } /* namespace CalculatedVariables */
