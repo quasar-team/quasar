@@ -87,6 +87,26 @@ double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* na
     }
 }
 
+static std::string elaborateParent(
+        const std::string& input,
+        unsigned int levels,
+        const std::string& thisFormulaAddress)
+{
+    // the assumption is that for every level to go up we find the dot and cut off at such place
+    LOG(Log::TRC, logComponentId) << "Elaborating parent of address='" << input << "' for numLevels='" << levels << "'";
+    std::size_t cutOffIndex = std::string::npos;
+    while (levels > 0)
+    {
+        cutOffIndex = input.rfind('.', cutOffIndex);
+        if (cutOffIndex == std::string::npos)
+            LOG_AND_THROW_ERROR("TODO - which formula", "Not enough levels to go up!"); // TODO: which formula?
+        levels--;
+    }
+    std::string result = input.substr(0, cutOffIndex);
+    LOG(Log::TRC, logComponentId) << "Elaboration parent result: '" << result << "'";
+    return result;
+}
+
 std::string CalculatedVariables::Engine::elaborateFormula (
         const Configuration::CalculatedVariable& config,
         const std::string& parentObjectAddress
@@ -122,10 +142,10 @@ std::string CalculatedVariables::Engine::elaborateFormula (
             std::string operation = matched[1];
             bool argumentPresent = matched[2].matched;
             std::string argument = matched[2];
-            if (operation == "_")
+            if (operation == "_" || operation == "thisObjectAddress")
             {
                 if (argumentPresent)
-                    LOG_AND_THROW_ERROR(thisFormulaAddress, "$_ expression does not take arguments!");
+                    LOG_AND_THROW_ERROR(thisFormulaAddress, "$"+operation+" expression does not take arguments!");
                 LOG(Log::TRC, logComponentId) << "Before expanding $_, formulaInWork=" << formulaInWork;
                 formulaInWork.replace(/*from*/ matched[0].first, /*to*/ matched[0].second, parentObjectAddress);
                 LOG(Log::TRC, logComponentId) << "After expanding $_, formulaInWork=" << formulaInWork;
@@ -141,6 +161,23 @@ std::string CalculatedVariables::Engine::elaborateFormula (
                 }
                 catch (std::out_of_range &e)
                     LOG_AND_THROW_ERROR(thisFormulaAddress, "Generic Formula id='"+formulaId+"' was referenced but never declared.");
+            }
+            else if (operation == "parentObjectAddress")
+            {
+                if (!argumentPresent)
+                    LOG_AND_THROW_ERROR(thisFormulaAddress, "$"+operation+" expression requires an argument");
+                basic_regex<std::string::iterator> argumentFormat =
+                        basic_regex<std::string::iterator>::compile("^numLevelsUp=(\\d+)$");
+                match_results<std::string::iterator> myMatchResults;
+                if (!regex_match(argument, myMatchResults, argumentFormat))
+                    LOG_AND_THROW_ERROR(thisFormulaAddress, "Argument did not fit the expected syntax, for example: $parentObjectAddress(numLevelsUp=2)");
+                unsigned int numLevelsUp = std::stoi(myMatchResults[1]);
+                LOG(Log::TRC, logComponentId) << "Before expanding parentObjectAddress, formulaInWork=" << formulaInWork << ", levels=" << numLevelsUp;
+                formulaInWork.replace(
+                        /*from*/ matched[0].first,
+                        /*to*/ matched[0].second,
+                        elaborateParent(parentObjectAddress, numLevelsUp, thisFormulaAddress));
+                LOG(Log::TRC, logComponentId) << "After expanding parentObjectAddress, formulaInWork=" << formulaInWork;
             }
             else
                 LOG_AND_THROW_ERROR(thisFormulaAddress, "Invalid dollar expression: "+matched[0].str());
