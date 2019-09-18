@@ -99,8 +99,15 @@ static std::string elaborateParent(
     {
         cutOffIndex = input.rfind('.', cutOffIndex);
         if (cutOffIndex == std::string::npos)
-            LOG_AND_THROW_ERROR("TODO - which formula", "Not enough levels to go up!"); // TODO: which formula?
+            LOG_AND_THROW_ERROR(thisFormulaAddress, "Not enough levels to go up!"); 
         levels--;
+        if (levels>0)
+        {
+            if (cutOffIndex>0)
+                cutOffIndex--;
+            else
+                LOG_AND_THROW_ERROR(thisFormulaAddress, "Not enough levels to go up!");
+        }
     }
     std::string result = input.substr(0, cutOffIndex);
     LOG(Log::TRC, logComponentId) << "Elaboration parent result: '" << result << "'";
