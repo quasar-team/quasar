@@ -95,7 +95,6 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
            if ( tagName=="<xsl:value-of select="@class"/>")
            {
-            LOG(Log::INF) &lt;&lt; "Found an instance of <xsl:value-of select="@class"/> ";
                         auto it = std::find_if(
                     config.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>().begin(),
                     config.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>().end(),
