@@ -91,11 +91,14 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
         char* transcodedTagName = xercesc::XMLString::transcode(element-&gt;getTagName());
         const std::string tagName (transcodedTagName);
         xercesc::XMLString::release(&amp;transcodedTagName);
+        
+        if (tagName == "StandardMetaData")
+            continue;
+        
          <xsl:for-each select="d:hasobjects[@instantiateUsing='configuration']">
 
            if ( tagName=="<xsl:value-of select="@class"/>")
            {
-            LOG(Log::INF) &lt;&lt; "Found an instance of <xsl:value-of select="@class"/> ";
                         auto it = std::find_if(
                     config.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>().begin(),
                     config.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>().end(),
@@ -146,7 +149,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
              continue;
            }
          
-         throw_runtime_error_with_origin("No handler found for object - bug of new Configurator? Call Piotr.");
+         throw_runtime_error_with_origin("No handler found for object - bug of new Configurator? Call Piotr.  The tag in question is:"+tagName);
     }
     </xsl:template>
 
