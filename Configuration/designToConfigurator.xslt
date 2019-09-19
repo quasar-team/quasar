@@ -49,50 +49,11 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 	
 	
-	<xsl:template name="hasObjects">
+	<xsl:template name="hasObjects_instantiatedby_design">
 	<xsl:param name="parentNodeId"/>
 	<xsl:param name="parentDevice"/>
 	<xsl:param name="configuration" />
 	<xsl:param name="containingClass" />
-	<xsl:choose>
-	<xsl:when test="@instantiateUsing='configuration'">
-	for (const Configuration::<xsl:value-of select="@class"/> &amp; <xsl:value-of select="@class"/>config : <xsl:value-of select="$configuration"/>.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>())
-	<!-- this funny thing with adding 1 above is when a class has hasObjects towards itself- xsdcxx then renames access method with 1 at the end in order not to confuse it with the constructor -->
-		{
-			<xsl:variable name="containedClass"><xsl:value-of select="@class"/></xsl:variable>
-			<!-- If contained class doesn't have device logic then there is nothing to add -->
-			<xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
-			Device::<xsl:value-of select="fnc:DClassName($containedClass)"/>* newObject =
-			</xsl:if>
-			configure<xsl:value-of select="@class"/> (
-				<xsl:value-of select="@class"/>config,
-				nm,
-				<xsl:value-of select="$parentNodeId"/><xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">,
-				<xsl:choose>
-				<xsl:when test="(fnc:getCountParentClassesAndRoot(/,@class)=1) and (fnc:classHasDeviceLogic(/,$containingClass)='true')">
-				<xsl:value-of select="$parentDevice"/>
-				</xsl:when>
-				<xsl:otherwise>
-				/*parent not existing */ 0
-				</xsl:otherwise>
-				</xsl:choose>
-			      </xsl:if>
-				);
-			
-			<xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
-			<xsl:choose>
-			<xsl:when test="fnc:classHasDeviceLogic(/,$containingClass)='true'">
-			<xsl:value-of select="$parentDevice"/>-&gt;add( newObject );
-			</xsl:when>
-			<xsl:otherwise>
-			Device::<xsl:value-of select="fnc:DClassName($containedClass)"/>::registerOrphanedObject( newObject );
-			</xsl:otherwise>
-			</xsl:choose>
-			</xsl:if>
-			
-		}
-	</xsl:when>
-	<xsl:when test="@instantiateUsing='design'">
 	/* Experimental code: instantiating from design. */
 	<xsl:variable name="className"><xsl:value-of select="@class"/></xsl:variable>
 	<xsl:for-each select="d:object">
@@ -114,9 +75,83 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	}
 	</xsl:for-each>
 	
-	</xsl:when>	
-	</xsl:choose>
 	</xsl:template>
+    
+    <xsl:template name="all_hasObjects_instantiatedby_configuration">
+    <xsl:param name="parentNodeId"/>
+    <xsl:param name="containingClass"/>
+    <xsl:param name="parentDevice"/>
+    xercesc::DOMNodeList* childrenNodes = config._node()->getChildNodes();
+    for (size_t i = 0; i &lt; childrenNodes-&gt;getLength(); ++i )
+    {
+         xercesc::DOMElement * element = dynamic_cast&lt;xercesc::DOMElement *&gt; (childrenNodes->item(i));
+         if (!element)
+            continue; // it wasnt an element anyway
+        // Note for the code below: the internal representation of strings in Xerces is UTF-16 so we should transcode 
+        char* transcodedTagName = xercesc::XMLString::transcode(element-&gt;getTagName());
+        const std::string tagName (transcodedTagName);
+        xercesc::XMLString::release(&amp;transcodedTagName);
+        
+        if (tagName == "StandardMetaData")
+            continue;
+        
+         <xsl:for-each select="d:hasobjects[@instantiateUsing='configuration']">
+
+           if ( tagName=="<xsl:value-of select="@class"/>")
+           {
+                        auto it = std::find_if(
+                    config.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>().begin(),
+                    config.<xsl:value-of select="@class"/><xsl:if test="$containingClass=@class">1</xsl:if>().end(),
+                    [element](const Configuration::<xsl:value-of select="@class"/>&amp; x){return x._node() == element;});
+
+            <xsl:if test="fnc:classHasDeviceLogic(/,@class)='true'">
+            Device::<xsl:value-of select="fnc:DClassName(@class)"/>* newObject =
+            </xsl:if>
+            configure<xsl:value-of select="@class"/> (*it, nm, <xsl:value-of select="$parentNodeId"/>
+            <xsl:if test="fnc:classHasDeviceLogic(/,@class)='true'">,
+                <xsl:choose>
+                <xsl:when test="(fnc:getCountParentClassesAndRoot(/,@class)=1) and (fnc:classHasDeviceLogic(/,$containingClass)='true')">
+                <xsl:value-of select="$parentDevice"/>
+                </xsl:when>
+                <xsl:otherwise>
+                /*parent not existing */ 0
+                </xsl:otherwise>
+                </xsl:choose>
+                  </xsl:if>);
+                  
+            <xsl:if test="fnc:classHasDeviceLogic(/,@class)='true'">
+            <xsl:choose>
+            <xsl:when test="fnc:classHasDeviceLogic(/,$containingClass)='true'">
+            <xsl:value-of select="$parentDevice"/>-&gt;add( newObject );
+            </xsl:when>
+            <xsl:otherwise>
+            Device::<xsl:value-of select="fnc:DClassName(@class)"/>::registerOrphanedObject( newObject );
+            </xsl:otherwise>
+            </xsl:choose>
+            </xsl:if>
+                  
+            continue;
+           }
+           
+
+           
+         </xsl:for-each>
+         
+                    if (tagName == "CalculatedVariable")
+           {
+             auto it = std::find_if(
+                          config.CalculatedVariable().begin(),
+                          config.CalculatedVariable().end(),
+            [element](const Configuration::CalculatedVariable&amp; x) {
+                return x._node() == element;
+            });
+             Engine::instantiateCalculatedVariable (nm, <xsl:value-of select="$parentNodeId"/>, *it);
+             continue;
+           }
+         
+         throw_runtime_error_with_origin("No handler found for object - bug of new Configurator? Call Piotr.  The tag in question is:"+tagName);
+    }
+    </xsl:template>
 
 	<xsl:template name="configureHeader">
 	<xsl:param name="class"/>
@@ -167,21 +202,22 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		dItem-&gt;linkAddressSpace( asItem, asItem-&gt;nodeId().toString().toUtf8() );
  		
 		</xsl:if>
-		
-		<xsl:for-each select="/d:design/d:class[@name=$class]/d:hasobjects">
-		<xsl:call-template name="hasObjects">
-		<xsl:with-param name="containingClass"><xsl:value-of select="$class"/></xsl:with-param>
-		<xsl:with-param name="parentDevice">dItem</xsl:with-param>
-		<xsl:with-param name="parentNodeId">asItem->nodeId()</xsl:with-param>
-		<xsl:with-param name="configuration">config</xsl:with-param>
-		</xsl:call-template>
-		</xsl:for-each>
-
-        for ( const Configuration::CalculatedVariable &amp; item : config.CalculatedVariable() )
-        {
-            Engine::instantiateCalculatedVariable (nm, asItem->nodeId(), item);   
-        }
-		
+        
+        <xsl:for-each select="/d:design/d:class[@name=$class]/d:hasobjects[@instantiateUsing='design']">
+            <xsl:call-template name="hasObjects_instantiatedby_design">
+            <xsl:with-param name="containingClass"><xsl:value-of select="$class"/></xsl:with-param>
+            <xsl:with-param name="parentDevice">dItem</xsl:with-param>
+            <xsl:with-param name="parentNodeId">asItem->nodeId()</xsl:with-param>
+            <xsl:with-param name="configuration">config</xsl:with-param>
+            </xsl:call-template>
+        </xsl:for-each>
+        
+        <xsl:call-template name="all_hasObjects_instantiatedby_configuration">
+        <xsl:with-param name="parentNodeId">asItem->nodeId()</xsl:with-param>
+        <xsl:with-param name="containingClass"><xsl:value-of select="$class"/></xsl:with-param>
+        <xsl:with-param name="parentDevice">dItem</xsl:with-param>
+        </xsl:call-template>
+				
 		<xsl:if test="fnc:classHasDeviceLogic(/,$class)='true'">
 		return dItem;
 		</xsl:if>
@@ -193,7 +229,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:template match="/">
 
 	<xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToConfigurator.xslt','Piotr Nikiel')"/>
-	#include &lt;iostream&gt;
+    
+    #include &lt;xercesc/dom/DOMNodeList.hpp&gt;
+    #include &lt;xercesc/dom/DOMElement.hpp&gt;
 	
 	#include &lt;ASUtils.h&gt;
 	#include &lt;ASInformationModel.h&gt;
@@ -209,6 +247,8 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	#include &lt;meta.h&gt;
 
 	#include &lt;LogIt.h&gt;
+    
+    #include &lt;Utils.h&gt;
     
     using namespace CalculatedVariables;
 	
@@ -264,7 +304,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	
 	try
 	{
-	    theConfiguration = Configuration::configuration(fileName);
+	    theConfiguration = Configuration::configuration(fileName, ::xml_schema::flags::keep_dom);
 	} 
 	catch (xsd::cxx::tree::parsing&lt;char&gt; &amp;exception)
 	{
@@ -286,43 +326,25 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	configureMeta( *theConfiguration.get(), nm, rootNode );	
 	if(!runConfigurationDecoration(*theConfiguration, configXmlDecoratorFunction)) return false;
     
-	<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']">
-
-        <xsl:call-template name="hasObjects">
+    const Configuration::Configuration&amp; config = *theConfiguration;
+    
+       <xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='design']">
+            <xsl:call-template name="hasObjects_instantiatedby_design">
+            <xsl:with-param name="containingClass">Root</xsl:with-param>
+            <xsl:with-param name="parentDevice">deviceRoot</xsl:with-param>
+            <xsl:with-param name="parentNodeId">rootNode</xsl:with-param>
+            <xsl:with-param name="configuration">config</xsl:with-param>
+            </xsl:call-template>
+        </xsl:for-each>
+    
+    <xsl:for-each select="/d:design/d:root">
+        <xsl:call-template name="all_hasObjects_instantiatedby_configuration">
+        <xsl:with-param name="parentNodeId">rootNode</xsl:with-param>
         <xsl:with-param name="containingClass">Root</xsl:with-param>
         <xsl:with-param name="parentDevice">deviceRoot</xsl:with-param>
-        <xsl:with-param name="parentNodeId">rootNode</xsl:with-param>
-        <xsl:with-param name="configuration">(*theConfiguration)</xsl:with-param>
         </xsl:call-template>
-
-	</xsl:for-each>
-	
-	<xsl:for-each select="/d:design/d:root/d:hasobjects[@instantiateUsing='design']">
-	<xsl:variable name="className"><xsl:value-of select="@class"/></xsl:variable>
-	<xsl:for-each select="d:object">
-	{
-				Configuration::<xsl:value-of select="$className"/> c ("<xsl:value-of select="@name"/>");
-				AddressSpace::<xsl:value-of select="fnc:ASClassName($className)"/> *a<xsl:value-of select="fnc:ASClassName($className)"/> = 
-				new AddressSpace::AS<xsl:value-of select="$className"/>(
-				rootNode, 
-				nm->getTypeNodeId(AddressSpace::ASInformationModel::<xsl:value-of select="fnc:typeNumericId($className)"/>), 
-				nm,
-				c);
-				<xsl:variable name="className"><xsl:value-of select="$className"/></xsl:variable>
-				<xsl:for-each select="/d:design/d:class[@name=$className]">
-				<xsl:call-template name="createDeviceLogic">
-				<xsl:with-param name="configItem">c</xsl:with-param>
-				<xsl:with-param name="parentDevice">deviceRoot</xsl:with-param>
-				</xsl:call-template>
-				</xsl:for-each>
-	}
-	</xsl:for-each>
-	</xsl:for-each>
-    
-    for ( const Configuration::CalculatedVariable &amp; item : theConfiguration-&gt;CalculatedVariable() )
-    {
-            Engine::instantiateCalculatedVariable (nm, rootNode, item);   
-    }
+    </xsl:for-each>
+       
     
 	return true;
 }
