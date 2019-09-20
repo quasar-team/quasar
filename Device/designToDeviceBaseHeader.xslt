@@ -110,6 +110,12 @@
 		<xsl:text> </xsl:text><xsl:value-of select="@name"/> () { return m_<xsl:value-of select="@name"/>; }
 		</xsl:for-each>
 		
+        <xsl:for-each select="d:hasobjects">
+        <xsl:if test="fnc:isHasObjectsSingleton(.)='true'">
+        // This function is generated because the hasObjects links to exactly 1 object
+        <xsl:value-of select="fnc:DClassName(@class)"/> * <xsl:value-of select="lower-case(@class)"/>() const;
+        </xsl:if>
+        </xsl:for-each>
 		
 		/* mutex operations */
 		<xsl:if test="fnc:classDeviceLogicHasMutex(/,$className)='true'">
