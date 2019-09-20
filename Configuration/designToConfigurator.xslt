@@ -92,7 +92,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
         const std::string tagName (transcodedTagName);
         xercesc::XMLString::release(&amp;transcodedTagName);
         
-        if (tagName == "StandardMetaData")
+        if (tagName == "StandardMetaData" || tagName == "CalculatedVariableGenericFormula" )
             continue;
         
          <xsl:for-each select="d:hasobjects[@instantiateUsing='configuration']">
