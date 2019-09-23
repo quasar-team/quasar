@@ -322,6 +322,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
     
 	UaNodeId rootNode = UaNodeId(OpcUaId_ObjectsFolder, 0);
 	Device::DRoot *deviceRoot = Device::DRoot::getInstance();
+    (void)deviceRoot; // silence-out the warning from unused variable
 
 	configureMeta( *theConfiguration.get(), nm, rootNode );	
 	if(!runConfigurationDecoration(*theConfiguration, configXmlDecoratorFunction)) return false;
