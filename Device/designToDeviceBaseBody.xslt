@@ -117,7 +117,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		
 		</xsl:for-each><!-- for-each configEntry -->
 		
-		<xsl:if test="fnc:isHasObjectsSingleton(.)='true'">
+		<xsl:if test="fnc:isHasObjectsSingleton(.)='true' and fnc:classHasDeviceLogic(/,@class)='true'">
 		// This function is generated because the hasObjects links to exactly 1 object
 		<xsl:value-of select="fnc:DClassName(@class)"/> * <xsl:value-of select="fnc:Base_DClassName($className)"/>::<xsl:value-of select="lower-case(@class)"/>() const
 		{

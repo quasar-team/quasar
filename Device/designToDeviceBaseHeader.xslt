@@ -59,7 +59,8 @@
 		<xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
 		void add ( <xsl:value-of select="fnc:DClassName(@class)"/> *);
 		const std::vector&lt;<xsl:value-of select="fnc:DClassName(@class)"/> * &gt; &amp; <xsl:value-of select="lower-case(@class)"/>s () const { return m_<xsl:value-of select="@class"/>s; }
-		<xsl:if test="fnc:isHasObjectsSingleton(.)='true'">
+		// This function is generated because the hasObjects links to exactly 1 object
+        <xsl:if test="fnc:isHasObjectsSingleton(.)='true'">
 		<xsl:value-of select="fnc:DClassName(@class)"/> * <xsl:value-of select="lower-case(@class)"/>() const;
 		</xsl:if>
 		</xsl:if>
@@ -82,6 +83,8 @@
 		  <xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const;
 		</xsl:for-each>
 		</xsl:for-each>
+        
+        
 		
 		<xsl:for-each select="d:hasobjects">
 		<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
@@ -109,13 +112,6 @@
 		</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="@name"/> () { return m_<xsl:value-of select="@name"/>; }
 		</xsl:for-each>
-		
-        <xsl:for-each select="d:hasobjects">
-        <xsl:if test="fnc:isHasObjectsSingleton(.)='true'">
-        // This function is generated because the hasObjects links to exactly 1 object
-        <xsl:value-of select="fnc:DClassName(@class)"/> * <xsl:value-of select="lower-case(@class)"/>() const;
-        </xsl:if>
-        </xsl:for-each>
 		
 		/* mutex operations */
 		<xsl:if test="fnc:classDeviceLogicHasMutex(/,$className)='true'">
