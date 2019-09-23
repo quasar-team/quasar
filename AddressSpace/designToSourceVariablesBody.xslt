@@ -355,7 +355,7 @@ UaStatus SourceVariables_spawnIoJobRead (
 		{
 		<xsl:for-each select="/d:design/d:class">
 		<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
-		<xsl:for-each select="d:sourcevariable">
+		<xsl:for-each select="d:sourcevariable[@addressSpaceRead!='forbidden']">
         case ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/>:
             <xsl:choose>
                 <xsl:when test="fnc:classHasDeviceLogic(/,$className)!='true'">
