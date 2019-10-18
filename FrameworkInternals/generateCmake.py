@@ -38,7 +38,7 @@ def generateCmake(context, buildType="Release"):
 		if os.path.isfile(os.path.join(context['projectSourceDir'], 'CMakeCache.txt')):
 			raise Mistake('User mistake? CMakeCache.txt exists in source directory; '+
 						  'that will prevent CMake to make a successful out-of-source build. '+
-						  'Remove CMakeCache.txt (or attempt "quasar.py clean" and retry') 
+						  'Remove CMakeCache.txt and all cmake_install.cmake files, and build/ directory') 
 		
 	projectSourceDir = context['projectSourceDir']
 	projectBinaryDir = context['projectBinaryDir']
