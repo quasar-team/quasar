@@ -34,6 +34,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 
 
 	<xsl:template name="deviceBody">
+    <xsl:param name="className"/>
 	 
 		void <xsl:value-of select="fnc:Base_DClassName(@name)"/>::linkAddressSpace( AddressSpace::<xsl:value-of select="fnc:ASClassName(@name)"/> *addressSpaceLink, const std::string &amp; stringAddress)
 		{
@@ -170,43 +171,38 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	 
 	
 	 	<xsl:template match="/">	
-	 	<xsl:if test="not(/d:design/d:class[@name=$className])">
-				<xsl:message terminate="yes">Class '<xsl:value-of select="$className"/>' not found. If you are running this through generateDevice*.sh scripts, maybe you forgot to put name of the class as a parameter?</xsl:message>
-		</xsl:if>
-		<xsl:if test="fnc:classHasDeviceLogic(/,$className)!='true'">
-				<xsl:message terminate="yes">Class '<xsl:value-of select="$className"/>' hasnt got device logic</xsl:message>
-		</xsl:if>
+
 	 	<xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToDeviceBaseBody.xslt','Piotr Nikiel')"/>
 
 		
 #include &lt;Configuration.hxx&gt;
 
 
-#include &lt;<xsl:value-of select="fnc:Base_DClassName($className)"/>.h&gt;
-
-
-
-	<xsl:for-each select="/d:design/d:class[@name=$className]">
-	<xsl:if test="fnc:classHasDeviceLogic(/,$className)='true'">
-	<xsl:for-each select="d:hasobjects">
-	<xsl:variable name="containedClass"><xsl:value-of select="@class"/></xsl:variable>
-	<xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
-	#include &lt;<xsl:value-of select="fnc:DClassName(@class)"/>.h&gt;
-	</xsl:if>
-	</xsl:for-each>
-	</xsl:if>
-	</xsl:for-each>
+    <xsl:for-each select="/d:design/d:class">
+        <xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
+            #include &lt;<xsl:value-of select="fnc:Base_DClassName(@name)"/>.h&gt;
+            <xsl:for-each select="d:hasobjects">
+                <xsl:variable name="containedClass"><xsl:value-of select="@class"/></xsl:variable>
+                <xsl:if test="fnc:classHasDeviceLogic(/,$containedClass)='true'">
+                #include &lt;<xsl:value-of select="fnc:DClassName(@class)"/>.h&gt;
+                </xsl:if>
+            </xsl:for-each>
+        </xsl:if>
+    </xsl:for-each>
 
 
 
 namespace Device
 {
 
-	<xsl:for-each select="/d:design/d:class[@name=$className]">
-	<xsl:call-template name="deviceBody"/>
+	<xsl:for-each select="/d:design/d:class">
+    <xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
+	<xsl:call-template name="deviceBody">
+    <xsl:with-param name="className"><xsl:value-of select="@name"/></xsl:with-param>
+    </xsl:call-template>
 	
-	std::list&lt;<xsl:value-of select="fnc:DClassName($className)"/>*&gt; Base_<xsl:value-of select="fnc:DClassName($className)"/>::s_orphanedObjects;
-	
+	std::list&lt;<xsl:value-of select="fnc:DClassName(@name)"/>*&gt; Base_<xsl:value-of select="fnc:DClassName(@name)"/>::s_orphanedObjects;
+	</xsl:if>
 	</xsl:for-each>
 	
 	

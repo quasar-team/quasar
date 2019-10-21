@@ -46,12 +46,14 @@ commands = [
 	[['generate','cmake_headers'],    generateCmake, False],   # This one takes variable number of params
 	[['prepare_build'],               generateCmake, True],   #
 	[['generate','root'],             lambda context: transformByKey([TransformKeys.D_ROOT_H, TransformKeys.D_ROOT_CPP], {'context':context}), False],		 # This takes none - check
-	[['generate','base'],             lambda context, className: transformByKey([TransformKeys.D_BASE_H, TransformKeys.D_BASE_CPP], {'context':context, 'className':className}), False],
+	[['generate','base_h'],           lambda context, className: transformByKey([TransformKeys.D_BASE_H], {'context':context, 'className':className}), False],
+	[['generate','base_cpp_all'],     lambda context: transformByKey([TransformKeys.D_BASE_CPP_ALL], {'context':context}), False],
 	[['generate','device','--all'],   generateAllDevices, True],
 	[['generate','device'],           generateDeviceClass, True],
 	[['generate','source_variables'], lambda context: transformByKey([TransformKeys.AS_SOURCEVARIABLES_H, TransformKeys.AS_SOURCEVARIABLES_CPP], {'context':context}), False],
 	[['generate','info_model'],       lambda context: transformByKey([TransformKeys.AS_INFOMODEL_H, TransformKeys.AS_INFOMODEL_CPP], {'context':context}), False],
-	[['generate','asclass'],          lambda context, className: transformByKey([TransformKeys.AS_CLASS_H, TransformKeys.AS_CLASS_CPP], {'context':context, 'className':className}), False],
+	[['generate','asclass'],          lambda context, className: transformByKey([TransformKeys.AS_CLASS_H], {'context':context, 'className':className}), False],
+	[['generate','asclass_cpp_all'],  lambda context: transformByKey([TransformKeys.AS_CLASS_CPP_ALL], {'context':context}), False],
 	[['generate','config_xsd'],       generateConfiguration, False],
 	[['generate','config_cpp'],       lambda context: transformByKey(TransformKeys.CONFIGURATOR, {'context':context}), False],
 	[['generate','config_validator'], lambda context: transformByKey(TransformKeys.CONFIG_VALIDATOR, {'context':context}), False],
