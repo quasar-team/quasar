@@ -23,7 +23,7 @@ import os
 import platform
 import subprocess
 import re
-from generateCmake import generateCmake
+from generateCmake import generateCmake, BuildSystemDefault
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
 from quasarExceptions import WrongArguments
@@ -78,7 +78,7 @@ def set_build_config(build_config):
         else:
                 write_build_config_selector(build_config)
 
-def automatedBuild(context, buildType="Release"):
+def automatedBuild(context, buildType="Release", buildSystem=BuildSystemDefault):
 	"""Method that generates the cmake headers, and after that calls make/vis-studio to compile your server.
 
 	Keyword arguments:
@@ -87,7 +87,7 @@ def automatedBuild(context, buildType="Release"):
         if not buildType in ["Release","Debug"]:
                 raise Exception ("Only Release or Debug is accepted as the parameter. "
                                  "If you are used to passing build config through here, note this version of quasar has separate command to do that: build_config")
-	generateCmake(context, buildType)
+	generateCmake(context, buildType, buildSystem)
 
 	print("Calling build, type ["+buildType+"]...")
 	if platform.system() == "Windows":
@@ -96,7 +96,10 @@ def automatedBuild(context, buildType="Release"):
 		except Exception, e:
 			print("Build process error. Exception: [" + str(e) + "]")
 	elif platform.system() == "Linux":
-		print('make -j$(nproc)')
-		process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
-		out, err = process.communicate()
-		subprocessWithImprovedErrors([getCommand("make"), "-j" + str(int(out))], getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
+		if buildSystem == BuildSystemDefault:
+			print('make -j$(nproc)')
+			process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
+			out, err = process.communicate()
+			subprocessWithImprovedErrors([getCommand("make"), "-j" + str(int(out))], getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
+		else:
+			subprocessWithImprovedErrors([getCommand("cmake"), "--build", ".", "--config", buildType], "cmake --build")

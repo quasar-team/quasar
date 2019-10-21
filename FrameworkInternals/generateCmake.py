@@ -28,7 +28,9 @@ from commandMap import getCommand
 from quasarExceptions import Mistake
 from manage_files import symlinkRuntimeDeps
 
-def generateCmake(context, buildType="Release"):
+BuildSystemDefault = "PlatformDefault"
+
+def generateCmake(context, buildType="Release", buildSystem=BuildSystemDefault):
 	"""Generates CMake header lists in various directories, and then calls cmake.
 	
 	Keyword arguments:
@@ -60,6 +62,7 @@ def generateCmake(context, buildType="Release"):
 					      "-G", "Visual Studio 15 2017 Win64", projectSourceDir],
 					     getCommand("cmake"))
 	elif platform.system() == "Linux":
-		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-                                              projectSourceDir],
+		buildSystemArgs = [] if buildSystem==BuildSystemDefault else ["-G", "Ninja"]
+		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType] + buildSystemArgs + 
+                                              [projectSourceDir],
 					     getCommand("cmake"))
