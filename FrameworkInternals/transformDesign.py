@@ -36,7 +36,7 @@ class TransformKeys(enum.Enum):
     AS_SOURCEVARIABLES_H = 1
     AS_SOURCEVARIABLES_CPP = 2
     AS_CLASS_H = 3
-    AS_CLASS_CPP = 4
+    AS_CLASS_CPP_ALL = 4
     AS_INFOMODEL_H = 5
     AS_INFOMODEL_CPP = 6
     CONFIGURATION_XSD = 7
@@ -48,7 +48,7 @@ class TransformKeys(enum.Enum):
     D_ROOT_H = 13
     D_ROOT_CPP = 14
     D_BASE_H = 15
-    D_BASE_CPP = 16
+    D_BASE_CPP_ALL = 16
     D_DEVICE_H = 17
     D_DEVICE_CPP = 18
     HONKYTONK = 19
@@ -74,7 +74,7 @@ QuasarTransforms = [
     [TransformKeys.AS_SOURCEVARIABLES_H,    'AddressSpace/designToSourceVariablesHeader.xslt',      'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
     [TransformKeys.AS_SOURCEVARIABLES_CPP,  'AddressSpace/designToSourceVariablesBody.xslt',        'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
     [TransformKeys.AS_CLASS_H,              'AddressSpace/designToClassHeader.xslt',                'AddressSpace/include/AS{className}.h',         'B',            True,           False,        'className={className}'],
-    [TransformKeys.AS_CLASS_CPP,            'AddressSpace/designToClassBody.xslt',                  'AddressSpace/src/AS{className}.cpp',           'B',            True,           False,        'className={className}'],
+    [TransformKeys.AS_CLASS_CPP_ALL,        'AddressSpace/designToClassBody.xslt',                  'AddressSpace/src/AddressSpaceClasses.cpp',     'B',            True,           False,        None],
     [TransformKeys.AS_INFOMODEL_H,          'AddressSpace/designToInformationModelHeader.xslt',     'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
     [TransformKeys.AS_INFOMODEL_CPP,        'AddressSpace/designToInformationModelBody.xslt',       'AddressSpace/src/ASInformationModel.cpp',      'B',            True,           False,        None],
     [TransformKeys.AS_CMAKE,                'AddressSpace/designToGeneratedCmakeAddressSpace.xslt', 'AddressSpace/cmake_generated.cmake',           'B',            False,          False,        None],
@@ -87,7 +87,7 @@ QuasarTransforms = [
     [TransformKeys.D_ROOT_H,                'Device/designToRootHeader.xslt',                       'Device/include/DRoot.h',                       'B',            True,           False,        None],
     [TransformKeys.D_ROOT_CPP,              'Device/designToRootBody.xslt',                         'Device/src/DRoot.cpp',                         'B',            True,           False,        None],
     [TransformKeys.D_BASE_H,                'Device/designToDeviceBaseHeader.xslt',                 'Device/generated/Base_D{className}.h',         'B',            True,           False,        'className={className}'],
-    [TransformKeys.D_BASE_CPP,              'Device/designToDeviceBaseBody.xslt',                   'Device/generated/Base_D{className}.cpp',       'B',            True,           False,        'className={className}'],
+    [TransformKeys.D_BASE_CPP_ALL,          'Device/designToDeviceBaseBody.xslt',                   'Device/generated/Base_All.cpp',                'B',            True,           False,        None],
     [TransformKeys.D_DEVICE_H,              'Device/designToDeviceHeader.xslt',                     'Device/include/D{className}.h',                'S',            True,           True,         'className={className}'],
     [TransformKeys.D_DEVICE_CPP,            'Device/designToDeviceBody.xslt',                       'Device/src/D{className}.cpp',                  'S',            True,           True,         'className={className}'],
     [TransformKeys.D_CMAKE,                 'Device/designToGeneratedCmakeDevice.xslt',             'Device/generated/cmake_header.cmake',          'B',            False,          False,        None],

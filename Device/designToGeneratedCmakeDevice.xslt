@@ -31,22 +31,23 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:include href="../Design/CommonFunctions.xslt" />
 	<xsl:template name="commands">
 	
-	add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.h ${PROJECT_BINARY_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.cpp 
+	add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.h 
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-	COMMAND python quasar.py generate base <xsl:value-of select="@name"/> --project_binary_dir ${PROJECT_BINARY_DIR}
-	DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/quasar.py ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseHeader.xslt Configuration.hxx_GENERATED validateDesign ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseBody.xslt
+	COMMAND python quasar.py generate base_h <xsl:value-of select="@name"/> --project_binary_dir ${PROJECT_BINARY_DIR}
+	DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/quasar.py ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseHeader.xslt Configuration.hxx_GENERATED validateDesign 
 	)	
 	
 	
 	</xsl:template>
-	<xsl:template name="simpleFileList">
-	${PROJECT_SOURCE_DIR}/AddressSpace/include/<xsl:value-of select="fnc:ASClassName(@name)"/>.h
-	${PROJECT_SOURCE_DIR}/AddressSpace/src/<xsl:value-of select="fnc:ASClassName(@name)"/>.cpp
-	</xsl:template>
+
 	
 	<xsl:template match="/">
 	
-
+    add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/Base_All.cpp 
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND python quasar.py generate base_cpp_all --project_binary_dir ${PROJECT_BINARY_DIR}
+    DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/quasar.py Configuration.hxx_GENERATED validateDesign ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseBody.xslt
+    )   
 	
 	<xsl:for-each select="/d:design/d:class">
 	<xsl:call-template name="commands"/>
@@ -55,10 +56,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	set(DEVICEBASE_GENERATED_FILES
         include/DRoot.h
         src/DRoot.cpp
+        generated/Base_All.cpp
 	<xsl:for-each select="/d:design/d:class">
 	<xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
 	generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.h
-	generated/<xsl:value-of select="fnc:Base_DClassName(@name)"/>.cpp
 	</xsl:if>
 	</xsl:for-each>
 	)
