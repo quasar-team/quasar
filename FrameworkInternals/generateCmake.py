@@ -38,8 +38,6 @@ def generateCmake(context, *args):
 	Keyword arguments:
 	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""	
-	import pdb
-	pdb.set_trace()
 	args = list(args) # we do it to be able to remove things via extract_argument, otherwise it is immutable tuple
 	(args2, builder) = extract_argument(args, "--builder")
 	if len(args2) > 1:
