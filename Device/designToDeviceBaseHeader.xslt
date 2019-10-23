@@ -232,7 +232,6 @@
 
 		
 		#include &lt;DRoot.h&gt;
-		<!-- #include &lt;Configuration.hxx&gt;  -->
 		
 		#include &lt;opcua_platformdefs.h&gt;
 
