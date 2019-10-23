@@ -27,13 +27,24 @@ from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
 from quasarExceptions import Mistake
 from manage_files import symlinkRuntimeDeps
+from quasar_basic_utils import extract_argument
 
-def generateCmake(context, buildType="Release"):
+BuilderDefault = "PlatformDefault"
+
+# previous definition: def generateCmake(context, buildType="Release", buildSystem=BuilderDefault):
+def generateCmake(context, *args):
 	"""Generates CMake header lists in various directories, and then calls cmake.
 	
 	Keyword arguments:
 	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""	
+	args = list(args) # we do it to be able to remove things via extract_argument, otherwise it is immutable tuple
+	(args2, builder) = extract_argument(args, "--builder")
+	if len(args2) > 1:
+		raise WrongArguments("Max one positional argument for generateCmake")
+	buildType = "Release" if len(args2) == 0 else args2[0]
+	if builder is None: builder = BuilderDefault
+	
 	if not context['projectSourceDir'] == context['projectBinaryDir']: # out-of-source build
 		if os.path.isfile(os.path.join(context['projectSourceDir'], 'CMakeCache.txt')):
 			raise Mistake('User mistake? CMakeCache.txt exists in source directory; '+
@@ -51,7 +62,7 @@ def generateCmake(context, buildType="Release"):
 	
 	transformByKey(TransformKeys.AS_CMAKE, {'context':context})
 	transformByKey(TransformKeys.D_CMAKE, {'context':context})
-	print("Build type ["+buildType+"]")
+	print("Build type [{0}], Builder [{1}]".format(buildType, builder))
 	os.chdir(projectBinaryDir)
 
 	print("Calling CMake")
@@ -60,6 +71,7 @@ def generateCmake(context, buildType="Release"):
 					      "-G", "Visual Studio 15 2017 Win64", projectSourceDir],
 					     getCommand("cmake"))
 	elif platform.system() == "Linux":
-		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-                                              projectSourceDir],
+		builderArgs = [] if builder == BuilderDefault else ["-G", builder]
+		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType] + builderArgs + 
+                                              [projectSourceDir],
 					     getCommand("cmake"))

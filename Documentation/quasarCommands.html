@@ -6,18 +6,20 @@
   </head>
   <body>
     <h1>quasar.py command help</h1>
-    <h2><a name="build"></a>build (TODO this description is complete
-      crap)<br>
+    <h2><a name="build"></a>build<br>
     </h2>
-    <p>Method that generates the cmake headers, and after that calls
-      make/vis-studio to compile your server.<br>
-      <br>
-      Keyword arguments:<br>
-      buildType -- Optional parameter to specify Debug or Release build.
-      If it is not specified it will default to Release.<br>
+    <p>This is the main command to build a quasar-based OPC-UA server.<br>
+      Syntax:<br>
+      ./quasar.py build [--builder builder] [buildType]<br>
     </p>
-    <p><br>
+    <p>Where:<br>
     </p>
+    <ul>
+      <li>builder (optional) can be Ninja (in Linux), or left absent for
+        GNU Make</li>
+      <li>buildType (optional) can be either Debug or Release(default)<br>
+      </li>
+    </ul>
     <h2><a name="build_config"></a>build_config</h2>
     <p>&nbsp;&nbsp;&nbsp; Prints the currently chosen build
       configuration file.<br>

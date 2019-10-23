@@ -23,10 +23,11 @@ import os
 import platform
 import subprocess
 import re
-from generateCmake import generateCmake
+from generateCmake import generateCmake, BuilderDefault
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
 from quasarExceptions import WrongArguments
+from quasar_basic_utils import extract_argument
 
 def findFileRecursively( topdir, target ):
 	for dirpath, dirnames, files in os.walk(topdir):
@@ -78,25 +79,35 @@ def set_build_config(build_config):
         else:
                 write_build_config_selector(build_config)
 
-def automatedBuild(context, buildType="Release"):
+def automatedBuild(context, *args):
 	"""Method that generates the cmake headers, and after that calls make/vis-studio to compile your server.
 
 	Keyword arguments:
 	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
 	"""
-        if not buildType in ["Release","Debug"]:
-                raise Exception ("Only Release or Debug is accepted as the parameter. "
-                                 "If you are used to passing build config through here, note this version of quasar has separate command to do that: build_config")
-	generateCmake(context, buildType)
+	args2 = list(args) # we do it to be able to remove things via extract_argument, otherwise it is immutable tuple
+	(args2, builder) = extract_argument(args2, "--builder")
+	if builder is None: builder = BuilderDefault
+	if len(args2) > 1:
+		raise WrongArguments("Max one positional argument for build")
+	buildType = "Release" if len(args2) == 0 else args2[0]
+	if not buildType in ["Release","Debug"]:
+				raise Exception ("Only Release or Debug is accepted as the parameter. "
+								 "If you are used to passing build config through here, note this version of quasar has separate command to do that: build_config")
+				
+	generateCmake(context, *args)
 
-	print("Calling build, type ["+buildType+"]...")
+	print("Calling build, type [{0}], builder [{1}]".format(buildType, builder))
 	if platform.system() == "Windows":
 		try:
 			subprocessWithImprovedErrors( "cmake --build . --target ALL_BUILD --config "+buildType, 'visual studio build')
 		except Exception, e:
 			print("Build process error. Exception: [" + str(e) + "]")
 	elif platform.system() == "Linux":
-		print('make -j$(nproc)')
-		process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
-		out, err = process.communicate()
-		subprocessWithImprovedErrors([getCommand("make"), "-j" + str(int(out))], getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
+		if builder == BuilderDefault:
+			print('make -j$(nproc)')
+			process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
+			out, err = process.communicate()
+			subprocessWithImprovedErrors([getCommand("make"), "-j" + str(int(out))], getCommand("make"))#the conversion from string to int and back to string is to remove all whitespaces and ensure that we have an integer
+		else:
+			subprocessWithImprovedErrors([getCommand("cmake"), "--build", ".", "--config", builder], "cmake --build")
