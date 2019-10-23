@@ -38,6 +38,7 @@ from runDoxygen import runDoxygen
 from externalToolCheck import checkExternalDependencies
 from optionalModules import enableModule, disableModule, listModules, listEnabledModules, removeModules, removeModule
 from transformDesign import transformByKey, TransformKeys
+from quasar_basic_utils import extract_argument
 
 # format is: [command name], callable, for_users
 # where for_users is True for non-internal commands
@@ -95,21 +96,6 @@ def getCommandFromFunction(function):
     if len(matching) != 1:
         return ''
     return ' '.join(matching[0][0])
-
-def extract_argument(inData, key):
-	""" If key is present in inData, will remove it and the following element from the list. 
-		Returns a tuple of the output list (i.e. after removal of two elements) and the value of the element (i.e. the second of the two) """ 
-	if key in inData:
-		pos = inData.index(key)
-		output = inData
-		output.pop(pos)
-		try:
-			value = output.pop(pos)
-		except IndexError:
-			raise Exception ('Argument {0} requires to be followed by a value. Run out of arguments.'.format(key))
-		return (output, value)
-	else:  # nothing to do, argument not present
-		return (inData, None)
 
 def extract_common_arguments(inData):
 	""" Will parse some common arguments and remove them from the inData list """

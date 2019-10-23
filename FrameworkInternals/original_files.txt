@@ -187,6 +187,7 @@ File quasarCommands.py						must_exist,must_be_versioned,md5=check,install=overw
 File OptionalModule.cmake                   must_exist,must_be_versioned,md5=check,install=overwrite,
 File astyleSubstitute.py                    must_exist,must_be_versioned,md5=check,install=overwrite,
 File quasarExceptions.py               	    must_exist,must_be_versioned,md5=check,install=overwrite,
+File quasar_basic_utils.py                  must_exist,must_be_versioned,md5=check,install=overwrite,
 
 Directory RPM install=create
 
