@@ -28,11 +28,12 @@ xmlns:fnc="http://cern.ch/quasar/MyFunctions"
 xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd ">
 	<xsl:include href="../Design/CommonFunctions.xslt" />
 	<xsl:output method="text"></xsl:output>
-	 <xsl:param name="className"/>
+	 
 	 	<xsl:param name="xsltFileName"/>
 
 	
 		<xsl:template name="classBody">
+        <xsl:param name="className"/>
 		  <xsl:variable name="singleVariableNode"><xsl:if test="/d:design/d:class[@name=$className]/@singleVariableNode='true'">true</xsl:if></xsl:variable>
 	
 #include &lt;<xsl:value-of select="fnc:ASClassName(@name)"/>.h&gt;
@@ -858,11 +859,10 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 
     #include &lt;SourceVariables.h&gt;
 	
-	<xsl:if test="not(/d:design/d:class[@name=$className])">
-		<xsl:message terminate="yes">Class not found.</xsl:message>
-	</xsl:if>
-	<xsl:for-each select="/d:design/d:class[@name=$className]">
-	<xsl:call-template name="classBody"/>
+	<xsl:for-each select="/d:design/d:class">
+	<xsl:call-template name="classBody">
+    <xsl:with-param name="className"><xsl:value-of select="@name"/></xsl:with-param>
+    </xsl:call-template>
 	</xsl:for-each>
 	</xsl:template>
 

@@ -232,7 +232,6 @@
 
 		
 		#include &lt;DRoot.h&gt;
-		#include &lt;Configuration.hxx&gt;
 		
 		#include &lt;opcua_platformdefs.h&gt;
 
@@ -240,6 +239,10 @@
 		namespace AddressSpace { class
 		<xsl:value-of select="fnc:ASClassName($className)" />
 		; }
+        
+        /* forward decl for Configuration */
+        namespace Configuration { class <xsl:value-of select="$className"/>; }
+        
 		/* forward decl for Parent */
 		<xsl:if test="fnc:getCountParentClassesAndRoot(/,$className)=1">
 		<xsl:if test="fnc:classHasDeviceLogic(/,fnc:getParentClass(/,$className))='true'">
