@@ -140,6 +140,17 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 		/* Singleton's instance. */
 		DRoot* DRoot::m_instance = 0;
 		
+        <xsl:for-each select="/d:design/d:root/d:hasobjects">
+        <xsl:if test="fnc:isHasObjectsSingleton(.)='true' and fnc:classHasDeviceLogic(/,@class)='true'">
+        // This function is generated because the hasObjects links to exactly 1 object
+        <xsl:value-of select="fnc:DClassName(@class)"/> * DRoot::<xsl:value-of select="lower-case(@class)"/>() const
+        {
+          if (m_children<xsl:value-of select="@class"/>.size() != 1)
+            throw std::runtime_error( "Configuration error: ROOT should have exactly 1 <xsl:value-of select="@class"/> " );
+          return m_children<xsl:value-of select="@class"/>.at(0);
+        }
+        </xsl:if>
+        </xsl:for-each>
 		
 	 	}
 	 	

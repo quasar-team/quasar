@@ -65,7 +65,10 @@
 		<xsl:if test="fnc:classHasDeviceLogic(/,$className)='true'">
 		void add (<xsl:value-of select="fnc:DClassName(@class)"/> *d) { m_children<xsl:value-of select="@class"/>.push_back (d); }
 		const std::vector&lt;<xsl:value-of select="fnc:DClassName(@class)"/> * &gt; &amp; <xsl:value-of select="lower-case(@class)"/>s () const { return m_children<xsl:value-of select="@class"/>; }
-		</xsl:if> 
+		<xsl:if test="fnc:isHasObjectsSingleton(.)='true'">
+        <xsl:value-of select="fnc:DClassName(@class)"/> * <xsl:value-of select="lower-case(@class)"/>() const;
+        </xsl:if>
+        </xsl:if> 
 		</xsl:for-each>
 		
 		
