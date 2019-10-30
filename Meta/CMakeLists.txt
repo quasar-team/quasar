@@ -39,7 +39,7 @@ file(GLOB META_SRCS src/AS*.cpp src/D*.cpp src/Base_*.cpp src/meta.cpp src/MetaU
 add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/MetaAmalgamate.cpp
         DEPENDS ${META_SRCS}
-        COMMAND python ${PROJECT_SOURCE_DIR}/FrameworkInternals/quasar_busybox.py amalgamate ${PROJECT_BINARY_DIR}/MetaAmalgamate.cpp ${META_SRCS}
+        COMMAND python ${PROJECT_SOURCE_DIR}/FrameworkInternals/quasar_utils.py amalgamate ${PROJECT_BINARY_DIR}/MetaAmalgamate.cpp ${META_SRCS}
         )
         
 

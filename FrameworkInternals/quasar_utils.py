@@ -1,5 +1,5 @@
 '''
-quasar_busybox.py
+quasar_utils.py
 
 @author:     Piotr Nikiel <piotr@nikiel.info>
 
