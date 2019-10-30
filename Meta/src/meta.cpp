@@ -191,7 +191,8 @@ void configureServer(const Configuration::Server& config, AddressSpace::ASNodeMa
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dServer, asServer);
     MetaUtils::setDServer(dServer);
 
-    dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
+    //pnikiel: temporary disabled as per OPCUA-1564 due to planned work on OPCUA-1541
+    //dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
 }
 
 void configureComponentLogLevel(const Log::LogComponentHandle& componentHandle, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
