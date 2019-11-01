@@ -30,6 +30,7 @@ counter-increment: h2counter;
     <font size="+3">Calculated Variables</font><br>
     <br>
     by: Piotr Nikiel, Oct-Nov 2018<br>
+    Updated Nov 2019<br>
     <br>
     <h1>Overview and end-user documentation<br>
     </h1>
@@ -73,7 +74,7 @@ counter-increment: h2counter;
     </ul>
     <h2>Design-based variables vs Calculated Variables<br>
     </h2>
-    <table cellspacing="2" cellpadding="2" width="100%" border="1">
+    <table border="1" cellspacing="2" cellpadding="2" width="100%">
       <tbody>
         <tr>
           <td valign="top"><b>Aspect</b><b><br>
@@ -129,7 +130,7 @@ counter-increment: h2counter;
       </tbody>
     </table>
     <h2>Feature list</h2>
-    <table cellspacing="2" cellpadding="2" border="1">
+    <table border="1" cellspacing="2" cellpadding="2">
       <tbody>
         <tr>
           <td valign="top"><b>Feature</b><br>
@@ -450,7 +451,7 @@ counter-increment: h2counter;
     <p>The XML element type is called CalculatedVariable and it has the
       following attributes:<br>
     </p>
-    <table cellspacing="2" cellpadding="2" border="1">
+    <table border="1" cellspacing="2" cellpadding="2">
       <tbody>
         <tr>
           <td valign="top"><b>Name</b><b><br>
@@ -570,8 +571,17 @@ counter-increment: h2counter;
       logical operators as well as isBoolean attribute:<br>
     </p>
     <pre>&lt;CalculatedVariable name="isWarmEnough" value="temperatureC &gt; 20" isBoolean="true" /&gt;<br></pre>
-    <p><br>
+    <h2>Counter-examples</h2>
+    <h3>Place no white-space between unary operation (e.g. a function)
+      and the parenthesis around its operand</h3>
+    <p>Note that it is illegal (i.e. will be refused at configuration
+      loading) to put any whitespace between unary operation (function?)
+      and the operands, e.g. this is legal:<br>
     </p>
+    <pre>&lt;CalculatedVariable name="V300" value="cos(x + 1.4)"/&gt;<br></pre>
+    and this is illegal:<br>
+    <pre>&lt;CalculatedVariable name="V300" value="cos (x + 1.4)"/&gt;<br>
+</pre>
     <h1>Advanced documentation for quasar developers</h1>
     <h2>Selection of expression parser</h2>
     <p>There exist many open-source parsers potentially suitable for the
