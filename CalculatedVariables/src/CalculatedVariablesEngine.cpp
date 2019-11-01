@@ -70,7 +70,7 @@ double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* na
             [name](const ParserVariable& variable){return variable.name()==name;});
     if (it == std::end(s_parserVariables))
     {
-        LOG(Log::ERR, logComponentId) << "Variable " << name << " can't be found. Formula error most likely?";
+        LOG(Log::ERR, logComponentId) << "Variable " << name << " can't be found. Formula error most likely? (While instantiating '" << requestor->nodeId().toString().toUtf8() << "')";
         throw std::runtime_error("Couldnt find formula variable. The exact error has been logged.");
     }
     else
