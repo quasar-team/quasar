@@ -17,6 +17,7 @@
 
 
 
+
       opc<span style="color: #225498;font-size:150%;"><strong>ua</strong>
         <strong>s</strong></span>erver gener<span style="color:
         #225498;font-size:150%;"><strong>a</strong></span>tion f<span
@@ -196,12 +197,21 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
       <li>Download UaExpert for an universal test&amp;dev tool for
         OPC-UA.</li>
     </ol>
-    <h3><a name="ubuntu"></a>Quick setup hints for Ubuntu (here: 14.04)</h3>
+    <h3><a name="ubuntu"></a>Quick setup hints for Ubuntu 19.04</h3>
+    <p>Execute:<br>
+      sudo apt install cmake g++ libboost-all-dev libxml2-utils astyle
+      xsdcxx libxerces-c-dev libssl-dev kdiff3 default-jre libxml2-utils
+      python-enum34 python-lxml<br>
+    </p>
+    <ol>
+    </ol>
+    <h3><a name="ubuntu1404"></a>Quick setup hints for Ubuntu 14.04</h3>
     Execute:<br>
     sudo apt-get install cmake g++ libboost-all-dev libxml2-utils astyle
     xsdcxx libxerces-c-dev libssl-dev kdiff3 default-jre libxml2-utils<br>
     Note you will need the UA SDK (i.e. evaluation version) or
-    alternative backend (consider open62541 with quasar integration).
+    alternative backend (consider open62541 with quasar integration).<br>
+    <br>
     <h3><a name="windows"></a>Setup for Windows users <br>
     </h3>
     <ol>
@@ -255,6 +265,7 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
     <h2>Calculated Variables</h2>
     <p><a
 href="../CalculatedVariables/doc/CalculatedVariables.htmlCalculatedVariables.html">Developer
+
 
 
         documentation of Calculated Variables</a><br>
@@ -429,9 +440,11 @@ href="../CalculatedVariables/doc/CalculatedVariables.htmlCalculatedVariables.htm
 
 
 
+
           Defined Runtime Configuration</a></li>
       <li>How do I link libraries, add include directories, use build
         configurations etc... ? See <a href="quasarBuildSystem.html">build
+
           system doc</a>. <br>
       </li>
     </ol>
