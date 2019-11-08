@@ -95,6 +95,11 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
         if (tagName == "StandardMetaData" || tagName == "CalculatedVariableGenericFormula" )
             continue;
         
+        <xsl:for-each select="d:cachevariable[d:array] | d:configentry[d:array]">
+        if (tagName == "<xsl:value-of select="@name"/>")
+            continue;
+        </xsl:for-each>
+        
          <xsl:for-each select="d:hasobjects[@instantiateUsing='configuration']">
 
            if ( tagName=="<xsl:value-of select="@class"/>")
