@@ -21,7 +21,7 @@ import sys
 import argparse
 
 def amalgamate (args):
-	print 'Amalgamating {0} files as {1}'.format(len(args.inputs), args.output)
+	print('Amalgamating {0} files as {1}'.format(len(args.inputs), args.output))
 	line_counter = 0
 	f_output = file(args.output, 'w')
 	for path in args.inputs:
@@ -30,7 +30,7 @@ def amalgamate (args):
 			f_output.write(line)
 			line_counter += 1
 	f_output.close()
-	print 'Wrote {0} amalgamated lines'.format(line_counter)
+	print('Wrote {0} amalgamated lines'.format(line_counter))
 
 parser = argparse.ArgumentParser(description="Quasar BusyBox")
 

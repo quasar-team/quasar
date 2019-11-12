@@ -40,7 +40,7 @@ class VersionControlInterface:
             found_str = ','.join(magic_found)
             raise Exception ('Project seems versioned under multiple version control systems. Please fix first. [Hint: found these vcs:'+found_str+']')
         self.vcs_type = magic_found[0]
-        print 'Determined vcs type: '+self.vcs_type
+        print('Determined vcs type: '+self.vcs_type)
         
         try:
             if self.vcs_type is 'git':

@@ -24,4 +24,4 @@ def distClean(context):
 	"""
         Deprecated. Simply remove your build directory.
 	"""
-        print 'This method has been deprecated since quasar 1.3.0. Please simply remove (e.g. rm -Rf) your build directory.' 
+        print('This method has been deprecated since quasar 1.3.0. Please simply remove (e.g. rm -Rf) your build directory.') 

@@ -90,8 +90,8 @@ def createDiagram(context, detailLevel=0, mode='dot'):
                 'circo':['-Kcirco', '-Gsplines=true', '-Granksep=0.1', '-Gmindist=0', '-Goverlap=false', '-Gepsilon=0.00001'],
                 'fdp':['-Kfdp', '-Gsplines=true', '-Goverlap=false', '-Gepsilon=0.00001', '-GK=0.01', '-Gmaxiter=10000', '-Gstart=random']
         }
-        print 'Using {0} as level of detail'.format(str(detailLevel))
-        print 'Using {0} as layout mode. Hint: from quasar 1.3.5, you can choose among: {1}, run with -h for help.'.format(mode, ','.join(graphvizArgs.keys()))
+        print('Using {0} as level of detail'.format(str(detailLevel)))
+        print('Using {0} as layout mode. Hint: from quasar 1.3.5, you can choose among: {1}, run with -h for help.'.format(mode, ','.join(list(graphvizArgs.keys()))))
 	transformByKey(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context, 'detailLevel':detailLevel})
         args = ["-Tpdf", "-o", designPath + "diagram.pdf", getTransformOutput(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context})] + graphvizArgs[mode]
 	subprocessWithImprovedErrors([getCommand("graphviz")] + args , "GraphViz (dot)")

@@ -37,8 +37,8 @@ from quasarExceptions import WrongReturnValue, WrongArguments, Mistake
 (args, project_binary_dir) = extract_common_arguments(sys.argv[1:])  # 1: to skip the script name given by the operating system
 if project_binary_dir is None:
         if ('build' in args or 'prepare_build' in args):
-                print 'Note: since quasar 1.3.0, by default, your build will be made in build/ directory.'
-                print 'If you need in-source build, try:  ./quasar.py build --project_binary_dir . '                    
+                print('Note: since quasar 1.3.0, by default, your build will be made in build/ directory.')
+                print('If you need in-source build, try:  ./quasar.py build --project_binary_dir . ')                    
         project_binary_dir = os.path.join(os.getcwd(),'build')
         
 def makeContext():
@@ -53,7 +53,7 @@ def makeContext():
 	return context
 
 if len(args) < 1:
-        print 'The script was run without specifying what to do. Here are available commands:'
+        print('The script was run without specifying what to do. Here are available commands:')
         printCommandList()
         sys.exit(1)
 
@@ -61,13 +61,13 @@ try:
 	commands = getCommands()
 	matched_command = filter(lambda x: x[0] == args[:len(x[0])], commands)[0]
 except IndexError:
-	print 'Sorry, no such command. These are available:'
+	print('Sorry, no such command. These are available:')
 	printCommandList()
 	sys.exit(1)
 
 if '-h' in args or '--help' in args:
 	anchor = '_'.join(matched_command[0])
-	print 'Will open quasarCommands.html for anchor {0}'.format(anchor)
+	print('Will open quasarCommands.html for anchor {0}'.format(anchor))
 	webbrowser.open("file:///{htmlPath}#{anchor}".format(
 		htmlPath=os.path.join(os.getcwd(),'Documentation','quasarCommands.html'),
 		anchor=anchor))
@@ -82,5 +82,5 @@ else:
 		else:
 			callee( *args )						
 	except (WrongReturnValue, WrongArguments, Mistake) as e:
-		print str(e)
+		print(str(e))
 		sys.exit(1)

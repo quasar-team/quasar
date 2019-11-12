@@ -85,7 +85,7 @@ def checkDoxyGen():
 def tryDependency(functionCheck, critical=True):
 	try:
 		functionCheck()
-	except Exception, e:
+	except Exception as e:
 		if(critical):
 			print("CRITICAL dependency missing: " + str(e))
 		else:
@@ -128,10 +128,10 @@ def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, 
 	outputFile        -- file where the std out of the process will be written into
 	validReturnCodes  -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
 	"""
-	print 'Calling {tool} with args {args} with output to file {out}'.format(
+	print('Calling {tool} with args {args} with output to file {out}'.format(
 		tool=dependencyName,
 		args=' '.join(subprocessCommand),
-		out=outputFile)
+		out=outputFile))
 	try:
 		with open(outputFile,"wb") as out:
 			process = subprocess.Popen(subprocessCommand, stdout=out)
