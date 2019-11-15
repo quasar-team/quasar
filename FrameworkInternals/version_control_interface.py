@@ -107,7 +107,7 @@ class VersionControlInterface:
         commitID = "Failed to find commitID"
         try:
             if self.vcs_type is 'git':
-		import pygit2
+                import pygit2
                 commitID = self.repo.describe(describe_strategy=pygit2.GIT_DESCRIBE_ALL, show_commit_oid_as_fallback=True, always_use_long_format=True, dirty_suffix='-dirty')
             elif self.vcs_type is 'svn':
                 commitID = self.svnClient.info2(self.project_path)[0][1]['rev'].number
