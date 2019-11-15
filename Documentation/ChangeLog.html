@@ -55,9 +55,11 @@
 
 
 
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
 
 
 
@@ -133,6 +135,7 @@
 
 
 
+
               Release notes</strong><br>
           </td>
         </tr>
@@ -146,26 +149,21 @@
           <td valign="top">
             <meta http-equiv="content-type" content="text/html;
               charset=windows-1252">
-            Bug
-            <br>
+            Bug <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1568">OPCUA-1568</a>]
                 - No location printed for CalcVars error "Variable sqrt
-                can't be found. Formula error most likely?"
-              </li>
+                can't be found. Formula error most likely?" </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1573">OPCUA-1573</a>]
                 - Initializers for array values were forgotten to be
-                allowed in the new Configurator (from quasar 1.3.6)
-              </li>
+                allowed in the new Configurator (from quasar 1.3.6) </li>
             </ul>
             <br>
-            Task
-            <br>
+            Task <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1569">OPCUA-1569</a>]
                 - Document no-whitespace between operation and
-                parenthesis-operand
-              </li>
+                parenthesis-operand </li>
             </ul>
           </td>
         </tr>
@@ -504,6 +502,14 @@
             <br>
             <br>
             <pre style="margin: 0; line-height: 125%">git submodule update --init --recursive</pre>
+            <br>
+            For all users who used to profit from <b>UATRACE</b>
+            logging sink: you are requested to add to your build config
+            the following line:<br>
+            <br>
+            <meta http-equiv="content-type" content="text/html;
+              charset=windows-1252">
+            <pre style="font-size: 13.3333px; color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial; background-color: rgb(244, 245, 247); margin-top: 0px; margin-bottom: 0px; padding: 0px;"><font color="#172B4D" size="1"><span style="font-size: 12px; background-color: rgb(244, 245, 247);">option(LOGIT_BACKEND_UATRACE <font color="#009100">"Whether to build with UATRACE (logging via UASDK logger)"</font> ON) </span></font></pre>
             <br>
             <br>
             <a href="LogIt.html#maintainers">Read more about LogIt
