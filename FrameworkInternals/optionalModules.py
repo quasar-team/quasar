@@ -49,7 +49,7 @@ def _getEnabledModules():
 		try:
 			minVersion = open(module+".minVersion").readline().rstrip()
 			tag = open(module+".tag").readline().rstrip()
-		except Exception, ex:
+		except Exception as ex:
 			print ex
 		if not minVersion:
 			print("Error reading min version info for module "+module)
@@ -87,7 +87,7 @@ def _getModuleInfo(serverString="", forceFetch=False):
 	if os.path.exists(".git") and not forceFetch:
 		try:
 			subprocess.call("git pull origin master", shell=True)
-		except Exception, ex:
+		except Exception as ex:
 			print "Error trying to fetch optional module list from git:", ex
 			return False
 	else:
@@ -96,7 +96,7 @@ def _getModuleInfo(serverString="", forceFetch=False):
 			subprocess.call("git remote add origin "+serverString+"/quasar-team/quasar-modules.git", shell=True)
 			subprocess.call("git remote set-url --push origin push-disabled", shell=True)
 			subprocess.call("git pull origin master", shell=True)
-		except Exception, ex:
+		except Exception as ex:
 			print "Error trying to fetch optional module list from git:", ex
 			return False
 
@@ -108,7 +108,7 @@ def _getModuleInfo(serverString="", forceFetch=False):
 		try:
 			moduleInfo[module] = {"minVersion" : open(module+".minVersion").readline().rstrip(),
 					      "url" : open(moduleUrl).readline().rstrip()}
-		except Exception, ex:
+		except Exception as ex:
 			print "Error reading version info for module "+module, ex
 			return False
 	os.chdir(baseDirectory)
@@ -155,7 +155,7 @@ def enableModule(moduleName, tag="master", serverString=""):
 	quasarVersion = None
 	try:
 		quasarVersion = open("Design/quasarVersion.txt").readline().rstrip()
-	except Exception, ex:
+	except Exception as ex:
 		print ex
 	if not quasarVersion:
 		print("Error reading version info from Design/quasarVersion.txt")
@@ -204,7 +204,7 @@ def enableModule(moduleName, tag="master", serverString=""):
 		if os.path.exists(tagFileName): os.remove(tagFileName)
 		file = open(tagFileName, "w")
 		file.write(tag)
-	except Exception, ex:
+	except Exception as ex:
 		print "Failed to set up module files in FrameworkInternals/EnabledModules/ :", ex
 		return False
 
@@ -238,7 +238,7 @@ def disableModule(moduleName):
 	try:
 		for file in glob("FrameworkInternals/EnabledModules/"+moduleName+".*"):
 			os.remove(file)
-	except Exception, ex:
+	except Exception as ex:
 		print ("Failed to remove module file in FrameworkInternals/EnabledModules/ :", ex)
 		return False
 
@@ -293,7 +293,7 @@ def removeModule(module):
 			print("Removing", dir)
 			try:
 				rmtree(dir)
-			except Exception, ex:
+			except Exception as ex:
 				print ("Failed to remove dir", dir, ex)
 	else: print ("Nothing to be removed for module", module)
 	return True
