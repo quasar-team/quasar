@@ -42,10 +42,10 @@ try:
 
 
 except Exception as e:
-    print "Apparently you dont have all required python modules to run this program."
-    print "For SLC6 system, please execute:"
-    print "	  sudo yum install pysvn python-lxml "
-    print "For another operating system, contact piotr@nikiel.info for assistance in setting up this project"
+    print("Apparently you dont have all required python modules to run this program.")
+    print("For SLC6 system, please execute:")
+    print("	  sudo yum install pysvn python-lxml ")
+    print("For another operating system, contact piotr@nikiel.info for assistance in setting up this project")
     raise e
 
 
@@ -54,7 +54,7 @@ ask=False
 
 def yes_or_no(question):
     while True:
-        print question+' type y or n; then enter   '
+        print(question+' type y or n; then enter   ')
         sys.stdout.flush()
         yn = raw_input()
         if yn in ['y','n']:
@@ -128,7 +128,7 @@ class File(UserDict):
         return self.has_key('deprecated')
 
     def check_md5(self):
-        if verbose: print "---> Checking md5 of file: "+self.path()
+        if verbose: print("---> Checking md5 of file: "+self.path())
         if not os.path.isfile(self.path()):
             return ['Cant checksum because the file doesnt exist: '+self.path()]
         else:
@@ -145,7 +145,7 @@ class File(UserDict):
 
 
     def check_consistency(self, vci):
-        if verbose: print "--> check_consistency called on File "+self.path()
+        if verbose: print("--> check_consistency called on File "+self.path())
         problems=[]
         if self.must_exist():
             if not os.path.isfile(self.path()):
@@ -154,10 +154,10 @@ class File(UserDict):
         if self.must_be_versioned():
             # this applies only if file exists
             if os.path.isfile(self.path()):
-                if verbose: print "----> checking if versioned: "+self.path()
+                if verbose: print("----> checking if versioned: "+self.path())
                 if not vci.is_versioned(self.path()):
                     if ask:
-                        print "File is not versioned: "+self.path()
+                        print("File is not versioned: "+self.path())
                         yn = yes_or_no("Do you want to fix that now?")
                         if yn is 'y':
                             vci.add_to_vc(self.path())
@@ -171,14 +171,14 @@ class File(UserDict):
         if self.deprecated():
             if os.path.isfile(self.path()):
                 if ask:
-                    print "File is deprecated: "+self.path()
+                    print("File is deprecated: "+self.path())
                     yn = yes_or_no("Do you want to fix that now?")
                     if yn is 'y':
                         if vci.is_versioned(self.path()):
-                            print 'Attempting delete with your version control system: you will have to commit afterwards!'
+                            print('Attempting delete with your version control system: you will have to commit afterwards!')
                             vci.remove_from_vc(self.path())
                         else:
-                            print 'Deleting deprecated file: '+self.path()
+                            print('Deleting deprecated file: '+self.path())
                             os.remove(self.path())
                             pass
                     else:
@@ -190,7 +190,7 @@ class File(UserDict):
 
     def make_md5(self):
         cmd='md5sum '+self.path()
-        print 'Calling '+cmd
+        print('Calling '+cmd)
         [status,output]=commands.getstatusoutput('md5sum '+self.path())
         if status!=0:
             raise Exception ('Calling md5sum was not successful on file '+self.path()+' . This is a fatal error. Cant continue')
@@ -269,7 +269,7 @@ def scan_dir(dir):
             if c!=".svn" and c!=".git":
                 files.extend (scan_dir(full_path))
         else:
-            print 'skipped: '+full_path+' which is neither file nor directory'
+            print('skipped: '+full_path+' which is neither file nor directory')
     return files
 
 def check_uncovered(directories,project_directory):
@@ -279,9 +279,9 @@ def check_uncovered(directories,project_directory):
         for f in d['files']:
             if f.path() in all_files:
                 all_files.remove(f.path())
-    print "uncovered files:"
+    print("uncovered files:")
     for f in all_files:
-        print f
+        print(f)
 
 
 
@@ -323,7 +323,7 @@ def load_file(file_name,project_directory):
                 raise Exception ('First word of line: '+chunks[0]+' unknown')
 
     except Exception as e:
-        print "The exception was thrown while processing line "+str(line_no)
+        print("The exception was thrown while processing line "+str(line_no))
         raise e
 
     return directories
@@ -345,11 +345,11 @@ def create_release(directories):
         s=s+d.make_text()
     f=file('FrameworkInternals' + os.path.sep + 'files.txt','w')
     f.write(s)
-    print 'file files.txt was created'
+    print('file files.txt was created')
 
 def perform_installation(directories, source_directory, target_directory):
     if not os.path.isdir(target_directory):
-        print 'given target_directory='+target_directory+' doesnt exist or is not a directory'
+        print('given target_directory='+target_directory+' doesnt exist or is not a directory')
         return False
     for d in directories:
         source_dir_path = source_directory+os.path.sep+d['name']
@@ -358,43 +358,43 @@ def perform_installation(directories, source_directory, target_directory):
             dir_action = d['install']
             if dir_action=='create':
                 if not os.path.isdir(target_dir_path):
-                    print 'Creating directory '+target_dir_path
+                    print('Creating directory '+target_dir_path)
                     os.mkdir(target_dir_path)
             else:
                 raise Exception ('directory '+d['name']+' install='+dir_action+' is not valid')
         for f in d['files']:
             source_file_path = source_dir_path+os.path.sep+f['name']
             target_file_path = target_dir_path+os.path.sep+f['name']
-            print "at file="+f.path()
+            print("at file="+f.path())
             if f.has_key('install'):
                 file_action = f['install']
                 if file_action=='overwrite':
                     if not os.path.isfile(target_file_path):
-                        print 'Copying '+source_file_path+' -> '+target_file_path
+                        print('Copying '+source_file_path+' -> '+target_file_path)
                         shutil.copy2(source_file_path,  target_file_path)
                     else:
-                        print 'Overwriting: '+target_file_path
+                        print('Overwriting: '+target_file_path)
                         shutil.copy2(source_file_path,  target_file_path)
                 elif file_action=='ask_to_merge':
                     # if the target file doesnt exist, just copy it
                     if not os.path.isfile(target_file_path):
-                        print 'Copying '+source_file_path+' -> '+target_file_path
+                        print('Copying '+source_file_path+' -> '+target_file_path)
                         shutil.copy2(source_file_path,  target_file_path)
                     else:
                         # maybe the files are the same and it is not needed to merge ??
                         if os.system('diff '+source_file_path+' '+target_file_path)==0:
-                            print 'Files the same; merging not needed'
+                            print('Files the same; merging not needed')
                         else:
-                            print 'Filed differ; merging needed'
+                            print('Filed differ; merging needed')
                             merge_val=os.system('kdiff3 -o '+target_file_path+' '+source_file_path+' '+target_file_path)
-                            print 'Merge tool returned: '+str(merge_val)
+                            print('Merge tool returned: '+str(merge_val))
                             if merge_val!=0:
                                 yn=yes_or_no('Merge tool returned non-zero, wanna continue?')
                                 if yn=='n':
                                     sys.exit(1)
                 elif file_action=='copy_if_not_existing':
                     if not os.path.isfile(target_file_path):
-                        print 'Copying '+source_file_path+' -> '+target_file_path
+                        print('Copying '+source_file_path+' -> '+target_file_path)
                         shutil.copy2(source_file_path,  target_file_path)
                 elif file_action=='dont_touch':
                     pass
@@ -408,19 +408,19 @@ def perform_installation(directories, source_directory, target_directory):
 def project_setup_svn_ignore(project_directory):
 
     cmd="svn propset svn:ignore -F .gitignore -R "+project_directory
-    print 'Will call: '+cmd
+    print('Will call: '+cmd)
     os.system(cmd)
 
 
 
 def check_file_for_mtime ( design_mtime, p, project_directory, type, c ):
     if not os.path.isfile(p):
-        print '*** ERROR: Following device file doesnt exist:'
-        print '  '+p
-        print '  Without it, the build will most certainly fail.'
+        print('*** ERROR: Following device file doesnt exist:')
+        print('  '+p)
+        print('  Without it, the build will most certainly fail.')
         yn = yes_or_no('Would you like to generate an empty stub of this class?')
         if yn == 'y':
-            print '  Trying to generate the empty stub'
+            print('  Trying to generate the empty stub')
             what=''
             if type=='h':
                 what='Header'
@@ -433,9 +433,9 @@ def check_file_for_mtime ( design_mtime, p, project_directory, type, c ):
     else:
         file_mtime = os.path.getmtime( p )
         if design_mtime > file_mtime:
-            print '*** WARNING: Following device file is older than your design file:'
-            print '  '+p
-            print '  If build goes bananas, this could be one of the reasons.'
+            print('*** WARNING: Following device file is older than your design file:')
+            print('  '+p)
+            print('  If build goes bananas, this could be one of the reasons.')
 
 
 
@@ -464,11 +464,11 @@ def mfCheckConsistency(param=None):
     problems=check_consistency(directories, os.getcwd(), vci)
     check_uncovered(directories,os.getcwd())
     if len(problems)>0:
-        print "I've found this consistency problems (#problems="+str(len(problems))+")"
+        print("I've found this consistency problems (#problems="+str(len(problems))+")")
         for p in problems:
-            print p
+            print(p)
     else:
-        print "No problems found."
+        print("No problems found.")
 
 def mfCreateRelease(context):
     """Upgrades files.txt with the contents of original_files.txt. Expert command, only to be used by developers of the framework when creating a new release"""
@@ -500,7 +500,7 @@ def mfDesignVsDevice():
 
 def copyIfNotExists(src, dst):
     if not os.path.exists( os.path.dirname(dst) ):
-        print 'File [{0}] copy rejected - destination directory does not exist [{1}]'.format(os.path.basename(src), os.path.dirname(dst))
+        print('File [{0}] copy rejected - destination directory does not exist [{1}]'.format(os.path.basename(src), os.path.dirname(dst)))
         return
 
     yepCopyFile = False
@@ -510,18 +510,18 @@ def copyIfNotExists(src, dst):
         yepCopyFile = ( 'y' == yes_or_no('binary directory file [{0}] already exists, do you want to replace it with source directory file [{1}]? Contents *will* be overwritten.'.format(dst, src)) )
 
     if yepCopyFile:
-        print 'Copying source directory file [{0}] to binary directory file {1}'.format(os.path.basename(src), dst)
+        print('Copying source directory file [{0}] to binary directory file {1}'.format(os.path.basename(src), dst))
         shutil.copyfile(src, dst)
     else:
-        print 'Skipped: copying source file [{0}]: copy rejected by user'.format(os.path.basename(src))
+        print('Skipped: copying source file [{0}]: copy rejected by user'.format(os.path.basename(src)))
 
 def symlinkIfNotExists(src, dst):
     try:
         os.symlink(src, dst)
-        print 'Symlinked {0} as {1}'.format(src, dst)
+        print('Symlinked {0} as {1}'.format(src, dst))
     except OSError as e:
         if e.errno == errno.EEXIST:
-            print 'Skipped {0} because: target already exists'.format(src)
+            print('Skipped {0} because: target already exists'.format(src))
         else:
             raise e
 
@@ -540,6 +540,6 @@ def symlinkRuntimeDeps(context, wildcard=None):
             linkerFunction(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
     else:
         config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', wildcard))
-        print 'Matched {0} files'.format(len(config_files))
+        print('Matched {0} files'.format(len(config_files)))
         for config_file in config_files:
             linkerFunction(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))

@@ -87,7 +87,7 @@ commands = [
 def printCommandList():
     for cmd in commands:
         if cmd[2]:
-            print ' '.join(cmd[0])
+            print(' '.join(cmd[0]))
 def getCommands():
     return commands
 
