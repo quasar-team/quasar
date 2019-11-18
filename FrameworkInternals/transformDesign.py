@@ -155,7 +155,7 @@ def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, ad
         raise
 
 def getTransformSpecByKey(key):
-    return filter(lambda x: x[FieldIds.KEY.value]==key, QuasarTransforms)[0]
+    return [x for x in QuasarTransforms if x[FieldIds.KEY.value]==key][0]
 
 def getTransformOutput (key, supplementaryData={}):
     """Returns absolute path to the output of transform identified by key 'key'"""

@@ -59,7 +59,7 @@ if len(args) < 1:
 
 try:
     commands = getCommands()
-    matched_command = filter(lambda x: x[0] == args[:len(x[0])], commands)[0]
+    matched_command = [x for x in commands if x[0] == args[:len(x[0])]][0]
 except IndexError:
     print('Sorry, no such command. These are available:')
     printCommandList()
