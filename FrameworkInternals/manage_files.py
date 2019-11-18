@@ -26,7 +26,7 @@ try:
     import os
     import platform
     import os.path
-    import commands
+    import subprocess
     import traceback
     import string
     from UserDict import UserDict
@@ -132,7 +132,7 @@ class File(UserDict):
         if not os.path.isfile(self.path()):
             return ['Cant checksum because the file doesnt exist: '+self.path()]
         else:
-            [status,output]=commands.getstatusoutput('md5sum '+self.path())
+            [status,output]=subprocess.getstatusoutput('md5sum '+self.path())
             if status!=0:
                 raise Exception ('Calling md5sum was not successful: '+output+'. This is a fatal error. Cant continue')
             md5=output.split(" ")[0]
@@ -191,7 +191,7 @@ class File(UserDict):
     def make_md5(self):
         cmd='md5sum '+self.path()
         print('Calling '+cmd)
-        [status,output]=commands.getstatusoutput('md5sum '+self.path())
+        [status,output]=subprocess.getstatusoutput('md5sum '+self.path())
         if status!=0:
             raise Exception ('Calling md5sum was not successful on file '+self.path()+' . This is a fatal error. Cant continue')
         md5=output.split(" ")[0]
