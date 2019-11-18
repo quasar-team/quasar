@@ -25,22 +25,22 @@ from manage_files import get_list_classes
 from quasarExceptions import WrongArguments
 
 def generateOneDeviceClass(context, className):
-	transformByKey([TransformKeys.D_DEVICE_H, TransformKeys.D_DEVICE_CPP], {'context':context, 'className':className})
-	
-def generateDeviceClass(context, *classList):
-	"""Generates the files D<classname>.h and D<classname>.cpp. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.
-	
-	Keyword arguments:
-	classname -- the name of the device, which this class will be associated to. You can specify several classes (up to 10), separated by spaces or just --all to regenerate all device classes.
-	"""
-	if len(classList) < 1:
-		raise WrongArguments("need at least one arg for this")
+    transformByKey([TransformKeys.D_DEVICE_H, TransformKeys.D_DEVICE_CPP], {'context':context, 'className':className})
 
-	for aClass in classList:
-		generateOneDeviceClass(context, aClass)
-	
+def generateDeviceClass(context, *classList):
+    """Generates the files D<classname>.h and D<classname>.cpp. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.
+
+    Keyword arguments:
+    classname -- the name of the device, which this class will be associated to. You can specify several classes (up to 10), separated by spaces or just --all to regenerate all device classes.
+    """
+    if len(classList) < 1:
+        raise WrongArguments("need at least one arg for this")
+
+    for aClass in classList:
+        generateOneDeviceClass(context, aClass)
+
 def generateAllDevices(context):
-	"""Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
-	classes = get_list_classes(os.path.join(context['projectSourceDir'],'Design','Design.xml'))
-	for aClass in filter(lambda x: x['has_device_logic'], classes):
-		generateOneDeviceClass(context, aClass['name'])
+    """Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
+    classes = get_list_classes(os.path.join(context['projectSourceDir'],'Design','Design.xml'))
+    for aClass in filter(lambda x: x['has_device_logic'], classes):
+        generateOneDeviceClass(context, aClass['name'])

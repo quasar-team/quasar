@@ -19,16 +19,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 class WrongArguments(Exception):
-	def __init__(self, desc):
-		Exception.__init__(self, desc)
-		
+    def __init__(self, desc):
+        Exception.__init__(self, desc)
+
 class WrongReturnValue(Exception):
-	def __init__(self, tool, return_value):
-		Exception.__init__(self, 'WrongReturnValue: tool {tool} returned {rv}'.format(
-			tool=tool, 
-			rv=str(return_value)
-			))
-		
+    def __init__(self, tool, return_value):
+        Exception.__init__(self, 'WrongReturnValue: tool {tool} returned {rv}'.format(
+                tool=tool,
+                rv=str(return_value)
+                ))
+
 class Mistake(Exception):
-	def __init__(self, desc):
-		Exception.__init__(self, desc)
+    def __init__(self, desc):
+        Exception.__init__(self, desc)

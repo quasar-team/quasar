@@ -23,19 +23,19 @@ import os
 from transformDesign import TransformKeys, transformByKey, getTransformOutput
 from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
 from commandMap import getCommand
-  
+
 def generateConfiguration(context):
-	"""Generates the file Configuration.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
-	config_xsd_path = os.path.join(context['projectBinaryDir'],'Configuration','Configuration.xsd')
-	try: 
-		transformByKey( TransformKeys.CONFIGURATION_XSD, {
-			'context':context,
-			'metaXsdPath':os.path.join(context['projectSourceDir'],'Meta','config','Meta.xsd').replace('\\','/') } )
-	except:	
-		if os.path.isfile(config_xsd_path):
-			os.remove(config_xsd_path)
-		raise
-	subprocessWithImprovedErrorsPipeOutputToFile(
-		[getCommand("xmllint"), "--xinclude", getTransformOutput(TransformKeys.CONFIGURATION_XSD, {'context':context})], 
-		config_xsd_path, 
-		getCommand("xmllint"))
+    """Generates the file Configuration.xsd. This method is called automatically by cmake, it does not need to be called by the user."""
+    config_xsd_path = os.path.join(context['projectBinaryDir'],'Configuration','Configuration.xsd')
+    try:
+        transformByKey( TransformKeys.CONFIGURATION_XSD, {
+                'context':context,
+                'metaXsdPath':os.path.join(context['projectSourceDir'],'Meta','config','Meta.xsd').replace('\\','/') } )
+    except:
+        if os.path.isfile(config_xsd_path):
+            os.remove(config_xsd_path)
+        raise
+    subprocessWithImprovedErrorsPipeOutputToFile(
+            [getCommand("xmllint"), "--xinclude", getTransformOutput(TransformKeys.CONFIGURATION_XSD, {'context':context})],
+            config_xsd_path,
+            getCommand("xmllint"))

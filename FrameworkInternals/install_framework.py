@@ -23,42 +23,42 @@ import os
 from manage_files import mfInstall
 
 def upgradeProject(destination):
-	"""Upgrades the framework in a given directory
-	
-	Keyword arguments:
-	destination -- The target directory where the framework will be installed or upgraded
-	"""
-	if os.path.exists(destination) and os.path.exists(destination + os.path.sep + 'Device') and os.path.exists(destination + os.path.sep + 'Design') and os.path.exists(destination + os.path.sep + 'Configuration') and os.path.exists(destination + os.path.sep + 'AddressSpace'):
-		destination = os.path.abspath(destination)
-		print( "Selected installation folder: " + destination)
-	else:
-		raise Exception("There was a problem when trying to ugrade a project, invalid path.")
-	
-	installFramework(destination)
-	
+    """Upgrades the framework in a given directory
+
+    Keyword arguments:
+    destination -- The target directory where the framework will be installed or upgraded
+    """
+    if os.path.exists(destination) and os.path.exists(destination + os.path.sep + 'Device') and os.path.exists(destination + os.path.sep + 'Design') and os.path.exists(destination + os.path.sep + 'Configuration') and os.path.exists(destination + os.path.sep + 'AddressSpace'):
+        destination = os.path.abspath(destination)
+        print( "Selected installation folder: " + destination)
+    else:
+        raise Exception("There was a problem when trying to ugrade a project, invalid path.")
+
+    installFramework(destination)
+
 def createProject(destination):
-	"""Installs the framework in a given directory. If the directory doesn't exist, it gets created
-	
-	Keyword arguments:
-	destination -- The target directory where the framework will be installed or upgraded
-	"""
-	if os.path.exists(destination):
-		destination = os.path.abspath(destination)
-		print( "Selected installation folder: " + destination)
-	else:
-		destination = os.path.abspath(destination)
-		os.makedirs(destination)
-		print( "Created installation folder: " + destination)	
-	installFramework(destination)
+    """Installs the framework in a given directory. If the directory doesn't exist, it gets created
+
+    Keyword arguments:
+    destination -- The target directory where the framework will be installed or upgraded
+    """
+    if os.path.exists(destination):
+        destination = os.path.abspath(destination)
+        print( "Selected installation folder: " + destination)
+    else:
+        destination = os.path.abspath(destination)
+        os.makedirs(destination)
+        print( "Created installation folder: " + destination)
+    installFramework(destination)
 
 def installFramework(destination):
-	"""Installs or upgrades the framework in a given directory
-	
-	Keyword arguments:
-	destination -- The target directory where the framework will be installed or upgraded
-	"""	
-		
-	baseDirectory = os.getcwd()
-	
-	print("Calling mfInstall")
-	mfInstall(baseDirectory, destination)
+    """Installs or upgrades the framework in a given directory
+
+    Keyword arguments:
+    destination -- The target directory where the framework will be installed or upgraded
+    """
+
+    baseDirectory = os.getcwd()
+
+    print("Calling mfInstall")
+    mfInstall(baseDirectory, destination)

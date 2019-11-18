@@ -33,45 +33,45 @@ BuilderDefault = "PlatformDefault"
 
 # previous definition: def generateCmake(context, buildType="Release", buildSystem=BuilderDefault):
 def generateCmake(context, *args):
-	"""Generates CMake header lists in various directories, and then calls cmake.
-	
-	Keyword arguments:
-	buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
-	"""	
-	args = list(args) # we do it to be able to remove things via extract_argument, otherwise it is immutable tuple
-	(args2, builder) = extract_argument(args, "--builder")
-	if len(args2) > 1:
-		raise WrongArguments("Max one positional argument for generateCmake")
-	buildType = "Release" if len(args2) == 0 else args2[0]
-	if builder is None: builder = BuilderDefault
-	
-	if not context['projectSourceDir'] == context['projectBinaryDir']: # out-of-source build
-		if os.path.isfile(os.path.join(context['projectSourceDir'], 'CMakeCache.txt')):
-			raise Mistake('User mistake? CMakeCache.txt exists in source directory; '+
-						  'that will prevent CMake to make a successful out-of-source build. '+
-						  'Remove CMakeCache.txt and all cmake_install.cmake files, and build/ directory') 
-		
-	projectSourceDir = context['projectSourceDir']
-	projectBinaryDir = context['projectBinaryDir']
-	if not os.path.isdir(projectBinaryDir):
-		print("PROJECT_BINARY_DIR {0} doesn't exist -- creating it.".format(projectBinaryDir))
-		os.mkdir(projectBinaryDir)
-		os.mkdir(os.path.join(projectBinaryDir, "bin"))
-		print("Creating symlinks for xml files in the build directory")
-		symlinkRuntimeDeps(context, '*.xml')
-	
-	transformByKey(TransformKeys.AS_CMAKE, {'context':context})
-	transformByKey(TransformKeys.D_CMAKE, {'context':context})
-	print("Build type [{0}], Builder [{1}]".format(buildType, builder))
-	os.chdir(projectBinaryDir)
+    """Generates CMake header lists in various directories, and then calls cmake.
 
-	print("Calling CMake")
-	if platform.system() == "Windows":
-		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-					      "-G", "Visual Studio 15 2017 Win64", projectSourceDir],
-					     getCommand("cmake"))
-	elif platform.system() == "Linux":
-		builderArgs = [] if builder == BuilderDefault else ["-G", builder]
-		subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType] + builderArgs + 
-                                              [projectSourceDir],
-					     getCommand("cmake"))
+    Keyword arguments:
+    buildType -- Optional parameter to specify Debug or Release build. If it is not specified it will default to Release.
+    """
+    args = list(args) # we do it to be able to remove things via extract_argument, otherwise it is immutable tuple
+    (args2, builder) = extract_argument(args, "--builder")
+    if len(args2) > 1:
+        raise WrongArguments("Max one positional argument for generateCmake")
+    buildType = "Release" if len(args2) == 0 else args2[0]
+    if builder is None: builder = BuilderDefault
+
+    if not context['projectSourceDir'] == context['projectBinaryDir']: # out-of-source build
+        if os.path.isfile(os.path.join(context['projectSourceDir'], 'CMakeCache.txt')):
+            raise Mistake('User mistake? CMakeCache.txt exists in source directory; '+
+                                      'that will prevent CMake to make a successful out-of-source build. '+
+                                      'Remove CMakeCache.txt and all cmake_install.cmake files, and build/ directory')
+
+    projectSourceDir = context['projectSourceDir']
+    projectBinaryDir = context['projectBinaryDir']
+    if not os.path.isdir(projectBinaryDir):
+        print("PROJECT_BINARY_DIR {0} doesn't exist -- creating it.".format(projectBinaryDir))
+        os.mkdir(projectBinaryDir)
+        os.mkdir(os.path.join(projectBinaryDir, "bin"))
+        print("Creating symlinks for xml files in the build directory")
+        symlinkRuntimeDeps(context, '*.xml')
+
+    transformByKey(TransformKeys.AS_CMAKE, {'context':context})
+    transformByKey(TransformKeys.D_CMAKE, {'context':context})
+    print("Build type [{0}], Builder [{1}]".format(buildType, builder))
+    os.chdir(projectBinaryDir)
+
+    print("Calling CMake")
+    if platform.system() == "Windows":
+        subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
+                                      "-G", "Visual Studio 15 2017 Win64", projectSourceDir],
+                                     getCommand("cmake"))
+    elif platform.system() == "Linux":
+        builderArgs = [] if builder == BuilderDefault else ["-G", builder]
+        subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType] + builderArgs +
+                                      [projectSourceDir],
+                                     getCommand("cmake"))

@@ -29,117 +29,117 @@ VERBOSE = 1
 
 
 def printIfVerbose(msg):
-	if VERBOSE > 0:
-		print(msg)
+    if VERBOSE > 0:
+        print(msg)
 
 def checkExecutableExists(executableKeyName, doesNotExistErrorMessage, executableArgument='-h'):
-	errorMessage = "executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \n"+doesNotExistErrorMessage
-	try:
-		returnCode = subprocess.call([getCommand(executableKeyName), executableArgument], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-		if returnCode == 0:
-			printIfVerbose("executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] exists")
-		else:
-			raise Exception(errorMessage)
-	except:
-		raise Exception(errorMessage)
+    errorMessage = "executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \n"+doesNotExistErrorMessage
+    try:
+        returnCode = subprocess.call([getCommand(executableKeyName), executableArgument], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+        if returnCode == 0:
+            printIfVerbose("executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] exists")
+        else:
+            raise Exception(errorMessage)
+    except:
+        raise Exception(errorMessage)
 
 def checkJava():
-	checkExecutableExists('java', 'Java can be downloaded in https://www.java.com/en/download/')
+    checkExecutableExists('java', 'Java can be downloaded in https://www.java.com/en/download/')
 
 def checkAstyle():
-	checkExecutableExists('astyle', 'Astyle can be downloaded in http://astyle.sourceforge.net/')
+    checkExecutableExists('astyle', 'Astyle can be downloaded in http://astyle.sourceforge.net/')
 
 def checkKdiff3():
-		if platform.system() == "Linux":
-			return checkExecutableExists('diff', 'kdiff3 can be downloaded in http://kdiff3.sourceforge.net/', '--help')
-		#if the system is a windows machine then:
-		errorMessageWindows = "kdiff3 cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nkdiff3 can be downloaded in http://kdiff3.sourceforge.net/ "
-		try:
-			returnCode = subprocess.call(['where', getCommand('diff')], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
-			if returnCode == 0:
-				printIfVerbose("kdiff3 does exist")
-			else:
-				raise Exception(errorMessageWindows)
-		except:
-			raise Exception(errorMessageWindows)
+    if platform.system() == "Linux":
+        return checkExecutableExists('diff', 'kdiff3 can be downloaded in http://kdiff3.sourceforge.net/', '--help')
+    #if the system is a windows machine then:
+    errorMessageWindows = "kdiff3 cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nkdiff3 can be downloaded in http://kdiff3.sourceforge.net/ "
+    try:
+        returnCode = subprocess.call(['where', getCommand('diff')], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+        if returnCode == 0:
+            printIfVerbose("kdiff3 does exist")
+        else:
+            raise Exception(errorMessageWindows)
+    except:
+        raise Exception(errorMessageWindows)
 
 def checkCMake():
-	checkExecutableExists('cmake', 'CMake can be downloaded in https://cmake.org/')
+    checkExecutableExists('cmake', 'CMake can be downloaded in https://cmake.org/')
 
 def checkCompiler():
-	if platform.system() == "Linux":
-		checkExecutableExists('make', 'Please, install the package make using the package manager of your distribution.')
-		return checkExecutableExists('gcc', 'Please, install the package gcc using the package manager of your distribution.', '--help')	
+    if platform.system() == "Linux":
+        checkExecutableExists('make', 'Please, install the package make using the package manager of your distribution.')
+        return checkExecutableExists('gcc', 'Please, install the package gcc using the package manager of your distribution.', '--help')
 
 def checkXMLLint():
-	checkExecutableExists('xmllint', 'XML Lint can be downloaded in http://xmlsoft.org/', '--version')
+    checkExecutableExists('xmllint', 'XML Lint can be downloaded in http://xmlsoft.org/', '--version')
 
 #Non compulsory dependancy (Needed for generating graphs, but QUASAR will perfectly work without GraphViz)
 def checkGraphViz():
-	checkExecutableExists('graphviz', 'GraphViz can be downloaded in http://www.graphviz.org/', '-V')
+    checkExecutableExists('graphviz', 'GraphViz can be downloaded in http://www.graphviz.org/', '-V')
 
 #Non compulsory dependancy (Needed for generating documentation, but QUASAR will perfectly work without DoxyGen)
 def checkDoxyGen():
-	checkExecutableExists('doxygen', 'DoxyGen can be downloaded in http://www.stack.nl/~dimitri/doxygen/', '--version')
+    checkExecutableExists('doxygen', 'DoxyGen can be downloaded in http://www.stack.nl/~dimitri/doxygen/', '--version')
 
 def tryDependency(functionCheck, critical=True):
-	try:
-		functionCheck()
-	except Exception, e:
-		if(critical):
-			print("CRITICAL dependency missing: " + str(e))
-		else:
-			print("Optional dependency missing: " + str(e))
+    try:
+        functionCheck()
+    except Exception, e:
+        if(critical):
+            print("CRITICAL dependency missing: " + str(e))
+        else:
+            print("Optional dependency missing: " + str(e))
 
 def checkExternalDependencies():
-	"""Checks all of QUASAR dependencies to see if everything is setup as expected, and prints apropiate messages to point out what is missing."""
-	tryDependency(checkJava)
-	tryDependency(checkKdiff3)
-	tryDependency(checkCMake)
-	tryDependency(checkCompiler)
-	tryDependency(checkXMLLint)
-	tryDependency(checkAstyle)
-	tryDependency(checkGraphViz, False)
-	tryDependency(checkDoxyGen, False)
+    """Checks all of QUASAR dependencies to see if everything is setup as expected, and prints apropiate messages to point out what is missing."""
+    tryDependency(checkJava)
+    tryDependency(checkKdiff3)
+    tryDependency(checkCMake)
+    tryDependency(checkCompiler)
+    tryDependency(checkXMLLint)
+    tryDependency(checkAstyle)
+    tryDependency(checkGraphViz, False)
+    tryDependency(checkDoxyGen, False)
 
 def subprocessWithImprovedErrors(subprocessCommand, dependencyName, validReturnCodes=[0]):
-	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions caught.
+    """Method that calls subprocess, but print intelligent error messages if there are any exceptions caught.
 
-	Keyword arguments:
-	subprocessCommand -- String or list of strings that will be given to subprocess
-	dependencyName -- parameterless name of the command, just for error loging purposes
-	validReturnCodes -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
-	"""
-	try:
-		returnCode = subprocess.call(subprocessCommand)
-	except OSError as e:
-		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
-	except Exception, e:
-		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
-	if returnCode not in validReturnCodes:
-		raise WrongReturnValue(dependencyName, returnCode)
+    Keyword arguments:
+    subprocessCommand -- String or list of strings that will be given to subprocess
+    dependencyName -- parameterless name of the command, just for error loging purposes
+    validReturnCodes -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
+    """
+    try:
+        returnCode = subprocess.call(subprocessCommand)
+    except OSError as e:
+        raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
+    except Exception, e:
+        raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
+    if returnCode not in validReturnCodes:
+        raise WrongReturnValue(dependencyName, returnCode)
 
 def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, dependencyName, validReturnCodes=[0]):
-	"""Method that calls subprocess, but print intelligent error messages if there are any exceptions catched, and then pipes the output of the process to the given file
+    """Method that calls subprocess, but print intelligent error messages if there are any exceptions catched, and then pipes the output of the process to the given file
 
-	Keyword arguments:
-	subprocessCommand -- String or list of strings that will be given to subprocess
-	dependencyName    -- parameterless name of the command, just for error loging purposes
-	outputFile        -- file where the std out of the process will be written into
-	validReturnCodes  -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
-	"""
-	print 'Calling {tool} with args {args} with output to file {out}'.format(
-		tool=dependencyName,
-		args=' '.join(subprocessCommand),
-		out=outputFile)
-	try:
-		with open(outputFile,"wb") as out:
-			process = subprocess.Popen(subprocessCommand, stdout=out)
-			streamdata = process.communicate()
-			returnCode = process.returncode
-	except OSError as e:
-		raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
-	except Exception, e:
-		raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
-	if returnCode not in validReturnCodes:
-		raise WrongReturnValue(dependencyName, returnCode)
+    Keyword arguments:
+    subprocessCommand -- String or list of strings that will be given to subprocess
+    dependencyName    -- parameterless name of the command, just for error loging purposes
+    outputFile        -- file where the std out of the process will be written into
+    validReturnCodes  -- array of acceptable return codes, only 0 by default. If the return code is not in the list and exception will be thrown
+    """
+    print 'Calling {tool} with args {args} with output to file {out}'.format(
+            tool=dependencyName,
+            args=' '.join(subprocessCommand),
+            out=outputFile)
+    try:
+        with open(outputFile,"wb") as out:
+            process = subprocess.Popen(subprocessCommand, stdout=out)
+            streamdata = process.communicate()
+            returnCode = process.returncode
+    except OSError as e:
+        raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
+    except Exception, e:
+        raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
+    if returnCode not in validReturnCodes:
+        raise WrongReturnValue(dependencyName, returnCode)

@@ -36,7 +36,7 @@ commandMap = {
 }
 
 def getCommand(key):
-	"""
-	Checks the command map, and returns the command specified by the key
-	"""
-	return commandMap[key]
+    """
+    Checks the command map, and returns the command specified by the key
+    """
+    return commandMap[key]
