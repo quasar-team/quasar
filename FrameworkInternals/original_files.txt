@@ -190,24 +190,6 @@ File quasarExceptions.py               	    must_exist,must_be_versioned,md5=che
 File quasar_basic_utils.py                  must_exist,must_be_versioned,md5=check,install=overwrite,
 File quasar_utils.py                        must_exist,must_be_versioned,md5=check,install=overwrite,
 
-Directory RPM install=create
-
-Directory RPM/build_from_svn install=create
-File buildRpm.sh                            must_exist,must_be_versioned,install=copy_if_not_existing
-File template.spec                          must_exist,must_be_versioned,install=copy_if_not_existing
-
-Directory RPM/build_from_svn/rpmbuild install=create
-Directory RPM/build_from_svn/rpmbuild/BUILD install=create
-Directory RPM/build_from_svn/rpmbuild/BUILDROOT install=create
-Directory RPM/build_from_svn/rpmbuild/RPMS install=create
-Directory RPM/build_from_svn/rpmbuild/SOURCES install=create
-Directory RPM/build_from_svn/rpmbuild/SPECS install=create
-
-Directory RPM/build_from_git install=create
-File buildRpm.sh                            must_exist,must_be_versioned,install=copy_if_not_existing
-File template.spec                          must_exist,must_be_versioned,install=copy_if_not_existing
-
-
 Directory Server install=create
 File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge
 
