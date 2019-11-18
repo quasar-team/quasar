@@ -15,45 +15,45 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import sys  # for the command line args
 
 
-def do_indentation(input_file_name):    
+def do_indentation(input_file_name):
 
     in_file = file(input_file_name, 'r')
-    
+
     current_indent = 0
-    
+
     basic_tab = '    '  # here you put what you'd like to do
-    
+
     input_lines = in_file.readlines()
     in_file.close()
-    
+
     previous_line = ''
-    
+
     out_file = file(input_file_name, 'w')
     out_file.write('/* This file was indented using fall-back indent tool, because we failed to run astyle program */\n')
     out_file.write('/* Please obtain astyle (there are packages for almost any Linux) for highest user satisfaction */\n')
-    
+
     for line in input_lines:
         if line.isspace() and previous_line.isspace():
             continue
         #  closing bracket should shrink indent BEFORE why opening bracket AFTER
         if current_indent>0:
             current_indent -= line.count('}')
-        
+
         line = basic_tab*current_indent + line.lstrip()
         if not 'namespace' in previous_line:  # for compatibility with existing code, don't indent namespace declarations
             num_brackets = line.count('{')
             if num_brackets > 0:
-                current_indent += num_brackets    
+                current_indent += num_brackets
         if len(line)>0:
             out_file.write(line)
             if line[-1] != '\n':
                 out_file.write('\n')
-            
+
         else:
             if len(previous_line)>0:
                 out_file.write('\n')
         previous_line = line
-        
+
     out_file.close()
 
 if __name__ == "__main__":

@@ -56,18 +56,18 @@ class TransformKeys(enum.Enum):
     D_CMAKE = 21
     CONFIG_DOCUMENTATION = 22
     AS_DOCUMENTATION = 23
-    
+
 # column IDs
 @enum.unique
 class FieldIds(enum.Enum):
     KEY = 0
     XSLT_PATH = 1
-    OUT_PATH = 2 
-    SOURCE_OR_BINARY = 3   
+    OUT_PATH = 2
+    SOURCE_OR_BINARY = 3
     CPP_FORMAT = 4
     REQUIRES_MERGE = 5
     ADDITIONAL_PARAM = 6
-    
+
 
 QuasarTransforms = [
     #(0)key                                 (1)where XSLT is                                        (2)output                                       (3) source or b (4)c++format    (5)req merge  (6)additional params
@@ -99,12 +99,12 @@ QuasarTransforms = [
 def transformDesignVerbose(xsltTransformation, outputFile, requiresMerge, astyleRun=False, additionalParam=None):
     """Just a verbose wrapper around transformDesign, for arguments description see transformDesign below """
     print("Using the transform [" + xsltTransformation + "] to generate the file [" + outputFile + "] {0}"
-		.format('additionalParam=[{0}]'.format(additionalParam) if additionalParam is not None else ''))
+                .format('additionalParam=[{0}]'.format(additionalParam) if additionalParam is not None else ''))
     return transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, additionalParam)
 
 def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, additionalParam=None):
     """Generates a file, applying an xslt transform to Design.xml This is done calling saxon9he.jar
-    
+
     Keyword arguments:
     xsltTransformation   -- xslt file where the transformation is defined
     outputFile           -- name of the file to be generated
@@ -113,10 +113,10 @@ def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, ad
     additionalParam      -- Optional extra param to be passed e.g. to XSLT transform.
     """
     if isinstance(additionalParam, str):
-    	additionalParam = [additionalParam] # compat mode for passing multiple additional params
+        additionalParam = [additionalParam] # compat mode for passing multiple additional params
     elif additionalParam == None:
-    	additionalParam = []	
-    	
+        additionalParam = []
+
     # files
     XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + getCommand('saxon')
     DESIGN_XML = '.' + os.path.sep + 'Design' + os.path.sep + 'Design.xml'
@@ -125,7 +125,7 @@ def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, ad
         outputFile = outputFile + '.generated'
     try:
         # Do transformation
-        subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile] + additionalParam, getCommand("java"))    
+        subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, DESIGN_XML, xsltTransformation, '-o:' + outputFile] + additionalParam, getCommand("java"))
 
         if astyleRun:
             try:
@@ -138,7 +138,7 @@ def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, ad
                     print "We didnt manage to run neither 'astyle' nor 'indent' tool. We're running a fall-back tool now. For best user satisfaction, please install astyle as described in the quasar documentation.  "
                     astyleSubstitute.do_indentation(outputFile)
 
-            
+
 
         if requiresMerge:
             # If the file existed previously and it is different from the old one we run kdiff3
@@ -163,21 +163,21 @@ def getTransformOutput (key, supplementaryData={}):
     outputDir = supplementaryData['context']['projectBinaryDir'] if transformSpec[FieldIds.SOURCE_OR_BINARY.value] == 'B' else supplementaryData['context']['projectSourceDir']
     outputFileRaw = transformSpec[FieldIds.OUT_PATH.value].format(**supplementaryData)
     return os.path.join(outputDir, outputFileRaw)
-    
+
 def transformByKey (keys, supplementaryData={}):
     """ Works both for a single key as well as a list of keys """
     if isinstance(keys, list):
         for key in keys:
             transformByKey(key, supplementaryData)
-    else:           
+    else:
         transformSpec = getTransformSpecByKey(keys)
         outputDir = supplementaryData['context']['projectBinaryDir'] if transformSpec[FieldIds.SOURCE_OR_BINARY.value] == 'B' else supplementaryData['context']['projectSourceDir']
         outputFile = getTransformOutput(keys, supplementaryData)
         transformDesignVerbose(
-            xsltTransformation = transformSpec[FieldIds.XSLT_PATH.value], 
-            outputFile = outputFile, 
-            requiresMerge = transformSpec[FieldIds.REQUIRES_MERGE.value], 
-            astyleRun = transformSpec[FieldIds.CPP_FORMAT.value], 
+            xsltTransformation = transformSpec[FieldIds.XSLT_PATH.value],
+            outputFile = outputFile,
+            requiresMerge = transformSpec[FieldIds.REQUIRES_MERGE.value],
+            astyleRun = transformSpec[FieldIds.CPP_FORMAT.value],
             additionalParam = transformSpec[FieldIds.ADDITIONAL_PARAM.value].format(
-				**supplementaryData) if transformSpec[FieldIds.ADDITIONAL_PARAM.value] is not None else None
+                                **supplementaryData) if transformSpec[FieldIds.ADDITIONAL_PARAM.value] is not None else None
             )

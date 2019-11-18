@@ -41,7 +41,7 @@ class VersionControlInterface:
             raise Exception ('Project seems versioned under multiple version control systems. Please fix first. [Hint: found these vcs:'+found_str+']')
         self.vcs_type = magic_found[0]
         print 'Determined vcs type: '+self.vcs_type
-        
+
         try:
             if self.vcs_type is 'git':
                 import pygit2
@@ -53,8 +53,8 @@ class VersionControlInterface:
                 raise Exception('Internal quasar error')
         except Exception as e:
             raise Exception('It was impossible to import Python module for your version control system type. Original exception:'+str(e))
-        
-    
+
+
     def is_versioned(self,file_path):
         if self.vcs_type is 'git':
             file_path = file_path.replace(os.getcwd()+os.path.sep,'')
@@ -78,7 +78,7 @@ class VersionControlInterface:
             return status['is_versioned']==1
         else:
             raise Exception('Internal quasar error')
-        
+
     def add_to_vc(self,file_path):
         if self.vcs_type is 'git':
             #  file path should start at the base
@@ -90,7 +90,7 @@ class VersionControlInterface:
             self.svnClient.add(file_path)
         else:
             raise Exception('Internal quasar error')
-               
+
     def remove_from_vc(self,file_path):
         if self.vcs_type is 'git':
             #  file path should start at the base
@@ -107,11 +107,11 @@ class VersionControlInterface:
         commitID = "Failed to find commitID"
         try:
             if self.vcs_type is 'git':
-		import pygit2
+                import pygit2
                 commitID = self.repo.describe(describe_strategy=pygit2.GIT_DESCRIBE_ALL, show_commit_oid_as_fallback=True, always_use_long_format=True, dirty_suffix='-dirty')
             elif self.vcs_type is 'svn':
                 commitID = self.svnClient.info2(self.project_path)[0][1]['rev'].number
         except Exception as e:
             commitID = 'Exception: {}'.format(str(e))
-        return 'VCS type [{}] commit ID [{}]'.format(self.vcs_type, commitID) 
-    
+        return 'VCS type [{}] commit ID [{}]'.format(self.vcs_type, commitID)
+

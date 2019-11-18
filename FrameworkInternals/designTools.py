@@ -32,67 +32,67 @@ designXML = "Design.xml"
 designXSD = "Design.xsd"
 
 def validateDesign(context):
-	"""Checks design.xml against Design.xsd, and after that performs some additional checks (defined in designValidation.xslt)"""
-	# 1st line of validation -- does it matches its schema?
-	# This allows some basic checks
-	print("1st line of check -- XSD conformance")
-	print("Validating the file " + designXML + " with the schema " + designXSD)
-	subprocessWithImprovedErrors([getCommand("xmllint"), "--noout", "--schema", designPath + designXSD, designPath + designXML], getCommand("xmllint"))
-	# 2nd line of validation -- including XSLT
-	print("2nd line of check -- more advanced checks using XSLT processor")
-	transformByKey(TransformKeys.DESIGN_VALIDATION, {'context':context} )
+    """Checks design.xml against Design.xsd, and after that performs some additional checks (defined in designValidation.xslt)"""
+    # 1st line of validation -- does it matches its schema?
+    # This allows some basic checks
+    print("1st line of check -- XSD conformance")
+    print("Validating the file " + designXML + " with the schema " + designXSD)
+    subprocessWithImprovedErrors([getCommand("xmllint"), "--noout", "--schema", designPath + designXSD, designPath + designXML], getCommand("xmllint"))
+    # 2nd line of validation -- including XSLT
+    print("2nd line of check -- more advanced checks using XSLT processor")
+    transformByKey(TransformKeys.DESIGN_VALIDATION, {'context':context} )
 
 def formatXml(inFileName, outFileName):
-	if platform.system() == "Windows":
-		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), inFileName], outFileName, getCommand("xmllint"))
-	elif platform.system() == "Linux":
-		subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", inFileName], outFileName, getCommand("xmllint"))
+    if platform.system() == "Windows":
+        subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), inFileName], outFileName, getCommand("xmllint"))
+    elif platform.system() == "Linux":
+        subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", inFileName], outFileName, getCommand("xmllint"))
 
 def formatDesign():
-	"""Formats design.xml. This is done to have always the same indentation format. The formatting is done in a separate file, in case something goes wrong, and then copied over."""
-	backupName = designXML + ".backup"
-	tempName = designXML + ".new"
+    """Formats design.xml. This is done to have always the same indentation format. The formatting is done in a separate file, in case something goes wrong, and then copied over."""
+    backupName = designXML + ".backup"
+    tempName = designXML + ".new"
 
-	print("Creating a backup of " + designXML + " under the name of " + backupName)
-	shutil.copyfile(designPath + designXML, designPath + backupName)
+    print("Creating a backup of " + designXML + " under the name of " + backupName)
+    shutil.copyfile(designPath + designXML, designPath + backupName)
 
-	print("Formatting the file " + designXML + "using the tool XMLlint. The result will be saved in " + tempName)
-	formatXml(designPath + designXML, designPath + tempName)
-		
-	print("Copying the formated file  " + tempName + " into the name of " + designXML)
-	shutil.copyfile(designPath + tempName, designPath + designXML)
-	
+    print("Formatting the file " + designXML + "using the tool XMLlint. The result will be saved in " + tempName)
+    formatXml(designPath + designXML, designPath + tempName)
+
+    print("Copying the formated file  " + tempName + " into the name of " + designXML)
+    shutil.copyfile(designPath + tempName, designPath + designXML)
+
 def upgradeDesign(context, additionalParam):
-	"""Method for adjusting Design.xml for a new Design.xsd when updating to a new version of the Framework"""
-	print("Formatting your design file ...")
-	formatDesign()
+    """Method for adjusting Design.xml for a new Design.xsd when updating to a new version of the Framework"""
+    print("Formatting your design file ...")
+    formatDesign()
 
-	transformByKey(TransformKeys.UPGRADE_DESIGN, {'context':context, 'whatToDo':additionalParam})
-	
-	print("Formatting the upgraded file ")
-	upgradedNonFormatted = getTransformOutput(TransformKeys.UPGRADE_DESIGN, {'context':context} )
-	upgradedFormatted = upgradedNonFormatted + ".formatted"
-	
-	formatXml(upgradedNonFormatted, upgradedFormatted)
-	
-	print("Now running merge-tool. Please merge the upgraded changed")
-	subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, upgradedFormatted], getCommand("diff"))
-	
+    transformByKey(TransformKeys.UPGRADE_DESIGN, {'context':context, 'whatToDo':additionalParam})
+
+    print("Formatting the upgraded file ")
+    upgradedNonFormatted = getTransformOutput(TransformKeys.UPGRADE_DESIGN, {'context':context} )
+    upgradedFormatted = upgradedNonFormatted + ".formatted"
+
+    formatXml(upgradedNonFormatted, upgradedFormatted)
+
+    print("Now running merge-tool. Please merge the upgraded changed")
+    subprocessWithImprovedErrors([getCommand("diff"), "-o", designPath + designXML, designPath + designXML, upgradedFormatted], getCommand("diff"))
+
 def createDiagram(context, detailLevel=0, mode='dot'):
-	"""Creates an UML diagram based on the classes of the server.
-	
-	Keyword arguments:
-	detailLevel -- Detail level of the diagram. If it is not present, 0 will be assumed
-        mode -- one of graph layout modes to be passed to graphviz
-	"""
-        graphvizArgs = {
-                'dot':[],
-                'circo':['-Kcirco', '-Gsplines=true', '-Granksep=0.1', '-Gmindist=0', '-Goverlap=false', '-Gepsilon=0.00001'],
-                'fdp':['-Kfdp', '-Gsplines=true', '-Goverlap=false', '-Gepsilon=0.00001', '-GK=0.01', '-Gmaxiter=10000', '-Gstart=random']
-        }
-        print 'Using {0} as level of detail'.format(str(detailLevel))
-        print 'Using {0} as layout mode. Hint: from quasar 1.3.5, you can choose among: {1}, run with -h for help.'.format(mode, ','.join(graphvizArgs.keys()))
-	transformByKey(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context, 'detailLevel':detailLevel})
-        args = ["-Tpdf", "-o", designPath + "diagram.pdf", getTransformOutput(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context})] + graphvizArgs[mode]
-	subprocessWithImprovedErrors([getCommand("graphviz")] + args , "GraphViz (dot)")
-			
+    """Creates an UML diagram based on the classes of the server.
+
+    Keyword arguments:
+    detailLevel -- Detail level of the diagram. If it is not present, 0 will be assumed
+    mode -- one of graph layout modes to be passed to graphviz
+    """
+    graphvizArgs = {
+            'dot':[],
+            'circo':['-Kcirco', '-Gsplines=true', '-Granksep=0.1', '-Gmindist=0', '-Goverlap=false', '-Gepsilon=0.00001'],
+            'fdp':['-Kfdp', '-Gsplines=true', '-Goverlap=false', '-Gepsilon=0.00001', '-GK=0.01', '-Gmaxiter=10000', '-Gstart=random']
+    }
+    print 'Using {0} as level of detail'.format(str(detailLevel))
+    print 'Using {0} as layout mode. Hint: from quasar 1.3.5, you can choose among: {1}, run with -h for help.'.format(mode, ','.join(graphvizArgs.keys()))
+    transformByKey(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context, 'detailLevel':detailLevel})
+    args = ["-Tpdf", "-o", designPath + "diagram.pdf", getTransformOutput(TransformKeys.CREATE_DIAGRAM_DOT, {'context': context})] + graphvizArgs[mode]
+    subprocessWithImprovedErrors([getCommand("graphviz")] + args , "GraphViz (dot)")
+

@@ -17,16 +17,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 def extract_argument(inData, key):
-	""" If key is present in inData, will remove it and the following element from the list. 
-		Returns a tuple of the output list (i.e. after removal of two elements) and the value of the element (i.e. the second of the two) """ 
-	if key in inData:
-		pos = inData.index(key)
-		output = inData
-		output.pop(pos)
-		try:
-			value = output.pop(pos)
-		except IndexError:
-			raise Exception ('Argument {0} requires to be followed by a value. Run out of arguments.'.format(key))
-		return (output, value)
-	else:  # nothing to do, argument not present
-		return (inData, None)
+    """ If key is present in inData, will remove it and the following element from the list. 
+            Returns a tuple of the output list (i.e. after removal of two elements) and the value of the element (i.e. the second of the two) """
+    if key in inData:
+        pos = inData.index(key)
+        output = inData
+        output.pop(pos)
+        try:
+            value = output.pop(pos)
+        except IndexError:
+            raise Exception ('Argument {0} requires to be followed by a value. Run out of arguments.'.format(key))
+        return (output, value)
+    else:  # nothing to do, argument not present
+        return (inData, None)
