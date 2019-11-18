@@ -41,7 +41,7 @@ def open_generation_target_file(target_generation_dir):
     generation_file_path = os.path.join(target_generation_dir,  'MetaBuildInfoGenerated.h')
     try:
         return open(generation_file_path, 'w')
-    except Exception, e:
+    except Exception as e:
         sys.exit('Generation Failed! Could not open/create target generation file [{}]'.format(generation_file_path))
 
 def generateBuildTime(generatedFile):

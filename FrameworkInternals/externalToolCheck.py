@@ -85,7 +85,7 @@ def checkDoxyGen():
 def tryDependency(functionCheck, critical=True):
     try:
         functionCheck()
-    except Exception, e:
+    except Exception as e:
         if(critical):
             print("CRITICAL dependency missing: " + str(e))
         else:
@@ -114,7 +114,7 @@ def subprocessWithImprovedErrors(subprocessCommand, dependencyName, validReturnC
         returnCode = subprocess.call(subprocessCommand)
     except OSError as e:
         raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
-    except Exception, e:
+    except Exception as e:
         raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
     if returnCode not in validReturnCodes:
         raise WrongReturnValue(dependencyName, returnCode)
@@ -139,7 +139,7 @@ def subprocessWithImprovedErrorsPipeOutputToFile(subprocessCommand, outputFile, 
             returnCode = process.returncode
     except OSError as e:
         raise Exception("There was an OS error when trying to execute the program [" + dependencyName + "]. This probably means that a dependency is missing or non-accesible; Exception: [" + str(e) + "]. For more details run the command 'quasar.py external_tool_check'.")
-    except Exception, e:
+    except Exception as e:
         raise Exception("There was an application error when trying to execute the program [" + dependencyName + "]. Exception: [" + str(e) + "]")
     if returnCode not in validReturnCodes:
         raise WrongReturnValue(dependencyName, returnCode)
