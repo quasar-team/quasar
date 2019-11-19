@@ -28,7 +28,6 @@ try:
     import os.path
     import subprocess
     import traceback
-    import string
     from optparse import OptionParser
     import hashlib
     import version_control_interface
@@ -110,7 +109,7 @@ class File(dict):
             raise Exception ("A textline given to File() doesnt start with File: "+chunks[0])
         self['path']=directory+chunks[1]
         self['name']=chunks[1]
-        get_key_value_pairs(string.join(chunks[2:]), File.allowed_keys, self)
+        get_key_value_pairs(' '.join(chunks[2:]), File.allowed_keys, self)
 
 
     def path(self):
@@ -209,7 +208,7 @@ class Directory(dict):
         chunks = textLine.split()
         if chunks[0] != 'Directory':
             raise Exception ("A textline given to Directory() doesnt start with Directory: "+chunks[0])
-        get_key_value_pairs(string.join(chunks[2:]), Directory.allowed_keys, self)
+        get_key_value_pairs(' '.join(chunks[2:]), Directory.allowed_keys, self)
     def add_file(self,file):
         self['files'].append(file)
     def make_text(self):
@@ -288,7 +287,7 @@ def load_file(file_name,project_directory):
     ''' Returns list of directories '''
     line_no=0
     directories=[]
-    f=file(file_name,'r')
+    f=open(file_name,'r')
     try:
         for line in f:
             line_no = line_no+1
@@ -300,7 +299,6 @@ def load_file(file_name,project_directory):
             chunks = line.split()
             if len(chunks)<1:
                 continue  # skip an empty line
-            text_line=string.join(chunks[2:])
             if chunks[0]=='Directory':
                 current_directory = Directory( chunks[1], line )
                 if chunks[1]=='.':
