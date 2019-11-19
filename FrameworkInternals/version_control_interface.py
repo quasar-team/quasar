@@ -33,14 +33,14 @@ class VersionControlInterface:
         for vcs_type in known_vcs_types:
             magic_found_per_type[vcs_type] = os.path.isdir(self.project_path + os.path.sep + magic_vcs_dir[vcs_type])
         #  see what vcs types were identified: preferably there should be exactly one
-        magic_found = filter( lambda x: magic_found_per_type[x], magic_found_per_type )
+        magic_found = [x for x in magic_found_per_type if magic_found_per_type[x]]
         if len(magic_found) < 1:
             raise Exception ('Project is unversioned or it was impossible to determine the version control system used')
         elif len(magic_found) > 1:
             found_str = ','.join(magic_found)
             raise Exception ('Project seems versioned under multiple version control systems. Please fix first. [Hint: found these vcs:'+found_str+']')
         self.vcs_type = magic_found[0]
-        print 'Determined vcs type: '+self.vcs_type
+        print('Determined vcs type: '+self.vcs_type)
 
         try:
             if self.vcs_type is 'git':

@@ -133,9 +133,9 @@ def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, ad
             except Exception as e:
                 try:
                     subprocess.call([getCommand('indent'), outputFile, '-o', outputFile])
-                    print "We indented your code using 'indent' tool which is a fall-back tool. For best user satisfaction, please install astyle as described in the quasar documentation.  "
+                    print("We indented your code using 'indent' tool which is a fall-back tool. For best user satisfaction, please install astyle as described in the quasar documentation.  ")
                 except Exception as e:
-                    print "We didnt manage to run neither 'astyle' nor 'indent' tool. We're running a fall-back tool now. For best user satisfaction, please install astyle as described in the quasar documentation.  "
+                    print("We didnt manage to run neither 'astyle' nor 'indent' tool. We're running a fall-back tool now. For best user satisfaction, please install astyle as described in the quasar documentation.  ")
                     astyleSubstitute.do_indentation(outputFile)
 
 
@@ -150,12 +150,12 @@ def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, ad
                 os.rename(outputFile, originalOutputFile)
     except Exception:
         if os.path.isfile(outputFile):
-            print "Removing partially generated file: {0}".format(outputFile)
+            print("Removing partially generated file: {0}".format(outputFile))
             os.remove(outputFile)  # sometimes the output of XSLT processor is partial...
         raise
 
 def getTransformSpecByKey(key):
-    return filter(lambda x: x[FieldIds.KEY.value]==key, QuasarTransforms)[0]
+    return [x for x in QuasarTransforms if x[FieldIds.KEY.value]==key][0]
 
 def getTransformOutput (key, supplementaryData={}):
     """Returns absolute path to the output of transform identified by key 'key'"""

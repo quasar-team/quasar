@@ -87,12 +87,12 @@ commands = [
 def printCommandList():
     for cmd in commands:
         if cmd[2]:
-            print ' '.join(cmd[0])
+            print(' '.join(cmd[0]))
 def getCommands():
     return commands
 
 def getCommandFromFunction(function):
-    matching = filter(lambda x: x[1] == function, commands)
+    matching = [x for x in commands if x[1] == function]
     if len(matching) != 1:
         return ''
     return ' '.join(matching[0][0])

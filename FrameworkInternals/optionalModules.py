@@ -38,7 +38,7 @@ def _getEnabledModules():
     os.chdir(baseDirectory + os.path.sep + "FrameworkInternals")
     if os.path.exists("EnabledModules"): os.chdir("EnabledModules")
     else:
-        print "No enabled modules."
+        print("No enabled modules.")
         return
     moduleUrls = glob("*.url")
     enabledModules = {}
@@ -49,13 +49,13 @@ def _getEnabledModules():
         try:
             minVersion = open(module+".minVersion").readline().rstrip()
             tag = open(module+".tag").readline().rstrip()
-        except Exception, ex:
-            print ex
+        except Exception as ex:
+            print(ex)
         if not minVersion:
-            print "Error reading min version info for module "+module
+            print("Error reading min version info for module "+module)
             return None
         if not tag:
-            print "Error reading tag/branch info for module "+module
+            print("Error reading tag/branch info for module "+module)
             return None
         enabledModules[module] = {"tag":tag, "minVersion":minVersion}
     os.chdir(baseDirectory)
@@ -64,9 +64,9 @@ def _getEnabledModules():
 def listEnabledModules():
     """List registered module URLs"""
     enabledModules = _getEnabledModules()
-    print "Enabled optional modules and their required quasar versions: "
+    print("Enabled optional modules and their required quasar versions: ")
     for module in enabledModules.keys():
-        print module, enabledModules[module]["tag"], "(requires quasar", enabledModules[module]["minVersion"]+")"
+        print(module, enabledModules[module]["tag"], "(requires quasar", enabledModules[module]["minVersion"]+")")
 
 def _getModuleInfo(serverString="", forceFetch=False):
     """Downloads list of modules from git and initializes global module list."""
@@ -87,8 +87,8 @@ def _getModuleInfo(serverString="", forceFetch=False):
     if os.path.exists(".git") and not forceFetch:
         try:
             subprocess.call("git pull origin master", shell=True)
-        except Exception, ex:
-            print "Error trying to fetch optional module list from git:", ex
+        except Exception as ex:
+            print("Error trying to fetch optional module list from git:", ex)
             return False
     else:
         try:
@@ -96,8 +96,8 @@ def _getModuleInfo(serverString="", forceFetch=False):
             subprocess.call("git remote add origin "+serverString+"/quasar-team/quasar-modules.git", shell=True)
             subprocess.call("git remote set-url --push origin push-disabled", shell=True)
             subprocess.call("git pull origin master", shell=True)
-        except Exception, ex:
-            print "Error trying to fetch optional module list from git:", ex
+        except Exception as ex:
+            print("Error trying to fetch optional module list from git:", ex)
             return False
 
     moduleUrls = glob("*.url")
@@ -108,8 +108,8 @@ def _getModuleInfo(serverString="", forceFetch=False):
         try:
             moduleInfo[module] = {"minVersion" : open(module+".minVersion").readline().rstrip(),
                                   "url" : open(moduleUrl).readline().rstrip()}
-        except Exception, ex:
-            print "Error reading version info for module "+module, ex
+        except Exception as ex:
+            print("Error reading version info for module "+module, ex)
             return False
     os.chdir(baseDirectory)
     return True
@@ -117,9 +117,9 @@ def _getModuleInfo(serverString="", forceFetch=False):
 def listModules(serverString="", forceFetch=False):
     """Prints list of modules available on git server."""
 
-    print "List of existing optional modules and their required quasar versions: "
+    print("List of existing optional modules and their required quasar versions: ")
     _getModuleInfo(serverString, forceFetch)
-    print json.dumps(moduleInfo, indent=2)
+    print(json.dumps(moduleInfo, indent=2))
 
 def _getModuleUrl(moduleName, serverString=""):
     if not moduleInfo: getModuleInfo(serverString="")
@@ -134,7 +134,7 @@ def _checkTagExists(url, tag): # works for tags or branchess
     ## with python 2.7 use the following:
     ## output = subprocess.call("git ls-remote --tags "+url+" "+tag, shell=True)
     if not output:
-        print "Error, tag/branch "+tag+" for URL "+url+" does not exist. Please specify existing tag/branch."
+        print("Error, tag/branch "+tag+" for URL "+url+" does not exist. Please specify existing tag/branch.")
         return False
     return True
 
@@ -147,24 +147,24 @@ def enableModule(moduleName, tag="master", serverString=""):
     tag          -- tag/branch to checkout, if not specified, master branch is used
     serverString -- default git server is "https://github.com", specify custom if necessary, e.g. "ssh://git@gitlab.cern.ch:7999"
     """
-    print "Enabling module "+moduleName+", tag/branch "+tag
+    print("Enabling module "+moduleName+", tag/branch "+tag)
 
     if not _getModuleInfo(serverString): return False
 
-    print "Checking module to be compatible..."
+    print("Checking module to be compatible...")
     quasarVersion = None
     try:
         quasarVersion = open("Design/quasarVersion.txt").readline().rstrip()
-    except Exception, ex:
-        print ex
+    except Exception as ex:
+        print(ex)
     if not quasarVersion:
-        print "Error reading version info from Design/quasarVersion.txt"
+        print("Error reading version info from Design/quasarVersion.txt")
         return False
     moduleMinVersion = moduleInfo[moduleName]["minVersion"]
     if parse_version(quasarVersion) >= parse_version(moduleMinVersion):
-        print "Module {0} tag {1} required version {2} is compatible with installed quasar version {3}".format(moduleName, tag, moduleMinVersion, quasarVersion)
+        print("Module {0} tag {1} required version {2} is compatible with installed quasar version {3}".format(moduleName, tag, moduleMinVersion, quasarVersion))
     else:
-        print "Cannot enable module "+moduleName+". Minimum required version "+moduleMinVersion+" is newer than installed quasar version "+quasarVersion
+        print("Cannot enable module "+moduleName+". Minimum required version "+moduleMinVersion+" is newer than installed quasar version "+quasarVersion)
         return False
 
     # Check tag to be existing
@@ -181,10 +181,10 @@ def enableModule(moduleName, tag="master", serverString=""):
     oldTag = ""
     if os.path.exists(tagFileName): oldTag = open(tagFileName).read()
     if oldTag and oldTag!=tag:
-        print "Old version of "+moduleName+" exists ("+oldTag+"). Removing it first..."
+        print("Old version of "+moduleName+" exists ("+oldTag+"). Removing it first...")
         os.chdir(baseDirectory)
         if not removeModule(moduleName):
-            print "Module not enabled, correct above errors first."
+            print("Module not enabled, correct above errors first.")
             return
         os.chdir(fwInternalsDir)
 
@@ -204,8 +204,8 @@ def enableModule(moduleName, tag="master", serverString=""):
         if os.path.exists(tagFileName): os.remove(tagFileName)
         file = open(tagFileName, "w")
         file.write(tag)
-    except Exception, ex:
-        print "Failed to set up module files in FrameworkInternals/EnabledModules/ :", ex
+    except Exception as ex:
+        print("Failed to set up module files in FrameworkInternals/EnabledModules/ :", ex)
         return False
 
     print("Created module files. Adding them to your version control system to store the selection.")
@@ -233,13 +233,13 @@ def disableModule(moduleName):
     """
 
     if not os.path.exists("FrameworkInternals/EnabledModules/"+moduleName+".url"):
-        print "Error, module "+moduleName+" seems not installed!"
+        print("Error, module "+moduleName+" seems not installed!")
         return False
     try:
         for file in glob("FrameworkInternals/EnabledModules/"+moduleName+".*"):
             os.remove(file)
-    except Exception, ex:
-        print "Failed to remove module file in FrameworkInternals/EnabledModules/ :", ex
+    except Exception as ex:
+        print("Failed to remove module file in FrameworkInternals/EnabledModules/ :", ex)
         return False
 
     print("Removed url file of "+moduleName+'. Now trying to store your decision in the VCS.')
@@ -271,15 +271,15 @@ def removeModule(module):
     #
     baseDirectory = os.getcwd()
     if not os.path.exists(baseDirectory + os.path.sep + module):
-        print "Error, module directory "+module+" does not exist."
+        print("Error, module directory "+module+" does not exist.")
         return False
     os.chdir(baseDirectory + os.path.sep + module)
     output = subprocess.Popen(['git', 'ls-files', '-m'], stdout=subprocess.PIPE).communicate()[0]
     ## with python 2.7 use the f ollowing:
     ## output = subprocess.call("git ls-files -m", shell=True)
     if output:
-        print "Error, tracked modified files exist in "+module+". Please resolve this before removing the module. Modified files: "
-        print output
+        print("Error, tracked modified files exist in "+module+". Please resolve this before removing the module. Modified files: ")
+        print(output)
         return False
     os.chdir(baseDirectory)
 
@@ -288,19 +288,19 @@ def removeModule(module):
     dirs = glob(module+"*")
     dirs.extend(glob("FrameworkInternals/EnabledModules/"+module+"*/"))
     if dirs:
-        print "Removing files of module", module
+        print("Removing files of module", module)
         for dir in dirs:
-            print "Removing", dir
+            print("Removing", dir)
             try:
                 rmtree(dir)
-            except Exception, ex:
-                print "Failed to remove dir", dir, ex
-    else: print "Nothing to be removed for module", module
+            except Exception as ex:
+                print("Failed to remove dir", dir, ex)
+    else: print("Nothing to be removed for module", module)
     return True
 
 def removeModules():
     """Remove all enabled modules"""
     enabledModules = getEnabledModules()
-    print "Removing downloaded modules"
+    print("Removing downloaded modules")
     for module in enabledModules.keys():
         removeModule(module)
