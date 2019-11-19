@@ -17,7 +17,7 @@ import sys  # for the command line args
 
 def do_indentation(input_file_name):
 
-    in_file = file(input_file_name, 'r')
+    in_file = open(input_file_name, 'r')
 
     current_indent = 0
 
@@ -28,7 +28,7 @@ def do_indentation(input_file_name):
 
     previous_line = ''
 
-    out_file = file(input_file_name, 'w')
+    out_file = open(input_file_name, 'w')
     out_file.write('/* This file was indented using fall-back indent tool, because we failed to run astyle program */\n')
     out_file.write('/* Please obtain astyle (there are packages for almost any Linux) for highest user satisfaction */\n')
 

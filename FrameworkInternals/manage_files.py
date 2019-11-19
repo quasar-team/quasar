@@ -62,7 +62,7 @@ def yes_or_no(question):
 
 def get_list_classes(design_file_name):
     output=[]
-    f = file(design_file_name,'r')
+    f = open(design_file_name,'r')
     tree = etree.parse(f)
     classes = tree.findall('{http://cern.ch/quasar/Design}class')
     for c in classes:
@@ -338,7 +338,7 @@ def create_release(directories):
             if f.must_be_md5_checked():
                 f.make_md5()
         s=s+d.make_text()
-    f=file('FrameworkInternals' + os.path.sep + 'files.txt','w')
+    f=open('FrameworkInternals' + os.path.sep + 'files.txt','w')
     f.write(s)
     print('file files.txt was created')
 
