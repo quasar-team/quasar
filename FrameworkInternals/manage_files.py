@@ -94,7 +94,7 @@ def get_key_value_pairs(options, allowed_keys, dictionary):
 def export_key_value_pairs(keys,dictionary):
     output=""
     for k in keys:
-        if dictionary.has_key(k):
+        if k in dictionary:
             output=output+k
             if dictionary[k]!=None:
                 output=output+"="+str(dictionary[k])
@@ -115,14 +115,14 @@ class File(dict):
     def path(self):
         return self['path']
     def must_be_versioned(self):
-        return self.has_key('must_be_versioned')
+        return 'must_be_versioned' in self
 
     def must_be_md5_checked(self):
-        return self.has_key('md5')
+        return 'md5' in self
     def must_exist(self):
-        return self.has_key('must_exist')
+        return 'must_exist' in self
     def deprecated(self):
-        return self.has_key('deprecated')
+        return 'deprecated' in self
 
     def check_md5(self):
         if verbose: print("---> Checking md5 of file: "+self.path())
@@ -349,7 +349,7 @@ def perform_installation(directories, source_directory, target_directory):
     for d in directories:
         source_dir_path = source_directory+os.path.sep+d['name']
         target_dir_path = target_directory+os.path.sep+d['name']
-        if d.has_key('install'):
+        if 'install' in d:
             dir_action = d['install']
             if dir_action=='create':
                 if not os.path.isdir(target_dir_path):
@@ -361,7 +361,7 @@ def perform_installation(directories, source_directory, target_directory):
             source_file_path = source_dir_path+os.path.sep+f['name']
             target_file_path = target_dir_path+os.path.sep+f['name']
             print("at file="+f.path())
-            if f.has_key('install'):
+            if 'install' in f:
                 file_action = f['install']
                 if file_action=='overwrite':
                     if not os.path.isfile(target_file_path):
