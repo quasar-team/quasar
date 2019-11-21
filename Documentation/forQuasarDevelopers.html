@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>For quasar developers</title>
+  </head>
+  <body>
+    <h1>Notes for quasar developers</h1>
+    <p>Written by Piotr P. Nikiel, Nov 2019<br>
+    </p>
+    <h2>Conventions regarding Python code for quasar tooling</h2>
+    <p>The note here applies to people developing quasar scripting, like
+      quasar.py and other py scripts in the FrameworkInternals
+      directory.<br>
+    </p>
+    <h2>Indentation<br>
+    </h2>
+    <p>Developers should follow <a
+        href="https://www.python.org/dev/peps/pep-0008/#indentation">PEP8</a>.
+      <br>
+    </p>
+    Note that there is some tooling which can help maintain proper
+    indentation, for instance we recommend autopep8.<br>
+    The way to invoke it might be:<br>
+    <br>
+    <pre>find . -name \*.py -exec autopep8 --select E101,W291,W293 -i {} \;</pre>
+    <br>
+    <h2>Line ending encoding</h2>
+    <br>
+    You should use LF line endings. You can use dos2unix if in need.<br>
+    <br>
+    <h2>Encoding</h2>
+    <br>
+    You should use UTF-8.<br>
+    <br>
+    <h2>Shebang</h2>
+    <br>
+    You should use the following shebang:<br>
+    <br>
+    <pre>#!/usr/bin/env python</pre>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </body>
+</html>
