@@ -75,8 +75,6 @@ install:
   - ps : Write-Output "Installing python packages..."
   - ps : python -m pip install --upgrade pip
   - ps : python -W ignore -m pip install lxml
-  - ps : python -W ignore -m pip install pygit2
-  - ps : python -W ignore -m pip install enum34
   - ps : Write-Output "Installed python packages"
   - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py # checks to see if required python libs are OK.
 
