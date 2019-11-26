@@ -124,17 +124,22 @@ class File(dict):
     def deprecated(self):
         return 'deprecated' in self
 
+    @staticmethod
+    def compute_md5(file_name):
+        # Piotr: used the nice recipe from https://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file
+        hash_md5 = hashlib.md5()
+        with open(file_name, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()
+
+    
     def check_md5(self):
         if verbose: print("---> Checking md5 of file: "+self.path())
         if not os.path.isfile(self.path()):
             return ['Cant checksum because the file doesnt exist: '+self.path()]
         else:
-            [status,output]=subprocess.getstatusoutput('md5sum '+self.path())
-            if status!=0:
-                raise Exception ('Calling md5sum was not successful: '+output+'. This is a fatal error. Cant continue')
-            md5=output.split(" ")[0]
-            #print "obtained md5="+md5
-            #print "requested md5="+self['md5']
+            md5 = self.compute_md5(self.path())
             if md5!=self['md5']:
                 return ['MD5 Failure at file: '+self.path()+' md5_obtained='+md5+' md5_expected='+self['md5']]
             else:
@@ -185,16 +190,13 @@ class File(dict):
 
         return problems
 
-    def make_md5(self):
-        cmd='md5sum '+self.path()
-        print('Calling '+cmd)
-        [status,output]=subprocess.getstatusoutput('md5sum '+self.path())
-        if status!=0:
-            raise Exception ('Calling md5sum was not successful on file '+self.path()+' . This is a fatal error. Cant continue')
-        md5=output.split(" ")[0]
-        #print "obtained md5="+md5
-        self['md5']=md5
 
+    
+    def make_md5(self):
+        self['md5'] = self.compute_md5(self.path())
+
+        
+        
     def make_text_line(self):
         s="File "+os.path.basename(self.path())+" "+export_key_value_pairs(File.allowed_keys, self)
         return s
