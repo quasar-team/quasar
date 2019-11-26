@@ -43,10 +43,10 @@ class VersionControlInterface:
         print('Determined vcs type: '+self.vcs_type)
 
         try:
-            if self.vcs_type is 'git':
+            if self.vcs_type == 'git':
                 import pygit2
                 self.repo = pygit2.Repository(self.project_path)
-            elif self.vcs_type is 'svn':
+            elif self.vcs_type == 'svn':
                 import pysvn
                 self.svnClient = pysvn.Client()
             else:
@@ -56,7 +56,7 @@ class VersionControlInterface:
 
 
     def is_versioned(self,file_path):
-        if self.vcs_type is 'git':
+        if self.vcs_type == 'git':
             file_path = file_path.replace(os.getcwd()+os.path.sep,'')
             index = self.repo.index
             index.read()
@@ -65,7 +65,7 @@ class VersionControlInterface:
             except:
                 return False
             return True
-        elif self.vcs_type is 'svn':
+        elif self.vcs_type == 'svn':
             try:
                 statuses = self.svnClient.status(file_path)
             except:
@@ -80,25 +80,25 @@ class VersionControlInterface:
             raise Exception('Internal quasar error')
 
     def add_to_vc(self,file_path):
-        if self.vcs_type is 'git':
+        if self.vcs_type == 'git':
             #  file path should start at the base
             file_path = file_path.replace(os.getcwd()+os.path.sep,'')
             self.repo.index.read()
             self.repo.index.add(file_path)
             self.repo.index.write()
-        elif self.vcs_type is 'svn':
+        elif self.vcs_type == 'svn':
             self.svnClient.add(file_path)
         else:
             raise Exception('Internal quasar error')
 
     def remove_from_vc(self,file_path):
-        if self.vcs_type is 'git':
+        if self.vcs_type == 'git':
             #  file path should start at the base
             file_path = file_path.replace(os.getcwd()+os.path.sep,'')
             self.repo.index.read()
             self.repo.index.remove(file_path)
             self.repo.index.write()
-        elif self.vcs_type is 'svn':
+        elif self.vcs_type == 'svn':
             self.svnClient.remove(file_path)
         else:
             raise Exception('Internal quasar error')
@@ -106,10 +106,10 @@ class VersionControlInterface:
     def get_latest_repo_commit(self):
         commitID = "Failed to find commitID"
         try:
-            if self.vcs_type is 'git':
+            if self.vcs_type == 'git':
                 import pygit2
                 commitID = self.repo.describe(describe_strategy=pygit2.GIT_DESCRIBE_ALL, show_commit_oid_as_fallback=True, always_use_long_format=True, dirty_suffix='-dirty')
-            elif self.vcs_type is 'svn':
+            elif self.vcs_type == 'svn':
                 commitID = self.svnClient.info2(self.project_path)[0][1]['rev'].number
         except Exception as e:
             commitID = 'Exception: {}'.format(str(e))

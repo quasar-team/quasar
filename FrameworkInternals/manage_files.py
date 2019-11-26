@@ -156,7 +156,7 @@ class File(dict):
                     if ask:
                         print("File is not versioned: "+self.path())
                         yn = yes_or_no("Do you want to fix that now?")
-                        if yn is 'y':
+                        if yn == 'y':
                             vci.add_to_vc(self.path())
                         else:
                             problems.append('File not versioned: '+self.path())
@@ -170,7 +170,7 @@ class File(dict):
                 if ask:
                     print("File is deprecated: "+self.path())
                     yn = yes_or_no("Do you want to fix that now?")
-                    if yn is 'y':
+                    if yn == 'y':
                         if vci.is_versioned(self.path()):
                             print('Attempting delete with your version control system: you will have to commit afterwards!')
                             vci.remove_from_vc(self.path())
