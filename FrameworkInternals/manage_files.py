@@ -186,14 +186,12 @@ class File(dict):
         return problems
 
     def make_md5(self):
-        cmd='md5sum '+self.path()
-        print('Calling '+cmd)
-        [status,output]=subprocess.getstatusoutput('md5sum '+self.path())
-        if status!=0:
-            raise Exception ('Calling md5sum was not successful on file '+self.path()+' . This is a fatal error. Cant continue')
-        md5=output.split(" ")[0]
-        #print "obtained md5="+md5
-        self['md5']=md5
+        # Piotr: used the nice recipe from https://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file
+        hash_md5 = hashlib.md5()
+        with open(self.path(), 'r') as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        self['md5'] = hash_md5.hexdigest()
 
     def make_text_line(self):
         s="File "+os.path.basename(self.path())+" "+export_key_value_pairs(File.allowed_keys, self)
