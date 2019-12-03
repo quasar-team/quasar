@@ -305,7 +305,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	bool configure (std::string fileName, AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction configXmlDecoratorFunction)
     {
 	
-	std::auto_ptr&lt;Configuration::Configuration&gt; theConfiguration;
+	std::unique_ptr&lt;Configuration::Configuration&gt; theConfiguration;
 	
 	try
 	{
