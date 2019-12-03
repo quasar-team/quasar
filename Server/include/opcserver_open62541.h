@@ -3,11 +3,10 @@
 #ifndef MAIN_OPCSERVER_H
 #define MAIN_OPCSERVER_H
 
-#include <open62541_compat.h>
-#include <ASNodeManager.h>
-#include <boost/thread.hpp>
+#include <uaserver.h>
 
-using AddressSpace::ASNodeManager;
+// forward-decls
+namespace AddressSpace { class ASNodeManager; }
 
 class OpcServer
 {
@@ -21,9 +20,9 @@ public:
 
     // Methods used to initialize the server
     int setServerConfig(const UaString& configurationFile, const UaString& applicationPath);
-//    int setServerConfig(ServerConfig* pServerConfig);
-    int addNodeManager(ASNodeManager* pNodeManager);
-//    int setCallback(OpcServerCallback* pOpcServerCallback);
+
+    int addNodeManager(AddressSpace::ASNodeManager* pNodeManager);
+
     /* This is just to create a certificate and quit right away */
     int createCertificate (
             const UaString& backendConfigFile,
@@ -39,14 +38,9 @@ public:
     std::string getLogFilePath() { return m_logFilePath; }
 
 private:
-    ASNodeManager *m_nodemanager;
     std::string m_logFilePath;
 
-    std::unique_ptr<UA_ServerConfig, std::function<void(UA_ServerConfig*)> > m_server_config;
-    UA_Server *m_server;
-    boost::thread m_open62541_server_thread;
-
-    void runThread();
+    UaServer m_server;
 };
 
 
