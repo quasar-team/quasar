@@ -51,11 +51,13 @@ add_custom_target(runBuildInfoGeneratorPy ALL
 	DEPENDS alwaysRunBuildInfoGeneratorPy
 )
 
+string(REPLACE "-l" "_l" OPCUA_TOOLKIT_LIBS_ESCAPED ${OPCUA_TOOLKIT_LIBS})
+
 add_custom_command(OUTPUT alwaysRunBuildInfoGeneratorPy # note output never actually created: ensures cmd always runs
 	COMMENT "generating meta build info definitions header using python script" 
 	WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
 	DEPENDS ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/meta_build_info.py
-	COMMAND python ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/meta_build_info.py --project_root_dir ${CMAKE_SOURCE_DIR} --target_generation_dir ${PROJECT_BINARY_DIR}/generated --toolkit_libs "${OPCUA_TOOLKIT_LIBS}"
+	COMMAND python ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/meta_build_info.py --project_root_dir ${CMAKE_SOURCE_DIR} --target_generation_dir ${PROJECT_BINARY_DIR}/generated --toolkit_libs "${OPCUA_TOOLKIT_LIBS_ESCAPED}"
 	VERBATIM
 )
 
