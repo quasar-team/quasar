@@ -173,21 +173,9 @@ include_directories( ${PROJECT_SOURCE_DIR}/GoogleTest/gtest/src/gtest/include )
 #------
 add_definitions( -DBACKEND_OPEN62541 )
 SET( OPCUA_TOOLKIT_PATH "" )
-
-include_directories (${PROJECT_BINARY_DIR}/open62541-compat/open62541)
-
-if(NOT TARGET open62541release)
-	add_library(open62541release STATIC IMPORTED)
-	set_property(TARGET open62541release PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/open62541-compat/open62541/Release/open62541.lib)
-endif()
-
-if(NOT TARGET open62541debug)
-	add_library(open62541debug STATIC IMPORTED)
-	set_property(TARGET open62541debug PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/open62541-compat/open62541/Debug/open62541.lib)
-endif()
-
-SET( OPCUA_TOOLKIT_LIBS_RELEASE open62541release )
-SET( OPCUA_TOOLKIT_LIBS_DEBUG open62541debug )
+include_directories(${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/include )
+SET( OPCUA_TOOLKIT_LIBS_RELEASE -lrt )
+SET( OPCUA_TOOLKIT_LIBS_DEBUG   -lrt )
 
 #------
 #General
