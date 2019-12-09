@@ -66,9 +66,9 @@ message ("using BOOST_LIBS [${BOOST_LIBS}]")
 # No OPC-UA Toolkit: using Open62541-compat instead. It is referenced in BACKEND_MODULES below
 add_definitions( -DBACKEND_OPEN62541 )
 SET( OPCUA_TOOLKIT_PATH "" )
-SET( OPCUA_TOOLKIT_LIBS_RELEASE "${PROJECT_BINARY_DIR}/open62541-compat/open62541/libopen62541.a" -lrt -lpthread)
-SET( OPCUA_TOOLKIT_LIBS_DEBUG "${PROJECT_BINARY_DIR}/open62541-compat/open62541/libopen62541.a" -lrt -lpthread)
-include_directories( ${PROJECT_BINARY_DIR}/open62541-compat/open62541 )
+SET( OPCUA_TOOLKIT_LIBS_RELEASE -lrt -lpthread )
+SET( OPCUA_TOOLKIT_LIBS_DEBUG -lrt -lpthread )
+include_directories( ${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/include )
 
 #-----
 #XML Libs
