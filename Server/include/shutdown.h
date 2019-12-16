@@ -62,10 +62,4 @@ void ShutDown();
 //! Need to keep it extern for usgae in opcserver_open62541.cpp, for instance.
 extern volatile OpcUa_Boolean g_RunningFlag;
 
-
-/* Use this to get the application path created with new. Delete returned char array if not NULL. */
-char* getAppPath();
-
-
-
 #endif
