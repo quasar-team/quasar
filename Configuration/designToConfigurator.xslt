@@ -54,9 +54,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	<xsl:param name="parentDevice"/>
 	<xsl:param name="configuration" />
 	<xsl:param name="containingClass" />
-	/* Experimental code: instantiating from design. */
 	<xsl:variable name="className"><xsl:value-of select="@class"/></xsl:variable>
-	<xsl:for-each select="d:object">
+	<xsl:for-each select="d:object[$className!='Meta']">
+	/* Experimental code: instantiating from design. */
 	{
 				Configuration::<xsl:value-of select="$className"/> c ("<xsl:value-of select="@name"/>");
 				AddressSpace::<xsl:value-of select="fnc:ASClassName($className)"/> *a<xsl:value-of select="fnc:ASClassName($className)"/> = 
