@@ -26,21 +26,12 @@
 /// load
 class Certificate {
 public:
-    /// behavior:
-    /// NONE: don't attempt to read any certificates, do nothing. Validity is unknown.
-    /// TRY:  if cert file exists, load it, otherwise report and continue
-    /// TRYCA: like TRY, but with CA and a chain
-    /// CERT: load a crt from file, abort if problem
-    /// CERTCA: like CERT, but with CA load and interrogation
-	/// we can discuss this ;-)
-	enum behaviour_t { BEHAVIOR_NONE, BEHAVIOR_TRY, BEHAVIOR_TRYCA, BEHAVIOR_CERT, BEHAVIOR_CERTCA };
-
 	enum status_t { STATUS_OK, STATUS_FAILED, STATUS_UNKNOWN };
 
 	const static std::string DEFAULT_PUBLIC_CERT_FILENAME;
 	const static std::string DEFAULT_PRIVATE_CERT_FILENAME;
 
-	static Certificate* Instance( std::string certfn, std::string privkeyfn, enum behaviour_t beh );
+	static Certificate* Instance( std::vector<string> vder );
 	static Certificate* Instance( );
 
 	virtual ~Certificate();
@@ -50,7 +41,7 @@ public:
 	void setTypePEM( void ) { m_type = SSL_FILETYPE_PEM; }
 
 private:
-	Certificate( std::string certfn, std::string privkeyfn, enum behaviour_t beh  );	// singleton
+	Certificate( std::vector<string> vder );	// singleton
 	Certificate( Certificate const&);                            // copy constructor absent (i.e. cannot call it - linker will fail).
 	Certificate& operator=(Certificate const&);  		// assignment operator absent (i.e. cannot call it - linker will fail).
 	static Certificate* _pInstance;
@@ -75,7 +66,6 @@ private:
 
 	const std::string m_certfn;
 	const std::string m_privkeyfn;
-	const behaviour_t m_behaviour;
 	int m_type;
 
 	SSL *m_ssl;
