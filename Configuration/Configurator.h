@@ -24,8 +24,8 @@
 #ifndef CONFIGURATOR_H_
 #define CONFIGURATOR_H_
 
-
 #include <string>
+#include <boost/function.hpp> // TODO: remove it (added because a cleanup of ASNodeManager made Meta not compile
 
 #include <ASNodeManager.h>
 #include <Configuration.hxx>

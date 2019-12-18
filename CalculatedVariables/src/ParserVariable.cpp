@@ -26,7 +26,7 @@
 #include <ParserVariable.h>
 #include <CalculatedVariable.h>
 
-#include <boost/thread/lock_guard.hpp>
+#include <mutex> // for lock_guard
 
 namespace CalculatedVariables
 {
@@ -66,7 +66,7 @@ void ParserVariable::setValueNonSynchronized(double v, State state)
 
 void ParserVariable::setValueSynchronized(double v, State state)
 {
-    boost::lock_guard<Synchronizer> lock (*m_synchronizer);
+    std::lock_guard<Synchronizer> lock (*m_synchronizer);
     this->setValueNonSynchronized(v, state);
 }
 

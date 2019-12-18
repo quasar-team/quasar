@@ -27,7 +27,6 @@
 #include <vector>
 #include <string>
 #include <list>
-#include <boost/thread/mutex.hpp>
 
 
 #include <DRoot.h>

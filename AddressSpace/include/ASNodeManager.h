@@ -23,13 +23,11 @@
 #ifndef ASNODEMANAGER_H_
 #define ASNODEMANAGER_H_
 
-#include <iostream>
-#include <boost/function.hpp>
+#include <functional> // for std::function
 
 #include <nodemanagerbase.h>
 
 #include <ASUtils.h>
-
 
 namespace AddressSpace
 
@@ -54,14 +52,14 @@ namespace AddressSpace
     UaNodeId makeChildNodeId (const UaNodeId &parent, const UaString& childName);
 
     const UaNodeId getTypeNodeId (unsigned int numericalType);
-    void setAfterStartupDelegate( boost::function<UaStatus ()> afterStartUpDelegate );
+    void setAfterStartupDelegate( std::function<UaStatus ()> afterStartUpDelegate );
 
 	UaStatus addUnreferencedNode( UaNode* node ) { m_unreferencedNodes.push_back(node); return OpcUa_Good; }
 	const std::list<UaNode*>& getUnreferencedNodes () const { return m_unreferencedNodes; }
 
   private:
     UaStatus createTypeNodes();
-    boost::function<UaStatus ()> m_afterStartUpDelegate;
+    std::function<UaStatus ()> m_afterStartUpDelegate;
 	std::list<UaNode*> m_unreferencedNodes;
   };
 
