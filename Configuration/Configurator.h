@@ -25,12 +25,14 @@
 #define CONFIGURATOR_H_
 
 #include <string>
-#include <boost/function.hpp> // TODO: remove it (added because a cleanup of ASNodeManager made Meta not compile
+#include <functional>
 
 #include <ASNodeManager.h>
-#include <Configuration.hxx>
 
-typedef boost::function<bool (Configuration::Configuration&)> ConfigXmlDecoratorFunction;
+// forward-decls
+namespace Configuration{ class Configuration; }
+
+typedef std::function<bool (Configuration::Configuration&)> ConfigXmlDecoratorFunction;
 bool configure (std::string fileName,
         AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction
         configXmlDecoratorFunction = ConfigXmlDecoratorFunction()); // 'empty' function by default.
