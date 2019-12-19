@@ -23,7 +23,6 @@
 #define __DStandardMetaData__H__
 
 #include <vector>
-#include <boost/thread/mutex.hpp>
 
 #include <statuscode.h>
 #include <uadatetime.h>

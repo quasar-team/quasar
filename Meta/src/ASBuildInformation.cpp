@@ -20,17 +20,10 @@
  */
 
 
-#include <iostream>
 #include <climits>
-
-#include <boost/lexical_cast.hpp>
 
 #include <ArrayTools.h>
 #include <Utils.h>
-
-#include <SourceVariables.h>
-
-
 
 #include <ASBuildInformation.h>
 
@@ -146,7 +139,7 @@ ASBuildInformation::ASBuildInformation (
             m_BuildHost, OpcUaId_HasComponent);
     if (!s.isGood())
     {
-        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_BuildHost->nodeId().toString().toUtf8() << " : " << std::endl;
+        LOG(Log::ERR) << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_BuildHost->nodeId().toString().toUtf8() << " : " << std::endl;
         ASSERT_GOOD(s);
     }
 
@@ -167,7 +160,7 @@ ASBuildInformation::ASBuildInformation (
             m_BuildTimestamp, OpcUaId_HasComponent);
     if (!s.isGood())
     {
-        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_BuildTimestamp->nodeId().toString().toUtf8() << " : " << std::endl;
+        LOG(Log::ERR) << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_BuildTimestamp->nodeId().toString().toUtf8() << " : " << std::endl;
         ASSERT_GOOD(s);
     }
 
@@ -188,7 +181,7 @@ ASBuildInformation::ASBuildInformation (
             m_CommitID, OpcUaId_HasComponent);
     if (!s.isGood())
     {
-        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_CommitID->nodeId().toString().toUtf8() << " : " << std::endl;
+        LOG(Log::ERR) << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_CommitID->nodeId().toString().toUtf8() << " : " << std::endl;
         ASSERT_GOOD(s);
     }
 
@@ -209,7 +202,7 @@ ASBuildInformation::ASBuildInformation (
             m_ToolkitLibs, OpcUaId_HasComponent);
     if (!s.isGood())
     {
-        std::cout << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_ToolkitLibs->nodeId().toString().toUtf8() << " : " << std::endl;
+        LOG(Log::ERR) << "While addNodeAndReference from " << this->nodeId().toString().toUtf8() << " to " << m_ToolkitLibs->nodeId().toString().toUtf8() << " : " << std::endl;
         ASSERT_GOOD(s);
     }
 

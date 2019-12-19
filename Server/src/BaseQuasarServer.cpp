@@ -45,17 +45,14 @@
 #endif
 
 #include <shutdown.h>
-#include <SourceVariables.h>
+#include <SourceVariables.h> // needed for starting up the SourceVariables threadpool
 #include <meta.h>
-#include <boost/bind.hpp>
-#include <boost/thread.hpp>
 
 #include <signal.h>
 #ifndef __GNUC__
 #include <windows.h>
 #endif
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/thread/thread.hpp> 
 
 #include <MetaBuildInfo.h>
 #include <CalculatedVariablesEngine.h>
@@ -137,7 +134,7 @@ int BaseQuasarServer::serverRun(
 
     m_nodeManager = new AddressSpace::ASNodeManager();
     m_nodeManager->setAfterStartupDelegate(
-            boost::bind(&BaseQuasarServer::configurationInitializerHandler, this, configFileName, m_nodeManager));
+            std::bind(&BaseQuasarServer::configurationInitializerHandler, this, configFileName, m_nodeManager));
 
     m_pServer->addNodeManager(m_nodeManager);
 
@@ -302,8 +299,7 @@ void BaseQuasarServer::mainLoop()
 
     while (ShutDownFlag() == 0)
     {
-
-        boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     printServerMsg(" Shutting down server");
 }

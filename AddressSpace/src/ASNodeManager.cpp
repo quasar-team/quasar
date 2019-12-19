@@ -62,15 +62,15 @@ UaStatus ASNodeManager::createTypeNodes ()
 
 UaStatus ASNodeManager::afterStartUp()
 {
-	UaStatus s;
-	s = createTypeNodes();
-	if (!s.isGood())
-		return s;
-	if (! m_afterStartUpDelegate.empty())
+	UaStatus status;
+	status = createTypeNodes();
+	if (!status.isGood())
+		return status;
+	if (m_afterStartUpDelegate)
 	{
-		s = m_afterStartUpDelegate();
-		if (!s.isGood())
-			return s;
+		status = m_afterStartUpDelegate();
+		if (!status.isGood())
+			return status;
 	}
 	
 	return OpcUa_Good;
@@ -218,7 +218,7 @@ UaStatus ASNodeManager::beforeShutDown()
 
 	  
 	  
-	void ASNodeManager::setAfterStartupDelegate( boost::function<UaStatus ()> afterStartUpDelegate )
+	void ASNodeManager::setAfterStartupDelegate( std::function<UaStatus ()> afterStartUpDelegate )
 	{
 		m_afterStartUpDelegate = afterStartUpDelegate;
 	}

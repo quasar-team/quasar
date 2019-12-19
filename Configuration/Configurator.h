@@ -24,13 +24,15 @@
 #ifndef CONFIGURATOR_H_
 #define CONFIGURATOR_H_
 
-
 #include <string>
+#include <functional>
 
 #include <ASNodeManager.h>
-#include <Configuration.hxx>
 
-typedef boost::function<bool (Configuration::Configuration&)> ConfigXmlDecoratorFunction;
+// forward-decls
+namespace Configuration{ class Configuration; }
+
+typedef std::function<bool (Configuration::Configuration&)> ConfigXmlDecoratorFunction;
 bool configure (std::string fileName,
         AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction
         configXmlDecoratorFunction = ConfigXmlDecoratorFunction()); // 'empty' function by default.

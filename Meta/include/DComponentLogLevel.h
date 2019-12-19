@@ -23,7 +23,6 @@
 
 #include <vector>
 #include <stdint.h>
-#include <boost/thread/mutex.hpp>
 
 #include <statuscode.h>
 #include <uadatetime.h>

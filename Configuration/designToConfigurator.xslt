@@ -286,7 +286,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 <!-- *************************************************** -->	
 	bool runConfigurationDecoration(Configuration::Configuration&amp; theConfiguration, ConfigXmlDecoratorFunction&amp; configXmlDecoratorFunction)
 	{
-		if(configXmlDecoratorFunction.empty()) return true;
+		if(!configXmlDecoratorFunction) return true;
 		
 		if(configXmlDecoratorFunction(theConfiguration))
 		{
