@@ -60,6 +60,17 @@ endif(DEFINED ENV{OPCUA_TOOLKIT_PATH})
 SET( OPCUA_TOOLKIT_LIBS_DEBUG "-luamoduled -lcoremoduled -luabased -luastackd -luapkid -lxmlparserd -lxml2 -lssl -lcrypto -lpthread" ) 
 SET( OPCUA_TOOLKIT_LIBS_RELEASE "-luamodule -lcoremodule -luabase -luastack -luapki -lxmlparser -lxml2 -lssl -lcrypto -lpthread" ) 
 
+add_custom_target( quasar_opcua_backend_is_ready ) 
+
+include_directories (
+	${OPCUA_TOOLKIT_PATH}/include/uastack
+	${OPCUA_TOOLKIT_PATH}/include/uabase
+	${OPCUA_TOOLKIT_PATH}/include/uaserver
+	${OPCUA_TOOLKIT_PATH}/include/xmlparser
+	${OPCUA_TOOLKIT_PATH}/include/uapki
+)
+
+
 #-----
 #XML Libs
 #-----
