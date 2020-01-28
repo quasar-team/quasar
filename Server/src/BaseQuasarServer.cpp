@@ -218,8 +218,8 @@ int BaseQuasarServer::parseCommandLine(
 	         ->default_value(defaultOpcUaBackendConfigurationFile), 
                  "(Optional) path to the OPC-UA settings file")
             ("create_certificate", bool_switch(&createCertificateOnly), "Create new certificate and exit")
-            ("help", "Print help")
-            ("version", bool_switch(&printVersion), "Print version and exit");
+            ("help,h", "Print help")
+            ("version,v", bool_switch(&printVersion), "Print version and exit");
 
     positional_options_description p;
     p.add("config_file", 1);
@@ -231,14 +231,14 @@ int BaseQuasarServer::parseCommandLine(
     {
 	store(command_line_parser(argc,argv)
 	      .options(desc)
-	      .style(command_line_style::allow_long_disguise | command_line_style::unix_style)
+	      .style(command_line_style::unix_style)
 	      .positional(p)
 	      .run(),
 	      vm);
     }
     catch (boost::exception &e)
     {
-        cout << "Couldn't interpret command line, please run with -help " << endl;
+        cout << "Couldn't interpret command line, please run with --help " << endl;
         return 1;
     }
     notify(vm);
