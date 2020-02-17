@@ -93,7 +93,7 @@ def automatedBuild(context, *args):
     buildType = "Release" if len(args2) == 0 else args2[0]
     if not buildType in ["Release","Debug"]:
         raise Exception ("Only Release or Debug is accepted as the parameter. "
-                                         "If you are used to passing build config through here, note this version of quasar has separate command to do that: build_config")
+                                         "If you are used to passing build config through here, note this version of quasar has separate command to do that: set_build_config")
 
     generateCmake(context, *args)
 
