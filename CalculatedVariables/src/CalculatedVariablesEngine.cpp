@@ -131,7 +131,7 @@ std::string CalculatedVariables::Engine::elaborateFormula (
     // $xxxxxxxxx
     // $xxxxxxxxx(yyyyy)
     // Note: ?: is the non-captured group so in the end we get between 2 and 3 capture groups total.
-    basic_regex<std::string::iterator> cvSubstitutionRegex = basic_regex<std::string::iterator>::compile("\\$([A-Za-z0-9_]+)(?:(?:\\()(\\S+)(?:\\)))?");
+    basic_regex<std::string::iterator> cvSubstitutionRegex = basic_regex<std::string::iterator>::compile("\\$([A-Za-z0-9_]+)(?:(?:\\()([^ \r\n\t()]+)(?:\\)))?");
 
     match_results<std::string::iterator> matched;
     std::string formulaInWork (config.value());
@@ -168,6 +168,7 @@ std::string CalculatedVariables::Engine::elaborateFormula (
                 }
                 catch (std::out_of_range &e)
                     LOG_AND_THROW_ERROR(thisFormulaAddress, "Generic Formula id='"+formulaId+"' was referenced but never declared.");
+                LOG(Log::TRC, logComponentId) << "After expanding $applyGenericFormula, formulaInWork=" << formulaInWork;
             }
             else if (operation == "parentObjectAddress")
             {
