@@ -62,9 +62,13 @@ endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 set(OPTIONAL_SERVER_MODULES)
 file(GLOB OPTIONAL_SERVER_MODULE_URLS "FrameworkInternals/EnabledModules/*.url")
 
+include( FrameworkInternals/UrlHandling.cmake )
 foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
     #
     file (STRINGS ${moduleFile} OPT_MODULE_URL)
+
+    process_git_url(OPT_MODULE_URL)
+
     get_filename_component(module ${moduleFile} NAME_WE)
     file (STRINGS FrameworkInternals/EnabledModules/${module}.tag OPT_MODULE_TAG)
     message("Adding module ${module} URL=${OPT_MODULE_URL} TAG=${OPT_MODULE_TAG}")
