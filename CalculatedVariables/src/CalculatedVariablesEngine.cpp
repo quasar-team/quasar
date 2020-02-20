@@ -164,7 +164,10 @@ std::string CalculatedVariables::Engine::elaborateFormula (
                 std::string formulaId = matched[2];
                 try
                 {
-                    formulaInWork = s_genericFormulas.at(formulaId);
+                    formulaInWork.replace(
+                            /*from*/ matched[0].first,
+                            /*to*/ matched[0].second,
+                            s_genericFormulas.at(formulaId));
                 }
                 catch (std::out_of_range &e)
                     LOG_AND_THROW_ERROR(thisFormulaAddress, "Generic Formula id='"+formulaId+"' was referenced but never declared.");
