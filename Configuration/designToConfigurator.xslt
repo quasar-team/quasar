@@ -65,6 +65,9 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 				nm->getTypeNodeId(AddressSpace::ASInformationModel::<xsl:value-of select="fnc:typeNumericId($className)"/>), 
 				nm,
 				c);
+                /* just in case this class hasn't got device logic, silence out the unused variable warning,
+                   because what mattered was already done in the constructor invocation above */
+                (void)a<xsl:value-of select="fnc:ASClassName($className)"/>;
 				<xsl:variable name="className"><xsl:value-of select="$className"/></xsl:variable>
 				<xsl:for-each select="/d:design/d:class[@name=$className]">
 				<xsl:call-template name="createDeviceLogic">
