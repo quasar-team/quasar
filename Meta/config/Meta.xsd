@@ -59,9 +59,9 @@
 	</xs:complexType>
 	
     <xs:complexType name="SourceVariableThreadPool">
-      <xs:attribute name="minThreads" use="required" type="xs:unsignedInt"/>
-      <xs:attribute name="maxThreads" use="required" type="xs:unsignedInt"/>
-      <xs:attribute name="maxJobs" use="required" type="xs:unsignedInt"/>
+      <xs:attribute name="minThreads" use="optional" type="xs:unsignedInt" default="1" />
+      <xs:attribute name="maxThreads" use="optional" type="xs:unsignedInt" default="10" />
+      <xs:attribute name="maxJobs" use="optional" type="xs:unsignedInt" default="1000" />
    </xs:complexType>   
 
 	<xs:simpleType name="logLevelIdentifier">

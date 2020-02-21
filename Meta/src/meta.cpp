@@ -227,10 +227,7 @@ const Configuration::SourceVariableThreadPool getSourceVariableThreadPoolConfig(
 	else
 	{
 		LOG(Log::INF) << "no StandardMetaData.SourceVariableThreadPool configuration found in the configuration file, configuring StandardMetaData.SourceVariableThreadPool with default values";
-		unsigned int min = 1;
-		unsigned int max = 10;
-		unsigned int jobs = 1000;
-		return Configuration::SourceVariableThreadPool(min, max, jobs);
+		return Configuration::SourceVariableThreadPool();
 	}
 }
 
