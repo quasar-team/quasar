@@ -39,6 +39,8 @@ endif()
 
 include( ProjectSettings.cmake )
 
+include( FrameworkInternals/BoostSetup.cmake )
+
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
@@ -56,39 +58,8 @@ else(${CMAKE_BUILD_TYPE} MATCHES Debug)
     set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
 endif(${CMAKE_BUILD_TYPE} MATCHES Debug)	
 
-#
-# begin optional quasar modules
-#
 set(OPTIONAL_SERVER_MODULES)
-file(GLOB OPTIONAL_SERVER_MODULE_URLS "FrameworkInternals/EnabledModules/*.url")
-
-include( FrameworkInternals/UrlHandling.cmake )
-foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
-    #
-    file (STRINGS ${moduleFile} OPT_MODULE_URL)
-
-    process_git_url(OPT_MODULE_URL)
-
-    get_filename_component(module ${moduleFile} NAME_WE)
-    file (STRINGS FrameworkInternals/EnabledModules/${module}.tag OPT_MODULE_TAG)
-    message("Adding module ${module} URL=${OPT_MODULE_URL} TAG=${OPT_MODULE_TAG}")
-    set(OPTIONAL_SERVER_MODULES ${OPTIONAL_SERVER_MODULES} ${module})
-    set(OPT_MODULE_NAME ${module})
-    configure_file(${PROJECT_SOURCE_DIR}/FrameworkInternals/OptionalModule.cmake
-                   FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake/CMakeLists.txt)
-    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake)
-    execute_process(COMMAND ${CMAKE_COMMAND} --build . --config ${CMAKE_BUILD_TYPE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake OUTPUT_FILE ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_download.log)
-    if (EXISTS ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME})
-       message("Module ${module} was added.")
-       execute_process(COMMAND git remote set-url --push origin push-disabled WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME})
-    else()
-       message("Error, module ${module} was not properly fetched. Please check FrameworkInternals/EnabledModules/${module}_download.log for errors.")
-    endif()
-    #
-endforeach(moduleFile)
-#
-# end quasar modules
-#
+include( FrameworkInternals/OptionalModules.cmake )
 
 set(NATIVE_SERVER_MODULES AddressSpace Configuration Common Server Device Meta LogIt CalculatedVariables)
 set(SERVER_MODULES ${NATIVE_SERVER_MODULES} ${OPTIONAL_SERVER_MODULES} ${CUSTOM_SERVER_MODULES})

@@ -9,13 +9,10 @@ set(SERVER_INCLUDE_DIRECTORIES  )
 set(SERVER_LINK_LIBRARIES  )
 set(SERVER_LINK_DIRECTORIES  )
 
-## -------
-##  Boost
-## -------
-## Example for adding additional boost libraries.
-## Edit and uncomment if required
 ##
-#set( BOOST_LIBS ${BOOST_LIBS} "-lboost_filesystem-mt -lboost_program_options-mt -lboost_date_time-mt" )
+## Add here any additional boost libraries needed
+##
+set(ADDITIONAL_BOOST_LIBS )
 
 ##
 ## Add any other cmake instructions below which are specific to this project
