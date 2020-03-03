@@ -209,7 +209,7 @@ UaVariant v;
 			unsigned int max = <xsl:value-of select="@name"/>_maximumSize();
  		    if ( dim &lt; min || dim &gt; max )
  		    {
- 		    	throw_runtime_error_with_origin("Size of configuration data supplied to the constructor is out of bounds. Size is "+boost::lexical_cast&lt;std::string&gt;(dim)+" and bounds are ["+boost::lexical_cast&lt;std::string&gt;(min)+","+boost::lexical_cast&lt;std::string&gt;(max)+"]");
+ 		    	throw_runtime_error_with_origin("Size of configuration data supplied to the constructor is out of bounds. Size is "+std::to_string(dim)+" and bounds are ["+std::to_string(min)+","+std::to_string(max)+"]");
  		   	}
  		   	std::vector &lt;<xsl:value-of select="@dataType"/>&gt; vect;
  		   	<xsl:choose>
@@ -847,10 +847,8 @@ return m_<xsl:value-of select="@name"/>-&gt;setValue (0, UaDataValue (v, statusC
 	
 	<xsl:template match="/">	
     <xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToClassBody.xslt','Piotr Nikiel')"/>
-	#include &lt;iostream&gt;
+	#include &lt;string&gt; // for std::to_string
 	#include &lt;climits&gt;
-	
-	#include &lt;boost/lexical_cast.hpp&gt;
 	
 	#include &lt;ArrayTools.h&gt;
 	#include &lt;Utils.h&gt;
