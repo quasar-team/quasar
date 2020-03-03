@@ -10,7 +10,8 @@ set(SERVER_LINK_LIBRARIES  )
 set(SERVER_LINK_DIRECTORIES  )
 
 ##
-## Add here any additional boost libraries needed
+## Add here any additional boost libraries needed with their canonical name
+## examples: date_time atomic etc.
 ##
 set(ADDITIONAL_BOOST_LIBS )
 
