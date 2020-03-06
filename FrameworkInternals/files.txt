@@ -154,6 +154,8 @@ File commandMap.py must_exist,must_be_versioned,md5=a8ef2892871b2d15b9df91904971
 File quasarCommands.py must_exist,must_be_versioned,md5=30fa56f82cc2a77e1fb780287cb26753,install=overwrite,
 File OptionalModule.cmake must_exist,must_be_versioned,md5=996314c29c74bc7903c0665b45d643be,install=overwrite,
 File OptionalModules.cmake must_exist,must_be_versioned,md5=7fe5b6f44d4b42057b3e6fe0c58a380e,install=overwrite,
+File UrlProcessing.cmake must_exist,must_be_versioned,md5=4ae748bc86d1b314fd348bca4549852c,install=overwrite,
+File BoostSetup.cmake must_exist,must_be_versioned,md5=e394fb023420ea9f667269ebcf5a4e4f,install=overwrite,
 File astyleSubstitute.py must_exist,must_be_versioned,md5=4b0389575e4514fb23705bb13807a9f2,install=overwrite,
 File quasarExceptions.py must_exist,must_be_versioned,md5=fc3c0b8d15dfa9a023767d3a03a26076,install=overwrite,
 File quasar_basic_utils.py must_exist,must_be_versioned,md5=c4f57cfa9fb7bb2ad038301862fb9d4a,install=overwrite,
