@@ -17,4 +17,7 @@ set(ADDITIONAL_BOOST_LIBS )
 
 ##
 ## Add any other cmake instructions below which are specific to this project
+## and should be executed as a prefix to quasar cmake instructions.
+## Note that post-build instructions such as install targets
+## should be defined in a file named CMakeEpilogue.cmake
 ##
