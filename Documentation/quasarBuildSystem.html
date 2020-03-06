@@ -338,7 +338,7 @@
     stack (if used)</span></li>
     <li class="c6 c14 c19 c15"><span class="c4">Path to boost
     headers and libs and list of libraries to link
-    against if they cannot be automatically resolved. Note that by default, the quasar cmake engine uses find_package() to resolve boost header and lib location. See also the paragraph about ProjectSettings.cmake below.</span></li>
+    against if they cannot be automatically resolved. Note that by default, the quasar cmake engine uses  <a href="https://cmake.org/cmake/help/latest/module/FindBoost.html">find_boost</a> to resolve boost header and lib locations. To set a custom boost location use the BOOST_ROOT environment variable. See also the paragraph about ProjectSettings.cmake below.</span></li>
     <li class="c6 c14 c19 c15"><span class="c4">Additional compiler
     defines (e.g. -fPIC or -Wall or so).</span></li>
   </ul>
