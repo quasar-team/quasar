@@ -22,6 +22,16 @@
 #include "MetaUtils.h"
 #include "Certificate.h"
 
+// debug
+#define BACKEND_UATOOLKIT 1
+
+// serverconfig is implemented by ua toolkit in 1.5.5 and later
+#ifdef BACKEND_UATOOLKIT
+#include <servermanager.h>
+#include <serverconfig.h>
+
+#endif
+
 using std::string;
 
 Device::DServer* g_dServer = 0;
@@ -43,8 +53,58 @@ void MetaUtils::setDServer(Device::DServer* ser)
 
 string MetaUtils::calculateRemainingCertificateValidity(void)
 {
-    Certificate::Instance( Certificate::DEFAULT_PUBLIC_CERT_FILENAME, Certificate::DEFAULT_PRIVATE_CERT_FILENAME, Certificate::BEHAVIOR_TRY )->init();
-    return Certificate::Instance()->remainingTime();
+	std::vector<std::string> vfn = MetaUtils::readCertAndPkeyFilenameFromServerConfig();
+	if ( vfn.size() < 2 ){
+		vfn[0] = Certificate::DEFAULT_PUBLIC_CERT_FILENAME;
+		vfn[1] = Certificate::DEFAULT_PRIVATE_CERT_FILENAME;
+		LOG(Log::WRN) << "could not find cert file names in server config Certificate Store, taking defaults instead.";
+	}
+	Certificate::Instance( vfn )->init();
+	return Certificate::Instance()->remainingTime();
+}
+
+// return the first certificate filename
+// we can have several enpoints, but ignore them for now, just take the first
+// code is disabled anyway for now
+std::vector<string> MetaUtils::readCertAndPkeyFilenameFromServerConfig( void ){
+	std::vector<string> vfn;
+
+#if BACKEND_UATOOLKIT
+	// need the server config
+	ServerConfig* serverConfig = ServerManager().getServerConfig();
+	UaStatus stat = serverConfig->loadConfiguration();
+	UaString sRejectedCertificateDirectory;
+	OpcUa_UInt32 nRejectedCertificateCount;
+	UaEndpointArray uaEndpointArray;
+	serverConfig->getEndpointConfiguration(
+			sRejectedCertificateDirectory,
+			nRejectedCertificateCount,
+			uaEndpointArray);
+
+	for ( OpcUa_UInt32 idx=0; idx<uaEndpointArray.length(); idx++ ) {
+		LOG(Log::DBG) << "Opened endpoint: " << uaEndpointArray[idx]->sEndpointUrl().toUtf8();
+
+		CertificateStoreConfiguration *pstore = uaEndpointArray[idx]->pEndpointCertificateStore();
+		LOG(Log::DBG) << "certificate count : " << pstore->certificateCount();
+		for ( OpcUa_UInt32 k = 0; k < pstore->certificateCount(); k++ ){
+			if ( pstore->getCertificate( k )->isCertificateAvailable() ){
+				LOG(Log::DBG) << "certificate location : " <<
+						pstore->getCertificate( k )->m_sCertificateLocation.toUtf8();
+
+				LOG(Log::DBG) << "priv key location : " <<
+						pstore->getCertificate( k )->m_sPrivateKeyLocation.toUtf8();
+
+				vfn.push_back( pstore->getCertificate( k )->m_sCertificateLocation.toUtf8() );
+				vfn.push_back( pstore->getCertificate( k )->m_sPrivateKeyLocation.toUtf8() );
+			} else {
+				LOG(Log::WRN) << "certificate " << k << " is not available from Certificate Store";
+			}
+		}
+		// we can do much more with the cert store at this point, and provide certain functionality
+		// in the OPCUA address space as well. Up to the developer.
+	}
+#endif
+	return( vfn );
 }
 
 

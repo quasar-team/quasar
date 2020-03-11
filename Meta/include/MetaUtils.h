@@ -47,6 +47,8 @@ void linkHandlerObjectAndAddressSpaceNode(THandlerObject* handlerObject, TAddres
 void setDServer(Device::DServer*);
 
 std::string calculateRemainingCertificateValidity(void);
+std::vector<std::string> readCertAndPkeyFilenameFromServerConfig(void);
+
 
 
 } // namespace MetaUtils

@@ -191,8 +191,15 @@ void configureServer(const Configuration::Server& config, AddressSpace::ASNodeMa
     MetaUtils::linkHandlerObjectAndAddressSpaceNode(dServer, asServer);
     MetaUtils::setDServer(dServer);
 
-    //pnikiel: temporary disabled as per OPCUA-1564 due to planned work on OPCUA-1541
-    //dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
+    // pnikiel: temporary disabled as per OPCUA-1564 due to planned work on OPCUA-1541
+    // ml: keep disabled as discussed on 17 dec 2019 in atlas dcm meeting, where we essentially
+    // decided that security is the server developers responsibility and presently neither
+    // quasar nor atlas sysadmins are ready to do full security (like it should be, if you do it at all).
+    // The code stays disabled therefore since quasar does not implement it actively, but
+    // since it is working the code remains here, as dead code for your example. Works only
+    // for .ua anyway, and not for .open6.
+    //
+    // dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
 }
 
 void configureComponentLogLevel(const Log::LogComponentHandle& componentHandle, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
