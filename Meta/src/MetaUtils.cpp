@@ -22,8 +22,6 @@
 #include "MetaUtils.h"
 #include "Certificate.h"
 
-// debug
-#define BACKEND_UATOOLKIT 1
 
 // serverconfig is implemented by ua toolkit in 1.5.5 and later
 #ifdef BACKEND_UATOOLKIT
