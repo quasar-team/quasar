@@ -93,7 +93,7 @@ QuasarTransforms = [
     [TransformKeys.D_ROOT_CPP,              ['Device','designToRootBody.jinja'],                     'Device/src/DRoot.cpp',                         'B',            True,           False,        None],
     [TransformKeys.D_BASE_H,                ['Device','designToDeviceBaseHeader.jinja'],             'Device/generated/Base_D{className}.h',         'B',            True,           False,        ['className']],
     [TransformKeys.D_BASE_CPP_ALL,          ['Device','designToDeviceBaseBody.jinja'],               'Device/generated/Base_All.cpp',                'B',            True,           False,        None],
-    [TransformKeys.D_DEVICE_H,              'Device/designToDeviceHeader.xslt',                      'Device/include/D{className}.h',                'S',            True,           True,         'className={className}'],
+    [TransformKeys.D_DEVICE_H,              ['Device','designToDeviceHeader.jinja'],                 'Device/include/D{className}.h',                'S',            True,           True,         ['className']],
     [TransformKeys.D_DEVICE_CPP,            'Device/designToDeviceBody.xslt',                        'Device/src/D{className}.cpp',                  'S',            True,           True,         'className={className}'],
     [TransformKeys.D_CMAKE,                 ['Device','designToGeneratedCmakeDevice.jinja'],         'Device/generated/cmake_header.cmake',          'B',            False,          False,        None],
     [TransformKeys.HONKYTONK,               'Extra/designToHonkyTonk.xslt',                          'Extra/honkyTonky.cc',                          'S',            True,           False,        None],
@@ -116,7 +116,7 @@ def capFirst(s):
     return s[0].upper() + s[1:]
 
 def templateDebug(text):
-    print(Fore.MAGENTA + text + Style.RESET_ALL)
+    print(Fore.MAGENTA + str(text) + Style.RESET_ALL)
     return ''
 
 def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalParam):
@@ -125,7 +125,9 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
     if not os.path.isdir(outputDirectory):
         os.makedirs(outputDirectory)
     designInspector = DesignInspector(designXmlPath)
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(transformPath)))
+    commonTemplatesLoader = jinja2.FileSystemLoader('/home/pnikiel/gitProjects/OPCUA-1746_gen_using_jinja2/Common/templates')  # TODO!
+    moduleTemplatesLoader = jinja2.FileSystemLoader(os.path.dirname(transformPath))
+    env = jinja2.Environment(loader=jinja2.ChoiceLoader([commonTemplatesLoader, moduleTemplatesLoader]))
     env.filters['capFirst']  = capFirst
     env.filters['debug'] = templateDebug
     env.trim_blocks = True

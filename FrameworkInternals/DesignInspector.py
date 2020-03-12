@@ -139,3 +139,12 @@ class DesignInspector():
     def objectifyConfigEntries(self, className, restrictBy=''):
         return self.objectifyAny("/d:design/d:class[@name='{0}']/d:configentry{1}".format(className, restrictBy))
 
+    def objectifySourceVariables(self, className, restrictBy=''):
+        return self.objectifyAny("/d:design/d:class[@name='{0}']/d:sourcevariable{1}".format(className, restrictBy))
+
+    def objectifyMethods(self, className, restrictBy=''):
+        return self.objectifyAny("/d:design/d:class[@name='{0}']/d:method{1}".format(className, restrictBy))
+    
+    def objectifyDesign(self):
+        return self.objectifyAny("/d:design")[0]
+

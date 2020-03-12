@@ -23,6 +23,14 @@
     {
       return m_{{hasobjects.get('class')}}s;
     }
+    {% if designInspector.isHasObjectsSingleton2(hasobjects) %}
+      D{{hasobjects.get('class')}}* {{fullClassName}}::{{hasobjects.get('class')|lower}}() const
+      {
+        if (m_{{hasobjects.get('class')}}s.size() != 1)
+          throw std::runtime_error( "Configuration error: should have exactly 1 {{hasobjects.get('class')}} due to design restrictions" );
+        return m_{{hasobjects.get('class')}}s.at(0);
+      }
+    {% endif %}
   {% endif %}
 {% endfor %}
 {% endmacro %}
