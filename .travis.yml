@@ -13,7 +13,7 @@ script:
      echo '********************************************************************' ;
      echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
      echo '********************************************************************' ;
-     apt install python-enum34 ;
+     apt install python-enum34 python-jinja2 ;
      ln -s /usr/bin/cmake /usr/bin/cmake3 ;
      git config --global user.email quasar-developers@cern.ch ;  
      git config --global user.name QuasarDeveloper ;
