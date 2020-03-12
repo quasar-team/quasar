@@ -56,6 +56,10 @@ else(${CMAKE_BUILD_TYPE} MATCHES Debug)
     set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
 endif(${CMAKE_BUILD_TYPE} MATCHES Debug)	
 
+set(QUASAR_TRANSFORM_SENSITIVE_FILES
+	${PROJECT_SOURCE_DIR}/FrameworkInternals/transformDesign.py
+	${PROJECT_SOURCE_DIR}/FrameworkInternals/DesignInspector.py
+	${PROJECT_SOURCE_DIR}/FrameworkInternals/Oracle.py )
 #
 # begin optional quasar modules
 #

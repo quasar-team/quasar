@@ -1,0 +1,207 @@
+{# Missing header here #}
+
+{% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
+{% set this = designInspector.objectifyClass(className) %}
+
+#ifndef __Base_D{{className}}__H__
+#define __Base_D{{className}}__H__
+
+#include <vector>
+#include <string>
+#include <list>
+#include <boost/thread/mutex.hpp> // TODO: this can be std?
+
+{# #include <DRoot.h> TODO why #}
+
+#include <opcua_platformdefs.h>
+
+/* forward decl for AddressSpace */
+namespace AddressSpace { class AS{{className}}; }
+
+/* forward decl for Configuration */
+namespace Configuration { class {{className}}; }
+
+{# before here used to include whole DeviceLogic class of our parent, maybe not necessary though? #}
+
+namespace Device
+{
+  {% if designInspector.classHasLegitDeviceLogicParent(className) %}
+  class {{designInspector.getParentStruct(className)}};
+  {% endif %}
+
+  typedef {{designInspector.getParentStruct(className)}} Parent_D{{className}};
+
+  class D{{className}};
+
+  /* forward declarations (comes from design.class.hasObjects) */
+  {% for containedClass in designInspector.getClassHasObjectsClassNames(className, only_with_device_logic=True) %}
+  class D{{containedClass}};
+  {% endfor %}
+
+{# and now comes part which is taken from deviceHeader template #}
+
+class Base_D{{className}}
+{
+  public:
+  /* Constructor */
+  explicit Base_D{{className}} (
+    const Configuration::{{className}}& config,
+    {{designInspector.getParentClassName(className)}}* parent
+    ) ;
+
+		/* No copy constructors or assignment operators */
+		Base_D{{className}} (const Base_D{{className}}& other) = delete;
+		Base_D{{className}}& operator=(const Base_D{{className}}& other) = delete;
+
+		/* dtr */
+		virtual ~Base_D{{className}} ();
+
+    Parent_D{{className}}* getParent () const { return m_parent; }
+
+    {{ commonDeviceTemplates.hasobjectsAccessors(this, designInspector, oracle) }}
+
+		/* to safely quit */
+		unsigned int unlinkAllChildren ();
+
+		void linkAddressSpace (AddressSpace::AS{{className}}* as, const std::string& stringAddress);
+		AddressSpace::AS{{className}}* getAddressSpaceLink () const;
+
+{#
+
+/* find methods for children */
+<xsl:for-each select="d:hasobjects">
+<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
+<xsl:for-each select="/d:design/d:class[@name=$class]/d:cachevariable[@isKey='true']">
+/* Returns 0 when element not found */
+<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (
+  <xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const;
+</xsl:for-each>
+</xsl:for-each>
+
+
+
+<xsl:for-each select="d:hasobjects">
+<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
+<xsl:for-each select="/d:design/d:class[@name=$class]/d:configentry[@isKey='true']">
+/* Returns 0 when element not found */
+<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (
+      <xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const;
+</xsl:for-each>
+</xsl:for-each>
+
+
+/* getters for values which are keys */
+<xsl:for-each select="d:cachevariable[@isKey='true']">
+const
+<xsl:choose>
+<xsl:when test="@dataType='UaString'">std::string</xsl:when>
+<xsl:otherwise><xsl:value-of select="@dataType"/></xsl:otherwise>
+</xsl:choose>
+<xsl:text> </xsl:text><xsl:value-of select="@name"/> () { return m_<xsl:value-of select="@name"/>; }
+</xsl:for-each>
+#}
+
+{% for configEntry in
+  designInspector.xpath("/d:design/d:class[@name='{0}']/d:configentry[@isKey='true' or @storedInDeviceObject='true']", className) %}
+const {{oracle.getDeviceLogicTypeFromQuasarType(configEntry.attrib['dataType'])}} {{configEntry.attrib['name']}} () { return m_{{ configEntry.attrib['name'] }}; }
+{% endfor %}
+
+/* mutex operations */
+{% if designInspector.classDeviceLogicHasMutex(className) %}
+void lock () { m_lock.lock(); }
+void unlock () { m_lock.unlock(); }
+boost::mutex& getLock () { return m_lock; }
+{% endif %}
+
+{#
+/* variable-wise locks */
+<xsl:for-each select="d:sourcevariable">
+<xsl:if test="@addressSpaceWriteUseMutex='of_this_variable' or @addressSpaceReadUseMutex='of_this_variable'">
+void lockVariable_<xsl:value-of select="@name"/> () { m_lockVariable_<xsl:value-of select="@name"/>.lock(); }
+void unlockVariable_<xsl:value-of select="@name"/> () { m_lockVariable_<xsl:value-of select="@name"/>.unlock(); }
+</xsl:if>
+</xsl:for-each>
+
+<xsl:for-each select="d:sourcevariable">
+<xsl:if test="@addressSpaceWriteUseMutex='of_this_operation'">
+void lockVariableWrite_<xsl:value-of select="@name"/> () { m_lockVariable_write_<xsl:value-of select="@name"/>.lock(); }
+void unlockVariableWrite_<xsl:value-of select="@name"/> () { m_lockVariable_write_<xsl:value-of select="@name"/>.unlock(); }
+</xsl:if>
+</xsl:for-each>
+
+<xsl:for-each select="d:sourcevariable">
+<xsl:if test="@addressSpaceReadUseMutex='of_this_operation'">
+void lockVariableRead_<xsl:value-of select="@name"/> () { m_lockVariable_read_<xsl:value-of select="@name"/>.lock(); }
+void unlockVariableRead_<xsl:value-of select="@name"/> () { m_lockVariable_read_<xsl:value-of select="@name"/>.unlock(); }
+</xsl:if>
+</xsl:for-each>
+#}
+/* query address-space for full name (mostly for debug purposes) */
+std::string getFullName() const { return m_stringAddress; };
+
+  static std::list<D{{className}}*> s_orphanedObjects;
+  static void registerOrphanedObject( D{{className}}* object ) { s_orphanedObjects.push_back( object ); }
+  static std::list<D{{className}}*>& orphanedObjects() { return s_orphanedObjects; }
+
+private:
+  Parent_D{{className}}* m_parent;
+  AddressSpace::AS{{className}}* m_addressSpaceLink;
+  std::string m_stringAddress;
+
+  /* Collections of device logic children objects */
+  {{ commonDeviceTemplates.hasobjectsChildrenCollection(this, designInspector, oracle) }}
+
+{#
+
+/* if any of our cachevariables has isKey=true then we shall keep its copy here for find functions  (it is const, either way) */
+<xsl:for-each select="d:cachevariable[@isKey='true']">
+const
+<xsl:choose>
+  <xsl:when test="@dataType='UaString'">std::string </xsl:when>
+  <xsl:otherwise><xsl:value-of select="@dataType"/></xsl:otherwise>
+</xsl:choose> m_<xsl:value-of select="@name"/> ;
+</xsl:for-each>
+#}
+
+
+{% for configEntry in
+  designInspector.xpath("/d:design/d:class[@name='{0}']/d:configentry[@isKey='true' or @storedInDeviceObject='true']", className) %}
+{{oracle.getDeviceLogicTypeFromQuasarType(configEntry.attrib['dataType'])}} m_{{configEntry.attrib['name']}};
+{% endfor %}
+
+/* object-wise lock */
+{% if designInspector.classDeviceLogicHasMutex(className) %}
+boost::mutex m_lock;
+{% endif %}
+
+{#
+/* variable-wise locks */
+<xsl:for-each select="d:sourcevariable">
+<xsl:if test="@addressSpaceWriteUseMutex='of_this_variable' or @addressSpaceReadUseMutex='of_this_variable'">
+boost::mutex m_lockVariable_<xsl:value-of select="@name"/> ;
+</xsl:if>
+</xsl:for-each>
+
+<xsl:for-each select="d:sourcevariable">
+<xsl:if test="@addressSpaceWriteUseMutex='of_this_operation'">
+boost::mutex m_lockVariable_write_<xsl:value-of select="@name"/> ;
+</xsl:if>
+</xsl:for-each>
+
+<xsl:for-each select="d:sourcevariable">
+<xsl:if test="@addressSpaceReadUseMutex='of_this_operation'">
+boost::mutex m_lockVariable_read_<xsl:value-of select="@name"/> ;
+</xsl:if>
+</xsl:for-each>
+
+
+
+
+
+#}
+
+};
+
+}
+
+#endif // __Base_D{{className}}__H__

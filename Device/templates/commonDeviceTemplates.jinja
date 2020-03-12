@@ -1,0 +1,49 @@
+{% macro hasobjectsAccessors(this, designInspector, oracle) %}
+{# this: is the parent of hasobjects, so either d:root or d:class #}
+  {% for hasobjects in this.hasobjects %}
+    {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+      void add (D{{hasobjects.get('class')}}* device);
+      const std::vector<D{{hasobjects.get('class')}}* >& {{hasobjects.get('class')|lower}}s () const;
+      {# TODO below: we should merge into one hasObjects #}
+      {% if designInspector.isHasObjectsSingleton2(hasobjects) %}
+        D{{hasobjects.get('class')}}* {{hasobjects.get('class')|lower}}() const;
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro hasobjectsAccessorsBody(this, designInspector, oracle, fullClassName) %}
+{% for hasobjects in this.hasobjects %}
+  {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+    void {{fullClassName}}::add (D{{hasobjects.get('class')}}* device)
+    {
+      m_{{hasobjects.get('class')}}s.push_back (device);
+    }
+    const std::vector<D{{hasobjects.get('class')}}* >& {{fullClassName}}::{{hasobjects.get('class')|lower}}s () const
+    {
+      return m_{{hasobjects.get('class')}}s;
+    }
+  {% endif %}
+{% endfor %}
+{% endmacro %}
+
+{% macro hasobjectsChildrenCollection(this, designInspector, oracle) %}
+{# this: is the parent of hasobjects, so either d:root or d:class #}
+  {% for hasobjects in this.hasobjects %}
+    {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+      std::vector<D{{hasobjects.get('class')}}* > m_{{hasobjects.get('class')}}s;
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro deviceLogicDeleter(this, designInspector, oracle) %}
+  // part 1 of dtr: remove all legit children (i.e. non-orphaned objects)
+  {% for hasobjects in this.hasobjects %}
+    {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+      for (auto* obj : {{hasobjects.get('class')|lower}}s())
+        delete obj;
+      m_{{hasobjects.get('class')}}s.clear();
+    {% endif %}
+  {% endfor %}
+
+{% endmacro %}

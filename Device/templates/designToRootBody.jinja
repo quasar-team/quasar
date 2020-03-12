@@ -1,0 +1,84 @@
+{# TODO headerS #}
+
+{% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
+{% set root = designInspector.objectifyRoot() %}
+
+#include <stdexcept>
+
+#include <DRoot.h>
+#include <LogIt.h>
+
+// Need to have full declarations of classes on which we will call "delete" operator
+{% for hasobjects in root.hasobjects %}
+  {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+    #include <D{{hasobjects.get('class')}}.h>
+  {% endif %}
+{% endfor %}
+
+
+namespace Device
+{
+
+/* Singleton's instance. */
+DRoot* DRoot::m_instance = nullptr;
+
+DRoot::DRoot()
+{
+  if (m_instance != 0)
+    throw std::logic_error("DRoot can be instantiated just once");
+  m_instance = this;
+}
+
+DRoot::~DRoot()
+{
+  {{ commonDeviceTemplates.deviceLogicDeleter(root, designInspector, oracle) }}
+  // part 2 of dtr: remove all orphaned objects
+  {% for hasobjects in root.hasobjects %}
+    {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+      {
+        auto objects = Base_D{{hasobjects.get('class')}}::orphanedObjects ();
+        for (auto* obj : objects)
+          delete obj;
+        objects.clear();
+      }
+    {% endif %}
+  {% endfor %}
+}
+
+DRoot* DRoot::getInstance()
+{
+  if (m_instance == 0)
+  {
+    throw std::logic_error ("DRoot: instance not yet created. ");
+  }
+  return m_instance;
+}
+
+/* For constructing the tree of devices and for browsing children. */
+{{ commonDeviceTemplates.hasobjectsAccessorsBody(root, designInspector, oracle, 'DRoot') }}
+
+void DRoot::unlinkAllChildren () const
+{
+  unsigned int objectCounter = 0;
+  // part 1: unlinking all legit children
+  {% for hasobjects in root.hasobjects %}
+    {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+      for (auto* obj : {{hasobjects.get('class')|lower}}s())
+        objectCounter += obj->unlinkAllChildren();
+    {% endif %}
+  {% endfor %}
+
+  // part 2: unlinking all orphaned children
+  {% for hasobjects in root.hasobjects %}
+    {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+      {
+        auto objects = Base_D{{hasobjects.get('class')}}::orphanedObjects ();
+        for (auto* obj : objects)
+          objectCounter += obj->unlinkAllChildren();
+      }
+    {% endif %}
+  {% endfor %}
+  LOG(Log::INF) << "DRoot::unlinkAllChildren(): " << objectCounter << " objects unlinked ";
+}
+
+}

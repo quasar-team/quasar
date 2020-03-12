@@ -1,0 +1,135 @@
+{% set this = designInspector.objectifyClass(className) %}
+
+{# Header TODO #}
+
+#ifndef __AS{{className}}__H__
+#define __AS{{className}}__H__
+
+#include <opcua_baseobjecttype.h>
+
+#include <methodhandleuanode.h>
+#include <ASDelegatingMethod.h>
+
+#include <Configuration.hxx>
+
+#include <ASNodeManager.h>
+#include <ASDelegatingVariable.h>
+
+#include <ASSourceVariable.h>
+
+{% if designInspector.classHasDeviceLogic(className) %}
+  /* forward declaration */
+  namespace Device { class D{{className}}; }
+{% endif %}
+
+namespace AddressSpace
+{
+  class ChangeNotifyingVariable;
+
+  //! Fully auto-generated class to represent {{className}} in the OPC UA AddressSpace
+  class AS{{className}}: public OpcUa::BaseObjectType
+  {
+  UA_DISABLE_COPY(AS{{className}}); {# TODO improve this #}
+  public:
+  //! Constructor. Used in Configurator.cpp. You NEVER use it directly.
+  AS{{className}} (
+    UaNodeId parentNodeId,
+    const UaNodeId& typeNodeId,
+    ASNodeManager *nm,
+    const Configuration::{{className}}& config);
+
+  /*dtor*/
+  ~AS{{className}} ();
+
+  /* setters and getters for variables */
+  {% for cv in this.cachevariable %}
+    {% if cv.array %}
+      {# TODO #}
+    {% else %}
+      UaStatus get{{cv.get('name')|capFirst}} ({{cv.get('dataType')}}& out) const;
+      UaStatus {{ oracle.getCacheVariableSetter(cv.get('name'), cv.get('dataType'), True) }};
+      {% if cv.get('nullPolicy') == 'nullForbidden' %}
+        /* short getter (possible because nullPolicy=nullForbidden) */
+        {{cv.get('dataType')}} get{{cv.get('name')|capFirst}} () const;
+      {% endif %}
+      {% if cv.get('nullPolicy') == 'nullAllowed' %}
+        /* null-setter (possible because nullPolicy=nullAllowed) */
+        UaStatus {{ oracle.getCacheVariableSetter(cv.get('name'), None, True) }};
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {# TODO #}
+
+  /* delegators for cachevariables  */
+  {% for cv in this.cachevariable %}
+    {{cv.get('addressSpaceWrite')|debug}}
+    {% if cv.get('addressSpaceWrite') in ['delegated','regular'] %}
+      {{ oracle.getDelegatedWriteHeader(cv.get('name'), className, 'header') }};
+    {% endif %}
+  {% endfor %}
+
+  /* delegators for methods */
+  {% for method in this.method %}
+    UaStatus call{{method.get('name')|capFirst}} (
+      MethodManagerCallback* pCallback,
+      OpcUa_UInt32           callbackHandle,
+      const UaVariantArray&  inputArguments);
+  {% endfor %}
+
+  /* device logic links (if device logic is present per this class) */
+    {% if designInspector.classHasDeviceLogic(className) %}
+    void linkDevice( Device::D{{className}}* deviceLink);
+    void unlinkDevice ();
+    Device::D{{className}}* getDeviceLink () const { return m_deviceLink; }
+  {% endif %}
+
+  /* OPC UA Type Information provider for this class. */
+  virtual UaNodeId typeDefinitionId () const { return m_typeNodeId; }
+
+  {% if this.method|length >= 1 %}
+    /* Call handler defined because at least one method is declared */
+    virtual UaStatus beginCall (
+        MethodManagerCallback *    pCallback,
+        const ServiceContext&     serviceContext,
+        OpcUa_UInt32              callbackHandle,
+        MethodHandle*              pMethodHandle,
+        const UaVariantArray&     inputArguments
+    );
+  {% endif %}
+
+  {# TODO here we need array _minimumSize and _maximumSize #}
+
+  private:
+  UaNodeId m_typeNodeId;
+
+  /* Variables */
+  {% for cv in this.cachevariable %}
+    {% if cv.get('addressSpaceWrite') == 'delegated' %}
+      ASDelegatingVariable<AS{{className}}>
+    {% else %}
+      ChangeNotifyingVariable
+    {% endif %}
+    * m_{{cv.get('name')}};
+  {% endfor %}
+
+  {% for sv in this.sourcevariable %}
+    ASSourceVariable* m_{{sv.get('name')}};
+  {% endfor %}
+
+  /* Methods */
+  {% for method in this.method %}
+    ASDelegatingMethod<AS{{className}}>* m_{{method.get('name')}};
+  {% endfor %}
+
+  /* Device Logic link (if requested) */
+  {% if designInspector.classHasDeviceLogic(className) %}
+    Device::D{{className}}* m_deviceLink;
+  {% endif %}
+
+  };
+
+
+}
+
+#endif // __AS{{className}}__H__

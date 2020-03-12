@@ -1,0 +1,50 @@
+{# TODO copyright header #}
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/Base_All.cpp
+WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+COMMAND python quasar.py generate base_cpp_all --project_binary_dir ${PROJECT_BINARY_DIR}
+DEPENDS
+  ${DESIGN_FILE}
+  ${PROJECT_SOURCE_DIR}/quasar.py
+  Configuration.hxx_GENERATED
+  validateDesign
+  ${PROJECT_SOURCE_DIR}/Device/designToDeviceBaseBody.xslt
+  templates/commonDeviceTemplates.jinja
+  ${QUASAR_TRANSFORM_SENSITIVE_FILES}
+  templates/designToDeviceBaseBody.jinja
+
+)
+
+{% for className in designInspector.getNamesOfAllClasses() %}
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/Base_D{{className}}.h
+WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+COMMAND python quasar.py generate base_h {{className}} --project_binary_dir ${PROJECT_BINARY_DIR}
+DEPENDS
+  ${DESIGN_FILE}
+  validateDesign
+  ${PROJECT_SOURCE_DIR}/quasar.py
+  ${PROJECT_SOURCE_DIR}/Device/templates/designToDeviceBaseHeader.jinja
+  Configuration.hxx_GENERATED
+  templates/commonDeviceTemplates.jinja
+  ${QUASAR_TRANSFORM_SENSITIVE_FILES}
+)
+{% endfor %}
+
+set(DEVICEBASE_GENERATED_FILES
+      include/DRoot.h
+      src/DRoot.cpp
+      generated/Base_All.cpp
+      {% for className in designInspector.getNamesOfAllClasses(only_with_device_logic=True) %}
+      generated/Base_D{{className}}.h
+      {% endfor %}
+)
+
+set(DEVICE_CLASSES
+  {% for className in designInspector.getNamesOfAllClasses(only_with_device_logic=True) %}
+  src/D{{className}}.cpp
+  {% endfor %}
+)
+
+add_custom_target(DeviceBase DEPENDS ${DEVICEBASE_GENERATED_FILES} )
+
+add_custom_target(DeviceGeneratedHeaders DEPENDS include/DRoot.h ${DEVICEBASE_GENERATED_FILES})
