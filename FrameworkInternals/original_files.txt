@@ -84,6 +84,9 @@ Directory Common/src install=create
 File ASUtils.cpp                            must_exist,must_be_versioned,md5=check,install=ask_to_merge
 File QuasarThreadPool.cpp		    must_exist,must_be_versioned,md5=check,install=overwrite
 
+Directory Common/templates install=create
+File headers.jinja                          must_exist,must_be_versioned, md5=check, install=overwrite
+
 Directory Configuration install=create
 File CMakeLists.txt                         must_exist,must_be_versioned, md5=check, install=overwrite
 File Configurator.h                         must_exist,must_be_versioned, md5=check, install=overwrite
@@ -140,9 +143,14 @@ Directory Device/include install=create
 Directory Device/src install=create
 # List of files in this directory should be supplemented by bodies of classes from Design file that have device logic
 
-Directory Device/templates install=create
+Directory Device/templates install=create   
+File commonDeviceTemplates.jinja            must_exist,must_be_versioned,md5=check,install=overwrite
+File designToDeviceBaseBody.jinja           must_exist,must_be_versioned,md5=check,install=overwrite
 File designToDeviceBaseHeader.jinja         must_exist,must_be_versioned,md5=check,install=overwrite
+File designToDeviceHeader.jinja             must_exist,must_be_versioned,md5=check,install=overwrite
 File designToGeneratedCmakeDevice.jinja     must_exist,must_be_versioned,md5=check,install=overwrite
+File designToRootBody.jinja                 must_exist,must_be_versioned,md5=check,install=overwrite
+File designToRootHeader.jinja               must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Documentation install=create
 File GenericServer.html                     deprecated
