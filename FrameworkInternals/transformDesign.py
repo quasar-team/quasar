@@ -115,6 +115,10 @@ def transformDesignByXslt(designXmlPath, transformPath, outputFile, additionalPa
 def capFirst(s):
     return s[0].upper() + s[1:]
 
+def cppCommentsToCmakeComments(s):
+    ### pnikiel: this is cheapo soltion... but it works ;-)
+    return '\n'.join([ '# '+x for x in s.split('\n')]) ## TODO Piotr this could be better ;-)
+
 def templateDebug(text):
     print(Fore.MAGENTA + str(text) + Style.RESET_ALL)
     return ''
@@ -130,6 +134,7 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
     env = jinja2.Environment(loader=jinja2.ChoiceLoader([commonTemplatesLoader, moduleTemplatesLoader]))
     env.filters['capFirst']  = capFirst
     env.filters['debug'] = templateDebug
+    env.filters['cppCommentsToCmakeComments'] = cppCommentsToCmakeComments
     env.trim_blocks = True
     fout = open(outputFile, 'w')
     render_args = {'designInspector':designInspector, 'oracle':Oracle()}
