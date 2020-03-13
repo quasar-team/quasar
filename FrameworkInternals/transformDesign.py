@@ -129,8 +129,9 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
     if not os.path.isdir(outputDirectory):
         os.makedirs(outputDirectory)
     designInspector = DesignInspector(designXmlPath)
-    commonTemplatesLoader = jinja2.FileSystemLoader('/home/pnikiel/gitProjects/OPCUA-1746_gen_using_jinja2/Common/templates')  # TODO!
-    moduleTemplatesLoader = jinja2.FileSystemLoader(os.path.dirname(transformPath))
+    transformDir = os.path.dirname(transformPath)
+    commonTemplatesLoader = jinja2.FileSystemLoader(os.path.join(transformDir, '..', '..', 'Common', 'templates'))
+    moduleTemplatesLoader = jinja2.FileSystemLoader(transformDir)
     env = jinja2.Environment(loader=jinja2.ChoiceLoader([commonTemplatesLoader, moduleTemplatesLoader]))
     env.filters['capFirst']  = capFirst
     env.filters['debug'] = templateDebug
