@@ -46,8 +46,10 @@ if( EXISTS ${CMAKE_CURRENT_LIST_DIR}/${BOOST_SETUP_CMAKE_FILE} )
   message( STATUS "Setting up boost location and libraries using [${BOOST_SETUP_CMAKE_FILE}]")
   include( ${BOOST_SETUP_CMAKE_FILE} )
 else()
-  message( STATUS "Unable to locate a valid BOOST_SETUP_CMAKE_FILE file, value [${BOOST_SETUP_CMAKE_FILE}]. \
-  Presumably boost setup somehow else (e.g. defined in-line in platform build configuration file)"
+  message( STATUS "\
+  Unable to locate a valid BOOST_SETUP_CMAKE_FILE file, value [${BOOST_SETUP_CMAKE_FILE}]. \
+  Presumably boost setup somehow else (e.g. defined in-line in platform build configuration file)
+  \")
 endif()
 
 set(PYTHON_COMMAND python)
