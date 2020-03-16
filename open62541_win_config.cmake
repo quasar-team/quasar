@@ -25,6 +25,7 @@ message("using build configuration from enice_win_configuration.cmake")
 #Boost
 #-------
 message(STATUS "starting the quest for boost, relevant environment variables: BOOST_PATH_HEADERS [$ENV{BOOST_PATH_HEADERS}] BOOST_PATH_LIBS [$ENV{BOOST_PATH_LIBS}] BOOST_HOME [$ENV{BOOST_HOME}]")
+set( BOOST_SETUP_CMAKE_FILE HANDLED_INLINE_IN_BUILD_CONFIG ) # i.e. no seperate boost finder file used, all inline in this file.
 
 # headers path
 if(DEFINED ENV{BOOST_PATH_HEADERS})
@@ -36,6 +37,7 @@ else()
 		message(STATUS "using BOOST_PATH_HEADERS from environment BOOST_HOME [$BOOST_HOME] -> BOOST_PATH_HEADERS [$BOOST_PATH_HEADERS]")
 	endif()
 endif()
+include_directories( ${BOOST_PATH_HEADERS} )
 
 # libs path
 if(DEFINED ENV{BOOST_PATH_LIBS})
