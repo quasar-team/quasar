@@ -10,6 +10,11 @@ set(SERVER_LINK_LIBRARIES  )
 set(SERVER_LINK_DIRECTORIES  )
 
 ##
+## If ON, in addition to an executable, a shared object will be created.
+##
+set(BUILD_SERVER_SHARED_LIB OFF)
+
+##
 ## Add here any additional boost libraries needed with their canonical name
 ## examples: date_time atomic etc.
 ## Note: boost paths are resolved either from $BOOST_ROOT if defined or system paths as fallback
