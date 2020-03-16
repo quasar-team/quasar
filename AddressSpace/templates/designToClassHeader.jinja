@@ -77,8 +77,6 @@ namespace AddressSpace
         /* null-setter (possible because nullPolicy=nullAllowed) */
         UaStatus {{ oracle.getCacheVariableSetterArray(cv.get('name'), None, True) }};
       {% endif %}
-
-
     {% else %}
       UaStatus get{{cv.get('name')|capFirst}} ({{cv.get('dataType')}}& out) const;
       UaStatus {{ oracle.getCacheVariableSetter(cv.get('name'), cv.get('dataType'), True) }};
@@ -92,8 +90,6 @@ namespace AddressSpace
       {% endif %}
     {% endif %}
   {% endfor %}
-
-  {# TODO #}
 
   /* delegators for cachevariables  */
   {% for cv in this.cachevariable %}
@@ -124,15 +120,13 @@ namespace AddressSpace
   {% if this.method|length >= 1 %}
     /* Call handler defined because at least one method is declared */
     virtual UaStatus beginCall (
-        MethodManagerCallback *    pCallback,
+        MethodManagerCallback*    pCallback,
         const ServiceContext&     serviceContext,
         OpcUa_UInt32              callbackHandle,
-        MethodHandle*              pMethodHandle,
+        MethodHandle*             pMethodHandle,
         const UaVariantArray&     inputArguments
     );
   {% endif %}
-
-  {# TODO here we need array _minimumSize and _maximumSize #}
 
   private:
   UaNodeId m_typeNodeId;
