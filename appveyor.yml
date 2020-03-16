@@ -82,11 +82,11 @@ build_script:
   - cmd : git config --global user.email "quasar-developers@cern.ch"
   - cmd : git config --global user.name "Quasar Developer"
   - cmd : python quasar.py create_project %QUASAR_TEST_PROJECT_DIR%
-  - cmd : copy open6_win_configuration.cmake %QUASAR_TEST_PROJECT_DIR%
+  - cmd : copy open62541_win_config.cmake %QUASAR_TEST_PROJECT_DIR%
   - cmd : cd %QUASAR_TEST_PROJECT_DIR%
   - cmd : dir %QUASAR_TEST_PROJECT_DIR%
 
-  - cmd : python quasar.py set_build_config open6_win_configuration.cmake
+  - cmd : python quasar.py set_build_config open62541_win_config.cmake
   - cmd : python quasar.py enable_module open62541-compat
   - cmd : python quasar.py prepare_build Release
   - cmd : python quasar.py build Release
