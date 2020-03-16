@@ -64,8 +64,21 @@ namespace AddressSpace
 
   /* setters and getters for variables */
   {% for cv in this.cachevariable %}
-    {% if cv.array %}
-      {# TODO #}
+    {% if cv.array|length>0 %}
+      OpcUa_UInt32 {{cv.get('name')}}_minimumSize();
+      OpcUa_UInt32 {{cv.get('name')}}_maximumSize();
+      UaStatus get{{cv.get('name')|capFirst}} (std::vector <{{cv.get('dataType')}}>& out) const;
+	    UaStatus {{ oracle.getCacheVariableSetterArray(cv.get('name'), cv.get('dataType'), True) }} ;
+      {% if cv.get('nullPolicy') == 'nullForbidden' %}
+        /* short getter (possible because nullPolicy=nullForbidden) */
+        std::vector<{{cv.get('dataType')}}> get{{cv.get('name')|capFirst}} () const;
+      {% endif %}
+      {% if cv.get('nullPolicy') == 'nullAllowed' %}
+        /* null-setter (possible because nullPolicy=nullAllowed) */
+        UaStatus {{ oracle.getCacheVariableSetterArray(cv.get('name'), None, True) }};
+      {% endif %}
+
+
     {% else %}
       UaStatus get{{cv.get('name')|capFirst}} ({{cv.get('dataType')}}& out) const;
       UaStatus {{ oracle.getCacheVariableSetter(cv.get('name'), cv.get('dataType'), True) }};
