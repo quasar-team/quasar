@@ -39,11 +39,11 @@ endif()
 
 include( ProjectSettings.cmake )
 
-if( NOT DEFINED BOOST_SETUP_CMAKE_FILE)
+if( NOT DEFINED BOOST_SETUP_CMAKE_FILE )
   set( BOOST_SETUP_CMAKE_FILE FrameworkInternals/BoostSetup.cmake )
 endif()
 message( STATUS "Setting up boost location and libraries using [${BOOST_SETUP_CMAKE_FILE}]")
-include( $BOOST_SETUP_CMAKE_FILE )
+include( ${BOOST_SETUP_CMAKE_FILE} )
 
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
