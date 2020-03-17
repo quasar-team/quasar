@@ -32,36 +32,30 @@ add_definitions(
 )
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
-	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
+    include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
 else()
-     message(FATAL_ERROR "Build configuration has not been chosen yet. Please run 'quasar.py set_build_config'")
+    message(FATAL_ERROR "Build configuration has not been chosen yet. Please run 'quasar.py set_build_config'")
 endif()
 
 include( ProjectSettings.cmake )
 
-if( NOT DEFINED BOOST_SETUP_CMAKE_FILE )
-  set( BOOST_SETUP_CMAKE_FILE FrameworkInternals/BoostSetup.cmake )
-endif()
-if( EXISTS ${CMAKE_CURRENT_LIST_DIR}/${BOOST_SETUP_CMAKE_FILE} )
-  message( STATUS "Setting up boost location and libraries using [${BOOST_SETUP_CMAKE_FILE}]")
-  include( ${BOOST_SETUP_CMAKE_FILE} )
+if( ( NOT DEFINED IGNORE_BOOST_SETUP ) OR ( ${IGNORE_BOOST_SETUP} EQUAL OFF ) )
+    message( STATUS "Setting up boost location and libraries using FrameworkInternals/BoostSetup.cmake")
+    include( FrameworkInternals/BoostSetup.cmake )
 else()
-  message( STATUS "\
-  Unable to locate a valid BOOST_SETUP_CMAKE_FILE file, value [${BOOST_SETUP_CMAKE_FILE}]. \
-  Presumably boost setup somehow else (e.g. defined in-line in platform build configuration file).\
-  ")
+    message( STATUS "Automatic boost setup was set to be ignored (IGNORE_BOOST_SETUP). Boost libs and includes must be defined elsewhere (e.g. in the build config)." )
 endif()
 
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
 include_directories (
-	${BOOST_PATH_HEADERS}
-	${PROJECT_BINARY_DIR}/Device/generated
-	${PROJECT_SOURCE_DIR}/Configuration  # this is to cover Configurator.h
-	${PROJECT_BINARY_DIR}/Configuration
-	${SERVER_INCLUDE_DIRECTORIES}
-	)
+    ${BOOST_PATH_HEADERS}
+    ${PROJECT_BINARY_DIR}/Device/generated
+    ${PROJECT_SOURCE_DIR}/Configuration  # this is to cover Configurator.h
+    ${PROJECT_BINARY_DIR}/Configuration
+    ${SERVER_INCLUDE_DIRECTORIES}
+    )
 	
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
     set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG} )
@@ -102,7 +96,6 @@ endforeach(module)
 
 
 
-
 add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/Design/validated.tmp
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -113,38 +106,38 @@ add_custom_command(
 add_custom_target(validateDesign DEPENDS  ${PROJECT_BINARY_DIR}/Design/validated.tmp )
 
 add_custom_target(dep ALL 
-        COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device 
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        ) 
+    COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device 
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    ) 
 
 link_directories(
-	${OPCUA_TOOLKIT_PATH}/lib
-	${BOOST_PATH_LIBS}
-	${SERVER_LINK_DIRECTORIES}
+    ${OPCUA_TOOLKIT_PATH}/lib
+    ${BOOST_PATH_LIBS}
+    ${SERVER_LINK_DIRECTORIES}
 )
 add_executable ( ${EXECUTABLE}
-	${MODULES_OBJECTS}
-	)
+    ${MODULES_OBJECTS}
+    )
 set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
 
 set(TARGET_LIBS
-        ${BOOST_LIBS}
-        ${XML_LIBS}
-        ${OPCUA_TOOLKIT_LIBS}
-        ${QUASAR_SERVER_LIBS}
-        ${SERVER_LINK_LIBRARIES}
-        )
+    ${BOOST_LIBS}
+    ${XML_LIBS}
+    ${OPCUA_TOOLKIT_LIBS}
+    ${QUASAR_SERVER_LIBS}
+    ${SERVER_LINK_LIBRARIES}
+    )
 
 target_link_libraries ( ${EXECUTABLE} ${TARGET_LIBS} )
 
 if(BUILD_SERVER_SHARED_LIB)
-        set( SERVER_SHARED_LIB_TARGET "${EXECUTABLE}Object" )
-        add_library ( ${SERVER_SHARED_LIB_TARGET} SHARED ${MODULES_OBJECTS} )
-        set_target_properties( ${SERVER_SHARED_LIB_TARGET} PROPERTIES LIBRARY_OUTPUT_DIRECTORY bin/ )
-	target_link_libraries( ${SERVER_SHARED_LIB_TARGET} ${TARGET_LIBS})
+    set( SERVER_SHARED_LIB_TARGET "${EXECUTABLE}Object" )
+    add_library ( ${SERVER_SHARED_LIB_TARGET} SHARED ${MODULES_OBJECTS} )
+    set_target_properties( ${SERVER_SHARED_LIB_TARGET} PROPERTIES LIBRARY_OUTPUT_DIRECTORY bin/ )
+    target_link_libraries( ${SERVER_SHARED_LIB_TARGET} ${TARGET_LIBS})
 endif(BUILD_SERVER_SHARED_LIB)
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/CMakeEpilogue.cmake)
-	  MESSAGE("CMakeEpilogue found")
-	  include (${PROJECT_SOURCE_DIR}/CMakeEpilogue.cmake)
+    MESSAGE("CMakeEpilogue found")
+    include (${PROJECT_SOURCE_DIR}/CMakeEpilogue.cmake)
 endif(EXISTS ${PROJECT_SOURCE_DIR}/CMakeEpilogue.cmake)
