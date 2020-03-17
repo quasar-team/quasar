@@ -39,7 +39,7 @@ endif()
 
 include( ProjectSettings.cmake )
 
-if( ( NOT DEFINED IGNORE_BOOST_SETUP ) OR ( ${IGNORE_BOOST_SETUP} STREQUAL OFF ) )
+if( ( NOT DEFINED IGNORE_BOOST_SETUP ) OR ( ${IGNORE_BOOST_SETUP} STREQUAL "OFF" ) )
     message( STATUS "Setting up boost location and libraries using FrameworkInternals/BoostSetup.cmake")
     include( FrameworkInternals/BoostSetup.cmake )
 else()
