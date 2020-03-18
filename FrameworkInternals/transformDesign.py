@@ -137,7 +137,7 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
     env.filters['debug'] = templateDebug
     env.filters['cppCommentsToCmakeComments'] = cppCommentsToCmakeComments
     env.trim_blocks = True
-    fout = open(outputFile, 'w')
+    fout = open(outputFile, 'wb')
     render_args = {'designInspector':designInspector, 'oracle':Oracle()}
     if not isinstance(additionalParam, dict):
         render_args.update({'additionalParam':additionalParam})

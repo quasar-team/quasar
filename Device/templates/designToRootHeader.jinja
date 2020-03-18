@@ -13,10 +13,13 @@
 {# You should have received a copy of the GNU Lesser General Public License      #}
 {# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
 {#                                                                               #}
-{# Created:      Jun 2014 (revamp to Jinja2: Mar 2020)                           #}
+{# Created:      Jun 2014 (original XSLT version)                                #}
+{#               Mar 2020 (converted to Jinja2                                   #}
 {# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info                                             #}
 
-{# TODO <xsl:value-of select="fnc:headerFullyGenerated(/, 'using transform designToRootHeader.xslt','Piotr Nikiel')"/> #}
+{% import 'headers.jinja' as headers %}
+{{ headers.cppFullGeneratedHeader() }}
 
 {% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
 {% set root = designInspector.objectifyRoot() %}
@@ -56,13 +59,16 @@ public:
   /* For constructing the tree of devices and for browsing children. */
 	{{ commonDeviceTemplates.hasobjectsAccessors(root, designInspector, oracle) }}
 
+  /* "find" methods for children */
+  {% for hasobjects in root.hasobjects %}
+    {% for cv in designInspector.objectifyCacheVariables(hasobjects.get('class'), "[@isKey='true']") %}
+      D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}}; {# TODO implementation #}
+    {% endfor %}
+  {% endfor %}
+
 
 	{#
 
-
-
-
-	/* find methods for children */
 	<xsl:for-each select="/d:design/d:root/d:hasobjects">
 	<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
 	<xsl:for-each select="/d:design/d:class[@name=$class]/d:cachevariable[@isKey='true']">

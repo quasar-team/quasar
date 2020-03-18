@@ -138,7 +138,7 @@ class DesignInspector():
     def objectifyClass(self, className):
         class_element = self.xpath("/d:design/d:class[@name='{0}']".format(className))
         if len(class_element) != 1:
-            raise Exception ("TODO!!")
+            raise Exception ("ERROR: Class {0} NOT FOUND in your quasar design... ".format(className))
         objectified = objectify.fromstring( etree.tostring(class_element[0]) )
         return objectified
 

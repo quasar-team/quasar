@@ -26,7 +26,12 @@ def capFirst(s):
 class Oracle():
 	PassByValueDataTypes = [
 		'OpcUa_Boolean',
+		'OpcUa_Byte',
+		'OpcUa_SByte',
+		'OpcUa_UInt16',
+		'OpcUa_Int16',
 		'OpcUa_UInt32',
+		'OpcUa_Int32',
 		'OpcUa_UInt64',
 		'OpcUa_Double',
 		'OpcUa_Float']
@@ -44,7 +49,8 @@ class Oracle():
 		if forHeader:
 			srcTimeStamp += '= UaDateTime::now()'
 		if dataType in Oracle.PassByValueDataTypes:
-			return 'set{0}( {1} value, OpcUa_StatusCode statusCode, {2} )'.format(capFirst(name), dataType, srcTimeStamp)
+			# TODO @pnikiel BELOW: when settled down, we should remove const from PassByValue things as that looks stupid
+			return 'set{0}( const {1} value, OpcUa_StatusCode statusCode, {2} )'.format(capFirst(name), dataType, srcTimeStamp)
 		elif dataType is None:  # formerly null
 			return 'setNull{0}( OpcUa_StatusCode statusCode, {1})'.format(capFirst(name), srcTimeStamp)
 		else:

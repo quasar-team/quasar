@@ -88,31 +88,27 @@ class Base_D{{className}}
 		void linkAddressSpace (AddressSpace::AS{{className}}* as, const std::string& stringAddress);
 		AddressSpace::AS{{className}}* getAddressSpaceLink () const;
 
-{#
+    /* find methods for children */
 
-/* find methods for children */
-<xsl:for-each select="d:hasobjects">
-<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
-<xsl:for-each select="/d:design/d:class[@name=$class]/d:cachevariable[@isKey='true']">
-/* Returns 0 when element not found */
-<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (
-  <xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const;
-</xsl:for-each>
-</xsl:for-each>
-
-
-
-<xsl:for-each select="d:hasobjects">
-<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
-<xsl:for-each select="/d:design/d:class[@name=$class]/d:configentry[@isKey='true']">
-/* Returns 0 when element not found */
-<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (
-      <xsl:value-of select="fnc:dataTypeToBaseDeviceType(@dataType)"/> key) const;
-</xsl:for-each>
-</xsl:for-each>
+    {# TODO unify the code below with Root #}
+    {% for hasobjects in this.hasobjects %}
+      {% for cv in designInspector.objectifyCacheVariables(hasobjects.get('class'), "[@isKey='true']") %}
+        D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}}
+          (const {{oracle.getDeviceLogicTypeFromQuasarType(cv.get('dataType'))}} key );
+      {% endfor %}
+      {% for ce in designInspector.objectifyConfigEntries(hasobjects.get('class'), "[@isKey='true']") %}
+        D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{ce.get('name')|capFirst}}
+          (const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} key );
+      {% endfor %}
+    {% endfor %}
 
 
 /* getters for values which are keys */
+{% for cv in designInspector.objectifyCacheVariables(className, "[@isKey='true']") %}
+  const {{cv.get('dataType')}} {{cv.get('name')}} () { return m_{{cv.get('name')}}; }
+  {# TODO merge the things from below! #}
+{% endfor %}
+{#
 <xsl:for-each select="d:cachevariable[@isKey='true']">
 const
 <xsl:choose>
@@ -123,16 +119,15 @@ const
 </xsl:for-each>
 #}
 
-{% for configEntry in
-  designInspector.xpath("/d:design/d:class[@name='{0}']/d:configentry[@isKey='true' or @storedInDeviceObject='true']", className) %}
-const {{oracle.getDeviceLogicTypeFromQuasarType(configEntry.attrib['dataType'])}} {{configEntry.attrib['name']}} () { return m_{{ configEntry.attrib['name'] }}; }
+{% for ce in designInspector.objectifyConfigEntries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
+  const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} {{ce.get('name')}}() { return m_{{ ce.get('name') }}; }
 {% endfor %}
 
 /* mutex operations */
 {% if designInspector.classDeviceLogicHasMutex(className) %}
-void lock () { m_lock.lock(); }
-void unlock () { m_lock.unlock(); }
-boost::mutex& getLock () { return m_lock; }
+  void lock () { m_lock.lock(); }
+  void unlock () { m_lock.unlock(); }
+  boost::mutex& getLock () { return m_lock; }
 {% endif %}
 
 {#
@@ -173,28 +168,19 @@ private:
   /* Collections of device logic children objects */
   {{ commonDeviceTemplates.hasobjectsChildrenCollection(this, designInspector, oracle) }}
 
-{#
+  /* if any of our cachevariables has isKey=true then we shall keep its copy here for find functions  (it is const, either way) */
+  {% for cv in designInspector.objectifyCacheVariables(className, "[@isKey='true']") %}
+    const {{oracle.getDeviceLogicTypeFromQuasarType(cv.get('dataType'))}} m_{{cv.get('name')}};
+  {% endfor %}
 
-/* if any of our cachevariables has isKey=true then we shall keep its copy here for find functions  (it is const, either way) */
-<xsl:for-each select="d:cachevariable[@isKey='true']">
-const
-<xsl:choose>
-  <xsl:when test="@dataType='UaString'">std::string </xsl:when>
-  <xsl:otherwise><xsl:value-of select="@dataType"/></xsl:otherwise>
-</xsl:choose> m_<xsl:value-of select="@name"/> ;
-</xsl:for-each>
-#}
+  {% for ce in designInspector.objectifyConfigEntries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
+    const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} m_{{ce.get('name')}};
+  {% endfor %}
 
-
-{% for configEntry in
-  designInspector.xpath("/d:design/d:class[@name='{0}']/d:configentry[@isKey='true' or @storedInDeviceObject='true']", className) %}
-{{oracle.getDeviceLogicTypeFromQuasarType(configEntry.attrib['dataType'])}} m_{{configEntry.attrib['name']}};
-{% endfor %}
-
-/* object-wise lock */
-{% if designInspector.classDeviceLogicHasMutex(className) %}
-boost::mutex m_lock;
-{% endif %}
+  /* object-wise lock */
+  {% if designInspector.classDeviceLogicHasMutex(className) %}
+    boost::mutex m_lock;
+  {% endif %}
 
 {#
 /* variable-wise locks */
