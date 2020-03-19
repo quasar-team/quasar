@@ -359,6 +359,7 @@
       config.</span></p>
   <p class="c6 c14 c26"></p>
   <p class="c6 c14"><span class="c4">The following optional variables/settings may be used to influence the build process:</span></p>
+  <p class="c6 c14 c26"></p>
   <table class="c32">
     <tbody>
       <tr class="c30">
@@ -381,10 +382,10 @@
       <tr class="c30">
         <td class="c8" colspan="1" rowspan="1">
           <p class="c3"><span class=
-          "c4">GITHUB_REPLACEMENT</span></p>
+          "c4">GIT_SERVER_REPLACEMENT</span></p>
         </td>
         <td class="c9" colspan="1" rowspan="1">
-          <p class="c3"><span class="c4">By default, quasar optional modules are fetched from their respective github location. Use this variable to replace the default URL base <pre>https://github.com/</pre> with the variable value (example: <pre>ssh://git@gitlab.cern.ch:7999/</pre>)</span></p>
+          <p class="c3"><span class="c4">By default, quasar optional modules are fetched from their respective github location. Use this variable to replace the default URL base <pre>https://github.com/</pre> with the variable value (example: <pre>ssh://git@gitlab.cern.ch:7999/</pre>). This allows for example to profit from repository mirrors within private networks. The replacement mechanism can also be used in other CMake instruction sets within quasar project modules (see function definition in FrameworkInternals/UrlHandling.cmake).</span></p>
         </td>
       </tr>
     </tbody>
