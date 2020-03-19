@@ -23,6 +23,7 @@ jobs:
            source .travis/job_prologue.sh ;
 
            cp .travis/test_cases/test_cache_variables/Design.xml Design ;
+           ./quasar.py generate device --all ;
 
            source .travis/job_epilogue.sh ;
            "
@@ -37,10 +38,6 @@ jobs:
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
            source .travis/job_prologue.sh ;
-           
-           python quasar.py enable_module open62541-compat ;
-           python quasar.py set_build_config open62541_config.cmake ;
-           python quasar.py prepare_build Release ;
-           python quasar.py build Release ;
-           exit ;
+
+           source .travis/job_epilogue.sh ;
            "
