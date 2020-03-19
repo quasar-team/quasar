@@ -12,7 +12,7 @@ jobs:
   include:
     - name: test_cache_variables
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c "
+        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
            echo '********************************************************************' ;
            echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
            echo '********************************************************************' ;
@@ -28,8 +28,16 @@ jobs:
            "
     - name: default_quasar_design
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c "
+        -  docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+            echo '********************************************************************' ;
+            echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
+            echo '********************************************************************' ;
+            git config --global user.email quasar-developers@cern.ch ;
+            git config --global user.name QuasarDeveloper ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            cd quasar ;
            source .travis/job_prologue.sh ;
+           
            python quasar.py enable_module open62541-compat ;
            python quasar.py set_build_config open62541_config.cmake ;
            python quasar.py prepare_build Release ;
