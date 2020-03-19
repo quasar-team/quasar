@@ -76,3 +76,49 @@
   {% endfor %}
 
 {% endmacro %}
+
+{% macro deviceLogicFindByKeyHeaders(this, designInspector, oracle) %}
+  {% for hasobjects in this.hasobjects %}
+    {% for cv in designInspector.objectifyCacheVariables(hasobjects.get('class'), "[@isKey='true']") %}
+      D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}} (
+        const {{oracle.getDeviceLogicTypeFromQuasarType(cv.get('dataType'))}} key );
+    {% endfor %}
+    {% for ce in designInspector.objectifyConfigEntries(hasobjects.get('class'), "[@isKey='true']") %}
+      D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{ce.get('name')|capFirst}} (
+        const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} key );
+    {% endfor %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro deviceLogicFindByKeyBody(this, designInspector, oracle, fullClassName) %}
+  {# documentation
+    this         - is whatever that has hasobjects element (usually d:class or d:root),
+    fullClasName - is a name of the class for which this body is generated (so DRoot or Base_DMyClass)
+  #}
+  {% for hasobjects in this.hasobjects %}
+    {% for ce in designInspector.objectifyConfigEntries(hasobjects.get('class'), "[@isKey='true']") %}
+      D{{hasobjects.get('class')}}* {{fullClassName}}::get{{hasobjects.get('class')}}By{{ce.get('name')|capFirst}} (
+        const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} key )
+        {
+          for( auto* test : this->{{hasobjects.get('class')|lower}}s() )
+          {
+            if (test->{{ce.get('name')}}() == key)
+              return test;
+          }
+          return nullptr;
+        }
+    {% endfor %}{# for ce #}
+    {% for cv in designInspector.objectifyCacheVariables(hasobjects.get('class'), "[@isKey='true']") %}
+      D{{hasobjects.get('class')}}* {{fullClassName}}::get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}} (
+        const {{oracle.getDeviceLogicTypeFromQuasarType(cv.get('dataType'))}} key )
+        {
+          for( auto* test : this->{{hasobjects.get('class')|lower}}s() )
+          {
+            if (test->{{cv.get('name')}}() == key)
+              return test;
+          }
+          return nullptr;
+        }
+    {% endfor %}{# for cv #}
+  {% endfor %}{# for hasobjects #}
+{% endmacro %}

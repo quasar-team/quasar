@@ -89,18 +89,7 @@ class Base_D{{className}}
 		AddressSpace::AS{{className}}* getAddressSpaceLink () const;
 
     /* find methods for children */
-
-    {# TODO unify the code below with Root #}
-    {% for hasobjects in this.hasobjects %}
-      {% for cv in designInspector.objectifyCacheVariables(hasobjects.get('class'), "[@isKey='true']") %}
-        D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}}
-          (const {{oracle.getDeviceLogicTypeFromQuasarType(cv.get('dataType'))}} key );
-      {% endfor %}
-      {% for ce in designInspector.objectifyConfigEntries(hasobjects.get('class'), "[@isKey='true']") %}
-        D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{ce.get('name')|capFirst}}
-          (const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} key );
-      {% endfor %}
-    {% endfor %}
+    {{ commonDeviceTemplates.deviceLogicFindByKeyHeaders(this, designInspector, oracle) }}
 
 
 /* getters for values which are keys */

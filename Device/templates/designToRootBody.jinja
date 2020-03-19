@@ -104,4 +104,7 @@ void DRoot::unlinkAllChildren () const
   LOG(Log::INF) << "DRoot::unlinkAllChildren(): " << objectCounter << " objects unlinked ";
 }
 
+/* find methods for children */
+{{ commonDeviceTemplates.deviceLogicFindByKeyBody(root, designInspector, oracle, "DRoot") }}
+
 }

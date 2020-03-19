@@ -99,21 +99,7 @@ unsigned int Base_D{{className}}::unlinkAllChildren ()
 }
 
   /* find methods for children */
-  {% for hasobjects in this.hasobjects %}
-    {% for cv in designInspector.objectifyCacheVariables(hasobjects.get('class'), "[@isKey='true']") %}
-      D{{hasobjects.get('class')}}* Base_D{{className}}::get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}}
-        (const {{oracle.getDeviceLogicTypeFromQuasarType(cv.get('dataType'))}} key );
-    {% endfor %}
-
-    {% for ce in designInspector.objectifyConfigEntries(hasobjects.get('class'), "[@isKey='true']") %}
-      D{{hasobjects.get('class')}}* Base_D{{className}}::get{{hasobjects.get('class')}}By{{ce.get('name')|capFirst}}
-        (const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} key )
-        {
-          return nullptr; // TODO!!
-        }
-    {% endfor %}
-
-  {% endfor %}
+  {{ commonDeviceTemplates.deviceLogicFindByKeyBody(this, designInspector, oracle, "Base_D"+className) }}
 
 
 {% endfor %}

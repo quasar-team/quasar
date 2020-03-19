@@ -59,33 +59,10 @@ public:
   /* For constructing the tree of devices and for browsing children. */
 	{{ commonDeviceTemplates.hasobjectsAccessors(root, designInspector, oracle) }}
 
-  /* "find" methods for children */
-  {% for hasobjects in root.hasobjects %}
-    {% for cv in designInspector.objectifyCacheVariables(hasobjects.get('class'), "[@isKey='true']") %}
-      D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}}; {# TODO implementation #}
-    {% endfor %}
-  {% endfor %}
+  /* find methods for children */
+  {{ commonDeviceTemplates.deviceLogicFindByKeyHeaders(root, designInspector, oracle) }}
 
-
-	{#
-
-	<xsl:for-each select="/d:design/d:root/d:hasobjects">
-	<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
-	<xsl:for-each select="/d:design/d:class[@name=$class]/d:cachevariable[@isKey='true']">
-
-	<xsl:value-of select="fnc:DClassName($class)"/> * get<xsl:value-of select="$class"/>By<xsl:value-of select="fnc:capFirst(@name)"/> (
-	<xsl:choose>
-	<xsl:when test="@dataType='UaString'">std::string </xsl:when>
-	<xsl:otherwise><xsl:value-of select="@dataType"/></xsl:otherwise>
-	</xsl:choose>
-	 key) const;
-
-	</xsl:for-each>
-	</xsl:for-each>
-
-	/* Here you can put your custom code, e.g. for browsing objects which are children of root elements */
-
-  #}
+  /* query address-space for full name (mostly for debug purposes) */
 	std::string getFullName () const { return "[ROOT]"; }
 
 private:
