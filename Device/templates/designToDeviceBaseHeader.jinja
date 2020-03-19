@@ -31,9 +31,7 @@
 #include <vector>
 #include <string>
 #include <list>
-#include <boost/thread/mutex.hpp> // TODO: this can be std?
-
-{# #include <DRoot.h> TODO why #}
+#include <boost/thread/mutex.hpp> // will go to std soon, see OPCUA-1759
 
 #include <opcua_platformdefs.h>
 
@@ -42,8 +40,6 @@ namespace AddressSpace { class AS{{className}}; }
 
 /* forward decl for Configuration */
 namespace Configuration { class {{className}}; }
-
-{# before here used to include whole DeviceLogic class of our parent, maybe not necessary though? #}
 
 namespace Device
 {
@@ -71,79 +67,60 @@ class Base_D{{className}}
     {{designInspector.getParentClassName(className)}}* parent
     ) ;
 
-		/* No copy constructors or assignment operators */
-		Base_D{{className}} (const Base_D{{className}}& other) = delete;
-		Base_D{{className}}& operator=(const Base_D{{className}}& other) = delete;
+  /* No copy constructors or assignment operators */
+  Base_D{{className}} (const Base_D{{className}}& other) = delete;
+  Base_D{{className}}& operator=(const Base_D{{className}}& other) = delete;
 
-		/* dtr */
-		virtual ~Base_D{{className}} ();
+  /* dtr */
+  virtual ~Base_D{{className}} ();
 
-    Parent_D{{className}}* getParent () const { return m_parent; }
+  Parent_D{{className}}* getParent () const { return m_parent; }
 
-    {{ commonDeviceTemplates.hasobjectsAccessors(this, designInspector, oracle) }}
+  {{ commonDeviceTemplates.hasobjectsAccessors(this, designInspector, oracle) }}
 
-		/* to safely quit */
-		unsigned int unlinkAllChildren ();
+  /* to safely quit */
+  unsigned int unlinkAllChildren ();
 
-		void linkAddressSpace (AddressSpace::AS{{className}}* as, const std::string& stringAddress);
-		AddressSpace::AS{{className}}* getAddressSpaceLink () const;
+  void linkAddressSpace (AddressSpace::AS{{className}}* as, const std::string& stringAddress);
+  AddressSpace::AS{{className}}* getAddressSpaceLink () const;
 
-    /* find methods for children */
-    {{ commonDeviceTemplates.deviceLogicFindByKeyHeaders(this, designInspector, oracle) }}
+  /* find methods for children */
+  {{ commonDeviceTemplates.deviceLogicFindByKeyHeaders(this, designInspector, oracle) }}
 
+  /* getters for values which are keys */
+  {# TODO @pnikiel review the data-types below, both headers should be equal regarding types #}
+  {% for cv in designInspector.objectifyCacheVariables(className, "[@isKey='true']") %}
+    const {{cv.get('dataType')}} {{cv.get('name')}} () { return m_{{cv.get('name')}}; }
+  {% endfor %}
+  {% for ce in designInspector.objectifyConfigEntries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
+    const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} {{ce.get('name')}}() { return m_{{ ce.get('name') }}; }
+  {% endfor %}
 
-/* getters for values which are keys */
-{% for cv in designInspector.objectifyCacheVariables(className, "[@isKey='true']") %}
-  const {{cv.get('dataType')}} {{cv.get('name')}} () { return m_{{cv.get('name')}}; }
-  {# TODO merge the things from below! #}
-{% endfor %}
-{#
-<xsl:for-each select="d:cachevariable[@isKey='true']">
-const
-<xsl:choose>
-<xsl:when test="@dataType='UaString'">std::string</xsl:when>
-<xsl:otherwise><xsl:value-of select="@dataType"/></xsl:otherwise>
-</xsl:choose>
-<xsl:text> </xsl:text><xsl:value-of select="@name"/> () { return m_<xsl:value-of select="@name"/>; }
-</xsl:for-each>
-#}
+  /* mutex operations */
+  {% if designInspector.classDeviceLogicHasMutex(className) %}
+    void lock () { m_lock.lock(); }
+    void unlock () { m_lock.unlock(); }
+    boost::mutex& getLock () { return m_lock; } // will go to std soon, see OPCUA-1759
+  {% endif %}
 
-{% for ce in designInspector.objectifyConfigEntries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
-  const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} {{ce.get('name')}}() { return m_{{ ce.get('name') }}; }
-{% endfor %}
+  /* variable-wise locks */
+  {% for sv in designInspector.objectifySourceVariables(className, "[@addressSpaceWriteUseMutex='of_this_variable' or @addressSpaceReadUseMutex='of_this_variable']") %}
+    void lockVariable_{{sv.get('name')}} () { m_lockVariable_{{sv.get('name')}}.lock(); }
+    void unlockVariable_{{sv.get('name')}} () { m_lockVariable_{{sv.get('name')}}.unlock(); }
+  {% endfor %}
 
-/* mutex operations */
-{% if designInspector.classDeviceLogicHasMutex(className) %}
-  void lock () { m_lock.lock(); }
-  void unlock () { m_lock.unlock(); }
-  boost::mutex& getLock () { return m_lock; }
-{% endif %}
+  {% for sv in designInspector.objectifySourceVariables(className, "[@addressSpaceWriteUseMutex='of_this_operation']") %}
+    void lockVariableWrite_{{sv.get('name')}} () { m_lockVariable_write_{{sv.get('name')}}.lock(); }
+    void unlockVariableWrite_{{sv.get('name')}} () { m_lockVariable_write_{{sv.get('name')}}.unlock(); }
+  {% endfor %}
 
-{#
-/* variable-wise locks */
-<xsl:for-each select="d:sourcevariable">
-<xsl:if test="@addressSpaceWriteUseMutex='of_this_variable' or @addressSpaceReadUseMutex='of_this_variable'">
-void lockVariable_<xsl:value-of select="@name"/> () { m_lockVariable_<xsl:value-of select="@name"/>.lock(); }
-void unlockVariable_<xsl:value-of select="@name"/> () { m_lockVariable_<xsl:value-of select="@name"/>.unlock(); }
-</xsl:if>
-</xsl:for-each>
+  {% for sv in designInspector.objectifySourceVariables(className, "[@addressSpaceReadUseMutex='of_this_operation']") %}
+    void lockVariableRead_{{sv.get('name')}} () { m_lockVariable_read_{{sv.get('name')}}.lock(); }
+    void unlockVariableRead_{{sv.get('name')}} () { m_lockVariable_read_{{sv.get('name')}}.unlock(); }
+  {% endfor %}
 
-<xsl:for-each select="d:sourcevariable">
-<xsl:if test="@addressSpaceWriteUseMutex='of_this_operation'">
-void lockVariableWrite_<xsl:value-of select="@name"/> () { m_lockVariable_write_<xsl:value-of select="@name"/>.lock(); }
-void unlockVariableWrite_<xsl:value-of select="@name"/> () { m_lockVariable_write_<xsl:value-of select="@name"/>.unlock(); }
-</xsl:if>
-</xsl:for-each>
-
-<xsl:for-each select="d:sourcevariable">
-<xsl:if test="@addressSpaceReadUseMutex='of_this_operation'">
-void lockVariableRead_<xsl:value-of select="@name"/> () { m_lockVariable_read_<xsl:value-of select="@name"/>.lock(); }
-void unlockVariableRead_<xsl:value-of select="@name"/> () { m_lockVariable_read_<xsl:value-of select="@name"/>.unlock(); }
-</xsl:if>
-</xsl:for-each>
-#}
-/* query address-space for full name (mostly for debug purposes) */
-std::string getFullName() const { return m_stringAddress; };
+  /* query address-space for full name (mostly for debug purposes) */
+  std::string getFullName() const { return m_stringAddress; }
 
   static std::list<D{{className}}*> s_orphanedObjects;
   static void registerOrphanedObject( D{{className}}* object ) { s_orphanedObjects.push_back( object ); }
@@ -171,31 +148,18 @@ private:
     boost::mutex m_lock;
   {% endif %}
 
-{#
-/* variable-wise locks */
-<xsl:for-each select="d:sourcevariable">
-<xsl:if test="@addressSpaceWriteUseMutex='of_this_variable' or @addressSpaceReadUseMutex='of_this_variable'">
-boost::mutex m_lockVariable_<xsl:value-of select="@name"/> ;
-</xsl:if>
-</xsl:for-each>
+  /* variable-wise locks */
+  {% for sv in designInspector.objectifySourceVariables(className, "[@addressSpaceWriteUseMutex='of_this_variable' or @addressSpaceReadUseMutex='of_this_variable']") %}
+    boost::mutex m_lockVariable_{{sv.get('name')}};
+  {% endfor %}
 
-<xsl:for-each select="d:sourcevariable">
-<xsl:if test="@addressSpaceWriteUseMutex='of_this_operation'">
-boost::mutex m_lockVariable_write_<xsl:value-of select="@name"/> ;
-</xsl:if>
-</xsl:for-each>
+  {% for sv in designInspector.objectifySourceVariables(className, "[@addressSpaceWriteUseMutex='of_this_operation']") %}
+    boost::mutex m_lockVariable_write_{{sv.get('name')}};
+  {% endfor %}
 
-<xsl:for-each select="d:sourcevariable">
-<xsl:if test="@addressSpaceReadUseMutex='of_this_operation'">
-boost::mutex m_lockVariable_read_<xsl:value-of select="@name"/> ;
-</xsl:if>
-</xsl:for-each>
-
-
-
-
-
-#}
+  {% for sv in designInspector.objectifySourceVariables(className, "[@addressSpaceReadUseMutex='of_this_operation']") %}
+    boost::mutex m_lockVariable_read_{{sv.get('name')}};
+  {% endfor %}
 
 };
 

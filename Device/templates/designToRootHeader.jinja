@@ -37,36 +37,36 @@ namespace Device
 
 {% for hasobjects in root.hasobjects %}
   {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
-	  class D{{hasobjects.get('class')}};
-	{% endif %}
+    class D{{hasobjects.get('class')}};
+  {% endif %}
 {% endfor %}
 
 class DRoot
 {
 public:
-	/* yes, it's a singleton */
-	static DRoot* getInstance ();
+  /* yes, it's a singleton */
+  static DRoot* getInstance ();
 
-	DRoot ();
-	DRoot (const DRoot& other) = delete;
-	DRoot& operator= (const DRoot& other) = delete;
+  DRoot ();
+  DRoot (const DRoot& other) = delete;
+  DRoot& operator= (const DRoot& other) = delete;
 
-	virtual ~DRoot ();
+  virtual ~DRoot ();
 
-	/* To gracefully quit */
-	void unlinkAllChildren () const;
+  /* To gracefully quit */
+  void unlinkAllChildren () const;
 
   /* For constructing the tree of devices and for browsing children. */
-	{{ commonDeviceTemplates.hasobjectsAccessors(root, designInspector, oracle) }}
+  {{ commonDeviceTemplates.hasobjectsAccessors(root, designInspector, oracle) }}
 
   /* find methods for children */
   {{ commonDeviceTemplates.deviceLogicFindByKeyHeaders(root, designInspector, oracle) }}
 
   /* query address-space for full name (mostly for debug purposes) */
-	std::string getFullName () const { return "[ROOT]"; }
+  std::string getFullName () const { return "[ROOT]"; }
 
 private:
-	static DRoot *m_instance; /* it's a singleton class */
+  static DRoot *m_instance; /* it's a singleton class */
 
   /* Collections of device logic children objects */
   {{ commonDeviceTemplates.hasobjectsChildrenCollection(root, designInspector, oracle) }}

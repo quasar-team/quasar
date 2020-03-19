@@ -51,7 +51,7 @@ class DesignInspector():
         classes = self.xpath(xpath_expression)
         classes_names = map(lambda x: x.attrib['name'], classes)
         return classes_names
-    
+
     def getParentClassName(self, className):
         ## TODO: deprecated, remove it
         return 'Parent_D'+className
@@ -93,7 +93,7 @@ class DesignInspector():
         """ Returns whatever should be typedef'ed as Parent_DX for X = className """
         "TODO: rename to getDeviceLogicParentStruct "
         "TODO: ensure that both parent and child have device logic"
-        NoParentStructure = 'struct{/*No exact Parent of the class*/}' # a case where device logic parent cant be established 
+        NoParentStructure = 'struct{/*No exact Parent of the class*/}' # a case where device logic parent cant be established
         if self.classHasDeviceLogic(className):
             hasObjects_origins = self.getHasObjectsOriginNames(className, include_root=True)
             if len(hasObjects_origins) == 1:
@@ -114,7 +114,7 @@ class DesignInspector():
 
     def isHasObjectsSingleton(self, hasObjects):
         return "minOccurs" in hasObjects.attrib and hasObjects.attrib['minOccurs'] == "1" and "maxOccurs" in hasObjects.attrib and hasObjects.attrib['maxOccurs'] == "1"
-    
+
     def isHasObjectsSingleton2(self, hasObjects):
         """ TODO merge this with one, this should favour the objectified version """
         return "minOccurs" in hasObjects.keys() and "maxOccurs" in hasObjects.keys() and hasObjects.get("minOccurs") == "1" and hasObjects.get("maxOccurs") == "1"
@@ -153,7 +153,7 @@ class DesignInspector():
 
     def objectifyCacheVariables(self, className, restrictBy=''):
         return self.objectifyAny("/d:design/d:class[@name='{0}']/d:cachevariable{1}".format(className, restrictBy))
-        
+
     def objectifyConfigEntries(self, className, restrictBy=''):
         return self.objectifyAny("/d:design/d:class[@name='{0}']/d:configentry{1}".format(className, restrictBy))
 
@@ -162,7 +162,7 @@ class DesignInspector():
 
     def objectifyMethods(self, className, restrictBy=''):
         return self.objectifyAny("/d:design/d:class[@name='{0}']/d:method{1}".format(className, restrictBy))
-    
+
     def objectifyDesign(self):
         return self.objectifyAny("/d:design")[0]
 
