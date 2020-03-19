@@ -10,23 +10,40 @@ before_install:
 
 jobs:
   include:
-    - script:
-      - echo "this was OK"
-
-    - script:
-      - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c "
-         echo '********************************************************************' ;
-         echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
-         echo '********************************************************************' ;
-         apt install python-enum34 ;
-         ln -s /usr/bin/cmake /usr/bin/cmake3 ;
-         git config --global user.email quasar-developers@cern.ch ;
-         git config --global user.name QuasarDeveloper ;
-         git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
-         cd quasar ;
-         python quasar.py enable_module open62541-compat ;
-         python quasar.py set_build_config open62541_config.cmake ;
-         python quasar.py prepare_build Release ;
-         python quasar.py build Release ;
-         exit ;
-         "
+    - name: test_cache_variables
+      script:
+        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c "
+           echo '********************************************************************' ;
+           echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
+           echo '********************************************************************' ;
+           apt install python-enum34 ;
+           ln -s /usr/bin/cmake /usr/bin/cmake3 ;
+           git config --global user.email quasar-developers@cern.ch ;
+           git config --global user.name QuasarDeveloper ;
+           git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+           cd quasar ;
+           cp .travis/test_cases/test_cache_variables/Design.xml Design ;
+           python quasar.py enable_module open62541-compat ;
+           python quasar.py set_build_config open62541_config.cmake ;
+           python quasar.py prepare_build Release ;
+           python quasar.py build Release ;
+           exit ;
+           "
+    - name: default_design
+      script:
+        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/sh -c "
+           echo '********************************************************************' ;
+           echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
+           echo '********************************************************************' ;
+           apt install python-enum34 ;
+           ln -s /usr/bin/cmake /usr/bin/cmake3 ;
+           git config --global user.email quasar-developers@cern.ch ;
+           git config --global user.name QuasarDeveloper ;
+           git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+           cd quasar ;
+           python quasar.py enable_module open62541-compat ;
+           python quasar.py set_build_config open62541_config.cmake ;
+           python quasar.py prepare_build Release ;
+           python quasar.py build Release ;
+           exit ;
+           "
