@@ -356,7 +356,39 @@
   <p class="c6 c14"><span class="c4">To switch between different
   build configs, use "quasar.py set_build_config" command. Note
   that "quasar.py build" will always use the recently chosen build
-  config.</span></p>
+      config.</span></p>
+  <p class="c6 c14 c26"></p>
+  <p class="c6 c14"><span class="c4">The following optional variables/settings may be used to influence the build process:</span></p>
+  <table class="c32">
+    <tbody>
+      <tr class="c30">
+        <td class="c8 c11" colspan="1" rowspan="1">
+          <p class="c3"><span class="c34">Setting name</span></p>
+        </td>
+        <td class="c9 c11" colspan="1" rowspan="1">
+          <p class="c3"><span class="c34">Meaning</span></p>
+        </td>
+      </tr>
+      <tr class="c30">
+        <td class="c8" colspan="1" rowspan="1">
+          <p class="c3"><span class=
+          "c4">IGNORE_DEFAULT_BOOST_SETUP</span></p>
+        </td>
+        <td class="c9" colspan="1" rowspan="1">
+          <p class="c3"><span class="c4">By default, quasar tries to resolve boost dependencies automatically using CMake's <i>FindBoost</i> function (see also setting ADDITIONAL_BOOST_LIBS below). By setting this variable to ON, no automatic boost resolution is attempted and must be explicitly done within the build config. Note that if this setting is activated, the project setting ADDITIONAL_BOOST_LIBS has no effect.</span></p>
+        </td>
+      </tr>
+      <tr class="c30">
+        <td class="c8" colspan="1" rowspan="1">
+          <p class="c3"><span class=
+          "c4">GITHUB_REPLACEMENT</span></p>
+        </td>
+        <td class="c9" colspan="1" rowspan="1">
+          <p class="c3"><span class="c4">By default, quasar optional modules are fetched from their respective github location. Use this variable to replace the default URL base <pre>https://github.com/</pre> with the variable value (example: <pre>ssh://git@gitlab.cern.ch:7999/</pre>)</span></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
   <h1 class="c5" id="h.ps44wq6o7efp"><span class="c22">Build
   configuration files vs ProjectSettings.cmake</span></h1>
   <p class="c6 c14"><span class="c4">The ProjectSettings.cmake file
