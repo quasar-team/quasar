@@ -8,3 +8,8 @@ variables:
 - with forbidden write as well as with write delegates
 
 There is one class (TestClass) with Device Logic.
+
+
+Pass criteria
+-------------
+Successful build.
