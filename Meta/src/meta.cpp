@@ -199,7 +199,7 @@ void configureServer(const Configuration::Server& config, AddressSpace::ASNodeMa
     // since it is working the code remains here, as dead code for your example. Works only
     // for .ua anyway, and not for .open6.
     //
-    // dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
+    dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
 }
 
 void configureComponentLogLevel(const Log::LogComponentHandle& componentHandle, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
