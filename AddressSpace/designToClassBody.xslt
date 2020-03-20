@@ -230,6 +230,18 @@ UaVariant v;
                     vect.begin(), 
                     [](bool x){ return x ? OpcUa_True : OpcUa_False; }  );
                 </xsl:when>
+                <xsl:when test="@dataType='OpcUa_UInt64' or @dataType='OpcUa_Int64'">
+                vect.assign(dim, 0);
+                for (size_t i = 0; i &lt; dim; ++i)
+                {
+                    auto x = config.<xsl:value-of select="@name" />().value()[i];
+                    if (x > std::numeric_limits&lt;<xsl:value-of select="@dataType"/>&gt;::max())
+                        throw std::out_of_range("Array element in the configuration file out of range");
+                    if (x &lt; std::numeric_limits&lt;<xsl:value-of select="@dataType"/>&gt;::min())
+                        throw std::out_of_range("Array element in the configuration file out of range");
+                    vect[i] = x;
+                }
+                </xsl:when>
 				<xsl:otherwise>
 				vect = config.<xsl:value-of select="@name" />().value();
 				</xsl:otherwise>
