@@ -20,12 +20,12 @@ jobs:
            git config --global user.name QuasarDeveloper ;
            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
            cd quasar ;
-           source .travis/job_prologue.sh ;
+           source .CI/travis/job_prologue.sh ;
 
-           cp .travis/test_cases/test_cache_variables/Design.xml Design ;
+           cp .CI/test_cases/test_cache_variables/Design.xml Design ;
            ./quasar.py generate device --all ;
 
-           source .travis/job_epilogue.sh ;
+           source .CI/travis/job_epilogue.sh ;
            "
     - name: default_quasar_design
       script:
@@ -37,7 +37,7 @@ jobs:
             git config --global user.name QuasarDeveloper ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-           source .travis/job_prologue.sh ;
+             source .CI/travis/job_prologue.sh ;
 
-           source .travis/job_epilogue.sh ;
+             source .CI/travis/job_epilogue.sh ;
            "
