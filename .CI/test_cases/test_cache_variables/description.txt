@@ -1,0 +1,10 @@
+In this test case,
+we try to generate the space of all possible cache-variables from the following
+variables:
+- scalars and arrays: both
+- initializers from configuration as well as using valueAndStatus
+- all known quasar data types, restricting to legal combinations (for example,
+  arrays are not legal in valueAndStatus)
+- with forbidden write as well as with write delegates
+
+There is one class (TestClass) with Device Logic.

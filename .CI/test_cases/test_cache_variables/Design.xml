@@ -10,6 +10,42 @@
 <d:cachevariable name="configuration_OpcUaDouble_scalar_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Double"  />
 <d:cachevariable name="configuration_OpcUaFloat_scalar_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Float"  />
 <d:cachevariable name="configuration_UaString_scalar_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="UaString"  />
+<d:cachevariable name="configuration_OpcUaBoolean_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Boolean"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaByte_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Byte"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaSByte_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_SByte"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaUInt16_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_UInt16"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaInt16_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Int16"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaUInt32_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_UInt32"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaInt32_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Int32"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaUInt64_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_UInt64"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaInt64_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Int64"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaDouble_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Double"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaFloat_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Float"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_UaString_array_forbidden" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="UaString"  >
+<d:array/>
+</d:cachevariable>
 <d:cachevariable name="configuration_OpcUaBoolean_scalar_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Boolean"  />
 <d:cachevariable name="configuration_OpcUaByte_scalar_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Byte"  />
 <d:cachevariable name="configuration_OpcUaSByte_scalar_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_SByte"  />
@@ -22,6 +58,42 @@
 <d:cachevariable name="configuration_OpcUaDouble_scalar_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Double"  />
 <d:cachevariable name="configuration_OpcUaFloat_scalar_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Float"  />
 <d:cachevariable name="configuration_UaString_scalar_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="UaString"  />
+<d:cachevariable name="configuration_OpcUaBoolean_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Boolean"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaByte_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Byte"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaSByte_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_SByte"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaUInt16_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_UInt16"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaInt16_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Int16"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaUInt32_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_UInt32"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaInt32_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Int32"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaUInt64_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_UInt64"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaInt64_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Int64"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaDouble_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Double"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_OpcUaFloat_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Float"  >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="configuration_UaString_array_delegated" addressSpaceWrite="delegated" initializeWith="configuration" nullPolicy="nullForbidden" dataType="UaString"  >
+<d:array/>
+</d:cachevariable>
 <d:cachevariable name="valueAndStatus_OpcUaBoolean_scalar_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Boolean" initialStatus="OpcUa_Good" initialValue="OpcUa_True" />
 <d:cachevariable name="valueAndStatus_OpcUaByte_scalar_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Byte" initialStatus="OpcUa_Good" initialValue="69" />
 <d:cachevariable name="valueAndStatus_OpcUaSByte_scalar_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_SByte" initialStatus="OpcUa_Good" initialValue="69" />
@@ -34,6 +106,42 @@
 <d:cachevariable name="valueAndStatus_OpcUaDouble_scalar_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Double" initialStatus="OpcUa_Good" initialValue="69" />
 <d:cachevariable name="valueAndStatus_OpcUaFloat_scalar_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Float" initialStatus="OpcUa_Good" initialValue="69" />
 <d:cachevariable name="valueAndStatus_UaString_scalar_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="UaString" initialStatus="OpcUa_Good" initialValue="abcde" />
+<d:cachevariable name="valueAndStatus_OpcUaBoolean_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Boolean" initialStatus="OpcUa_Good" initialValue="OpcUa_True" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaByte_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Byte" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaSByte_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_SByte" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaUInt16_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_UInt16" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaInt16_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Int16" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaUInt32_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_UInt32" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaInt32_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Int32" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaUInt64_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_UInt64" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaInt64_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Int64" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaDouble_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Double" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaFloat_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Float" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_UaString_array_forbidden" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="UaString" initialStatus="OpcUa_Good" initialValue="abcde" >
+<d:array/>
+</d:cachevariable>
 <d:cachevariable name="valueAndStatus_OpcUaBoolean_scalar_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Boolean" initialStatus="OpcUa_Good" initialValue="OpcUa_True" />
 <d:cachevariable name="valueAndStatus_OpcUaByte_scalar_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Byte" initialStatus="OpcUa_Good" initialValue="69" />
 <d:cachevariable name="valueAndStatus_OpcUaSByte_scalar_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_SByte" initialStatus="OpcUa_Good" initialValue="69" />
@@ -46,4 +154,40 @@
 <d:cachevariable name="valueAndStatus_OpcUaDouble_scalar_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Double" initialStatus="OpcUa_Good" initialValue="69" />
 <d:cachevariable name="valueAndStatus_OpcUaFloat_scalar_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Float" initialStatus="OpcUa_Good" initialValue="69" />
 <d:cachevariable name="valueAndStatus_UaString_scalar_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="UaString" initialStatus="OpcUa_Good" initialValue="abcde" />
+<d:cachevariable name="valueAndStatus_OpcUaBoolean_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Boolean" initialStatus="OpcUa_Good" initialValue="OpcUa_True" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaByte_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Byte" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaSByte_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_SByte" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaUInt16_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_UInt16" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaInt16_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Int16" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaUInt32_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_UInt32" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaInt32_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Int32" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaUInt64_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_UInt64" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaInt64_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Int64" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaDouble_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Double" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_OpcUaFloat_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="OpcUa_Float" initialStatus="OpcUa_Good" initialValue="69" >
+<d:array/>
+</d:cachevariable>
+<d:cachevariable name="valueAndStatus_UaString_array_delegated" addressSpaceWrite="delegated" initializeWith="valueAndStatus" nullPolicy="nullForbidden" dataType="UaString" initialStatus="OpcUa_Good" initialValue="abcde" >
+<d:array/>
+</d:cachevariable>
 </d:class><d:root><d:hasobjects instantiateUsing="configuration" class="TestClass"/></d:root></d:design>
