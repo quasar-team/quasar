@@ -222,6 +222,14 @@ UaVariant v;
 					[](const std::string&amp; x){ return x.c_str(); }  );
 
 				</xsl:when>
+                <xsl:when test="@dataType='OpcUa_Boolean'">
+                vect.assign(dim, OpcUa_False);
+                std::transform( 
+                    config.<xsl:value-of select="@name" />().value().begin(), 
+                    config.<xsl:value-of select="@name" />().value().end(), 
+                    vect.begin(), 
+                    [](bool x){ return x ? OpcUa_True : OpcUa_False; }  );
+                </xsl:when>
 				<xsl:otherwise>
 				vect = config.<xsl:value-of select="@name" />().value();
 				</xsl:otherwise>
