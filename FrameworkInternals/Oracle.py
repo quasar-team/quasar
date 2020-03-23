@@ -24,17 +24,74 @@ def capFirst(s):
     return s[0].upper() + s[1:]
 
 class Oracle():
-    PassByValueDataTypes = [
-            'OpcUa_Boolean',
-            'OpcUa_Byte',
-            'OpcUa_SByte',
-            'OpcUa_UInt16',
-            'OpcUa_Int16',
-            'OpcUa_UInt32',
-            'OpcUa_Int32',
-            'OpcUa_UInt64',
-            'OpcUa_Double',
-            'OpcUa_Float']
+    AllQuasarDataTypes = [
+        'OpcUa_Boolean',
+        'OpcUa_Byte',
+        'OpcUa_SByte',
+        'OpcUa_UInt16',
+        'OpcUa_Int16',
+        'OpcUa_UInt32',
+        'OpcUa_Int32',
+        'OpcUa_UInt64',
+        'OpcUa_Int64',
+        'OpcUa_Double',
+        'OpcUa_Float',
+        'UaString',
+        'UaVariant',
+        'UaByteString']
+
+    NumericDataTypes = [      
+        'OpcUa_Byte',
+        'OpcUa_SByte',
+        'OpcUa_UInt16',
+        'OpcUa_Int16',
+        'OpcUa_UInt32',
+        'OpcUa_Int32',
+        'OpcUa_UInt64',
+        'OpcUa_Int64',
+        'OpcUa_Double',
+        'OpcUa_Float']
+
+    PassByValueDataTypes = [ # all scalar types that should be passed by value
+        'OpcUa_Boolean',
+        'OpcUa_Byte',
+        'OpcUa_SByte',
+        'OpcUa_UInt16',
+        'OpcUa_Int16',
+        'OpcUa_UInt32',
+        'OpcUa_Int32',
+        'OpcUa_UInt64',
+        'OpcUa_Int64',
+        'OpcUa_Double',
+        'OpcUa_Float']
+
+    InitializeFromConfigurationDataTypes = [ # all types for which a configentry or config-made cache-variable is legit
+        'OpcUa_Boolean',
+        'OpcUa_Byte',
+        'OpcUa_SByte',
+        'OpcUa_UInt16',
+        'OpcUa_Int16',
+        'OpcUa_UInt32',
+        'OpcUa_Int32',
+        'OpcUa_UInt64',
+        'OpcUa_Int64',
+        'OpcUa_Double',
+        'OpcUa_Float',
+        'UaString']
+
+    InitializeFromValueAndStatusDataTypes = [
+        'OpcUa_Boolean',
+        'OpcUa_Byte',
+        'OpcUa_SByte',
+        'OpcUa_UInt16',
+        'OpcUa_Int16',
+        'OpcUa_UInt32',
+        'OpcUa_Int32',
+        'OpcUa_UInt64',
+        'OpcUa_Int64',
+        'OpcUa_Double',
+        'OpcUa_Float',
+        'UaString']
 
     def getDeviceLogicTypeFromQuasarType(self, t):
         if t == "UaString":

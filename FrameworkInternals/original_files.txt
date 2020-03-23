@@ -1,5 +1,5 @@
-# © Copyright CERN, 2015. All rights not expressly granted are reserved. 
-# 
+# © Copyright CERN, 2015. All rights not expressly granted are reserved.
+#
 # This file lists files of Quasar which should be installed in the target project.
 # Please note that files.txt is a derivative of this file, which replaces md5=check with the result of md5 check.
 Directory AddressSpace install=create
@@ -39,10 +39,12 @@ File ChangeNotifyingVariable.cpp            must_exist,must_be_versioned,md5=che
 Directory AddressSpace/templates install=create
 File designToGeneratedCmakeAddressSpace.jinja  must_exist,must_be_versioned,md5=check,install=overwrite
 File designToClassHeader.jinja                 must_exist,must_be_versioned,md5=check,install=overwrite
+File designToInformationModelBody.jinja        must_exist,must_be_versioned,md5=check,install=overwrite
+File designToInformationModelHeader.jinja      must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory bin install=create
 File ServerConfig.xml                       must_exist,must_be_versioned,install=copy_if_not_existing
-File config.xml	                            install=copy_if_not_existing 
+File config.xml	                            install=copy_if_not_existing
 
 Directory CalculatedVariables install=create
 File CMakeLists.txt                         must_exist,must_be_versioned,md5=check,install=overwrite
@@ -73,10 +75,10 @@ File CalculatedVariablesChangeListener.cpp  must_exist,must_be_versioned,md5=che
 File ParserVariable.cpp                     must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Common install=create
-File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge 
+File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge
 
 Directory Common/include install=create
-File ASUtils.h                              must_exist,must_be_versioned,md5=check,install=ask_to_merge 
+File ASUtils.h                              must_exist,must_be_versioned,md5=check,install=ask_to_merge
 File Utils.h                                must_exist,must_be_versioned,install=ask_to_merge
 File QuasarThreadPool.h			    must_exist,must_be_versioned,md5=check,install=overwrite
 
@@ -92,18 +94,18 @@ File CMakeLists.txt                         must_exist,must_be_versioned, md5=ch
 File Configurator.h                         must_exist,must_be_versioned, md5=check, install=overwrite
 File designToConfigurationXSD.xslt          must_exist,must_be_versioned, md5=check, install=overwrite
 File designToConfigurator.xslt              must_exist,must_be_versioned, md5=check, install=overwrite
-File designToConfigValidator.xslt           must_exist,must_be_versioned, md5=check, install=overwrite 
+File designToConfigValidator.xslt           must_exist,must_be_versioned, md5=check, install=overwrite
 File generateConfiguration.sh               deprecated,install=dont_touch
 File generateConfigurator.sh                deprecated,install=dont_touch
 File generateConfigValidator.sh             deprecated,install=dont_touch
-File designToConfigDocumentationHtml.xslt   must_exist,must_be_versioned, md5=check, install=overwrite 
+File designToConfigDocumentationHtml.xslt   must_exist,must_be_versioned, md5=check, install=overwrite
 
 
 Directory Design install=create
 File CommonFunctions.xslt                   must_exist,must_be_versioned,md5=check,install=overwrite
 File createDiagram.sh                       deprecated,install=dont_touch
 File designToDot.xslt                       must_exist,must_be_versioned,md5=check,install=overwrite
-File Design.xml                             must_exist,must_be_versioned,install=copy_if_not_existing 
+File Design.xml                             must_exist,must_be_versioned,install=copy_if_not_existing
 File Design.xsd                             must_exist,must_be_versioned,md5=check,install=overwrite
 File functions.sh                           deprecated,install=dont_touch
 File quasarVersion.txt                      must_exist,must_be_versioned,md5=check,install=overwrite
@@ -132,7 +134,7 @@ File designToDeviceBaseHeader.xslt          must_exist,must_be_versioned,md5=che
 File designToGeneratedCmakeDevice.xslt      must_exist,must_be_versioned,md5=check,install=overwrite
 File generateBaseBody.sh                    deprecated,install=dont_touch
 File generateBaseHeader.sh                  deprecated,install=dont_touch
- 
+
 
 Directory Device/generated install=create
 
@@ -143,7 +145,7 @@ Directory Device/include install=create
 Directory Device/src install=create
 # List of files in this directory should be supplemented by bodies of classes from Design file that have device logic
 
-Directory Device/templates install=create   
+Directory Device/templates install=create
 File commonDeviceTemplates.jinja            must_exist,must_be_versioned,md5=check,install=overwrite
 File designToDeviceBaseBody.jinja           must_exist,must_be_versioned,md5=check,install=overwrite
 File designToDeviceBaseHeader.jinja         must_exist,must_be_versioned,md5=check,install=overwrite
@@ -247,8 +249,8 @@ File generated_headers_list.cmake           always_autogenerated
 File .gitignore                             must_be_versioned,install=ask_to_merge
 File quasar.py                              must_exist,must_be_versioned,install=overwrite,md5=check,
 File quasarGUI.py                           deprecated
-File framework.py                           deprecated 
-File frameworkGUI.py                        deprecated 
+File framework.py                           deprecated
+File frameworkGUI.py                        deprecated
 File generated_files_list.cmake             deprecated,install=dont_touch
 File generated_headers_list.cmake           deprecated,install=dont_touch
 File transformDesign.sh               	    deprecated,install=dont_touch
@@ -348,6 +350,3 @@ File LogSinks.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File StdOutLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File UaTraceSink.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File WindowsDebuggerSink.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
-
-
-
