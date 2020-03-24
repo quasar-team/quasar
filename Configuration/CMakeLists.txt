@@ -35,7 +35,7 @@ add_custom_target(Configuration.hxx_GENERATED DEPENDS ${PROJECT_BINARY_DIR}/Conf
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configurator.cpp	
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 	COMMAND ${PYTHON_COMMAND} quasar.py generate config_cpp --project_binary_dir ${PROJECT_BINARY_DIR}
-	DEPENDS ${DESIGN_FILE} designToConfigurator.xslt ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
+	DEPENDS ${DESIGN_FILE} templates/designToConfigurator.jinja ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
 )
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/ConfigValidator.cpp	

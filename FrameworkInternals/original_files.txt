@@ -88,12 +88,12 @@ File QuasarThreadPool.cpp		    must_exist,must_be_versioned,md5=check,install=ov
 
 Directory Common/templates install=create
 File headers.jinja                          must_exist,must_be_versioned, md5=check, install=overwrite
+File designToConfigurator.jinja              must_exist,must_be_versioned, md5=check, install=overwrite
 
 Directory Configuration install=create
 File CMakeLists.txt                         must_exist,must_be_versioned, md5=check, install=overwrite
 File Configurator.h                         must_exist,must_be_versioned, md5=check, install=overwrite
 File designToConfigurationXSD.xslt          must_exist,must_be_versioned, md5=check, install=overwrite
-File designToConfigurator.xslt              must_exist,must_be_versioned, md5=check, install=overwrite
 File designToConfigValidator.xslt           must_exist,must_be_versioned, md5=check, install=overwrite
 File generateConfiguration.sh               deprecated,install=dont_touch
 File generateConfigurator.sh                deprecated,install=dont_touch
