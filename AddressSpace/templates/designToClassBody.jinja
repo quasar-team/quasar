@@ -1,0 +1,206 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jun 2014 (the original XSLT version)                               #}
+{#            23 Mar 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+{#   Michael Ludwig (some parts relating to arrays)                              #}
+
+{% import 'headers.jinja' as headers %}
+{{ headers.cppFullGeneratedHeader() }}
+
+#include <string> // for std::to_string
+#include <climits>
+
+#include <ArrayTools.h>
+#include <Utils.h>
+#include <ChangeNotifyingVariable.h>
+#include <CalculatedVariablesEngine.h>
+
+#include <SourceVariables.h>
+
+{% for className in designInspector.getNamesOfAllClasses() %}
+  #include <AS{{className}}.h>
+  {% if designInspector.classHasDeviceLogic(className) %}
+    #include <D{{className}}.h>
+  {% endif %}
+{% endfor %}
+
+namespace AddressSpace
+{
+
+static std::string decorateSingleVariableNodeName (const std::string& basicName, bool isSingleVariableNode)
+{
+  if (isSingleVariableNode)
+    return "__single_item_node__" + basicName;
+  else
+    return basicName;
+}
+
+{% for className in designInspector.getNamesOfAllClasses() %}
+  {% set this = designInspector.objectifyClass(className) %}
+
+  /*ctr*/
+  AS{{className}}::AS{{className}} (
+  	UaNodeId                            parentNodeId,
+  	const UaNodeId&                     typeNodeId,
+  	ASNodeManager*                      nm,
+  	const Configuration::{{className}}& config):
+  	OpcUa::BaseObjectType (
+  		/*nodeId*/ nm->makeChildNodeId(
+        parentNodeId,
+        decorateSingleVariableNodeName(config.name(), {{designInspector.designBooleanAsCppBoolean(this.get('singleVariableNode'))}}).c_str()),
+      /*name*/decorateSingleVariableNodeName(config.name(), {{designInspector.designBooleanAsCppBoolean(this.get('singleVariableNode'))}}).c_str(),
+      nm->getNameSpaceIndex(),
+      nm),
+  	m_typeNodeId (typeNodeId)
+    {%- for cv in this.cachevariable %},
+      m_{{cv.get('name')}} (nullptr) // this cache-variable will be created in the ctr body
+    {% endfor -%}
+    {%- for sv in this.sourcevariable %},
+      m_{{sv.get('name')}} (nullptr) // this source-variable will be created in the ctr body
+    {% endfor %}
+    {%- for m in this.method %},
+      m_{{m.get('name')}} (nullptr) // this method will be created in the ctr body
+    {% endfor %}
+    {% if designInspector.classHasDeviceLogic(className) %},
+      m_deviceLink(nullptr)
+    {% endif %}
+    {
+      {% for cv in this.cachevariable %}
+        {% if designInspector.isClassSingleVariableNode(className) %}
+          {% set variableName = "config.name().c_str()" %}
+        {% else %}
+          {% set variableName = '"' + cv.get('name') + '"' %}
+        {% endif %}
+        m_{{cv.get('name')}} = new {{oracle.cacheVariableCppType(cv.get('addressSpaceWrite'), className)}} (
+          nm->makeChildNodeId(
+            {% if designInspector.isClassSingleVariableNode(className) %}
+              parentNodeId,
+            {% else %}
+              this->nodeId(),
+            {% endif %}
+            UaString({{variableName}})),
+          UaString({{variableName}}),
+          nm->getNameSpaceIndex(),
+          UaVariant(),
+          {{oracle.cacheVariableAccessLevel(cv.get('addressSpaceWrite'))}},
+          nm);
+      {% endfor %}
+    }
+
+    AS{{className}}::~AS{{className}} ()
+    {
+      {% if designInspector.classHasDeviceLogic(className) %}
+      if (m_deviceLink)
+      {
+        LOG(Log::ERR) << "While destructing the class, device logic link is still not null. Sth went wrong with quasar logic...";
+      }
+      {% endif %}
+    }
+
+{### SETTERS AND GETTERS ###}
+    /* generate setters and getters (if requested) -- for scalar cache-variables first */
+    {% for cv in designInspector.objectifyCacheVariables(className, '[not(d:array)]') %}
+      UaStatus AS{{className}}::{{ oracle.getCacheVariableSetter(cv.get('name'), cv.get('dataType'), False) }}
+      {
+        {% if cv.get('dataType') == 'UaVariant' %}
+          return m_{{cv.get('name')}}->setValue (/*session*/ nullptr, UaDataValue (value, statusCode, srcTime, UaDateTime::now()), /*check access*/ OpcUa_False);
+        {% else %} {# not a variant #}
+          UaVariant v;
+          {% if cv.get('dataType') == 'UaByteString' %}
+            v.setByteString(const_cast<UaByteString&>(value), /*detach*/ OpcUa_False); // this const_case should be safe because we don't detach the value
+          {% else %}
+            v.{{oracle.dataTypeToVariantSetter(cv.get('dataType'))}} (value);
+          {% endif %}
+          return m_{{cv.get('name')}}->setValue (/*session*/ nullptr, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/ OpcUa_False );
+        {% endif %}
+      }
+
+      //! the basic getter, it's always there no matter what.
+      UaStatus AS{{className}}::get{{cv.get('name')|capFirst}} ({{cv.get('dataType')}}& returnValue) const
+      {
+        UaVariant v (* (m_{{cv.get('name')}}->value(/*session*/ nullptr).value()));
+        {% if cv.get('dataType') == 'UaString' %}
+          if (v.type() == OpcUaType_String)
+          {
+            returnValue = v.toString();
+            return OpcUa_Good;
+          }
+          else // that case would be when we allow nulls, and the cachevariable stores null
+            return OpcUa_Bad;
+        {% elif cv.get('dataType') == 'UaVariant' %}
+          returnValue = v; {# TODO @pnikiel a cheap and obvious optimization here is to avoid this copy here and return directly from value() #}
+          return OpcUa_Good;
+        {% else %}
+          return v.{{oracle.dataTypeToVariantConverter(cv.get('dataType'))}}( returnValue );
+        {% endif %}
+      }
+    {% endfor %}
+
+
+
+{### METHODS ... ###}
+    {% if this.method|length >= 1 %}
+    /* Call handler defined because at least one method is declared */
+    UaStatus AS{{className}}::beginCall (
+        MethodManagerCallback*    pCallback,
+        const ServiceContext&     serviceContext,
+        OpcUa_UInt32              callbackHandle,
+        MethodHandle*  	          pMethodHandle,
+        const UaVariantArray&     inputArguments
+    )
+    {
+      {% if designInspector.classHasDeviceLogic(className) %}
+        MethodHandleUaNode* upper = dynamic_cast<MethodHandleUaNode*> (pMethodHandle);
+        if (!upper)
+          return OpcUa_BadInternalError;
+        ASDelegatingMethod<AS{{className}}>* impl =
+          static_cast< ASDelegatingMethod<AS{{className}}>* > ( upper->pUaMethod() );
+        if (impl)
+          return impl->call(pCallback, callbackHandle, inputArguments);
+        else
+        {
+          LOG(Log::ERR) << "quasar logic error here?";
+          return OpcUa_BadInternalError;
+        }
+      {% else %} {# no device logic #}
+        return OpcUa_BadInternalError;
+      {% endif %}
+    }
+    {% endif %}
+
+{### LINK/UNLINK DEVICE LOGIC ###}
+    /* generate device logic link */
+    {% if designInspector.classHasDeviceLogic(className) %}
+    void AS{{className}}::linkDevice( Device::D{{className}}* deviceLink)
+    {
+      if (m_deviceLink) /* This is an error -- device can be linked at most once in the object's lifetime. */
+        throw std::logic_error("linkDevice() should be called only once. Quasar logic error?");
+      else
+        m_deviceLink = deviceLink;
+    }
+
+    void AS{{className}}::unlinkDevice ()
+    {
+      m_deviceLink = nullptr;
+    }
+    {% endif %}
+
+{% endfor %}
+
+}
