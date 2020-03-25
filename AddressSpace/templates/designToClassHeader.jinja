@@ -133,12 +133,7 @@ namespace AddressSpace
 
   /* Variables */
   {% for cv in this.cachevariable %}
-    {% if cv.get('addressSpaceWrite') == 'delegated' %}
-      ASDelegatingVariable<AS{{className}}>
-    {% else %}
-      ChangeNotifyingVariable
-    {% endif %}
-    * m_{{cv.get('name')}};
+    {{oracle.cacheVariableCppType(cv.get('addressSpaceWrite'), className)}}* m_{{cv.get('name')}};
   {% endfor %}
 
   {% for sv in this.sourcevariable %}

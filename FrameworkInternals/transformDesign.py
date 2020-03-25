@@ -79,7 +79,7 @@ QuasarTransforms = [
     [TransformKeys.AS_SOURCEVARIABLES_H,    'AddressSpace/designToSourceVariablesHeader.xslt',       'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
     [TransformKeys.AS_SOURCEVARIABLES_CPP,  'AddressSpace/designToSourceVariablesBody.xslt',         'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
     [TransformKeys.AS_CLASS_H,              ['AddressSpace','designToClassHeader.jinja'],            'AddressSpace/include/AS{className}.h',         'B',            True,           False,        ['className']],
-    [TransformKeys.AS_CLASS_CPP_ALL,        'AddressSpace/designToClassBody.xslt',                   'AddressSpace/src/AddressSpaceClasses.cpp',     'B',            True,           False,        None],
+    [TransformKeys.AS_CLASS_CPP_ALL,        ['AddressSpace','designToClassBody.jinja'],              'AddressSpace/src/AddressSpaceClasses.cpp',     'B',            True,           False,        None],
     [TransformKeys.AS_INFOMODEL_H,          ['AddressSpace','designToInformationModelHeader.jinja'], 'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
     [TransformKeys.AS_INFOMODEL_CPP,        ['AddressSpace','designToInformationModelBody.jinja'],   'AddressSpace/src/ASInformationModel.cpp',      'B',            True,           False,        None],
     [TransformKeys.AS_CMAKE,                ['AddressSpace','designToGeneratedCmakeAddressSpace.jinja'], 'AddressSpace/cmake_generated.cmake',           'B',            False,          False,        None],

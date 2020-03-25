@@ -40,7 +40,7 @@ class Oracle():
         'UaVariant',
         'UaByteString']
 
-    NumericDataTypes = [      
+    NumericDataTypes = [
         'OpcUa_Byte',
         'OpcUa_SByte',
         'OpcUa_UInt16',
@@ -92,6 +92,36 @@ class Oracle():
         'OpcUa_Double',
         'OpcUa_Float',
         'UaString']
+
+    DataTypeToVariantSetter = {
+      'OpcUa_Double' : 'setDouble',
+      'OpcUa_Float'  : 'setFloat',
+      'OpcUa_Byte'   : 'setByte',
+      'OpcUa_SByte'  : 'setSByte',
+      'OpcUa_Int16'  : 'setInt16',
+      'OpcUa_UInt16' : 'setUInt16',
+      'OpcUa_Int32'  : 'setInt32',
+      'OpcUa_UInt32' : 'setUInt32',
+      'OpcUa_Int64'  : 'setInt64',
+      'OpcUa_UInt64' : 'setUInt64',
+      'OpcUa_Boolean': 'setBool',
+      'UaString'     : 'setString'
+    }
+
+    DataTypeToVariantConverter = {
+    'OpcUa_Double'  : 'toDouble',
+    'OpcUa_Float'   : 'toFloat',
+    'OpcUa_Byte'    : 'toByte',
+    'OpcUa_SByte'   : 'toSByte',
+    'OpcUa_Int16'   : 'toInt16',
+    'OpcUa_UInt16'  : 'toUInt16',
+    'OpcUa_Int32'   : 'toInt32',
+    'OpcUa_UInt32'  : 'toUInt32',
+    'OpcUa_Int64'   : 'toInt64',
+    'OpcUa_UInt64'  : 'toUInt64',
+    'OpcUa_Boolean' : 'toBool',
+    'UaByteString'  : 'toByteString'
+    }
 
     def getDeviceLogicTypeFromQuasarType(self, t):
         if t == "UaString":
@@ -150,3 +180,32 @@ class Oracle():
             return 'std::vector<{0}>'.format(quasarDataType)
         else:
             return quasarDataType
+
+    def cacheVariableCppType(self, addressSpaceWrite, inWhichClass):
+        if addressSpaceWrite in ['regular', 'forbidden']:
+            return 'ChangeNotifyingVariable'
+        elif addressSpaceWrite == 'delegated':
+            return 'ASDelegatingVariable<AS{0}>'.format(inWhichClass)
+        else:
+            raise Exception ("Unsupported addressSpaceWrite mode")
+
+    def cacheVariableAccessLevel(self, addressSpaceWrite):
+        if addressSpaceWrite in ['regular', 'forbidden']:
+            return 'OpcUa_AccessLevels_CurrentRead'
+        elif addressSpaceWrite == 'delegated':
+            return 'OpcUa_AccessLevels_CurrentReadOrWrite'
+        else:
+            raise Exception ("Unsupported addressSpaceWrite mode")
+
+    def dataTypeToVariantSetter(self, dataType):
+        if dataType == 'UaByteString':
+            raise Exception ('quasar logic error: UaByteString doesnt have a trivial (i.e. 1-arg) variant setter')
+        else:
+            return Oracle.DataTypeToVariantSetter[dataType]
+
+    def dataTypeToVariantConverter(self, dataType):
+        if dataType == 'UaString':
+            raise Exception ('quasar logic error: UaString has specific toString converter')
+        else:
+            return Oracle.DataTypeToVariantConverter[dataType]
+    
