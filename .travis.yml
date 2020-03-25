@@ -41,3 +41,20 @@ jobs:
 
              source .CI/travis/job_epilogue.sh ;
            "
+    - name: test_cache_variables
+      script:
+         - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+            echo '********************************************************************' ;
+            echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
+            echo '********************************************************************' ;
+            git config --global user.email quasar-developers@cern.ch ;
+            git config --global user.name QuasarDeveloper ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            cd quasar ;
+            source .CI/travis/job_prologue.sh ;
+
+            cp .CI/test_cases/test_methods/Design.xml Design ;
+            ./quasar.py generate device --all ;
+
+            source .CI/travis/job_epilogue.sh ;
+            "

@@ -1,0 +1,10 @@
+In this test case,
+we try to test all method/functions signatures regarding methods, call paths etc...
+
+We therefore have a test case where a list of methods is declared per class,
+each method has between 0..2 arguments and 0..2 return values, each of different
+data type, variation of scalar/included.
+
+Pass criteria
+-------------
+Successful build.
