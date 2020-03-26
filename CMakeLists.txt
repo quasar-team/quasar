@@ -50,18 +50,17 @@ set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
 include_directories (
-	${BOOST_PATH_HEADERS}
 	${PROJECT_BINARY_DIR}/Device/generated
 	${PROJECT_SOURCE_DIR}/Configuration  # this is to cover Configurator.h
 	${PROJECT_BINARY_DIR}/Configuration
 	${SERVER_INCLUDE_DIRECTORIES}
 	)
-	
+
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
     set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG} )
 else(${CMAKE_BUILD_TYPE} MATCHES Debug)
     set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
-endif(${CMAKE_BUILD_TYPE} MATCHES Debug)	
+endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 
 set(OPTIONAL_SERVER_MODULES)
 include( FrameworkInternals/OptionalModules.cmake )
@@ -75,7 +74,7 @@ set(MODULES_OBJECTS)
 set(MODULE_INCLUDES)
 foreach(module ${SERVER_MODULES})
     FILE(GLOB SUBMODULE_INCLUDES ${PROJECT_SOURCE_DIR}/${module}/*/include)
-    set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${PROJECT_BINARY_DIR}/${module}/include ${SUBMODULE_INCLUDES}) 
+    set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${PROJECT_BINARY_DIR}/${module}/include ${SUBMODULE_INCLUDES})
 endforeach(module)
 foreach(include ${MODULE_INCLUDES})
     include_directories(${include})
@@ -89,7 +88,7 @@ foreach(module ${MODULES_IN_SOURCE_DIR})
     add_dependencies( ${module} quasar_opcua_backend_is_ready )
 endforeach(module)
 
-foreach(module ${OPTIONAL_SERVER_MODULES})    
+foreach(module ${OPTIONAL_SERVER_MODULES})
     add_subdirectory( ${PROJECT_BINARY_DIR}/${module} ${PROJECT_BINARY_DIR}/${module} )  # listed twice, 1st is SOURCE_DIR 2nd is BINARY_DIR
     set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
 endforeach(module)
@@ -106,10 +105,10 @@ add_custom_command(
     )
 add_custom_target(validateDesign DEPENDS  ${PROJECT_BINARY_DIR}/Design/validated.tmp )
 
-add_custom_target(dep ALL 
-        COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device 
+add_custom_target(dep ALL
+        COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        ) 
+        )
 
 link_directories(
 	${OPCUA_TOOLKIT_PATH}/lib
