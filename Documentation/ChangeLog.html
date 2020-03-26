@@ -64,9 +64,11 @@
 
 
 
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
 
 
 
@@ -160,7 +162,106 @@
 
 
 
+
               Release notes</strong><br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">1.3.13<br>
+            <b>xxx</b><br>
+          </td>
+          <td valign="top">The primary advantage are the improvements
+            done to help build different quasar-based servers in
+            restricted areas (like P1), thanks to URL translation for
+            optional modules etc...<br>
+          </td>
+          <td valign="top">Now, by default, find_package(Boost) is used
+            to resolve Boost libraries.<br>
+            <br>
+            If you want the older behaviour, which implied manually
+            specifying boost paths and libs, you can still do it by
+            defining, in the build config of choice, the following CMake
+            variable:<br>
+            <br>
+            IGNORE_DEFAULT_BOOST_SETUP<br>
+          </td>
+          <td valign="top">
+            <meta http-equiv="content-type" content="text/html;
+              charset=windows-1252">
+            Bug
+            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
+              font-family: -apple-system, BlinkMacSystemFont,
+              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
+              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
+              Neue&quot;, sans-serif; font-size: 14px; font-style:
+              normal; font-variant-ligatures: normal; font-variant-caps:
+              normal; font-weight: 400; letter-spacing: normal; orphans:
+              2; text-align: start; text-indent: 0px; text-transform:
+              none; white-space: normal; widows: 2; word-spacing: 0px;
+              -webkit-text-stroke-width: 0px; background-color: rgb(255,
+              255, 255); text-decoration-style: initial;
+              text-decoration-color: initial;">
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1781"
+                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1781</a>]
+                - cache-variables of arrays of booleans, initialized
+                from configuration, don't build</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1782"
+                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1782</a>]
+                - cache-variables of arrays of uint64, initialized from
+                configuration, don't build</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1783"
+                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1783</a>]
+                - multiple root/hasobjects elements referring to same
+                class causes non-compiling code</li>
+            </ul>
+            Task
+            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
+              font-family: -apple-system, BlinkMacSystemFont,
+              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
+              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
+              Neue&quot;, sans-serif; font-size: 14px; font-style:
+              normal; font-variant-ligatures: normal; font-variant-caps:
+              normal; font-weight: 400; letter-spacing: normal; orphans:
+              2; text-align: start; text-indent: 0px; text-transform:
+              none; white-space: normal; widows: 2; word-spacing: 0px;
+              -webkit-text-stroke-width: 0px; background-color: rgb(255,
+              255, 255); text-decoration-style: initial;
+              text-decoration-color: initial;">
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1776"
+                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1776</a>]
+                - Extend quasar travis for some beyond-trivial tests
+                (e.g. inject few different Designs than span some common
+                scenarios)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1790"
+                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1790</a>]
+                - Optimize OptionalModules (separate CMake file)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1791"
+                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1791</a>]
+                - OptionalModules URL processing for server URL
+                replacement(s)</li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1792"
+                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1792</a>]
+                - Use find_package(Boost) for general Boost resolution
+                in quasar</li>
+            </ul>
+            Improvement
+            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
+              font-family: -apple-system, BlinkMacSystemFont,
+              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
+              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
+              Neue&quot;, sans-serif; font-size: 14px; font-style:
+              normal; font-variant-ligatures: normal; font-variant-caps:
+              normal; font-weight: 400; letter-spacing: normal; orphans:
+              2; text-align: start; text-indent: 0px; text-transform:
+              none; white-space: normal; widows: 2; word-spacing: 0px;
+              -webkit-text-stroke-width: 0px; background-color: rgb(255,
+              255, 255); text-decoration-style: initial;
+              text-decoration-color: initial;">
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1741"
+                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1741</a>]
+                - boost::lexical_cast -&gt; std::to_string in quasar
+                (subject to gcc 4.8.5 avail)</li>
+            </ul>
           </td>
         </tr>
         <tr>
