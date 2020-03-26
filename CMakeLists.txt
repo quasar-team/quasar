@@ -39,6 +39,13 @@ endif()
 
 include( ProjectSettings.cmake )
 
+if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP STREQUAL "OFF" ) )
+    message( STATUS "Setting up boost location and libraries using FrameworkInternals/BoostSetup.cmake")
+    include( FrameworkInternals/BoostSetup.cmake )
+else()
+    message( STATUS "Automatic boost setup was set to be ignored (IGNORE_DEFAULT_BOOST_SETUP). Boost libs and includes must be defined elsewhere (e.g. in the build config)." )
+endif()
+
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
