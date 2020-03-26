@@ -44,6 +44,7 @@ if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP S
     include( FrameworkInternals/BoostSetup.cmake )
 else()
     message( STATUS "Automatic boost setup was set to be ignored (IGNORE_DEFAULT_BOOST_SETUP). Boost libs and includes must be defined elsewhere (e.g. in the build config)." )
+    include_directories(${BOOST_PATH_HEADERS})  # this falls back to the old solution when we didn't yet use find_package(Boost)
 endif()
 
 set(PYTHON_COMMAND python)
