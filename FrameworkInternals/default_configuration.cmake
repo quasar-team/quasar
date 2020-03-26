@@ -84,3 +84,12 @@ SET( XML_LIBS "-lxerces-c" )
 
 # TODO: split between Win / MSVC, perhaps MSVC has different notation for these
 add_definitions(-Wall -Wno-deprecated -std=gnu++0x -DBACKEND_UATOOLKIT ) 
+
+#-------
+# Github replacement
+#-------
+# If used, replaces https://github.com/ in modules which are fetched on demand,
+# this can be used if private mirror git servers are used instead of github.
+# Example, edit and uncomment if required.
+#
+#set(GITHUB_REPLACEMENT "ssh://git@gitlab.cern.ch:7999/" )
