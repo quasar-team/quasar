@@ -19,7 +19,6 @@
 
 file(GLOB OPTIONAL_SERVER_MODULE_URLS "FrameworkInternals/EnabledModules/*.url")
 
-include( FrameworkInternals/UrlHandling.cmake )
 foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
     #
     file (STRINGS ${moduleFile} OPT_MODULE_URL)
