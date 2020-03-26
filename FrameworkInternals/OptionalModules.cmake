@@ -19,9 +19,12 @@
 
 file(GLOB OPTIONAL_SERVER_MODULE_URLS "FrameworkInternals/EnabledModules/*.url")
 
+include( FrameworkInternals/UrlHandling.cmake )
 foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
     #
     file (STRINGS ${moduleFile} OPT_MODULE_URL)
+
+    process_git_url(OPT_MODULE_URL)
 
     get_filename_component(module ${moduleFile} NAME_WE)
     file (STRINGS FrameworkInternals/EnabledModules/${module}.tag OPT_MODULE_TAG)

@@ -186,6 +186,7 @@ File commandMap.py							must_exist,must_be_versioned,md5=check,install=overwrit
 File quasarCommands.py						must_exist,must_be_versioned,md5=check,install=overwrite
 File OptionalModule.cmake                   must_exist,must_be_versioned,md5=check,install=overwrite,
 File OptionalModules.cmake                  must_exist,must_be_versioned,md5=check,install=overwrite,
+File UrlHandling.cmake                      must_exist,must_be_versioned,md5=check,install=overwrite,
 File astyleSubstitute.py                    must_exist,must_be_versioned,md5=check,install=overwrite,
 File quasarExceptions.py               	    must_exist,must_be_versioned,md5=check,install=overwrite,
 File quasar_basic_utils.py                  must_exist,must_be_versioned,md5=check,install=overwrite,
