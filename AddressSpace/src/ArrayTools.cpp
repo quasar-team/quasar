@@ -29,6 +29,7 @@ namespace AddressSpace
 namespace ArrayTools
 {
 
+/** This templatized function is applicable to "simple types" like arrays of ints, where an assignment operator does well... */
 template<typename Type, typename ArrayType>
 static void vectorToUaVariant( const std::vector<Type>& input, UaVariant& output, void (UaVariant::*setterFunction)(ArrayType& array, OpcUa_Boolean detach) )
 {
@@ -36,7 +37,18 @@ static void vectorToUaVariant( const std::vector<Type>& input, UaVariant& output
     array.create( input.size() );
     for (unsigned int i=0; i<input.size(); ++i)
         array[i] = input[i];
-    (output.*setterFunction)(array, /*detach*/ OpcUa_False);
+    (output.*setterFunction)(array, /*detach*/ OpcUa_False); // TODO @pnikiel: one day we should switch to detach=true, after testing...
+}
+
+/** This templatized function is applicable to "complex types" like arrays of UaByteString, where an assignment operator to the stack type is not defined... */
+template<typename Type, typename ArrayType>
+static void vectorToUaVariantByCopyTo( const std::vector<Type>& input, UaVariant& output, void (UaVariant::*setterFunction)(ArrayType& array, OpcUa_Boolean detach) )
+{
+    ArrayType array;
+    array.create( input.size() );
+    for (unsigned int i=0; i<input.size(); ++i)
+        input[i].copyTo(&array[i]);
+    (output.*setterFunction)(array, /*detach*/ OpcUa_False); // TODO @pnikiel: one day we should switch to detach=true, after testing...
 }
 
 void convertBooleanVectorToUaVariant( const std::vector<OpcUa_Boolean>& input, UaVariant& output )
@@ -99,15 +111,19 @@ void convertVectorToUaVariant( const std::vector <OpcUa_Double>& input, UaVarian
     vectorToUaVariant (input, output, &UaVariant::setDoubleArray);
 }
 
+void convertVectorToUaVariant( const std::vector< UaByteString>& input, UaVariant& output )
+{
+    vectorToUaVariantByCopyTo ( input, output, &UaVariant::setByteStringArray);
+}
+
+void convertVectorToUaVariant( const std::vector <UaVariant>& input, UaVariant& output )
+{
+    vectorToUaVariantByCopyTo ( input, output, &UaVariant::setVariantArray);
+}
+
 void convertVectorToUaVariant( const std::vector <UaString>& input, UaVariant& output)
 {
-    UaStringArray array;
-    array.create( input.size() );
-    for (unsigned int i=0; i<input.size(); ++i)
-    {
-        input[i].copyTo(&array[i]);
-    }
-    output.setStringArray(array, /*detach*/ OpcUa_False);
+    vectorToUaVariantByCopyTo ( input, output, &UaVariant::setStringArray);
 }
 
 template<typename Type, typename ArrayType>
@@ -187,6 +203,16 @@ UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Do
 UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaString> &output )
 {
     return uaVariantToVector<UaString, UaStringArray>(input, output, &UaVariant::toStringArray);
+}
+
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaByteString>& output )
+{
+    return uaVariantToVector<UaByteString, UaByteStringArray>(input, output, &UaVariant::toByteStringArray);
+}
+
+UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaVariant>& output )
+{
+    return uaVariantToVector<UaVariant, UaVariantArray>(input, output, &UaVariant::toVariantArray);
 }
 
 std::vector<std::string> convertStdStringsToUaStrings( const std::vector<std::string>& input )
