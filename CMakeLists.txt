@@ -39,56 +39,36 @@ endif()
 
 include( ProjectSettings.cmake )
 
+if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP STREQUAL "OFF" ) )
+    message( STATUS "Setting up boost location and libraries using FrameworkInternals/BoostSetup.cmake")
+    include( FrameworkInternals/BoostSetup.cmake )
+else()
+    message( STATUS "Automatic boost setup was set to be ignored (IGNORE_DEFAULT_BOOST_SETUP). Boost libs and includes must be defined elsewhere (e.g. in the build config)." )
+    include_directories(${BOOST_PATH_HEADERS})  # this falls back to the old solution when we didn't yet use find_package(Boost)
+endif()
+
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
 include_directories (
-	${BOOST_PATH_HEADERS}
 	${PROJECT_BINARY_DIR}/Device/generated
 	${PROJECT_SOURCE_DIR}/Configuration  # this is to cover Configurator.h
 	${PROJECT_BINARY_DIR}/Configuration
 	${SERVER_INCLUDE_DIRECTORIES}
 	)
-	
+
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
     set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG} )
 else(${CMAKE_BUILD_TYPE} MATCHES Debug)
     set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
-endif(${CMAKE_BUILD_TYPE} MATCHES Debug)	
+endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 
 set(QUASAR_TRANSFORM_SENSITIVE_FILES
 	${PROJECT_SOURCE_DIR}/FrameworkInternals/transformDesign.py
 	${PROJECT_SOURCE_DIR}/FrameworkInternals/DesignInspector.py
 	${PROJECT_SOURCE_DIR}/FrameworkInternals/Oracle.py )
-#
-# begin optional quasar modules
-#
 set(OPTIONAL_SERVER_MODULES)
-file(GLOB OPTIONAL_SERVER_MODULE_URLS "FrameworkInternals/EnabledModules/*.url")
-
-foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
-    #
-    file (STRINGS ${moduleFile} OPT_MODULE_URL)
-    get_filename_component(module ${moduleFile} NAME_WE)
-    file (STRINGS FrameworkInternals/EnabledModules/${module}.tag OPT_MODULE_TAG)
-    message("Adding module ${module} URL=${OPT_MODULE_URL} TAG=${OPT_MODULE_TAG}")
-    set(OPTIONAL_SERVER_MODULES ${OPTIONAL_SERVER_MODULES} ${module})
-    set(OPT_MODULE_NAME ${module})
-    configure_file(${PROJECT_SOURCE_DIR}/FrameworkInternals/OptionalModule.cmake
-                   FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake/CMakeLists.txt)
-    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake)
-    execute_process(COMMAND ${CMAKE_COMMAND} --build . --config ${CMAKE_BUILD_TYPE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_cmake OUTPUT_FILE ${CMAKE_BINARY_DIR}/FrameworkInternals/EnabledModules/${OPT_MODULE_NAME}_download.log)
-    if (EXISTS ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME})
-       message("Module ${module} was added.")
-       execute_process(COMMAND git remote set-url --push origin push-disabled WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME})
-    else()
-       message("Error, module ${module} was not properly fetched. Please check FrameworkInternals/EnabledModules/${module}_download.log for errors.")
-    endif()
-    #
-endforeach(moduleFile)
-#
-# end quasar modules
-#
+include( FrameworkInternals/OptionalModules.cmake )
 
 set(NATIVE_SERVER_MODULES AddressSpace Configuration Common Server Device Meta LogIt CalculatedVariables)
 set(SERVER_MODULES ${NATIVE_SERVER_MODULES} ${OPTIONAL_SERVER_MODULES} ${CUSTOM_SERVER_MODULES})
@@ -99,7 +79,7 @@ set(MODULES_OBJECTS)
 set(MODULE_INCLUDES)
 foreach(module ${SERVER_MODULES})
     FILE(GLOB SUBMODULE_INCLUDES ${PROJECT_SOURCE_DIR}/${module}/*/include)
-    set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${PROJECT_BINARY_DIR}/${module}/include ${SUBMODULE_INCLUDES}) 
+    set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${PROJECT_BINARY_DIR}/${module}/include ${SUBMODULE_INCLUDES})
 endforeach(module)
 foreach(include ${MODULE_INCLUDES})
     include_directories(${include})
@@ -113,7 +93,7 @@ foreach(module ${MODULES_IN_SOURCE_DIR})
     add_dependencies( ${module} quasar_opcua_backend_is_ready )
 endforeach(module)
 
-foreach(module ${OPTIONAL_SERVER_MODULES})    
+foreach(module ${OPTIONAL_SERVER_MODULES})
     add_subdirectory( ${PROJECT_BINARY_DIR}/${module} ${PROJECT_BINARY_DIR}/${module} )  # listed twice, 1st is SOURCE_DIR 2nd is BINARY_DIR
     set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
 endforeach(module)
@@ -130,10 +110,10 @@ add_custom_command(
     )
 add_custom_target(validateDesign DEPENDS  ${PROJECT_BINARY_DIR}/Design/validated.tmp )
 
-add_custom_target(dep ALL 
-        COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device 
+add_custom_target(dep ALL
+        COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        ) 
+        )
 
 link_directories(
 	${OPCUA_TOOLKIT_PATH}/lib

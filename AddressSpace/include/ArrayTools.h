@@ -46,6 +46,8 @@ namespace ArrayTools
 	void convertVectorToUaVariant( const std::vector <OpcUa_Float>& input, UaVariant& output );
 	void convertVectorToUaVariant( const std::vector <OpcUa_Double>& input, UaVariant& output  );
 	void convertVectorToUaVariant( const std::vector <UaString>& input, UaVariant& output );
+	void convertVectorToUaVariant( const std::vector <UaVariant>& input, UaVariant& output );
+	void convertVectorToUaVariant( const std::vector< UaByteString>& input, UaVariant& output );
 
 	UaStatus convertUaVariantToBooleanVector( const UaVariant& input, std::vector <OpcUa_Boolean> &vect );
 	UaStatus convertUaVariantToByteVector( const UaVariant& input, std::vector <OpcUa_Byte> &vect );
@@ -59,6 +61,8 @@ namespace ArrayTools
 	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Float> &vect );
 	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <OpcUa_Double> &vect );
 	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaString> &vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaByteString>& vect );
+	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaVariant>& vect );
 
 	std::vector<std::string> convertStdStringsToUaStrings( const std::vector<std::string>& input );
 }

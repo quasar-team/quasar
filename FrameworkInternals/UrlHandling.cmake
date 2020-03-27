@@ -1,5 +1,5 @@
 # LICENSE:
-# Copyright (c) 2015, CERN
+# Copyright (c) 2020, CERN
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,50 +13,27 @@
 # BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
 # GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
-# Author: Piotr Nikiel <piotr@nikiel.info>
-# Author: Ben Farnham
-# @author pnikiel
-# @date May-2018
-# This file is a build config for quasar-based projects to use open62541 OPC-UA backend.
-# You can use it directly, or make a copy and adjust accordingly.
 
-#-----
-#General settings
-#-----
+# Author: Stefan Schlenker
 
-add_definitions(-Wall -Wno-deprecated)
+function ( process_git_url URL )
 
-# open62541-compat has no uatrace
-set (LOGIT_HAS_UATRACE FALSE)
+    # replace git server base URL if defined in project settings
+    # example: setting GIT_SERVER_REPLACEMENT="ssh://gitlab.com:7999/"
+    # and calling process_git_url(URL) with URL=https://github.com/quasar-team/MyQuasarModule.git
+    # results in URL to be set to "ssh://gitlab.com:7999/quasar-team/MyQuasarModule.git"
+    #
+    if (DEFINED GIT_SERVER_REPLACEMENT)
+      set( NEW_URL ${${URL}} )
+      set( MATCHED )
+      string(REGEX MATCH "(http|https|ssh):\\/\\/[-a-zA-Z0-9@:%._\\+~#=]+\\.[a-z]+(:[0-9]+)?\\/" MATCHED ${NEW_URL})
+      message("process_git_url(): Matched ${MATCHED} in ${${URL}}")
+      if ( MATCHED )
+        string(REPLACE ${MATCHED} ${GIT_SERVER_REPLACEMENT} NEW_URL ${NEW_URL})
+        message("process_git_url(): Replaced to ${NEW_URL}")
+      endif()
 
-# need C++11
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+      set( ${URL} ${NEW_URL} PARENT_SCOPE )
+    endif()
 
-#-------
-#Boost
-#-------
-# should get resolved via FrameworkInternals/BoostSetup.cmake since quasar 1.3.13
-
-#------
-#OPCUA
-#------
-
-# No OPC-UA Toolkit: using Open62541-compat instead. It is referenced in BACKEND_MODULES below
-add_definitions( -DBACKEND_OPEN62541 )
-SET( OPCUA_TOOLKIT_PATH "" )
-SET( OPCUA_TOOLKIT_LIBS_RELEASE -lrt -lpthread )
-SET( OPCUA_TOOLKIT_LIBS_DEBUG -lrt -lpthread )
-include_directories( ${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/include )
-
-#-----
-#XML Libs
-#-----
-#As of 03-Sep-2015 I see no FindXerces or whatever in our Cmake 2.8 installation, so no find_package can be user...
-# TODO perhaps also take it from environment if requested
-SET( XML_LIBS "-lxerces-c" )
-
-#-----
-#Quasar server libs
-#-----
-SET( QUASAR_SERVER_LIBS "-lssl -lcrypto -lpthread" )
+endfunction ()
