@@ -29,7 +29,7 @@ function ( process_git_url URL )
       string(REGEX MATCH "(http|https|ssh):\\/\\/[-a-zA-Z0-9@:%._\\+~#=]+\\.[a-z]+(:[0-9]+)?\\/" MATCHED ${NEW_URL})
       message("process_git_url(): Matched ${MATCHED} in ${${URL}}")
       if ( MATCHED )
-        string(REPLACE ${MATCHED} ${GITSERVER_REPLACEMENT} NEW_URL ${NEW_URL})
+        string(REPLACE ${MATCHED} ${GIT_SERVER_REPLACEMENT} NEW_URL ${NEW_URL})
         message("process_git_url(): Replaced to ${NEW_URL}")
       endif()
 
