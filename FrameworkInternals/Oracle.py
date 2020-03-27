@@ -109,19 +109,37 @@ class Oracle():
     }
 
     DataTypeToVariantConverter = {
-    'OpcUa_Double'  : 'toDouble',
-    'OpcUa_Float'   : 'toFloat',
-    'OpcUa_Byte'    : 'toByte',
-    'OpcUa_SByte'   : 'toSByte',
-    'OpcUa_Int16'   : 'toInt16',
-    'OpcUa_UInt16'  : 'toUInt16',
-    'OpcUa_Int32'   : 'toInt32',
-    'OpcUa_UInt32'  : 'toUInt32',
-    'OpcUa_Int64'   : 'toInt64',
-    'OpcUa_UInt64'  : 'toUInt64',
-    'OpcUa_Boolean' : 'toBool',
-    'UaByteString'  : 'toByteString'
+        'OpcUa_Double'  : 'toDouble',
+        'OpcUa_Float'   : 'toFloat',
+        'OpcUa_Byte'    : 'toByte',
+        'OpcUa_SByte'   : 'toSByte',
+        'OpcUa_Int16'   : 'toInt16',
+        'OpcUa_UInt16'  : 'toUInt16',
+        'OpcUa_Int32'   : 'toInt32',
+        'OpcUa_UInt32'  : 'toUInt32',
+        'OpcUa_Int64'   : 'toInt64',
+        'OpcUa_UInt64'  : 'toUInt64',
+        'OpcUa_Boolean' : 'toBool',
+        'UaByteString'  : 'toByteString'
     }
+
+    DataTypeToBuiltinType = {
+        'OpcUa_Double':'OpcUaType_Double',
+        'OpcUa_Float':'OpcUaType_Float',
+        'OpcUa_Byte':'OpcUaType_Byte',
+        'OpcUa_SByte':'OpcUaType_SByte',
+        'OpcUa_Int16':'OpcUaType_Int16',
+        'OpcUa_UInt16':'OpcUaType_UInt16',
+        'OpcUa_Int32':'OpcUaType_Int32',
+        'OpcUa_UInt32':'OpcUaType_UInt32',
+        'OpcUa_Int64':'OpcUaType_Int64',
+        'OpcUa_UInt64':'OpcUaType_UInt64',
+        'OpcUa_Boolean':'OpcUaType_Boolean',
+        'UaString':'OpcUaType_String',
+        'UaByteString':'OpcUaType_ByteString',
+        'UaVariant':'OpcUaType_Variant'
+    }
+
 
     def getDeviceLogicTypeFromQuasarType(self, t):
         if t == "UaString":
@@ -208,4 +226,6 @@ class Oracle():
             raise Exception ('quasar logic error: UaString has specific toString converter')
         else:
             return Oracle.DataTypeToVariantConverter[dataType]
-    
+
+    def dataTypeToBuiltinType(self, dataType):
+        return Oracle.DataTypeToBuiltinType[dataType]

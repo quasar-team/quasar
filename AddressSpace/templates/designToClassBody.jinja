@@ -80,7 +80,9 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     {% if designInspector.classHasDeviceLogic(className) %},
       m_deviceLink(nullptr)
     {% endif %}
-    {
+    { {# here constructor body begins #}
+      {# TODO @pnikiel split it all, perhaps the acts of creation should be in separate methods #}
+      {# here, create cache-variables #}
       {% for cv in this.cachevariable %}
         {% if designInspector.isClassSingleVariableNode(className) %}
           {% set variableName = "config.name().c_str()" %}
@@ -101,6 +103,101 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           {{oracle.cacheVariableAccessLevel(cv.get('addressSpaceWrite'))}},
           nm);
       {% endfor %}
+      {# here, create source-variables #}
+      {# here, create methods #}
+
+      createMethods(nm);
+
+    }
+
+    void AS{{className}}::createMethods(ASNodeManager *nm)
+    {
+      UaStatus status;
+      {% for m in this.method %}
+        m_{{m.get('name')}} = new ASDelegatingMethod<AS{{className}}> (
+          nm->makeChildNodeId(
+            this->nodeId(),
+            UaString( "{{m.get('name')}}" )),
+          UaString( "{{m.get('name')}}" ),
+          nm->getNameSpaceIndex());
+        {% if designInspector.classHasDeviceLogic(className) %}
+          m_{{m.get('name')}}->assignHandler( this, &AS{{className}}::call{{m.get('name')|capFirst}} );
+        {% endif %}
+
+        {% if m.argument|length>0 %}
+          {
+            UaPropertyMethodArgument * prop = new UaPropertyMethodArgument (
+              nm->makeChildNodeId( m_{{m.get('name')}}->nodeId(), "args" ),
+              OpcUa_AccessLevels_CurrentRead,
+              {{m.argument|length}},
+              UaPropertyMethodArgument::INARGUMENTS
+              );
+            {% for arg in m.argument %}
+              { // those blocks are intentional to reuse safely same variable names
+                UaUInt32Array dimensions;
+                {% if arg.array|length>0 %}
+                  OpcUa_Int32 valueRank = 1; // this argument is an 1D array
+                {% else %}
+                  OpcUa_Int32 valueRank = -1; // this argument is a scalar
+                {% endif %}
+                prop->setArgument(
+                  {{loop.index0}},
+                  UaString("{{arg.get('name')}}"),
+                  UaNodeId( {{oracle.dataTypeToBuiltinType(arg.get('dataType'))}}, 0),
+                  valueRank,
+                  dimensions,
+                  UaLocalizedText("en_US", "{{arg.get('name')}}") );
+              }
+            {% endfor %}
+            status = nm->addNodeAndReference(
+              m_{{m.get('name')}},
+              prop,
+              OpcUaId_HasProperty);
+            if (!status.isGood())
+              throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+          }
+        {% endif %}
+
+        {% if m.returnvalue|length>0 %}
+          {
+            UaPropertyMethodArgument * propReturn = new UaPropertyMethodArgument (
+            	nm->makeChildNodeId( m_{{m.get('name')}}->nodeId(), "return_values" ),
+            	OpcUa_AccessLevels_CurrentRead,
+            	{{m.argument|length}},
+            	UaPropertyMethodArgument::OUTARGUMENTS
+            	);
+            {% for rv in m.returnvalue %}
+          	{
+          		UaUInt32Array dimensions;
+              {% if rv.array|length>0 %}
+                OpcUa_Int32 valueRank = 1; // this return-value is an 1D array
+              {% else %}
+                OpcUa_Int32 valueRank = -1; // this return-value is a scalar
+              {% endif %}
+          		propReturn->setArgument(
+                {{loop.index0}},
+                UaString("{{rv.get('name')}}"),
+                UaNodeId({{oracle.dataTypeToBuiltinType(rv.get('dataType'))}}, 0),
+                valueRank,
+                dimensions,
+                UaLocalizedText("en_US", "{{rv.get('name')}}") );
+          	}
+            status = nm->addNodeAndReference(
+          	  m_{{m.get('name')}},
+              propReturn,
+              OpcUaId_HasProperty);
+            if (!status.isGood())
+              throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+            {% endfor %}
+          }
+        {% endif %}
+        status = nm->addNodeAndReference(
+	        this,
+          m_{{m.get('name')}},
+          OpcUaId_HasComponent);
+        if (!status.isGood())
+          throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+      {% endfor %}
     }
 
     AS{{className}}::~AS{{className}} ()
@@ -114,7 +211,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     }
 
 {### SETTERS AND GETTERS ###}
-    /* generate setters and getters (if requested) -- for scalar cache-variables first */
+    /* generate setters and getters -- for scalar cache-variables first */
     {% for cv in designInspector.objectifyCacheVariables(className, '[not(d:array)]') %}
       UaStatus AS{{className}}::{{ oracle.getCacheVariableSetter(cv.get('name'), cv.get('dataType'), False) }}
       {
@@ -150,7 +247,23 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           return v.{{oracle.dataTypeToVariantConverter(cv.get('dataType'))}}( returnValue );
         {% endif %}
       }
+
+      /* short getter (possible because the value of this variable will never be null, guaranteed by Design) */
+      {{cv.get('dataType')}} AS{{className}}::get{{cv.get('name')|capFirst}} () const
+      {
+        UaVariant v (* m_{{cv.get('name')}}->value (/*session*/ nullptr).value() );
+        {{cv.get('dataType')}} v_value;
+        {% if cv.get('dataType') == 'UaString' %}
+          v_value = v.toString();
+        {% else %}
+          v.{{oracle.dataTypeToVariantConverter(cv.get('dataType'))}} ( v_value );
+        {% endif %}
+        return v_value;
+      }
     {% endfor %}
+
+    /* generate setters and getters -- now for arrays */
+
 
 
 

@@ -131,6 +131,8 @@ namespace AddressSpace
   private:
   UaNodeId m_typeNodeId;
 
+  void createMethods(ASNodeManager *nm);
+
   /* Variables */
   {% for cv in this.cachevariable %}
     {{oracle.cacheVariableCppType(cv.get('addressSpaceWrite'), className)}}* m_{{cv.get('name')}};
