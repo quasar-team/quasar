@@ -36,6 +36,7 @@ File ChangeNotifyingVariable.cpp must_exist,must_be_versioned,md5=aa4aa02f5cd84c
 Directory AddressSpace/templates install=create,
 File designToGeneratedCmakeAddressSpace.jinja must_exist,must_be_versioned,md5=52f5676614b200c251e85e55113d22e5,install=overwrite,
 File designToClassHeader.jinja must_exist,must_be_versioned,md5=04b22ba0cdfd43959bc230ae7d2c7aa8,install=overwrite,
+File designToClassBody.jinja must_exist,must_be_versioned,md5=732df8ffdc3d907356679e2c517bb2f6,install=overwrite,
 File designToInformationModelHeader.jinja must_exist,must_be_versioned,md5=95280b56649caf8a3c53945fc02327ce,install=overwrite,
 File designToInformationModelBody.jinja must_exist,must_be_versioned,md5=fd54d976af2f6c303b4aedd0a954e3cc,install=overwrite,
 Directory bin install=create,
