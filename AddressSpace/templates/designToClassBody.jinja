@@ -295,6 +295,113 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
         return OpcUa_BadInternalError;
       {% endif %}
     }
+
+    {% if designInspector.classHasDeviceLogic(className) %}
+      {% for m in this.method %}
+        UaStatus AS{{className}}::call{{m.get('name')|capFirst}} (
+          MethodManagerCallback* pCallback,
+          OpcUa_UInt32           callbackHandle,
+          const UaVariantArray&  inputArguments)
+        {
+          if (inputArguments.length() != {{m.argument|length}})
+            return OpcUa_BadArgumentsMissing;
+          {% for arg in m.argument %}
+            {{oracle.quasarDataTypeToCppType(arg.get('dataType'),arg.array|length>0)}} arg_{{arg.get('name')}};
+            {% if arg.array|length>0 %}
+              {
+                UaStatus conversionStatus = {{oracle.convertUaVariantToVectorFunctionName(arg.get('dataType'))}} (
+                  inputArguments[{{loop.index0}}],
+                  arg_{{arg.get('name')}}
+                );
+                if (!conversionStatus.isGood())
+                  return conversionStatus;
+              }
+            {% else %}
+              {% if arg.get('dataType') == 'UaString' %}
+                arg_{{arg.get('name')}} = (UaVariant(inputArguments[{{loop.index0}}])).toString();
+              {% elif arg.get('dataType') == 'UaVariant' %}
+                arg_{{arg.get('name')}} = inputArguments[{{loop.index0}}];
+              {% else %}
+                if ((UaVariant(inputArguments[{{loop.index0}}])).{{oracle.dataTypeToVariantConverter(arg.get('dataType'))}}( arg_{{arg.get('name')}} ) != OpcUa_Good)
+                  return OpcUa_BadDataEncodingInvalid;
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {% if m.get('executionSynchronicity') == 'asynchronous' %}
+            #ifdef BACKEND_OPEN62541
+            #error asynchronous method execution is not available for open62541 backend
+            #endif
+            AddressSpace::SourceVariables_getThreadPool()->addJob(
+              [this,
+              callbackHandle,
+              pCallback
+              {% for arg in m.argument %}
+                ,arg_{{m.get('name')}}
+              {% endfor %}
+              ](){
+          {% endif %}
+
+          {% for rv in m.returnvalue %}
+            {{oracle.quasarDataTypeToCppType(rv.get('dataType'), rv.array|length>0)}} rv_{{rv.get('name')}};
+          {% endfor %}
+
+          UaStatusCodeArray       inputArgumentResults;
+          UaDiagnosticInfos       inputArgumentDiag;
+          UaVariantArray          outputArguments;
+
+          try
+          {
+            UaStatus stat = getDeviceLink()->call{{m.get('name')|capFirst}} (
+              {% for arg in m.argument %}
+                arg_{{arg.get('name')}}{% if loop.index < (m.argument|length+m.returnvalue|length) %},
+                  {% endif %}
+              {% endfor %}
+              {% for rv in m.returnvalue %}
+                rv_{{rv.get('name')}}{% if loop.index < (m.returnvalue|length) %},
+                  {% endif %}
+              {% endfor %}
+
+            );
+            {% if m.returnvalue|length>0 %}
+              UaVariant helper;
+              outputArguments.create( {{m.returnvalue|length}} );
+              {% for rv in m.returnvalue %}
+                {% if rv.array|length>0 %}
+                  {{oracle.convertVectorToUaVariantFunctionName(rv.get('dataType'))}}(rv_{{rv.get('name')}}, helper);
+                {% else %}
+                  {% if rv.get('dataType') == 'OpcUa_Boolean' %}
+                    {#  we do this because OpcUa_Boolean decays to char and not C++ bool. #}
+                    helper.setBool( rv_{{rv.get('name')}} );
+                  {% elif rv.get('dataType') == 'UaByteString' %}
+                    helper.setByteString( rv_{{rv.get('name')}}, /*detach*/false );
+                  {% else %}
+                    helper = rv_{{rv.get('name')}};
+                  {% endif %}
+                {% endif %}
+                helper.copyTo( &outputArguments[{{loop.index0}}] );
+              {% endfor %}
+            {% endif %}
+            pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, stat );
+            return (OpcUa_StatusCode)OpcUa_Good;
+
+          }
+          catch (const std::exception& e)
+          {
+            LOG(Log::ERR) << "method call of method {{m.get('name')}} thrown an exception (should have been handled in the method body...): " << e.what();
+            UaStatus badStatus = OpcUa_BadInternalError;
+            pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );
+            return OpcUa_BadInternalError;
+          }
+
+          {% if m.get('executionSynchronicity') == 'asynchronous' %}
+          }, std::string("method call of method {{m.get('name')}} on object ")+this->nodeId().toString().toUtf8());
+          return OpcUa_Good;
+          {% endif %}
+        }
+      {% endfor %}
+    {% endif %}
+
     {% endif %}
 
 {### LINK/UNLINK DEVICE LOGIC ###}

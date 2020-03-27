@@ -229,3 +229,19 @@ class Oracle():
 
     def dataTypeToBuiltinType(self, dataType):
         return Oracle.DataTypeToBuiltinType[dataType]
+
+    def convertUaVariantToVectorFunctionName(self, dataType):
+        if dataType == 'OpcUa_Byte':
+            return 'ArrayTools::convertUaVariantToByteVector'
+        elif dataType == 'OpcUa_Boolean':
+            return 'ArrayTools::convertUaVariantToBooleanVector'
+        else:
+            return 'ArrayTools::convertUaVariantToVector'
+
+    def convertVectorToUaVariantFunctionName(self, dataType):
+        if dataType == 'OpcUa_Byte':
+            return 'ArrayTools::convertByteVectorToUaVariant'
+        elif dataType == 'OpcUa_Boolean':
+            return 'ArrayTools::convertBooleanVectorToUaVariant'
+        else:
+            return 'ArrayTools::convertVectorToUaVariant'        
