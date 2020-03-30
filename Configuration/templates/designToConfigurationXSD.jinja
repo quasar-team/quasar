@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}     
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}     
+{# the Free Software Foundation, either version 3 of the Licence.                #}     
+{# Quasar is distributed in the hope that it will be useful,                     #}     
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}     
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014                                                           #}
+{#            Mar 2020 (translated to Jinja2)                                    #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+{#   Ben Farnham  <firstNm.secondNm@cern.ch>                                     #}
+{% import 'headers.jinja' as headers %}
+{% set this = designInspector.objectifyRoot() %}
+{{ headers.xmlFullGeneratedHeader() }}
+
+{% macro writeRestriction(className, varName, dataType, restriction) %}
+  <!--processing restriction for class [{{className}}] name: {{varName}} dataType [{{dataType}}]-->  
+  {% if restriction %}
+  <xs:simpleType>
+	<xs:restriction base="{{oracle.quasarDataTypeToXsdType(dataType)}}">
+	{% if restriction['type'] == 'byEnumeration' %}
+	  {% for enumerationValue in restriction['enumerationValues']%}
+	    <xs:enumeration value="{{enumerationValue}}"/>
+	  {% endfor %}
+	{% elif restriction['type'] == 'byPattern' %}
+	  <xs:pattern value="{{restriction['pattern']}}"/>
+	{% elif restriction['type'] == 'byBounds' %}
+	  {% if restriction['minExclusive'] %}
+	     <xs:minExclusive value="{{restriction['minExclusive']}}"/>
+	  {% endif %}
+	  {% if restriction['maxExclusive'] %}
+	     <xs:maxExclusive value="{{restriction['maxExclusive']}}"/>
+	  {% endif %}
+	  {% if restriction['minInclusive'] %}
+	     <xs:minInclusive value="{{restriction['minInclusive']}}"/>
+	  {% endif %}
+	  {% if restriction['maxInclusive'] %}
+	     <xs:maxInclusive value="{{restriction['maxInclusive']}}"/>
+	  {% endif %}
+	{% endif %}
+	</xs:restriction>
+  </xs:simpleType>
+  {% endif %}         
+{% endmacro %}
+
+<xs:schema xmlns:tns="http://cern.ch/quasar/Configuration"
+  xmlns:xi="http://www.w3.org/2003/XInclude"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:d="http://cern.ch/quasar/Design"
+  xmlns:fnc="http://cern.ch/quasar/Functions"
+  targetNamespace="http://cern.ch/quasar/Configuration"
+  elementFormDefault="qualified">
+<!--TODO %%BF: fix this, get meta schema location via transform parameter -->  
+{% set metaXsdPath="/local/bfarnham/workspace/OPC-UA/quasar-stuff/quasar-test-projects/jinja-transforms-V2/Meta/config/Meta.xsd" %}
+  <xi:include href="{{metaXsdPath}}" xpointer="xmlns(xs=http://www.w3.org/2001/XMLSchema) xpointer(/xs:schema/node())"/>
+  <xs:simpleType name="ObjectName">
+    <xs:restriction base="xs:string">
+    <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="CalculatedVariable">
+    <xs:attribute name="name" type="tns:ObjectName" use="required"/>
+    <xs:attribute name="value" type="xs:string" use="required"/>
+    <xs:attribute name="initialValue" type="xs:double" use="optional"/>
+    <xs:attribute name="isBoolean" type="xs:boolean" use="optional" default="false"/>
+    <xs:attribute name="status" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="CalculatedVariableGenericFormula">
+    <xs:attribute name="name" type="tns:ObjectName" use="required"/>
+   <xs:attribute name="formula" type="xs:string" use="required"/>
+  </xs:complexType>
+ 
+{% for className in designInspector.getNamesOfAllClasses() %}
+  <xs:complexType name="{{className}}">
+   
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="CalculatedVariable" type="tns:CalculatedVariable" />
+        {% for innerClassByConfig in designInspector.objectifyHasObjects(className) %}
+          <xs:element name="{{innerClassByConfig.get('class')}}" type="tns:{{innerClassByConfig.get('class')}}"/>
+        {% endfor %}
+	  </xs:choice>
+    
+	    <!-- processing array cache vars for class [{{className}}] -->
+	    {% for arrayCacheVarByConfig in designInspector.objectifyCacheVariables(className, restrictBy="[@initializeWith='configuration'][d:array]") %}
+	      {% set restriction = designInspector.getCacheVariableRestriction(className, arrayCacheVarByConfig.get('name')) %}
+	      <!-- add arrayCacheVarByConfig name [{{arrayCacheVarByConfig.get('name')}}] type [{{arrayCacheVarByConfig.get('dataType')}}] -->
+	      <xs:element name="{{arrayCacheVarByConfig.get('name')}}">
+	        <xs:complexType>
+	          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+	            <xs:element name="value">
+	            {{ writeRestriction(className, arrayCacheVarByConfig.get('name'), arrayCacheVarByConfig.get('dataType'), restriction) }}
+	            </xs:element>
+	          </xs:sequence>
+	        </xs:complexType>
+	      </xs:element>
+	    {% endfor %}
+    </xs:sequence>
+    
+    <xs:attribute name="name" type="tns:ObjectName" use="required"/>
+    
+    <!-- processing non-array cache vars for class [{{className}}] -->
+    {% for scalarCacheVarByConfig in designInspector.objectifyCacheVariables(className, restrictBy="[@initializeWith='configuration'][not(d:array)]") %}
+      {% set restriction = designInspector.getCacheVariableRestriction(className, scalarCacheVarByConfig.get('name')) %}
+      <!-- add scalarCacheVarByConfig name [{{scalarCacheVarByConfig.get('name')}}] type [{{scalarCacheVarByConfig.get('dataType')}}] -->
+      <xs:attribute name="{{scalarCacheVarByConfig.get('name')}}" use="required">
+        {{ writeRestriction(className, scalarCacheVarByConfig.get('name'), scalarCacheVarByConfig.get('dataType'), restriction) }}
+      </xs:attribute>   
+    {% endfor %}
+    
+    <!-- processing non-array config entries for class [{{className}}] -->
+    {% for scalarConfigEntry in designInspector.objectifyConfigEntries(className, restrictBy="[not(d:array)]") %}
+      {% set restriction = designInspector.getConfigEntryRestriction(className, scalarConfigEntry.get('name')) %}
+      <xs:attribute name="{{scalarConfigEntry.get('name')}}" use="required">
+        {{ writeRestriction(className, scalarConfigEntry.get('name'), scalarConfigEntry.get('dataType'), restriction) }}
+      </xs:attribute>   
+    {% endfor %}    
+        
+  </xs:complexType>
+{% endfor %}
+
+<xs:complexType name="Configuration">
+  <xs:sequence>
+    <xs:choice minOccurs="0" maxOccurs="1">
+      <xs:element name="StandardMetaData" type="tns:StandardMetaData"/>
+      </xs:choice>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="CalculatedVariableGenericFormula" type="tns:CalculatedVariableGenericFormula"/>
+    </xs:choice>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      {% for rootClass in designInspector.objectifyAny("/d:design/d:root/d:hasobjects") %}
+        <xs:element name="{{rootClass.get('class')}}" type="tns:{{rootClass.get('class')}}" />
+      {% endfor %}
+    </xs:choice>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="CalculatedVariable" type="tns:CalculatedVariable"/>
+    </xs:choice>
+  </xs:sequence>
+</xs:complexType>
+<xs:element name="configuration" type="tns:Configuration"/>
+
+ </xs:schema>

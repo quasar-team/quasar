@@ -142,6 +142,32 @@ class DesignInspector():
         objectified = objectify.fromstring( etree.tostring(class_element[0]) )
         return objectified
 
+    def parseRestrictions(self, restrictionElems):
+        if(len(restrictionElems)==1):
+            restrictionElem = restrictionElems[0]
+
+            restriction=dict()
+            restriction['type']='ERROR'
+            for child in restrictionElem.iterchildren():
+                if 'restrictionByEnumeration' in child.tag:
+                    restriction['type']='byEnumeration'
+                    restriction['enumerationValues']=[]
+                    for enumerationValue in child.iterchildren():
+                        restriction['enumerationValues'].append(enumerationValue.get('value'))
+                elif 'restrictionByPattern' in child.tag:
+                    restriction['type']='byPattern'
+                    restriction['pattern']=child.get('pattern')
+                    break;
+                elif 'restrictionByBounds' in child.tag:
+                    restriction['type']='byBounds'
+                    restriction['minInclusive']=child.get('minInclusive')
+                    restriction['maxInclusive']=child.get('maxInclusive')
+                    restriction['minExclusive']=child.get('minExclusive')
+                    restriction['maxExclusive']=child.get('maxExclusive')
+                    break;
+            return restriction
+        return None
+
     def objectifyRoot(self):
         root_element = self.xpath("/d:design/d:root")
         return objectify.fromstring( etree.tostring(root_element[0]) )
@@ -157,8 +183,16 @@ class DesignInspector():
     def objectifyCacheVariables(self, className, restrictBy=''):
         return self.objectifyAny("/d:design/d:class[@name='{0}']/d:cachevariable{1}".format(className, restrictBy))
 
+    def getCacheVariableRestriction(self, className, varName):
+        restrictionElems=self.objectifyAny("/d:design/d:class[@name='{0}']/d:cachevariable[@name='{1}']/d:configRestriction".format(className, varName))
+        return self.parseRestrictions(restrictionElems)
+
     def objectifyConfigEntries(self, className, restrictBy=''):
         return self.objectifyAny("/d:design/d:class[@name='{0}']/d:configentry{1}".format(className, restrictBy))
+
+    def getConfigEntryRestriction(self, className, configEntryName):
+        restrictionElems=self.objectifyAny("/d:design/d:class[@name='{0}']/d:configentry[@name='{1}']/d:configRestriction".format(className, configEntryName))
+        return self.parseRestrictions(restrictionElems)
 
     def objectifySourceVariables(self, className, restrictBy=''):
         return self.objectifyAny("/d:design/d:class[@name='{0}']/d:sourcevariable{1}".format(className, restrictBy))

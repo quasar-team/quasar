@@ -140,6 +140,19 @@ class Oracle():
         'UaVariant':'OpcUaType_Variant'
     }
 
+    QuasarTypeToXsdType = {
+        'UaString':'xs:string',
+        'OpcUa_SByte': 'xs:byte',
+        'OpcUa_Byte': 'xs:unsignedByte',
+        'OpcUa_Int16': 'xs:short',
+        'OpcUa_UInt16': 'xs:unsignedShort',
+        'OpcUa_Int32': 'xs:int',
+        'OpcUa_UInt32': 'xs:unsignedInt',
+        'OpcUa_Int64': 'xs:long',
+        'OpcUa_UInt64': 'xs:unsignedLong',
+        'OpcUa_Boolean': 'xs:boolean',
+        'OpcUa_Double': 'xs:double',
+        'OpcUa_Float': 'xs:float'}
 
     def getDeviceLogicTypeFromQuasarType(self, t):
         if t == "UaString":
@@ -245,3 +258,9 @@ class Oracle():
             return 'ArrayTools::convertBooleanVectorToUaVariant'
         else:
             return 'ArrayTools::convertVectorToUaVariant'        
+
+    def quasarDataTypeToXsdType(self, quasarDataType):
+        try:
+            return Oracle.QuasarTypeToXsdType[quasarDataType]
+        except KeyError:
+            sys.exit("ERROR: it is not allowed to initialize a variable of [{0}] type from configuration".format(quasarDataType))
