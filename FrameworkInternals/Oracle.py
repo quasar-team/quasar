@@ -244,4 +244,11 @@ class Oracle():
         elif dataType == 'OpcUa_Boolean':
             return 'ArrayTools::convertBooleanVectorToUaVariant'
         else:
-            return 'ArrayTools::convertVectorToUaVariant'        
+            return 'ArrayTools::convertVectorToUaVariant'
+
+    def wrapLiteral(self, dataType, literal):
+        if dataType == 'UaString':
+            return '"{0}"'.format(literal)
+        else:
+            return literal
+

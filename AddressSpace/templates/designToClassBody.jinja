@@ -81,8 +81,29 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       m_deviceLink(nullptr)
     {% endif %}
     { {# here constructor body begins #}
-      {# TODO @pnikiel split it all, perhaps the acts of creation should be in separate methods #}
-      {# here, create cache-variables #}
+      UaStatus status;
+
+      {% if designInspector.isClassSingleVariableNode(className) %}
+        status = nm->addUnreferencedNode( this );
+      {% else %}
+        status = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent );
+      {% endif %}
+      if (!status.isGood())
+        throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+
+      createCacheVariables(nm, config);
+      initializeArrayCacheVariablesFromConfiguration(nm, config);
+      createSourceVariables(nm);
+      createMethods(nm);
+
+    }
+
+    void AS{{className}}::createCacheVariables(
+      ASNodeManager *nm,
+      const Configuration::{{className}}& config)
+    {
+      UaStatus status;
+      UaVariant helperVariant;
       {% for cv in this.cachevariable %}
         {% if designInspector.isClassSingleVariableNode(className) %}
           {% set variableName = "config.name().c_str()" %}
@@ -102,11 +123,133 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           UaVariant(),
           {{oracle.cacheVariableAccessLevel(cv.get('addressSpaceWrite'))}},
           nm);
-      {% endfor %}
-      {# here, create source-variables #}
-      {# here, create methods #}
 
-      createMethods(nm);
+        {# configure dataType #}
+        {% if cv.get('nullPolicy') == 'nullForbidden' %}
+          m_{{cv.get('name')}}->setDataType(
+            UaNodeId( {{oracle.dataTypeToBuiltinType(cv.get('dataType'))}}, 0 ));
+        {% endif %}
+
+        {# configure valueRank and arrayDimensions #}
+        {% if cv.array|length>0 %}
+          m_{{cv.get('name')}}->setValueRank( 1 ); // 1D-array
+          {
+            UaUInt32Array arrayDimensions;
+            arrayDimensions.create(1);
+            m_{{cv.get('name')}}->setArrayDimensions(arrayDimensions);
+          }
+        {% else %}
+          m_{{cv.get('name')}}->setValueRank( -1 ); // scalar
+        {% endif %}
+
+        {# handle valueAndStatus initialization for scalars #}
+        {% if cv.get('initializeWith') == 'valueAndStatus' and cv.array|length == 0 %}
+          {% if cv.get('initialValue') %}
+            helperVariant.{{oracle.dataTypeToVariantSetter(cv.get('dataType'))}} ( {{oracle.wrapLiteral(cv.get('dataType'), cv.get('initialValue'))}} );
+          {% else %}
+            helperVariant.clear ();
+          {% endif %}
+          m_{{cv.get('name')}}->setValue(
+            /*pSession*/ nullptr,
+            UaDataValue(
+              helperVariant,
+              OpcUa_Good,
+              UaDateTime::now(),
+              UaDateTime::now()),
+            /*check access level*/ OpcUa_False);
+        {% endif %}
+
+        {# handle configuration initialization for scalars #}
+        {% if cv.get('initializeWith') == 'configuration' and cv.array|length == 0 %}
+          helperVariant.{{oracle.dataTypeToVariantSetter(cv.get('dataType'))}} (
+            config.{{cv.get('name')}}(){% if cv.get('dataType') == 'UaString' %}.c_str(){% endif %}
+            );
+          m_{{cv.get('name')}}->setValue(
+            /*pSession*/ nullptr,
+            UaDataValue(
+              helperVariant,
+              OpcUa_Good,
+              UaDateTime::now(),
+              UaDateTime::now() ),
+              /*check access level*/ OpcUa_False);
+        {% endif %}
+
+        status = nm->addNodeAndReference(
+          {% if designInspector.isClassSingleVariableNode(className) %}
+            parentNodeId,
+          {% else %}
+            this,
+          {% endif %}
+          m_{{cv.get('name')}},
+          OpcUaId_HasComponent);
+        if (!status.isGood())
+          throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+      {% endfor %}
+    }
+
+    void AS{{className}}::initializeArrayCacheVariablesFromConfiguration(
+      ASNodeManager *nm,
+      const Configuration::{{className}}& config)
+    {
+      {% for cv in designInspector.objectifyCacheVariables(className, '[d:array]') %}
+        {
+          unsigned int dim = config.{{cv.get('name')}}().value().size();
+          // make sure the design size constraints are respected during runtime
+          unsigned int min = {{cv.get('name')}}_minimumSize();
+          unsigned int max = {{cv.get('name')}}_maximumSize();
+          if ( dim < min || dim > max )
+          {
+            // @pnikiel TODO at name of attribute and possibly also path to the element
+            // @pnikiel this should be in config validator in fact
+            throw_runtime_error_with_origin("Size of configuration data supplied to the constructor is out of bounds. Size is "+std::to_string(dim)+" and bounds are ["+std::to_string(min)+","+std::to_string(max)+"]");
+          }
+          std::vector<{{cv.get('dataType')}}> vect;
+          {% if cv.get('dataType') == 'UaString' %} {# TODO @pnikiel this code can be supplied in e.g. ArrayTools #}
+            vect.assign(dim, UaString());
+            std::transform(
+              config.{{cv.get('name')}}().value().begin(),
+              config.{{cv.get('name')}}().value().end(),
+              vect.begin(),
+              [](const std::string& x){ return x.c_str(); }  );
+          {% elif cv.get('dataType') == 'OpcUa_UInt64' or cv.get('dataType') == 'OpcUa_Int64' %}
+            vect.assign(dim, 0);
+            for (size_t i = 0; i < dim; ++i)
+            {
+              auto x = config.{{cv.get('name')}}().value()[i];
+              if (x > std::numeric_limits<{{cv.get('dataType')}}>::max())
+                  throw std::out_of_range("Array element in the configuration file out of range");
+              if (x < std::numeric_limits<{{cv.get('dataType')}}>::min())
+                  throw std::out_of_range("Array element in the configuration file out of range");
+              vect[i] = x;
+            }
+          {% elif cv.get('dataType') == 'OpcUa_Boolean' %}
+          vect.assign(dim, OpcUa_False);
+            std::transform(
+                config.{{cv.get('name')}}().value().begin(),
+                config.{{cv.get('name')}}().value().end(),
+                vect.begin(),
+                [](bool x){ return x ? OpcUa_True : OpcUa_False; }  );
+          {% else %}
+            vect = config.{{cv.get('name')}}().value();
+          {% endif %}
+          UaVariant variant;
+          {{oracle.convertVectorToUaVariantFunctionName(cv.get('dataType'))}} (vect, variant);
+          m_{{cv.get('name')}}->setDataType( UaNodeId({{oracle.dataTypeToBuiltinType(cv.get('dataType'))}}, 0) );
+          m_{{cv.get('name')}}->setValue(
+            /*pSession*/ nullptr,
+            UaDataValue(
+              variant,
+              OpcUa_Good,
+              UaDateTime::now(),
+              UaDateTime::now()),
+            /*check access level*/ OpcUa_False);
+
+        }
+      {% endfor %}
+    }
+
+    void AS{{className}}::createSourceVariables(ASNodeManager *nm)
+    {
 
     }
 
@@ -265,6 +408,27 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     /* generate setters and getters -- now for arrays */
 
 
+{### ARRAY UTILS, TODO @pnikiel this should be moved to CONFIG VALIDATOR ###}
+    {% for cv in this.cachevariable %}
+      {% if cv.array|length>0 %}
+        OpcUa_UInt32 AS{{className}}::{{cv.get('name')}}_minimumSize()
+        {
+          {% if cv.array.get('minimumSize') %}
+            return {{cv.array.get('minimumSize')}};
+          {% else %}
+            return 0;
+          {% endif %}
+        }
+        OpcUa_UInt32 AS{{className}}::{{cv.get('name')}}_maximumSize()
+        {
+          {% if cv.array.get('maximumSize') %}
+            return {{cv.array.get('maximumSize')}};
+          {% else %}
+            return INT_MAX;
+          {% endif %}
+        }
+      {% endif %}
+    {% endfor %}
 
 
 {### METHODS ... ###}

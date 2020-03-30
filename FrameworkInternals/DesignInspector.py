@@ -151,6 +151,9 @@ class DesignInspector():
         objectified = [ objectify.fromstring( etree.tostring(x)) for x in results ]
         return objectified
 
+    def objectifyHasObjects(self, className, restrictBy=''):
+        return self.objectifyAny("/d:design/d:class[@name='{0}']/d:hasobjects{1}".format(className, restrictBy))
+
     def objectifyCacheVariables(self, className, restrictBy=''):
         return self.objectifyAny("/d:design/d:class[@name='{0}']/d:cachevariable{1}".format(className, restrictBy))
 
