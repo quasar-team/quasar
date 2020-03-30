@@ -143,6 +143,9 @@ class DesignInspector():
         return objectified
 
     def parseRestrictions(self, restrictionElems):
+        """ Method returns a dict populated according to the (objectified) restrictions"""
+        """ passed. Note that the assumption is there is *at most one* restriction permitted"""
+        """ in the parent cachevar/configentry XML excerpt """ 
         if(len(restrictionElems)==1):
             restrictionElem = restrictionElems[0]
 
@@ -154,6 +157,7 @@ class DesignInspector():
                     restriction['enumerationValues']=[]
                     for enumerationValue in child.iterchildren():
                         restriction['enumerationValues'].append(enumerationValue.get('value'))
+                    break
                 elif 'restrictionByPattern' in child.tag:
                     restriction['type']='byPattern'
                     restriction['pattern']=child.get('pattern')
