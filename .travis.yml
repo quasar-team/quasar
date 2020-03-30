@@ -27,7 +27,7 @@ jobs:
 
            source .CI/travis/job_epilogue.sh ;
            "
-    - name: default_quasar_design
+    - name: default_quasar_design_open62541
       script:
         -  docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
             echo '********************************************************************' ;
@@ -41,7 +41,7 @@ jobs:
 
              source .CI/travis/job_epilogue.sh ;
            "
-    - name: test_methods
+    - name: test_methods_open62541
       script:
          - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
             echo '********************************************************************' ;
@@ -58,3 +58,8 @@ jobs:
 
             source .CI/travis/job_epilogue.sh ;
             "
+    - name: default_quasar_design_uasdk
+      script:
+        - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
+          git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;  
+          "
