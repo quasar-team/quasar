@@ -5,9 +5,6 @@ language: cpp
 services:
  - docker
 
-before_install:
- - docker pull bfarnham/quasar:quasar-open62541
-
 jobs:
   include:
     - name: test_cache_variables
@@ -61,5 +58,8 @@ jobs:
     - name: default_quasar_design_uasdk
       script:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
-          git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;  
+          git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+          cd quasar ;
+          ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
+          ./quasar.py build ;
           "
