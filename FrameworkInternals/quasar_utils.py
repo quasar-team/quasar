@@ -23,9 +23,9 @@ import argparse
 def amalgamate (args):
     print('Amalgamating {0} files as {1}'.format(len(args.inputs), args.output))
     line_counter = 0
-    f_output = open(args.output, 'w')
+    f_output = open(args.output, 'w', encoding='utf-8')
     for path in args.inputs:
-        f_in = open(path, 'r')
+        f_in = open(path, 'r', encoding='utf-8')
         for line in f_in:
             f_output.write(line)
             line_counter += 1
