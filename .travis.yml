@@ -63,3 +63,23 @@ jobs:
           ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
           ./quasar.py build ;
           "
+    - name test_sync_methods_uasdk
+      script:
+        - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
+          git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+          cd quasar ;
+          cp .CI/test_cases/test_methods/Design.xml Design ;
+          ./quasar.py generate device --all ;
+          ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
+          ./quasar.py build ;
+          "
+    - name test_cache_variables_uasdk
+      script:
+        - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
+          git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+          cd quasar ;
+          cp .CI/test_cases/test_cache_variables/Design.xml Design ;
+          ./quasar.py generate device --all ;
+          ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
+          ./quasar.py build ;
+          "
