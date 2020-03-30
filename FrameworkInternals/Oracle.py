@@ -40,7 +40,7 @@ class Oracle():
         'UaVariant',
         'UaByteString']
 
-    NumericDataTypes = [      
+    NumericDataTypes = [
         'OpcUa_Byte',
         'OpcUa_SByte',
         'OpcUa_UInt16',
@@ -92,6 +92,54 @@ class Oracle():
         'OpcUa_Double',
         'OpcUa_Float',
         'UaString']
+
+    DataTypeToVariantSetter = {
+      'OpcUa_Double' : 'setDouble',
+      'OpcUa_Float'  : 'setFloat',
+      'OpcUa_Byte'   : 'setByte',
+      'OpcUa_SByte'  : 'setSByte',
+      'OpcUa_Int16'  : 'setInt16',
+      'OpcUa_UInt16' : 'setUInt16',
+      'OpcUa_Int32'  : 'setInt32',
+      'OpcUa_UInt32' : 'setUInt32',
+      'OpcUa_Int64'  : 'setInt64',
+      'OpcUa_UInt64' : 'setUInt64',
+      'OpcUa_Boolean': 'setBool',
+      'UaString'     : 'setString'
+    }
+
+    DataTypeToVariantConverter = {
+        'OpcUa_Double'  : 'toDouble',
+        'OpcUa_Float'   : 'toFloat',
+        'OpcUa_Byte'    : 'toByte',
+        'OpcUa_SByte'   : 'toSByte',
+        'OpcUa_Int16'   : 'toInt16',
+        'OpcUa_UInt16'  : 'toUInt16',
+        'OpcUa_Int32'   : 'toInt32',
+        'OpcUa_UInt32'  : 'toUInt32',
+        'OpcUa_Int64'   : 'toInt64',
+        'OpcUa_UInt64'  : 'toUInt64',
+        'OpcUa_Boolean' : 'toBool',
+        'UaByteString'  : 'toByteString'
+    }
+
+    DataTypeToBuiltinType = {
+        'OpcUa_Double':'OpcUaType_Double',
+        'OpcUa_Float':'OpcUaType_Float',
+        'OpcUa_Byte':'OpcUaType_Byte',
+        'OpcUa_SByte':'OpcUaType_SByte',
+        'OpcUa_Int16':'OpcUaType_Int16',
+        'OpcUa_UInt16':'OpcUaType_UInt16',
+        'OpcUa_Int32':'OpcUaType_Int32',
+        'OpcUa_UInt32':'OpcUaType_UInt32',
+        'OpcUa_Int64':'OpcUaType_Int64',
+        'OpcUa_UInt64':'OpcUaType_UInt64',
+        'OpcUa_Boolean':'OpcUaType_Boolean',
+        'UaString':'OpcUaType_String',
+        'UaByteString':'OpcUaType_ByteString',
+        'UaVariant':'OpcUaType_Variant'
+    }
+
 
     def getDeviceLogicTypeFromQuasarType(self, t):
         if t == "UaString":
@@ -150,3 +198,50 @@ class Oracle():
             return 'std::vector<{0}>'.format(quasarDataType)
         else:
             return quasarDataType
+
+    def cacheVariableCppType(self, addressSpaceWrite, inWhichClass):
+        if addressSpaceWrite in ['regular', 'forbidden']:
+            return 'ChangeNotifyingVariable'
+        elif addressSpaceWrite == 'delegated':
+            return 'ASDelegatingVariable<AS{0}>'.format(inWhichClass)
+        else:
+            raise Exception ("Unsupported addressSpaceWrite mode")
+
+    def cacheVariableAccessLevel(self, addressSpaceWrite):
+        if addressSpaceWrite in ['regular', 'forbidden']:
+            return 'OpcUa_AccessLevels_CurrentRead'
+        elif addressSpaceWrite == 'delegated':
+            return 'OpcUa_AccessLevels_CurrentReadOrWrite'
+        else:
+            raise Exception ("Unsupported addressSpaceWrite mode")
+
+    def dataTypeToVariantSetter(self, dataType):
+        if dataType == 'UaByteString':
+            raise Exception ('quasar logic error: UaByteString doesnt have a trivial (i.e. 1-arg) variant setter')
+        else:
+            return Oracle.DataTypeToVariantSetter[dataType]
+
+    def dataTypeToVariantConverter(self, dataType):
+        if dataType == 'UaString':
+            raise Exception ('quasar logic error: UaString has specific toString converter')
+        else:
+            return Oracle.DataTypeToVariantConverter[dataType]
+
+    def dataTypeToBuiltinType(self, dataType):
+        return Oracle.DataTypeToBuiltinType[dataType]
+
+    def convertUaVariantToVectorFunctionName(self, dataType):
+        if dataType == 'OpcUa_Byte':
+            return 'ArrayTools::convertUaVariantToByteVector'
+        elif dataType == 'OpcUa_Boolean':
+            return 'ArrayTools::convertUaVariantToBooleanVector'
+        else:
+            return 'ArrayTools::convertUaVariantToVector'
+
+    def convertVectorToUaVariantFunctionName(self, dataType):
+        if dataType == 'OpcUa_Byte':
+            return 'ArrayTools::convertByteVectorToUaVariant'
+        elif dataType == 'OpcUa_Boolean':
+            return 'ArrayTools::convertBooleanVectorToUaVariant'
+        else:
+            return 'ArrayTools::convertVectorToUaVariant'        

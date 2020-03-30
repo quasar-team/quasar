@@ -33,7 +33,7 @@
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/src/AddressSpaceClasses.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND python quasar.py generate asclass_cpp_all --project_binary_dir ${PROJECT_BINARY_DIR}
-DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/designToClassBody.xslt Configuration.hxx_GENERATED validateDesign
+DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/templates/designToClassBody.jinja Configuration.hxx_GENERATED validateDesign
 )
 
 set(ADDRESSSPACE_CLASSES

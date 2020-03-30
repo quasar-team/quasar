@@ -169,3 +169,13 @@ class DesignInspector():
     def objectifyDesign(self):
         return self.objectifyAny("/d:design")[0]
 
+    def designBooleanAsCppBoolean(self, attribute):
+        if attribute is None:
+            return 'false'
+        if attribute:
+            return 'true'
+        return 'false'
+
+    def isClassSingleVariableNode(self, className):
+        the_class = self.objectifyClass(className)
+        return the_class.get('singleVariableNode') == 'true'
