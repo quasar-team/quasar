@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="OpcUaSca" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">
+  <d:class name="TestClass">
+    <d:devicelogic>
+      <d:mutex/>
+    </d:devicelogic>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_r_no_mutex" dataType="OpcUa_Boolean" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_Boolean" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_Boolean" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_Boolean" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_w_no_mutex" dataType="OpcUa_Boolean" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_Boolean" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_Boolean" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_Boolean" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_rw_no_mutex" dataType="OpcUa_Boolean" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_Boolean" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_Boolean" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_Boolean" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_r_no_mutex" dataType="OpcUa_Boolean" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_Boolean" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_Boolean" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_Boolean" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_w_no_mutex" dataType="OpcUa_Boolean" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_Boolean" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_Boolean" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_Boolean" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_Boolean" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_Boolean" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_Boolean" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaBoolean_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_Boolean" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_r_no_mutex" dataType="OpcUa_Byte" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_Byte" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_Byte" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_Byte" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_w_no_mutex" dataType="OpcUa_Byte" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_Byte" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_Byte" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_Byte" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_rw_no_mutex" dataType="OpcUa_Byte" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_Byte" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_Byte" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_Byte" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_r_no_mutex" dataType="OpcUa_Byte" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_Byte" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_Byte" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_Byte" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_w_no_mutex" dataType="OpcUa_Byte" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_Byte" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_Byte" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_Byte" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_Byte" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_Byte" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_Byte" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaByte_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_Byte" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_r_no_mutex" dataType="OpcUa_SByte" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_SByte" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_SByte" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_SByte" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_w_no_mutex" dataType="OpcUa_SByte" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_SByte" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_SByte" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_SByte" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_rw_no_mutex" dataType="OpcUa_SByte" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_SByte" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_SByte" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_SByte" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_r_no_mutex" dataType="OpcUa_SByte" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_SByte" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_SByte" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_SByte" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_w_no_mutex" dataType="OpcUa_SByte" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_SByte" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_SByte" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_SByte" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_SByte" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_SByte" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_SByte" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaSByte_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_SByte" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_r_no_mutex" dataType="OpcUa_UInt16" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_UInt16" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_UInt16" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_UInt16" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_w_no_mutex" dataType="OpcUa_UInt16" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_UInt16" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_UInt16" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_UInt16" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_rw_no_mutex" dataType="OpcUa_UInt16" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_UInt16" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_UInt16" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_UInt16" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_r_no_mutex" dataType="OpcUa_UInt16" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_UInt16" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_UInt16" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_UInt16" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_w_no_mutex" dataType="OpcUa_UInt16" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_UInt16" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_UInt16" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_UInt16" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_UInt16" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_UInt16" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_UInt16" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt16_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_UInt16" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_r_no_mutex" dataType="OpcUa_Int16" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_Int16" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_Int16" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_Int16" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_w_no_mutex" dataType="OpcUa_Int16" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_Int16" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_Int16" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_Int16" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_rw_no_mutex" dataType="OpcUa_Int16" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_Int16" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_Int16" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_Int16" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_r_no_mutex" dataType="OpcUa_Int16" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_Int16" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_Int16" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_Int16" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_w_no_mutex" dataType="OpcUa_Int16" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_Int16" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_Int16" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_Int16" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_Int16" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_Int16" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_Int16" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt16_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_Int16" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_r_no_mutex" dataType="OpcUa_UInt32" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_UInt32" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_UInt32" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_UInt32" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_w_no_mutex" dataType="OpcUa_UInt32" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_UInt32" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_UInt32" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_UInt32" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_rw_no_mutex" dataType="OpcUa_UInt32" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_UInt32" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_UInt32" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_UInt32" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_r_no_mutex" dataType="OpcUa_UInt32" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_UInt32" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_UInt32" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_UInt32" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_w_no_mutex" dataType="OpcUa_UInt32" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_UInt32" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_UInt32" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_UInt32" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_UInt32" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_UInt32" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_UInt32" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt32_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_UInt32" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_r_no_mutex" dataType="OpcUa_Int32" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_Int32" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_Int32" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_Int32" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_w_no_mutex" dataType="OpcUa_Int32" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_Int32" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_Int32" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_Int32" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_rw_no_mutex" dataType="OpcUa_Int32" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_Int32" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_Int32" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_Int32" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_r_no_mutex" dataType="OpcUa_Int32" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_Int32" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_Int32" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_Int32" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_w_no_mutex" dataType="OpcUa_Int32" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_Int32" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_Int32" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_Int32" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_Int32" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_Int32" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_Int32" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt32_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_Int32" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_r_no_mutex" dataType="OpcUa_UInt64" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_UInt64" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_UInt64" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_UInt64" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_w_no_mutex" dataType="OpcUa_UInt64" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_UInt64" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_UInt64" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_UInt64" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_rw_no_mutex" dataType="OpcUa_UInt64" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_UInt64" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_UInt64" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_UInt64" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_r_no_mutex" dataType="OpcUa_UInt64" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_UInt64" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_UInt64" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_UInt64" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_w_no_mutex" dataType="OpcUa_UInt64" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_UInt64" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_UInt64" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_UInt64" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_UInt64" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_UInt64" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_UInt64" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaUInt64_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_UInt64" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_r_no_mutex" dataType="OpcUa_Int64" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_Int64" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_Int64" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_Int64" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_w_no_mutex" dataType="OpcUa_Int64" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_Int64" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_Int64" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_Int64" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_rw_no_mutex" dataType="OpcUa_Int64" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_Int64" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_Int64" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_Int64" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_r_no_mutex" dataType="OpcUa_Int64" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_Int64" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_Int64" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_Int64" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_w_no_mutex" dataType="OpcUa_Int64" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_Int64" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_Int64" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_Int64" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_Int64" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_Int64" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_Int64" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaInt64_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_Int64" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_r_no_mutex" dataType="OpcUa_Double" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_Double" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_Double" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_Double" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_w_no_mutex" dataType="OpcUa_Double" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_Double" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_Double" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_Double" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_rw_no_mutex" dataType="OpcUa_Double" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_Double" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_Double" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_Double" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_r_no_mutex" dataType="OpcUa_Double" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_Double" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_Double" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_Double" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_w_no_mutex" dataType="OpcUa_Double" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_Double" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_Double" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_Double" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_Double" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_Double" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_Double" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaDouble_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_Double" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_r_no_mutex" dataType="OpcUa_Float" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_r_mutex_this_operation" dataType="OpcUa_Float" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_r_mutex_this_variable" dataType="OpcUa_Float" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_r_mutex_containing_object" dataType="OpcUa_Float" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_w_no_mutex" dataType="OpcUa_Float" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_w_mutex_this_operation" dataType="OpcUa_Float" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_w_mutex_this_variable" dataType="OpcUa_Float" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_w_mutex_containing_object" dataType="OpcUa_Float" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_rw_no_mutex" dataType="OpcUa_Float" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_rw_mutex_this_operation" dataType="OpcUa_Float" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_rw_mutex_this_variable" dataType="OpcUa_Float" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_synchronous_rw_mutex_containing_object" dataType="OpcUa_Float" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_r_no_mutex" dataType="OpcUa_Float" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_r_mutex_this_operation" dataType="OpcUa_Float" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_r_mutex_this_variable" dataType="OpcUa_Float" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_r_mutex_containing_object" dataType="OpcUa_Float" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_w_no_mutex" dataType="OpcUa_Float" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_w_mutex_this_operation" dataType="OpcUa_Float" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_w_mutex_this_variable" dataType="OpcUa_Float" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_w_mutex_containing_object" dataType="OpcUa_Float" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_rw_no_mutex" dataType="OpcUa_Float" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_rw_mutex_this_operation" dataType="OpcUa_Float" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_rw_mutex_this_variable" dataType="OpcUa_Float" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="OpcUaFloat_scalar_asynchronous_rw_mutex_containing_object" dataType="OpcUa_Float" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_r_no_mutex" dataType="UaString" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_r_mutex_this_operation" dataType="UaString" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_r_mutex_this_variable" dataType="UaString" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_r_mutex_containing_object" dataType="UaString" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_w_no_mutex" dataType="UaString" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_w_mutex_this_operation" dataType="UaString" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_w_mutex_this_variable" dataType="UaString" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_w_mutex_containing_object" dataType="UaString" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_rw_no_mutex" dataType="UaString" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_rw_mutex_this_operation" dataType="UaString" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_rw_mutex_this_variable" dataType="UaString" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_synchronous_rw_mutex_containing_object" dataType="UaString" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_r_no_mutex" dataType="UaString" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_r_mutex_this_operation" dataType="UaString" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_r_mutex_this_variable" dataType="UaString" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_r_mutex_containing_object" dataType="UaString" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_w_no_mutex" dataType="UaString" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_w_mutex_this_operation" dataType="UaString" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_w_mutex_this_variable" dataType="UaString" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_w_mutex_containing_object" dataType="UaString" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_rw_no_mutex" dataType="UaString" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_rw_mutex_this_operation" dataType="UaString" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_rw_mutex_this_variable" dataType="UaString" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaString_scalar_asynchronous_rw_mutex_containing_object" dataType="UaString" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_r_no_mutex" dataType="UaVariant" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_r_mutex_this_operation" dataType="UaVariant" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_r_mutex_this_variable" dataType="UaVariant" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_r_mutex_containing_object" dataType="UaVariant" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_w_no_mutex" dataType="UaVariant" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_w_mutex_this_operation" dataType="UaVariant" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_w_mutex_this_variable" dataType="UaVariant" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_w_mutex_containing_object" dataType="UaVariant" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_rw_no_mutex" dataType="UaVariant" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_rw_mutex_this_operation" dataType="UaVariant" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_rw_mutex_this_variable" dataType="UaVariant" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_synchronous_rw_mutex_containing_object" dataType="UaVariant" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_r_no_mutex" dataType="UaVariant" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_r_mutex_this_operation" dataType="UaVariant" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_r_mutex_this_variable" dataType="UaVariant" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_r_mutex_containing_object" dataType="UaVariant" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_w_no_mutex" dataType="UaVariant" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_w_mutex_this_operation" dataType="UaVariant" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_w_mutex_this_variable" dataType="UaVariant" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_w_mutex_containing_object" dataType="UaVariant" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_rw_no_mutex" dataType="UaVariant" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_rw_mutex_this_operation" dataType="UaVariant" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_rw_mutex_this_variable" dataType="UaVariant" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaVariant_scalar_asynchronous_rw_mutex_containing_object" dataType="UaVariant" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_r_no_mutex" dataType="UaByteString" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_r_mutex_this_operation" dataType="UaByteString" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_r_mutex_this_variable" dataType="UaByteString" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_r_mutex_containing_object" dataType="UaByteString" addressSpaceWrite="forbidden" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_w_no_mutex" dataType="UaByteString" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_w_mutex_this_operation" dataType="UaByteString" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_w_mutex_this_variable" dataType="UaByteString" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_w_mutex_containing_object" dataType="UaByteString" addressSpaceWrite="synchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_rw_no_mutex" dataType="UaByteString" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_rw_mutex_this_operation" dataType="UaByteString" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_rw_mutex_this_variable" dataType="UaByteString" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_synchronous_rw_mutex_containing_object" dataType="UaByteString" addressSpaceWrite="synchronous" addressSpaceRead="synchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_r_no_mutex" dataType="UaByteString" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_r_mutex_this_operation" dataType="UaByteString" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_r_mutex_this_variable" dataType="UaByteString" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_r_mutex_containing_object" dataType="UaByteString" addressSpaceWrite="forbidden" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_w_no_mutex" dataType="UaByteString" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_w_mutex_this_operation" dataType="UaByteString" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_w_mutex_this_variable" dataType="UaByteString" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_w_mutex_containing_object" dataType="UaByteString" addressSpaceWrite="asynchronous" addressSpaceRead="forbidden" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_rw_no_mutex" dataType="UaByteString" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_rw_mutex_this_operation" dataType="UaByteString" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_operation" addressSpaceWriteUseMutex="of_this_operation">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_rw_mutex_this_variable" dataType="UaByteString" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_this_variable" addressSpaceWriteUseMutex="of_this_variable">
+</d:sourcevariable>
+    <d:sourcevariable name="UaByteString_scalar_asynchronous_rw_mutex_containing_object" dataType="UaByteString" addressSpaceWrite="asynchronous" addressSpaceRead="asynchronous" addressSpaceReadUseMutex="of_containing_object" addressSpaceWriteUseMutex="of_containing_object">
+</d:sourcevariable>
+  </d:class>
+  <d:root>
+    <d:hasobjects instantiateUsing="configuration" class="TestClass"/>
+  </d:root>
+</d:design>
