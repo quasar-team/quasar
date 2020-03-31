@@ -275,3 +275,8 @@ class Oracle():
             return 'ASSOURCEVARIABLE_{0}_WRITE_{1}'.format(className, variableName)
         else:
             return 'ASSOURCEVARIABLE_NOTHING'
+
+    def isDataTypeNumeric(self, dataType):
+        if not dataType in Oracle.AllQuasarDataTypes:
+            raise Exception ('dataType {0} unknown'.format(dataType))
+        return dataType in Oracle.NumericDataTypes

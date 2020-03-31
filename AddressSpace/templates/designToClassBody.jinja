@@ -100,8 +100,8 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
       createCacheVariables(nm, config);
       initializeArrayCacheVariablesFromConfiguration(nm, config);
-      createSourceVariables(nm, parentNodeId);
-      createMethods(nm);
+      createSourceVariables(nm, config);
+      createMethods(nm, config);
 
     }
 
@@ -111,18 +111,16 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     {
       UaStatus status;
       UaVariant helperVariant;
-      {# TODO @pnikiel: the way this is done with source-variable is much better, reapply it! #}
+      UaString variableName;
       {% for cv in this.cachevariable %}
-        {% if designInspector.isClassSingleVariableNode(className) %}
-          {% set variableName = "config.name().c_str()" %}
-        {% else %}
-          {% set variableName = '"' + cv.get('name') + '"' %}
-        {% endif %}
+        variableName = fixChildNameWhenSingleNodeClass(
+          "{{cv.get('name')}}",
+          config.name().c_str());
         m_{{cv.get('name')}} = new {{oracle.cacheVariableCppType(cv.get('addressSpaceWrite'), className)}} (
           nm->makeChildNodeId(
             m_effectiveParentNodeIdForChildren,
-            UaString({{variableName}})),
-          UaString({{variableName}}),
+            variableName),
+          variableName,
           nm->getNameSpaceIndex(),
           UaVariant(),
           {{oracle.cacheVariableAccessLevel(cv.get('addressSpaceWrite'))}},
@@ -178,7 +176,6 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               /*check access level*/ OpcUa_False);
         {% endif %}
 
-        {# TODO @pnikiel: the single variable node thing could be made into a method effectiveParentNodeId() #}
         status = nm->addNodeAndReference(
           m_effectiveParentNodeIdForChildren,
           m_{{cv.get('name')}},
@@ -186,8 +183,15 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
         if (!status.isGood())
           throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
 
-        // TODO: assign handlers for delegated,
-        // TODO: CalculatedVariablesEngine
+        {% if cv.get('addressSpaceWrite') == 'delegated' %}
+          m_{{cv.get('name')}}->assignHandler(
+            this,
+            &AS{{className}}::write{{cv.get('name')|capFirst}};
+        {% endif %}
+
+        {% if oracle.isDataTypeNumeric(cv.get('dataType')) and cv.array|length==0 %}
+          CalculatedVariables::Engine::registerVariableForCalculatedVariables( m_{{cv.get('name')}} );
+        {% endif %}
 
       {% endfor %}
     }
@@ -255,16 +259,14 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
     void AS{{className}}::createSourceVariables(
       ASNodeManager* nm,
-      UaNodeId&      parentNodeId)
+      const Configuration::{{className}}& config)
     {
       UaStatus status;
       UaString variableName;
       {% for sv in this.sourcevariable %}
-        {% if designInspector.isClassSingleVariableNode(className) %}
-          variableName = config.name().c_str();
-        {% else %}
-          variableName = "{{sv.get('name')}}";
-        {% endif %}
+        variableName = fixChildNameWhenSingleNodeClass(
+          "{{sv.get('name')}}",
+          config.name().c_str());
         m_{{sv.get('name')}} = new ASSourceVariable(
           nm->makeChildNodeId(
             m_effectiveParentNodeIdForChildren,
@@ -288,15 +290,21 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {% endfor %}
     }
 
-    void AS{{className}}::createMethods(ASNodeManager* nm)
+    void AS{{className}}::createMethods(
+      ASNodeManager* nm,
+      const Configuration::{{className}}& config)
     {
       UaStatus status;
+      UaString methodName;
       {% for m in this.method %}
+        methodName = fixChildNameWhenSingleNodeClass(
+          "{{m.get('name')}}",
+          config.name().c_str());
         m_{{m.get('name')}} = new ASDelegatingMethod<AS{{className}}> (
           nm->makeChildNodeId(
             m_effectiveParentNodeIdForChildren,
-            UaString( "{{m.get('name')}}" )),
-          UaString( "{{m.get('name')}}" ),
+            methodName),
+          methodName,
           nm->getNameSpaceIndex());
         {% if designInspector.classHasDeviceLogic(className) %}
           m_{{m.get('name')}}->assignHandler( this, &AS{{className}}::call{{m.get('name')|capFirst}} );
@@ -385,6 +393,18 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {
         LOG(Log::ERR) << "While destructing the class, device logic link is still not null. Sth went wrong with quasar logic...";
       }
+      {% endif %}
+    }
+
+    UaString AS{{className}}::fixChildNameWhenSingleNodeClass(
+      const std::string& nameByDesign,
+      const std::string& nameByConfig
+      ) const
+    {
+      {% if designInspector.isClassSingleVariableNode(className) %}
+        return nameByConfig.c_str();
+      {% else %}
+        return nameByDesign.c_str();
       {% endif %}
     }
 

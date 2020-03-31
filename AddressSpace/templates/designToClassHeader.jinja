@@ -132,6 +132,11 @@ namespace AddressSpace
   UaNodeId m_typeNodeId;
   const UaNodeId m_effectiveParentNodeIdForChildren;
 
+  UaString fixChildNameWhenSingleNodeClass(
+    const std::string& nameByDesign,
+    const std::string& nameByConfig
+    ) const;
+
   void createCacheVariables(
     ASNodeManager* nm,
     const Configuration::{{className}}& config);
@@ -140,8 +145,10 @@ namespace AddressSpace
     const Configuration::{{className}}& config);
   void createSourceVariables(
     ASNodeManager* nm,
-    UaNodeId&      parentNodeId);
-  void createMethods(ASNodeManager* nm);
+    const Configuration::{{className}}& config);
+  void createMethods(
+    ASNodeManager* nm,
+    const Configuration::{{className}}& config);
 
   /* Variables */
   {% for cv in this.cachevariable %}
