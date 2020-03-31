@@ -67,7 +67,12 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       /*name*/decorateSingleVariableNodeName(config.name(), {{designInspector.designBooleanAsCppBoolean(this.get('singleVariableNode'))}}).c_str(),
       nm->getNameSpaceIndex(),
       nm),
-  	m_typeNodeId (typeNodeId)
+  	m_typeNodeId (typeNodeId),
+    {% if designInspector.isClassSingleVariableNode(className) %}
+      m_effectiveParentNodeIdForChildren(parentNodeId)
+    {% else %}
+      m_effectiveParentNodeIdForChildren(this->nodeId())
+    {% endif %}
     {%- for cv in this.cachevariable %},
       m_{{cv.get('name')}} (nullptr) // this cache-variable will be created in the ctr body
     {% endfor -%}
@@ -80,7 +85,9 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     {% if designInspector.classHasDeviceLogic(className) %},
       m_deviceLink(nullptr)
     {% endif %}
-    { {# here constructor body begins #}
+    {
+
+      {# here constructor body begins #}
       UaStatus status;
 
       {% if designInspector.isClassSingleVariableNode(className) %}
@@ -104,6 +111,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     {
       UaStatus status;
       UaVariant helperVariant;
+      {# TODO @pnikiel: the way this is done with source-variable is much better, reapply it! #}
       {% for cv in this.cachevariable %}
         {% if designInspector.isClassSingleVariableNode(className) %}
           {% set variableName = "config.name().c_str()" %}
@@ -112,11 +120,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
         {% endif %}
         m_{{cv.get('name')}} = new {{oracle.cacheVariableCppType(cv.get('addressSpaceWrite'), className)}} (
           nm->makeChildNodeId(
-            {% if designInspector.isClassSingleVariableNode(className) %}
-              parentNodeId,
-            {% else %}
-              this->nodeId(),
-            {% endif %}
+            m_effectiveParentNodeIdForChildren,
             UaString({{variableName}})),
           UaString({{variableName}}),
           nm->getNameSpaceIndex(),
@@ -174,16 +178,17 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               /*check access level*/ OpcUa_False);
         {% endif %}
 
+        {# TODO @pnikiel: the single variable node thing could be made into a method effectiveParentNodeId() #}
         status = nm->addNodeAndReference(
-          {% if designInspector.isClassSingleVariableNode(className) %}
-            parentNodeId,
-          {% else %}
-            this,
-          {% endif %}
+          m_effectiveParentNodeIdForChildren,
           m_{{cv.get('name')}},
           OpcUaId_HasComponent);
         if (!status.isGood())
           throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+
+        // TODO: assign handlers for delegated,
+        // TODO: CalculatedVariablesEngine
+
       {% endfor %}
     }
 
@@ -254,18 +259,15 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     {
       UaStatus status;
       UaString variableName;
-      UaNodeId effectiveParentNodeId;
       {% for sv in this.sourcevariable %}
         {% if designInspector.isClassSingleVariableNode(className) %}
           variableName = config.name().c_str();
-          effectiveParentNodeId = parentNodeId;
         {% else %}
           variableName = "{{sv.get('name')}}";
-          effectiveParentNodeId = this->nodeId();
         {% endif %}
         m_{{sv.get('name')}} = new ASSourceVariable(
           nm->makeChildNodeId(
-            effectiveParentNodeId,
+            m_effectiveParentNodeIdForChildren,
             variableName),
           variableName,
           nm->getNameSpaceIndex(),
@@ -278,7 +280,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           );
         m_{{sv.get('name')}}->setDataType( UaNodeId( {{oracle.dataTypeToBuiltinType(sv.get('dataType'))}}, 0 ));
         status = nm->addNodeAndReference(
-          effectiveParentNodeId,
+          m_effectiveParentNodeIdForChildren,
           m_{{sv.get('name')}},
           OpcUaId_HasComponent);
         if (!status.isGood())
@@ -292,7 +294,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {% for m in this.method %}
         m_{{m.get('name')}} = new ASDelegatingMethod<AS{{className}}> (
           nm->makeChildNodeId(
-            this->nodeId(),
+            m_effectiveParentNodeIdForChildren,
             UaString( "{{m.get('name')}}" )),
           UaString( "{{m.get('name')}}" ),
           nm->getNameSpaceIndex());
@@ -368,7 +370,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           }
         {% endif %}
         status = nm->addNodeAndReference(
-	        this,
+	        m_effectiveParentNodeIdForChildren,
           m_{{m.get('name')}},
           OpcUaId_HasComponent);
         if (!status.isGood())

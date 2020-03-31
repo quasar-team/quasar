@@ -130,6 +130,7 @@ namespace AddressSpace
 
   private:
   UaNodeId m_typeNodeId;
+  const UaNodeId m_effectiveParentNodeIdForChildren;
 
   void createCacheVariables(
     ASNodeManager* nm,
