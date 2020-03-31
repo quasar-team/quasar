@@ -93,13 +93,13 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
       createCacheVariables(nm, config);
       initializeArrayCacheVariablesFromConfiguration(nm, config);
-      createSourceVariables(nm);
+      createSourceVariables(nm, parentNodeId);
       createMethods(nm);
 
     }
 
     void AS{{className}}::createCacheVariables(
-      ASNodeManager *nm,
+      ASNodeManager* nm,
       const Configuration::{{className}}& config)
     {
       UaStatus status;
@@ -188,7 +188,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     }
 
     void AS{{className}}::initializeArrayCacheVariablesFromConfiguration(
-      ASNodeManager *nm,
+      ASNodeManager* nm,
       const Configuration::{{className}}& config)
     {
       {% for cv in designInspector.objectifyCacheVariables(className, '[d:array]') %}
@@ -248,12 +248,45 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {% endfor %}
     }
 
-    void AS{{className}}::createSourceVariables(ASNodeManager *nm)
+    void AS{{className}}::createSourceVariables(
+      ASNodeManager* nm,
+      UaNodeId&      parentNodeId)
     {
-
+      UaStatus status;
+      UaString variableName;
+      UaNodeId effectiveParentNodeId;
+      {% for sv in this.sourcevariable %}
+        {% if designInspector.isClassSingleVariableNode(className) %}
+          variableName = config.name().c_str();
+          effectiveParentNodeId = parentNodeId;
+        {% else %}
+          variableName = "{{sv.get('name')}}";
+          effectiveParentNodeId = this->nodeId();
+        {% endif %}
+        m_{{sv.get('name')}} = new ASSourceVariable(
+          nm->makeChildNodeId(
+            effectiveParentNodeId,
+            variableName),
+          variableName,
+          nm->getNameSpaceIndex(),
+          UaVariant(),
+          {{oracle.sourceVariableReadAccessMask(sv.get('addressSpaceRead'))}} | {{oracle.sourceVariableWriteAccessMask(sv.get('addressSpaceWrite'))}},
+          nm,
+          this,
+          {{oracle.sourceVariableReadJobId(className, sv.get('name'), sv.get('addressSpaceRead'))}},
+          {{oracle.sourceVariableWriteJobId(className, sv.get('name'), sv.get('addressSpaceWrite'))}}
+          );
+        m_{{sv.get('name')}}->setDataType( UaNodeId( {{oracle.dataTypeToBuiltinType(sv.get('dataType'))}}, 0 ));
+        status = nm->addNodeAndReference(
+          effectiveParentNodeId,
+          m_{{sv.get('name')}},
+          OpcUaId_HasComponent);
+        if (!status.isGood())
+          throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+      {% endfor %}
     }
 
-    void AS{{className}}::createMethods(ASNodeManager *nm)
+    void AS{{className}}::createMethods(ASNodeManager* nm)
     {
       UaStatus status;
       {% for m in this.method %}

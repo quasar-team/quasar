@@ -252,3 +252,26 @@ class Oracle():
         else:
             return literal
 
+    def sourceVariableReadAccessMask(self, addressSpaceRead):
+        if addressSpaceRead in ['asynchronous', 'synchronous']:
+            return 'OpcUa_AccessLevels_CurrentRead'
+        else:
+            return 0
+
+    def sourceVariableWriteAccessMask(self, addressSpaceWrite):
+        if addressSpaceWrite in ['asynchronous', 'synchronous']:
+            return 'OpcUa_AccessLevels_CurrentWrite'
+        else:
+            return 0
+
+    def sourceVariableReadJobId(self, className, variableName, addressSpaceRead):
+        if addressSpaceRead in ['asynchronous', 'synchronous']:
+            return 'ASSOURCEVARIABLE_{0}_READ_{1}'.format(className, variableName)
+        else:
+            return 'ASSOURCEVARIABLE_NOTHING'
+
+    def sourceVariableWriteJobId(self, className, variableName, addressSpaceWrite):
+        if addressSpaceWrite in ['asynchronous', 'synchronous']:
+            return 'ASSOURCEVARIABLE_{0}_WRITE_{1}'.format(className, variableName)
+        else:
+            return 'ASSOURCEVARIABLE_NOTHING'

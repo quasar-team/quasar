@@ -132,13 +132,15 @@ namespace AddressSpace
   UaNodeId m_typeNodeId;
 
   void createCacheVariables(
-    ASNodeManager *nm,
+    ASNodeManager* nm,
     const Configuration::{{className}}& config);
   void initializeArrayCacheVariablesFromConfiguration(
-    ASNodeManager *nm,
+    ASNodeManager* nm,
     const Configuration::{{className}}& config);
-  void createSourceVariables(ASNodeManager *nm);
-  void createMethods(ASNodeManager *nm);
+  void createSourceVariables(
+    ASNodeManager* nm,
+    UaNodeId&      parentNodeId);
+  void createMethods(ASNodeManager* nm);
 
   /* Variables */
   {% for cv in this.cachevariable %}
