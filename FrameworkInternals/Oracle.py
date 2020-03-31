@@ -264,3 +264,10 @@ class Oracle():
             return Oracle.QuasarTypeToXsdType[quasarDataType]
         except KeyError:
             sys.exit("ERROR: it is not allowed to initialize a variable of [{0}] type from configuration".format(quasarDataType))
+            return 'ArrayTools::convertVectorToUaVariant'
+
+    def wrapLiteral(self, dataType, literal):
+        if dataType == 'UaString':
+            return '"{0}"'.format(literal)
+        else:
+            return literal

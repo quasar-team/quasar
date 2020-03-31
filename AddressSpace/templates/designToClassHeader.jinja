@@ -131,6 +131,13 @@ namespace AddressSpace
   private:
   UaNodeId m_typeNodeId;
 
+  void createCacheVariables(
+    ASNodeManager *nm,
+    const Configuration::{{className}}& config);
+  void initializeArrayCacheVariablesFromConfiguration(
+    ASNodeManager *nm,
+    const Configuration::{{className}}& config);
+  void createSourceVariables(ASNodeManager *nm);
   void createMethods(ASNodeManager *nm);
 
   /* Variables */
