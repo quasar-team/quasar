@@ -4,6 +4,8 @@ RUN apt-get update && apt-get install -y \
   git \
   python3 \
   python3-lxml \
+  python3-jinja2 \
+  python3-colorama \
   default-jre-headless \
   cmake \
   libboost-program-options-dev \
