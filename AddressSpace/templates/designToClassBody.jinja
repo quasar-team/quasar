@@ -186,7 +186,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
         {% if cv.get('addressSpaceWrite') == 'delegated' %}
           m_{{cv.get('name')}}->assignHandler(
             this,
-            &AS{{className}}::write{{cv.get('name')|capFirst}};
+            &AS{{className}}::write{{cv.get('name')|capFirst}});
         {% endif %}
 
         {% if oracle.isDataTypeNumeric(cv.get('dataType')) and cv.array|length==0 %}

@@ -76,8 +76,7 @@ namespace Device
     {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
       /* {{sv.get('addressSpaceWrite')|upper}} !! */
       UaStatus write{{sv.get('name')|capFirst}} (
-        {{sv.get('dataType')}}& value,
-        UaDateTime& sourceTime
+        {{sv.get('dataType')}}& value
       );
     {% endif %}
   {% endfor %}
