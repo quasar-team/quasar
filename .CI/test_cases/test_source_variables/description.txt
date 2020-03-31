@@ -1,0 +1,8 @@
+This test is based on a space of sourcevariables, which are elements from a cartesion product of following individual dimensions:
+1) all "basic" quasar data types,
+2) sync or async, whenever either read or write is chosen (note that when rw is chosen then both will have same sync/async settings, this limits the phase space significantly!),
+3) r, w or rw
+4) lock options, note: same lock option will be chosen[D[D[ for both r and w (this limits the space significantly!), also note that "of_parent_of_containing_object" is not there
+
+-----
+Pass conditions: it builds
