@@ -446,18 +446,20 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
         {% endif %}
       }
 
-      /* short getter (possible because the value of this variable will never be null, guaranteed by Design) */
-      {{cv.get('dataType')}} AS{{className}}::get{{cv.get('name')|capFirst}} () const
-      {
-        UaVariant v (* m_{{cv.get('name')}}->value (/*session*/ nullptr).value() );
-        {{cv.get('dataType')}} v_value;
-        {% if cv.get('dataType') == 'UaString' %}
-          v_value = v.toString();
-        {% else %}
-          v.{{oracle.dataTypeToVariantConverter(cv.get('dataType'))}} ( v_value );
-        {% endif %}
-        return v_value;
-      }
+      {% if cv.get('nullPolicy') == 'nullForbidden' %}
+        /* short getter (possible because the value of this variable will never be null, guaranteed by Design) */
+        {{cv.get('dataType')}} AS{{className}}::get{{cv.get('name')|capFirst}} () const
+        {
+          UaVariant v (* m_{{cv.get('name')}}->value (/*session*/ nullptr).value() );
+          {{cv.get('dataType')}} v_value;
+          {% if cv.get('dataType') == 'UaString' %}
+            v_value = v.toString();
+          {% else %}
+            v.{{oracle.dataTypeToVariantConverter(cv.get('dataType'))}} ( v_value );
+          {% endif %}
+          return v_value;
+        }
+      {% endif %}
     {% endfor %}
 
     /* generate setters and getters -- now for arrays */
@@ -556,7 +558,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               callbackHandle,
               pCallback
               {% for arg in m.argument %}
-                ,arg_{{m.get('name')}}
+                ,arg_{{arg.get('name')}}
               {% endfor %}
               ](){
           {% endif %}
