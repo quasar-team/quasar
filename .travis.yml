@@ -40,7 +40,7 @@ jobs:
             cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
             ./quasar.py build Release ;"
 
-    - name: open62541_test_methods_
+    - name: open62541_test_methods
       script:
         - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
             echo '********************************************************************' ;
@@ -55,7 +55,7 @@ jobs:
             ./quasar.py generate device --all ;
             source .CI/travis/job_epilogue.sh ;"
 
-    - name: uask_default_quasar_design
+    - name: uasdk_default_quasar_design
       script:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
@@ -81,6 +81,9 @@ jobs:
             cp .CI/test_cases/test_cache_variables/Design.xml Design ;
             ./quasar.py generate device --all ;
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
+            ./quasar.py build ;
+            cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h ;
+            cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
             ./quasar.py build ;"
 
     - name: uasdk_test_source_variables
