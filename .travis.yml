@@ -35,10 +35,10 @@ jobs:
             ./quasar.py set_build_config open62541_config.cmake ;
             cp .CI/test_cases/test_cache_variables/Design.xml Design ;
             ./quasar.py generate device --all ;
-            quasar.py build Release ;
+            ./quasar.py build Release ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
-            exit;"
+            ./quasar.py build Release ;"
 
     - name: open62541_test_methods_
       script:
