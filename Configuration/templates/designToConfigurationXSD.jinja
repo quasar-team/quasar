@@ -96,7 +96,7 @@
 	    <!-- processing array cache vars for class [{{className}}] -->
 	    {% for arrayCacheVarByConfig in designInspector.objectifyCacheVariables(className, restrictBy="[@initializeWith='configuration'][d:array]") %}
               {% set dataType = oracle.quasarDataTypeToXsdType(arrayCacheVarByConfig.get('dataType')) %}
-	      {% set restriction = designInspector.getCacheVariableRestriction(className, arrayCacheVarByConfig.get('name')) %}
+	      {% set restriction = designInspector.getRestriction(className, arrayCacheVarByConfig.get('name')) %}
 	      <!-- add arrayCacheVarByConfig name [{{arrayCacheVarByConfig.get('name')}}] type [{{dataType}}] -->
 	      <xs:element name="{{arrayCacheVarByConfig.get('name')}}">
 	        <xs:complexType>
@@ -115,7 +115,7 @@
     <!-- processing scalar cache vars for class [{{className}}] -->
     {% for scalarCacheVarByConfig in designInspector.objectifyCacheVariables(className, restrictBy="[@initializeWith='configuration'][not(d:array)]") %}
       {% set dataType = oracle.quasarDataTypeToXsdType(scalarCacheVarByConfig.get('dataType')) %}
-      {% set restriction = designInspector.getCacheVariableRestriction(className, scalarCacheVarByConfig.get('name')) %}
+      {% set restriction = designInspector.getRestriction(className, scalarCacheVarByConfig.get('name')) %}
       <!-- add scalarCacheVarByConfig name [{{scalarCacheVarByConfig.get('name')}}] type [{{dataType}}] restriction [{{ restriction['type']|default('None') }}] -->
       {% if restriction %}
         <xs:attribute name="{{scalarCacheVarByConfig.get('name')}}" use="required">
@@ -129,7 +129,7 @@
     <!-- processing scalar config entries for class [{{className}}] -->
     {% for scalarConfigEntry in designInspector.objectifyConfigEntries(className, restrictBy="[not(d:array)]") %}
       {% set dataType = oracle.quasarDataTypeToXsdType(scalarConfigEntry.get('dataType')) %}
-      {% set restriction = designInspector.getConfigEntryRestriction(className, scalarConfigEntry.get('name')) %}
+      {% set restriction = designInspector.getRestriction(className, scalarConfigEntry.get('name')) %}
       <!-- add scalarConfigEntry name [{{scalarConfigEntry.get('name')}}] type [{{dataType}}] restriction [{{ restriction['type']|default('None') }}] -->
       {% if restriction %}
         <xs:attribute name="{{scalarConfigEntry.get('name')}}" use="required">
