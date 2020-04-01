@@ -52,6 +52,9 @@ class DesignInspector():
         classes_names = map(lambda x: x.attrib['name'], classes)
         return classes_names
 
+    def getProjectName(self):
+        return self.xpath("/d:design/@projectShortName")[0]
+        
     def getParentClassName(self, className):
         ## TODO: deprecated, remove it
         return 'Parent_D'+className
@@ -187,15 +190,15 @@ class DesignInspector():
     def objectifyCacheVariables(self, className, restrictBy=''):
         return self.objectifyAny("/d:design/d:class[@name='{0}']/d:cachevariable{1}".format(className, restrictBy))
 
-    def getCacheVariableRestriction(self, className, varName):
-        restrictionElems=self.objectifyAny("/d:design/d:class[@name='{0}']/d:cachevariable[@name='{1}']/d:configRestriction".format(className, varName))
-        return self.parseRestrictions(restrictionElems)
-
     def objectifyConfigEntries(self, className, restrictBy=''):
         return self.objectifyAny("/d:design/d:class[@name='{0}']/d:configentry{1}".format(className, restrictBy))
 
-    def getConfigEntryRestriction(self, className, configEntryName):
-        restrictionElems=self.objectifyAny("/d:design/d:class[@name='{0}']/d:configentry[@name='{1}']/d:configRestriction".format(className, configEntryName))
+    def getRestriction(self, className, cachevar_or_configentry_name):
+        xpath_str="\
+            /d:design/d:class[@name='{0}']/d:cachevariable[@name='{1}']/d:configRestriction \
+            | \
+            /d:design/d:class[@name='{0}']/d:configentry[@name='{1}']/d:configRestriction".format(className, cachevar_or_configentry_name)
+        restrictionElems=self.objectifyAny(xpath_str)
         return self.parseRestrictions(restrictionElems)
 
     def objectifySourceVariables(self, className, restrictBy=''):
@@ -206,7 +209,27 @@ class DesignInspector():
 
     def objectifyDesign(self):
         return self.objectifyAny("/d:design")[0]
+    
+    def objectifyDocumentation(self, className, cachevar_or_configentry_name=''):
+        """ if cachevar_or_config_entry_name empty, returns class documentation element as object """
+        """ otherwise returns specified cachevar/configentry documentation element as object """
+        if not cachevar_or_configentry_name:
+            return self.objectifyAny("/d:design/d:class[@name='{0}']/d:documentation".format(className))
+        else:
+            xpath_str="\
+            /d:design/d:class[@name='{0}']/d:cachevariable[@name='{1}']/d:documentation \
+            | \
+            /d:design/d:class[@name='{0}']/d:configentry[@name='{1}']/d:documentation".format(className, cachevar_or_configentry_name)
+            return self.objectifyAny(xpath_str)            
 
+    def objectifyAllParents(self, className, restrict_to_by_configuration=False):
+        #pdb.set_trace()
+        xpath_string="//d:hasobjects[@class='{0}'".format(className)
+        if(restrict_to_by_configuration):
+            xpath_string+=" and @instantiateUsing='configuration'"
+        xpath_string+="]/.."
+        return self.xpath(xpath_string)
+    
     def designBooleanAsCppBoolean(self, attribute):
         if attribute is None:
             return 'false'
