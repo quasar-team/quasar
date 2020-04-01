@@ -177,8 +177,8 @@ class Oracle():
                 This function is modelled on its XSLT predecessor, in CommonFunctions, fnc:delegateWrite from quasar 1.3.12 """
         output = "UaStatus "
         if where is 'body':
-            output += className + "::"
-        output += 'write{0}( Session* pSession, const UaDataValue& dataValue, OpcUa_Boolean checkAccessLevel{1} )'.format(capFirst(name), ' = OpcUa_True' if where is 'body' else '')
+            output += "AS" + className + "::"
+        output += 'write{0}( Session* pSession, const UaDataValue& dataValue, OpcUa_Boolean checkAccessLevel{1} )'.format(capFirst(name), ' = OpcUa_True' if where is 'header' else '')
         return output
 
     def fixDataTypePassingMethod(self, quasarDataType, isArray):

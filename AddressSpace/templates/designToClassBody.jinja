@@ -487,6 +487,51 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {% endif %}
     {% endfor %}
 
+{### DELEGATES ###}
+    /* generate delegates (if requested) */
+    {% for cv in this.cachevariable %}
+      {% if cv.get('addressSpaceWrite') in ['delegated','regular'] %}
+        {{ oracle.getDelegatedWriteHeader(cv.get('name'), className, 'body') }}
+        {
+          {% if cv.get('dataType') != 'UaVariant' %}
+            /* ensure that data type passed by OPC UA client matches specification */
+            UaVariant v (*dataValue.value()); // TODO : do we really need this copy?
+            if (v.type() != {{oracle.dataTypeToBuiltinType(cv.get('dataType'))}} )
+            {
+              {% if cv.get('nullPolicy') == 'nullForbidden' %}
+                return OpcUa_BadDataEncodingInvalid;
+              {% endif %}
+                if (v.type() != OpcUaType_Null)
+                  return OpcUa_BadDataEncodingInvalid; // now we know it is neither the intended datatype nor NULL
+            }
+          {% endif %}
+          {% if cv.get('addressSpaceWrite') == 'regular' %}
+            return OpcUa_Good;
+          {% elif cv.get('addressSpaceWrite') == 'delegated' %}
+            {% if cv.array|length>0 %}
+              std::vector<{{cv.get('dataType')}}> v_value;
+              UaStatus status = {{oracle.convertUaVariantToVectorFunctionName(cv.get('dataType'))}} (v, v_value);
+              if (!status.isGood())
+                return status;
+            {% else %}
+              {{cv.get('dataType')}} v_value;
+              {% if cv.get('dataType') == 'UaString' %}
+                {# TODO @pnikiel in future we should identify multiple conversions between UaVariant and UaString #}
+                v_value = v.toString();
+              {% else %}
+                v.{{oracle.dataTypeToVariantConverter(cv.get('dataType'))}} ( v_value );
+              {% endif %}
+            {% endif %}
+            /* if device logic type specified, then generate calling functions */
+            {% if designInspector.classHasDeviceLogic(className) %}
+              return getDeviceLink()->write{{cv.get('name')|capFirst}} (v_value);
+            {% else %}
+              return OpcUa_BadNotImplemented;
+            {% endif %}
+          {% endif %}
+        }
+      {% endif %}
+    {% endfor %}
 
 {### METHODS ... ###}
     {% if this.method|length >= 1 %}
