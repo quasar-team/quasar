@@ -37,7 +37,7 @@ jobs:
             ./quasar.py generate device --all ;
             quasar.py build Release ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h ;
-            cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Devince/src/DTestClass.cpp ;
+            cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
             exit;"
 
     - name: open62541_test_methods_
