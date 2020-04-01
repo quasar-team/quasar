@@ -30,10 +30,15 @@ jobs:
             git config --global user.name QuasarDeveloper ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
+            ./quasar.py enable_module open62541-compat ;
+            ./quasar.py set_build_config open62541_config.cmake ;
             source .CI/travis/job_prologue.sh ;
             cp .CI/test_cases/test_cache_variables/Design.xml Design ;
             ./quasar.py generate device --all ;
-            source .CI/travis/job_epilogue.sh ;"
+            quasar.py build Release ;
+            cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h ;
+            cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Devince/src/DTestClass.cpp ;
+            exit;"
 
     - name: open62541_test_methods_
       script:
