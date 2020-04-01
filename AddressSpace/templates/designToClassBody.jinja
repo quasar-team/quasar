@@ -479,6 +479,69 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     {% endfor %}
 
     /* generate setters and getters -- now for arrays */
+    {% for cv in designInspector.objectifyCacheVariables(className, '[d:array]') %}
+    UaStatus AS{{className}}::{{oracle.getCacheVariableSetterArray(cv.get('name'), cv.get('dataType'), False)}}
+    {
+      auto min = {{cv.get('name')}}_minimumSize();
+      auto max = {{cv.get('name')}}_maximumSize();
+
+      // make sure the design size constraints are respected during runtime
+      auto dim = value.size();
+      if ( dim < min || dim > max )
+      {
+        LOG(Log::ERR) << "Attempted to set an array of size " << dim << " which is out of Design bounds!";
+        return OpcUa_BadIndexRangeInvalid;
+      }
+      UaVariant v;
+      {{oracle.convertVectorToUaVariantFunctionName(cv.get('dataType'))}} (value, v);
+      return m_{{cv.get('name')}}->setValue (
+        /*session*/ nullptr,
+        UaDataValue (
+          v,
+          statusCode,
+          srcTime,
+          UaDateTime::now()),
+        /*check access*/ OpcUa_False);
+    }
+
+    UaStatus AS{{className}}::get{{cv.get('name')|capFirst}} ( std::vector <{{cv.get('dataType')}}>& r) const
+    {
+    	UaVariant v ( * (m_{{cv.get('name')}}->value (/* session */ nullptr).value()));
+    	if ( !v.isArray() )
+    	{
+        return OpcUa_BadIndexRangeNoData;
+    	}
+      return {{oracle.convertUaVariantToVectorFunctionName(cv.get('dataType'))}} (v, r);
+    }
+
+    {% if cv.get('nullPolicy') == 'nullForbidden' %}
+      /* short getter (possible because this variable will never be null) */
+      std::vector<{{cv.get('dataType')}}> AS{{className}}::get{{cv.get('name')|capFirst}} () const
+      {
+        UaVariant variant (* m_{{cv.get('name')}}->value (/*session*/ nullptr).value() );
+        std::vector<{{cv.get('dataType')}}> vector;
+        {{oracle.convertUaVariantToVectorFunctionName(cv.get('dataType'))}} (variant, vector);
+        return vector;
+      }
+    {% endif %}
+
+    {% if cv.get('nullPolicy') == 'nullAllowed' %} {# TODO pnikiel commonalize with the verion for scalar #}
+      /* null-setter (possible because nullPolicy=nullAllowed) */
+      UaStatus AS{{className}}::{{ oracle.getCacheVariableSetter(cv.get('name'), None, False) }}
+      {
+        UaVariant v;
+        return m_{{cv.get('name')}}->setValue (
+          /*session*/ nullptr,
+          UaDataValue (
+            v,
+            statusCode,
+            srcTime,
+            UaDateTime::now()),
+          /*check access*/OpcUa_False );
+      }
+    {% endif %}
+
+    {% endfor %}
 
 
 {### ARRAY UTILS, TODO @pnikiel this should be moved to CONFIG VALIDATOR ###}
