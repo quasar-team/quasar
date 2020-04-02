@@ -151,6 +151,7 @@ File commonDeviceTemplates.jinja            must_exist,must_be_versioned,md5=che
 File designToDeviceBaseBody.jinja           must_exist,must_be_versioned,md5=check,install=overwrite
 File designToDeviceBaseHeader.jinja         must_exist,must_be_versioned,md5=check,install=overwrite
 File designToDeviceHeader.jinja             must_exist,must_be_versioned,md5=check,install=overwrite
+File designToDeviceBody.jinja               must_exist,must_be_versioned,md5=check,install=overwrite
 File designToGeneratedCmakeDevice.jinja     must_exist,must_be_versioned,md5=check,install=overwrite
 File designToRootBody.jinja                 must_exist,must_be_versioned,md5=check,install=overwrite
 File designToRootHeader.jinja               must_exist,must_be_versioned,md5=check,install=overwrite

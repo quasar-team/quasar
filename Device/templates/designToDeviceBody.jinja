@@ -86,7 +86,7 @@ namespace Device
   {% for sv in this.sourcevariable %}
     {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
       /* {{sv.get('addressSpaceRead')|upper}} !! */
-      UaStatus read{{sv.get('name')|capFirst}} (
+      UaStatus D{{className}}::read{{sv.get('name')|capFirst}} (
         {{sv.get('dataType')}}& value,
         UaDateTime& sourceTime
       )
@@ -97,7 +97,7 @@ namespace Device
     {% endif %}
     {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
       /* {{sv.get('addressSpaceWrite')|upper}} !! */
-      UaStatus write{{sv.get('name')|capFirst}} (
+      UaStatus D{{className}}::write{{sv.get('name')|capFirst}} (
         {{sv.get('dataType')}}& value
       )
       {
@@ -109,7 +109,7 @@ namespace Device
   /* delegators for methods */
   {% for m in this.method %}
     {% set allArgsLen = m.argument|length + m.returnvalue|length %}
-    UaStatus call{{m.get('name')|capFirst}} (
+    UaStatus D{{className}}::call{{m.get('name')|capFirst}} (
     {% for arg in m.argument %}
       {{oracle.fixDataTypePassingMethod(arg.get('dataType'), arg.array|length>0 )}} {{arg.get('name')}}
       {%- if loop.index < allArgsLen %},
