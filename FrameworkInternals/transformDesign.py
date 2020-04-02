@@ -94,7 +94,7 @@ QuasarTransforms = [
     [TransformKeys.D_BASE_H,                ['Device','designToDeviceBaseHeader.jinja'],             'Device/generated/Base_D{className}.h',         'B',            True,           False,        ['className']],
     [TransformKeys.D_BASE_CPP_ALL,          ['Device','designToDeviceBaseBody.jinja'],               'Device/generated/Base_All.cpp',                'B',            True,           False,        None],
     [TransformKeys.D_DEVICE_H,              ['Device','designToDeviceHeader.jinja'],                 'Device/include/D{className}.h',                'S',            True,           True,         ['className']],
-    [TransformKeys.D_DEVICE_CPP,            'Device/designToDeviceBody.xslt',                        'Device/src/D{className}.cpp',                  'S',            True,           True,         'className={className}'],
+    [TransformKeys.D_DEVICE_CPP,            ['Device','designToDeviceBody.jinja'],                   'Device/src/D{className}.cpp',                  'S',            True,           True,         ['className']],
     [TransformKeys.D_CMAKE,                 ['Device','designToGeneratedCmakeDevice.jinja'],         'Device/generated/cmake_header.cmake',          'B',            False,          False,        None],
     [TransformKeys.HONKYTONK,               'Extra/designToHonkyTonk.xslt',                          'Extra/honkyTonky.cc',                          'S',            True,           False,        None],
     [TransformKeys.CONFIG_DOCUMENTATION,    'Configuration/designToConfigDocumentationHtml.xslt',    'Documentation/ConfigDocumentation.html',       'S',            False,          False,        None],

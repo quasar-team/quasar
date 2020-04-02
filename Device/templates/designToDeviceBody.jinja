@@ -15,7 +15,7 @@
 {# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
 {#                                                                               #}
 {# Created:   Jul 2014 (the original XSLT version)                               #}
-{#            12 Mar 2020 (translated to Jinja2)                                 #}
+{#            02 Apr 2020 (translated to Jinja2)                                 #}
 {# Authors:                                                                      #}
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
@@ -23,47 +23,64 @@
 {% set this = designInspector.objectifyClass(className) %}
 {{ headers.cppStubHeader(designInspector.objectifyRoot().get('author')) }}
 
-#ifndef __D{{className}}__H__
-#define __D{{className}}__H__
+#include <Configuration.hxx> // TODO; should go away, is already in Base class for ages
 
-#include <vector>                  // TODO; should go away, is already in Base class for ages
-#include <boost/thread/mutex.hpp>  // TODO; should go away, is already in Base class for ages
-
-#include <statuscode.h>            // TODO; should go away, is already in Base class for ages
-#include <uadatetime.h>            // TODO; should go away, is already in Base class for ages
-#include <session.h>               // TODO; should go away, is already in Base class for ages
-
-#include <DRoot.h>                 // TODO; should go away, is already in Base class for ages
-#include <Configuration.hxx>       // TODO; should go away, is already in Base class for ages
-
-#include <Base_D{{className}}.h>
+#include <D{{className}}.h>
+#include <AS{{className}}.h>
 
 namespace Device
 {
+  // 1111111111111111111111111111111111111111111111111111111111111111111111111
+  // 1     GENERATED CODE STARTS HERE AND FINISHES AT SECTION 2              1
+  // 1     Users don't modify this code!!!!                                  1
+  // 1     If you modify this code you may start a fire or a flood somewhere,1
+  // 1     and some human being may possible cease to exist. You don't want  1
+  // 1     to be charged with that!                                          1
+  // 1111111111111111111111111111111111111111111111111111111111111111111111111
 
-  class
-  D{{className}}
-  : public Base_D{{className}}
-  {
 
-  public:
-  /* sample constructor */
-  explicit D{{className}} (
+
+
+
+
+  // 2222222222222222222222222222222222222222222222222222222222222222222222222
+  // 2     SEMI CUSTOM CODE STARTS HERE AND FINISHES AT SECTION 3            2
+  // 2     (code for which only stubs were generated automatically)          2
+  // 2     You should add the implementation but dont alter the headers      2
+  // 2     (apart from constructor, in which you should complete initializati2
+  // 2     on list)                                                          2
+  // 2222222222222222222222222222222222222222222222222222222222222222222222222
+
+  /* sample ctr */
+  D{{className}}::D{{className}} (
     const Configuration::{{className}}& config,
     Parent_D{{className}}* parent
-  ) ;
-  /* sample dtr */
-  ~D{{className}} ();
+  ):
+    Base_D{{className}}( config, parent)
 
-  /* delegators for
-  cachevariables and sourcevariables */
+  /* fill up constructor initialization list here */
+  {
+    /* fill up constructor body here */
+  }
+
+  /* sample dtr */
+  D{{className}}::~D{{className}} ()
+  {
+  }
+
+  /* delegates for cachevariables */
+
   {% for cv in designInspector.objectifyCacheVariables(className, "[@addressSpaceWrite='delegated']") %}
     /* Note: never directly call this function. */
-    {% if cv.array|length>0 %}
-      UaStatus write{{cv.get('name')|capFirst}} ( const std::vector<{{cv.get('dataType')}}>& v);
+
+    {% if cv.array|length > 0 %}
+      UaStatus D{{className}}::write{{cv.get('name')|capFirst}} ( const std::vector<{{cv.get('dataType')}}>& v)
     {% else %}
-      UaStatus write{{cv.get('name')|capFirst}} ( const {{cv.get('dataType')}}& v);
+      UaStatus D{{className}}::write{{cv.get('name')|capFirst}} ( const {{cv.get('dataType')}}& v)
     {% endif %}
+    {
+      return OpcUa_BadNotImplemented;
+    }
   {% endfor %}
 
   {% for sv in this.sourcevariable %}
@@ -72,13 +89,20 @@ namespace Device
       UaStatus read{{sv.get('name')|capFirst}} (
         {{sv.get('dataType')}}& value,
         UaDateTime& sourceTime
-      );
+      )
+      {
+        sourceTime = UaDateTime::now();
+        return OpcUa_BadNotImplemented;
+      }
     {% endif %}
     {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
       /* {{sv.get('addressSpaceWrite')|upper}} !! */
       UaStatus write{{sv.get('name')|capFirst}} (
         {{sv.get('dataType')}}& value
-      );
+      )
+      {
+        return OpcUa_BadNotImplemented;
+      }
     {% endif %}
   {% endfor %}
 
@@ -97,27 +121,16 @@ namespace Device
       {% endif %}
     {% endfor %}
 
-    ) ;
+    )
+    {
+      return OpcUa_BadNotImplemented;
+    }
   {% endfor %}
 
-  private:
-  /* Delete copy constructor and assignment operator */
-  D{{className}}( const D{{className}}& other );
-  D{{className}}& operator=(const D{{className}}& other);
-
-  // ----------------------------------------------------------------------- *
-  // -     CUSTOM CODE STARTS BELOW THIS COMMENT.                            *
-  // -     Don't change this comment, otherwise merge tool may be troubled.  *
-  // ----------------------------------------------------------------------- *
-
-  public:
-
-  private:
-
-
-
-	};
+  // 3333333333333333333333333333333333333333333333333333333333333333333333333
+  // 3     FULLY CUSTOM CODE STARTS HERE                                     3
+  // 3     Below you put bodies for custom methods defined for this class.   3
+  // 3     You can do whatever you want, but please be decent.               3
+  // 3333333333333333333333333333333333333333333333333333333333333333333333333
 
 }
-
-#endif // __D{{className}}__H__
