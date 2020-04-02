@@ -33,6 +33,7 @@ from colorama import Fore, Style
 import pdb
 from DesignInspector import DesignInspector
 from Oracle import Oracle
+import transform_filters
 
 # here we define all transforms of Design known to Quasar
 # first, IDs
@@ -112,17 +113,6 @@ def transformDesignByXslt(designXmlPath, transformPath, outputFile, additionalPa
     XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + getCommand('saxon')
     subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, designXmlPath, transformPath, '-o:' + outputFile] + additionalParam, getCommand("java"))
 
-def capFirst(s):
-    return s[0].upper() + s[1:]
-
-def cppCommentsToCmakeComments(s):
-    ### pnikiel: this is cheapo soltion... but it works ;-)
-    return '\n'.join([ '# '+x for x in s.split('\n')]) ## TODO Piotr this could be better ;-)
-
-def templateDebug(text):
-    print(Fore.MAGENTA + str(text) + Style.RESET_ALL)
-    return ''
-
 def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalParam):
     """ additionalParam - a dictionary that will be passed to the transform """
     outputDirectory = os.path.dirname(outputFile)
@@ -133,9 +123,7 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
     commonTemplatesLoader = jinja2.FileSystemLoader(os.path.join(transformDir, '..', '..', 'Common', 'templates'))
     moduleTemplatesLoader = jinja2.FileSystemLoader(transformDir)
     env = jinja2.Environment(loader=jinja2.ChoiceLoader([commonTemplatesLoader, moduleTemplatesLoader]))
-    env.filters['capFirst']  = capFirst
-    env.filters['debug'] = templateDebug
-    env.filters['cppCommentsToCmakeComments'] = cppCommentsToCmakeComments
+    transform_filters.setup_all_filters(env)
     env.trim_blocks = True
     fout = open(outputFile, 'wb')
     render_args = {'designInspector':designInspector, 'oracle':Oracle()}
