@@ -35,6 +35,9 @@ from DesignInspector import DesignInspector
 from Oracle import Oracle
 import transform_filters
 
+# This will be removed when NextGen transforms (Jinja-based) are fully in place
+LEGACY_CODE_GENERATION = False
+
 # here we define all transforms of Design known to Quasar
 # first, IDs
 @enum.unique
@@ -84,7 +87,7 @@ QuasarTransforms = [
     [TransformKeys.AS_INFOMODEL_H,          ['AddressSpace','designToInformationModelHeader.jinja'], 'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
     [TransformKeys.AS_INFOMODEL_CPP,        ['AddressSpace','designToInformationModelBody.jinja'],   'AddressSpace/src/ASInformationModel.cpp',      'B',            True,           False,        None],
     [TransformKeys.AS_CMAKE,                ['AddressSpace','designToGeneratedCmakeAddressSpace.jinja'], 'AddressSpace/cmake_generated.cmake',           'B',            False,          False,        None],
-    [TransformKeys.CONFIGURATION_XSD,       'Configuration/designToConfigurationXSD.xslt',           'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        'metaXsdPath={metaXsdPath}'],
+    [TransformKeys.CONFIGURATION_XSD,       'Configuration/designToConfigurationXSD.xslt',           'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        ['metaXsdPath']],
     [TransformKeys.CONFIGURATOR,            'Configuration/designToConfigurator.xslt',               'Configuration/Configurator.cpp',               'B',            True,           False,        None],
     [TransformKeys.CONFIG_VALIDATOR,        'Configuration/designToConfigValidator.xslt',            'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
     [TransformKeys.DESIGN_VALIDATION,       'Design/designValidation.xslt',                          'Design/validationOutput.removeme',             'B',            False,          False,        None],
@@ -110,8 +113,10 @@ def transformDesignVerbose(transformPath, outputFile, requiresMerge, astyleRun=F
     return transformDesign(transformPath, outputFile, requiresMerge, astyleRun, additionalParam)
 
 def transformDesignByXslt(designXmlPath, transformPath, outputFile, additionalParam):
-    XSLT_JAR = '.' + os.path.sep + 'Design' + os.path.sep + getCommand('saxon')
-    subprocessWithImprovedErrors([getCommand('java'), '-jar', XSLT_JAR, designXmlPath, transformPath, '-o:' + outputFile] + additionalParam, getCommand("java"))
+    xsltProcPath = os.path.sep.join(['Design', getCommand('saxon')])
+    additionalParamStringified = [ "{0}={1}".format(key, additionalParam[key]) for key in additionalParam.keys() ]
+    #pdb.set_trace()
+    subprocessWithImprovedErrors([getCommand('java'), '-jar', xsltProcPath, designXmlPath, transformPath, '-o:' + outputFile] + additionalParamStringified, getCommand("java"))
 
 def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalParam):
     """ additionalParam - a dictionary that will be passed to the transform """
@@ -137,7 +142,7 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
         Style.RESET_ALL)
     
 
-def transformDesign(transformPath, outputFile, requiresMerge, astyleRun, additionalParam=None):
+def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, additionalParam=None):
     """Generates a file, applying a transform (XSLT or Jinja2) to Design.xml
 
     Keyword arguments:
@@ -147,10 +152,17 @@ def transformDesign(transformPath, outputFile, requiresMerge, astyleRun, additio
     astyleRun            -- if True, will run astyle on generated file
     additionalParam      -- Optional extra param to be passed e.g. to XSLT transform.
     """
-    if isinstance(additionalParam, str):
-        additionalParam = [additionalParam] # compat mode for passing multiple additional params
+    transformPath = xsltTransformation
+    newAdditionalParam = {}
+    if isinstance(additionalParam, list): # this is the legacy mode for certain quasar modules
+        processedAdditionalParam = {}
+        for chunk in additionalParam:
+            [key, value] = chunk.split('=')
+            processedAdditionalParam[key] = value
     elif additionalParam == None:
-        additionalParam = []
+        processedAdditionalParam = {}
+    else:
+        processedAdditionalParam = additionalParam
 
     # files
     designXmlPath = '.' + os.path.sep + 'Design' + os.path.sep + 'Design.xml'  # TODO os.path.join
@@ -159,9 +171,9 @@ def transformDesign(transformPath, outputFile, requiresMerge, astyleRun, additio
         outputFile = outputFile + '.generated'
     try:
         if transformPath.endswith('.jinja'):
-            transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalParam)
+            transformDesignByJinja(designXmlPath, transformPath, outputFile, processedAdditionalParam)
         elif transformPath.endswith('.xslt'):
-            transformDesignByXslt(designXmlPath, transformPath, outputFile, additionalParam)
+            transformDesignByXslt(designXmlPath, transformPath, outputFile, processedAdditionalParam)
         else:
             raise Exception("Couldnt determine transformation type")
 
@@ -202,6 +214,23 @@ def getTransformOutput (key, supplementaryData={}):
     outputFileRaw = transformSpec[FieldIds.OUT_PATH.value].format(**supplementaryData)
     return os.path.join(outputDir, outputFileRaw)
 
+def get_transform_path (key):
+    transformSpec = getTransformSpecByKey(key)
+
+    if isinstance(transformSpec[FieldIds.TRANSFORM_PATH.value], list):
+        # only for NextGen transforms
+        tp = transformSpec[FieldIds.TRANSFORM_PATH.value]
+        if LEGACY_CODE_GENERATION:
+            print(Fore.RED + 
+                'quasar Jinja2 generator: running in legacy mode, forcing XSLT templates!'
+                + Style.RESET_ALL)
+            transformPath = os.path.join(tp[0], tp[1].replace('.jinja', '.xslt'))
+        else:
+            transformPath = os.path.join(tp[0], 'templates', tp[1])
+    else:
+        transformPath = transformSpec[FieldIds.TRANSFORM_PATH.value]
+    return transformPath
+
 def transformByKey (keys, supplementaryData={}):
     """ This runs the transform both for a single key as well as a list of keys. 
         keys              - a key from TransformKeys enum, or a list of such keys
@@ -223,11 +252,7 @@ def transformByKey (keys, supplementaryData={}):
             additionalParam = { x: supplementaryData[x] for x in transformSpec[FieldIds.ADDITIONAL_PARAM.value]}
         else:
             additionalParam = None
-        if isinstance(transformSpec[FieldIds.TRANSFORM_PATH.value], list):
-            tp = transformSpec[FieldIds.TRANSFORM_PATH.value]
-            transformPath = os.path.join(tp[0], 'templates', tp[1])
-        else:
-            transformPath = transformSpec[FieldIds.TRANSFORM_PATH.value]
+        transformPath = get_transform_path(keys)
         transformDesignVerbose(
             transformPath = transformPath,
             outputFile = outputFile,
