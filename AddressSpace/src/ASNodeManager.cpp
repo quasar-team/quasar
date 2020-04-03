@@ -72,7 +72,7 @@ UaStatus ASNodeManager::afterStartUp()
 		if (!status.isGood())
 			return status;
 	}
-	
+
 	return OpcUa_Good;
 }
 
@@ -80,92 +80,6 @@ UaStatus ASNodeManager::beforeShutDown()
 {
 	return OpcUa_Good;
 }
-
-/* Inspired on OPCUA CANopen server */
-/* Probably get rid of this */
-//UaObject* ASNodeManager::getInstanceDeclarationObjectType (OpcUa_UInt32 typeId)
-//{
-//	// Try to find the instance declaration node with the numeric identifier
-//	// and the namespace index of this node manager
-//	UaNode* pNode = findNode (UaNodeId(typeId, getNameSpaceIndex()));
-//	if (pNode != NULL && pNode->nodeClass()==OpcUa_NodeClass_ObjectType)
-//		return (UaObject*) pNode;
-//	else
-//		throw std::logic_error (std::string(__func__)+": no satisfying object found, given typeId="+CUtils::toString(typeId));
-//
-//}
-
-
-
-///* This is rather temporary */
-//OpcUa_Int32  ASNodeManager::findUaVariables(OpcUa::BaseObjectType *pParObj,std::string& pattern,UaControlVariableSet& storage)
-//{
-//	OpcUa_Int32 nMatched =  0;
-//	UaReference *pRefList = const_cast<UaReference*>( pParObj->pTargetNodes() );
-//	UaString fPatten = UaString("%1.%2").arg(pParObj->getKey().toString()).arg(pattern.c_str());
-//	std::string fullpatten = fPatten.toUtf8();
-//	while (pRefList) {
-//		nMatched = nMatched + findUaNodeVariables(pRefList->pTargetNode(),fullpatten,storage);
-//		pRefList = pRefList->pNextForwardReference();
-//	}
-//	return nMatched;
-//}
-
-/** @brief find set of variables starting from node
-	* @param pNode pointer to starting node
-	* @param pattern searching pattern
-	* @param storage return found variables
-	* @return number of finding variables
-	*/
-//	OpcUa_Int32  ASNodeManager::findUaNodeVariables(UaNode *pNode,std::string & pattern,UaControlVariableSet& storage)
-//	{
-//		OpcUa_Int32 nMatched =  0;
-//		boost::xpressive::sregex expression = boost::xpressive::sregex::compile(pattern);
-//
-//		std::cout << "pattern=" << pattern << std::endl;
-//
-//		if (pNode->nodeClass() == OpcUa_NodeClass_Variable) {
-//			UaNodeId nodeid = pNode->getKey();
-//			if (nodeid.identifierType()  == OpcUa_IdentifierType_String) {
-//				boost::xpressive::smatch what;
-//				string sName = nodeid.toString().toUtf8();
-//				std::cout << "Comparing " << sName << std::endl;
-//				if (boost::xpressive::regex_match(sName,what,expression))
-//				{
-//					cout << "matched" << endl;
-//					nMatched = 1;
-//					storage.push_back((UaControlVariable *)pNode);
-//				}
-//			}
-//		}
-//		else {
-//			if (pNode->nodeClass() ==  OpcUa_NodeClass_Object) {
-//				UaReference *pRefList = (UaReference *)pNode->getUaReferenceLists()->pTargetNodes();
-//				while (pRefList) {
-//					nMatched = nMatched + findUaNodeVariables(pRefList->pTargetNode(),pattern,storage);
-//					pRefList = pRefList->pNextForwardReference();
-//				}
-//			}
-//		}
-//		return nMatched;
-//	}
-
-	// TODO This function actually could be a template parametrized as a type
-	// Then you would do findNode<UaControlVariable>(name)
-	// TODO Actually should by called findNodeByStringId
-
-//	UaControlVariable * ASNodeManager::findUaControlVariable (std::string & fullName)
-//	{
-//		UaNode* node = getNode (UaNodeId (fullName.c_str(), getNameSpaceIndex()));
-//
-//		if (node && node == dynamic_cast<UaControlVariable*>(node) )
-//		{
-//			/* Alright, we deal with existing UaControlVariable or its descendant */
-//			return (UaControlVariable*) node;
-//		}
-//		else
-//			return 0;
-//	}
 
 	UaNodeId ASNodeManager::makeChildNodeId (const UaNodeId &parent, const UaString& childName )
 	{
@@ -216,8 +130,8 @@ UaStatus ASNodeManager::beforeShutDown()
 	  }
 #endif // BACKEND_OPEN62541
 
-	  
-	  
+
+
 	void ASNodeManager::setAfterStartupDelegate( std::function<UaStatus ()> afterStartUpDelegate )
 	{
 		m_afterStartUpDelegate = afterStartUpDelegate;
