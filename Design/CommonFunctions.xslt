@@ -66,7 +66,7 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 <!--  task OPCUA-167: simple datatypes (bools, integers, floats) shall be passed by value rather than by reference -->
 <!--  task OPCUA-209: null setters for non-uavariant variables -->
 <xsl:choose>
-<xsl:when test="$dataType='OpcUa_Double' or $dataType='OpcUa_Float' or $dataType='OpcUa_UInt32' or $dataType='OpcUa_Int32' or $dataType='OpcUa_UInt64' or $dataType='OpcUa_Int64' or $dataType='OpcUa_Boolean'">
+<xsl:when test="$dataType='OpcUa_Double' or $dataType='OpcUa_Float' or $dataType='OpcUa_UInt16' or $dataType='OpcUa_Int16' or $dataType='OpcUa_UInt32' or $dataType='OpcUa_Int32' or $dataType='OpcUa_UInt64' or $dataType='OpcUa_Int64' or $dataType='OpcUa_Boolean'">
 <!-- simple dataTypes -->
 <xsl:value-of select="concat('set',fnc:capFirst($name),' (const ',$dataType,' value, OpcUa_StatusCode statusCode,', $srcTime,')' )"/>
 </xsl:when>
