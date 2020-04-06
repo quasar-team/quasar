@@ -125,7 +125,7 @@ File designToDeviceBaseHeader.xslt          must_exist,must_be_versioned,md5=che
 File designToGeneratedCmakeDevice.xslt      must_exist,must_be_versioned,md5=check,install=overwrite
 File generateBaseBody.sh                    deprecated,install=dont_touch
 File generateBaseHeader.sh                  deprecated,install=dont_touch
- 
+File DeviceCustom.cmake                     must_exist,must_be_versioned,install=ask_to_merge 
 
 Directory Device/generated install=create
 
@@ -333,6 +333,3 @@ File LogSinks.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File StdOutLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File UaTraceSink.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
 File WindowsDebuggerSink.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
-
-
-

@@ -23,6 +23,10 @@ else(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
 	include(${PROJECT_BINARY_DIR}/Device/generated/cmake_header.cmake)
 endif(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
 
+if(EXISTS ${PROJECT_SOURCE_DIR}/Device/DeviceCustom.cmake)
+	include (DeviceCustom.cmake)
+endif(EXISTS ${PROJECT_SOURCE_DIR}/Device/DeviceCustom.cmake)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/include/DRoot.h ${PROJECT_BINARY_DIR}/Device/src/DRoot.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND python quasar.py generate root --project_binary_dir ${PROJECT_BINARY_DIR}
@@ -33,9 +37,11 @@ add_library (Device OBJECT
 
     ${DEVICEBASE_GENERATED_FILES}
     ${DEVICE_CLASSES}
+    ${DEVICE_CUSTOM_SOURCES} # if used, would come from DeviceCustom.cmake
     
     # Your custom Device logic code - begin. Skip classes! (They are declared
     # in ${DEVICE_CLASSES) 
+    # Note: since quasar 1.3.14 you should rather list such files in DeviceCustom.cmake
     
 	
     # Your custom Device logic code - end
