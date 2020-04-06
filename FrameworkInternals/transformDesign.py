@@ -83,7 +83,7 @@ QuasarTransforms = [
     [TransformKeys.AS_INFOMODEL_H,          ['AddressSpace','designToInformationModelHeader.jinja'], 'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
     [TransformKeys.AS_INFOMODEL_CPP,        ['AddressSpace','designToInformationModelBody.jinja'],   'AddressSpace/src/ASInformationModel.cpp',      'B',            True,           False,        None],
     [TransformKeys.AS_CMAKE,                ['AddressSpace','designToGeneratedCmakeAddressSpace.jinja'], 'AddressSpace/cmake_generated.cmake',           'B',            False,          False,        None],
-    [TransformKeys.CONFIGURATION_XSD,       ['Configuration', 'designToConfigurationXSD.jinja'],     'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        'metaXsdPath={metaXsdPath}'],    
+    [TransformKeys.CONFIGURATION_XSD,       ['Configuration', 'designToConfigurationXSD.jinja'],     'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        ['metaXsdPath']],    
     [TransformKeys.CONFIGURATOR,            ['Configuration', 'designToConfigurator.jinja'],         'Configuration/Configurator.cpp',               'B',            True,           False,        None],
     [TransformKeys.CONFIG_VALIDATOR,        ['Configuration', 'designToConfigValidator.jinja'],      'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
     [TransformKeys.DESIGN_VALIDATION,       'Design/designValidation.xslt',                          'Design/validationOutput.removeme',             'B',            False,          False,        None],
