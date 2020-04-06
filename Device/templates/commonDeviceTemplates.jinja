@@ -81,11 +81,11 @@
   {% for hasobjects in this.hasobjects %}
     {% for cv in designInspector.objectifyCacheVariables(hasobjects.get('class'), "[@isKey='true']") %}
       D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}} (
-        const {{oracle.getDeviceLogicTypeFromQuasarType(cv.get('dataType'))}} key );
+        const {{oracle.data_type_to_device_type(cv.get('dataType'))}} key );
     {% endfor %}
     {% for ce in designInspector.objectifyConfigEntries(hasobjects.get('class'), "[@isKey='true']") %}
       D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{ce.get('name')|capFirst}} (
-        const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} key );
+        const {{oracle.data_type_to_device_type(ce.get('dataType'))}} key );
     {% endfor %}
   {% endfor %}
 {% endmacro %}
@@ -98,7 +98,7 @@
   {% for hasobjects in this.hasobjects %}
     {% for ce in designInspector.objectifyConfigEntries(hasobjects.get('class'), "[@isKey='true']") %}
       D{{hasobjects.get('class')}}* {{fullClassName}}::get{{hasobjects.get('class')}}By{{ce.get('name')|capFirst}} (
-        const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} key )
+        const {{oracle.data_type_to_device_type(ce.get('dataType'))}} key )
         {
           for( auto* test : this->{{hasobjects.get('class')|lower}}s() )
           {
@@ -110,7 +110,7 @@
     {% endfor %}{# for ce #}
     {% for cv in designInspector.objectifyCacheVariables(hasobjects.get('class'), "[@isKey='true']") %}
       D{{hasobjects.get('class')}}* {{fullClassName}}::get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}} (
-        const {{oracle.getDeviceLogicTypeFromQuasarType(cv.get('dataType'))}} key )
+        const {{oracle.data_type_to_device_type(cv.get('dataType'))}} key )
         {
           for( auto* test : this->{{hasobjects.get('class')|lower}}s() )
           {

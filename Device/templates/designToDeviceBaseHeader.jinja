@@ -93,7 +93,7 @@ class Base_D{{className}}
     const {{cv.get('dataType')}} {{cv.get('name')}} () { return m_{{cv.get('name')}}; }
   {% endfor %}
   {% for ce in designInspector.objectifyConfigEntries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
-    const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} {{ce.get('name')}}() { return m_{{ ce.get('name') }}; }
+    const {{oracle.data_type_to_device_type(ce.get('dataType'))}} {{ce.get('name')}}() { return m_{{ ce.get('name') }}; }
   {% endfor %}
 
   /* mutex operations */
@@ -136,11 +136,11 @@ private:
 
   /* if any of our cachevariables has isKey=true then we shall keep its copy here for find functions  (it is const, either way) */
   {% for cv in designInspector.objectifyCacheVariables(className, "[@isKey='true']") %}
-    const {{oracle.getDeviceLogicTypeFromQuasarType(cv.get('dataType'))}} m_{{cv.get('name')}};
+    const {{oracle.data_type_to_device_type(cv.get('dataType'))}} m_{{cv.get('name')}};
   {% endfor %}
 
   {% for ce in designInspector.objectifyConfigEntries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
-    const {{oracle.getDeviceLogicTypeFromQuasarType(ce.get('dataType'))}} m_{{ce.get('name')}};
+    const {{oracle.data_type_to_device_type(ce.get('dataType'))}} m_{{ce.get('name')}};
   {% endfor %}
 
   /* object-wise lock */

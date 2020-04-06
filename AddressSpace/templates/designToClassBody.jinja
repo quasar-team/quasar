@@ -116,20 +116,20 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
         variableName = fixChildNameWhenSingleNodeClass(
           "{{cv.get('name')}}",
           config.name().c_str());
-        m_{{cv.get('name')}} = new {{oracle.cacheVariableCppType(cv.get('addressSpaceWrite'), className)}} (
+        m_{{cv.get('name')}} = new {{oracle.cache_variable_cpp_type(cv.get('addressSpaceWrite'), className)}} (
           nm->makeChildNodeId(
             m_effectiveParentNodeIdForChildren,
             variableName),
           variableName,
           nm->getNameSpaceIndex(),
           UaVariant(),
-          {{oracle.cacheVariableAccessLevel(cv.get('addressSpaceWrite'))}},
+          {{oracle.cache_variable_access_level(cv.get('addressSpaceWrite'))}},
           nm);
 
         {# configure dataType #}
         {% if cv.get('nullPolicy') == 'nullForbidden' %}
           m_{{cv.get('name')}}->setDataType(
-            UaNodeId( {{oracle.dataTypeToBuiltinType(cv.get('dataType'))}}, 0 ));
+            UaNodeId( {{oracle.data_type_to_builtin_type(cv.get('dataType'))}}, 0 ));
         {% endif %}
 
         {# configure valueRank and arrayDimensions #}
@@ -147,7 +147,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
         {# handle valueAndStatus initialization for scalars #}
         {% if cv.get('initializeWith') == 'valueAndStatus' and cv.array|length == 0 %}
           {% if cv.get('initialValue') %}
-            helperVariant.{{oracle.dataTypeToVariantSetter(cv.get('dataType'))}} ( {{oracle.wrapLiteral(cv.get('dataType'), cv.get('initialValue'))}} );
+            helperVariant.{{oracle.data_type_to_variant_setter(cv.get('dataType'))}} ( {{oracle.wrap_literal(cv.get('dataType'), cv.get('initialValue'))}} );
           {% else %}
             helperVariant.clear ();
           {% endif %}
@@ -163,7 +163,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
         {# handle configuration initialization for scalars #}
         {% if cv.get('initializeWith') == 'configuration' and cv.array|length == 0 %}
-          helperVariant.{{oracle.dataTypeToVariantSetter(cv.get('dataType'))}} (
+          helperVariant.{{oracle.data_type_to_variant_setter(cv.get('dataType'))}} (
             config.{{cv.get('name')}}(){% if cv.get('dataType') == 'UaString' %}.c_str(){% endif %}
             );
           m_{{cv.get('name')}}->setValue(
@@ -189,7 +189,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
             &AS{{className}}::write{{cv.get('name')|capFirst}});
         {% endif %}
 
-        {% if oracle.isDataTypeNumeric(cv.get('dataType')) and cv.array|length==0 %}
+        {% if oracle.is_data_type_numeric(cv.get('dataType')) and cv.array|length==0 %}
           CalculatedVariables::Engine::registerVariableForCalculatedVariables( m_{{cv.get('name')}} );
         {% endif %}
 
@@ -242,8 +242,8 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
             vect = config.{{cv.get('name')}}().value();
           {% endif %}
           UaVariant variant;
-          {{oracle.convertVectorToUaVariantFunctionName(cv.get('dataType'))}} (vect, variant);
-          m_{{cv.get('name')}}->setDataType( UaNodeId({{oracle.dataTypeToBuiltinType(cv.get('dataType'))}}, 0) );
+          {{oracle.vector_to_uavariant_function(cv.get('dataType'))}} (vect, variant);
+          m_{{cv.get('name')}}->setDataType( UaNodeId({{oracle.data_type_to_builtin_type(cv.get('dataType'))}}, 0) );
           m_{{cv.get('name')}}->setValue(
             /*pSession*/ nullptr,
             UaDataValue(
@@ -274,13 +274,13 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           variableName,
           nm->getNameSpaceIndex(),
           UaVariant(),
-          {{oracle.sourceVariableReadAccessMask(sv.get('addressSpaceRead'))}} | {{oracle.sourceVariableWriteAccessMask(sv.get('addressSpaceWrite'))}},
+          {{oracle.source_var_read_access_mask(sv.get('addressSpaceRead'))}} | {{oracle.source_var_write_access_mask(sv.get('addressSpaceWrite'))}},
           nm,
           this,
-          {{oracle.sourceVariableReadJobId(className, sv.get('name'), sv.get('addressSpaceRead'))}},
-          {{oracle.sourceVariableWriteJobId(className, sv.get('name'), sv.get('addressSpaceWrite'))}}
+          {{oracle.source_var_read_job_id(className, sv.get('name'), sv.get('addressSpaceRead'))}},
+          {{oracle.source_var_write_job_id(className, sv.get('name'), sv.get('addressSpaceWrite'))}}
           );
-        m_{{sv.get('name')}}->setDataType( UaNodeId( {{oracle.dataTypeToBuiltinType(sv.get('dataType'))}}, 0 ));
+        m_{{sv.get('name')}}->setDataType( UaNodeId( {{oracle.data_type_to_builtin_type(sv.get('dataType'))}}, 0 ));
         status = nm->addNodeAndReference(
           m_effectiveParentNodeIdForChildren,
           m_{{sv.get('name')}},
@@ -329,7 +329,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
                 prop->setArgument(
                   {{loop.index0}},
                   UaString("{{arg.get('name')}}"),
-                  UaNodeId( {{oracle.dataTypeToBuiltinType(arg.get('dataType'))}}, 0),
+                  UaNodeId( {{oracle.data_type_to_builtin_type(arg.get('dataType'))}}, 0),
                   valueRank,
                   dimensions,
                   UaLocalizedText("en_US", "{{arg.get('name')}}") );
@@ -363,7 +363,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           		propReturn->setArgument(
                 {{loop.index0}},
                 UaString("{{rv.get('name')}}"),
-                UaNodeId({{oracle.dataTypeToBuiltinType(rv.get('dataType'))}}, 0),
+                UaNodeId({{oracle.data_type_to_builtin_type(rv.get('dataType'))}}, 0),
                 valueRank,
                 dimensions,
                 UaLocalizedText("en_US", "{{rv.get('name')}}") );
@@ -411,7 +411,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 {### SETTERS AND GETTERS ###}
     /* generate setters and getters -- for scalar cache-variables first */
     {% for cv in designInspector.objectifyCacheVariables(className, '[not(d:array)]') %}
-      UaStatus AS{{className}}::{{ oracle.getCacheVariableSetter(cv.get('name'), cv.get('dataType'), False) }}
+      UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), cv.get('dataType'), False) }}
       {
         {% if cv.get('dataType') == 'UaVariant' %}
           return m_{{cv.get('name')}}->setValue (/*session*/ nullptr, UaDataValue (value, statusCode, srcTime, UaDateTime::now()), /*check access*/ OpcUa_False);
@@ -420,7 +420,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           {% if cv.get('dataType') == 'UaByteString' %}
             v.setByteString(const_cast<UaByteString&>(value), /*detach*/ OpcUa_False); // this const_case should be safe because we don't detach the value
           {% else %}
-            v.{{oracle.dataTypeToVariantSetter(cv.get('dataType'))}} (value);
+            v.{{oracle.data_type_to_variant_setter(cv.get('dataType'))}} (value);
           {% endif %}
           return m_{{cv.get('name')}}->setValue (/*session*/ nullptr, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/ OpcUa_False );
         {% endif %}
@@ -442,7 +442,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           returnValue = v; {# TODO @pnikiel a cheap and obvious optimization here is to avoid this copy here and return directly from value() #}
           return OpcUa_Good;
         {% else %}
-          return v.{{oracle.dataTypeToVariantConverter(cv.get('dataType'))}}( returnValue );
+          return v.{{oracle.data_type_to_variant_converter(cv.get('dataType'))}}( returnValue );
         {% endif %}
       }
 
@@ -455,7 +455,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           {% if cv.get('dataType') == 'UaString' %}
             v_value = v.toString();
           {% else %}
-            v.{{oracle.dataTypeToVariantConverter(cv.get('dataType'))}} ( v_value );
+            v.{{oracle.data_type_to_variant_converter(cv.get('dataType'))}} ( v_value );
           {% endif %}
           return v_value;
         }
@@ -463,7 +463,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
       {% if cv.get('nullPolicy') == 'nullAllowed' %}
         /* null-setter (possible because nullPolicy=nullAllowed) */
-        UaStatus AS{{className}}::{{ oracle.getCacheVariableSetter(cv.get('name'), None, False) }}
+        UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), None, False) }}
         {
           UaVariant v;
           return m_{{cv.get('name')}}->setValue (
@@ -480,7 +480,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
     /* generate setters and getters -- now for arrays */
     {% for cv in designInspector.objectifyCacheVariables(className, '[d:array]') %}
-    UaStatus AS{{className}}::{{oracle.getCacheVariableSetterArray(cv.get('name'), cv.get('dataType'), False)}}
+    UaStatus AS{{className}}::{{oracle.get_cache_variable_setter_array(cv.get('name'), cv.get('dataType'), False)}}
     {
       auto min = {{cv.get('name')}}_minimumSize();
       auto max = {{cv.get('name')}}_maximumSize();
@@ -493,7 +493,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
         return OpcUa_BadIndexRangeInvalid;
       }
       UaVariant v;
-      {{oracle.convertVectorToUaVariantFunctionName(cv.get('dataType'))}} (value, v);
+      {{oracle.vector_to_uavariant_function(cv.get('dataType'))}} (value, v);
       return m_{{cv.get('name')}}->setValue (
         /*session*/ nullptr,
         UaDataValue (
@@ -511,7 +511,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     	{
         return OpcUa_BadIndexRangeNoData;
     	}
-      return {{oracle.convertUaVariantToVectorFunctionName(cv.get('dataType'))}} (v, r);
+      return {{oracle.uavariant_to_vector_function(cv.get('dataType'))}} (v, r);
     }
 
     {% if cv.get('nullPolicy') == 'nullForbidden' %}
@@ -520,14 +520,14 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {
         UaVariant variant (* m_{{cv.get('name')}}->value (/*session*/ nullptr).value() );
         std::vector<{{cv.get('dataType')}}> vector;
-        {{oracle.convertUaVariantToVectorFunctionName(cv.get('dataType'))}} (variant, vector);
+        {{oracle.uavariant_to_vector_function(cv.get('dataType'))}} (variant, vector);
         return vector;
       }
     {% endif %}
 
     {% if cv.get('nullPolicy') == 'nullAllowed' %} {# TODO pnikiel commonalize with the verion for scalar #}
       /* null-setter (possible because nullPolicy=nullAllowed) */
-      UaStatus AS{{className}}::{{ oracle.getCacheVariableSetter(cv.get('name'), None, False) }}
+      UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), None, False) }}
       {
         UaVariant v;
         return m_{{cv.get('name')}}->setValue (
@@ -570,12 +570,12 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     /* generate delegates (if requested) */
     {% for cv in this.cachevariable %}
       {% if cv.get('addressSpaceWrite') in ['delegated','regular'] %}
-        {{ oracle.getDelegatedWriteHeader(cv.get('name'), className, 'body') }}
+        {{ oracle.get_delegated_write_header(cv.get('name'), className, 'body') }}
         {
           {% if cv.get('dataType') != 'UaVariant' %}
             /* ensure that data type passed by OPC UA client matches specification */
             UaVariant v (*dataValue.value()); // TODO : do we really need this copy?
-            if (v.type() != {{oracle.dataTypeToBuiltinType(cv.get('dataType'))}} )
+            if (v.type() != {{oracle.data_type_to_builtin_type(cv.get('dataType'))}} )
             {
               {% if cv.get('nullPolicy') == 'nullForbidden' %}
                 return OpcUa_BadDataEncodingInvalid;
@@ -589,7 +589,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           {% elif cv.get('addressSpaceWrite') == 'delegated' %}
             {% if cv.array|length>0 %}
               std::vector<{{cv.get('dataType')}}> v_value;
-              UaStatus status = {{oracle.convertUaVariantToVectorFunctionName(cv.get('dataType'))}} (v, v_value);
+              UaStatus status = {{oracle.uavariant_to_vector_function(cv.get('dataType'))}} (v, v_value);
               if (!status.isGood())
                 return status;
             {% else %}
@@ -598,7 +598,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
                 {# TODO @pnikiel in future we should identify multiple conversions between UaVariant and UaString #}
                 v_value = v.toString();
               {% else %}
-                v.{{oracle.dataTypeToVariantConverter(cv.get('dataType'))}} ( v_value );
+                v.{{oracle.data_type_to_variant_converter(cv.get('dataType'))}} ( v_value );
               {% endif %}
             {% endif %}
             /* if device logic type specified, then generate calling functions */
@@ -651,10 +651,10 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           if (inputArguments.length() != {{m.argument|length}})
             return OpcUa_BadArgumentsMissing;
           {% for arg in m.argument %}
-            {{oracle.quasarDataTypeToCppType(arg.get('dataType'),arg.array|length>0)}} arg_{{arg.get('name')}};
+            {{oracle.quasar_data_type_to_cpp_type(arg.get('dataType'),arg.array|length>0)}} arg_{{arg.get('name')}};
             {% if arg.array|length>0 %}
               {
-                UaStatus conversionStatus = {{oracle.convertUaVariantToVectorFunctionName(arg.get('dataType'))}} (
+                UaStatus conversionStatus = {{oracle.uavariant_to_vector_function(arg.get('dataType'))}} (
                   inputArguments[{{loop.index0}}],
                   arg_{{arg.get('name')}}
                 );
@@ -667,7 +667,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               {% elif arg.get('dataType') == 'UaVariant' %}
                 arg_{{arg.get('name')}} = inputArguments[{{loop.index0}}];
               {% else %}
-                if ((UaVariant(inputArguments[{{loop.index0}}])).{{oracle.dataTypeToVariantConverter(arg.get('dataType'))}}( arg_{{arg.get('name')}} ) != OpcUa_Good)
+                if ((UaVariant(inputArguments[{{loop.index0}}])).{{oracle.data_type_to_variant_converter(arg.get('dataType'))}}( arg_{{arg.get('name')}} ) != OpcUa_Good)
                   return OpcUa_BadDataEncodingInvalid;
               {% endif %}
             {% endif %}
@@ -688,7 +688,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           {% endif %}
 
           {% for rv in m.returnvalue %}
-            {{oracle.quasarDataTypeToCppType(rv.get('dataType'), rv.array|length>0)}} rv_{{rv.get('name')}};
+            {{oracle.quasar_data_type_to_cpp_type(rv.get('dataType'), rv.array|length>0)}} rv_{{rv.get('name')}};
           {% endfor %}
 
           UaStatusCodeArray       inputArgumentResults;
@@ -713,7 +713,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               outputArguments.create( {{m.returnvalue|length}} );
               {% for rv in m.returnvalue %}
                 {% if rv.array|length>0 %}
-                  {{oracle.convertVectorToUaVariantFunctionName(rv.get('dataType'))}}(rv_{{rv.get('name')}}, helper);
+                  {{oracle.vector_to_uavariant_function(rv.get('dataType'))}}(rv_{{rv.get('name')}}, helper);
                 {% else %}
                   {% if rv.get('dataType') == 'OpcUa_Boolean' %}
                     {#  we do this because OpcUa_Boolean decays to char and not C++ bool. #}

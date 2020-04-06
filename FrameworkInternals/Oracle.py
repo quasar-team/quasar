@@ -33,6 +33,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from transform_filters import cap_first
 
 class Oracle():
+    """This class represents knowledge about quasar architecture.
+    It knows how to map quasar data types into address-space or device-logic
+    C++ types, how to map that into node ids, XSD types, etc."""
+
     AllQuasarDataTypes = [
         'OpcUa_Boolean',
         'OpcUa_Byte',
@@ -75,7 +79,7 @@ class Oracle():
         'OpcUa_Float']
 
     # all types for which a configentry or config-made cache-variable is legit
-    InitializeFromConfigurationDataTypes = [
+    InitializeFromConfigDataTypes = [
         'OpcUa_Boolean',
         'OpcUa_Byte',
         'OpcUa_SByte',
@@ -89,7 +93,7 @@ class Oracle():
         'OpcUa_Float',
         'UaString']
 
-    InitializeFromValueAndStatusDataTypes = [
+    ValueAndStatusInitDataTypes = [
         'OpcUa_Boolean',
         'OpcUa_Byte',
         'OpcUa_SByte',
@@ -151,14 +155,14 @@ class Oracle():
     }
 
 
-    def getDeviceLogicTypeFromQuasarType(self, quasar_data_type):
+    def data_type_to_device_type(self, quasar_data_type):
         """TODO @pnikiel We will clean-up type derivation in subsequent efforts """
         if quasar_data_type == "UaString":
             return "std::string"
         else:
             return quasar_data_type
 
-    def getCacheVariableSetter(self, name, quasar_data_type, for_header):
+    def get_cache_variable_setter(self, name, quasar_data_type, for_header):
         """This function is based on its XSLT version, CommonFunctions,
            fnc:varSetter from quasar 1.3.12
            TODO @pnikiel should be reworked to profit from other functions """
@@ -168,15 +172,19 @@ class Oracle():
         if quasar_data_type in Oracle.PassByValueDataTypes:
             # TODO @pnikiel BELOW: when settled down, we should remove
             # const from PassByValue things as that looks stupid
-            return 'set{0}( const {1} value, OpcUa_StatusCode statusCode, {2} )'.format(cap_first(name), quasar_data_type, source_time_stamp)
+            return ('set{0}( const {1} value, '
+                    'OpcUa_StatusCode statusCode, {2} )').format(
+                        cap_first(name), quasar_data_type, source_time_stamp)
         elif quasar_data_type is None:  # formerly null
             return 'setNull{0}( OpcUa_StatusCode statusCode, {1})'.format(
                 cap_first(name),
                 source_time_stamp)
         else:
-            return 'set{0}( const {1}& value, OpcUa_StatusCode statusCode, {2})'.format(cap_first(name), quasar_data_type, source_time_stamp)
+            return ('set{0}( const {1}& value, '
+                    'OpcUa_StatusCode statusCode, {2})').format(
+                        cap_first(name), quasar_data_type, source_time_stamp)
 
-    def getCacheVariableSetterArray(self, name, quasar_data_type, for_header):
+    def get_cache_variable_setter_array(self, name, quasar_data_type, for_header):
         """ TODO: description """
         source_time_stamp = 'const UaDateTime& srcTime'
         if for_header:
@@ -186,45 +194,54 @@ class Oracle():
                 cap_first(name),
                 source_time_stamp)
         else:
-            return 'set{0}(const std::vector<{1}>& value, OpcUa_StatusCode statusCode, {2})'.format(cap_first(name), quasar_data_type, source_time_stamp)
+            return ('set{0}(const std::vector<{1}>& value, '
+                    'OpcUa_StatusCode statusCode, {2})').format(
+                        cap_first(name), quasar_data_type, source_time_stamp)
 
-    def getDelegatedWriteHeader(self, name, class_name, where):
+    def get_delegated_write_header(self, name, class_name, where):
         """ Returns the function header for a cache-variable write delegate.
-                where  -- needs to be either body or header
-                This function is modelled on its XSLT predecessor, in CommonFunctions, fnc:delegateWrite from quasar 1.3.12 """
+        where  -- needs to be either body or header
+        This function is modelled on its XSLT predecessor, in CommonFunctions,
+        fnc:delegateWrite from quasar 1.3.12 """
         output = "UaStatus "
         if where == 'body':
             output += "AS" + class_name + "::"
-        output += 'write{0}( Session* pSession, const UaDataValue& dataValue, OpcUa_Boolean checkAccessLevel{1} )'.format(cap_first(name), ' = OpcUa_True' if where is 'header' else '')
+        initializer = ' = OpcUa_True' if where is 'header' else ''
+        output += ('write{0}( Session* pSession, const UaDataValue& dataValue,'
+                   ' OpcUa_Boolean checkAccessLevel{1} )').format(
+                       cap_first(name), initializer)
         return output
 
-    def fixDataTypePassingMethod(self, quasar_data_type, is_array):
-        """ Modelled on CommonFunctions, fixDataTypePassingMethod
+    def fix_data_type_passing_method(self, quasar_data_type, is_array):
+        """ Modelled on CommonFunctions, fix_data_type_passing_method
             TODO: this should be massively reviewed """
         if is_array:
-            return 'const std::vector<{0}>& '.format(quasar_data_type)  ## TODO this most likely is wrong for e.g. UaString
+            ## TODO this most likely is wrong for e.g. UaString
+            return 'const std::vector<{0}>& '.format(quasar_data_type)
         else: # scalar
             if quasar_data_type in ['UaString', 'UaByteString', 'UaVariant']:
                 return 'const {0}& '.format(quasar_data_type)
             else:
                 return quasar_data_type
 
-    def quasarDataTypeToCppType(self, quasar_data_type, is_array):
+    def quasar_data_type_to_cpp_type(self, quasar_data_type, is_array):
         """ TODO: this needs to be cleaned-up, really """
         if is_array:
             return 'std::vector<{0}>'.format(quasar_data_type)
         else:
             return quasar_data_type
 
-    def cacheVariableCppType(self, address_space_write, inWhichClass):
+    def cache_variable_cpp_type(self, address_space_write, in_which_class):
+        """Returns C++ class to represent this cache-var in address-space"""
         if address_space_write in ['regular', 'forbidden']:
             return 'ChangeNotifyingVariable'
         elif address_space_write == 'delegated':
-            return 'ASDelegatingVariable<AS{0}>'.format(inWhichClass)
+            return 'ASDelegatingVariable<AS{0}>'.format(in_which_class)
         else:
             raise Exception("Unsupported address_space_write mode")
 
-    def cacheVariableAccessLevel(self, address_space_write):
+    def cache_variable_access_level(self, address_space_write):
+        """Returns value of OPC-UA accessLevel attribute"""
         if address_space_write in ['regular', 'forbidden']:
             return 'OpcUa_AccessLevels_CurrentRead'
         elif address_space_write == 'delegated':
@@ -232,22 +249,30 @@ class Oracle():
         else:
             raise Exception("Unsupported address_space_write mode")
 
-    def dataTypeToVariantSetter(self, quasar_data_type):
+    def data_type_to_variant_setter(self, quasar_data_type):
+        """Returns name of method of UaVariant that sets given data type"""
         if quasar_data_type == 'UaByteString':
-            raise Exception('quasar logic error: UaByteString doesnt have a trivial (i.e. 1-arg) variant setter')
+            raise Exception(('quasar logic error: UaByteString doesnt have a '
+                             'trivial (i.e. 1-arg) variant setter'))
         else:
             return Oracle.DataTypeToVariantSetter[quasar_data_type]
 
-    def dataTypeToVariantConverter(self, quasar_data_type):
+    def data_type_to_variant_converter(self, quasar_data_type):
+        """Returns name of method of UaVariant that converts to the data type"""
         if quasar_data_type == 'UaString':
-            raise Exception('quasar logic error: UaString has specific toString converter')
+            raise Exception(
+                'quasar logic error: UaString has specific toString converter')
         else:
             return Oracle.DataTypeToVariantConverter[quasar_data_type]
 
-    def dataTypeToBuiltinType(self, quasar_data_type):
+    def data_type_to_builtin_type(self, quasar_data_type):
+        """Returns a numeric constant which represents given type in the
+           OPC-UA information model"""
         return Oracle.DataTypeToBuiltinType[quasar_data_type]
 
-    def convertUaVariantToVectorFunctionName(self, quasar_data_type):
+    def uavariant_to_vector_function(self, quasar_data_type):
+        """Returns the name of function from ArrayTools which can perform
+           that conversion"""
         if quasar_data_type == 'OpcUa_Byte':
             return 'ArrayTools::convertUaVariantToByteVector'
         elif quasar_data_type == 'OpcUa_Boolean':
@@ -255,7 +280,9 @@ class Oracle():
         else:
             return 'ArrayTools::convertUaVariantToVector'
 
-    def convertVectorToUaVariantFunctionName(self, quasar_data_type):
+    def vector_to_uavariant_function(self, quasar_data_type):
+        """Returns the name of function from ArrayTools which can perform
+           that conversion"""
         if quasar_data_type == 'OpcUa_Byte':
             return 'ArrayTools::convertByteVectorToUaVariant'
         elif quasar_data_type == 'OpcUa_Boolean':
@@ -263,37 +290,43 @@ class Oracle():
         else:
             return 'ArrayTools::convertVectorToUaVariant'
 
-    def wrapLiteral(self, quasar_data_type, literal):
+    def wrap_literal(self, quasar_data_type, literal):
+        """For string constants wraps in the double-quotes as C++ literals"""
         if quasar_data_type == 'UaString':
             return '"{0}"'.format(literal)
         else:
             return literal
 
-    def sourceVariableReadAccessMask(self, address_space_read):
+    def source_var_read_access_mask(self, address_space_read):
+        """Returns OPC-UA access level mask"""
         if address_space_read in ['asynchronous', 'synchronous']:
             return 'OpcUa_AccessLevels_CurrentRead'
         else:
             return 0
 
-    def sourceVariableWriteAccessMask(self, address_space_write):
+    def source_var_write_access_mask(self, address_space_write):
+        """Returns OPC-UA access level mask"""
         if address_space_write in ['asynchronous', 'synchronous']:
             return 'OpcUa_AccessLevels_CurrentWrite'
         else:
             return 0
 
-    def sourceVariableReadJobId(self, class_name, variable_name, address_space_read):
+    def source_var_read_job_id(self, class_name, variable_name, address_space_read):
+        """Returns job id for given source variable"""
         if address_space_read in ['asynchronous', 'synchronous']:
             return 'ASSOURCEVARIABLE_{0}_READ_{1}'.format(class_name, variable_name)
         else:
             return 'ASSOURCEVARIABLE_NOTHING'
 
-    def sourceVariableWriteJobId(self, class_name, variable_name, address_space_write):
+    def source_var_write_job_id(self, class_name, variable_name, address_space_write):
+        """Returns job id for given source variable"""
         if address_space_write in ['asynchronous', 'synchronous']:
             return 'ASSOURCEVARIABLE_{0}_WRITE_{1}'.format(class_name, variable_name)
         else:
             return 'ASSOURCEVARIABLE_NOTHING'
 
-    def isDataTypeNumeric(self, quasar_data_type):
+    def is_data_type_numeric(self, quasar_data_type):
+        """Returns True if given type can be considered numeric"""
         if not quasar_data_type in Oracle.AllQuasarDataTypes:
             raise Exception('quasar_data_type {0} unknown'.format(quasar_data_type))
         return quasar_data_type in Oracle.NumericDataTypes

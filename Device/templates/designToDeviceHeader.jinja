@@ -92,7 +92,7 @@ namespace Device
       {% endif %}
     {% endfor %}
     {% for rv in m.returnvalue %}
-      {{oracle.quasarDataTypeToCppType(rv.get('dataType'), rv.array|length>0 )}}& {{rv.get('name')}}
+      {{oracle.quasar_data_type_to_cpp_type(rv.get('dataType'), rv.array|length>0 )}}& {{rv.get('name')}}
       {%- if not loop.last %},
       {% endif %}
     {% endfor %}
