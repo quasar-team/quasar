@@ -23,6 +23,7 @@ else(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
 	include(${PROJECT_BINARY_DIR}/Device/generated/cmake_header.cmake)
 endif(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
 
+# check quasar/Device/DeviceCustom.cmake.example for an example!
 if(EXISTS ${PROJECT_SOURCE_DIR}/Device/DeviceCustom.cmake)
 	include (DeviceCustom.cmake)
 endif(EXISTS ${PROJECT_SOURCE_DIR}/Device/DeviceCustom.cmake)
@@ -49,4 +50,3 @@ add_library (Device OBJECT
 )
     
 add_dependencies (Device Configuration.hxx_GENERATED AddressSpaceGeneratedHeaders DeviceBase )
-
