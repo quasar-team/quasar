@@ -35,7 +35,6 @@ DEPENDS ${DESIGN_FILE}
 	templates/designToRootBody.jinja
 	templates/commonDeviceTemplates.jinja
 	${QUASAR_TRANSFORM_SENSITIVE_FILES}
-	
 )
 
 add_library (Device OBJECT
