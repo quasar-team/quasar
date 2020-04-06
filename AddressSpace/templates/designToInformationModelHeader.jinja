@@ -45,7 +45,7 @@ public:
   AS_TYPE_QUASAR,
   AS_TYPE_SERVER,
   AS_TYPE_BUILDINFORMATION
-  {% for className in designInspector.getNamesOfAllClasses() -%},
+  {% for className in designInspector.get_names_of_all_classes() -%},
     AS_TYPE_{{className|upper}}
   {% endfor %}
   };

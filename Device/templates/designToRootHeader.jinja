@@ -22,7 +22,7 @@
 {{ headers.cppFullGeneratedHeader() }}
 
 {% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
-{% set root = designInspector.objectifyRoot() %}
+{% set root = designInspector.objectify_root() %}
 
 #ifndef DROOT_H_
 #define DROOT_H_
@@ -36,7 +36,7 @@ namespace Device
 {
 
 {% for hasobjects in root.hasobjects %}
-  {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+  {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
     class D{{hasobjects.get('class')}};
   {% endif %}
 {% endfor %}

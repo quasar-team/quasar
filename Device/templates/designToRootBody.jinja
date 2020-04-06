@@ -24,7 +24,7 @@
 
 {{ headers.cppFullGeneratedHeader() }}
 
-{% set root = designInspector.objectifyRoot() %}
+{% set root = designInspector.objectify_root() %}
 
 #include <stdexcept>
 
@@ -33,7 +33,7 @@
 
 // Need to have full declarations of classes on which we will call "delete" operator
 {% for hasobjects in root.hasobjects %}
-  {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+  {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
     #include <D{{hasobjects.get('class')}}.h>
   {% endif %}
 {% endfor %}
@@ -57,7 +57,7 @@ DRoot::~DRoot()
   {{ commonDeviceTemplates.deviceLogicDeleter(root, designInspector, oracle) }}
   // part 2 of dtr: remove all orphaned objects
   {% for hasobjects in root.hasobjects %}
-    {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
       {
         auto objects = Base_D{{hasobjects.get('class')}}::orphanedObjects ();
         for (auto* obj : objects)
@@ -85,7 +85,7 @@ void DRoot::unlinkAllChildren () const
   unsigned int objectCounter = 0;
   // part 1: unlinking all legit children
   {% for hasobjects in root.hasobjects %}
-    {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
       for (auto* obj : {{hasobjects.get('class')|lower}}s())
         objectCounter += obj->unlinkAllChildren();
     {% endif %}
@@ -93,7 +93,7 @@ void DRoot::unlinkAllChildren () const
 
   // part 2: unlinking all orphaned children
   {% for hasobjects in root.hasobjects %}
-    {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
       {
         auto objects = Base_D{{hasobjects.get('class')}}::orphanedObjects ();
         for (auto* obj : objects)

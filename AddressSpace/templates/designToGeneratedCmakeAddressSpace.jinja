@@ -22,7 +22,7 @@
 {% import 'headers.jinja' as headers %}
 {{ headers.cppFullGeneratedHeader()|cppCommentsToCmakeComments }}
 
-{% for className in designInspector.getNamesOfAllClasses() %}
+{% for className in designInspector.get_names_of_all_classes() %}
   add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/include/AS{{className}}.h
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
   COMMAND python quasar.py generate asclass {{className}} --project_binary_dir ${PROJECT_BINARY_DIR}
@@ -41,7 +41,7 @@ ${PROJECT_BINARY_DIR}/AddressSpace/src/AddressSpaceClasses.cpp
 )
 
 set(ADDRESSSPACE_HEADERS
-{% for className in designInspector.getNamesOfAllClasses() %}
+{% for className in designInspector.get_names_of_all_classes() %}
   ${PROJECT_BINARY_DIR}/AddressSpace/include/AS{{className}}.h
 {% endfor %}
 )

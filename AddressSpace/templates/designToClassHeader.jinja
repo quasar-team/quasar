@@ -20,7 +20,7 @@
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
 {% import 'headers.jinja' as headers %}
-{% set this = designInspector.objectifyClass(className) %}
+{% set this = designInspector.objectify_class(className) %}
 {{ headers.cppFullGeneratedHeader() }}
 
 #ifndef __AS{{className}}__H__
@@ -38,7 +38,7 @@
 
 #include <ASSourceVariable.h>
 
-{% if designInspector.classHasDeviceLogic(className) %}
+{% if designInspector.class_has_device_logic(className) %}
   /* forward declaration */
   namespace Device { class D{{className}}; }
 {% endif %}
@@ -107,7 +107,7 @@ namespace AddressSpace
   {% endfor %}
 
   /* device logic links (if device logic is present per this class) */
-    {% if designInspector.classHasDeviceLogic(className) %}
+    {% if designInspector.class_has_device_logic(className) %}
     void linkDevice( Device::D{{className}}* deviceLink);
     void unlinkDevice ();
     Device::D{{className}}* getDeviceLink () const { return m_deviceLink; }
@@ -164,7 +164,7 @@ namespace AddressSpace
   {% endfor %}
 
   /* Device Logic link (if requested) */
-  {% if designInspector.classHasDeviceLogic(className) %}
+  {% if designInspector.class_has_device_logic(className) %}
     Device::D{{className}}* m_deviceLink;
   {% endif %}
 

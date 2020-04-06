@@ -20,8 +20,8 @@
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
 {% import 'headers.jinja' as headers %}
-{% set this = designInspector.objectifyClass(className) %}
-{{ headers.cppStubHeader(designInspector.objectifyRoot().get('author')) }}
+{% set this = designInspector.objectify_class(className) %}
+{{ headers.cppStubHeader(designInspector.objectify_root().get('author')) }}
 
 #ifndef __D{{className}}__H__
 #define __D{{className}}__H__
@@ -57,7 +57,7 @@ namespace Device
 
   /* delegators for
   cachevariables and sourcevariables */
-  {% for cv in designInspector.objectifyCacheVariables(className, "[@addressSpaceWrite='delegated']") %}
+  {% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
     /* Note: never directly call this function. */
     {% if cv.array|length>0 %}
       UaStatus write{{cv.get('name')|capFirst}} ( const std::vector<{{cv.get('dataType')}}>& v);

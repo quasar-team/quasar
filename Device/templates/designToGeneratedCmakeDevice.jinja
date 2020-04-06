@@ -34,7 +34,7 @@ DEPENDS
 
 )
 
-{% for className in designInspector.getNamesOfAllClasses() %}
+{% for className in designInspector.get_names_of_all_classes() %}
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/Base_D{{className}}.h
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND python quasar.py generate base_h {{className}} --project_binary_dir ${PROJECT_BINARY_DIR}
@@ -53,13 +53,13 @@ set(DEVICEBASE_GENERATED_FILES
       include/DRoot.h
       src/DRoot.cpp
       generated/Base_All.cpp
-      {% for className in designInspector.getNamesOfAllClasses(only_with_device_logic=True) %}
+      {% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
       generated/Base_D{{className}}.h
       {% endfor %}
 )
 
 set(DEVICE_CLASSES
-  {% for className in designInspector.getNamesOfAllClasses(only_with_device_logic=True) %}
+  {% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
   src/D{{className}}.cpp
   {% endfor %}
 )

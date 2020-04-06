@@ -33,30 +33,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from lxml import etree, objectify
 from colorama import Fore, Style
+
 DEBUG = False
 DEBUG_XPATH = False
 
-quasar_namespaces = {'d':'http://cern.ch/quasar/Design'}
+QUASAR_NAMESPACES = {'d':'http://cern.ch/quasar/Design'}
 
 class DesignInspector():
+    """This class is to dig out data of interest for quasar NextGen transforms"""
     def __init__(self, designPath):
-        f = open(designPath,'r')
-        self.tree = etree.parse(f)
+        design_file = open(designPath, 'r')
+        self.tree = etree.parse(design_file)
         # TODO: get root here if it is guaranteed to exist?
 
     def xpath(self, expr, *args):
         """ Just a wrapper on top of etree.xpath that does quasar namespaces mapping """
         xpath_expr = expr.format(*args)
-        result = self.tree.xpath(xpath_expr, namespaces = quasar_namespaces)
+        result = self.tree.xpath(xpath_expr, namespaces=QUASAR_NAMESPACES)
         if DEBUG_XPATH:
             print(Fore.YELLOW + "xpath({0}) gives {1}".format(
                 xpath_expr, result)
-                 + Style.RESET_ALL)
+                  + Style.RESET_ALL)
         return result
 
-    def getNamesOfAllClasses(self, only_with_device_logic=False):
-        """ Returns a list of names of all classes from the design.
-            Unless only_with_device_logic is True, returns classes with and without device logic. """
+    def get_names_of_all_classes(self, only_with_device_logic=False):
+        """Returns a list of names of all classes from the design.
+        Unless only_with_device_logic is True, returns classes with and without
+        device logic"""
         xpath_expression = 'd:class'
         if only_with_device_logic:
             xpath_expression += '[d:devicelogic]'
@@ -64,130 +67,148 @@ class DesignInspector():
         classes_names = map(lambda x: x.attrib['name'], classes)
         return classes_names
 
-    def getParentClassName(self, class_name):
-        ## TODO: deprecated, remove it
-        return 'Parent_D'+class_name
-
-    def classHasDeviceLogic(self, class_name):
+    def class_has_device_logic(self, class_name):
         """ Returns true if given class has device logic """
-        """ TODO: should throw an exception when no such class """
+        # TODO: should throw an exception when no such class
         device_logic = self.xpath('/d:design/d:class[@name="{0}"]/d:devicelogic'.format(class_name))
         return len(device_logic) > 0 ## no devicelogic element means empty list returned
 
-    def getHasObjectsOriginNames(self, class_name, include_root=False):
-        """ TODO: is broken !! """
-        """ Finds all classes (and Root, if requested) that have hasObjects pointing to class_name """
-        classes = self.xpath("/d:design/d:class[d:hasobjects/@class='{0}']".format(class_name))
+    def get_has_objects_origin_names(self, class_name, include_root=False):
+        """Finds all classes (and Root, if requested) that have has_objects
+        pointing to class_name """
+        classes = self.xpath(
+            "/d:design/d:class[d:hasobjects/@class='{0}']".format(class_name))
         classes = [x.attrib['name'] for x in classes]
         if include_root:
-            root = self.xpath("/d:design/d:root[d:hasobjects/@class='{0}']".format(class_name))
+            root = self.xpath(
+                "/d:design/d:root[d:hasobjects/@class='{0}']".format(class_name))
             if len(root) == 1: # will be an empty list if none
                 classes += ['Root']
-        if DEBUG:
-            print(Fore.YELLOW + "getHasObjectsOriginNames({0}, include_root={1}) gives {2}".format(
-                class_name, include_root, classes)
-                 + Style.RESET_ALL)
         return classes
 
     def classHasLegitDeviceLogicParent(self, class_name):
-        if not self.classHasDeviceLogic(class_name):
+        if not self.class_has_device_logic(class_name):
             return False
-        hasObjects_origins = self.getHasObjectsOriginNames(class_name, include_root=True)
-        if len(hasObjects_origins) != 1:
+        has_objects_origins = self.get_has_objects_origin_names(
+            class_name, include_root=True)
+        if len(has_objects_origins) != 1:
             return False
-        if hasObjects_origins[0] == "Root":
+        if has_objects_origins[0] == "Root":
             return True
-        if not self.classHasDeviceLogic(hasObjects_origins[0]):
+        if not self.class_has_device_logic(has_objects_origins[0]):
             return False
         return True
 
-    def getParentStruct(self, class_name):
+    def get_parent_struct(self, class_name):
         """ Returns whatever should be typedef'ed as Parent_DX for X = class_name """
-        "TODO: rename to getDeviceLogicParentStruct "
-        "TODO: ensure that both parent and child have device logic"
-        NoParentStructure = 'struct{/*No exact Parent of the class*/}' # a case where device logic parent cant be established
-        if self.classHasDeviceLogic(class_name):
-            hasObjects_origins = self.getHasObjectsOriginNames(class_name, include_root=True)
-            if len(hasObjects_origins) == 1:
-                parentStructure = 'D'+hasObjects_origins[0]
+        # a case where device logic parent cant be established
+        no_parent_structure = 'struct{/*No exact Parent of the class*/}'
+        if self.class_has_device_logic(class_name):
+            has_objects_origins = self.get_has_objects_origin_names(class_name, include_root=True)
+            if len(has_objects_origins) == 1:
+                parent_structure = 'D'+has_objects_origins[0]
             else:
-                parentStructure = NoParentStructure
+                parent_structure = no_parent_structure
         else:
-            parentStructure = NoParentStructure
+            parent_structure = no_parent_structure
         if DEBUG:
-            print(Fore.YELLOW + "getParentStruct({0}) gives {1}".format(class_name, parentStructure) + Style.RESET_ALL)
-        return parentStructure
+            print(Fore.YELLOW
+                  + "get_parent_struct({0}) gives {1}".format(
+                      class_name, parent_structure)
+                  + Style.RESET_ALL)
+        return parent_structure
 
-    def getClassHasObjects(self, class_name, only_with_device_logic=False):
-        """ Returns a list of names of all classes that are 'children' (in hasObjects) sense of given class """
-        """ TODO: should throw a NoSuchClass exception for no class """
+    def get_class_has_objects(self, class_name):
+        """Returns a list of names of all classes that are 'children'
+        (in has_objects) sense of given class."""
+        # TODO: should throw a NoSuchClass exception when no class!
         has_objects = self.xpath("/d:design/d:class[@name='{0}']/d:hasobjects".format(class_name))
         return has_objects
 
-    def isHasObjectsSingleton(self, hasObjects):
-        return "minOccurs" in hasObjects.attrib and hasObjects.attrib['minOccurs'] == "1" and "maxOccurs" in hasObjects.attrib and hasObjects.attrib['maxOccurs'] == "1"
+    def is_has_objects_singleton_any(self, has_objects):
+        return ("minOccurs" in has_objects.attrib
+                and has_objects.attrib['minOccurs'] == "1"
+                and "maxOccurs" in has_objects.attrib
+                and has_objects.attrib['maxOccurs'] == "1")
 
-    def isHasObjectsSingleton2(self, hasObjects):
+    def is_has_objects_singleton_any2(self, has_objects):
         """ TODO merge this with one, this should favour the objectified version """
-        return "minOccurs" in hasObjects.keys() and "maxOccurs" in hasObjects.keys() and hasObjects.get("minOccurs") == "1" and hasObjects.get("maxOccurs") == "1"
+        return ("minOccurs" in has_objects.keys()
+                and "maxOccurs" in has_objects.keys()
+                and has_objects.get("minOccurs") == "1"
+                and has_objects.get("maxOccurs") == "1")
 
-
-    def getClassHasObjectsClassNames(self, class_name, only_with_device_logic=False):
-        """ Returns a list of names of all classes that are 'children' (in hasObjects) sense of given class """
-        """ TODO: should throw a NoSuchClass exception for no class """
+    def get_class_has_objectsClassNames(self, class_name, only_with_device_logic=False):
+        """Returns a list of names of all classes that are 'children' (in has_objects) sense of
+        given class"""
+        # TODO: should throw a NoSuchClass exception for no class
         has_objects = self.xpath("/d:design/d:class[@name='{0}']/d:hasobjects".format(class_name))
-        has_objects_class_names = [ has_object.attrib['class'] for has_object in has_objects ]
+        has_objects_class_names = [has_object.attrib['class'] for has_object in has_objects]
         if only_with_device_logic:
-            has_objects_class_names = [ x for x in has_objects_class_names if self.classHasDeviceLogic(x) ]
-        if DEBUG:
-            print(Fore.YELLOW + "getClassHasObjectsClassNames({0}, only_with_device_logic={2}) gives {1}".format(class_name, has_objects_class_names, only_with_device_logic) + Style.RESET_ALL)
+            has_objects_class_names = [x for x in has_objects_class_names
+                                       if self.class_has_device_logic(x)]
         return has_objects_class_names
 
-    def classDeviceLogicHasMutex(self, class_name):
-        mutex = self.xpath("/d:design/d:class[@name='{0}']/d:devicelogic/d:mutex".format(class_name))
+    def device_logic_has_mutex(self, class_name):
+        """Returns True if class 'class_name' device logic has mutex"""
+        mutex = self.xpath(
+            "/d:design/d:class[@name='{0}']/d:devicelogic/d:mutex".format(class_name))
         return len(mutex) > 0  ## no mutex element means empty list returned
 
-    def objectifyClass(self, class_name):
+    def objectify_class(self, class_name):
         class_element = self.xpath("/d:design/d:class[@name='{0}']".format(class_name))
         if len(class_element) != 1:
-            raise Exception ("ERROR: Class {0} NOT FOUND in your quasar design... ".format(class_name))
-        objectified = objectify.fromstring( etree.tostring(class_element[0]) )
+            raise Exception(
+                "ERROR: Class {0} NOT FOUND in your quasar design... ".format(class_name))
+        objectified = objectify.fromstring(etree.tostring(class_element[0]))
         return objectified
 
-    def objectifyRoot(self):
+    def objectify_root(self):
         root_element = self.xpath("/d:design/d:root")
-        return objectify.fromstring( etree.tostring(root_element[0]) )
+        return objectify.fromstring(etree.tostring(root_element[0]))
 
-    def objectifyAny(self, xpathExpression, *args):
-        results = self.xpath(xpathExpression.format(*args))
-        objectified = [ objectify.fromstring( etree.tostring(x)) for x in results ]
+    def objectify_any(self, xpath_expression, *args):
+        results = self.xpath(xpath_expression.format(*args))
+        objectified = [objectify.fromstring(etree.tostring(x)) for x in results]
         return objectified
 
-    def objectifyHasObjects(self, class_name, restrict_by=''):
-        return self.objectifyAny("/d:design/d:class[@name='{0}']/d:hasobjects{1}".format(class_name, restrict_by))
+    def objectify_has_objects(self, class_name, restrict_by=''):
+        return self.objectify_any(
+            "/d:design/d:class[@name='{0}']/d:hasobjects{1}".format(
+                class_name, restrict_by))
 
-    def objectifyCacheVariables(self, class_name, restrict_by=''):
-        return self.objectifyAny("/d:design/d:class[@name='{0}']/d:cachevariable{1}".format(class_name, restrict_by))
+    def objectify_cache_variables(self, class_name, restrict_by=''):
+        """Returns a list of lxml.objectify of cache-vars of given class"""
+        return self.objectify_any(
+            "/d:design/d:class[@name='{0}']/d:cachevariable{1}".format(
+                class_name, restrict_by))
 
-    def objectifyConfigEntries(self, class_name, restrict_by=''):
-        return self.objectifyAny("/d:design/d:class[@name='{0}']/d:configentry{1}".format(class_name, restrict_by))
+    def objectify_config_entries(self, class_name, restrict_by=''):
+        """Returns a list of lxml.objectify of config-entries of given class"""
+        return self.objectify_any(
+            "/d:design/d:class[@name='{0}']/d:configentry{1}".
+            format(class_name, restrict_by))
 
-    def objectifySourceVariables(self, class_name, restrict_by=''):
-        return self.objectifyAny("/d:design/d:class[@name='{0}']/d:sourcevariable{1}".format(class_name, restrict_by))
+    def objectify_source_variables(self, class_name, restrict_by=''):
+        """Returns a list of lxml.objectify of source-vars of given class"""
+        return self.objectify_any(
+            "/d:design/d:class[@name='{0}']/d:sourcevariable{1}".format(class_name, restrict_by))
 
-    def objectifyMethods(self, class_name, restrict_by=''):
-        return self.objectifyAny("/d:design/d:class[@name='{0}']/d:method{1}".format(class_name, restrict_by))
+    def objectify_methods(self, class_name, restrict_by=''):
+        """Returns a list of lxml.objectify of methods of given class"""
+        return self.objectify_any(
+            "/d:design/d:class[@name='{0}']/d:method{1}".format(class_name, restrict_by))
 
-    def objectifyDesign(self):
-        return self.objectifyAny("/d:design")[0]
+    def objectify_design(self):
+        return self.objectify_any("/d:design")[0]
 
-    def designBooleanAsCppBoolean(self, attribute):
+    def design_boolean_as_cpp_boolean(self, attribute):
         if attribute is None:
             return 'false'
         if attribute:
             return 'true'
         return 'false'
 
-    def isClassSingleVariableNode(self, class_name):
-        the_class = self.objectifyClass(class_name)
+    def is_class_single_variable_node(self, class_name):
+        the_class = self.objectify_class(class_name)
         return the_class.get('singleVariableNode') == 'true'

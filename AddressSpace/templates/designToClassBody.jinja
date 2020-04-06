@@ -33,9 +33,9 @@
 
 #include <SourceVariables.h>
 
-{% for className in designInspector.getNamesOfAllClasses() %}
+{% for className in designInspector.get_names_of_all_classes() %}
   #include <AS{{className}}.h>
-  {% if designInspector.classHasDeviceLogic(className) %}
+  {% if designInspector.class_has_device_logic(className) %}
     #include <D{{className}}.h>
   {% endif %}
 {% endfor %}
@@ -51,8 +51,8 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     return basicName;
 }
 
-{% for className in designInspector.getNamesOfAllClasses() %}
-  {% set this = designInspector.objectifyClass(className) %}
+{% for className in designInspector.get_names_of_all_classes() %}
+  {% set this = designInspector.objectify_class(className) %}
 
   /*ctr*/
   AS{{className}}::AS{{className}} (
@@ -63,12 +63,12 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
   	OpcUa::BaseObjectType (
   		/*nodeId*/ nm->makeChildNodeId(
         parentNodeId,
-        decorateSingleVariableNodeName(config.name(), {{designInspector.designBooleanAsCppBoolean(this.get('singleVariableNode'))}}).c_str()),
-      /*name*/decorateSingleVariableNodeName(config.name(), {{designInspector.designBooleanAsCppBoolean(this.get('singleVariableNode'))}}).c_str(),
+        decorateSingleVariableNodeName(config.name(), {{designInspector.design_boolean_as_cpp_boolean(this.get('singleVariableNode'))}}).c_str()),
+      /*name*/decorateSingleVariableNodeName(config.name(), {{designInspector.design_boolean_as_cpp_boolean(this.get('singleVariableNode'))}}).c_str(),
       nm->getNameSpaceIndex(),
       nm),
   	m_typeNodeId (typeNodeId),
-    {% if designInspector.isClassSingleVariableNode(className) %}
+    {% if designInspector.is_class_single_variable_node(className) %}
       m_effectiveParentNodeIdForChildren(parentNodeId)
     {% else %}
       m_effectiveParentNodeIdForChildren(this->nodeId())
@@ -82,7 +82,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     {%- for m in this.method %},
       m_{{m.get('name')}} (nullptr) // this method will be created in the ctr body
     {% endfor %}
-    {% if designInspector.classHasDeviceLogic(className) %},
+    {% if designInspector.class_has_device_logic(className) %},
       m_deviceLink(nullptr)
     {% endif %}
     {
@@ -90,7 +90,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {# here constructor body begins #}
       UaStatus status;
 
-      {% if designInspector.isClassSingleVariableNode(className) %}
+      {% if designInspector.is_class_single_variable_node(className) %}
         status = nm->addUnreferencedNode( this );
       {% else %}
         status = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent );
@@ -200,7 +200,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       ASNodeManager* nm,
       const Configuration::{{className}}& config)
     {
-      {% for cv in designInspector.objectifyCacheVariables(className, '[d:array]') %}
+      {% for cv in designInspector.objectify_cache_variables(className, '[d:array]') %}
         {
           unsigned int dim = config.{{cv.get('name')}}().value().size();
           // make sure the design size constraints are respected during runtime
@@ -306,7 +306,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
             methodName),
           methodName,
           nm->getNameSpaceIndex());
-        {% if designInspector.classHasDeviceLogic(className) %}
+        {% if designInspector.class_has_device_logic(className) %}
           m_{{m.get('name')}}->assignHandler( this, &AS{{className}}::call{{m.get('name')|capFirst}} );
         {% endif %}
 
@@ -388,7 +388,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
     AS{{className}}::~AS{{className}} ()
     {
-      {% if designInspector.classHasDeviceLogic(className) %}
+      {% if designInspector.class_has_device_logic(className) %}
       if (m_deviceLink)
       {
         LOG(Log::ERR) << "While destructing the class, device logic link is still not null. Sth went wrong with quasar logic...";
@@ -401,7 +401,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       const std::string& nameByConfig
       ) const
     {
-      {% if designInspector.isClassSingleVariableNode(className) %}
+      {% if designInspector.is_class_single_variable_node(className) %}
         return nameByConfig.c_str();
       {% else %}
         return nameByDesign.c_str();
@@ -410,7 +410,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
 {### SETTERS AND GETTERS ###}
     /* generate setters and getters -- for scalar cache-variables first */
-    {% for cv in designInspector.objectifyCacheVariables(className, '[not(d:array)]') %}
+    {% for cv in designInspector.objectify_cache_variables(className, '[not(d:array)]') %}
       UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), cv.get('dataType'), False) }}
       {
         {% if cv.get('dataType') == 'UaVariant' %}
@@ -479,7 +479,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
     {% endfor %}
 
     /* generate setters and getters -- now for arrays */
-    {% for cv in designInspector.objectifyCacheVariables(className, '[d:array]') %}
+    {% for cv in designInspector.objectify_cache_variables(className, '[d:array]') %}
     UaStatus AS{{className}}::{{oracle.get_cache_variable_setter_array(cv.get('name'), cv.get('dataType'), False)}}
     {
       auto min = {{cv.get('name')}}_minimumSize();
@@ -602,7 +602,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               {% endif %}
             {% endif %}
             /* if device logic type specified, then generate calling functions */
-            {% if designInspector.classHasDeviceLogic(className) %}
+            {% if designInspector.class_has_device_logic(className) %}
               return getDeviceLink()->write{{cv.get('name')|capFirst}} (v_value);
             {% else %}
               return OpcUa_BadNotImplemented;
@@ -623,7 +623,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
         const UaVariantArray&     inputArguments
     )
     {
-      {% if designInspector.classHasDeviceLogic(className) %}
+      {% if designInspector.class_has_device_logic(className) %}
         MethodHandleUaNode* upper = dynamic_cast<MethodHandleUaNode*> (pMethodHandle);
         if (!upper)
           return OpcUa_BadInternalError;
@@ -641,7 +641,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {% endif %}
     }
 
-    {% if designInspector.classHasDeviceLogic(className) %}
+    {% if designInspector.class_has_device_logic(className) %}
       {% for m in this.method %}
         UaStatus AS{{className}}::call{{m.get('name')|capFirst}} (
           MethodManagerCallback* pCallback,
@@ -751,7 +751,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
 {### LINK/UNLINK DEVICE LOGIC ###}
     /* generate device logic link */
-    {% if designInspector.classHasDeviceLogic(className) %}
+    {% if designInspector.class_has_device_logic(className) %}
     void AS{{className}}::linkDevice( Device::D{{className}}* deviceLink)
     {
       if (m_deviceLink) /* This is an error -- device can be linked at most once in the object's lifetime. */

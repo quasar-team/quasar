@@ -28,15 +28,15 @@
 
 /* Note: need to have full declarations of classes on which we will call
   "delete" operator plus more, and not just base classes */
-{% for className in designInspector.getNamesOfAllClasses(only_with_device_logic=True) %}
+{% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
 #include <D{{className}}.h>
 {% endfor %}
 
 namespace Device
 {
 
-{% for className in designInspector.getNamesOfAllClasses(only_with_device_logic=True) %}
-{% set this = designInspector.objectifyClass(className) %}
+{% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
+{% set this = designInspector.objectify_class(className) %}
 
 // ctr
 Base_D{{className}}::Base_D{{className}} (
@@ -46,10 +46,10 @@ Base_D{{className}}::Base_D{{className}} (
   m_parent(parent),
   m_addressSpaceLink(nullptr),
   m_stringAddress("**NB**")
-  {% for cv in designInspector.objectifyCacheVariables(className, "[@isKey='true']") %} {# TODO #}
+  {% for cv in designInspector.objectify_cache_variables(className, "[@isKey='true']") %} {# TODO #}
   , m_{{cv.get('name')}} ( config.{{cv.get('name')}}() ) {# TODO @pnikiel move to body #}
   {% endfor %}
-  {% for ce in designInspector.objectifyConfigEntries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
+  {% for ce in designInspector.objectify_config_entries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
   , m_{{ce.get('name')}}( config.{{ce.get('name')}}() ) {# TODO @pnikiel move to body #}
   {% endfor %}
 {
@@ -90,7 +90,7 @@ unsigned int Base_D{{className}}::unlinkAllChildren ()
   m_addressSpaceLink = nullptr;
   {# TODO: unify this with what is designToRootBody.jinja #}
   {% for hasobjects in this.hasobjects %}
-    {% if designInspector.classHasDeviceLogic(hasobjects.get('class')) %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
       for (auto* obj : {{hasobjects.get('class')|lower}}s())
         objectCounter += obj->unlinkAllChildren();
     {% endif %}
@@ -107,7 +107,7 @@ unsigned int Base_D{{className}}::unlinkAllChildren ()
 
 
 // lists of orphaned objects, per class
-{% for className in designInspector.getNamesOfAllClasses(only_with_device_logic=True) %}
+{% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
   std::list<D{{className}}*> Base_D{{className}}::s_orphanedObjects;
 {% endfor %}
 }

@@ -20,8 +20,8 @@
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
 {% import 'headers.jinja' as headers %}
-{% set this = designInspector.objectifyClass(className) %}
-{{ headers.cppStubHeader(designInspector.objectifyRoot().get('author')) }}
+{% set this = designInspector.objectify_class(className) %}
+{{ headers.cppStubHeader(designInspector.objectify_root().get('author')) }}
 
 #include <Configuration.hxx> // TODO; should go away, is already in Base class for ages
 
@@ -70,7 +70,7 @@ namespace Device
 
   /* delegates for cachevariables */
 
-  {% for cv in designInspector.objectifyCacheVariables(className, "[@addressSpaceWrite='delegated']") %}
+  {% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
     /* Note: never directly call this function. */
 
     {% if cv.array|length > 0 %}
