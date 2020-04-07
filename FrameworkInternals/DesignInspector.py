@@ -86,15 +86,17 @@ class DesignInspector():
                 classes += ['Root']
         return classes
 
-    def classHasLegitDeviceLogicParent(self, class_name):
+    def class_has_legit_device_parent(self, class_name):
+        """Returns True if there exists a particular C++ Device Logic type that is a parent to
+        given class"""
         if not self.class_has_device_logic(class_name):
             return False
         has_objects_origins = self.get_has_objects_origin_names(
             class_name, include_root=True)
         if len(has_objects_origins) != 1:
-            return False
+            return False # referenced from multiple parents, so far sure no unique parent
         if has_objects_origins[0] == "Root":
-            return True
+            return True # Root by definition has device logic
         if not self.class_has_device_logic(has_objects_origins[0]):
             return False
         return True
@@ -126,19 +128,22 @@ class DesignInspector():
         return has_objects
 
     def is_has_objects_singleton_any(self, has_objects):
+        """Returns True if given hasObjects is a singleton. A version for lxml.etree"""
+        # TODO @pnikiel merge both versions
         return ("minOccurs" in has_objects.attrib
                 and has_objects.attrib['minOccurs'] == "1"
                 and "maxOccurs" in has_objects.attrib
                 and has_objects.attrib['maxOccurs'] == "1")
 
     def is_has_objects_singleton_any2(self, has_objects):
-        """ TODO merge this with one, this should favour the objectified version """
+        """Returns True if given hasObjects is a singleton. A version for lxml.objectify"""
+        # TODO @pnikiel merge both versions
         return ("minOccurs" in has_objects.keys()
                 and "maxOccurs" in has_objects.keys()
                 and has_objects.get("minOccurs") == "1"
                 and has_objects.get("maxOccurs") == "1")
 
-    def get_class_has_objectsClassNames(self, class_name, only_with_device_logic=False):
+    def has_objects_class_names(self, class_name, only_with_device_logic=False):
         """Returns a list of names of all classes that are 'children' (in has_objects) sense of
         given class"""
         # TODO: should throw a NoSuchClass exception for no class
@@ -156,6 +161,7 @@ class DesignInspector():
         return len(mutex) > 0  ## no mutex element means empty list returned
 
     def objectify_class(self, class_name):
+        """Returns lxml.objectify of given class"""
         class_element = self.xpath("/d:design/d:class[@name='{0}']".format(class_name))
         if len(class_element) != 1:
             raise Exception(
@@ -164,15 +170,18 @@ class DesignInspector():
         return objectified
 
     def objectify_root(self):
+        """Returns lxml.objectify of d:root"""
         root_element = self.xpath("/d:design/d:root")
         return objectify.fromstring(etree.tostring(root_element[0]))
 
     def objectify_any(self, xpath_expression, *args):
+        """Returns lxml.objectify of anything, this basically is a nice wrapper."""
         results = self.xpath(xpath_expression.format(*args))
         objectified = [objectify.fromstring(etree.tostring(x)) for x in results]
         return objectified
 
     def objectify_has_objects(self, class_name, restrict_by=''):
+        """Returns list of lxml.objectify of hasObjects"""
         return self.objectify_any(
             "/d:design/d:class[@name='{0}']/d:hasobjects{1}".format(
                 class_name, restrict_by))
@@ -200,9 +209,11 @@ class DesignInspector():
             "/d:design/d:class[@name='{0}']/d:method{1}".format(class_name, restrict_by))
 
     def objectify_design(self):
+        """Returns lxml.objectify of d:design"""
         return self.objectify_any("/d:design")[0]
 
     def design_boolean_as_cpp_boolean(self, attribute):
+        """Transforms a value from Design to a C++ boolean"""
         if attribute is None:
             return 'false'
         if attribute:
@@ -210,5 +221,6 @@ class DesignInspector():
         return 'false'
 
     def is_class_single_variable_node(self, class_name):
+        """Returns True if the class is a singleVariableNode"""
         the_class = self.objectify_class(class_name)
         return the_class.get('singleVariableNode') == 'true'

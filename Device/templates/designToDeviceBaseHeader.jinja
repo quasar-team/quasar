@@ -43,7 +43,7 @@ namespace Configuration { class {{className}}; }
 
 namespace Device
 {
-  {% if designInspector.classHasLegitDeviceLogicParent(className) %}
+  {% if designInspector.class_has_legit_device_parent(className) %}
   class {{designInspector.get_parent_struct(className)}};
   {% endif %}
 
@@ -52,7 +52,7 @@ namespace Device
   class D{{className}};
 
   /* forward declarations (comes from design.class.has_objects) */
-  {% for containedClass in designInspector.get_class_has_objectsClassNames(className, only_with_device_logic=True) %}
+  {% for containedClass in designInspector.has_objects_class_names(className, only_with_device_logic=True) %}
   class D{{containedClass}};
   {% endfor %}
 

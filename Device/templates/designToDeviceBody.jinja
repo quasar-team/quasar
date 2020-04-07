@@ -111,7 +111,7 @@ namespace Device
     {% set allArgsLen = m.argument|length + m.returnvalue|length %}
     UaStatus D{{className}}::call{{m.get('name')|capFirst}} (
     {% for arg in m.argument %}
-      {{oracle.fixDataTypePassingMethod(arg.get('dataType'), arg.array|length>0 )}} {{arg.get('name')}}
+      {{oracle.fix_data_type_passing_method(arg.get('dataType'), arg.array|length>0 )}} {{arg.get('name')}}
       {%- if loop.index < allArgsLen %},
       {% endif %}
     {% endfor %}
