@@ -153,7 +153,21 @@ class Oracle():
         'UaByteString'   : 'OpcUaType_ByteString',
         'UaVariant'      : 'OpcUaType_Variant'
     }
-
+    
+    QuasarTypeToXsdType = {
+        'UaString'      : 'xs:string',
+        'OpcUa_SByte'   : 'xs:byte',
+        'OpcUa_Byte'    : 'xs:unsignedByte',
+        'OpcUa_Int16'   : 'xs:short',
+        'OpcUa_UInt16'  : 'xs:unsignedShort',
+        'OpcUa_Int32'   : 'xs:int',
+        'OpcUa_UInt32'  : 'xs:unsignedInt',
+        'OpcUa_Int64'   : 'xs:long',
+        'OpcUa_UInt64'  : 'xs:unsignedLong',
+        'OpcUa_Boolean' : 'xs:boolean',
+        'OpcUa_Double'  : 'xs:double',
+        'OpcUa_Float'   : 'xs:float'
+    }
 
     def data_type_to_device_type(self, quasar_data_type):
         """TODO @pnikiel We will clean-up type derivation in subsequent efforts """
@@ -330,3 +344,13 @@ class Oracle():
         if not quasar_data_type in Oracle.AllQuasarDataTypes:
             raise Exception('quasar_data_type {0} unknown'.format(quasar_data_type))
         return quasar_data_type in Oracle.NumericDataTypes
+
+    def quasar_data_type_to_xsd_type(self, quasar_data_type):
+        if not quasar_data_type in Oracle.AllQuasarDataTypes:
+            raise Exception('quasar_data_type {0} unknown'.format(quasar_data_type))
+        if not quasar_data_type in Oracle.QuasarTypeToXsdType:
+            raise Exception(
+                "This quasar type {0} cant't be initialized from XSD configuration".format(
+                    quasar_data_type
+                ))
+        return Oracle.QuasarTypeToXsdType[quasar_data_type]

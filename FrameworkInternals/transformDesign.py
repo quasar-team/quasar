@@ -87,9 +87,9 @@ QuasarTransforms = [
     [TransformKeys.AS_INFOMODEL_H,          ['AddressSpace','designToInformationModelHeader.jinja'], 'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
     [TransformKeys.AS_INFOMODEL_CPP,        ['AddressSpace','designToInformationModelBody.jinja'],   'AddressSpace/src/ASInformationModel.cpp',      'B',            True,           False,        None],
     [TransformKeys.AS_CMAKE,                ['AddressSpace','designToGeneratedCmakeAddressSpace.jinja'], 'AddressSpace/cmake_generated.cmake',           'B',            False,          False,        None],
-    [TransformKeys.CONFIGURATION_XSD,       'Configuration/designToConfigurationXSD.xslt',           'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        ['metaXsdPath']],
-    [TransformKeys.CONFIGURATOR,            'Configuration/designToConfigurator.xslt',               'Configuration/Configurator.cpp',               'B',            True,           False,        None],
-    [TransformKeys.CONFIG_VALIDATOR,        'Configuration/designToConfigValidator.xslt',            'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
+    [TransformKeys.CONFIGURATION_XSD,       ['Configuration','designToConfigurationXSD.jinja'],      'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        ['metaXsdPath']],
+    [TransformKeys.CONFIGURATOR,            ['Configuration','designToConfigurator.jinja'],          'Configuration/Configurator.cpp',               'B',            True,           False,        None],
+    [TransformKeys.CONFIG_VALIDATOR,        ['Configuration','designToConfigValidator.jinja'],       'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
     [TransformKeys.DESIGN_VALIDATION,       'Design/designValidation.xslt',                          'Design/validationOutput.removeme',             'B',            False,          False,        None],
     [TransformKeys.UPGRADE_DESIGN,          'Design/designToUpgradedDesign.xslt',                    'Design/Design.xml.upgraded',                   'S',            False,          False,        '{whatToDo}'],
     [TransformKeys.CREATE_DIAGRAM_DOT,      'Design/designToDot.xslt',                               'Design/Design.dot',                            'B',            False,          False,        ['detailLevel']],
@@ -101,7 +101,7 @@ QuasarTransforms = [
     [TransformKeys.D_DEVICE_CPP,            ['Device','designToDeviceBody.jinja'],                   'Device/src/D{className}.cpp',                  'S',            True,           True,         ['className']],
     [TransformKeys.D_CMAKE,                 ['Device','designToGeneratedCmakeDevice.jinja'],         'Device/generated/cmake_header.cmake',          'B',            False,          False,        None],
     [TransformKeys.HONKYTONK,               'Extra/designToHonkyTonk.xslt',                          'Extra/honkyTonky.cc',                          'S',            True,           False,        None],
-    [TransformKeys.CONFIG_DOCUMENTATION,    'Configuration/designToConfigDocumentationHtml.xslt',    'Documentation/ConfigDocumentation.html',       'S',            False,          False,        None],
+    [TransformKeys.CONFIG_DOCUMENTATION,    ['Configuration','designToConfigDocumentationHtml.jinja'],    'Documentation/ConfigDocumentation.html',       'S',            False,          False,        None],
     [TransformKeys.AS_DOCUMENTATION,        'AddressSpace/designToAddressSpaceDocHtml.xslt',         'Documentation/AddressSpaceDoc.html',           'S',            False,          False,        None]
     ]
 

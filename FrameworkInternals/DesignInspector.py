@@ -224,3 +224,67 @@ class DesignInspector():
         """Returns True if the class is a singleVariableNode"""
         the_class = self.objectify_class(class_name)
         return the_class.get('singleVariableNode') == 'true'
+        
+    def get_restriction(self, className, cachevar_or_configentry_name):
+        xpath_str="\
+            /d:design/d:class[@name='{0}']/d:cachevariable[@name='{1}']/d:configRestriction \
+            | \
+            /d:design/d:class[@name='{0}']/d:configentry[@name='{1}']/d:configRestriction".format(className, cachevar_or_configentry_name)
+        restrictionElems=self.objectify_any(xpath_str)
+        # cache_variables = self.objectify_cache_variables(className, "[@name='{0}' and d:configRestriction]".format(cachevar_or_configentry_name))
+        # config_entries = self.objectify_config_entries(className, "[@name='{0}' and d:configRestriction]".format(cachevar_or_configentry_name))
+        # config_restrictions = [element.configRestriction for element in cache_variables + config_entries]
+        return self.parseRestrictions(restrictionElems)
+        
+    def parseRestrictions(self, restrictionElems):
+        """ Method returns a dict populated according to the (objectified) restrictions"""
+        """ passed. Note that the assumption is there is *at most one* restriction permitted"""
+        """ in the parent cachevar/configentry XML excerpt """ 
+        if(len(restrictionElems)==1):
+            restrictionElem = restrictionElems[0]
+
+            restriction=dict()
+            restriction['type']='ERROR'
+            for child in restrictionElem.iterchildren():
+                if 'restrictionByEnumeration' in child.tag:
+                    restriction['type']='byEnumeration'
+                    restriction['enumerationValues']=[]
+                    for enumerationValue in child.iterchildren():
+                        restriction['enumerationValues'].append(enumerationValue.get('value'))
+                    break
+                elif 'restrictionByPattern' in child.tag:
+                    restriction['type']='byPattern'
+                    restriction['pattern']=child.get('pattern')
+                    break;
+                elif 'restrictionByBounds' in child.tag:
+                    restriction['type']='byBounds'
+                    restriction['minInclusive']=child.get('minInclusive')
+                    restriction['maxInclusive']=child.get('maxInclusive')
+                    restriction['minExclusive']=child.get('minExclusive')
+                    restriction['maxExclusive']=child.get('maxExclusive')
+                    break;
+            return restriction
+        return None
+        
+    def getProjectName(self):
+        return self.xpath("/d:design/@projectShortName")[0]
+        
+    def objectifyAllParents(self, className, restrict_to_by_configuration=False):
+        #pdb.set_trace()
+        xpath_string="//d:hasobjects[@class='{0}'".format(className)
+        if(restrict_to_by_configuration):
+            xpath_string+=" and @instantiateUsing='configuration'"
+        xpath_string+="]/.."
+        return self.xpath(xpath_string)
+        
+    def objectifyDocumentation(self, className, cachevar_or_configentry_name=''):
+        """ if cachevar_or_config_entry_name empty, returns class documentation element as object """
+        """ otherwise returns specified cachevar/configentry documentation element as object """
+        if not cachevar_or_configentry_name:
+            return self.objectify_any("/d:design/d:class[@name='{0}']/d:documentation".format(className))
+        else:
+            xpath_str="\
+            /d:design/d:class[@name='{0}']/d:cachevariable[@name='{1}']/d:documentation \
+            | \
+            /d:design/d:class[@name='{0}']/d:configentry[@name='{1}']/d:documentation".format(className, cachevar_or_configentry_name)
+            return self.objectify_any(xpath_str)    

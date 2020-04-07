@@ -1,0 +1,297 @@
+{# © Copyright CERN, 2015.                                                      #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014                                                           #}
+{#            Mar 2020 (translated to Jinja2)                                    #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+{#   Ben Farnham  <firstNm.secondNm@cern.ch>                                     #}
+{% import 'headers.jinja' as headers %}
+{% set this = designInspector.objectify_root() %}
+{{ headers.cppFullGeneratedHeader() }}
+
+#include <xercesc/dom/DOMNodeList.hpp>
+#include <xercesc/dom/DOMElement.hpp>
+
+#include <ASUtils.h>
+#include <ASInformationModel.h>
+#include <ASNodeQueries.h>
+
+#include <DRoot.h>
+
+#include <Configurator.h>
+#include <Configuration.hxx>
+
+#include <CalculatedVariablesEngine.h>
+
+#include <meta.h>
+
+#include <LogIt.h>
+
+#include <Utils.h>
+
+using namespace CalculatedVariables;
+
+// includes for AS classes and Device classes
+{% for className in designInspector.get_names_of_all_classes() %}
+  #include <AS{{className}}.h>
+  {% if designInspector.class_has_device_logic(className) %}
+    #include <D{{className}}.h>
+  {% endif %}
+{% endfor %}
+
+{% macro writeConfigureClassFunctionSignature(className) %}
+
+  {% if designInspector.class_has_device_logic(className) %}
+    Device::D{{className}}*
+  {% else %}
+    void
+  {% endif %}
+  configure{{className}}(
+    const Configuration::{{className}}& config,
+    AddressSpace::ASNodeManager *nm,
+    UaNodeId parentNodeId
+    {% if designInspector.class_has_device_logic(className) %}
+      , Device::Parent_D{{className}}* parentDevice
+    {% endif %}
+  )
+{% endmacro %}
+
+{% macro writeConfigureObjectByDesign(className, instanceName, parentNodeId, parentDevice) %}
+  { // configure root INSTANTIATE BY DESIGN object: class [{{className}}] instance [{{instanceName}}]
+    // create empty configuration object for design instantiated object.
+    Configuration::{{className}} emptyConfig("{{instanceName}}");
+
+    // build address space side object
+    AddressSpace::AS{{className}} *asItem =
+    new AddressSpace::AS{{className}}(
+      {{parentNodeId}},
+      nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_{{className|upper}}),
+      nm,
+      emptyConfig);
+
+    {% if designInspector.class_has_device_logic(className) %}
+      // build device side object
+      Device::D{{className}} *dItem = new Device::D{{className}}(emptyConfig, dRoot);
+
+      // link address space and device side objects
+      asItem->linkDevice( dItem );
+      dItem->linkAddressSpace( asItem, asItem->nodeId().toString().toUtf8() );
+      {{parentDevice}}->add(dItem);
+    {% else %}
+      // avoid unused variable warning (constructor above was required)
+      (void)*asItem;
+    {% endif %}
+  }
+{% endmacro %}
+
+{% macro writeConfigureObjectByConfiguration(parentClassName, parentNodeId, parentDevice, innerObjects) %}
+xercesc::DOMNodeList* childrenNodes = config._node()->getChildNodes();
+for (size_t i = 0; i < childrenNodes->getLength(); ++i )
+{
+  xercesc::DOMElement * configElement = dynamic_cast<xercesc::DOMElement *> (childrenNodes->item(i));
+  if(!configElement) continue; // not an element anyway
+  const std::string tagName = transcodeElementName(configElement);
+
+  const std::vector<std::string> ignoreList = {"StandardMetaData", "CalculatedVariableGenericFormula"
+    {% for arrayCacheVar in designInspector.objectify_cache_variables(parentClassName, restrict_by='[d:array]') %}
+      ,"{{arrayCacheVar.get('name')}} // ignore array type cachevariables
+    {% endfor %}
+    {% for arrayConfigEntry in designInspector.objectify_config_entries(parentClassName, restrict_by='[d:array]') %}
+      ,"{{arrayConfigEntry.get('name')}}" // ignore array type configentries
+    {% endfor %}
+  };
+  if(std::find(ignoreList.begin(), ignoreList.end(), tagName) != ignoreList.end()) continue;
+
+  {% for innerObject in innerObjects %}
+    {% set innerClass = innerObject.get('class') %}
+    if(tagName == "{{innerClass}}")
+    {
+        auto predicateFn = [configElement](const Configuration::{{innerClass}}& x){return x._node() == configElement;};
+        auto startPos = config.{{innerClass}}().begin();
+        auto endPos   = config.{{innerClass}}().end();
+        auto innerObjectConfig = std::find_if(startPos, endPos, predicateFn);
+        // assert inner object configuration was found, bail otherwise
+        if(innerObjectConfig == config.{{innerClass}}().end())
+        {
+          throw_runtime_error_with_origin("Failed to find matching configuration instance for inner class [{{innerClass}}] inside class [{{className}}] in collection [config.{{innerClass}}()]");
+        }
+        {% if designInspector.class_has_device_logic(innerClass) %}
+          // class [{{innerClass}}] has device logic: Configure device object and register with parent
+          {% if designInspector.class_has_legit_device_parent(innerClass) %}
+            Device::Parent_D{{innerClass}}* pInnerItemParent = {{parentDevice}};
+          {% else %}
+            Device::Parent_D{{innerClass}}* pInnerItemParent = nullptr;  
+          {% endif %}
+          Device::D{{innerClass}}* dInnerItem = configure{{innerClass}} (
+            *innerObjectConfig, nm, {{parentNodeId}}, pInnerItemParent);
+          if(!pInnerItemParent) Device::D{{innerClass}}::registerOrphanedObject(dInnerItem);
+        {% else %}
+          // class [{{innerClass}}] has no device logic. Configure device object.
+          configure{{innerClass}} (*innerObjectConfig, nm, {{parentNodeId}});
+      {% endif %}
+      continue;
+    }
+  {% endfor %} 
+  if (tagName == "CalculatedVariable")
+  {
+    auto predicateFn = [configElement](const Configuration::CalculatedVariable& x){return x._node() == configElement;};
+    auto calcVarConfigPos = std::find_if(
+    config.CalculatedVariable().begin(),
+    config.CalculatedVariable().end(),
+    predicateFn);
+    Engine::instantiateCalculatedVariable (nm, {{parentNodeId}}, *calcVarConfigPos);
+    continue;
+  }
+
+ throw_runtime_error_with_origin("No handler found for object - bug of new Configurator? Call Piotr/Ben.  The tag in question is:"+tagName);
+}
+{% endmacro %}
+
+
+// Note: internal representation of strings in Xerces is UTF-16 so, transcode
+std::string transcodeElementName(const xercesc::DOMElement * element)
+{
+  char* transcodedTagName = xercesc::XMLString::transcode(element->getTagName());
+  const std::string tagName (transcodedTagName);
+  xercesc::XMLString::release(&transcodedTagName);
+  return tagName;
+}
+
+// forward declare configure function signatures
+{% for className in designInspector.get_names_of_all_classes() %}
+  {{ writeConfigureClassFunctionSignature(className) }};
+{% endfor %}
+
+// configure function bodies
+{% for className in designInspector.get_names_of_all_classes() %}
+  {{ writeConfigureClassFunctionSignature(className) }}{
+    // instantiate address space side object
+    AddressSpace::AS{{className}} *asItem = new AddressSpace::AS{{className}}(
+      parentNodeId,
+      nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_{{className|upper}}),
+      nm,
+      config
+   );
+
+   {% if designInspector.class_has_device_logic(className) %}
+     // instantiate device side object
+     Device::D{{className}} *dItem = new Device::D{{className}}(config, parentDevice);
+
+     // link address space side and device side objects
+     asItem->linkDevice( dItem );
+     dItem->linkAddressSpace( asItem, asItem->nodeId().toString().toUtf8() );
+   {% endif %}
+
+  // process each 'instantiated by design' instance individually - order not important
+  {% for hasObjectElement in designInspector.objectify_has_objects(className, "[@instantiateUsing='design']") %}
+    {% set objClass = hasObjectElement.get('class') %}
+    {% for obj in hasObjectElement.getchildren() %}
+      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asRootNodeId", "dRoot")}}
+    {% endfor %}
+  {% endfor %}
+
+  // process each 'instatiated by config' as XML nodes - order significant (calc'd vars)
+  {% set innerObjects=designInspector.objectify_has_objects(className, restrict_by="[@instantiateUsing='configuration']") %}
+  {{writeConfigureObjectByConfiguration(className, "asItem->nodeId()", "dItem", innerObjects) }}
+  
+  {% if designInspector.class_has_device_logic(className) %}
+    return dItem;
+  {% endif %}
+}
+{% endfor %}
+
+bool runConfigurationDecoration(Configuration::Configuration& theConfiguration, ConfigXmlDecoratorFunction& configXmlDecoratorFunction)
+{
+  if(!configXmlDecoratorFunction) return true;
+
+  if(configXmlDecoratorFunction(theConfiguration))
+  {
+    return true;
+  }
+  else
+  {
+    std::cout << __FUNCTION__ << " Error: device specific configuration decoration failed, check logs for details" << std::endl;
+  }
+  return false;
+}
+
+std::unique_ptr<Configuration::Configuration> loadConfigurationFromFile(const std::string& fileName)
+{
+  try
+  {
+    return std::unique_ptr<Configuration::Configuration>(Configuration::configuration(fileName, ::xml_schema::flags::keep_dom));
+  }
+  catch (xsd::cxx::tree::parsing<char>& exception)
+  {
+    LOG(Log::ERR) << __FUNCTION__ << " Configuration: Failed when trying to open the configuration, with general error message: " << exception.what();
+    for( const auto& error : exception.diagnostics() )
+    {
+      LOG(Log::ERR) << __FUNCTION__ << "Configuration: Problem at " << error.id() <<":" << error.line() << ": " << error.message();
+    }
+    throw std::runtime_error("Configuration: failed to load configuration file ["+fileName+"]. The exact problem description should have been logged.");
+  }
+}
+
+bool configure (std::string fileName, AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction configXmlDecoratorFunction)
+{
+  std::unique_ptr<Configuration::Configuration> theConfiguration = loadConfigurationFromFile(fileName);
+
+  CalculatedVariables::Engine::loadGenericFormulas(theConfiguration->CalculatedVariableGenericFormula());
+
+  UaNodeId asRootNodeId = UaNodeId(OpcUaId_ObjectsFolder, 0);
+  Device::DRoot *dRoot = Device::DRoot::getInstance();
+  (void)dRoot; // silence-out the warning from unused variable
+
+  configureMeta( *theConfiguration.get(), nm, asRootNodeId );
+  if(!runConfigurationDecoration(*theConfiguration, configXmlDecoratorFunction)) return false;
+
+  const Configuration::Configuration& config = *theConfiguration;
+
+  // process each 'instantiated by design' instance individually - order not important
+  {% set innerObjectsByDesign=designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='design']") %}
+  {% for innerObj in innerObjectsByDesign %}
+    {% set objClass = innerObj.get('class') %}
+    {% for obj in innerObj.getchildren() %}
+      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asRootNodeId", "dRoot")}}
+    {% endfor %}
+  {% endfor %}
+
+  // process each 'instatiated by config' as XML nodes - order significant (calc'd vars)
+  {% set innerObjectsByConfig=designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']") %}
+  {{ writeConfigureObjectByConfiguration("Root", "asRootNodeId", "dRoot", innerObjectsByConfig) }}
+
+  return true;
+}
+
+void unlinkAllDevices (AddressSpace::ASNodeManager *nm)
+{
+  unsigned int totalObjectsNumber = 0;
+  {% for className in designInspector.get_names_of_all_classes() %}
+    {% if designInspector.class_has_device_logic(className) %}
+      {
+	std::vector<AddressSpace::AS{{className}}*> objects;
+	AddressSpace::findAllObjectsByPatternInNodeManager<AddressSpace::AS{{className}}>(nm, ".*", objects);
+	totalObjectsNumber += objects.size();
+	for(auto a : objects)
+	{
+	  a->unlinkDevice();
+	}
+      }
+    {% endif %}
+  {% endfor %}
+  LOG(Log::INF) << __FUNCTION__ << " total number of unlinked objects: " << totalObjectsNumber;
+}

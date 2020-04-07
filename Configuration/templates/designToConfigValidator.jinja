@@ -1,0 +1,122 @@
+{# Copyright CERN, 2015.                                                         #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014                                                           #}
+{#            Mar 2020 (translated to Jinja2)                                    #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+{#   Ben Farnham  <firstNm.secondNm@cern.ch>                                     #}
+{% import 'headers.jinja' as headers %}
+{% set this = designInspector.objectify_root() %}
+{{ headers.cppFullGeneratedHeader() }}
+
+{% macro writeClassValidatorFunction(className) %}
+  bool validate{{className}}(Device::D{{className}}* object)
+  {
+    {% for hasObjectDef in designInspector.objectify_has_objects(className, "[@instantiateUsing='configuration']") %}
+      validate{{className}}Has{{hasObjectDef.get('class')}}(object);
+    {% endfor %}  
+    return true;
+  }
+{% endmacro %}
+
+{% macro writeInnerClassValidatorFunction(className, hasObjectDef) %}
+  {% set innerClassName=hasObjectDef.get('class')%}
+  bool validate{{className}}Has{{innerClassName}}(Device::D{{className}}* object)
+  {
+    {% if designInspector.class_has_device_logic(innerClassName) %}
+      const size_t size = object->{{innerClassName|lower}}s().size();
+      {% if hasObjectDef.get('minOccurs') %}
+        if( size < {{hasObjectDef.get('minOccurs')}} )
+        {
+          std::ostringstream msg;
+          msg << __FUNCTION__ << " configuration error: class [{{className}}] object ["<<object->getFullName()<<"] should have no less than [{{hasObjectDef.get('minOccurs')}}] instances of [{{innerClassName}}] (["<<size<<"] found)";
+          throw std::runtime_error(msg.str());
+        }
+      {% endif %}
+      {% if hasObjectDef.get('maxOccurs') %}
+        if( size > {{hasObjectDef.get('maxOccurs')}} )
+        {
+          std::ostringstream msg;
+          msg << __FUNCTION__ << " configuration error: class [{{className}}] object ["<<object->getFullName()<<"] should have no more than [{{hasObjectDef.get('maxOccurs')}}] instances of [{{innerClassName}}] (["<<size<<"] found)";
+          throw std::runtime_error(msg.str());
+        }
+      {% endif %}
+      (void)size;
+      for(auto *child : object->{{innerClassName|lower}}s())
+      {
+        validate{{innerClassName}}(child);
+      }    
+      
+    {% endif %}
+    return true;  	
+  }
+{% endmacro %}
+
+#include <iostream>
+	
+#include <ASUtils.h>
+#include <ASInformationModel.h>
+
+#include <Utils.h>
+	
+#include <DRoot.h>
+
+#include <Configurator.h>
+#include <Configuration.hxx>
+
+{# HEADERS OF ALL DECLARED CLASSES #}
+{% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
+  #include "D{{className}}.h"
+{% endfor %}
+
+{# CONFIGURATOR MAIN #}
+
+// validator function signatures 
+{% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
+  bool validate{{className}}(Device::D{{className}}* object);
+  {% for hasObjectDef in designInspector.objectify_has_objects(className, "[@instantiateUsing='configuration']") %}
+    bool validate{{className}}Has{{hasObjectDef.get('class')}}(Device::D{{className}}* object);
+  {% endfor %}
+{% endfor %}
+
+// validator function bodies
+{% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
+  {{ writeClassValidatorFunction(className) }}
+  {% for hasObjectDef in designInspector.objectify_has_objects(className, "[@instantiateUsing='configuration']") %}
+    {{ writeInnerClassValidatorFunction(className, hasObjectDef) }}
+  {% endfor %}  
+{% endfor %}
+
+// root validator bodies
+{% for rootHasObjectDef in designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']") %}
+  {{ writeInnerClassValidatorFunction("Root",  rootHasObjectDef) }}
+{% endfor %}
+
+bool validateRoot (Device::DRoot * root)
+{
+  {% for rootHasObjectDef in designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']") %}
+    validateRootHas{{rootHasObjectDef.get('class')}}(root);
+  {% endfor %}
+  return true; /* assume improper config throws */
+}
+
+// entry point to tree of validation functions
+bool validateDeviceTree ()
+{
+  Device::DRoot *deviceRoot = Device::DRoot::getInstance();
+  return validateRoot( deviceRoot );
+}

@@ -21,7 +21,7 @@ MESSAGE( STATUS "Design file=" ${DESIGN_FILE} )
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configuration.xsd
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 	COMMAND ${PYTHON_COMMAND} quasar.py generate config_xsd --project_binary_dir ${PROJECT_BINARY_DIR}
-	DEPENDS ${DESIGN_FILE} designToConfigurationXSD.xslt validateDesign ${PROJECT_SOURCE_DIR}/quasar.py ${PROJECT_SOURCE_DIR}/Meta/config/Meta.xsd
+	DEPENDS ${DESIGN_FILE} designToConfigurationXSD.xslt templates/designToConfigurationXSD.jinja validateDesign ${PROJECT_SOURCE_DIR}/quasar.py ${PROJECT_SOURCE_DIR}/Meta/config/Meta.xsd ${QUASAR_TRANSFORM_SENSITIVE_FILES}
 	)
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configuration.cxx ${PROJECT_BINARY_DIR}/Configuration/Configuration.hxx
@@ -35,13 +35,13 @@ add_custom_target(Configuration.hxx_GENERATED DEPENDS ${PROJECT_BINARY_DIR}/Conf
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configurator.cpp	
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 	COMMAND ${PYTHON_COMMAND} quasar.py generate config_cpp --project_binary_dir ${PROJECT_BINARY_DIR}
-	DEPENDS ${DESIGN_FILE} designToConfigurator.xslt ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
+	DEPENDS ${DESIGN_FILE} designToConfigurator.xslt templates/designToConfigurator.jinja ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
 )
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/ConfigValidator.cpp	
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 	COMMAND ${PYTHON_COMMAND} quasar.py generate config_validator --project_binary_dir ${PROJECT_BINARY_DIR}
-	DEPENDS ${DESIGN_FILE} designToConfigValidator.xslt ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
+	DEPENDS ${DESIGN_FILE} designToConfigValidator.xslt templates/designToConfigValidator.jinja ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
 )
 
 add_library (Configuration OBJECT
