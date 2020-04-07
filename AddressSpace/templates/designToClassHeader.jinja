@@ -1,0 +1,176 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jun 2014 (the original XSLT version)                               #}
+{#            11 Mar 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% import 'headers.jinja' as headers %}
+{% set this = designInspector.objectify_class(className) %}
+{{ headers.cppFullGeneratedHeader() }}
+
+#ifndef __AS{{className}}__H__
+#define __AS{{className}}__H__
+
+#include <opcua_baseobjecttype.h>
+
+#include <methodhandleuanode.h>
+#include <ASDelegatingMethod.h>
+
+#include <Configuration.hxx>
+
+#include <ASNodeManager.h>
+#include <ASDelegatingVariable.h>
+
+#include <ASSourceVariable.h>
+
+{% if designInspector.class_has_device_logic(className) %}
+  /* forward declaration */
+  namespace Device { class D{{className}}; }
+{% endif %}
+
+namespace AddressSpace
+{
+  class ChangeNotifyingVariable;
+
+  //! Fully auto-generated class to represent {{className}} in the OPC UA AddressSpace
+  class AS{{className}}: public OpcUa::BaseObjectType
+  {
+  UA_DISABLE_COPY(AS{{className}}); {# TODO @pnikiel improve this to use =delete #}
+  public:
+  //! Constructor. Used in Configurator.cpp. You NEVER use it directly.
+  AS{{className}} (
+    UaNodeId parentNodeId,
+    const UaNodeId& typeNodeId,
+    ASNodeManager *nm,
+    const Configuration::{{className}}& config);
+
+  /*dtor*/
+  ~AS{{className}} ();
+
+  /* setters and getters for variables */
+  {% for cv in this.cachevariable %}
+    {% if cv.array|length>0 %}
+      OpcUa_UInt32 {{cv.get('name')}}_minimumSize();
+      OpcUa_UInt32 {{cv.get('name')}}_maximumSize();
+      UaStatus get{{cv.get('name')|capFirst}} (std::vector <{{cv.get('dataType')}}>& out) const;
+	    UaStatus {{ oracle.get_cache_variable_setter_array(cv.get('name'), cv.get('dataType'), True) }} ;
+      {% if cv.get('nullPolicy') == 'nullForbidden' %}
+        /* short getter (possible because nullPolicy=nullForbidden) */
+        std::vector<{{cv.get('dataType')}}> get{{cv.get('name')|capFirst}} () const;
+      {% endif %}
+      {% if cv.get('nullPolicy') == 'nullAllowed' %}
+        /* null-setter (possible because nullPolicy=nullAllowed) */
+        UaStatus {{ oracle.get_cache_variable_setter_array(cv.get('name'), None, True) }};
+      {% endif %}
+    {% else %}
+      UaStatus get{{cv.get('name')|capFirst}} ({{cv.get('dataType')}}& out) const;
+      UaStatus {{ oracle.get_cache_variable_setter(cv.get('name'), cv.get('dataType'), True) }};
+      {% if cv.get('nullPolicy') == 'nullForbidden' %}
+        /* short getter (possible because nullPolicy=nullForbidden) */
+        {{cv.get('dataType')}} get{{cv.get('name')|capFirst}} () const;
+      {% endif %}
+      {% if cv.get('nullPolicy') == 'nullAllowed' %}
+        /* null-setter (possible because nullPolicy=nullAllowed) */
+        UaStatus {{ oracle.get_cache_variable_setter(cv.get('name'), None, True) }};
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  /* delegators for cachevariables  */
+  {% for cv in this.cachevariable %}
+    {% if cv.get('addressSpaceWrite') in ['delegated','regular'] %}
+      {{ oracle.get_delegated_write_header(cv.get('name'), className, 'header') }};
+    {% endif %}
+  {% endfor %}
+
+  /* delegators for methods */
+  {% for method in this.method %}
+    UaStatus call{{method.get('name')|capFirst}} (
+      MethodManagerCallback* pCallback,
+      OpcUa_UInt32           callbackHandle,
+      const UaVariantArray&  inputArguments);
+  {% endfor %}
+
+  /* device logic links (if device logic is present per this class) */
+    {% if designInspector.class_has_device_logic(className) %}
+    void linkDevice( Device::D{{className}}* deviceLink);
+    void unlinkDevice ();
+    Device::D{{className}}* getDeviceLink () const { return m_deviceLink; }
+  {% endif %}
+
+  /* OPC UA Type Information provider for this class. */
+  virtual UaNodeId typeDefinitionId () const { return m_typeNodeId; }
+
+  {% if this.method|length >= 1 %}
+    /* Call handler defined because at least one method is declared */
+    virtual UaStatus beginCall (
+        MethodManagerCallback*    pCallback,
+        const ServiceContext&     serviceContext,
+        OpcUa_UInt32              callbackHandle,
+        MethodHandle*             pMethodHandle,
+        const UaVariantArray&     inputArguments
+    );
+  {% endif %}
+
+  private:
+  UaNodeId m_typeNodeId;
+  const UaNodeId m_effectiveParentNodeIdForChildren;
+
+  UaString fixChildNameWhenSingleNodeClass(
+    const std::string& nameByDesign,
+    const std::string& nameByConfig
+    ) const;
+
+  void createCacheVariables(
+    ASNodeManager* nm,
+    const Configuration::{{className}}& config);
+  void initializeArrayCacheVariablesFromConfiguration(
+    ASNodeManager* nm,
+    const Configuration::{{className}}& config);
+  void createSourceVariables(
+    ASNodeManager* nm,
+    const Configuration::{{className}}& config);
+  void createMethods(
+    ASNodeManager* nm,
+    const Configuration::{{className}}& config);
+
+  /* Variables */
+  {% for cv in this.cachevariable %}
+    {{oracle.cache_variable_cpp_type(cv.get('addressSpaceWrite'), className)}}* m_{{cv.get('name')}};
+  {% endfor %}
+
+  {% for sv in this.sourcevariable %}
+    ASSourceVariable* m_{{sv.get('name')}};
+  {% endfor %}
+
+  /* Methods */
+  {% for method in this.method %}
+    ASDelegatingMethod<AS{{className}}>* m_{{method.get('name')}};
+  {% endfor %}
+
+  /* Device Logic link (if requested) */
+  {% if designInspector.class_has_device_logic(className) %}
+    Device::D{{className}}* m_deviceLink;
+  {% endif %}
+
+  };
+
+
+}
+
+#endif // __AS{{className}}__H__

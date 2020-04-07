@@ -1,0 +1,58 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jun 2014 (the original XSLT version)                               #}
+{#            23 Mar 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% import 'headers.jinja' as headers %}
+{{ headers.cppFullGeneratedHeader() }}
+
+#ifndef __ASINFORMATIONMODEL__H__
+#define __ASINFORMATIONMODEL__H__
+
+#include <ASNodeManager.h>
+
+namespace AddressSpace
+{
+
+class ASInformationModel
+{
+public:
+
+  enum
+  {
+  AS_TYPE_STANDARDMETADATA = 1000,
+  AS_TYPE_LOG,
+  AS_TYPE_GENERALLOGLEVEL,
+  AS_TYPE_SOURCEVARIABLESTHREADPOOL,
+  AS_TYPE_COMPONENTLOGLEVEL,
+  AS_TYPE_COMPONENTLOGLEVELS,
+  AS_TYPE_QUASAR,
+  AS_TYPE_SERVER,
+  AS_TYPE_BUILDINFORMATION
+  {% for className in designInspector.get_names_of_all_classes() -%},
+    AS_TYPE_{{className|upper}}
+  {% endfor %}
+  };
+
+  static void createNodesOfTypes (ASNodeManager *nm);
+};
+
+}
+
+#endif // __ASINFORMATIONMODEL__H__

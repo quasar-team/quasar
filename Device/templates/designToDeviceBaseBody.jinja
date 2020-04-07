@@ -1,0 +1,113 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014 (the original XSLT version)                               #}
+{#            12 Mar 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% import 'headers.jinja' as headers %}
+{{ headers.cppFullGeneratedHeader() }}
+
+{% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
+
+#include <Configuration.hxx>
+
+/* Note: need to have full declarations of classes on which we will call
+  "delete" operator plus more, and not just base classes */
+{% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
+#include <D{{className}}.h>
+{% endfor %}
+
+namespace Device
+{
+
+{% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
+{% set this = designInspector.objectify_class(className) %}
+
+// ctr
+Base_D{{className}}::Base_D{{className}} (
+  const Configuration::{{className}}& config,
+  Parent_D{{className}}* parent
+):
+  m_parent(parent),
+  m_addressSpaceLink(nullptr),
+  m_stringAddress("**NB**")
+  {% for cv in designInspector.objectify_cache_variables(className, "[@isKey='true']") %} {# TODO #}
+  , m_{{cv.get('name')}} ( config.{{cv.get('name')}}() ) {# TODO @pnikiel move to body #}
+  {% endfor %}
+  {% for ce in designInspector.objectify_config_entries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
+  , m_{{ce.get('name')}}( config.{{ce.get('name')}}() ) {# TODO @pnikiel move to body #}
+  {% endfor %}
+{
+}
+
+// dtr
+Base_D{{className}}::~Base_D{{className}} ()
+{
+  {{ commonDeviceTemplates.deviceLogicDeleter(this, designInspector, oracle) }}
+}
+
+void Base_D{{className}}::linkAddressSpace(
+  AddressSpace::AS{{className}}* addressSpaceLink,
+  const std::string& stringAddress)
+{
+  if (m_addressSpaceLink)
+    throw std::logic_error("addressSpaceLink can be established only once. Looks like a logic error.");
+  m_addressSpaceLink = addressSpaceLink;
+  m_stringAddress.assign( stringAddress );
+}
+
+AddressSpace::AS{{className}}* Base_D{{className}}::getAddressSpaceLink () const
+{
+  if (m_addressSpaceLink)
+    return m_addressSpaceLink;
+  else
+   throw std::logic_error("m_addressSpaceLink is nullptr! at:"+m_stringAddress);
+}
+
+/* For constructing the tree of devices and for browsing children. */
+{{ commonDeviceTemplates.hasobjectsAccessorsBody(this, designInspector, oracle, "Base_D"+className) }}
+
+/** Disconnects AddressSpace part from the Device logic, and does the same for all children
+    Returns number of unlinked objects including self **/
+unsigned int Base_D{{className}}::unlinkAllChildren ()
+{
+  unsigned int objectCounter = 1;  // 1 is for self
+  m_addressSpaceLink = nullptr;
+  {# TODO: unify this with what is designToRootBody.jinja #}
+  {% for hasobjects in this.hasobjects %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
+      for (auto* obj : {{hasobjects.get('class')|lower}}s())
+        objectCounter += obj->unlinkAllChildren();
+    {% endif %}
+  {% endfor %}
+  return objectCounter;
+}
+
+  /* find methods for children */
+  {{ commonDeviceTemplates.deviceLogicFindByKeyBody(this, designInspector, oracle, "Base_D"+className) }}
+
+
+{% endfor %}
+
+
+
+// lists of orphaned objects, per class
+{% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
+  std::list<D{{className}}*> Base_D{{className}}::s_orphanedObjects;
+{% endfor %}
+}

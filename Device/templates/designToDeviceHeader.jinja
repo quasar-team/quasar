@@ -1,0 +1,123 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014 (the original XSLT version)                               #}
+{#            12 Mar 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% import 'headers.jinja' as headers %}
+{% set this = designInspector.objectify_class(className) %}
+{{ headers.cppStubHeader(designInspector.objectify_root().get('author')) }}
+
+#ifndef __D{{className}}__H__
+#define __D{{className}}__H__
+
+#include <vector>                  // TODO; should go away, is already in Base class for ages
+#include <boost/thread/mutex.hpp>  // TODO; should go away, is already in Base class for ages
+
+#include <statuscode.h>            // TODO; should go away, is already in Base class for ages
+#include <uadatetime.h>            // TODO; should go away, is already in Base class for ages
+#include <session.h>               // TODO; should go away, is already in Base class for ages
+
+#include <DRoot.h>                 // TODO; should go away, is already in Base class for ages
+#include <Configuration.hxx>       // TODO; should go away, is already in Base class for ages
+
+#include <Base_D{{className}}.h>
+
+namespace Device
+{
+
+  class
+  D{{className}}
+  : public Base_D{{className}}
+  {
+
+  public:
+  /* sample constructor */
+  explicit D{{className}} (
+    const Configuration::{{className}}& config,
+    Parent_D{{className}}* parent
+  ) ;
+  /* sample dtr */
+  ~D{{className}} ();
+
+  /* delegators for
+  cachevariables and sourcevariables */
+  {% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
+    /* Note: never directly call this function. */
+    {% if cv.array|length>0 %}
+      UaStatus write{{cv.get('name')|capFirst}} ( const std::vector<{{cv.get('dataType')}}>& v);
+    {% else %}
+      UaStatus write{{cv.get('name')|capFirst}} ( const {{cv.get('dataType')}}& v);
+    {% endif %}
+  {% endfor %}
+
+  {% for sv in this.sourcevariable %}
+    {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
+      /* {{sv.get('addressSpaceRead')|upper}} !! */
+      UaStatus read{{sv.get('name')|capFirst}} (
+        {{sv.get('dataType')}}& value,
+        UaDateTime& sourceTime
+      );
+    {% endif %}
+    {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
+      /* {{sv.get('addressSpaceWrite')|upper}} !! */
+      UaStatus write{{sv.get('name')|capFirst}} (
+        {{sv.get('dataType')}}& value
+      );
+    {% endif %}
+  {% endfor %}
+
+  /* delegators for methods */
+  {% for m in this.method %}
+    {% set allArgsLen = m.argument|length + m.returnvalue|length %}
+    UaStatus call{{m.get('name')|capFirst}} (
+    {% for arg in m.argument %}
+      {{oracle.fix_data_type_passing_method(arg.get('dataType'), arg.array|length>0 )}} {{arg.get('name')}}
+      {%- if loop.index < allArgsLen %},
+      {% endif %}
+    {% endfor %}
+    {% for rv in m.returnvalue %}
+      {{oracle.quasar_data_type_to_cpp_type(rv.get('dataType'), rv.array|length>0 )}}& {{rv.get('name')}}
+      {%- if not loop.last %},
+      {% endif %}
+    {% endfor %}
+
+    ) ;
+  {% endfor %}
+
+  private:
+  /* Delete copy constructor and assignment operator */
+  D{{className}}( const D{{className}}& other );
+  D{{className}}& operator=(const D{{className}}& other);
+
+  // ----------------------------------------------------------------------- *
+  // -     CUSTOM CODE STARTS BELOW THIS COMMENT.                            *
+  // -     Don't change this comment, otherwise merge tool may be troubled.  *
+  // ----------------------------------------------------------------------- *
+
+  public:
+
+  private:
+
+
+
+	};
+
+}
+
+#endif // __D{{className}}__H__

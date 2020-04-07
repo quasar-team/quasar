@@ -272,6 +272,10 @@ xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform schema-for-xslt20.xsd "
 	#include &lt;LogIt.h&gt;
 	using namespace std;
 
+    <xsl:for-each select="/d:design/d:class[d:devicelogic]">
+    #include &lt;<xsl:value-of select="fnc:DClassName(@name)"/>.h&gt;
+    </xsl:for-each>
+
 	namespace AddressSpace
 	{
 

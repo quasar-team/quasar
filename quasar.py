@@ -25,6 +25,9 @@ import sys
 import subprocess
 import inspect
 import webbrowser
+import traceback
+import pdb
+from colorama import Fore, Style
 
 this_script_path = os.path.abspath(sys.argv[0])
 sys.path.insert(0, os.path.join(os.path.dirname(this_script_path), 'FrameworkInternals'))
@@ -52,35 +55,50 @@ def makeContext():
     context['projectBinaryDir'] = project_binary_dir
     return context
 
-if len(args) < 1:
-    print('The script was run without specifying what to do. Here are available commands:')
-    printCommandList()
-    sys.exit(1)
+if __name__ == '__main__':
 
-try:
-    commands = getCommands()
-    matched_command = [x for x in commands if x[0] == args[:len(x[0])]][0]
-except IndexError:
-    print('Sorry, no such command. These are available:')
-    printCommandList()
-    sys.exit(1)
-
-if '-h' in args or '--help' in args:
-    anchor = '_'.join(matched_command[0])
-    print('Will open quasarCommands.html for anchor {0}'.format(anchor))
-    webbrowser.open("file:///{htmlPath}#{anchor}".format(
-            htmlPath=os.path.join(os.getcwd(),'Documentation','quasarCommands.html'),
-            anchor=anchor))
-    sys.exit(0)
-else:
-    try:  # we print exceptions from external tools, but internal ones we want to have with stack trace or PDB capability
-        args = args[len(matched_command[0]):]
-        callee = matched_command[1]
-        # TODO throw WrongArguments here if not enough args
-        if 'context' in inspect.getargspec(callee).args:
-            callee( makeContext(), *args )  # pack arguments after the last chunk of the command
-        else:
-            callee( *args )
-    except (WrongReturnValue, WrongArguments, Mistake) as e:
-        print(str(e))
+    if len(args) < 1:
+        print('The script was run without specifying what to do. Here are available commands:')
+        printCommandList()
         sys.exit(1)
+
+    try:
+        commands = getCommands()
+        matched_command = [x for x in commands if x[0] == args[:len(x[0])]][0]
+    except IndexError:
+        print('Sorry, no such command. These are available:')
+        printCommandList()
+        sys.exit(1)
+
+    if '-h' in args or '--help' in args:
+        anchor = '_'.join(matched_command[0])
+        print('Will open quasarCommands.html for anchor {0}'.format(anchor))
+        webbrowser.open("file:///{htmlPath}#{anchor}".format(
+                htmlPath=os.path.join(os.getcwd(),'Documentation','quasarCommands.html'),
+                anchor=anchor))
+        sys.exit(0)
+    else:
+        try:  # we print exceptions from external tools, but internal ones we want to have with stack trace or PDB capability
+            args = args[len(matched_command[0]):]
+            callee = matched_command[1]
+            # TODO throw WrongArguments here if not enough args
+            if 'context' in inspect.getargspec(callee).args:
+                callee( makeContext(), *args )  # pack arguments after the last chunk of the command
+            else:
+                callee( *args )
+        except (WrongReturnValue, WrongArguments, Mistake) as e:
+            print(Fore.RED + str(e) + Style.RESET_ALL)
+            sys.exit(1)
+        except:
+            print(Fore.RED + 'quasar tooling caught an exception when executing ' +Fore.MAGENTA + ' '.join(sys.argv) + Style.RESET_ALL)
+            extype, value, tb = sys.exc_info()
+            print('Exception was: ' + Fore.RED + str(value) + Style.RESET_ALL)
+            traceback.print_exc()
+            if os.getenv('QUASAR_RUN_PDB', False):
+	            print(Fore.RED + '... running pdb now (if pdb shell is gone then maybe you want to repeat that particular quasar command alone)' + Style.RESET_ALL)
+	            print(Fore.GREEN + 'remove QUASAR_RUN_PDB from your shell environment if you dont wish to run pdb' + Style.RESET_ALL)
+	            pdb.post_mortem(tb)
+            else:
+            	print(Fore.GREEN + "Export QUASAR_RUN_PDB to your environment if you wish to automatically start Python debugger! (e.g. 'export QUASAR_RUN_PDB=1' in bash)" + Style.RESET_ALL)
+            sys.exit(1)
+

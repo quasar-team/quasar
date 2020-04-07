@@ -1,0 +1,771 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jun 2014 (the original XSLT version)                               #}
+{#            23 Mar 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+{#   Michael Ludwig (some parts relating to arrays)                              #}
+
+{% import 'headers.jinja' as headers %}
+{{ headers.cppFullGeneratedHeader() }}
+
+#include <string> // for std::to_string
+#include <climits>
+
+#include <ArrayTools.h>
+#include <Utils.h>
+#include <ChangeNotifyingVariable.h>
+#include <CalculatedVariablesEngine.h>
+
+#include <SourceVariables.h>
+
+{% for className in designInspector.get_names_of_all_classes() %}
+  #include <AS{{className}}.h>
+  {% if designInspector.class_has_device_logic(className) %}
+    #include <D{{className}}.h>
+  {% endif %}
+{% endfor %}
+
+namespace AddressSpace
+{
+
+static std::string decorateSingleVariableNodeName (const std::string& basicName, bool isSingleVariableNode)
+{
+  if (isSingleVariableNode)
+    return "__single_item_node__" + basicName;
+  else
+    return basicName;
+}
+
+{% for className in designInspector.get_names_of_all_classes() %}
+  {% set this = designInspector.objectify_class(className) %}
+
+  /*ctr*/
+  AS{{className}}::AS{{className}} (
+  	UaNodeId                            parentNodeId,
+  	const UaNodeId&                     typeNodeId,
+  	ASNodeManager*                      nm,
+  	const Configuration::{{className}}& config):
+  	OpcUa::BaseObjectType (
+  		/*nodeId*/ nm->makeChildNodeId(
+        parentNodeId,
+        decorateSingleVariableNodeName(config.name(), {{designInspector.design_boolean_as_cpp_boolean(this.get('singleVariableNode'))}}).c_str()),
+      /*name*/decorateSingleVariableNodeName(config.name(), {{designInspector.design_boolean_as_cpp_boolean(this.get('singleVariableNode'))}}).c_str(),
+      nm->getNameSpaceIndex(),
+      nm),
+  	m_typeNodeId (typeNodeId),
+    {% if designInspector.is_class_single_variable_node(className) %}
+      m_effectiveParentNodeIdForChildren(parentNodeId)
+    {% else %}
+      m_effectiveParentNodeIdForChildren(this->nodeId())
+    {% endif %}
+    {%- for cv in this.cachevariable %},
+      m_{{cv.get('name')}} (nullptr) // this cache-variable will be created in the ctr body
+    {% endfor -%}
+    {%- for sv in this.sourcevariable %},
+      m_{{sv.get('name')}} (nullptr) // this source-variable will be created in the ctr body
+    {% endfor %}
+    {%- for m in this.method %},
+      m_{{m.get('name')}} (nullptr) // this method will be created in the ctr body
+    {% endfor %}
+    {% if designInspector.class_has_device_logic(className) %},
+      m_deviceLink(nullptr)
+    {% endif %}
+    {
+
+      {# here constructor body begins #}
+      UaStatus status;
+
+      {% if designInspector.is_class_single_variable_node(className) %}
+        status = nm->addUnreferencedNode( this );
+      {% else %}
+        status = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent );
+      {% endif %}
+      if (!status.isGood())
+        throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+
+      createCacheVariables(nm, config);
+      initializeArrayCacheVariablesFromConfiguration(nm, config);
+      createSourceVariables(nm, config);
+      createMethods(nm, config);
+
+    }
+
+    void AS{{className}}::createCacheVariables(
+      ASNodeManager* nm,
+      const Configuration::{{className}}& config)
+    {
+      UaStatus status;
+      UaVariant helperVariant;
+      UaString variableName;
+      {% for cv in this.cachevariable %}
+        variableName = fixChildNameWhenSingleNodeClass(
+          "{{cv.get('name')}}",
+          config.name().c_str());
+        m_{{cv.get('name')}} = new {{oracle.cache_variable_cpp_type(cv.get('addressSpaceWrite'), className)}} (
+          nm->makeChildNodeId(
+            m_effectiveParentNodeIdForChildren,
+            variableName),
+          variableName,
+          nm->getNameSpaceIndex(),
+          UaVariant(),
+          {{oracle.cache_variable_access_level(cv.get('addressSpaceWrite'))}},
+          nm);
+
+        {# configure dataType #}
+        {% if cv.get('nullPolicy') == 'nullForbidden' %}
+          m_{{cv.get('name')}}->setDataType(
+            UaNodeId( {{oracle.data_type_to_builtin_type(cv.get('dataType'))}}, 0 ));
+        {% endif %}
+
+        {# configure valueRank and arrayDimensions #}
+        {% if cv.array|length>0 %}
+          m_{{cv.get('name')}}->setValueRank( 1 ); // 1D-array
+          {
+            UaUInt32Array arrayDimensions;
+            arrayDimensions.create(1);
+            m_{{cv.get('name')}}->setArrayDimensions(arrayDimensions);
+          }
+        {% else %}
+          m_{{cv.get('name')}}->setValueRank( -1 ); // scalar
+        {% endif %}
+
+        {# handle valueAndStatus initialization for scalars #}
+        {% if cv.get('initializeWith') == 'valueAndStatus' and cv.array|length == 0 %}
+          {% if cv.get('initialValue') %}
+            helperVariant.{{oracle.data_type_to_variant_setter(cv.get('dataType'))}} ( {{oracle.wrap_literal(cv.get('dataType'), cv.get('initialValue'))}} );
+          {% else %}
+            helperVariant.clear ();
+          {% endif %}
+          m_{{cv.get('name')}}->setValue(
+            /*pSession*/ nullptr,
+            UaDataValue(
+              helperVariant,
+              OpcUa_Good,
+              UaDateTime::now(),
+              UaDateTime::now()),
+            /*check access level*/ OpcUa_False);
+        {% endif %}
+
+        {# handle configuration initialization for scalars #}
+        {% if cv.get('initializeWith') == 'configuration' and cv.array|length == 0 %}
+          helperVariant.{{oracle.data_type_to_variant_setter(cv.get('dataType'))}} (
+            config.{{cv.get('name')}}(){% if cv.get('dataType') == 'UaString' %}.c_str(){% endif %}
+            );
+          m_{{cv.get('name')}}->setValue(
+            /*pSession*/ nullptr,
+            UaDataValue(
+              helperVariant,
+              OpcUa_Good,
+              UaDateTime::now(),
+              UaDateTime::now() ),
+              /*check access level*/ OpcUa_False);
+        {% endif %}
+
+        status = nm->addNodeAndReference(
+          m_effectiveParentNodeIdForChildren,
+          m_{{cv.get('name')}},
+          OpcUaId_HasComponent);
+        if (!status.isGood())
+          throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+
+        {% if cv.get('addressSpaceWrite') == 'delegated' %}
+          m_{{cv.get('name')}}->assignHandler(
+            this,
+            &AS{{className}}::write{{cv.get('name')|capFirst}});
+        {% endif %}
+
+        {% if oracle.is_data_type_numeric(cv.get('dataType')) and cv.array|length==0 %}
+          CalculatedVariables::Engine::registerVariableForCalculatedVariables( m_{{cv.get('name')}} );
+        {% endif %}
+
+      {% endfor %}
+    }
+
+    void AS{{className}}::initializeArrayCacheVariablesFromConfiguration(
+      ASNodeManager* nm,
+      const Configuration::{{className}}& config)
+    {
+      {% for cv in designInspector.objectify_cache_variables(className, '[d:array]') %}
+        {
+          unsigned int dim = config.{{cv.get('name')}}().value().size();
+          // make sure the design size constraints are respected during runtime
+          unsigned int min = {{cv.get('name')}}_minimumSize();
+          unsigned int max = {{cv.get('name')}}_maximumSize();
+          if ( dim < min || dim > max )
+          {
+            // @pnikiel TODO at name of attribute and possibly also path to the element
+            // @pnikiel this should be in config validator in fact
+            throw_runtime_error_with_origin("Size of configuration data supplied to the constructor is out of bounds. Size is "+std::to_string(dim)+" and bounds are ["+std::to_string(min)+","+std::to_string(max)+"]");
+          }
+          std::vector<{{cv.get('dataType')}}> vect;
+          {% if cv.get('dataType') == 'UaString' %} {# TODO @pnikiel this code can be supplied in e.g. ArrayTools #}
+            vect.assign(dim, UaString());
+            std::transform(
+              config.{{cv.get('name')}}().value().begin(),
+              config.{{cv.get('name')}}().value().end(),
+              vect.begin(),
+              [](const std::string& x){ return x.c_str(); }  );
+          {% elif cv.get('dataType') == 'OpcUa_UInt64' or cv.get('dataType') == 'OpcUa_Int64' %}
+            vect.assign(dim, 0);
+            for (size_t i = 0; i < dim; ++i)
+            {
+              auto x = config.{{cv.get('name')}}().value()[i];
+              if (x > std::numeric_limits<{{cv.get('dataType')}}>::max())
+                  throw std::out_of_range("Array element in the configuration file out of range");
+              if (x < std::numeric_limits<{{cv.get('dataType')}}>::min())
+                  throw std::out_of_range("Array element in the configuration file out of range");
+              vect[i] = x;
+            }
+          {% elif cv.get('dataType') == 'OpcUa_Boolean' %}
+          vect.assign(dim, OpcUa_False);
+            std::transform(
+                config.{{cv.get('name')}}().value().begin(),
+                config.{{cv.get('name')}}().value().end(),
+                vect.begin(),
+                [](bool x){ return x ? OpcUa_True : OpcUa_False; }  );
+          {% else %}
+            vect = config.{{cv.get('name')}}().value();
+          {% endif %}
+          UaVariant variant;
+          {{oracle.vector_to_uavariant_function(cv.get('dataType'))}} (vect, variant);
+          m_{{cv.get('name')}}->setDataType( UaNodeId({{oracle.data_type_to_builtin_type(cv.get('dataType'))}}, 0) );
+          m_{{cv.get('name')}}->setValue(
+            /*pSession*/ nullptr,
+            UaDataValue(
+              variant,
+              OpcUa_Good,
+              UaDateTime::now(),
+              UaDateTime::now()),
+            /*check access level*/ OpcUa_False);
+
+        }
+      {% endfor %}
+    }
+
+    void AS{{className}}::createSourceVariables(
+      ASNodeManager* nm,
+      const Configuration::{{className}}& config)
+    {
+      UaStatus status;
+      UaString variableName;
+      {% for sv in this.sourcevariable %}
+        variableName = fixChildNameWhenSingleNodeClass(
+          "{{sv.get('name')}}",
+          config.name().c_str());
+        m_{{sv.get('name')}} = new ASSourceVariable(
+          nm->makeChildNodeId(
+            m_effectiveParentNodeIdForChildren,
+            variableName),
+          variableName,
+          nm->getNameSpaceIndex(),
+          UaVariant(),
+          {{oracle.source_var_read_access_mask(sv.get('addressSpaceRead'))}} | {{oracle.source_var_write_access_mask(sv.get('addressSpaceWrite'))}},
+          nm,
+          this,
+          {{oracle.source_var_read_job_id(className, sv.get('name'), sv.get('addressSpaceRead'))}},
+          {{oracle.source_var_write_job_id(className, sv.get('name'), sv.get('addressSpaceWrite'))}}
+          );
+        m_{{sv.get('name')}}->setDataType( UaNodeId( {{oracle.data_type_to_builtin_type(sv.get('dataType'))}}, 0 ));
+        status = nm->addNodeAndReference(
+          m_effectiveParentNodeIdForChildren,
+          m_{{sv.get('name')}},
+          OpcUaId_HasComponent);
+        if (!status.isGood())
+          throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+      {% endfor %}
+    }
+
+    void AS{{className}}::createMethods(
+      ASNodeManager* nm,
+      const Configuration::{{className}}& config)
+    {
+      UaStatus status;
+      UaString methodName;
+      {% for m in this.method %}
+        methodName = fixChildNameWhenSingleNodeClass(
+          "{{m.get('name')}}",
+          config.name().c_str());
+        m_{{m.get('name')}} = new ASDelegatingMethod<AS{{className}}> (
+          nm->makeChildNodeId(
+            m_effectiveParentNodeIdForChildren,
+            methodName),
+          methodName,
+          nm->getNameSpaceIndex());
+        {% if designInspector.class_has_device_logic(className) %}
+          m_{{m.get('name')}}->assignHandler( this, &AS{{className}}::call{{m.get('name')|capFirst}} );
+        {% endif %}
+
+        {% if m.argument|length>0 %}
+          {
+            UaPropertyMethodArgument * prop = new UaPropertyMethodArgument (
+              nm->makeChildNodeId( m_{{m.get('name')}}->nodeId(), "args" ),
+              OpcUa_AccessLevels_CurrentRead,
+              {{m.argument|length}},
+              UaPropertyMethodArgument::INARGUMENTS
+              );
+            {% for arg in m.argument %}
+              { // those blocks are intentional to reuse safely same variable names
+                UaUInt32Array dimensions;
+                {% if arg.array|length>0 %}
+                  OpcUa_Int32 valueRank = 1; // this argument is an 1D array
+                {% else %}
+                  OpcUa_Int32 valueRank = -1; // this argument is a scalar
+                {% endif %}
+                prop->setArgument(
+                  {{loop.index0}},
+                  UaString("{{arg.get('name')}}"),
+                  UaNodeId( {{oracle.data_type_to_builtin_type(arg.get('dataType'))}}, 0),
+                  valueRank,
+                  dimensions,
+                  UaLocalizedText("en_US", "{{arg.get('name')}}") );
+              }
+            {% endfor %}
+            status = nm->addNodeAndReference(
+              m_{{m.get('name')}},
+              prop,
+              OpcUaId_HasProperty);
+            if (!status.isGood())
+              throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+          }
+        {% endif %}
+
+        {% if m.returnvalue|length>0 %}
+          {
+            UaPropertyMethodArgument * propReturn = new UaPropertyMethodArgument (
+            	nm->makeChildNodeId( m_{{m.get('name')}}->nodeId(), "return_values" ),
+            	OpcUa_AccessLevels_CurrentRead,
+            	{{m.argument|length}},
+            	UaPropertyMethodArgument::OUTARGUMENTS
+            	);
+            {% for rv in m.returnvalue %}
+          	{
+          		UaUInt32Array dimensions;
+              {% if rv.array|length>0 %}
+                OpcUa_Int32 valueRank = 1; // this return-value is an 1D array
+              {% else %}
+                OpcUa_Int32 valueRank = -1; // this return-value is a scalar
+              {% endif %}
+          		propReturn->setArgument(
+                {{loop.index0}},
+                UaString("{{rv.get('name')}}"),
+                UaNodeId({{oracle.data_type_to_builtin_type(rv.get('dataType'))}}, 0),
+                valueRank,
+                dimensions,
+                UaLocalizedText("en_US", "{{rv.get('name')}}") );
+          	}
+            status = nm->addNodeAndReference(
+          	  m_{{m.get('name')}},
+              propReturn,
+              OpcUaId_HasProperty);
+            if (!status.isGood())
+              throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+            {% endfor %}
+          }
+        {% endif %}
+        status = nm->addNodeAndReference(
+	        m_effectiveParentNodeIdForChildren,
+          m_{{m.get('name')}},
+          OpcUaId_HasComponent);
+        if (!status.isGood())
+          throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+      {% endfor %}
+    }
+
+    AS{{className}}::~AS{{className}} ()
+    {
+      {% if designInspector.class_has_device_logic(className) %}
+      if (m_deviceLink)
+      {
+        LOG(Log::ERR) << "While destructing the class, device logic link is still not null. Sth went wrong with quasar logic...";
+      }
+      {% endif %}
+    }
+
+    UaString AS{{className}}::fixChildNameWhenSingleNodeClass(
+      const std::string& nameByDesign,
+      const std::string& nameByConfig
+      ) const
+    {
+      {% if designInspector.is_class_single_variable_node(className) %}
+        return nameByConfig.c_str();
+      {% else %}
+        return nameByDesign.c_str();
+      {% endif %}
+    }
+
+{### SETTERS AND GETTERS ###}
+    /* generate setters and getters -- for scalar cache-variables first */
+    {% for cv in designInspector.objectify_cache_variables(className, '[not(d:array)]') %}
+      UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), cv.get('dataType'), False) }}
+      {
+        {% if cv.get('dataType') == 'UaVariant' %}
+          return m_{{cv.get('name')}}->setValue (/*session*/ nullptr, UaDataValue (value, statusCode, srcTime, UaDateTime::now()), /*check access*/ OpcUa_False);
+        {% else %} {# not a variant #}
+          UaVariant v;
+          {% if cv.get('dataType') == 'UaByteString' %}
+            v.setByteString(const_cast<UaByteString&>(value), /*detach*/ OpcUa_False); // this const_case should be safe because we don't detach the value
+          {% else %}
+            v.{{oracle.data_type_to_variant_setter(cv.get('dataType'))}} (value);
+          {% endif %}
+          return m_{{cv.get('name')}}->setValue (/*session*/ nullptr, UaDataValue (v, statusCode, srcTime, UaDateTime::now()), /*check access*/ OpcUa_False );
+        {% endif %}
+      }
+
+      //! the basic getter, it's always there no matter what.
+      UaStatus AS{{className}}::get{{cv.get('name')|capFirst}} ({{cv.get('dataType')}}& returnValue) const
+      {
+        UaVariant v (* (m_{{cv.get('name')}}->value(/*session*/ nullptr).value()));
+        {% if cv.get('dataType') == 'UaString' %}
+          if (v.type() == OpcUaType_String)
+          {
+            returnValue = v.toString();
+            return OpcUa_Good;
+          }
+          else // that case would be when we allow nulls, and the cachevariable stores null
+            return OpcUa_Bad;
+        {% elif cv.get('dataType') == 'UaVariant' %}
+          returnValue = v; {# TODO @pnikiel a cheap and obvious optimization here is to avoid this copy here and return directly from value() #}
+          return OpcUa_Good;
+        {% else %}
+          return v.{{oracle.data_type_to_variant_converter(cv.get('dataType'))}}( returnValue );
+        {% endif %}
+      }
+
+      {% if cv.get('nullPolicy') == 'nullForbidden' %}
+        /* short getter (possible because the value of this variable will never be null, guaranteed by Design) */
+        {{cv.get('dataType')}} AS{{className}}::get{{cv.get('name')|capFirst}} () const
+        {
+          UaVariant v (* m_{{cv.get('name')}}->value (/*session*/ nullptr).value() );
+          {{cv.get('dataType')}} v_value;
+          {% if cv.get('dataType') == 'UaString' %}
+            v_value = v.toString();
+          {% else %}
+            v.{{oracle.data_type_to_variant_converter(cv.get('dataType'))}} ( v_value );
+          {% endif %}
+          return v_value;
+        }
+      {% endif %}
+
+      {% if cv.get('nullPolicy') == 'nullAllowed' %}
+        /* null-setter (possible because nullPolicy=nullAllowed) */
+        UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), None, False) }}
+        {
+          UaVariant v;
+          return m_{{cv.get('name')}}->setValue (
+            /*session*/ nullptr,
+            UaDataValue (
+              v,
+              statusCode,
+              srcTime,
+              UaDateTime::now()),
+            /*check access*/OpcUa_False );
+        }
+      {% endif %}
+    {% endfor %}
+
+    /* generate setters and getters -- now for arrays */
+    {% for cv in designInspector.objectify_cache_variables(className, '[d:array]') %}
+    UaStatus AS{{className}}::{{oracle.get_cache_variable_setter_array(cv.get('name'), cv.get('dataType'), False)}}
+    {
+      auto min = {{cv.get('name')}}_minimumSize();
+      auto max = {{cv.get('name')}}_maximumSize();
+
+      // make sure the design size constraints are respected during runtime
+      auto dim = value.size();
+      if ( dim < min || dim > max )
+      {
+        LOG(Log::ERR) << "Attempted to set an array of size " << dim << " which is out of Design bounds!";
+        return OpcUa_BadIndexRangeInvalid;
+      }
+      UaVariant v;
+      {{oracle.vector_to_uavariant_function(cv.get('dataType'))}} (value, v);
+      return m_{{cv.get('name')}}->setValue (
+        /*session*/ nullptr,
+        UaDataValue (
+          v,
+          statusCode,
+          srcTime,
+          UaDateTime::now()),
+        /*check access*/ OpcUa_False);
+    }
+
+    UaStatus AS{{className}}::get{{cv.get('name')|capFirst}} ( std::vector <{{cv.get('dataType')}}>& r) const
+    {
+    	UaVariant v ( * (m_{{cv.get('name')}}->value (/* session */ nullptr).value()));
+    	if ( !v.isArray() )
+    	{
+        return OpcUa_BadIndexRangeNoData;
+    	}
+      return {{oracle.uavariant_to_vector_function(cv.get('dataType'))}} (v, r);
+    }
+
+    {% if cv.get('nullPolicy') == 'nullForbidden' %}
+      /* short getter (possible because this variable will never be null) */
+      std::vector<{{cv.get('dataType')}}> AS{{className}}::get{{cv.get('name')|capFirst}} () const
+      {
+        UaVariant variant (* m_{{cv.get('name')}}->value (/*session*/ nullptr).value() );
+        std::vector<{{cv.get('dataType')}}> vector;
+        {{oracle.uavariant_to_vector_function(cv.get('dataType'))}} (variant, vector);
+        return vector;
+      }
+    {% endif %}
+
+    {% if cv.get('nullPolicy') == 'nullAllowed' %} {# TODO pnikiel commonalize with the verion for scalar #}
+      /* null-setter (possible because nullPolicy=nullAllowed) */
+      UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), None, False) }}
+      {
+        UaVariant v;
+        return m_{{cv.get('name')}}->setValue (
+          /*session*/ nullptr,
+          UaDataValue (
+            v,
+            statusCode,
+            srcTime,
+            UaDateTime::now()),
+          /*check access*/OpcUa_False );
+      }
+    {% endif %}
+
+    {% endfor %}
+
+
+{### ARRAY UTILS, TODO @pnikiel this should be moved to CONFIG VALIDATOR ###}
+    {% for cv in this.cachevariable %}
+      {% if cv.array|length>0 %}
+        OpcUa_UInt32 AS{{className}}::{{cv.get('name')}}_minimumSize()
+        {
+          {% if cv.array.get('minimumSize') %}
+            return {{cv.array.get('minimumSize')}};
+          {% else %}
+            return 0;
+          {% endif %}
+        }
+        OpcUa_UInt32 AS{{className}}::{{cv.get('name')}}_maximumSize()
+        {
+          {% if cv.array.get('maximumSize') %}
+            return {{cv.array.get('maximumSize')}};
+          {% else %}
+            return INT_MAX;
+          {% endif %}
+        }
+      {% endif %}
+    {% endfor %}
+
+{### DELEGATES ###}
+    /* generate delegates (if requested) */
+    {% for cv in this.cachevariable %}
+      {% if cv.get('addressSpaceWrite') in ['delegated','regular'] %}
+        {{ oracle.get_delegated_write_header(cv.get('name'), className, 'body') }}
+        {
+          {% if cv.get('dataType') != 'UaVariant' %}
+            /* ensure that data type passed by OPC UA client matches specification */
+            UaVariant v (*dataValue.value()); // TODO : do we really need this copy?
+            if (v.type() != {{oracle.data_type_to_builtin_type(cv.get('dataType'))}} )
+            {
+              {% if cv.get('nullPolicy') == 'nullForbidden' %}
+                return OpcUa_BadDataEncodingInvalid;
+              {% endif %}
+                if (v.type() != OpcUaType_Null)
+                  return OpcUa_BadDataEncodingInvalid; // now we know it is neither the intended datatype nor NULL
+            }
+          {% endif %}
+          {% if cv.get('addressSpaceWrite') == 'regular' %}
+            return OpcUa_Good;
+          {% elif cv.get('addressSpaceWrite') == 'delegated' %}
+            {% if cv.array|length>0 %}
+              std::vector<{{cv.get('dataType')}}> v_value;
+              UaStatus status = {{oracle.uavariant_to_vector_function(cv.get('dataType'))}} (v, v_value);
+              if (!status.isGood())
+                return status;
+            {% else %}
+              {{cv.get('dataType')}} v_value;
+              {% if cv.get('dataType') == 'UaString' %}
+                {# TODO @pnikiel in future we should identify multiple conversions between UaVariant and UaString #}
+                v_value = v.toString();
+              {% else %}
+                v.{{oracle.data_type_to_variant_converter(cv.get('dataType'))}} ( v_value );
+              {% endif %}
+            {% endif %}
+            /* if device logic type specified, then generate calling functions */
+            {% if designInspector.class_has_device_logic(className) %}
+              return getDeviceLink()->write{{cv.get('name')|capFirst}} (v_value);
+            {% else %}
+              return OpcUa_BadNotImplemented;
+            {% endif %}
+          {% endif %}
+        }
+      {% endif %}
+    {% endfor %}
+
+{### METHODS ... ###}
+    {% if this.method|length >= 1 %}
+    /* Call handler defined because at least one method is declared */
+    UaStatus AS{{className}}::beginCall (
+        MethodManagerCallback*    pCallback,
+        const ServiceContext&     serviceContext,
+        OpcUa_UInt32              callbackHandle,
+        MethodHandle*  	          pMethodHandle,
+        const UaVariantArray&     inputArguments
+    )
+    {
+      {% if designInspector.class_has_device_logic(className) %}
+        MethodHandleUaNode* upper = dynamic_cast<MethodHandleUaNode*> (pMethodHandle);
+        if (!upper)
+          return OpcUa_BadInternalError;
+        ASDelegatingMethod<AS{{className}}>* impl =
+          static_cast< ASDelegatingMethod<AS{{className}}>* > ( upper->pUaMethod() );
+        if (impl)
+          return impl->call(pCallback, callbackHandle, inputArguments);
+        else
+        {
+          LOG(Log::ERR) << "quasar logic error here?";
+          return OpcUa_BadInternalError;
+        }
+      {% else %} {# no device logic #}
+        return OpcUa_BadInternalError;
+      {% endif %}
+    }
+
+    {% if designInspector.class_has_device_logic(className) %}
+      {% for m in this.method %}
+        UaStatus AS{{className}}::call{{m.get('name')|capFirst}} (
+          MethodManagerCallback* pCallback,
+          OpcUa_UInt32           callbackHandle,
+          const UaVariantArray&  inputArguments)
+        {
+          if (inputArguments.length() != {{m.argument|length}})
+            return OpcUa_BadArgumentsMissing;
+          {% for arg in m.argument %}
+            {{oracle.quasar_data_type_to_cpp_type(arg.get('dataType'),arg.array|length>0)}} arg_{{arg.get('name')}};
+            {% if arg.array|length>0 %}
+              {
+                UaStatus conversionStatus = {{oracle.uavariant_to_vector_function(arg.get('dataType'))}} (
+                  inputArguments[{{loop.index0}}],
+                  arg_{{arg.get('name')}}
+                );
+                if (!conversionStatus.isGood())
+                  return conversionStatus;
+              }
+            {% else %}
+              {% if arg.get('dataType') == 'UaString' %}
+                arg_{{arg.get('name')}} = (UaVariant(inputArguments[{{loop.index0}}])).toString();
+              {% elif arg.get('dataType') == 'UaVariant' %}
+                arg_{{arg.get('name')}} = inputArguments[{{loop.index0}}];
+              {% else %}
+                if ((UaVariant(inputArguments[{{loop.index0}}])).{{oracle.data_type_to_variant_converter(arg.get('dataType'))}}( arg_{{arg.get('name')}} ) != OpcUa_Good)
+                  return OpcUa_BadDataEncodingInvalid;
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {% if m.get('executionSynchronicity') == 'asynchronous' %}
+            #ifdef BACKEND_OPEN62541
+            #error asynchronous method execution is not available for open62541 backend
+            #endif
+            AddressSpace::SourceVariables_getThreadPool()->addJob(
+              [this,
+              callbackHandle,
+              pCallback
+              {% for arg in m.argument %}
+                ,arg_{{arg.get('name')}}
+              {% endfor %}
+              ](){
+          {% endif %}
+
+          {% for rv in m.returnvalue %}
+            {{oracle.quasar_data_type_to_cpp_type(rv.get('dataType'), rv.array|length>0)}} rv_{{rv.get('name')}};
+          {% endfor %}
+
+          UaStatusCodeArray       inputArgumentResults;
+          UaDiagnosticInfos       inputArgumentDiag;
+          UaVariantArray          outputArguments;
+
+          try
+          {
+            UaStatus stat = getDeviceLink()->call{{m.get('name')|capFirst}} (
+              {% for arg in m.argument %}
+                arg_{{arg.get('name')}}{% if loop.index < (m.argument|length+m.returnvalue|length) %},
+                  {% endif %}
+              {% endfor %}
+              {% for rv in m.returnvalue %}
+                rv_{{rv.get('name')}}{% if loop.index < (m.returnvalue|length) %},
+                  {% endif %}
+              {% endfor %}
+
+            );
+            {% if m.returnvalue|length>0 %}
+              UaVariant helper;
+              outputArguments.create( {{m.returnvalue|length}} );
+              {% for rv in m.returnvalue %}
+                {% if rv.array|length>0 %}
+                  {{oracle.vector_to_uavariant_function(rv.get('dataType'))}}(rv_{{rv.get('name')}}, helper);
+                {% else %}
+                  {% if rv.get('dataType') == 'OpcUa_Boolean' %}
+                    {#  we do this because OpcUa_Boolean decays to char and not C++ bool. #}
+                    helper.setBool( rv_{{rv.get('name')}} );
+                  {% elif rv.get('dataType') == 'UaByteString' %}
+                    helper.setByteString( rv_{{rv.get('name')}}, /*detach*/false );
+                  {% else %}
+                    helper = rv_{{rv.get('name')}};
+                  {% endif %}
+                {% endif %}
+                helper.copyTo( &outputArguments[{{loop.index0}}] );
+              {% endfor %}
+            {% endif %}
+            pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, stat );
+            return (OpcUa_StatusCode)OpcUa_Good;
+
+          }
+          catch (const std::exception& e)
+          {
+            LOG(Log::ERR) << "method call of method {{m.get('name')}} thrown an exception (should have been handled in the method body...): " << e.what();
+            UaStatus badStatus = OpcUa_BadInternalError;
+            pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );
+            return OpcUa_BadInternalError;
+          }
+
+          {% if m.get('executionSynchronicity') == 'asynchronous' %}
+          }, std::string("method call of method {{m.get('name')}} on object ")+this->nodeId().toString().toUtf8());
+          return OpcUa_Good;
+          {% endif %}
+        }
+      {% endfor %}
+    {% endif %}
+
+    {% endif %}
+
+{### LINK/UNLINK DEVICE LOGIC ###}
+    /* generate device logic link */
+    {% if designInspector.class_has_device_logic(className) %}
+    void AS{{className}}::linkDevice( Device::D{{className}}* deviceLink)
+    {
+      if (m_deviceLink) /* This is an error -- device can be linked at most once in the object's lifetime. */
+        throw std::logic_error("linkDevice() should be called only once. Quasar logic error?");
+      else
+        m_deviceLink = deviceLink;
+    }
+
+    void AS{{className}}::unlinkDevice ()
+    {
+      m_deviceLink = nullptr;
+    }
+    {% endif %}
+
+{% endfor %}
+
+}

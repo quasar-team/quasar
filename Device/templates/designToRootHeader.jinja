@@ -1,0 +1,77 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:      Jun 2014 (original XSLT version)                                #}
+{#               Mar 2020 (converted to Jinja2                                   #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info                                             #}
+
+{% import 'headers.jinja' as headers %}
+{{ headers.cppFullGeneratedHeader() }}
+
+{% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
+{% set root = designInspector.objectify_root() %}
+
+#ifndef DROOT_H_
+#define DROOT_H_
+
+#include <opcua_platformdefs.h>
+
+#include <vector>
+#include <string>
+
+namespace Device
+{
+
+{% for hasobjects in root.hasobjects %}
+  {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
+    class D{{hasobjects.get('class')}};
+  {% endif %}
+{% endfor %}
+
+class DRoot
+{
+public:
+  /* yes, it's a singleton */
+  static DRoot* getInstance ();
+
+  DRoot ();
+  DRoot (const DRoot& other) = delete;
+  DRoot& operator= (const DRoot& other) = delete;
+
+  virtual ~DRoot ();
+
+  /* To gracefully quit */
+  void unlinkAllChildren () const;
+
+  /* For constructing the tree of devices and for browsing children. */
+  {{ commonDeviceTemplates.hasobjectsAccessors(root, designInspector, oracle) }}
+
+  /* find methods for children */
+  {{ commonDeviceTemplates.deviceLogicFindByKeyHeaders(root, designInspector, oracle) }}
+
+  /* query address-space for full name (mostly for debug purposes) */
+  std::string getFullName () const { return "[ROOT]"; }
+
+private:
+  static DRoot *m_instance; /* it's a singleton class */
+
+  /* Collections of device logic children objects */
+  {{ commonDeviceTemplates.hasobjectsChildrenCollection(root, designInspector, oracle) }}
+
+};
+
+}
+#endif // include guard

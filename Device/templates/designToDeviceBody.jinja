@@ -1,0 +1,136 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014 (the original XSLT version)                               #}
+{#            02 Apr 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% import 'headers.jinja' as headers %}
+{% set this = designInspector.objectify_class(className) %}
+{{ headers.cppStubHeader(designInspector.objectify_root().get('author')) }}
+
+#include <Configuration.hxx> // TODO; should go away, is already in Base class for ages
+
+#include <D{{className}}.h>
+#include <AS{{className}}.h>
+
+namespace Device
+{
+  // 1111111111111111111111111111111111111111111111111111111111111111111111111
+  // 1     GENERATED CODE STARTS HERE AND FINISHES AT SECTION 2              1
+  // 1     Users don't modify this code!!!!                                  1
+  // 1     If you modify this code you may start a fire or a flood somewhere,1
+  // 1     and some human being may possible cease to exist. You don't want  1
+  // 1     to be charged with that!                                          1
+  // 1111111111111111111111111111111111111111111111111111111111111111111111111
+
+
+
+
+
+
+  // 2222222222222222222222222222222222222222222222222222222222222222222222222
+  // 2     SEMI CUSTOM CODE STARTS HERE AND FINISHES AT SECTION 3            2
+  // 2     (code for which only stubs were generated automatically)          2
+  // 2     You should add the implementation but dont alter the headers      2
+  // 2     (apart from constructor, in which you should complete initializati2
+  // 2     on list)                                                          2
+  // 2222222222222222222222222222222222222222222222222222222222222222222222222
+
+  /* sample ctr */
+  D{{className}}::D{{className}} (
+    const Configuration::{{className}}& config,
+    Parent_D{{className}}* parent
+  ):
+    Base_D{{className}}( config, parent)
+
+  /* fill up constructor initialization list here */
+  {
+    /* fill up constructor body here */
+  }
+
+  /* sample dtr */
+  D{{className}}::~D{{className}} ()
+  {
+  }
+
+  /* delegates for cachevariables */
+
+  {% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
+    /* Note: never directly call this function. */
+
+    {% if cv.array|length > 0 %}
+      UaStatus D{{className}}::write{{cv.get('name')|capFirst}} ( const std::vector<{{cv.get('dataType')}}>& v)
+    {% else %}
+      UaStatus D{{className}}::write{{cv.get('name')|capFirst}} ( const {{cv.get('dataType')}}& v)
+    {% endif %}
+    {
+      return OpcUa_BadNotImplemented;
+    }
+  {% endfor %}
+
+  {% for sv in this.sourcevariable %}
+    {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
+      /* {{sv.get('addressSpaceRead')|upper}} !! */
+      UaStatus D{{className}}::read{{sv.get('name')|capFirst}} (
+        {{sv.get('dataType')}}& value,
+        UaDateTime& sourceTime
+      )
+      {
+        sourceTime = UaDateTime::now();
+        return OpcUa_BadNotImplemented;
+      }
+    {% endif %}
+    {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
+      /* {{sv.get('addressSpaceWrite')|upper}} !! */
+      UaStatus D{{className}}::write{{sv.get('name')|capFirst}} (
+        {{sv.get('dataType')}}& value
+      )
+      {
+        return OpcUa_BadNotImplemented;
+      }
+    {% endif %}
+  {% endfor %}
+
+  /* delegators for methods */
+  {% for m in this.method %}
+    {% set allArgsLen = m.argument|length + m.returnvalue|length %}
+    UaStatus D{{className}}::call{{m.get('name')|capFirst}} (
+    {% for arg in m.argument %}
+      {{oracle.fix_data_type_passing_method(arg.get('dataType'), arg.array|length>0 )}} {{arg.get('name')}}
+      {%- if loop.index < allArgsLen %},
+      {% endif %}
+    {% endfor %}
+    {% for rv in m.returnvalue %}
+      {{oracle.quasar_data_type_to_cpp_type(rv.get('dataType'), rv.array|length>0 )}}& {{rv.get('name')}}
+      {%- if not loop.last %},
+      {% endif %}
+    {% endfor %}
+
+    )
+    {
+      return OpcUa_BadNotImplemented;
+    }
+  {% endfor %}
+
+  // 3333333333333333333333333333333333333333333333333333333333333333333333333
+  // 3     FULLY CUSTOM CODE STARTS HERE                                     3
+  // 3     Below you put bodies for custom methods defined for this class.   3
+  // 3     You can do whatever you want, but please be decent.               3
+  // 3333333333333333333333333333333333333333333333333333333333333333333333333
+
+}

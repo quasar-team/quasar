@@ -1,0 +1,168 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014 (the original XSLT version)                               #}
+{#            12 Mar 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% import 'headers.jinja' as headers %}
+{{ headers.cppFullGeneratedHeader() }}
+
+{% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
+{% set this = designInspector.objectify_class(className) %}
+
+#ifndef __Base_D{{className}}__H__
+#define __Base_D{{className}}__H__
+
+#include <vector>
+#include <string>
+#include <list>
+#include <boost/thread/mutex.hpp> // will go to std soon, see OPCUA-1759
+
+#include <opcua_platformdefs.h>
+
+/* forward decl for AddressSpace */
+namespace AddressSpace { class AS{{className}}; }
+
+/* forward decl for Configuration */
+namespace Configuration { class {{className}}; }
+
+namespace Device
+{
+  {% if designInspector.class_has_legit_device_parent(className) %}
+  class {{designInspector.get_parent_struct(className)}};
+  {% endif %}
+
+  typedef {{designInspector.get_parent_struct(className)}} Parent_D{{className}};
+
+  class D{{className}};
+
+  /* forward declarations (comes from design.class.has_objects) */
+  {% for containedClass in designInspector.has_objects_class_names(className, only_with_device_logic=True) %}
+  class D{{containedClass}};
+  {% endfor %}
+
+{# and now comes part which is taken from deviceHeader template #}
+
+class Base_D{{className}}
+{
+  public:
+  /* Constructor */
+  explicit Base_D{{className}} (
+    const Configuration::{{className}}& config,
+    Parent_D{{className}}* parent
+    ) ;
+
+  /* No copy constructors or assignment operators */
+  Base_D{{className}} (const Base_D{{className}}& other) = delete;
+  Base_D{{className}}& operator=(const Base_D{{className}}& other) = delete;
+
+  /* dtr */
+  virtual ~Base_D{{className}} ();
+
+  Parent_D{{className}}* getParent () const { return m_parent; }
+
+  {{ commonDeviceTemplates.hasobjectsAccessors(this, designInspector, oracle) }}
+
+  /* to safely quit */
+  unsigned int unlinkAllChildren ();
+
+  void linkAddressSpace (AddressSpace::AS{{className}}* as, const std::string& stringAddress);
+  AddressSpace::AS{{className}}* getAddressSpaceLink () const;
+
+  /* find methods for children */
+  {{ commonDeviceTemplates.deviceLogicFindByKeyHeaders(this, designInspector, oracle) }}
+
+  /* getters for values which are keys */
+  {# TODO @pnikiel review the data-types below, both headers should be equal regarding types #}
+  {% for cv in designInspector.objectify_cache_variables(className, "[@isKey='true']") %}
+    const {{cv.get('dataType')}} {{cv.get('name')}} () { return m_{{cv.get('name')}}; }
+  {% endfor %}
+  {% for ce in designInspector.objectify_config_entries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
+    const {{oracle.data_type_to_device_type(ce.get('dataType'))}} {{ce.get('name')}}() { return m_{{ ce.get('name') }}; }
+  {% endfor %}
+
+  /* mutex operations */
+  {% if designInspector.device_logic_has_mutex(className) %}
+    void lock () { m_lock.lock(); }
+    void unlock () { m_lock.unlock(); }
+    boost::mutex& getLock () { return m_lock; } // will go to std soon, see OPCUA-1759
+  {% endif %}
+
+  /* variable-wise locks */
+  {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceWriteUseMutex='of_this_variable' or @addressSpaceReadUseMutex='of_this_variable']") %}
+    void lockVariable_{{sv.get('name')}} () { m_lockVariable_{{sv.get('name')}}.lock(); }
+    void unlockVariable_{{sv.get('name')}} () { m_lockVariable_{{sv.get('name')}}.unlock(); }
+  {% endfor %}
+
+  {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceWriteUseMutex='of_this_operation']") %}
+    void lockVariableWrite_{{sv.get('name')}} () { m_lockVariable_write_{{sv.get('name')}}.lock(); }
+    void unlockVariableWrite_{{sv.get('name')}} () { m_lockVariable_write_{{sv.get('name')}}.unlock(); }
+  {% endfor %}
+
+  {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceReadUseMutex='of_this_operation']") %}
+    void lockVariableRead_{{sv.get('name')}} () { m_lockVariable_read_{{sv.get('name')}}.lock(); }
+    void unlockVariableRead_{{sv.get('name')}} () { m_lockVariable_read_{{sv.get('name')}}.unlock(); }
+  {% endfor %}
+
+  /* query address-space for full name (mostly for debug purposes) */
+  std::string getFullName() const { return m_stringAddress; }
+
+  static std::list<D{{className}}*> s_orphanedObjects;
+  static void registerOrphanedObject( D{{className}}* object ) { s_orphanedObjects.push_back( object ); }
+  static std::list<D{{className}}*>& orphanedObjects() { return s_orphanedObjects; }
+
+private:
+  Parent_D{{className}}* m_parent;
+  AddressSpace::AS{{className}}* m_addressSpaceLink;
+  std::string m_stringAddress;
+
+  /* Collections of device logic children objects */
+  {{ commonDeviceTemplates.hasobjectsChildrenCollection(this, designInspector, oracle) }}
+
+  /* if any of our cachevariables has isKey=true then we shall keep its copy here for find functions  (it is const, either way) */
+  {% for cv in designInspector.objectify_cache_variables(className, "[@isKey='true']") %}
+    const {{oracle.data_type_to_device_type(cv.get('dataType'))}} m_{{cv.get('name')}};
+  {% endfor %}
+
+  {% for ce in designInspector.objectify_config_entries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
+    const {{oracle.data_type_to_device_type(ce.get('dataType'))}} m_{{ce.get('name')}};
+  {% endfor %}
+
+  /* object-wise lock */
+  {% if designInspector.device_logic_has_mutex(className) %}
+    boost::mutex m_lock;
+  {% endif %}
+
+  /* variable-wise locks */
+  {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceWriteUseMutex='of_this_variable' or @addressSpaceReadUseMutex='of_this_variable']") %}
+    boost::mutex m_lockVariable_{{sv.get('name')}};
+  {% endfor %}
+
+  {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceWriteUseMutex='of_this_operation']") %}
+    boost::mutex m_lockVariable_write_{{sv.get('name')}};
+  {% endfor %}
+
+  {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceReadUseMutex='of_this_operation']") %}
+    boost::mutex m_lockVariable_read_{{sv.get('name')}};
+  {% endfor %}
+
+};
+
+}
+
+#endif // __Base_D{{className}}__H__

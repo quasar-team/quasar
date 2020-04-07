@@ -1,0 +1,110 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014 (the original XSLT version)                               #}
+{#            10 Mar 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% import 'headers.jinja' as headers %}
+{% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
+
+{{ headers.cppFullGeneratedHeader() }}
+
+{% set root = designInspector.objectify_root() %}
+
+#include <stdexcept>
+
+#include <DRoot.h>
+#include <LogIt.h>
+
+// Need to have full declarations of classes on which we will call "delete" operator
+{% for hasobjects in root.hasobjects %}
+  {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
+    #include <D{{hasobjects.get('class')}}.h>
+  {% endif %}
+{% endfor %}
+
+
+namespace Device
+{
+
+/* Singleton's instance. */
+DRoot* DRoot::m_instance = nullptr;
+
+DRoot::DRoot()
+{
+  if (m_instance != 0)
+    throw std::logic_error("DRoot can be instantiated just once");
+  m_instance = this;
+}
+
+DRoot::~DRoot()
+{
+  {{ commonDeviceTemplates.deviceLogicDeleter(root, designInspector, oracle) }}
+  // part 2 of dtr: remove all orphaned objects
+  {% for hasobjects in root.hasobjects %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
+      {
+        auto objects = Base_D{{hasobjects.get('class')}}::orphanedObjects ();
+        for (auto* obj : objects)
+          delete obj;
+        objects.clear();
+      }
+    {% endif %}
+  {% endfor %}
+}
+
+DRoot* DRoot::getInstance()
+{
+  if (m_instance == 0)
+  {
+    throw std::logic_error ("DRoot: instance not yet created. ");
+  }
+  return m_instance;
+}
+
+/* For constructing the tree of devices and for browsing children. */
+{{ commonDeviceTemplates.hasobjectsAccessorsBody(root, designInspector, oracle, 'DRoot') }}
+
+void DRoot::unlinkAllChildren () const
+{
+  unsigned int objectCounter = 0;
+  // part 1: unlinking all legit children
+  {% for hasobjects in root.hasobjects %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
+      for (auto* obj : {{hasobjects.get('class')|lower}}s())
+        objectCounter += obj->unlinkAllChildren();
+    {% endif %}
+  {% endfor %}
+
+  // part 2: unlinking all orphaned children
+  {% for hasobjects in root.hasobjects %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
+      {
+        auto objects = Base_D{{hasobjects.get('class')}}::orphanedObjects ();
+        for (auto* obj : objects)
+          objectCounter += obj->unlinkAllChildren();
+      }
+    {% endif %}
+  {% endfor %}
+  LOG(Log::INF) << "DRoot::unlinkAllChildren(): " << objectCounter << " objects unlinked ";
+}
+
+/* find methods for children */
+{{ commonDeviceTemplates.deviceLogicFindByKeyBody(root, designInspector, oracle, "DRoot") }}
+
+}

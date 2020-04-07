@@ -1,0 +1,124 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:                                                                      #}
+{#            12-Mar-2020 (pnikiel)                                              #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% macro hasobjectsAccessors(this, designInspector, oracle) %}
+{# this: is the parent of hasobjects, so either d:root or d:class #}
+  {% for hasobjects in this.hasobjects %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
+      void add (D{{hasobjects.get('class')}}* device);
+      const std::vector<D{{hasobjects.get('class')}}* >& {{hasobjects.get('class')|lower}}s () const;
+      {# TODO below: we should merge into one has_objects #}
+      {% if designInspector.is_has_objects_singleton_any2(hasobjects) %}
+        D{{hasobjects.get('class')}}* {{hasobjects.get('class')|lower}}() const;
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro hasobjectsAccessorsBody(this, designInspector, oracle, fullClassName) %}
+{% for hasobjects in this.hasobjects %}
+  {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
+    void {{fullClassName}}::add (D{{hasobjects.get('class')}}* device)
+    {
+      m_{{hasobjects.get('class')}}s.push_back (device);
+    }
+    const std::vector<D{{hasobjects.get('class')}}* >& {{fullClassName}}::{{hasobjects.get('class')|lower}}s () const
+    {
+      return m_{{hasobjects.get('class')}}s;
+    }
+    {% if designInspector.is_has_objects_singleton_any2(hasobjects) %}
+      D{{hasobjects.get('class')}}* {{fullClassName}}::{{hasobjects.get('class')|lower}}() const
+      {
+        if (m_{{hasobjects.get('class')}}s.size() != 1)
+          throw std::runtime_error( "Configuration error: should have exactly 1 {{hasobjects.get('class')}} due to design restrictions" );
+        return m_{{hasobjects.get('class')}}s.at(0);
+      }
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% endmacro %}
+
+{% macro hasobjectsChildrenCollection(this, designInspector, oracle) %}
+{# this: is the parent of hasobjects, so either d:root or d:class #}
+  {% for hasobjects in this.hasobjects %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
+      std::vector<D{{hasobjects.get('class')}}* > m_{{hasobjects.get('class')}}s;
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro deviceLogicDeleter(this, designInspector, oracle) %}
+  // part 1 of dtr: remove all legit children (i.e. non-orphaned objects)
+  {% for hasobjects in this.hasobjects %}
+    {% if designInspector.class_has_device_logic(hasobjects.get('class')) %}
+      for (auto* obj : {{hasobjects.get('class')|lower}}s())
+        delete obj;
+      m_{{hasobjects.get('class')}}s.clear();
+    {% endif %}
+  {% endfor %}
+
+{% endmacro %}
+
+{% macro deviceLogicFindByKeyHeaders(this, designInspector, oracle) %}
+  {% for hasobjects in this.hasobjects %}
+    {% for cv in designInspector.objectify_cache_variables(hasobjects.get('class'), "[@isKey='true']") %}
+      D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}} (
+        const {{oracle.data_type_to_device_type(cv.get('dataType'))}} key );
+    {% endfor %}
+    {% for ce in designInspector.objectify_config_entries(hasobjects.get('class'), "[@isKey='true']") %}
+      D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{ce.get('name')|capFirst}} (
+        const {{oracle.data_type_to_device_type(ce.get('dataType'))}} key );
+    {% endfor %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro deviceLogicFindByKeyBody(this, designInspector, oracle, fullClassName) %}
+  {# documentation
+    this         - is whatever that has hasobjects element (usually d:class or d:root),
+    fullClasName - is a name of the class for which this body is generated (so DRoot or Base_DMyClass)
+  #}
+  {% for hasobjects in this.hasobjects %}
+    {% for ce in designInspector.objectify_config_entries(hasobjects.get('class'), "[@isKey='true']") %}
+      D{{hasobjects.get('class')}}* {{fullClassName}}::get{{hasobjects.get('class')}}By{{ce.get('name')|capFirst}} (
+        const {{oracle.data_type_to_device_type(ce.get('dataType'))}} key )
+        {
+          for( auto* test : this->{{hasobjects.get('class')|lower}}s() )
+          {
+            if (test->{{ce.get('name')}}() == key)
+              return test;
+          }
+          return nullptr;
+        }
+    {% endfor %}{# for ce #}
+    {% for cv in designInspector.objectify_cache_variables(hasobjects.get('class'), "[@isKey='true']") %}
+      D{{hasobjects.get('class')}}* {{fullClassName}}::get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}} (
+        const {{oracle.data_type_to_device_type(cv.get('dataType'))}} key )
+        {
+          for( auto* test : this->{{hasobjects.get('class')|lower}}s() )
+          {
+            if (test->{{cv.get('name')}}() == key)
+              return test;
+          }
+          return nullptr;
+        }
+    {% endfor %}{# for cv #}
+  {% endfor %}{# for hasobjects #}
+{% endmacro %}
