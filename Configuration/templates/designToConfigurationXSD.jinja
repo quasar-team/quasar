@@ -24,34 +24,34 @@
 {% set this = designInspector.objectify_root() %}
 {# TODO piotr{{ headers.xmlFullGeneratedHeader() }} #}
 
-{% macro writeRestriction(className, varName, dataType, restriction) %}
-  <!--processing restriction for class [{{className}}] name: {{varName}} dataType [{{dataType}}]-->  
-  {% if restriction %}
+{% macro writeRestrictions(className, varName, dataType, restrictions) %}
+  <!--processing [{{restrictions|length}}] restrictions for class [{{className}}] name: {{varName}} dataType [{{dataType}}]-->  
   <xs:simpleType>
     <xs:restriction base="{{dataType}}">
-    {% if restriction['type'] == 'byEnumeration' %}
-      {% for enumerationValue in restriction['enumerationValues']%}
-        <xs:enumeration value="{{enumerationValue}}"/>
-      {% endfor %}
-    {% elif restriction['type'] == 'byPattern' %}
-      <xs:pattern value="{{restriction['pattern']}}"/>
-    {% elif restriction['type'] == 'byBounds' %}
-      {% if restriction['minExclusive'] %}
-        <xs:minExclusive value="{{restriction['minExclusive']}}"/>
-      {% endif %}
-      {% if restriction['maxExclusive'] %}
-        <xs:maxExclusive value="{{restriction['maxExclusive']}}"/>
-      {% endif %}
-      {% if restriction['minInclusive'] %}
-       <xs:minInclusive value="{{restriction['minInclusive']}}"/>
+    {% for restriction in restrictions %}
+      {% if restriction['type'] == 'byEnumeration' %}
+        {% for enumerationValue in restriction['enumerationValues']%}
+          <xs:enumeration value="{{enumerationValue}}"/>
+        {% endfor %}
+      {% elif restriction['type'] == 'byPattern' %}
+        <xs:pattern value="{{restriction['pattern']}}"/>
+      {% elif restriction['type'] == 'byBounds' %}
+        {% if restriction['minExclusive'] %}
+          <xs:minExclusive value="{{restriction['minExclusive']}}"/>
+        {% endif %}
+        {% if restriction['maxExclusive'] %}
+          <xs:maxExclusive value="{{restriction['maxExclusive']}}"/>
+        {% endif %}
+        {% if restriction['minInclusive'] %}
+         <xs:minInclusive value="{{restriction['minInclusive']}}"/>
+       {% endif %}
+       {% if restriction['maxInclusive'] %}
+         <xs:maxInclusive value="{{restriction['maxInclusive']}}"/>
+       {% endif %}
      {% endif %}
-     {% if restriction['maxInclusive'] %}
-       <xs:maxInclusive value="{{restriction['maxInclusive']}}"/>
-     {% endif %}
-   {% endif %}
+    {% endfor %}         
    </xs:restriction>
   </xs:simpleType>
-  {% endif %}         
 {% endmacro %}
 
 {% macro writeUsageAndDefaultValue(configEntry) %}
@@ -108,13 +108,13 @@
 	    {% for arrayCacheVarByConfig in designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration' and d:array]") %}
         {% set dataType = oracle.quasar_data_type_to_xsd_type(arrayCacheVarByConfig.get('dataType')) %}
           {% set arrayObject = designInspector.xpath_relative_to_object(arrayCacheVarByConfig, "d:array")[0] %}
-	      {% set restriction = designInspector.get_restriction(className, arrayCacheVarByConfig.get('name')) %}
+	      {% set restrictions = designInspector.get_restrictions(className, arrayCacheVarByConfig.get('name')) %}
 	      <!-- add arrayCacheVarByConfig name [{{arrayCacheVarByConfig.get('name')}}] type [{{dataType}}] -->
 	      <xs:element name="{{arrayCacheVarByConfig.get('name')}}">
 	        <xs:complexType>
 	          <xs:sequence minOccurs="{{ arrayObject.get('minimumSize')|default('0', true) }}" maxOccurs="{{ arrayObject.get('maximumSize')|default('unbounded', true) }}">
 	            <xs:element name="value">
-  	            {{ writeRestriction(className, arrayCacheVarByConfig.get('name'), dataType, restriction) }}
+  	            {{ writeRestrictions(className, arrayCacheVarByConfig.get('name'), dataType, restrictions) }}
 	            </xs:element>
 	          </xs:sequence>
 	        </xs:complexType>
@@ -127,11 +127,11 @@
     <!-- processing scalar cache vars for class [{{className}}] -->
     {% for scalarCacheVarByConfig in designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration' and not(d:array)]") %}
       {% set dataType = oracle.quasar_data_type_to_xsd_type(scalarCacheVarByConfig.get('dataType')) %}
-      {% set restriction = designInspector.get_restriction(className, scalarCacheVarByConfig.get('name')) %}
-      <!-- add scalarCacheVarByConfig name [{{scalarCacheVarByConfig.get('name')}}] type [{{dataType}}] restriction [{{ restriction['type']|default('None') }}] -->
-      {% if restriction %}
+      {% set restrictions = designInspector.get_restrictions(className, scalarCacheVarByConfig.get('name')) %}
+      <!-- add scalarCacheVarByConfig name [{{scalarCacheVarByConfig.get('name')}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
+      {% if restrictions|length>0 %}
         <xs:attribute name="{{scalarCacheVarByConfig.get('name')}}" use="required">
-        {{ writeRestriction(className, scalarCacheVarByConfig.get('name'), dataType, restriction) }}
+        {{ writeRestrictions(className, scalarCacheVarByConfig.get('name'), dataType, restrictions) }}
       {% else %}
         <xs:attribute name="{{scalarCacheVarByConfig.get('name')}}" use="required" type="{{dataType}}">
       {% endif %}
@@ -141,11 +141,11 @@
     <!-- processing scalar config entries for class [{{className}}] -->
     {% for scalarConfigEntry in designInspector.objectify_config_entries(className, restrict_by="[not(d:array)]") %}
       {% set dataType = oracle.quasar_data_type_to_xsd_type(scalarConfigEntry.get('dataType')) %}
-      {% set restriction = designInspector.get_restriction(className, scalarConfigEntry.get('name')) %}
-      <!-- add scalarConfigEntry name [{{scalarConfigEntry.get('name')}}] type [{{dataType}}] restriction [{{ restriction['type']|default('None') }}] -->
-      {% if restriction %}
+      {% set restrictions = designInspector.get_restrictions(className, scalarConfigEntry.get('name')) %}
+      <!-- add scalarConfigEntry name [{{scalarConfigEntry.get('name')}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
+      {% if restrictions|length>0 %}
         <xs:attribute name="{{scalarConfigEntry.get('name')}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}}>
-        {{ writeRestriction(className, scalarConfigEntry.get('name'), dataType, restriction) }}
+        {{ writeRestrictions(className, scalarConfigEntry.get('name'), dataType, restrictions) }}
       {% else %}
         <xs:attribute name="{{scalarConfigEntry.get('name')}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}} type="{{dataType}}" >
       {% endif %}

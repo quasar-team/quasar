@@ -231,46 +231,36 @@ class DesignInspector():
         the_class = self.objectify_class(class_name)
         return the_class.get('singleVariableNode') == 'true'
         
-    def get_restriction(self, className, cachevar_or_configentry_name):
+    def get_restrictions(self, className, cachevar_or_configentry_name):
         xpath_str="\
             /d:design/d:class[@name='{0}']/d:cachevariable[@name='{1}']/d:configRestriction \
             | \
             /d:design/d:class[@name='{0}']/d:configentry[@name='{1}']/d:configRestriction".format(className, cachevar_or_configentry_name)
         restrictionElems=self.objectify_any(xpath_str)
-        # cache_variables = self.objectify_cache_variables(className, "[@name='{0}' and d:configRestriction]".format(cachevar_or_configentry_name))
-        # config_entries = self.objectify_config_entries(className, "[@name='{0}' and d:configRestriction]".format(cachevar_or_configentry_name))
-        # config_restrictions = [element.configRestriction for element in cache_variables + config_entries]
         return self.parseRestrictions(restrictionElems)
         
     def parseRestrictions(self, restrictionElems):
-        """ Method returns a dict populated according to the (objectified) restrictions"""
-        """ passed. Note that the assumption is there is *at most one* restriction permitted"""
-        """ in the parent cachevar/configentry XML excerpt """ 
-        if(len(restrictionElems)==1):
-            restrictionElem = restrictionElems[0]
-
-            restriction=dict()
-            restriction['type']='ERROR'
-            for child in restrictionElem.iterchildren():
-                if 'restrictionByEnumeration' in child.tag:
+        """ Method returns dict list, populated according to (objectified) restrictions"""
+        result=[]
+        for restrictionElem in restrictionElems:
+            for restrictionSpec in restrictionElem.iterchildren():
+                restriction={'type' : 'ERROR'}
+                if 'restrictionByEnumeration' in restrictionSpec.tag:
                     restriction['type']='byEnumeration'
                     restriction['enumerationValues']=[]
-                    for enumerationValue in child.iterchildren():
+                    for enumerationValue in restrictionSpec.iterchildren():
                         restriction['enumerationValues'].append(enumerationValue.get('value'))
-                    break
-                elif 'restrictionByPattern' in child.tag:
+                elif 'restrictionByPattern' in restrictionSpec.tag:
                     restriction['type']='byPattern'
-                    restriction['pattern']=child.get('pattern')
-                    break;
-                elif 'restrictionByBounds' in child.tag:
+                    restriction['pattern']=restrictionSpec.get('pattern')
+                elif 'restrictionByBounds' in restrictionSpec.tag:
                     restriction['type']='byBounds'
-                    restriction['minInclusive']=child.get('minInclusive')
-                    restriction['maxInclusive']=child.get('maxInclusive')
-                    restriction['minExclusive']=child.get('minExclusive')
-                    restriction['maxExclusive']=child.get('maxExclusive')
-                    break;
-            return restriction
-        return None
+                    restriction['minInclusive']=restrictionSpec.get('minInclusive')
+                    restriction['maxInclusive']=restrictionSpec.get('maxInclusive')
+                    restriction['minExclusive']=restrictionSpec.get('minExclusive')
+                    restriction['maxExclusive']=restrictionSpec.get('maxExclusive')
+                result.append(restriction)
+        return result
         
     def getProjectName(self):
         return self.xpath("/d:design/@projectShortName")[0]

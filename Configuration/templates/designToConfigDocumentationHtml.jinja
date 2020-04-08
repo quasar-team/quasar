@@ -22,32 +22,34 @@
 {% import 'headers.jinja' as headers %}
 {% set this = designInspector.objectify_root() %}
 
-{% macro writeRestriction(restriction) %}
-  {% if restriction %}
+{% macro writeRestrictions(restrictions) %}
+  {% if restrictions|length>0 %}
     <div style="background-color: #ffefef"><font color="red">Value restrictions</font>
-    {% if restriction['type'] == 'byEnumeration' %}
-      <br/>Enumeration:
-      {% for enumerationValue in restriction['enumerationValues'] %}
-        <code>{{enumerationValue}}</code>            
-      {% endfor %}
-    {% elif restriction['type'] == 'byPattern' %}
-      <br/>Pattern:
-      <code>{{restriction['pattern']}}</code>
-    {% elif restriction['type'] == 'byBounds' %}
-      <br/>Bounds:
-      {% if restriction['minExclusive'] %}
-        <code>mimimum exlusive {{restriction['minExclusive']}}</code>
+    {% for restriction in restrictions %}
+      {% if restriction['type'] == 'byEnumeration' %}
+        <br/>Enumeration:
+        {% for enumerationValue in restriction['enumerationValues'] %}
+          <code>{{enumerationValue}}</code>            
+        {% endfor %}
+      {% elif restriction['type'] == 'byPattern' %}
+        <br/>Pattern:
+        <code>{{restriction['pattern']}}</code>
+      {% elif restriction['type'] == 'byBounds' %}
+        <br/>Bounds:
+        {% if restriction['minExclusive'] %}
+          <code>mimimum exlusive {{restriction['minExclusive']}}</code>
+        {% endif %}
+        {% if restriction['maxExclusive'] %}
+          <code>maximum exlusive {{restriction['maxExclusive']}}</code>
+        {% endif %}
+        {% if restriction['minInclusive'] %}
+          <code>minimum inclusive{{restriction['minInclusive']}}</code>
+        {% endif %}
+        {% if restriction['maxInclusive'] %}
+          <code>maximum inclusive{{restriction['maxInclusive']}}</code>
+        {% endif %}
       {% endif %}
-      {% if restriction['maxExclusive'] %}
-        <code>maximum exlusive {{restriction['maxExclusive']}}</code>
-      {% endif %}
-      {% if restriction['minInclusive'] %}
-        <code>minimum inclusive{{restriction['minInclusive']}}</code>
-      {% endif %}
-      {% if restriction['maxInclusive'] %}
-        <code>maximum inclusive{{restriction['maxInclusive']}}</code>
-      {% endif %}
-    {% endif %}
+    {% endfor %}
     </div>
   {% endif %}
 {% endmacro %}
@@ -67,7 +69,7 @@
   {% else %}
     mandatory
   {% endif %}
-  {{ writeRestriction(designInspector.get_restriction(containingClassName, objectName)) }}
+  {{ writeRestrictions(designInspector.get_restrictions(containingClassName, objectName)) }}
 {% endmacro %}
     
 <html>
