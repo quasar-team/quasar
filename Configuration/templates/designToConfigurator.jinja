@@ -108,7 +108,7 @@ for (size_t i = 0; i < childrenNodes->getLength(); ++i )
 
   const std::vector<std::string> ignoreList = {"StandardMetaData", "CalculatedVariableGenericFormula"
     {% for arrayCacheVar in designInspector.objectify_cache_variables(parentClassName, restrict_by='[d:array]') %}
-      ,"{{arrayCacheVar.get('name')}} // ignore array type cachevariables
+      ,"{{arrayCacheVar.get('name')}}" // ignore array type cachevariables
     {% endfor %}
     {% for arrayConfigEntry in designInspector.objectify_config_entries(parentClassName, restrict_by='[d:array]') %}
       ,"{{arrayConfigEntry.get('name')}}" // ignore array type configentries
