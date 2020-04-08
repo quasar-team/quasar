@@ -242,9 +242,9 @@ class Oracle():
 
     def cache_variable_access_level(self, address_space_write):
         """Returns value of OPC-UA accessLevel attribute"""
-        if address_space_write in ['regular', 'forbidden']:
+        if address_space_write == 'forbidden':
             return 'OpcUa_AccessLevels_CurrentRead'
-        elif address_space_write == 'delegated':
+        elif address_space_write in ['regular', 'delegated']:
             return 'OpcUa_AccessLevels_CurrentReadOrWrite'
         else:
             raise Exception("Unsupported address_space_write mode")
