@@ -62,6 +62,27 @@
   {% endif -%}
 {% endmacro %}
 
+{% macro writeArrayCacheVarOrConfigEntry(className, targetVar) %}
+  {% set targetName = targetVar.get('name') %}
+  {% set dataType = oracle.quasar_data_type_to_xsd_type(targetVar.get('dataType')) %}
+  {% set arrayObject = designInspector.xpath_relative_to_object(targetVar, "d:array")[0] %}
+  {% set restrictions = designInspector.get_restrictions(className, targetName) %}
+  <!-- add array cacheVariable/configEntry name [{{targetName}}] type [{{dataType}}] -->
+  <xs:element name="{{targetName}}">
+    <xs:complexType>
+      <xs:sequence minOccurs="{{ arrayObject.get('minimumSize')|default('0', true) }}" maxOccurs="{{ arrayObject.get('maximumSize')|default('unbounded', true) }}">
+        {% if restrictions|length > 0 %}
+          <xs:element name="value">
+            {{ writeRestrictions(className, targetName, dataType, restrictions) }}
+          </xs:element>
+        {% else %}
+          <xs:element name="value" type="{{dataType}}"/>
+        {% endif %}
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+{% endmacro %}	      
+
 <xs:schema xmlns:tns="http://cern.ch/quasar/Configuration"
   xmlns:xi="http://www.w3.org/2003/XInclude"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -104,22 +125,16 @@
         {% endfor %}
 	  </xs:choice>
     
-	    <!-- processing array cache vars for class [{{className}}] -->
+	    <!-- processing array cache vars (by configuration) for class [{{className}}] -->
 	    {% for arrayCacheVarByConfig in designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration' and d:array]") %}
-        {% set dataType = oracle.quasar_data_type_to_xsd_type(arrayCacheVarByConfig.get('dataType')) %}
-          {% set arrayObject = designInspector.xpath_relative_to_object(arrayCacheVarByConfig, "d:array")[0] %}
-	      {% set restrictions = designInspector.get_restrictions(className, arrayCacheVarByConfig.get('name')) %}
-	      <!-- add arrayCacheVarByConfig name [{{arrayCacheVarByConfig.get('name')}}] type [{{dataType}}] -->
-	      <xs:element name="{{arrayCacheVarByConfig.get('name')}}">
-	        <xs:complexType>
-	          <xs:sequence minOccurs="{{ arrayObject.get('minimumSize')|default('0', true) }}" maxOccurs="{{ arrayObject.get('maximumSize')|default('unbounded', true) }}">
-	            <xs:element name="value">
-  	            {{ writeRestrictions(className, arrayCacheVarByConfig.get('name'), dataType, restrictions) }}
-	            </xs:element>
-	          </xs:sequence>
-	        </xs:complexType>
-	      </xs:element>
+	      {{writeArrayCacheVarOrConfigEntry(className, arrayCacheVarByConfig) }}
 	    {% endfor %}
+	    
+	    <!-- processing array config entries for class [{{className}}] -->
+	    {% for arrayConfigEntry in designInspector.objectify_config_entries(className, restrict_by="[d:array]") %}
+	      {{writeArrayCacheVarOrConfigEntry(className, arrayConfigEntry) }}
+	    {% endfor %}
+	    
     </xs:sequence>
     
     <xs:attribute name="name" type="tns:ObjectName" use="required"/>
