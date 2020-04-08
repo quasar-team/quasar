@@ -95,11 +95,14 @@
         <br/>
       {% endif %}
       
-      {% set configEntries= designInspector.objectify_config_entries(className) %}
+      Configuration attributes:
+      <ul>
+      {% set configEntries= designInspector.objectify_config_entries(className) %}      
       {% if configEntries|length > 0 %}
         {% for configEntry in configEntries %}
           <li>
           {{ writeCacheVarOrConfigEntry(className, configEntry) }}
+          </li>
         {% endfor %}
       {% else %}
 	      Class {{className}} has no configuration entries.
@@ -108,31 +111,35 @@
       {% set configuredCacheVars = designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration']") %}
       {% if configuredCacheVars |length > 0 %}
         {% for cacheVar in configuredCacheVars %}
+          <li>
           {{ writeCacheVarOrConfigEntry(className, cacheVar) }}
+          </li>
         {% endfor %}
       {% else %}
 	      Class {{className}} has no cache variables initialized from the configuration.
       {% endif %}
+      </ul>
       
-      <h2>Possible children:</h2>
+      Possible children:
       <a href="#class_CalculatedVariable">CalculatedVariable</a>
       {% for hasObject in designInspector.get_class_has_objects(className) %}
         {% if hasObject.get('instantiateUsing')=='configuration' %}
           <a href="#class_{{hasObject.get('class')}}">{{hasObject.get('class')}}</a>
         {% endif %}
       {% endfor %}
-    
-      <a id="class_CalculatedVariable"><h2>CalculatedVariable</h2></a>
-      A CalculatedVariable is a "synthetic" variable which is based on other "real" variables of the address-space.
-      You can declare a CalculatedVariable under any object in the configuration file.
-      The required attributes are:
-      <ul>
-        <li>name - will be the last part of the address</li>
-        <li>value - analytical formula used to calculate value of the variable. 
-        E.g. to calculate square of another variable with address x.y you should put <code>x.y^2</code></li>
-      </ul>
-      Detailed documentation of all features of CalculatedVariables is available in quasar Documentation.    
       
     {% endif %}
   {% endfor %}
+  
+  <a id="class_CalculatedVariable"><h2>CalculatedVariable</h2></a>
+  A CalculatedVariable is a "synthetic" variable which is based on other "real" variables of the address-space.
+  You can declare a CalculatedVariable under any object in the configuration file.
+  The required attributes are:
+  <ul>
+    <li>name - will be the last part of the address</li>
+    <li>value - analytical formula used to calculate value of the variable. 
+        E.g. to calculate square of another variable with address x.y you should put <code>x.y^2</code></li>
+  </ul>
+  Detailed documentation of all features of CalculatedVariables is available in quasar Documentation.    
+  
 </html>
