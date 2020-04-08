@@ -99,11 +99,12 @@
 	    <!-- processing array cache vars for class [{{className}}] -->
 	    {% for arrayCacheVarByConfig in designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration' and d:array]") %}
         {% set dataType = oracle.quasar_data_type_to_xsd_type(arrayCacheVarByConfig.get('dataType')) %}
+          {% set arrayObject = designInspector.xpath_relative_to_object(arrayCacheVarByConfig, "d:array")[0] %}
 	      {% set restriction = designInspector.get_restriction(className, arrayCacheVarByConfig.get('name')) %}
 	      <!-- add arrayCacheVarByConfig name [{{arrayCacheVarByConfig.get('name')}}] type [{{dataType}}] -->
 	      <xs:element name="{{arrayCacheVarByConfig.get('name')}}">
 	        <xs:complexType>
-	          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+	          <xs:sequence minOccurs="{{ arrayObject.get('minimumSize')|default('0', true) }}" maxOccurs="{{ arrayObject.get('maximumSize')|default('unbounded', true) }}">
 	            <xs:element name="value">
   	            {{ writeRestriction(className, arrayCacheVarByConfig.get('name'), dataType, restriction) }}
 	            </xs:element>

@@ -55,6 +55,12 @@ class DesignInspector():
                 xpath_expr, result)
                   + Style.RESET_ALL)
         return result
+    
+    def xpath_relative_to_object(self, object, xpath_expression):
+        """ Executes xpath query relative to 'object'. Expectation is that
+        object is of type ObjectifiedElement, or at least has method xpath
+        matching the signature of ObjectifiedElement.xpath()"""
+        return object.xpath(xpath_expression, namespaces=QUASAR_NAMESPACES)
 
     def get_names_of_all_classes(self, only_with_device_logic=False):
         """Returns a list of names of all classes from the design.
