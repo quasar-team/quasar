@@ -54,6 +54,14 @@
   {% endif %}         
 {% endmacro %}
 
+{% macro writeUsageAndDefaultValue(configEntry) %}
+  {%- if configEntry.get('defaultValue') %}
+    use="optional" default="{{configEntry.get('defaultValue')}}"
+  {% else %}
+    use="required"
+  {% endif -%}
+{% endmacro %}
+
 <xs:schema xmlns:tns="http://cern.ch/quasar/Configuration"
   xmlns:xi="http://www.w3.org/2003/XInclude"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -136,10 +144,10 @@
       {% set restriction = designInspector.get_restriction(className, scalarConfigEntry.get('name')) %}
       <!-- add scalarConfigEntry name [{{scalarConfigEntry.get('name')}}] type [{{dataType}}] restriction [{{ restriction['type']|default('None') }}] -->
       {% if restriction %}
-        <xs:attribute name="{{scalarConfigEntry.get('name')}}" use="required">
+        <xs:attribute name="{{scalarConfigEntry.get('name')}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}}>
         {{ writeRestriction(className, scalarConfigEntry.get('name'), dataType, restriction) }}
       {% else %}
-        <xs:attribute name="{{scalarConfigEntry.get('name')}}" use="required" type="{{dataType}}" >
+        <xs:attribute name="{{scalarConfigEntry.get('name')}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}} type="{{dataType}}" >
       {% endif %}
       </xs:attribute>   
     {% endfor %}    
