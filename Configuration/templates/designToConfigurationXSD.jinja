@@ -24,6 +24,18 @@
 {% set this = designInspector.objectify_root() %}
 {# TODO piotr{{ headers.xmlFullGeneratedHeader() }} #}
 
+{%macro writeDocumentation(docElements) %}
+  {% if docElements|length>0 %}
+    <xs:annotation>
+      <xs:documentation>
+      {% for docElement in docElements %}
+        {{ designInspector.strip_documentation_for_xsd(docElement) }}
+      {% endfor %}
+      </xs:documentation>
+    </xs:annotation>
+  {% endif %}  
+{% endmacro %}
+
 {% macro writeRestrictions(className, varName, dataType, restrictions) %}
   <!--processing [{{restrictions|length}}] restrictions for class [{{className}}] name: {{varName}} dataType [{{dataType}}]-->  
   <xs:simpleType>
@@ -70,6 +82,7 @@
   <!-- add array cacheVariable/configEntry name [{{targetName}}] type [{{dataType}}] -->
   <xs:element name="{{targetName}}">
     <xs:complexType>
+      {{ writeDocumentation(designInspector.objectifyDocumentation(className, targetName)) }}
       <xs:sequence minOccurs="{{ arrayObject.get('minimumSize')|default('0', true) }}" maxOccurs="{{ arrayObject.get('maximumSize')|default('unbounded', true) }}">
         {% if restrictions|length > 0 %}
           <xs:element name="value">
@@ -141,29 +154,33 @@
     
     <!-- processing scalar cache vars for class [{{className}}] -->
     {% for scalarCacheVarByConfig in designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration' and not(d:array)]") %}
+      {% set cacheVarName = scalarCacheVarByConfig.get('name') %}
       {% set dataType = oracle.quasar_data_type_to_xsd_type(scalarCacheVarByConfig.get('dataType')) %}
-      {% set restrictions = designInspector.get_restrictions(className, scalarCacheVarByConfig.get('name')) %}
-      <!-- add scalarCacheVarByConfig name [{{scalarCacheVarByConfig.get('name')}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
+      {% set restrictions = designInspector.get_restrictions(className, cacheVarName) %}
+      <!-- add scalarCacheVarByConfig name [{{cacheVarName}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
       {% if restrictions|length>0 %}
-        <xs:attribute name="{{scalarCacheVarByConfig.get('name')}}" use="required">
-        {{ writeRestrictions(className, scalarCacheVarByConfig.get('name'), dataType, restrictions) }}
+        <xs:attribute name="{{cacheVarName}}" use="required">
+        {{ writeRestrictions(className, cacheVarName, dataType, restrictions) }}
       {% else %}
-        <xs:attribute name="{{scalarCacheVarByConfig.get('name')}}" use="required" type="{{dataType}}">
+        <xs:attribute name="{{cacheVarName}}" use="required" type="{{dataType}}">
       {% endif %}
+      {{ writeDocumentation(designInspector.objectifyDocumentation(className, cacheVarName)) }}
       </xs:attribute>   
     {% endfor %}
     
     <!-- processing scalar config entries for class [{{className}}] -->
     {% for scalarConfigEntry in designInspector.objectify_config_entries(className, restrict_by="[not(d:array)]") %}
+      {% set configEntryName = scalarConfigEntry.get('name') %}
       {% set dataType = oracle.quasar_data_type_to_xsd_type(scalarConfigEntry.get('dataType')) %}
-      {% set restrictions = designInspector.get_restrictions(className, scalarConfigEntry.get('name')) %}
-      <!-- add scalarConfigEntry name [{{scalarConfigEntry.get('name')}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
+      {% set restrictions = designInspector.get_restrictions(className, configEntryName) %}
+      <!-- add scalarConfigEntry name [{{configEntryName}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
       {% if restrictions|length>0 %}
-        <xs:attribute name="{{scalarConfigEntry.get('name')}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}}>
-        {{ writeRestrictions(className, scalarConfigEntry.get('name'), dataType, restrictions) }}
+       <xs:attribute name="{{configEntryName}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}}>
+        {{ writeRestrictions(className, configEntryName, dataType, restrictions) }}
       {% else %}
-        <xs:attribute name="{{scalarConfigEntry.get('name')}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}} type="{{dataType}}" >
+        <xs:attribute name="{{configEntryName}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}} type="{{dataType}}" >
       {% endif %}
+      {{ writeDocumentation(designInspector.objectifyDocumentation(className, configEntryName)) }}
       </xs:attribute>   
     {% endfor %}    
         

@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from lxml import etree, objectify
 from colorama import Fore, Style
+from lxml.objectify import ObjectifiedDataElement
+from copy import deepcopy
 
 DEBUG = False
 DEBUG_XPATH = False
@@ -283,4 +285,13 @@ class DesignInspector():
             /d:design/d:class[@name='{0}']/d:cachevariable[@name='{1}']/d:documentation \
             | \
             /d:design/d:class[@name='{0}']/d:configentry[@name='{1}']/d:documentation".format(className, cachevar_or_configentry_name)
-            return self.objectify_any(xpath_str)    
+            return self.objectify_any(xpath_str)
+            
+    def strip_documentation_for_xsd(self, documentation_object):
+        """ documentation_object is as returned from objectify_documentation; an objectified
+        documentation element. Required since documentation may require markup tags (e.g HTML)
+        which are not permitted in the configuration XSD. Use this function to strip those tags"""
+        mutable_documentation_object = deepcopy(documentation_object)
+        etree.strip_tags(mutable_documentation_object, '*')
+        return mutable_documentation_object.text
+        
