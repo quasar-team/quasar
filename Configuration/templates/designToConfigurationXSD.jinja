@@ -160,11 +160,12 @@
       <!-- add scalarCacheVarByConfig name [{{cacheVarName}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
       {% if restrictions|length>0 %}
         <xs:attribute name="{{cacheVarName}}" use="required">
+        {{ writeDocumentation(designInspector.objectifyDocumentation(className, cacheVarName)) }}
         {{ writeRestrictions(className, cacheVarName, dataType, restrictions) }}
       {% else %}
         <xs:attribute name="{{cacheVarName}}" use="required" type="{{dataType}}">
-      {% endif %}
-      {{ writeDocumentation(designInspector.objectifyDocumentation(className, cacheVarName)) }}
+        {{ writeDocumentation(designInspector.objectifyDocumentation(className, cacheVarName)) }}
+      {% endif %}      
       </xs:attribute>   
     {% endfor %}
     
@@ -176,11 +177,12 @@
       <!-- add scalarConfigEntry name [{{configEntryName}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
       {% if restrictions|length>0 %}
        <xs:attribute name="{{configEntryName}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}}>
-        {{ writeRestrictions(className, configEntryName, dataType, restrictions) }}
+         {{ writeDocumentation(designInspector.objectifyDocumentation(className, configEntryName)) }}
+         {{ writeRestrictions(className, configEntryName, dataType, restrictions) }}
       {% else %}
         <xs:attribute name="{{configEntryName}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}} type="{{dataType}}" >
+        {{ writeDocumentation(designInspector.objectifyDocumentation(className, configEntryName)) }}
       {% endif %}
-      {{ writeDocumentation(designInspector.objectifyDocumentation(className, configEntryName)) }}
       </xs:attribute>   
     {% endfor %}    
         
