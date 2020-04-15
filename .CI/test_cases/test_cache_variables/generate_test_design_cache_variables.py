@@ -76,6 +76,9 @@ def generate():
 
 						generateDeviceLogicCase(dataType, scalarArray, initializer, asWrite, nullPolicy)
 
+						if initializer == 'valueAndStatus' and dataType == 'UaVariant' and nullPolicy == 'nullForbidden':
+							continue # this setting is clearly invalid!
+						
 						if initializer == 'valueAndStatus':
 							if dataType != 'UaVariant':		
 								initialValue = SampleInitialValue[dataType]
