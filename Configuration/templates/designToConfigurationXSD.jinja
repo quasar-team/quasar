@@ -198,7 +198,7 @@
       <xs:element name="CalculatedVariableGenericFormula" type="tns:CalculatedVariableGenericFormula"/>
     </xs:choice>
     <xs:choice minOccurs="0" maxOccurs="unbounded">
-      {% for hasobjects in designInspector.objectify_root().hasobjects %}
+      {% for hasobjects in designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']") %}
         <xs:element name="{{hasobjects.get('class')}}" type="tns:{{hasobjects.get('class')}}" />
       {% endfor %}
     </xs:choice>
