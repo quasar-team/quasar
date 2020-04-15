@@ -1,4 +1,5 @@
-from Oracle import Oracle, capFirst
+from Oracle import Oracle
+from transform_filters import cap_first
 
 Initializers = ['configuration', 'valueAndStatus']
 AddressSpaceWrites = ['forbidden', 'delegated']
@@ -9,7 +10,7 @@ SampleInitialValue = {
 	'UaString' : 'abcde'
 }
 
-for dataType in Oracle.InitializeFromValueAndStatusDataTypes:
+for dataType in Oracle.ValueAndStatusInitDataTypes:
 	if dataType in Oracle.NumericDataTypes:
 		SampleInitialValue[dataType] = '69'
 
@@ -23,9 +24,9 @@ def create_scenario_name(dataType, scalarArray, initializer, addressSpaceWriteSc
 def get_allowed_datatypes(initializer):
 	assert initializer in Initializers
 	if initializer == 'configuration':
-		return Oracle.InitializeFromConfigurationDataTypes
+		return Oracle.InitializeFromConfigDataTypes
 	else:
-		return Oracle.InitializeFromValueAndStatusDataTypes
+		return Oracle.ValueAndStatusInitDataTypes
 
 f=open('Design.out', 'w')
 f_devicelogic = open('DTestClass.cpp', 'w')
@@ -41,20 +42,23 @@ def output(s):
 def generateDeviceLogicCase (dataType, scalarArray, initializer, asWrite, nullPolicy):
 	scenario_name = create_scenario_name(dataType, scalarArray, initializer, asWrite, nullPolicy)
 	output_devicelogic('{{ // scenario name: {0} '.format(scenario_name))
-	sampleInitialValue = SampleInitialValue[dataType]
-	if dataType == 'UaString':
-		sampleInitialValue = '"{0}"'.format(sampleInitialValue)
-	if scalarArray == 'array':
-		sampleInitialValue = '{{ {0} }}'.format(sampleInitialValue)
-	sampleInitialValue = "({0})".format(sampleInitialValue)
+	if dataType != 'UaVariant':
+		sampleInitialValue = SampleInitialValue[dataType]
+		if dataType == 'UaString':
+			sampleInitialValue = '"{0}"'.format(sampleInitialValue)
+		if scalarArray == 'array':
+			sampleInitialValue = '{{ {0} }}'.format(sampleInitialValue)
+		sampleInitialValue = "({0})".format(sampleInitialValue)
+	else:
+		sampleInitialValue = ''
 	cppType = dataType if scalarArray == 'scalar' else 'std::vector<{0}>'.format(dataType)
 	output_devicelogic('{0} test_value {1};'.format(cppType, sampleInitialValue))
-	output_devicelogic('getAddressSpaceLink()->set{0}(test_value, OpcUa_Good);'.format(capFirst(scenario_name)))
-	output_devicelogic('getAddressSpaceLink()->get{0}(test_value);'.format(capFirst(scenario_name)))
+	output_devicelogic('getAddressSpaceLink()->set{0}(test_value, OpcUa_Good);'.format(cap_first(scenario_name)))
+	output_devicelogic('getAddressSpaceLink()->get{0}(test_value);'.format(cap_first(scenario_name)))
 	if nullPolicy == 'nullForbidden':
-		output_devicelogic('test_value = getAddressSpaceLink()->get{0}();'.format(capFirst(scenario_name)))
+		output_devicelogic('test_value = getAddressSpaceLink()->get{0}();'.format(cap_first(scenario_name)))
 	if nullPolicy == 'nullAllowed':
-		output_devicelogic('getAddressSpaceLink()->setNull{0}(OpcUa_Good);'.format(capFirst(scenario_name)))
+		output_devicelogic('getAddressSpaceLink()->setNull{0}(OpcUa_Good);'.format(cap_first(scenario_name)))
 	output_devicelogic('}} // scenario name: {0} '.format(scenario_name))
 
 def generate():
@@ -73,8 +77,11 @@ def generate():
 						generateDeviceLogicCase(dataType, scalarArray, initializer, asWrite, nullPolicy)
 
 						if initializer == 'valueAndStatus':
-							initialValue = SampleInitialValue[dataType]
-							extra = 'initialStatus="OpcUa_Good" initialValue="{0}"'.format(initialValue)
+							if dataType != 'UaVariant':		
+								initialValue = SampleInitialValue[dataType]
+								extra = 'initialStatus="OpcUa_Good" initialValue="{0}"'.format(initialValue)
+							else:
+								extra = 'initialStatus="OpcUa_Good" ' # no initial value!
 						else:
 							extra = ''
 						if scalarArray == 'scalar':
