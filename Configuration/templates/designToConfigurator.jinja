@@ -138,7 +138,14 @@ for (size_t i = 0; i < childrenNodes->getLength(); ++i )
           {% endif %}
           Device::D{{innerClass}}* dInnerItem = configure{{innerClass}} (
             *innerObjectConfig, nm, {{parentNodeId}}, pInnerItemParent);
-          if(!pInnerItemParent) Device::D{{innerClass}}::registerOrphanedObject(dInnerItem);
+          if(pInnerItemParent)
+          {
+          	pInnerItemParent->add(dInnerItem);
+          }
+          else
+          {
+          	Device::D{{innerClass}}::registerOrphanedObject(dInnerItem);
+          }
         {% else %}
           // class [{{innerClass}}] has no device logic. Configure device object.
           configure{{innerClass}} (*innerObjectConfig, nm, {{parentNodeId}});
