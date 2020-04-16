@@ -197,6 +197,11 @@ public:
     /* Note: never directly call this function. */
     UaStatus writeValueAndStatus_UaString_scalar_delegated_nullAllowed ( const UaString& v);
 
+    /* Note: never directly call this function. */
+
+
+    UaStatus writeValueAndStatus_UaVariant_scalar_delegated_nullAllowed ( const UaVariant & v);
+
 
     /* delegators for methods */
 
