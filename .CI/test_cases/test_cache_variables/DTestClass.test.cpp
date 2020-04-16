@@ -1382,6 +1382,12 @@ void DTestClass::testSettersGetters ()
         getAddressSpaceLink()->getValueAndStatus_UaString_scalar_forbidden_nullAllowed(test_value);
         getAddressSpaceLink()->setNullValueAndStatus_UaString_scalar_forbidden_nullAllowed(OpcUa_Good);
     } // scenario name: valueAndStatus_UaString_scalar_forbidden_nullAllowed
+    {   // scenario name: valueAndStatus_UaVariant_scalar_forbidden_nullAllowed
+        UaVariant test_value ;
+        getAddressSpaceLink()->setValueAndStatus_UaVariant_scalar_forbidden_nullAllowed(test_value, OpcUa_Good);
+        getAddressSpaceLink()->getValueAndStatus_UaVariant_scalar_forbidden_nullAllowed(test_value);
+        getAddressSpaceLink()->setNullValueAndStatus_UaVariant_scalar_forbidden_nullAllowed(OpcUa_Good);
+    } // scenario name: valueAndStatus_UaVariant_scalar_forbidden_nullAllowed
     {   // scenario name: valueAndStatus_OpcUaBoolean_scalar_delegated_nullForbidden
         OpcUa_Boolean test_value (OpcUa_True);
         getAddressSpaceLink()->setValueAndStatus_OpcUaBoolean_scalar_delegated_nullForbidden(test_value, OpcUa_Good);
@@ -1526,10 +1532,9 @@ void DTestClass::testSettersGetters ()
         getAddressSpaceLink()->getValueAndStatus_UaString_scalar_delegated_nullAllowed(test_value);
         getAddressSpaceLink()->setNullValueAndStatus_UaString_scalar_delegated_nullAllowed(OpcUa_Good);
     } // scenario name: valueAndStatus_UaString_scalar_delegated_nullAllowed
-
-}
-
-
-}
-
-
+    {   // scenario name: valueAndStatus_UaVariant_scalar_delegated_nullAllowed
+        UaVariant test_value ;
+        getAddressSpaceLink()->setValueAndStatus_UaVariant_scalar_delegated_nullAllowed(test_value, OpcUa_Good);
+        getAddressSpaceLink()->getValueAndStatus_UaVariant_scalar_delegated_nullAllowed(test_value);
+        getAddressSpaceLink()->setNullValueAndStatus_UaVariant_scalar_delegated_nullAllowed(OpcUa_Good);
+    } // scenario name: valueAndStatus_UaVariant_scalar_delegated_nullAllowed

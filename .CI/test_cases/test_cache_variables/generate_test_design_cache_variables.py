@@ -74,10 +74,10 @@ def generate():
 						scenario_name = create_scenario_name(dataType, scalarArray, initializer, asWrite, nullPolicy)
 						print(scenario_name)
 
-						generateDeviceLogicCase(dataType, scalarArray, initializer, asWrite, nullPolicy)
-
 						if initializer == 'valueAndStatus' and dataType == 'UaVariant' and nullPolicy == 'nullForbidden':
 							continue # this setting is clearly invalid!
+							
+						generateDeviceLogicCase(dataType, scalarArray, initializer, asWrite, nullPolicy)
 						
 						if initializer == 'valueAndStatus':
 							if dataType != 'UaVariant':		
