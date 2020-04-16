@@ -593,17 +593,20 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               if (!status.isGood())
                 return status;
             {% else %}
-              {{cv.get('dataType')}} v_value;
               {% if cv.get('dataType') == 'UaString' %}
-                {# TODO @pnikiel in future we should identify multiple conversions between UaVariant and UaString #}
-                v_value = v.toString();
-              {% else %}
+                UaString v_value = v.toString();
+              {% elif cv.get('dataType') != 'UaVariant' %}
+                {{cv.get('dataType')}} v_value;
                 v.{{oracle.data_type_to_variant_converter(cv.get('dataType'))}} ( v_value );
               {% endif %}
             {% endif %}
             /* if device logic type specified, then generate calling functions */
             {% if designInspector.class_has_device_logic(className) %}
-              return getDeviceLink()->write{{cv.get('name')|capFirst}} (v_value);
+              {% if cv.get('dataType') == 'UaVariant' and cv.array|length == 0 %}
+                return getDeviceLink()->write{{cv.get('name')|capFirst}} (*dataValue.value());
+              {% else %}
+                return getDeviceLink()->write{{cv.get('name')|capFirst}} (v_value);
+              {% endif %}      
             {% else %}
               return OpcUa_BadNotImplemented;
             {% endif %}
