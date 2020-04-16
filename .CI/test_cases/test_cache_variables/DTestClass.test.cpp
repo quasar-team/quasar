@@ -1538,3 +1538,6 @@ void DTestClass::testSettersGetters ()
         getAddressSpaceLink()->getValueAndStatus_UaVariant_scalar_delegated_nullAllowed(test_value);
         getAddressSpaceLink()->setNullValueAndStatus_UaVariant_scalar_delegated_nullAllowed(OpcUa_Good);
     } // scenario name: valueAndStatus_UaVariant_scalar_delegated_nullAllowed
+}
+
+}
