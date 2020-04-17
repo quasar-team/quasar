@@ -134,20 +134,18 @@ for (size_t i = 0; i < childrenNodes->getLength(); ++i )
           {% if designInspector.class_has_legit_device_parent(innerClass) %}
             Device::Parent_D{{innerClass}}* pInnerItemParent = {{parentDevice}};
           {% else %}
-            Device::Parent_D{{innerClass}}* pInnerItemParent = nullptr;  
+            Device::Parent_D{{innerClass}}* pInnerItemParent = nullptr;
           {% endif %}
           Device::D{{innerClass}}* dInnerItem = configure{{innerClass}} (
             *innerObjectConfig, nm, {{parentNodeId}}, pInnerItemParent);
-          if(pInnerItemParent)
-          {
-          	pInnerItemParent->add(dInnerItem);
-          }
-          else
-          {
+            
+          {% if designInspector.class_has_device_logic(parentClassName) %}
+          	{{parentDevice}}->add(dInnerItem);
+          {% else %}
           	Device::D{{innerClass}}::registerOrphanedObject(dInnerItem);
-          }
+         {% endif %}
         {% else %}
-          // class [{{innerClass}}] has no device logic. Configure device object.
+          // class [{{innerClass}}] has no device logic. Configure only address space object
           configure{{innerClass}} (*innerObjectConfig, nm, {{parentNodeId}});
       {% endif %}
       continue;
