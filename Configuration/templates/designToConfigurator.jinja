@@ -120,6 +120,7 @@ for (size_t i = 0; i < childrenNodes->getLength(); ++i )
     {% set innerClass = innerObject.get('class') %}
     if(tagName == "{{innerClass}}")
     {
+        // configure inner class [{{innerClass}}] - parent class [{{parentClassName}}], ptr to parent [{{parentDevice}}]
         auto predicateFn = [configElement](const Configuration::{{innerClass}}& x){return x._node() == configElement;};
         auto startPos = config.{{innerClass}}().begin();
         auto endPos   = config.{{innerClass}}().end();
@@ -138,11 +139,11 @@ for (size_t i = 0; i < childrenNodes->getLength(); ++i )
           {% endif %}
           Device::D{{innerClass}}* dInnerItem = configure{{innerClass}} (
             *innerObjectConfig, nm, {{parentNodeId}}, pInnerItemParent);
-            
-          {% if designInspector.class_has_device_logic(parentClassName) %}
-          	{{parentDevice}}->add(dInnerItem);
+
+          {% if ((designInspector.class_has_device_logic(parentClassName)) or ('Root' == parentClassName)) %}
+            {{parentDevice}}->add(dInnerItem);
           {% else %}
-          	Device::D{{innerClass}}::registerOrphanedObject(dInnerItem);
+            Device::D{{innerClass}}::registerOrphanedObject(dInnerItem);
          {% endif %}
         {% else %}
           // class [{{innerClass}}] has no device logic. Configure only address space object
