@@ -4,6 +4,7 @@
 Oracle.py
 
 @author:     Piotr Nikiel <piotr@nikiel.info>
+@author:     Ben Farnham  <firstNm.secondNm@cern.ch>
 
 @copyright:  2020 CERN
 
