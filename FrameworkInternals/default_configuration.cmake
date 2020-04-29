@@ -92,4 +92,4 @@ add_definitions(-Wall -Wno-deprecated -std=gnu++0x -DBACKEND_UATOOLKIT )
 # this can be used if private mirror git servers are used instead of github.
 # Example, edit and uncomment if required.
 #
-#set(GITHUB_REPLACEMENT "ssh://git@gitlab.cern.ch:7999/" )
+#set(GIT_SERVER_REPLACEMENT "ssh://git@gitlab.cern.ch:7999/" )
