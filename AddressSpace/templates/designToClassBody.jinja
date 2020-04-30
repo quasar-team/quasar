@@ -155,7 +155,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
             /*pSession*/ nullptr,
             UaDataValue(
               helperVariant,
-              OpcUa_Good,
+              {{cv.get('initialStatus')}},
               UaDateTime::now(),
               UaDateTime::now()),
             /*check access level*/ OpcUa_False);
