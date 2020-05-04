@@ -10,11 +10,6 @@ File designToInformationModelBody.xslt        must_exist,must_be_versioned,md5=c
 File designToInformationModelHeader.xslt      must_exist,must_be_versioned,md5=check,install=overwrite
 File designToSourceVariablesBody.xslt         must_exist,must_be_versioned,md5=check,install=overwrite
 File designToSourceVariablesHeader.xslt       must_exist,must_be_versioned,md5=check,install=overwrite
-File generateClassBody.sh                     deprecated,install=dont_touch
-File generateClassHeader.sh                   deprecated,install=dont_touch
-File generateInformationModelBody.sh          deprecated,install=dont_touch
-File generateInformationModelHeader.sh        deprecated,install=dont_touch
-File generateSourceVariables.sh               deprecated,install=dont_touch
 File designToGeneratedCmakeAddressSpace.xslt  must_exist,must_be_versioned,md5=check,install=overwrite
 File designToAddressSpaceDocHtml.xslt         must_exist,must_be_versioned,md5=check,install=overwrite
 
@@ -81,11 +76,11 @@ File CMakeLists.txt                         must_exist,must_be_versioned,install
 Directory Common/include install=create
 File ASUtils.h                              must_exist,must_be_versioned,md5=check,install=ask_to_merge
 File Utils.h                                must_exist,must_be_versioned,install=ask_to_merge
-File QuasarThreadPool.h			    must_exist,must_be_versioned,md5=check,install=overwrite
+File QuasarThreadPool.h                     must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Common/src install=create
 File ASUtils.cpp                            must_exist,must_be_versioned,md5=check,install=ask_to_merge
-File QuasarThreadPool.cpp		    must_exist,must_be_versioned,md5=check,install=overwrite
+File QuasarThreadPool.cpp                   must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Common/templates install=create
 File headers.jinja                          must_exist,must_be_versioned, md5=check, install=overwrite
@@ -96,9 +91,6 @@ File Configurator.h                         must_exist,must_be_versioned, md5=ch
 File designToConfigurationXSD.xslt          must_exist,must_be_versioned, md5=check, install=overwrite
 File designToConfigurator.xslt              must_exist,must_be_versioned, md5=check, install=overwrite
 File designToConfigValidator.xslt           must_exist,must_be_versioned, md5=check, install=overwrite
-File generateConfiguration.sh               deprecated,install=dont_touch
-File generateConfigurator.sh                deprecated,install=dont_touch
-File generateConfigValidator.sh             deprecated,install=dont_touch
 File designToConfigDocumentationHtml.xslt   must_exist,must_be_versioned, md5=check, install=overwrite
 
 Directory Configuration/templates install=create
@@ -109,22 +101,14 @@ File designToConfigurator.jinja             must_exist,must_be_versioned, md5=ch
 
 Directory Design install=create
 File CommonFunctions.xslt                   must_exist,must_be_versioned,md5=check,install=overwrite
-File createDiagram.sh                       deprecated,install=dont_touch
 File designToDot.xslt                       must_exist,must_be_versioned,md5=check,install=overwrite
 File Design.xml                             must_exist,must_be_versioned,install=copy_if_not_existing
 File Design.xsd                             must_exist,must_be_versioned,md5=check,install=overwrite
-File functions.sh                           deprecated,install=dont_touch
 File quasarVersion.txt                      must_exist,must_be_versioned,md5=check,install=overwrite
-File genericFrameworkVersion.txt            deprecated
 File saxon9he.jar                           must_exist,must_be_versioned,md5=check,install=overwrite
 File schema-for-xslt20.xsd                  must_exist,must_be_versioned,md5=check,install=overwrite
-File validateDesign.sh                      deprecated,install=dont_touch
 File designToUpgradedDesign.xslt            must_exist,must_be_versioned,md5=check,install=overwrite
-File formatDesign.sh                        deprecated,install=dont_touch
-File upgradeDesign.sh                       deprecated,install=dont_touch
 File designValidation.xslt                  must_exist,must_be_versioned,md5=check,install=overwrite
-
-
 
 Directory Device install=create
 File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge
@@ -132,18 +116,11 @@ File designToDeviceBody.xslt                must_exist,must_be_versioned,md5=che
 File designToDeviceHeader.xslt              must_exist,must_be_versioned,md5=check,install=overwrite
 File designToRootBody.xslt                  must_exist,must_be_versioned,md5=check,install=overwrite
 File designToRootHeader.xslt                must_exist,must_be_versioned,md5=check,install=overwrite
-File generateDeviceBody.sh                  deprecated,install=dont_touch
-File generateDeviceHeader.sh                deprecated,install=dont_touch
-File generateRoot.sh                        deprecated,install=dont_touch
 File designToDeviceBaseBody.xslt            must_exist,must_be_versioned,md5=check,install=overwrite
 File designToDeviceBaseHeader.xslt          must_exist,must_be_versioned,md5=check,install=overwrite
 File designToGeneratedCmakeDevice.xslt      must_exist,must_be_versioned,md5=check,install=overwrite
-File generateBaseBody.sh                    deprecated,install=dont_touch
-File generateBaseHeader.sh                  deprecated,install=dont_touch
-
 
 Directory Device/generated install=create
-
 
 Directory Device/include install=create
 # List of files in this directory should be supplemented by headers of classes from Design file that have device logic
@@ -163,30 +140,28 @@ File designToRootHeader.jinja               must_exist,must_be_versioned,md5=che
 
 Directory Documentation install=create
 File GenericServer.html                     deprecated
-File quasar.html                            must_exist,must_be_versioned,md5=check,install=overwrite
-File ChangeLog.html                         must_exist,must_be_versioned,md5=check,install=overwrite
-File WindowsSetup.html                      must_exist,must_be_versioned,md5=check,install=overwrite
-File enice_win_configuration.cmake          must_exist,must_be_versioned,md5=check,install=overwrite
-File youtube_links.html                     must_exist,must_be_versioned,md5=check,install=overwrite
-File diagram.png                            must_exist,must_be_versioned,md5=check,install=overwrite
-File transformations.pdf                    must_exist,must_be_versioned,md5=check,install=overwrite
-File runDoxygen.sh                          deprecated,install=dont_touch
-File Doxyfile                               must_exist,must_be_versioned,md5=check,install=ask_to_merge
-File DesignManual.html                      must_exist,must_be_versioned,md5=check,install=overwrite
+File quasar.html                                       must_exist,must_be_versioned,md5=check,install=overwrite
+File ChangeLog.html                                    must_exist,must_be_versioned,md5=check,install=overwrite
+File WindowsSetup.html                                 must_exist,must_be_versioned,md5=check,install=overwrite
+File enice_win_configuration.cmake                     must_exist,must_be_versioned,md5=check,install=overwrite
+File youtube_links.html                                must_exist,must_be_versioned,md5=check,install=overwrite
+File diagram.png                                       must_exist,must_be_versioned,md5=check,install=overwrite
+File transformations.pdf                               must_exist,must_be_versioned,md5=check,install=overwrite
+File Doxyfile                                          must_exist,must_be_versioned,md5=check,install=ask_to_merge
+File DesignManual.html                                 must_exist,must_be_versioned,md5=check,install=overwrite
 File UserDefinedRuntimeConfigurationModification.html  must_exist,must_be_versioned,install=overwrite
 File UserDefinedCommandLineParameters.html             must_exist,must_be_versioned,install=overwrite
-File AlternativeBackends.html               must_exist,must_be_versioned,install=overwrite
-File quasarCommands.html		    must_exist,must_be_versioned,md5=check,install=overwrite
+File AlternativeBackends.html                          must_exist,must_be_versioned,install=overwrite
+File quasarCommands.html                               must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Documentation/images install=create
-File quasar_engine_small_smooth_square_128x128.png must_exist,must_be_versioned,md5=check,install=overwrite
+File quasar_engine_small_smooth_square_128x128.png     must_exist,must_be_versioned,md5=check,install=overwrite
 
 
 Directory Documentation/DoxygenGenerated install=create
 
 Directory Extra install=create
-File designToHonkyTonk.xslt					must_exist,must_be_versioned,md5=check,install=overwrite
-File generateHonkyTonk.sh                   deprecated,install=dont_touch
+File designToHonkyTonk.xslt            must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory FrameworkInternals install=create
 File files.txt                         must_exist,must_be_versioned,install=overwrite
@@ -222,112 +197,99 @@ File DesignInspector.py                must_exist,must_be_versioned,md5=check,in
 File Oracle.py                         must_exist,must_be_versioned,md5=check,install=overwrite,
 
 Directory Server install=create
-File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge
+File CMakeLists.txt                    must_exist,must_be_versioned,install=ask_to_merge
 
 Directory Server/include install=create
-File BaseQuasarServer.h                    must_exist,must_be_versioned,md5=check,install=overwrite
-File QuasarServer.h                         must_exist,must_be_versioned,install=copy_if_not_existing
-File shutdown.h                             must_exist,must_be_versioned,md5=check,install=overwrite
-File serverconfigxml.h                      deprecated
-File serverconfigxml_quasar.h               must_exist,must_be_versioned,md5=check,install=overwrite
-File opcserver.h                            must_exist,must_be_versioned,md5=check,install=overwrite
-File opcserver_open62541.h		    must_exist,must_be_versioned,md5=check,install=overwrite
-File version.h                              must_exist,must_be_versioned,md5=check,install=overwrite
-File QuasarServerCallback.h                 must_exist,must_be_versioned,md5=check,install=overwrite
-File QuasarVersion.h                        must_exist,must_be_versioned,md5=check,install=overwrite
-File QUASARFrameworkVersion.h               deprecated
+File BaseQuasarServer.h                must_exist,must_be_versioned,md5=check,install=overwrite
+File QuasarServer.h                    must_exist,must_be_versioned,install=copy_if_not_existing
+File shutdown.h                        must_exist,must_be_versioned,md5=check,install=overwrite
+File serverconfigxml_quasar.h          must_exist,must_be_versioned,md5=check,install=overwrite
+File opcserver.h                       must_exist,must_be_versioned,md5=check,install=overwrite
+File opcserver_open62541.h             must_exist,must_be_versioned,md5=check,install=overwrite
+File version.h                         must_exist,must_be_versioned,md5=check,install=overwrite
+File QuasarServerCallback.h            must_exist,must_be_versioned,md5=check,install=overwrite
+File QuasarVersion.h                   must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Server/src install=create
-File main.cpp                               must_exist,must_be_versioned,install=ask_to_merge
-File BaseQuasarServer.cpp                   must_exist,must_be_versioned,md5=check,install=overwrite
-File QuasarServer.cpp                       must_exist,must_be_versioned,install=copy_if_not_existing
-File serverconfigxml.cpp                    must_exist,must_be_versioned,md5=check,install=overwrite
-File shutdown.cpp                           must_exist,must_be_versioned,md5=check,install=overwrite
-File opcserver.cpp                          must_exist,must_be_versioned,md5=check,install=overwrite
-File opcserver_open62541.cpp		    must_exist,must_be_versioned,md5=check,install=overwrite
-File QuasarServerCallback.cpp               must_exist,must_be_versioned,md5=check,install=overwrite
+File main.cpp                          must_exist,must_be_versioned,install=ask_to_merge
+File BaseQuasarServer.cpp              must_exist,must_be_versioned,md5=check,install=overwrite
+File QuasarServer.cpp                  must_exist,must_be_versioned,install=copy_if_not_existing
+File serverconfigxml.cpp               must_exist,must_be_versioned,md5=check,install=overwrite
+File shutdown.cpp                      must_exist,must_be_versioned,md5=check,install=overwrite
+File opcserver.cpp                     must_exist,must_be_versioned,md5=check,install=overwrite
+File opcserver_open62541.cpp           must_exist,must_be_versioned,md5=check,install=overwrite
+File QuasarServerCallback.cpp          must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory .
-File automated_build_linux.sh               deprecated,install=dont_touch
-File designToCmake.xslt                     deprecated,install=dont_touch
-File designToHeadersList.xslt               deprecated,install=dont_touch
-File CMakeLists.txt                         must_exist,must_be_versioned,install=overwrite
-File generateCmake.sh                       deprecated,install=dont_touch
-File distclean.sh                           deprecated,install=dont_touch
-File .project                               must_be_versioned
-File .cproject                              must_be_versioned
-File generated_headers_list.cmake           always_autogenerated
-File .gitignore                             must_be_versioned,install=ask_to_merge
-File quasar.py                              must_exist,must_be_versioned,install=overwrite,md5=check,
-File quasarGUI.py                           deprecated
-File framework.py                           deprecated
-File frameworkGUI.py                        deprecated
-File generated_files_list.cmake             deprecated,install=dont_touch
-File generated_headers_list.cmake           deprecated,install=dont_touch
-File transformDesign.sh               	    deprecated,install=dont_touch
-File LICENSE.TXT                            must_exist,must_be_versioned,install=overwrite,md5=check,
-File ProjectSettings.cmake		      must_exist,must_be_versioned,install=copy_if_not_existing
+File CMakeLists.txt                    must_exist,must_be_versioned,install=overwrite
+File .project                          must_be_versioned
+File .cproject                         must_be_versioned
+File generated_headers_list.cmake      always_autogenerated
+File .gitignore                        must_be_versioned,install=ask_to_merge
+File quasar.py                         must_exist,must_be_versioned,install=overwrite,md5=check,
+File LICENSE.TXT                       must_exist,must_be_versioned,install=overwrite,md5=check,
+File ProjectSettings.cmake             must_exist,must_be_versioned,install=copy_if_not_existing
 
 Directory Meta install=create,
-File CMakeLists.txt must_exist,must_be_versioned,install=overwrite,md5=check
+File CMakeLists.txt                    must_exist,must_be_versioned,install=overwrite,md5=check
 
 Directory Meta/include install=create,
-File ASGeneralLogLevel.h must_exist,must_be_versioned,install=overwrite,md5=check
-File ASStandardMetaData.h must_exist,must_be_versioned,install=overwrite,md5=check
-File ASLog.h must_exist,must_be_versioned,install=overwrite,md5=check
-File ASSourceVariableThreadPool.h   			must_exist,must_be_versioned,install=overwrite,md5=check
-File ASComponentLogLevels.h must_exist,must_be_versioned,install=overwrite,md5=check
-File ASComponentLogLevel.h must_exist,must_be_versioned,install=overwrite,md5=check
-File DGeneralLogLevel.h must_exist,must_be_versioned,install=overwrite,md5=check
-File DSourceVariableThreadPool.h            must_exist,must_be_versioned,install=overwrite,md5=check
-File DStandardMetaData.h must_exist,must_be_versioned,install=overwrite,md5=check
-File DComponentLogLevel.h must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DStandardMetaData.h must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DGeneralLogLevel.h must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DSourceVariableThreadPool.h            must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DComponentLogLevel.h must_exist,must_be_versioned,install=overwrite,md5=check
-File meta.h must_exist,must_be_versioned,install=overwrite,md5=check
-File MetaUtils.h must_exist,must_be_versioned,install=overwrite,md5=check
-File ASQuasar.h must_exist,must_be_versioned,install=overwrite,md5=check
-File ASServer.h must_exist,must_be_versioned,install=overwrite,md5=check
-File DQuasar.h must_exist,must_be_versioned,install=overwrite,md5=check
-File DServer.h must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DQuasar.h must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DServer.h must_exist,must_be_versioned,install=overwrite,md5=check
-File Certificate.h must_exist,must_be_versioned,install=overwrite,md5=check
-File MetaBuildInfo.h must_exist,must_be_versioned,install=overwrite,md5=check
-File ASBuildInformation.h must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DBuildInformation.h must_exist,must_be_versioned,install=overwrite,md5=check
-File DBuildInformation.h must_exist,must_be_versioned,install=overwrite,md5=check
+File ASGeneralLogLevel.h               must_exist,must_be_versioned,install=overwrite,md5=check
+File ASStandardMetaData.h              must_exist,must_be_versioned,install=overwrite,md5=check
+File ASLog.h                           must_exist,must_be_versioned,install=overwrite,md5=check
+File ASSourceVariableThreadPool.h      must_exist,must_be_versioned,install=overwrite,md5=check
+File ASComponentLogLevels.h            must_exist,must_be_versioned,install=overwrite,md5=check
+File ASComponentLogLevel.h             must_exist,must_be_versioned,install=overwrite,md5=check
+File DGeneralLogLevel.h                must_exist,must_be_versioned,install=overwrite,md5=check
+File DSourceVariableThreadPool.h       must_exist,must_be_versioned,install=overwrite,md5=check
+File DStandardMetaData.h               must_exist,must_be_versioned,install=overwrite,md5=check
+File DComponentLogLevel.h              must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DStandardMetaData.h          must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DGeneralLogLevel.h           must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DSourceVariableThreadPool.h  must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DComponentLogLevel.h         must_exist,must_be_versioned,install=overwrite,md5=check
+File meta.h                            must_exist,must_be_versioned,install=overwrite,md5=check
+File MetaUtils.h                       must_exist,must_be_versioned,install=overwrite,md5=check
+File ASQuasar.h                        must_exist,must_be_versioned,install=overwrite,md5=check
+File ASServer.h                        must_exist,must_be_versioned,install=overwrite,md5=check
+File DQuasar.h                         must_exist,must_be_versioned,install=overwrite,md5=check
+File DServer.h                         must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DQuasar.h                    must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DServer.h                    must_exist,must_be_versioned,install=overwrite,md5=check
+File Certificate.h                     must_exist,must_be_versioned,install=overwrite,md5=check
+File MetaBuildInfo.h                   must_exist,must_be_versioned,install=overwrite,md5=check
+File ASBuildInformation.h              must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DBuildInformation.h          must_exist,must_be_versioned,install=overwrite,md5=check
+File DBuildInformation.h               must_exist,must_be_versioned,install=overwrite,md5=check
 
 Directory Meta/src install=create,
-File ASGeneralLogLevel.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File ASStandardMetaData.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File ASLog.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File ASSourceVariableThreadPool.cpp   			must_exist,must_be_versioned,install=overwrite,md5=check
-File ASComponentLogLevels.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File ASComponentLogLevel.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File DGeneralLogLevel.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File DSourceVariableThreadPool.cpp				must_exist,must_be_versioned,install=overwrite,md5=check
-File DStandardMetaData.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File DComponentLogLevel.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DStandardMetaData.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DGeneralLogLevel.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DSourceVariableThreadPool.cpp   		must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DComponentLogLevel.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File meta.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File MetaUtils.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File ASQuasar.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File ASServer.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File DQuasar.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File DServer.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DQuasar.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DServer.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File Certificate.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File MetaBuildInfo.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File ASBuildInformation.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File Base_DBuildInformation.cpp must_exist,must_be_versioned,install=overwrite,md5=check
-File DBuildInformation.cpp must_exist,must_be_versioned,install=overwrite,md5=check
+File ASGeneralLogLevel.cpp              must_exist,must_be_versioned,install=overwrite,md5=check
+File ASStandardMetaData.cpp             must_exist,must_be_versioned,install=overwrite,md5=check
+File ASLog.cpp                          must_exist,must_be_versioned,install=overwrite,md5=check
+File ASSourceVariableThreadPool.cpp     must_exist,must_be_versioned,install=overwrite,md5=check
+File ASComponentLogLevels.cpp           must_exist,must_be_versioned,install=overwrite,md5=check
+File ASComponentLogLevel.cpp            must_exist,must_be_versioned,install=overwrite,md5=check
+File DGeneralLogLevel.cpp               must_exist,must_be_versioned,install=overwrite,md5=check
+File DSourceVariableThreadPool.cpp      must_exist,must_be_versioned,install=overwrite,md5=check
+File DStandardMetaData.cpp              must_exist,must_be_versioned,install=overwrite,md5=check
+File DComponentLogLevel.cpp             must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DStandardMetaData.cpp         must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DGeneralLogLevel.cpp          must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DSourceVariableThreadPool.cpp must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DComponentLogLevel.cpp        must_exist,must_be_versioned,install=overwrite,md5=check
+File meta.cpp                           must_exist,must_be_versioned,install=overwrite,md5=check
+File MetaUtils.cpp                      must_exist,must_be_versioned,install=overwrite,md5=check
+File ASQuasar.cpp                       must_exist,must_be_versioned,install=overwrite,md5=check
+File ASServer.cpp                       must_exist,must_be_versioned,install=overwrite,md5=check
+File DQuasar.cpp                        must_exist,must_be_versioned,install=overwrite,md5=check
+File DServer.cpp                        must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DQuasar.cpp                   must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DServer.cpp                   must_exist,must_be_versioned,install=overwrite,md5=check
+File Certificate.cpp                    must_exist,must_be_versioned,install=overwrite,md5=check
+File MetaBuildInfo.cpp                  must_exist,must_be_versioned,install=overwrite,md5=check
+File ASBuildInformation.cpp             must_exist,must_be_versioned,install=overwrite,md5=check
+File Base_DBuildInformation.cpp         must_exist,must_be_versioned,install=overwrite,md5=check
+File DBuildInformation.cpp              must_exist,must_be_versioned,install=overwrite,md5=check
 
 Directory Meta/config install=create,
 File Meta.xsd must_exist,must_be_versioned,install=overwrite,md5=check
@@ -336,28 +298,28 @@ Directory LogIt install=create,
 File CMakeLists.txt  must_exist,must_be_versioned,install=overwrite,md5=check
 
 Directory LogIt/include install=create,
-File BoostRotatingFileLog.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File ComponentAttributes.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogIt.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogItInstance.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogItStaticDefinitions.h must_exist,must_be_versioned,install=overwrite,md5=check
-File LogLevels.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogRecord.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogSinkInterface.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogSinks.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File StdOutLog.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File UaTraceSink.h  must_exist,must_be_versioned,install=overwrite,md5=check
-File WindowsDebuggerSink.h  must_exist,must_be_versioned,install=overwrite,md5=check
+File BoostRotatingFileLog.h       must_exist,must_be_versioned,install=overwrite,md5=check
+File ComponentAttributes.h        must_exist,must_be_versioned,install=overwrite,md5=check
+File LogIt.h                      must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItInstance.h              must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItStaticDefinitions.h     must_exist,must_be_versioned,install=overwrite,md5=check
+File LogLevels.h                  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogRecord.h                  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogSinkInterface.h           must_exist,must_be_versioned,install=overwrite,md5=check
+File LogSinks.h                   must_exist,must_be_versioned,install=overwrite,md5=check
+File StdOutLog.h                  must_exist,must_be_versioned,install=overwrite,md5=check
+File UaTraceSink.h                must_exist,must_be_versioned,install=overwrite,md5=check
+File WindowsDebuggerSink.h        must_exist,must_be_versioned,install=overwrite,md5=check
 
 
 Directory LogIt/src install=create,
-File BoostRotatingFileLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
+File BoostRotatingFileLog.cpp must_exist,must_be_versioned,install=overwrite,md5=check
 File ComponentAttributes.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogIt.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogItInstance.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogLevels.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogRecord.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
-File LogSinks.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
-File StdOutLog.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
-File UaTraceSink.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
+File LogIt.cpp                must_exist,must_be_versioned,install=overwrite,md5=check
+File LogItInstance.cpp        must_exist,must_be_versioned,install=overwrite,md5=check
+File LogLevels.cpp            must_exist,must_be_versioned,install=overwrite,md5=check
+File LogRecord.cpp            must_exist,must_be_versioned,install=overwrite,md5=check
+File LogSinks.cpp             must_exist,must_be_versioned,install=overwrite,md5=check
+File StdOutLog.cpp            must_exist,must_be_versioned,install=overwrite,md5=check
+File UaTraceSink.cpp          must_exist,must_be_versioned,install=overwrite,md5=check
 File WindowsDebuggerSink.cpp  must_exist,must_be_versioned,install=overwrite,md5=check
