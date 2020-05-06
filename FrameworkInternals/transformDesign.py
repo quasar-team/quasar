@@ -92,7 +92,7 @@ QuasarTransforms = [
     [TransformKeys.CONFIG_VALIDATOR,        ['Configuration','designToConfigValidator.jinja'],       'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
     [TransformKeys.DESIGN_VALIDATION,       'Design/designValidation.xslt',                          'Design/validationOutput.removeme',             'B',            False,          False,        None],
     [TransformKeys.UPGRADE_DESIGN,          'Design/designToUpgradedDesign.xslt',                    'Design/Design.xml.upgraded',                   'S',            False,          False,        '{whatToDo}'],
-    [TransformKeys.CREATE_DIAGRAM_DOT,      'Design/designToDot.xslt',                               'Design/Design.dot',                            'B',            False,          False,        ['detailLevel']],
+    [TransformKeys.CREATE_DIAGRAM_DOT,      ['Design','designToDot.jinja'],                          'Design/Design.dot',                            'B',            False,          False,        ['detailLevel']],
     [TransformKeys.D_ROOT_H,                ['Device','designToRootHeader.jinja'],                   'Device/include/DRoot.h',                       'B',            True,           False,        None],
     [TransformKeys.D_ROOT_CPP,              ['Device','designToRootBody.jinja'],                     'Device/src/DRoot.cpp',                         'B',            True,           False,        None],
     [TransformKeys.D_BASE_H,                ['Device','designToDeviceBaseHeader.jinja'],             'Device/generated/Base_D{className}.h',         'B',            True,           False,        ['className']],
