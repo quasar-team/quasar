@@ -105,6 +105,7 @@ add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/Design/validated.tmp
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/quasar.py validate_design --project_binary_dir ${PROJECT_BINARY_DIR}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/Design
     COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_BINARY_DIR}/Design/validated.tmp
     DEPENDS ${DESIGN_FILE}  ${PROJECT_SOURCE_DIR}/Design/Design.xsd
     )
