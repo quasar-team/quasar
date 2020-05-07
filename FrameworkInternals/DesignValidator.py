@@ -39,6 +39,7 @@ validate_second_stage. Running validate will invoke both stages.
 
 '''
 
+import io
 from colorama import Fore, Style
 from lxml import etree
 from quasarExceptions import DesignFlaw
@@ -81,7 +82,7 @@ def count_children(parent, element_name):
 class DesignValidator():
     """quasar design file validator"""
     def __init__(self, schema_file_path, design_file_path):
-        schema_file = open(schema_file_path, 'r')
+        schema_file = io.open(schema_file_path, 'r', encoding='utf-8')
         schema_doc = etree.parse(schema_file)
         self.schema = etree.XMLSchema(schema_doc)
         self.design_inspector = DesignInspector.DesignInspector(design_file_path)
