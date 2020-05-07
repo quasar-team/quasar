@@ -32,3 +32,7 @@ class WrongReturnValue(Exception):
 class Mistake(Exception):
     def __init__(self, desc):
         Exception.__init__(self, desc)
+
+class DesignFlaw(Exception):
+    def __init__(self, desc):
+        Exception.__init__(self, desc)

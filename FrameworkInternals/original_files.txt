@@ -220,6 +220,7 @@ File quasarExceptions.py               must_exist,must_be_versioned,md5=check,in
 File quasar_basic_utils.py             must_exist,must_be_versioned,md5=check,install=overwrite,
 File quasar_utils.py                   must_exist,must_be_versioned,md5=check,install=overwrite,
 File DesignInspector.py                must_exist,must_be_versioned,md5=check,install=overwrite,
+File DesignValidator.py                must_exist,must_be_versioned,md5=check,install=overwrite,
 File Oracle.py                         must_exist,must_be_versioned,md5=check,install=overwrite,
 
 Directory Server install=create

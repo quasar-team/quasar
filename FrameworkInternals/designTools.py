@@ -26,21 +26,18 @@ from transformDesign import transformByKey, TransformKeys, getTransformOutput
 from externalToolCheck import subprocessWithImprovedErrors
 from externalToolCheck import subprocessWithImprovedErrorsPipeOutputToFile
 from commandMap import getCommand
+from DesignValidator import DesignValidator
 
 designPath = "Design" + os.path.sep
 designXML = "Design.xml"
 designXSD = "Design.xsd"
 
 def validateDesign(context):
-    """Checks design.xml against Design.xsd, and after that performs some additional checks (defined in designValidation.xslt)"""
-    # 1st line of validation -- does it matches its schema?
-    # This allows some basic checks
-    print("1st line of check -- XSD conformance")
-    print("Validating the file " + designXML + " with the schema " + designXSD)
-    subprocessWithImprovedErrors([getCommand("xmllint"), "--noout", "--schema", designPath + designXSD, designPath + designXML], getCommand("xmllint"))
-    # 2nd line of validation -- including XSLT
-    print("2nd line of check -- more advanced checks using XSLT processor")
-    transformByKey(TransformKeys.DESIGN_VALIDATION, {'context':context} )
+    """Checks quasar's design validity"""
+    design_validator = DesignValidator(
+        os.path.sep.join(['Design', designXSD]), 
+        os.path.sep.join(['Design', designXML]))
+    design_validator.validate()
 
 def formatXml(inFileName, outFileName):
     if platform.system() == "Windows":
