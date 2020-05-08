@@ -124,7 +124,8 @@ File formatDesign.sh                        deprecated,install=dont_touch
 File upgradeDesign.sh                       deprecated,install=dont_touch
 File designValidation.xslt                  must_exist,must_be_versioned,md5=check,install=overwrite
 
-
+Directory Design/templates install=create
+File designToDot.jinja                      must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Device install=create
 File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge
