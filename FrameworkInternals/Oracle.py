@@ -169,6 +169,17 @@ class Oracle():
         'OpcUa_Double'  : 'xs:double',
         'OpcUa_Float'   : 'xs:float'
     }
+    
+    IntegerDataTypesRange = {
+        'OpcUa_SByte'   : (-2**7, 2**7-1),
+        'OpcUa_Byte'    : (0, 2**8-1),
+        'OpcUa_Int16'   : (-2**15, 2**15-1),
+        'OpcUa_UInt16'  : (0, 2**16-1),
+        'OpcUa_Int32'   : (-2**31, 2**31-1),
+        'OpcUa_UInt32'  : (0, 2**31-1),
+        'OpcUa_Int64'   : (-2**63, 2**63-1),
+        'OpcUa_UInt64'  : (0, 2**63-1)
+    }
 
     def data_type_to_device_type(self, quasar_data_type):
         """TODO @pnikiel We will clean-up type derivation in subsequent efforts """
