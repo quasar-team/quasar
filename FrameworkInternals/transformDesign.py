@@ -121,8 +121,10 @@ def transformDesignByXslt(designXmlPath, transformPath, outputFile, additionalPa
 def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalParam):
     """ additionalParam - a dictionary that will be passed to the transform """
     outputDirectory = os.path.dirname(outputFile)
-    if not os.path.isdir(outputDirectory):
+    try:
         os.makedirs(outputDirectory)
+    except FileExistsError:
+        pass # no problem, what matters is it exists.
     designInspector = DesignInspector(designXmlPath)
     transformDir = os.path.dirname(transformPath)
     commonTemplatesLoader = jinja2.FileSystemLoader(os.path.join(transformDir, '..', '..', 'Common', 'templates'))
