@@ -124,7 +124,7 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
     outputDirectory = os.path.dirname(outputFile)
     try:
         os.makedirs(outputDirectory)
-    except IOError as e:
+    except OSError as e:
         if e.errno == errno.EEXIST:
             pass # no problem, what matters is it exists.
         else:
