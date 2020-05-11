@@ -21,6 +21,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 import os
 import os.path
+import errno
 import sys
 import filecmp
 from externalToolCheck import subprocessWithImprovedErrors
@@ -123,8 +124,11 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
     outputDirectory = os.path.dirname(outputFile)
     try:
         os.makedirs(outputDirectory)
-    except FileExistsError:
-        pass # no problem, what matters is it exists.
+    except IOError as e:
+        if e.errno == errno.EEXIST:
+            pass # no problem, what matters is it exists.
+        else:
+            raise
     designInspector = DesignInspector(designXmlPath)
     transformDir = os.path.dirname(transformPath)
     commonTemplatesLoader = jinja2.FileSystemLoader(os.path.join(transformDir, '..', '..', 'Common', 'templates'))
