@@ -1,4 +1,4 @@
-#!/usr/bin/jinja_environment python
+#!/usr/bin/env python
 # encoding: utf-8
 '''
 transform_filters.py
@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @contact:    quasar-developers@cern.ch
 '''
 
+import lxml.etree
+import re
 from colorama import Fore, Style
 
 def cap_first(word):
@@ -48,8 +50,23 @@ def template_debug(text):
     print(Fore.MAGENTA + str(text) + Style.RESET_ALL)
     return '' # Important, it's a no-output Jinja filter!!
 
+def sorted_by_objectified_attr(items, attribute):
+    """Sorts with the key being chosen attribute of lxml-objectified node"""
+    return sorted(items, key=lambda x: x.get(attribute))
+
+def node_text_contents_to_string(node):
+    """Returns text equivalent to TEXT of given element, assuming processing was skipped"""
+    text = lxml.etree.tostring(node)
+    # the following regex will generate two groups named "tag" (less relevant here) and "text" that
+    # will match TEXT of given node, like if processing of children elements was skipped
+    regex = re.compile(r"<(?P<tag>\S+)[^>]*>(?P<text>.*)</(?P=tag)>", re.DOTALL)
+    match = regex.match(text)
+    return match.group('text')
+
 def setup_all_filters(jinja_environment):
     """Decorates jinja2.Environment object attaching custom filters"""
     jinja_environment.filters['capFirst'] = cap_first
     jinja_environment.filters['debug'] = template_debug
     jinja_environment.filters['cppCommentsToCmakeComments'] = cpp_comments_to_cmake_comments
+    jinja_environment.filters['sorted_by_objectified_attr'] = sorted_by_objectified_attr
+    jinja_environment.filters['node_text_contents_to_string'] = node_text_contents_to_string
