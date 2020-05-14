@@ -119,6 +119,7 @@ class DesignValidator():
         self.validate_classes()
         self.validate_cache_variables()
         self.validate_config_entries()
+        self.validate_hasobjects_wrapper()
 
     def validate_initial_value(self, cachevariable, locator):
         """initialValue is there, but its format depends on dataType so can't be validated by XSD"""
@@ -218,6 +219,40 @@ class DesignValidator():
                 if is_array:
                     assert_attribute_absent(config_entry, 'defaultValue', "when it's an array",
                                             locator)
+
+    def validate_hasobjects(self, hasobjects, locator):
+        """Performs validation of particular hasobjects element"""
+        locator['hasobjects'] = hasobjects.get('class')
+        locator['line_num'] = hasobjects.sourceline
+        if hasobjects.get('instantiateUsing') == 'design':
+            # stuff instantiated from design can't have any configuration-dependent things, just
+            # purely address-space items
+            inner_class = hasobjects.get('class')
+            cls = self.design_inspector.objectify_class(inner_class)
+            if count_children(cls, 'configentry') > 0:
+                raise DesignFlaw(('For instantiation from design, only classes without config '
+                                  'entries are allowed (at: {0})').format(
+                                      stringify_locator(locator)))
+            if count_children(cls, 'cachevariable') > 0:
+                for ce in cls.cachevariable:
+                    locator['inner_cachevariable'] = ce.get('name')
+                    if ce.get('initializeWith') == 'configuration':
+                        raise DesignFlaw(('For instantiation from design, only classes with non-'
+                                          'config-dependent cachevariables are allowed (at: {0})')
+                                         .format(stringify_locator(locator)))
+
+
+    def validate_hasobjects_wrapper(self):
+        """Performs validation of all hasobjects in the design, from all classes and root"""
+        for class_name in self.design_inspector.get_names_of_all_classes():
+            locator = {'class':class_name}
+            for ho in self.design_inspector.objectify_has_objects(class_name):
+                self.validate_hasobjects(ho, locator)
+        root = self.design_inspector.objectify_root()
+        if count_children(root, 'hasobjects'):
+            locator = {'in':'root'}
+            for ho in root.hasobjects:
+                self.validate_hasobjects(ho, locator)
 
 def main():
     """It's just a helper main if you want to run this file stand-alone with pdb or so"""
