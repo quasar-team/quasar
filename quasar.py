@@ -25,8 +25,6 @@ import sys
 import subprocess
 import inspect
 import webbrowser
-import traceback
-import pdb
 from colorama import Fore, Style
 
 this_script_path = os.path.abspath(sys.argv[0])
@@ -35,6 +33,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(this_script_path), 'FrameworkInt
 from quasarCommands import printCommandList
 from quasarCommands import getCommands, extract_common_arguments
 from quasarExceptions import WrongReturnValue, WrongArguments, Mistake
+import quasar_basic_utils
 
 # args starts from the command name (e.g. 'build') and skips the common arguments (e.g. 'project_binary_dir')
 (args, project_binary_dir) = extract_common_arguments(sys.argv[1:])  # 1: to skip the script name given by the operating system
@@ -90,15 +89,6 @@ if __name__ == '__main__':
             print(Fore.RED + str(e) + Style.RESET_ALL)
             sys.exit(1)
         except:
-            print(Fore.RED + 'quasar tooling caught an exception when executing ' +Fore.MAGENTA + ' '.join(sys.argv) + Style.RESET_ALL)
-            extype, value, tb = sys.exc_info()
-            print('Exception was: ' + Fore.RED + str(value) + Style.RESET_ALL)
-            traceback.print_exc()
-            if os.getenv('QUASAR_RUN_PDB', False):
-	            print(Fore.RED + '... running pdb now (if pdb shell is gone then maybe you want to repeat that particular quasar command alone)' + Style.RESET_ALL)
-	            print(Fore.GREEN + 'remove QUASAR_RUN_PDB from your shell environment if you dont wish to run pdb' + Style.RESET_ALL)
-	            pdb.post_mortem(tb)
-            else:
-            	print(Fore.GREEN + "Export QUASAR_RUN_PDB to your environment if you wish to automatically start Python debugger! (e.g. 'export QUASAR_RUN_PDB=1' in bash)" + Style.RESET_ALL)
+            quasar_basic_utils.quasaric_exception_handler()
             sys.exit(1)
 
