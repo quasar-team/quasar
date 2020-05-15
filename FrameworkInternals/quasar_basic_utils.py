@@ -16,9 +16,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 @contact: quasar-developers@cern.ch
 '''
 
+import os
+import sys
+import traceback
+import pdb
+from colorama import Fore, Style
+
 def extract_argument(inData, key):
-    """ If key is present in inData, will remove it and the following element from the list. 
-            Returns a tuple of the output list (i.e. after removal of two elements) and the value of the element (i.e. the second of the two) """
+    """If key is present in inData, will remove it and the following element from the list.
+       Returns a tuple of the output list (i.e. after removal of two elements) and the value
+       of the element (i.e. the second of the two)"""
     if key in inData:
         pos = inData.index(key)
         output = inData
@@ -26,7 +33,28 @@ def extract_argument(inData, key):
         try:
             value = output.pop(pos)
         except IndexError:
-            raise Exception ('Argument {0} requires to be followed by a value. Run out of arguments.'.format(key))
+            raise Exception('Argument {0} requires to be followed by a value. Run out of arguments.'.format(key))
         return (output, value)
     else:  # nothing to do, argument not present
         return (inData, None)
+
+def quasaric_exception_handler():
+    """Prints last exception in a nicer way (colors etc), plus let's run pdb to inspect it on the
+       go"""
+    print(Fore.RED + 'quasar tooling caught an exception when executing '
+          + Fore.MAGENTA + ' '.join(sys.argv) + Style.RESET_ALL)
+    extype, value, tb = sys.exc_info()
+    print('Exception was: ' + Fore.RED + str(value) + Style.RESET_ALL)
+    traceback.print_exc()
+    if os.getenv('QUASAR_RUN_PDB', False):
+        print(Fore.RED
+              + ('... running pdb now (if pdb shell is gone then maybe you want to repeat that '
+                 'particular quasar command alone)') + Style.RESET_ALL)
+        print(Fore.GREEN
+              + 'remove QUASAR_RUN_PDB from your shell environment if you dont wish to run pdb'
+              + Style.RESET_ALL)
+        pdb.post_mortem(tb)
+    else:
+        print(Fore.GREEN
+              + ("Export QUASAR_RUN_PDB to your environment if you wish to automatically start "
+                 "Python debugger! (e.g. 'export QUASAR_RUN_PDB=1' in bash)") + Style.RESET_ALL)
