@@ -45,9 +45,9 @@ def cpp_comments_to_cmake_comments(block):
     ## TODO @pnikiel consider sth better ;-)
     return '\n'.join(['# '+line for line in block.split('\n')])
 
-def template_debug(text):
+def template_debug(*args):
     """This filter is used to print debug messages from a Jinja transform"""
-    print(Fore.MAGENTA + str(text) + Style.RESET_ALL)
+    print(Fore.MAGENTA + ' '.join([str(x) for x in args]) + Style.RESET_ALL)
     return '' # Important, it's a no-output Jinja filter!!
 
 def sorted_by_objectified_attr(items, attribute):
@@ -70,3 +70,4 @@ def setup_all_filters(jinja_environment):
     jinja_environment.filters['cppCommentsToCmakeComments'] = cpp_comments_to_cmake_comments
     jinja_environment.filters['sorted_by_objectified_attr'] = sorted_by_objectified_attr
     jinja_environment.filters['node_text_contents_to_string'] = node_text_contents_to_string
+    jinja_environment.globals['debug'] = template_debug
