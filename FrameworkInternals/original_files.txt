@@ -37,6 +37,7 @@ File designToClassHeader.jinja                 must_exist,must_be_versioned,md5=
 File designToClassBody.jinja                   must_exist,must_be_versioned,md5=check,install=overwrite
 File designToInformationModelHeader.jinja      must_exist,must_be_versioned,md5=check,install=overwrite
 File designToInformationModelBody.jinja        must_exist,must_be_versioned,md5=check,install=overwrite
+File designToAddressSpaceDocHtml.jinja         must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory bin install=create
 File ServerConfig.xml                       must_exist,must_be_versioned,install=copy_if_not_existing
@@ -110,6 +111,8 @@ File schema-for-xslt20.xsd                  must_exist,must_be_versioned,md5=che
 File designToUpgradedDesign.xslt            must_exist,must_be_versioned,md5=check,install=overwrite
 File designValidation.xslt                  must_exist,must_be_versioned,md5=check,install=overwrite
 
+Directory Design/templates install=create
+File designToDot.jinja                      must_exist,must_be_versioned,md5=check,install=overwrite
 Directory Device install=create
 File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge
 File designToDeviceBody.xslt                must_exist,must_be_versioned,md5=check,install=overwrite
@@ -194,6 +197,7 @@ File quasarExceptions.py               must_exist,must_be_versioned,md5=check,in
 File quasar_basic_utils.py             must_exist,must_be_versioned,md5=check,install=overwrite,
 File quasar_utils.py                   must_exist,must_be_versioned,md5=check,install=overwrite,
 File DesignInspector.py                must_exist,must_be_versioned,md5=check,install=overwrite,
+File DesignValidator.py                must_exist,must_be_versioned,md5=check,install=overwrite,
 File Oracle.py                         must_exist,must_be_versioned,md5=check,install=overwrite,
 
 Directory Server install=create

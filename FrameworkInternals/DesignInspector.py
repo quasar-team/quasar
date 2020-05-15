@@ -295,4 +295,13 @@ class DesignInspector():
         mutable_documentation_object = deepcopy(documentation_object)
         etree.strip_tags(mutable_documentation_object, '*')
         return mutable_documentation_object.text
+
+    def to_list_if_exists(self, iterable):
+        try:
+            return list(iterable)
+        except ValueError:
+            return []
         
+if __name__ == "__main__":
+    """Mostly as test fixture"""
+    di = DesignInspector('../Design/Design.xml')

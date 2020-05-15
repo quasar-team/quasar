@@ -21,6 +21,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 import os
 import os.path
+import errno
 import sys
 import filecmp
 from externalToolCheck import subprocessWithImprovedErrors
@@ -79,30 +80,30 @@ class FieldIds(enum.Enum):
 
 
 QuasarTransforms = [
-    #(0)key                                 (1)where XSLT is                                        (2)output                                       (3) source or b (4)c++format    (5)req merge  (6)additional params
-    [TransformKeys.AS_SOURCEVARIABLES_H,    'AddressSpace/designToSourceVariablesHeader.xslt',       'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
-    [TransformKeys.AS_SOURCEVARIABLES_CPP,  'AddressSpace/designToSourceVariablesBody.xslt',         'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
-    [TransformKeys.AS_CLASS_H,              ['AddressSpace','designToClassHeader.jinja'],            'AddressSpace/include/AS{className}.h',         'B',            True,           False,        ['className']],
-    [TransformKeys.AS_CLASS_CPP_ALL,        ['AddressSpace','designToClassBody.jinja'],              'AddressSpace/src/AddressSpaceClasses.cpp',     'B',            True,           False,        None],
-    [TransformKeys.AS_INFOMODEL_H,          ['AddressSpace','designToInformationModelHeader.jinja'], 'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
-    [TransformKeys.AS_INFOMODEL_CPP,        ['AddressSpace','designToInformationModelBody.jinja'],   'AddressSpace/src/ASInformationModel.cpp',      'B',            True,           False,        None],
+    #(0)key                                 (1)where XSLT is                                             (2)output                                       (3) source or b (4)c++format    (5)req merge  (6)additional params
+    [TransformKeys.AS_SOURCEVARIABLES_H,    'AddressSpace/designToSourceVariablesHeader.xslt',           'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
+    [TransformKeys.AS_SOURCEVARIABLES_CPP,  'AddressSpace/designToSourceVariablesBody.xslt',             'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
+    [TransformKeys.AS_CLASS_H,              ['AddressSpace','designToClassHeader.jinja'],                'AddressSpace/include/AS{className}.h',         'B',            True,           False,        ['className']],
+    [TransformKeys.AS_CLASS_CPP_ALL,        ['AddressSpace','designToClassBody.jinja'],                  'AddressSpace/src/AddressSpaceClasses.cpp',     'B',            True,           False,        None],
+    [TransformKeys.AS_INFOMODEL_H,          ['AddressSpace','designToInformationModelHeader.jinja'],     'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
+    [TransformKeys.AS_INFOMODEL_CPP,        ['AddressSpace','designToInformationModelBody.jinja'],       'AddressSpace/src/ASInformationModel.cpp',      'B',            True,           False,        None],
     [TransformKeys.AS_CMAKE,                ['AddressSpace','designToGeneratedCmakeAddressSpace.jinja'], 'AddressSpace/cmake_generated.cmake',           'B',            False,          False,        None],
-    [TransformKeys.CONFIGURATION_XSD,       ['Configuration','designToConfigurationXSD.jinja'],      'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        ['metaXsdPath']],
-    [TransformKeys.CONFIGURATOR,            ['Configuration','designToConfigurator.jinja'],          'Configuration/Configurator.cpp',               'B',            True,           False,        None],
-    [TransformKeys.CONFIG_VALIDATOR,        ['Configuration','designToConfigValidator.jinja'],       'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
-    [TransformKeys.DESIGN_VALIDATION,       'Design/designValidation.xslt',                          'Design/validationOutput.removeme',             'B',            False,          False,        None],
-    [TransformKeys.UPGRADE_DESIGN,          'Design/designToUpgradedDesign.xslt',                    'Design/Design.xml.upgraded',                   'S',            False,          False,        '{whatToDo}'],
-    [TransformKeys.CREATE_DIAGRAM_DOT,      'Design/designToDot.xslt',                               'Design/Design.dot',                            'B',            False,          False,        ['detailLevel']],
-    [TransformKeys.D_ROOT_H,                ['Device','designToRootHeader.jinja'],                   'Device/include/DRoot.h',                       'B',            True,           False,        None],
-    [TransformKeys.D_ROOT_CPP,              ['Device','designToRootBody.jinja'],                     'Device/src/DRoot.cpp',                         'B',            True,           False,        None],
-    [TransformKeys.D_BASE_H,                ['Device','designToDeviceBaseHeader.jinja'],             'Device/generated/Base_D{className}.h',         'B',            True,           False,        ['className']],
-    [TransformKeys.D_BASE_CPP_ALL,          ['Device','designToDeviceBaseBody.jinja'],               'Device/generated/Base_All.cpp',                'B',            True,           False,        None],
-    [TransformKeys.D_DEVICE_H,              ['Device','designToDeviceHeader.jinja'],                 'Device/include/D{className}.h',                'S',            True,           True,         ['className']],
-    [TransformKeys.D_DEVICE_CPP,            ['Device','designToDeviceBody.jinja'],                   'Device/src/D{className}.cpp',                  'S',            True,           True,         ['className']],
-    [TransformKeys.D_CMAKE,                 ['Device','designToGeneratedCmakeDevice.jinja'],         'Device/generated/cmake_header.cmake',          'B',            False,          False,        None],
-    [TransformKeys.HONKYTONK,               'Extra/designToHonkyTonk.xslt',                          'Extra/honkyTonky.cc',                          'S',            True,           False,        None],
-    [TransformKeys.CONFIG_DOCUMENTATION,    ['Configuration','designToConfigDocumentationHtml.jinja'],    'Documentation/ConfigDocumentation.html',       'S',            False,          False,        None],
-    [TransformKeys.AS_DOCUMENTATION,        'AddressSpace/designToAddressSpaceDocHtml.xslt',         'Documentation/AddressSpaceDoc.html',           'S',            False,          False,        None]
+    [TransformKeys.CONFIGURATION_XSD,       ['Configuration','designToConfigurationXSD.jinja'],          'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        ['metaXsdPath']],
+    [TransformKeys.CONFIGURATOR,            ['Configuration','designToConfigurator.jinja'],              'Configuration/Configurator.cpp',               'B',            True,           False,        None],
+    [TransformKeys.CONFIG_VALIDATOR,        ['Configuration','designToConfigValidator.jinja'],           'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
+    [TransformKeys.DESIGN_VALIDATION,       'Design/designValidation.xslt',                              'Design/validationOutput.removeme',             'B',            False,          False,        None], #TODO: to bo abolished 
+    [TransformKeys.UPGRADE_DESIGN,          'Design/designToUpgradedDesign.xslt',                        'Design/Design.xml.upgraded',                   'S',            False,          False,        '{whatToDo}'],
+    [TransformKeys.CREATE_DIAGRAM_DOT,      ['Design','designToDot.jinja'],                              'Design/Design.dot',                            'B',            False,          False,        ['detailLevel']],
+    [TransformKeys.D_ROOT_H,                ['Device','designToRootHeader.jinja'],                       'Device/include/DRoot.h',                       'B',            True,           False,        None],
+    [TransformKeys.D_ROOT_CPP,              ['Device','designToRootBody.jinja'],                         'Device/src/DRoot.cpp',                         'B',            True,           False,        None],
+    [TransformKeys.D_BASE_H,                ['Device','designToDeviceBaseHeader.jinja'],                 'Device/generated/Base_D{className}.h',         'B',            True,           False,        ['className']],
+    [TransformKeys.D_BASE_CPP_ALL,          ['Device','designToDeviceBaseBody.jinja'],                   'Device/generated/Base_All.cpp',                'B',            True,           False,        None],
+    [TransformKeys.D_DEVICE_H,              ['Device','designToDeviceHeader.jinja'],                     'Device/include/D{className}.h',                'S',            True,           True,         ['className']],
+    [TransformKeys.D_DEVICE_CPP,            ['Device','designToDeviceBody.jinja'],                       'Device/src/D{className}.cpp',                  'S',            True,           True,         ['className']],
+    [TransformKeys.D_CMAKE,                 ['Device','designToGeneratedCmakeDevice.jinja'],             'Device/generated/cmake_header.cmake',          'B',            False,          False,        None],
+    [TransformKeys.HONKYTONK,               'Extra/designToHonkyTonk.xslt',                              'Extra/honkyTonky.cc',                          'S',            True,           False,        None],
+    [TransformKeys.CONFIG_DOCUMENTATION,    ['Configuration','designToConfigDocumentationHtml.jinja'],   'Documentation/ConfigDocumentation.html',       'S',            False,          False,        None],
+    [TransformKeys.AS_DOCUMENTATION,        ['AddressSpace','designToAddressSpaceDocHtml.jinja'],        'Documentation/AddressSpaceDoc.html',           'S',            False,          False,        None]
     ]
 
 def transformDesignVerbose(transformPath, outputFile, requiresMerge, astyleRun=False, additionalParam=None):
@@ -121,8 +122,13 @@ def transformDesignByXslt(designXmlPath, transformPath, outputFile, additionalPa
 def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalParam):
     """ additionalParam - a dictionary that will be passed to the transform """
     outputDirectory = os.path.dirname(outputFile)
-    if not os.path.isdir(outputDirectory):
+    try:
         os.makedirs(outputDirectory)
+    except OSError as e:
+        if e.errno == errno.EEXIST:
+            pass # no problem, what matters is it exists.
+        else:
+            raise
     designInspector = DesignInspector(designXmlPath)
     transformDir = os.path.dirname(transformPath)
     commonTemplatesLoader = jinja2.FileSystemLoader(os.path.join(transformDir, '..', '..', 'Common', 'templates'))
