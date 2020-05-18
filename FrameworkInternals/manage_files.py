@@ -20,6 +20,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import errno
+from colorama import Fore, Style
 
 try:
     import sys
@@ -525,18 +526,26 @@ def symlinkIfNotExists(src, dst):
 def symlinkRuntimeDeps(context, wildcard=None):
     # for windows runtime deps are copied; this avoids requiring elevated privileges (windows symlink requires admin rights)
     linkerFunction = copyIfNotExists if platform.system().lower() == 'windows' else symlinkIfNotExists
-    if wildcard is None:
-        yn = yes_or_no('No argument provided, will symlink ServerConfig.xml and all config*.xml files, OK?')
-        if yn == 'n':
-            return
-        linkerFunction(
-                os.path.join(context['projectSourceDir'], 'bin', 'ServerConfig.xml'),
-                os.path.join(context['projectBinaryDir'], 'bin', 'ServerConfig.xml'))
-        config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', 'config*.xml'))
-        for config_file in config_files:
-            linkerFunction(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
-    else:
-        config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', wildcard))
-        print('Matched {0} files'.format(len(config_files)))
-        for config_file in config_files:
-            linkerFunction(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
+    try:
+        if wildcard is None:
+            yn = yes_or_no('No argument provided, will symlink ServerConfig.xml and all config*.xml files, OK?')
+            if yn == 'n':
+                return
+            linkerFunction(
+                    os.path.join(context['projectSourceDir'], 'bin', 'ServerConfig.xml'),
+                    os.path.join(context['projectBinaryDir'], 'bin', 'ServerConfig.xml'))
+            config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', 'config*.xml'))
+            for config_file in config_files:
+                linkerFunction(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
+        else:
+            config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', wildcard))
+            print('Matched {0} files'.format(len(config_files)))
+            for config_file in config_files:
+                linkerFunction(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))
+    except OSError as exception:
+        if exception.errno == errno.ENOENT:
+            print(Fore.RED + 'You can call this only when build directory exists.'
+                  + Style.RESET_ALL)
+            print(Fore.GREEN + 'E.g. run it after running "quasar.py build"' + Style.RESET_ALL)
+        else:
+            raise
