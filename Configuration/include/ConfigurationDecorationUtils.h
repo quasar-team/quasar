@@ -30,7 +30,21 @@ namespace Configuration
 {
   namespace DecorationUtils
   {
-
+    /**
+    * push_back is a configuration decoration helper function. This function *MUST*
+    * be used when decorating the configuration object tree (i.e. adding new
+    * object instances). This function handles both
+    * 1. Addition: adding the object in the specified tree location.
+    * 2. Content Ordering: maintaining the ordering mechanism quasar uses to process
+    *    configuration elements in the correct order.
+    *
+    * @param parent: Parent tree node.
+    * @param children: The collection of children (owned by the parent) to which the
+    *        new child will be appended.
+    * @param child: The new child object
+    * @param childTypeId: The ordering type ID (as gen'd by xsdcxx) of the new child 
+    *        object          
+    */
     template< typename TParent, typename TChildren, typename TChild >
     void push_back(TParent& parent, TChildren& children, const TChild& child, const size_t childTypeId)
     {
