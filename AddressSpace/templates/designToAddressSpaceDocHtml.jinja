@@ -1,0 +1,157 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Sep 2018 (the original XSLT version)                               #}
+{#            11 May 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% macro estimateFunctionReadWrite(variable) %}
+  {% if 'cachevariable' in variable.tag %}
+    {% if variable.get('addressSpaceWrite') == 'forbidden' %}
+      read-only
+    {% else %}
+      read+write
+    {% endif %}
+  {% else %}
+    {% if variable.get('addressSpaceWrite') == 'forbidden' and variable.get('addressSpaceRead') == 'forbidden' %}
+      none
+    {% elif variable.get('addressSpaceWrite') == 'forbidden' and variable.get('addressSpaceRead') != 'forbidden' %}
+      read-only
+    {% elif variable.get('addressSpaceWrite') != 'forbidden' and variable.get('addressSpaceRead') == 'forbidden' %}
+      write-only
+    {% elif variable.get('addressSpaceWrite') != 'forbidden' and variable.get('addressSpaceRead') != 'forbidden' %}
+      read+write
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+<html>
+<head>
+  <title>OPC-UA address space documentation for {{designInspector.getProjectName()}}</title>
+</head>
+<body>
+<h1>
+  OPC-UA address space documentation for {{designInspector.getProjectName()}}
+</h1>
+
+
+Jump to:
+{% for class_name in designInspector.get_names_of_all_classes()|sort %}
+{% set cls = designInspector.objectify_class(class_name) %}
+  <a href="#class_{{cls.get('name')}}">{{cls.get('name')}}</a>
+{% endfor %}
+
+{% for class_name in designInspector.get_names_of_all_classes()|sort %}
+{% set cls = designInspector.objectify_class(class_name) %}
+  <a id="class_{{cls.get('name')}}">
+    <h2>{{cls.get('name')}}</h2>
+  </a>
+
+  {# per-class documentation #}
+  {% if cls.documentation|length>0 %}
+    <div style="background-color:#eeeeff">
+      <font color="blue">DOC</font>
+        {{cls.documentation|node_text_contents_to_string}}
+    </div>
+  {% endif %}
+
+  {% if (cls.cachevariable|length + cls.sourcevariable|length + cls.method|length)>0 %}
+    {% if (cls.cachevariable|length + cls.sourcevariable|length)>0 %}
+      Variables:
+      {#  we combine cache-vars and source-vars because the end-user should see both alphabetically
+          without paying attention whether these are CV or SV. #}
+      <ul>
+        {% set variables = designInspector.to_list_if_exists(cls.cachevariable) + designInspector.to_list_if_exists(cls.sourcevariable) %}
+        {% for variable in variables|sorted_by_objectified_attr('name') %}
+          <li>
+            <b>{{variable.get('name')}}</b> (dataType={{variable.get('dataType')}};
+            {% if 'cachevariable' in variable.tag %}
+              cache-variable;
+            {% else %}
+              source-variable;
+            {% endif %}
+            access={{estimateFunctionReadWrite(variable)}})
+            <br/>
+            {% if variable.documentation|length>0 %}
+              <div style="background-color:#eeeeff"><font color="blue">DOC</font>
+                {{variable.documentation|node_text_contents_to_string}}
+              </div>
+            {% endif %}
+          </li>
+          {% endfor %}
+      </ul>
+    {% endif %}
+    {% if cls.method|length>0 %}
+    Methods:
+      <ul>
+        {% for m in cls.method|sorted_by_objectified_attr('name') %}
+          <li>
+              <b>{{m.get('name')}}</b>
+              {% if m.documentation|length>0 %}
+                <div style="background-color:#eeeeff"><font color="blue">DOC</font>
+                  {{m.documentation|node_text_contents_to_string}}
+                </div>
+              {% endif %}
+              {% if m.argument|length>0 %}
+                <br/>
+                Arguments:
+                <ul>
+                  {% for arg in m.argument %}
+                    <li>
+                      {{arg.get('name')}} ({{arg.get('dataType')}} {% if arg.array|length>0 %}[]{% endif %})
+                      {% if arg.documentation|length>0 %}
+                        <div style="background-color:#eeeeff"><font color="blue">DOC</font>
+                          {{arg.documentation|node_text_contents_to_string}}
+                        </div>
+                      {% endif %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+
+              {% if m.returnvalue|length>0 %}
+                <br/>
+                Return values:
+                <ul>
+                  {% for rv in m.returnvalue %}
+                    <li>
+                      {{rv.get('name')}} ({{rv.get('dataType')}} {% if rv.array|length>0 %}[]{% endif %})
+                      {% if rv.documentation|length>0 %}
+                        <div style="background-color:#eeeeff"><font color="blue">DOC</font>
+                          {{rv.documentation|node_text_contents_to_string}}
+                        </div>
+                      {% endif %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% else %}
+    This quasar class has no address-space components.
+  {% endif %}
+  {% if cls.hasobjects|length>0 %}
+    Classes possible to be children objects:
+    {% for ho in cls.hasobjects %}
+      <a href="#class_{{ho.get('class')}}">{{ho.get('class')}}</a>
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+</body>
+</html>
