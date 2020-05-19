@@ -96,55 +96,66 @@ using namespace CalculatedVariables;
   }
 {% endmacro %}
 
-{% macro writeConfigureObjectByConfiguration(parentClassName, parentNodeId, parentDevice, innerObjects) %}
-// configure child nodes - content_order retains order from configuration XMl file
-for(const auto& orderedIter : config.content_order())
-{
-  const auto xmlIndex = orderedIter.index;
-  const auto xmlType = orderedIter.id;
-  switch(xmlType)
-  {
-    {% for innerObject in innerObjects %}
-      {% set innerClass = innerObject.get('class') %}
-      {% set xsdParentType = 'Configuration' if 'Root' == parentClassName else parentClassName %}
-      case Configuration::{{xsdParentType}}::{{innerClass}}_id:
-      {
-        const auto& xmlObj(config.{{innerClass}}()[xmlIndex]);
-        LOG(Log::DBG)<<__FUNCTION__<<" Configuring class type [id:"<<xmlType<<", nm:{{innerClass}}] ordering index ["<<xmlIndex<<"] parent class type []";
-        {% if not designInspector.class_has_device_logic(innerClass) %}
-          // class [{{innerClass}}] has no device logic: configure only address space object
-          configure{{innerClass}} (xmlObj, nm, {{parentNodeId}});
-        {% else %}        
-          // class [{{innerClass}}] has device logic: configure device object
-          {% if designInspector.class_has_legit_device_parent(innerClass) %}
-            Device::Parent_D{{innerClass}}* pInnerItemParent = {{parentDevice}};
-          {% else %}
-            Device::Parent_D{{innerClass}}* pInnerItemParent = nullptr;
-          {% endif %}
-          auto dInnerObj = configure{{innerClass}}(xmlObj, nm, {{parentNodeId}}, pInnerItemParent);
+{% macro validateContentOrder(xsdParentType, innerObjects) %}
+  {% for innerObject in innerObjects %}
+    {% set innerClass = innerObject.get('class') %}
+    validateContentOrder(config, config.{{innerClass}}(), Configuration::{{xsdParentType}}::{{innerClass}}_id);
+  {% endfor %}
+  validateContentOrder(config, config.CalculatedVariable(), Configuration::Configuration::CalculatedVariable_id);
+{% endmacro%}
 
-          // register class {{innerClass}}] with parent (or register orphan)
-          {% if ((designInspector.class_has_device_logic(parentClassName)) or ('Root' == parentClassName)) %}
-            {{parentDevice}}->add(dInnerObj);
-          {% else %}
-            Device::D{{innerClass}}::registerOrphanedObject(dInnerObj);
-         {% endif %}
-        {% endif %}        
+{% macro writeConfigureObjectByConfiguration(parentClassName, parentNodeId, parentDevice, innerObjects) %}
+  {% set xsdParentType = 'Configuration' if 'Root' == parentClassName else parentClassName %}
+  
+  {{validateContentOrder(xsdParentType, innerObjects)}}
+  
+  // configure child nodes - content_order retains order from configuration XMl file
+  for(const auto& orderedIter : config.content_order())
+  {
+    const auto xmlIndex = orderedIter.index;
+    const auto xmlType = orderedIter.id;
+    switch(xmlType)
+    {
+      {% for innerObject in innerObjects %}
+        {% set innerClass = innerObject.get('class') %}
+        case Configuration::{{xsdParentType}}::{{innerClass}}_id:
+        {
+          const auto& xmlObj(config.{{innerClass}}()[xmlIndex]);
+          LOG(Log::DBG)<<__FUNCTION__<<" Configuring class type [id:"<<xmlType<<", nm:{{innerClass}}] ordering index ["<<xmlIndex<<"] parent class type []";
+          {% if not designInspector.class_has_device_logic(innerClass) %}
+            // class [{{innerClass}}] has no device logic: configure only address space object
+            configure{{innerClass}} (xmlObj, nm, {{parentNodeId}});
+          {% else %}        
+            // class [{{innerClass}}] has device logic: configure device object
+            {% if designInspector.class_has_legit_device_parent(innerClass) %}
+              Device::Parent_D{{innerClass}}* pInnerItemParent = {{parentDevice}};
+            {% else %}
+              Device::Parent_D{{innerClass}}* pInnerItemParent = nullptr;
+            {% endif %}
+            auto dInnerObj = configure{{innerClass}}(xmlObj, nm, {{parentNodeId}}, pInnerItemParent);
+  
+            // register class {{innerClass}}] with parent (or register orphan)
+            {% if ((designInspector.class_has_device_logic(parentClassName)) or ('Root' == parentClassName)) %}
+              {{parentDevice}}->add(dInnerObj);
+            {% else %}
+              Device::D{{innerClass}}::registerOrphanedObject(dInnerObj);
+           {% endif %}
+          {% endif %}        
+        }
+        break;
+      {% endfor %}
+      case Configuration::Configuration::CalculatedVariable_id:
+      {
+        const auto& xmlObj(config.CalculatedVariable()[xmlIndex]);
+        LOG(Log::DBG)<<__FUNCTION__<<" Configuring type [id:"<<xmlType<<", nm:CalculatedVariable] ordering index ["<<xmlIndex<<"]";
+        Engine::instantiateCalculatedVariable(nm, {{parentNodeId}}, xmlObj);
       }
       break;
-    {% endfor %}
-    case Configuration::Configuration::CalculatedVariable_id:
-    {
-      const auto& xmlObj(config.CalculatedVariable()[xmlIndex]);
-      LOG(Log::DBG)<<__FUNCTION__<<" Configuring type [id:"<<xmlType<<", nm:CalculatedVariable] ordering index ["<<xmlIndex<<"]";
-      Engine::instantiateCalculatedVariable(nm, {{parentNodeId}}, xmlObj);
+      default:    
+        LOG(Log::DBG)<<__FUNCTION__<<" Ignoring type [id:"<<xmlType<<"] ordering index ["<<xmlIndex<<"]"; // valid to ignore, StandardMeta etc
+        break;
     }
-    break;
-    default:    
-      LOG(Log::DBG)<<__FUNCTION__<<" Ignoring type [id:"<<xmlType<<"] ordering index ["<<xmlIndex<<"]"; // valid to ignore, StandardMeta etc
-      break;
   }
-}
 {% endmacro %}
 
 // forward declare configure function signatures

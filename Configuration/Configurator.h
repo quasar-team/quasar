@@ -25,7 +25,10 @@
 #define CONFIGURATOR_H_
 
 #include <string>
+#include <set>
+#include <numeric>
 #include <functional>
+#include <boost/format.hpp>
 
 #include <ASNodeManager.h>
 
@@ -36,6 +39,31 @@ typedef std::function<bool (Configuration::Configuration&)> ConfigXmlDecoratorFu
 bool configure (std::string fileName,
         AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction
         configXmlDecoratorFunction = ConfigXmlDecoratorFunction()); // 'empty' function by default.
+
+template<typename TParent, typename TChildren, typename TChildTypeId>
+void validateContentOrder(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
+{
+  std::set<size_t> validChildIndices;
+  for(size_t i=0; i<children.size(); validChildIndices.insert(i++));
+
+  for(const auto& orderedIter : parent.content_order())
+  {
+    const auto xmlIndex = orderedIter.index;
+    if(orderedIter.id == childTypeId)
+    {
+      auto pos = std::find(std::begin(validChildIndices), std::end(validChildIndices), xmlIndex);
+      if(pos == std::end(validChildIndices))
+      {
+        throw std::range_error(boost::str(boost::format("%1% ERROR content order index [%2%] invalid. Valid={0..%3%}") % __FUNCTION__ % xmlIndex % children.size()));
+      }
+      validChildIndices.erase(pos);
+    }
+  }
+  if(!validChildIndices.empty())
+  {
+    throw std::range_error(boost::str(boost::format("%1% ERROR parent has [%2%] child objects unregistered in content order") % __FUNCTION__ % validChildIndices.size()));
+  }
+};
 
 void unlinkAllDevices (AddressSpace::ASNodeManager *nm);
 
