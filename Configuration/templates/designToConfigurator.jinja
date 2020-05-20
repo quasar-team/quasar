@@ -144,7 +144,7 @@ using namespace CalculatedVariables;
         }
         break;
       {% endfor %}
-      case Configuration::Configuration::CalculatedVariable_id:
+      case Configuration::{{xsdParentType}}::CalculatedVariable_id:
       {
         const auto& xmlObj(config.CalculatedVariable()[xmlIndex]);
         LOG(Log::DBG)<<__FUNCTION__<<" Configuring type [id:"<<xmlType<<", nm:CalculatedVariable] ordering index ["<<xmlIndex<<"]";
