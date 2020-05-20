@@ -101,7 +101,7 @@ using namespace CalculatedVariables;
     {% set innerClass = innerObject.get('class') %}
     validateContentOrder(config, config.{{innerClass}}(), Configuration::{{xsdParentType}}::{{innerClass}}_id);
   {% endfor %}
-  validateContentOrder(config, config.CalculatedVariable(), Configuration::Configuration::CalculatedVariable_id);
+  validateContentOrder(config, config.CalculatedVariable(), Configuration::{{xsdParentType}}::CalculatedVariable_id);
 {% endmacro%}
 
 {% macro writeConfigureObjectByConfiguration(parentClassName, parentNodeId, parentDevice, innerObjects) %}
