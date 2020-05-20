@@ -96,10 +96,27 @@ using namespace CalculatedVariables;
   }
 {% endmacro %}
 
+{#
+  macro required to account for xsdcxx generation for recursive types (i.e a type
+  that can have itself as a child). Quasar recursive type is a class with hasobjects
+  of itself.
+  In this case, in order not to confuse calls to child collection (parent.RecType())
+  and constructor RecType::RecType() xsdcxx generation appends '1' when parent is also 
+  RecType to:
+  a) collection name: parent.RecType1()
+  b) content order id: Configuration::RecType::RecType1_id
+#}
+{% macro innerClassName(xsdParentType, innerClass) -%}
+  {{innerClass}}
+  {%- if xsdParentType == innerClass -%}
+    1
+  {%- endif -%}
+{%- endmacro %}
+
 {% macro validateContentOrder(xsdParentType, innerObjects) %}
   {% for innerObject in innerObjects %}
     {% set innerClass = innerObject.get('class') %}
-    validateContentOrder(config, config.{{innerClass}}(), Configuration::{{xsdParentType}}::{{innerClass}}_id);
+    validateContentOrder(config, config.{{innerClassName(xsdParentType, innerClass)}}(), Configuration::{{xsdParentType}}::{{innerClassName(xsdParentType, innerClass)}}_id);
   {% endfor %}
   validateContentOrder(config, config.CalculatedVariable(), Configuration::{{xsdParentType}}::CalculatedVariable_id);
 {% endmacro%}
@@ -118,9 +135,9 @@ using namespace CalculatedVariables;
     {
       {% for innerObject in innerObjects %}
         {% set innerClass = innerObject.get('class') %}
-        case Configuration::{{xsdParentType}}::{{innerClass}}_id:
+        case Configuration::{{xsdParentType}}::{{innerClassName(xsdParentType, innerClass)}}_id:
         {
-          const auto& xmlObj(config.{{innerClass}}()[xmlIndex]);
+          const auto& xmlObj(config.{{innerClassName(xsdParentType, innerClass)}}()[xmlIndex]);
           LOG(Log::DBG)<<__FUNCTION__<<" Configuring class type [id:"<<xmlType<<", nm:{{innerClass}}] ordering index ["<<xmlIndex<<"] parent class type []";
           {% if not designInspector.class_has_device_logic(innerClass) %}
             // class [{{innerClass}}] has no device logic: configure only address space object
