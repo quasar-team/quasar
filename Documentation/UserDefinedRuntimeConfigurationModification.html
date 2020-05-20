@@ -43,6 +43,8 @@
                   <li><a href="#mozTocId65675">Server Design</a></li>
                   <li><a href="#mozTocId610798">Function
                       decorateConfiguration()</a></li>
+                  <li><a href="#mozTocId444708">Function
+                      validateContentOrder</a></li>
                 </ol>
               </li>
               <li><a href="#mozTocId898308">Wiring in the
@@ -183,9 +185,11 @@ bool configure (std::string fileName,
     The object addition above (<font color="#006600"><b>in dark green</b></font>)
     are calls to quasar's helper function, required to append new
     objects to the configuration.<br>
-    <h4>Function validateContentOrder</h4>
+    <h4><a name="mozTocId444708" class="mozTocH4"></a>Function
+      validateContentOrder</h4>
     <p>This section is here for information: There is no action required
       by server developers. Internally, quasar calls <i>validateContentOrder
+
       </i>during initialisation to verify the configuration object tree
       is valid with respect to the content order mechanism, including
       any additional objects that were added to the tree during
@@ -230,6 +234,7 @@ bool configure (std::string fileName,
 </pre>
     </code>
     <h2 id="persist"><a name="mozTocId11314" class="mozTocH2"></a>Persisting
+
 
 
 
