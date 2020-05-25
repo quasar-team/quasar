@@ -41,8 +41,6 @@
 
 #include <Utils.h>
 
-using namespace CalculatedVariables;
-
 // includes for AS classes and Device classes
 {% for className in designInspector.get_names_of_all_classes() %}
   #include <AS{{className}}.h>
@@ -165,7 +163,7 @@ using namespace CalculatedVariables;
       {
         const auto& xmlObj(config.CalculatedVariable()[xmlIndex]);
         LOG(Log::DBG)<<__FUNCTION__<<" Configuring type [id:"<<xmlType<<", nm:CalculatedVariable] ordering index ["<<xmlIndex<<"]";
-        Engine::instantiateCalculatedVariable(nm, {{parentNodeId}}, xmlObj);
+        CalculatedVariables::Engine::instantiateCalculatedVariable(nm, {{parentNodeId}}, xmlObj);
       }
       break;
       default:    
