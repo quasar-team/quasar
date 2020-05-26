@@ -22,7 +22,9 @@
 {% import 'headers.jinja' as headers %}
 {% set this = designInspector.objectify_root() %}
 
-{% macro writeRestrictions(restrictions) %}
+{% macro writeRestrictions(containingClassName, objectName) %}
+  {% set restrictions=designInspector.get_restrictions(containingClassName, objectName) %}
+
   {% if restrictions|length>0 %}
     <div style="background-color: #ffefef"><font color="red">Value restrictions</font>
     {% for restriction in restrictions %}
@@ -36,17 +38,22 @@
         <code>{{restriction['pattern']}}</code>
       {% elif restriction['type'] == 'byBounds' %}
         <br/>Bounds:
+        {% set boundsRestrictionPrefix="" %}
         {% if restriction['minExclusive'] %}
-          <code>mimimum exlusive {{restriction['minExclusive']}}</code>
+          <code>{{boundsRestrictionPrefix}}{{objectName}}&gt;{{restriction['minExclusive']}}</code>
+          {% set boundsRestrictionPrefix=" AND " %}
         {% endif %}
         {% if restriction['maxExclusive'] %}
-          <code>maximum exlusive {{restriction['maxExclusive']}}</code>
+          <code>{{boundsRestrictionPrefix}}{{objectName}}&lt;{{restriction['maxExclusive']}}</code>
+          {% set boundsRestrictionPrefix=" AND " %}
         {% endif %}
         {% if restriction['minInclusive'] %}
-          <code>minimum inclusive{{restriction['minInclusive']}}</code>
+          <code>{{boundsRestrictionPrefix}}{{objectName}}&gt;={{restriction['minInclusive']}}</code>
+          {% set boundsRestrictionPrefix=" AND " %}
         {% endif %}
         {% if restriction['maxInclusive'] %}
-          <code>maximum inclusive{{restriction['maxInclusive']}}</code>
+          <code>{{boundsRestrictionPrefix}}{{objectName}}&lt;={{restriction['maxInclusive']}}</code>
+          {% set boundsRestrictionPrefix=" AND " %}
         {% endif %}
       {% endif %}
     {% endfor %}
@@ -69,7 +76,7 @@
   {% else %}
     mandatory
   {% endif %}
-  {{ writeRestrictions(designInspector.get_restrictions(containingClassName, objectName)) }}
+  {{ writeRestrictions(containingClassName, objectName) }}
 {% endmacro %}
     
 <html>
