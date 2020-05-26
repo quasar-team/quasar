@@ -23,9 +23,6 @@
 {% set this = designInspector.objectify_root() %}
 {{ headers.cppFullGeneratedHeader() }}
 
-#include <xercesc/dom/DOMNodeList.hpp>
-#include <xercesc/dom/DOMElement.hpp>
-
 #include <ASUtils.h>
 #include <ASInformationModel.h>
 #include <ASNodeQueries.h>
@@ -40,10 +37,9 @@
 #include <meta.h>
 
 #include <LogIt.h>
+#include <LogLevels.h>
 
 #include <Utils.h>
-
-using namespace CalculatedVariables;
 
 // includes for AS classes and Device classes
 {% for className in designInspector.get_names_of_all_classes() %}
@@ -98,84 +94,84 @@ using namespace CalculatedVariables;
   }
 {% endmacro %}
 
-{% macro writeConfigureObjectByConfiguration(parentClassName, parentNodeId, parentDevice, innerObjects) %}
-xercesc::DOMNodeList* childrenNodes = config._node()->getChildNodes();
-for (size_t i = 0; i < childrenNodes->getLength(); ++i )
-{
-  xercesc::DOMElement * configElement = dynamic_cast<xercesc::DOMElement *> (childrenNodes->item(i));
-  if(!configElement) continue; // not an element anyway
-  const std::string tagName = transcodeElementName(configElement);
+{#
+  macro required to account for xsdcxx generation for recursive types (i.e a type
+  that can have itself as a child). Quasar recursive type is a class with hasobjects
+  of itself.
+  In this case, in order not to confuse calls to child collection (parent.RecType())
+  and constructor RecType::RecType() xsdcxx generation appends '1' when parent is also 
+  RecType to:
+  a) collection name: parent.RecType1()
+  b) content order id: Configuration::RecType::RecType1_id
+#}
+{% macro innerClassName(xsdParentType, innerClass) -%}
+  {{innerClass}}
+  {%- if xsdParentType == innerClass -%}
+    1
+  {%- endif -%}
+{%- endmacro %}
 
-  const std::vector<std::string> ignoreList = {"StandardMetaData", "CalculatedVariableGenericFormula"
-    {% for arrayCacheVar in designInspector.objectify_cache_variables(parentClassName, restrict_by='[d:array]') %}
-      ,"{{arrayCacheVar.get('name')}}" // ignore array type cachevariables
-    {% endfor %}
-    {% for arrayConfigEntry in designInspector.objectify_config_entries(parentClassName, restrict_by='[d:array]') %}
-      ,"{{arrayConfigEntry.get('name')}}" // ignore array type configentries
-    {% endfor %}
-  };
-  if(std::find(ignoreList.begin(), ignoreList.end(), tagName) != ignoreList.end()) continue;
-
+{% macro validateContentOrder(xsdParentType, innerObjects) %}
   {% for innerObject in innerObjects %}
     {% set innerClass = innerObject.get('class') %}
-    if(tagName == "{{innerClass}}")
-    {
-        // configure inner class [{{innerClass}}] - parent class [{{parentClassName}}], ptr to parent [{{parentDevice}}]
-        auto predicateFn = [configElement](const Configuration::{{innerClass}}& x){return x._node() == configElement;};
-        auto startPos = config.{{innerClass}}().begin();
-        auto endPos   = config.{{innerClass}}().end();
-        auto innerObjectConfig = std::find_if(startPos, endPos, predicateFn);
-        // assert inner object configuration was found, bail otherwise
-        if(innerObjectConfig == config.{{innerClass}}().end())
-        {
-          throw_runtime_error_with_origin("Failed to find matching configuration instance for inner class [{{innerClass}}] inside class [{{className}}] in collection [config.{{innerClass}}()]");
-        }
-        {% if designInspector.class_has_device_logic(innerClass) %}
-          // class [{{innerClass}}] has device logic: Configure device object and register with parent
-          {% if designInspector.class_has_legit_device_parent(innerClass) %}
-            Device::Parent_D{{innerClass}}* pInnerItemParent = {{parentDevice}};
-          {% else %}
-            Device::Parent_D{{innerClass}}* pInnerItemParent = nullptr;
-          {% endif %}
-          Device::D{{innerClass}}* dInnerItem = configure{{innerClass}} (
-            *innerObjectConfig, nm, {{parentNodeId}}, pInnerItemParent);
+    validateContentOrder(config, config.{{innerClassName(xsdParentType, innerClass)}}(), Configuration::{{xsdParentType}}::{{innerClassName(xsdParentType, innerClass)}}_id);
+  {% endfor %}
+  validateContentOrder(config, config.CalculatedVariable(), Configuration::{{xsdParentType}}::CalculatedVariable_id);
+{% endmacro%}
 
-          {% if ((designInspector.class_has_device_logic(parentClassName)) or ('Root' == parentClassName)) %}
-            {{parentDevice}}->add(dInnerItem);
-          {% else %}
-            Device::D{{innerClass}}::registerOrphanedObject(dInnerItem);
-         {% endif %}
-        {% else %}
-          // class [{{innerClass}}] has no device logic. Configure only address space object
-          configure{{innerClass}} (*innerObjectConfig, nm, {{parentNodeId}});
-      {% endif %}
-      continue;
-    }
-  {% endfor %} 
-  if (tagName == "CalculatedVariable")
+{% macro writeConfigureObjectByConfiguration(parentClassName, parentNodeId, parentDevice, innerObjects) %}
+  {% set xsdParentType = 'Configuration' if 'Root' == parentClassName else parentClassName %}
+  
+  {{validateContentOrder(xsdParentType, innerObjects)}}
+  
+  // configure child nodes - content_order retains order from configuration XMl file
+  for(const auto& orderedIter : config.content_order())
   {
-    auto predicateFn = [configElement](const Configuration::CalculatedVariable& x){return x._node() == configElement;};
-    auto calcVarConfigPos = std::find_if(
-    config.CalculatedVariable().begin(),
-    config.CalculatedVariable().end(),
-    predicateFn);
-    Engine::instantiateCalculatedVariable (nm, {{parentNodeId}}, *calcVarConfigPos);
-    continue;
+    const auto xmlIndex = orderedIter.index;
+    const auto xmlType = orderedIter.id;
+    switch(xmlType)
+    {
+      {% for innerObject in innerObjects %}
+        {% set innerClass = innerObject.get('class') %}
+        case Configuration::{{xsdParentType}}::{{innerClassName(xsdParentType, innerClass)}}_id:
+        {
+          const auto& xmlObj(config.{{innerClassName(xsdParentType, innerClass)}}()[xmlIndex]);
+          LOG(Log::DBG)<<__FUNCTION__<<" Configuring class type [id:"<<xmlType<<", nm:{{innerClass}}] ordering index ["<<xmlIndex<<"] parent class type []";
+          {% if not designInspector.class_has_device_logic(innerClass) %}
+            // class [{{innerClass}}] has no device logic: configure only address space object
+            configure{{innerClass}} (xmlObj, nm, {{parentNodeId}});
+          {% else %}        
+            // class [{{innerClass}}] has device logic: configure device object
+            {% if designInspector.class_has_legit_device_parent(innerClass) %}
+              Device::Parent_D{{innerClass}}* pInnerItemParent = {{parentDevice}};
+            {% else %}
+              Device::Parent_D{{innerClass}}* pInnerItemParent = nullptr;
+            {% endif %}
+            auto dInnerObj = configure{{innerClass}}(xmlObj, nm, {{parentNodeId}}, pInnerItemParent);
+  
+            // register class {{innerClass}}] with parent (or register orphan)
+            {% if ((designInspector.class_has_device_logic(parentClassName)) or ('Root' == parentClassName)) %}
+              {{parentDevice}}->add(dInnerObj);
+            {% else %}
+              Device::D{{innerClass}}::registerOrphanedObject(dInnerObj);
+           {% endif %}
+          {% endif %}        
+        }
+        break;
+      {% endfor %}
+      case Configuration::{{xsdParentType}}::CalculatedVariable_id:
+      {
+        const auto& xmlObj(config.CalculatedVariable()[xmlIndex]);
+        LOG(Log::DBG)<<__FUNCTION__<<" Configuring type [id:"<<xmlType<<", nm:CalculatedVariable] ordering index ["<<xmlIndex<<"]";
+        CalculatedVariables::Engine::instantiateCalculatedVariable(nm, {{parentNodeId}}, xmlObj);
+      }
+      break;
+      default:    
+        LOG(Log::DBG)<<__FUNCTION__<<" Ignoring type [id:"<<xmlType<<"] ordering index ["<<xmlIndex<<"]"; // valid to ignore, StandardMeta etc
+        break;
+    }
   }
-
- throw_runtime_error_with_origin("No handler found for object - bug of new Configurator? Call Piotr/Ben.  The tag in question is:"+tagName);
-}
 {% endmacro %}
-
-
-// Note: internal representation of strings in Xerces is UTF-16 so, transcode
-std::string transcodeElementName(const xercesc::DOMElement * element)
-{
-  char* transcodedTagName = xercesc::XMLString::transcode(element->getTagName());
-  const std::string tagName (transcodedTagName);
-  xercesc::XMLString::release(&transcodedTagName);
-  return tagName;
-}
 
 // forward declare configure function signatures
 {% for className in designInspector.get_names_of_all_classes() %}
