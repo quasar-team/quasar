@@ -20,7 +20,7 @@ import os
 import sys
 import traceback
 import pdb
-from colorama import Fore, Style
+from colorama import Fore, Back, Style
 
 def extract_argument(inData, key):
     """If key is present in inData, will remove it and the following element from the list.
@@ -41,10 +41,11 @@ def extract_argument(inData, key):
 def quasaric_exception_handler():
     """Prints last exception in a nicer way (colors etc), plus let's run pdb to inspect it on the
        go"""
-    print(Fore.RED + 'quasar tooling caught an exception when executing '
-          + Fore.MAGENTA + ' '.join(sys.argv) + Style.RESET_ALL)
     extype, value, tb = sys.exc_info()
-    print('Exception was: ' + Fore.RED + str(value) + Style.RESET_ALL)
+    print(Fore.RED + 'quasar tooling caught an exception of type {0} when executing '.format(
+          type(value).__name__)
+          + Fore.MAGENTA + ' '.join(sys.argv) + Style.RESET_ALL)
+    print('Exception was: ' + Back.RED +  Fore.WHITE + str(value) + Style.RESET_ALL)
     traceback.print_exc()
     if os.getenv('QUASAR_RUN_PDB', False):
         print(Fore.RED

@@ -50,7 +50,7 @@ def stringify_locator(locator):
     """Creates comma-separated representation of the dictionary in another font color. It is to
        point out where (in which class, variable, etc) given problem appeared"""
     locator_as_list = ["{0}={1}".format(key, locator[key]) for key in locator]
-    return Fore.MAGENTA + ', '.join(locator_as_list) + Style.RESET_ALL
+    return ', '.join(locator_as_list)
 
 def assert_attribute_absent(element, attribute, extra_msg, locator):
     """Throws if attribute is absent"""
@@ -118,6 +118,7 @@ class DesignValidator():
         """Performs only stage 2 validation. Internal method"""
         self.validate_classes()
         self.validate_cache_variables()
+        self.validate_source_variables()
         self.validate_config_entries()
         self.validate_hasobjects_wrapper()
 
@@ -207,6 +208,47 @@ class DesignValidator():
                     if count_children(cache_variable, 'array') != 0:
                         raise DesignFlaw('isKey can not be used with arrays (at: {0})'.format(
                             stringify_locator(locator)))
+
+    def assert_mutex_present(self, class_name, locator, extra_info=''):
+        """Raises DesignFlaw if class 'class_name' doesnt have a mutex"""
+
+        if not self.design_inspector.class_has_device_logic(class_name):
+            raise DesignFlaw('Class {2} needs device-logic to have a mutex (at: {0}) {1}'.format(
+                stringify_locator(locator), extra_info, class_name))
+        cls = self.design_inspector.objectify_class(class_name)
+        if count_children(cls.devicelogic, 'mutex') < 1:
+            raise DesignFlaw('Class {2} needs a mutex in its device logic(at: {0}) {1}'.format(
+                stringify_locator(locator), extra_info, class_name))
+            
+    def validate_source_variables(self):
+        for class_name in self.design_inspector.get_names_of_all_classes():
+            locator = {'class':class_name}
+            cls = self.design_inspector.objectify_class(class_name)
+            for source_variable in self.design_inspector.objectify_source_variables(class_name):
+                locator['sourcevariable'] = source_variable.get('name')
+                mutex_options = [
+                    source_variable.get('addressSpaceReadUseMutex'),
+                    source_variable.get('addressSpaceWriteUseMutex')]
+                # remove duplicates
+                mutex_options = list(set(mutex_options))
+                # remove values which don't require inter-class sync, thus need no validation
+                mutex_options = [x for x in mutex_options if x not in [
+                    'no', 'of_this_operation', 'of_this_variable']]
+                for option in mutex_options:
+                    if option == 'of_containing_object':
+                        self.assert_mutex_present(class_name, locator,
+                            'to support setting "{0}"'.format(option))
+                    elif option == 'of_parent_of_containing_object':
+                        parent = self.design_inspector.get_parent(class_name)
+                        if parent is None:
+                            raise DesignFlaw(('Class {0} has no unique parent, cant use "{1}" '
+                                              '(at: {2})').format(
+                                                  class_name, option, stringify_locator(locator)))
+                        self.assert_mutex_present(parent, locator, 'to support setting "{0}"'.format(
+                            option))
+                    else:
+                        raise NotImplementedError("Don't know how to validate '{0}'".format(option))
+                
 
     def validate_config_entries(self):
         """Performs validation of all config entries in the design"""
