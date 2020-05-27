@@ -200,7 +200,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       ASNodeManager* nm,
       const Configuration::{{className}}& config)
     {
-      {% for cv in designInspector.objectify_cache_variables(className, '[d:array]') %}
+      {% for cv in designInspector.objectify_cache_variables(className, "[d:array and @initializeWith='configuration']") %}
         {
           unsigned int dim = config.{{cv.get('name')}}().value().size();
           // make sure the design size constraints are respected during runtime
