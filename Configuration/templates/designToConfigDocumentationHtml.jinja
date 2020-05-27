@@ -30,9 +30,9 @@
     {% for restriction in restrictions %}
       {% if restriction['type'] == 'byEnumeration' %}
         <br/>Enumeration:
-        {% for enumerationValue in restriction['enumerationValues'] %}
-          <code>{{enumerationValue}}</code>            
-        {% endfor %}
+        {% for enumerationValue in restriction['enumerationValues'] -%}
+          <code>{{enumerationValue}}{{'|' if not loop.last}}</code>          
+        {%- endfor %}
       {% elif restriction['type'] == 'byPattern' %}
         <br/>Pattern:
         <code>{{restriction['pattern']}}</code>
@@ -64,17 +64,16 @@
 {% macro writeCacheVarOrConfigEntry(containingClassName, elementObject) %}
   {% set objectName=elementObject.get('name') %}
   {% set objectType=elementObject.get('dataType') %}
-  <b>{{objectName}}</b> ({{objectType}})
+  {% set optionalityMsg = 'optional, the default value shown below will be used if not present' if elementObject.get('defaultValue') else 'mandatory' %}
+  <b>{{objectName}}</b> ({{objectType}}) {{optionalityMsg}}
   {% set docElements=designInspector.objectifyDocumentation(containingClassName, objectName) %}
   {% if docElements|length > 0 %}
     <div style="background-color:#eeeeff"><font color="blue">DOC</font>
     {{docElements[0].text}}
     </div>
-  {% endif %}
+  {% endif %}  
   {% if elementObject.get('defaultValue') %}
-    optional (the default value shown below will be used if not present)
-  {% else %}
-    mandatory
+    <div style="background-color: #efffef"><b>Default value:</b> {{elementObject.get('defaultValue')}}</div>
   {% endif %}
   {{ writeRestrictions(containingClassName, objectName) }}
 {% endmacro %}
