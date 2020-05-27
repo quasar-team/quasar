@@ -30,9 +30,9 @@
     {% for restriction in restrictions %}
       {% if restriction['type'] == 'byEnumeration' %}
         <br/>Enumeration:
-        {% for enumerationValue in restriction['enumerationValues'] %}
+        {% for enumerationValue in restriction['enumerationValues'] -%}
           <code>{{enumerationValue}}{{'|' if not loop.last}}</code>          
-        {% endfor %}
+        {%- endfor %}
       {% elif restriction['type'] == 'byPattern' %}
         <br/>Pattern:
         <code>{{restriction['pattern']}}</code>
