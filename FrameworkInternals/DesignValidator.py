@@ -193,9 +193,11 @@ class DesignValidator():
                     self.validate_initial_value(cache_variable, locator)
                 if count_children(cache_variable, 'array') > 0:
                     self.validate_array(cache_variable.array, locator)
+                    assert_attribute_absent(cache_variable, 'initialValue',
+                                            'when it is not scalar', locator)
                 if cache_variable.get('dataType') in ['UaVariant', 'UaByteString']:
                     assert_attribute_equal(cache_variable, 'initializeWith', 'valueAndStatus',
-                                           'when data type is UaVariant', locator)
+                                           'when data type is UaVariant or UaByteString', locator)
                     assert_attribute_absent(cache_variable, 'initialValue',
                                             'when data type is UaVariant', locator)
                 if 'isKey' in cache_variable.attrib:
