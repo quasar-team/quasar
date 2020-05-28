@@ -110,24 +110,25 @@ class DesignInspector():
             return False
         return True
 
-    def get_parent_struct(self, class_name):
-        """ Returns whatever should be typedef'ed as Parent_DX for X = class_name """
-        # a case where device logic parent cant be established
-        no_parent_structure = 'struct{/*No exact Parent of the class*/}'
+    def get_parent(self, class_name):
+        """Returns parent class name or None if device-logic parent is not applicable"""
         if self.class_has_device_logic(class_name):
             has_objects_origins = self.get_has_objects_origin_names(class_name, include_root=True)
             if len(has_objects_origins) == 1:
-                parent_structure = 'D'+has_objects_origins[0]
+                return has_objects_origins[0]
             else:
-                parent_structure = no_parent_structure
+                return None  # many parents, so no single parent.
         else:
-            parent_structure = no_parent_structure
-        if DEBUG:
-            print(Fore.YELLOW
-                  + "get_parent_struct({0}) gives {1}".format(
-                      class_name, parent_structure)
-                  + Style.RESET_ALL)
-        return parent_structure
+            return None  # child class w/o DeviceLogic, so no device lo
+
+    def get_parent_struct(self, class_name):
+        """ Returns whatever should be typedef'ed as Parent_DX for X = class_name """
+        # a case where device logic parent cant be established
+        parent = self.get_parent(class_name)
+        if parent is None:
+            return 'struct{/*No exact Parent of the class*/}'
+        else:
+            return 'D'+parent
 
     def get_class_has_objects(self, class_name):
         """Returns a list of names of all classes that are 'children'
