@@ -73,6 +73,13 @@
 
 
 
+
+
+
+
+
+
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
@@ -130,68 +137,22 @@
 
 
 
+
+
+
+
+
+
+
               backward incompatibilites</strong><br>
           </td>
-          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>JIRA
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              Release notes</strong><br>
+          <td style="vertical-align: top; color: rgb(255, 255, 255);"
+            width="50%"><strong>JIRA Release notes</strong><br>
           </td>
         </tr>
         <tr>
           <td valign="top">1.4.1<br>
+            <font size="-1">05-Jun-2020</font><br>
           </td>
           <td valign="top">Next phase of NextGen transition:
             improvements, further removal of XSLT. New validator is
@@ -206,115 +167,91 @@
               </li>
             </ul>
           </td>
-          <td valign="top">Bug
-            <br>
+          <td valign="top">Bug <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1804">OPCUA-1804</a>]
                 - Validate presence of d:mutex when any dependent lock
-                is requested
-              </li>
+                is requested </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1816">OPCUA-1816</a>]
                 - Documentation for array type cacheVars omitted from
-                generated configuration.xsd
-              </li>
+                generated configuration.xsd </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1851">OPCUA-1851</a>]
                 - Wrong text in ConfigDoc.html
-                (designToConfigDocumentationHtml.jinja transform)
-              </li>
+                (designToConfigDocumentationHtml.jinja transform) </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1854">OPCUA-1854</a>]
                 - Configuration decoration backwards compatibility
-                broken (since 1.3.6)
-              </li>
+                broken (since 1.3.6) </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1863">OPCUA-1863</a>]
                 - ./quasar.py symlink_runtime_deps does not work with
-                quasar 1.4.1
-              </li>
+                quasar 1.4.1 </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1866">OPCUA-1866</a>]
                 - Documentation: broken link for
-                CalculatedVariables.html documentation
-              </li>
+                CalculatedVariables.html documentation </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1873">OPCUA-1873</a>]
                 - NextGen configurator fails for GenericSNMP server both
-                with 1.4.0 and pre-1.4.1
-              </li>
+                with 1.4.0 and pre-1.4.1 </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1878">OPCUA-1878</a>]
                 - configuration documentation: missing default values
-                and mandatory/optional
-              </li>
+                and mandatory/optional </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1879">OPCUA-1879</a>]
                 - AddressSpace classes incorrectly want to initialize
-                from config when 'valueAndStatus'
-              </li>
+                from config when 'valueAndStatus' </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1880">OPCUA-1880</a>]
                 - Validator not catching array and initialValue presence
               </li>
             </ul>
             <br>
-            New Feature
-            <br>
+            New Feature <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1855">OPCUA-1855</a>]
-                - atomic makedirs
-              </li>
+                - atomic makedirs </li>
             </ul>
             <br>
-            Task
-            <br>
+            Task <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1778">OPCUA-1778</a>]
-                - initialValue validation
-              </li>
+                - initialValue validation </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1780">OPCUA-1780</a>]
                 - Catch and ban all instantiations from design where
                 there is any config data (config entries or
-                config-initialized cache variables)
-              </li>
+                config-initialized cache variables) </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1798">OPCUA-1798</a>]
                 - Catch CV array with valueAndStatusInitializer in
                 validateDesign target (now is in AS classes generation)
               </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1799">OPCUA-1799</a>]
                 - Guarantee initialStatus presence when
-                initializeWith=initialValue in NextGen code gen
-              </li>
+                initializeWith=initialValue in NextGen code gen </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1849">OPCUA-1849</a>]
-                - Translate quasar diagrams generator to Jinja2
-              </li>
+                - Translate quasar diagrams generator to Jinja2 </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1850">OPCUA-1850</a>]
-                - Revamp design validator
-              </li>
+                - Revamp design validator </li>
             </ul>
             <br>
-            Improvement
-            <br>
+            Improvement <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1758">OPCUA-1758</a>]
-                - Remove deprecated files from ancient times
-              </li>
+                - Remove deprecated files from ancient times </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1856">OPCUA-1856</a>]
-                - Address Space documentation using NextGen transforms
-              </li>
+                - Address Space documentation using NextGen transforms </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1859">OPCUA-1859</a>]
                 - Configure AS/device objects retaining original order
                 from config.xml file using xsdcxx content_order
-                mechanism
-              </li>
+                mechanism </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1861">OPCUA-1861</a>]
                 - expose quasar exception handler for 3rd party
-                extensions
-              </li>
+                extensions </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1867">OPCUA-1867</a>]
-                - Better debug for Jinja templates
-              </li>
+                - Better debug for Jinja templates </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1868">OPCUA-1868</a>]
                 - Add docs to writers of transforms and code
-                transformations
-              </li>
+                transformations </li>
             </ul>
           </td>
         </tr>
         <tr>
           <td valign="top">1.4.0<br>
+            <font size="-1">04-May-2020</font><br>
           </td>
           <td valign="top">First release with NextGen transforms !<br>
             Note that some transforms are still XSLT based, XSLT will be
@@ -339,55 +276,87 @@
               </li>
             </ul>
           </td>
-          <td valign="top">
-            <meta http-equiv="content-type" content="text/html;
-              charset=windows-1252">
-            <meta http-equiv="content-type" content="text/html;
-              charset=windows-1252">
-            Task
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1820"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1820</a>]
-                - UaVariant + valueAndStatus not covered by tests</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1846"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1846</a>]
-                - initialStatus not correctly propagated</li>
+          <td valign="top"> <br>
+            Bug <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1804">OPCUA-1804</a>]
+                - Validate presence of d:mutex when any dependent lock
+                is requested </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1816">OPCUA-1816</a>]
+                - Documentation for array type cacheVars omitted from
+                generated configuration.xsd </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1851">OPCUA-1851</a>]
+                - Wrong text in ConfigDoc.html
+                (designToConfigDocumentationHtml.jinja transform) </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1854">OPCUA-1854</a>]
+                - Configuration decoration backwards compatibility
+                broken (since 1.3.6) </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1863">OPCUA-1863</a>]
+                - ./quasar.py symlink_runtime_deps does not work with
+                quasar 1.4.1 </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1866">OPCUA-1866</a>]
+                - Documentation: broken link for
+                CalculatedVariables.html documentation </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1873">OPCUA-1873</a>]
+                - NextGen configurator fails for GenericSNMP server both
+                with 1.4.0 and pre-1.4.1 </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1878">OPCUA-1878</a>]
+                - configuration documentation: missing default values
+                and mandatory/optional </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1879">OPCUA-1879</a>]
+                - AddressSpace classes incorrectly want to initialize
+                from config when 'valueAndStatus' </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1880">OPCUA-1880</a>]
+                - Validator not catching array and initialValue presence
+              </li>
             </ul>
             <br>
-            Improvement
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1746"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1746</a>]
-                - quasar NextGen design transformation via Jinja2</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1784"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1784</a>]
-                - add tests for valueAndStatus, but without
-                initialValue, to test_cachevariables</li>
+            New Feature <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1855">OPCUA-1855</a>]
+                - atomic makedirs </li>
             </ul>
             <br>
+            Task <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1778">OPCUA-1778</a>]
+                - initialValue validation </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1780">OPCUA-1780</a>]
+                - Catch and ban all instantiations from design where
+                there is any config data (config entries or
+                config-initialized cache variables) </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1798">OPCUA-1798</a>]
+                - Catch CV array with valueAndStatusInitializer in
+                validateDesign target (now is in AS classes generation)
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1799">OPCUA-1799</a>]
+                - Guarantee initialStatus presence when
+                initializeWith=initialValue in NextGen code gen </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1849">OPCUA-1849</a>]
+                - Translate quasar diagrams generator to Jinja2 </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1850">OPCUA-1850</a>]
+                - Revamp design validator </li>
+            </ul>
             <br>
+            Improvement <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1758">OPCUA-1758</a>]
+                - Remove deprecated files from ancient times </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1856">OPCUA-1856</a>]
+                - Address Space documentation using NextGen transforms </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1859">OPCUA-1859</a>]
+                - Configure AS/device objects retaining original order
+                from config.xml file using xsdcxx content_order
+                mechanism </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1861">OPCUA-1861</a>]
+                - expose quasar exception handler for 3rd party
+                extensions </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1867">OPCUA-1867</a>]
+                - Better debug for Jinja templates </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1868">OPCUA-1868</a>]
+                - Add docs to writers of transforms and code
+                transformations </li>
+            </ul>
           </td>
         </tr>
         <tr>
@@ -403,80 +372,40 @@
             Device/CMakeLists.txt will become a file owned by the quasar
             framework in one of future releases!<br>
           </td>
-          <td valign="top">
-            <meta http-equiv="content-type" content="text/html;
-              charset=windows-1252">
-            Bug
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1788"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1788</a>]
-                - Non-compiling arrays of UaByteString and UaVariant</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1801"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1801</a>]
-                - Amalgamation encoding missing, relevant for Python3.6+</li>
+          <td valign="top"> <br>
+            Bug <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1788">OPCUA-1788</a>]
+                - Non-compiling arrays of UaByteString and UaVariant </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1801">OPCUA-1801</a>]
+                - Amalgamation encoding missing, relevant for Python3.6+
+              </li>
             </ul>
-            Task
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1777"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1777</a>]
+            <br>
+            Task <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1777">OPCUA-1777</a>]
                 - Signature mismatch for OpcUa_XInt16 setters (X from
-                {null, "U"})</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1787"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1787</a>]
+                {null, "U"}) </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1787">OPCUA-1787</a>]
                 - Prepare a comprehensive test-design for methods
-                (configurable variant: synchronous vs asynchronous)</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1800"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1800</a>]
-                - Add UA-SDK based tests to quasar Travis</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1802"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1802</a>]
-                - Test source-variables</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1806"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1806</a>]
+                (configurable variant: synchronous vs asynchronous) </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1800">OPCUA-1800</a>]
+                - Add UA-SDK based tests to quasar Travis </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1802">OPCUA-1802</a>]
+                - Test source-variables </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1806">OPCUA-1806</a>]
                 - Add setters/getters invocation to test_cache_variables
-                test</li>
+                test </li>
             </ul>
-            Improvement
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1764"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1764</a>]
-                - Split Device's CMakeLists into user and non-user part</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1785"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1785</a>]
-                - Lot of stale code to remove in ASNodeManager.cpp</li>
+            <br>
+            Improvement <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1764">OPCUA-1764</a>]
+                - Split Device's CMakeLists into user and non-user part
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1785">OPCUA-1785</a>]
+                - Lot of stale code to remove in ASNodeManager.cpp </li>
             </ul>
           </td>
         </tr>
@@ -499,82 +428,38 @@
             <br>
             IGNORE_DEFAULT_BOOST_SETUP<br>
           </td>
-          <td valign="top">
-            <meta http-equiv="content-type" content="text/html;
-              charset=windows-1252">
-            Bug
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1781"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1781</a>]
+          <td valign="top"> Bug <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1781">OPCUA-1781</a>]
                 - cache-variables of arrays of booleans, initialized
-                from configuration, don't build</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1782"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1782</a>]
+                from configuration, don't build </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1782">OPCUA-1782</a>]
                 - cache-variables of arrays of uint64, initialized from
-                configuration, don't build</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1783"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1783</a>]
+                configuration, don't build </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1783">OPCUA-1783</a>]
                 - multiple root/hasobjects elements referring to same
-                class causes non-compiling code</li>
+                class causes non-compiling code </li>
             </ul>
-            Task
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1776"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1776</a>]
+            Task <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1776">OPCUA-1776</a>]
                 - Extend quasar travis for some beyond-trivial tests
                 (e.g. inject few different Designs than span some common
-                scenarios)</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1790"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1790</a>]
-                - Optimize OptionalModules (separate CMake file)</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1791"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1791</a>]
+                scenarios) </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1790">OPCUA-1790</a>]
+                - Optimize OptionalModules (separate CMake file) </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1791">OPCUA-1791</a>]
                 - OptionalModules URL processing for server URL
-                replacement(s)</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1792"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1792</a>]
+                replacement(s) </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1792">OPCUA-1792</a>]
                 - Use find_package(Boost) for general Boost resolution
-                in quasar</li>
+                in quasar </li>
             </ul>
-            Improvement
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1741"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1741</a>]
+            Improvement <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1741">OPCUA-1741</a>]
                 - boost::lexical_cast -&gt; std::to_string in quasar
-                (subject to gcc 4.8.5 avail)</li>
+                (subject to gcc 4.8.5 avail) </li>
             </ul>
           </td>
         </tr>
@@ -663,67 +548,28 @@
           </td>
           <td valign="top">(none known)<br>
           </td>
-          <td valign="top">
-            <meta http-equiv="content-type" content="text/html;
-              charset=windows-1252">
-            Bug
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1657"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1657</a>]
-                - fix windows and linux CI builds for master</li>
+          <td valign="top"> Bug <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1657">OPCUA-1657</a>]
+                - fix windows and linux CI builds for master </li>
             </ul>
-            Task
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1653"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1653</a>]
+            Task <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1653">OPCUA-1653</a>]
                 - Fix meta_build_info.py for the case of NO external
-                build libs</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1681"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1681</a>]
-                - Check GCC 8.3 warning for string operation truncation</li>
+                build libs </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1681">OPCUA-1681</a>]
+                - Check GCC 8.3 warning for string operation truncation
+              </li>
             </ul>
-            Improvement
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: 400; letter-spacing: normal; orphans:
-              2; text-align: start; text-indent: 0px; text-transform:
-              none; white-space: normal; widows: 2; word-spacing: 0px;
-              -webkit-text-stroke-width: 0px; background-color: rgb(255,
-              255, 255); text-decoration-style: initial;
-              text-decoration-color: initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1679"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1679</a>]
-                - boost -&gt; std migration (where possible)</li>
+            Improvement <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1679">OPCUA-1679</a>]
+                - boost -&gt; std migration (where possible) </li>
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td valign="top">1.3.10<br>
             <font size="-1">04-Dec-2019</font><br>
           </td>
@@ -785,67 +631,31 @@
           </td>
           <td valign="top">(none known)<br>
           </td>
-          <td valign="top">
-            <meta http-equiv="content-type" content="text/html;
-              charset=windows-1252">
-            <meta http-equiv="content-type" content="text/html;
-              charset=windows-1252">
-            <meta http-equiv="content-type" content="text/html;
-              charset=windows-1252">
-            Bug
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: normal; letter-spacing: normal;
-              orphans: 2; text-align: start; text-indent: 0px;
-              text-transform: none; white-space: normal; widows: 2;
-              word-spacing: 0px; -webkit-text-stroke-width: 0px;
-              background-color: rgb(255, 255, 255);
-              text-decoration-style: initial; text-decoration-color:
-              initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1585"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1585</a>]
-                - quasar python tooling not compatible with Python3</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1610"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1610</a>]
-                - Fix appveyor build - use python 3 (instead of 2)</li>
+          <td valign="top"> Bug <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1585">OPCUA-1585</a>]
+                - quasar python tooling not compatible with Python3 </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1610">OPCUA-1610</a>]
+                - Fix appveyor build - use python 3 (instead of 2) </li>
             </ul>
-            Task
-            <ul style="margin: 10px 0px 0px; color: rgb(23, 43, 77);
-              font-family: -apple-system, BlinkMacSystemFont,
-              &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, &quot;Fira
-              Sans&quot;, &quot;Droid Sans&quot;, &quot;Helvetica
-              Neue&quot;, sans-serif; font-size: 14px; font-style:
-              normal; font-variant-ligatures: normal; font-variant-caps:
-              normal; font-weight: normal; letter-spacing: normal;
-              orphans: 2; text-align: start; text-indent: 0px;
-              text-transform: none; white-space: normal; widows: 2;
-              word-spacing: 0px; -webkit-text-stroke-width: 0px;
-              background-color: rgb(255, 255, 255);
-              text-decoration-style: initial; text-decoration-color:
-              initial;">
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1600"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1600</a>]
+            <br>
+            Task <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1600">OPCUA-1600</a>]
                 - Converge whole quasar Python code to standardised
-                4-spaces separator</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1604"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1604</a>]
-                - RPM quasar module to go optional</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1614"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1614</a>]
+                4-spaces separator </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1604">OPCUA-1604</a>]
+                - RPM quasar module to go optional </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1614">OPCUA-1614</a>]
                 - Converge quasar Python-based s cripting to LF line
-                endings</li>
-              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1630"
-                  style="color: rgb(0, 82, 204); text-decoration: none;">OPCUA-1630</a>]
+                endings </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1630">OPCUA-1630</a>]
                 - Improve md5 computation (a.k.a. subprocess module has
-                no 'getstatusoutput' (In Python 2.7))</li>
+                no 'getstatusoutput' (In Python 2.7)) </li>
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td valign="top">1.3.8<br>
             <font size="-1">11-Nov-2019</font><br>
           </td>
@@ -911,7 +721,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td valign="top">1.3.6<br>
             <font size="-1">27-Sep-2019</font><br>
           </td>
@@ -1006,7 +816,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td valign="top">1.3.4<br>
             <font size="-1">16-Apr-2019</font><br>
           </td>
@@ -1103,7 +913,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td valign="top">1.3.2<br>
             <font size="-1">13-Dec-2018</font><br>
           </td>
@@ -1150,7 +960,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td valign="top">1.3.0<br>
             <font size="-1">15-Nov-2018</font><br>
           </td>
@@ -1284,7 +1094,7 @@
             </ul>
             <a name="editarea"></a> </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td valign="top">1.2.6<br>
             <font size="-1">21-Aug-2018</font><br>
           </td>
@@ -1380,7 +1190,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td valign="top">1.2.4<br>
             <font size="-1">04-Jun-2018</font><br>
           </td>
@@ -1495,7 +1305,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td valign="top">1.2.2<br>
             <font size="-1">27-Mar-2018</font><br>
           </td>
@@ -1558,7 +1368,7 @@
             </ul>
             <a name="editarea"></a> </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td valign="top">1.2.0<br>
             <font size="-1">03-Aug-2017</font><br>
           </td>
@@ -1682,7 +1492,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td style="vertical-align: top;">1.1.7<br>
             <font size="-1">17-Jun-2016</font><br>
           </td>
@@ -1755,7 +1565,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td style="vertical-align: top;">1.1.5<br>
             <font size="-1">29-Jan-2016</font><br>
           </td>
@@ -1814,7 +1624,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td style="vertical-align: top;">1.1.3<br>
             <font size="-1">27-Jan-2016</font><br>
           </td>
@@ -1897,7 +1707,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td style="vertical-align: top;">1.1.1<br>
             <font size="-1">19-Nov-2015</font><br>
           </td>
@@ -1987,7 +1797,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td style="vertical-align: top;">1.0.2<br>
           </td>
           <td style="vertical-align: top; text-align: left;">Minor
@@ -2069,7 +1879,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td style="vertical-align: top;">1.0.0<br>
           </td>
           <td style="vertical-align: top;">Major features:<br>
@@ -2212,7 +2022,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td style="vertical-align: top;">0.98<br>
           </td>
           <td style="vertical-align: top;">Major features:<br>
@@ -2347,7 +2157,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td style="vertical-align: top;">0.96<br>
           </td>
           <td style="vertical-align: top;"><br>
@@ -2419,7 +2229,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td style="vertical-align: top;">0.94<br>
           </td>
           <td style="vertical-align: top;">Major features:<br>
@@ -2505,7 +2315,7 @@
             </ul>
           </td>
         </tr>
-        <tr style="background-color: rgb(191, 212, 237);">
+        <tr>
           <td style="vertical-align: top;">0.92<br>
           </td>
           <td style="vertical-align: top;">Major features:<br>

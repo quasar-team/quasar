@@ -66,6 +66,11 @@ a.title:active {
     color: #cfcfdf;
     text-decoration: underline;
 }
+
+
+tr:nth-child(even) {}
+tr:nth-child(odd) {background-color: rgb(231, 242, 255);}
+
 td.Title {
     background-color: #dbeffb;
     border: 0 none;
