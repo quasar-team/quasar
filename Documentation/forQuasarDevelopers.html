@@ -61,12 +61,29 @@
       invited to use the <b>DesignInspector</b> and <b>Oracle</b>
       interfaces. You should not invent any method to open quasar
       design on your own.</li>
-    <li>If you develop an extension module:</li>
+    <li>If you develop an extension module and want to perform design transformation there (note: not every quasar extension module does this!)</li>
     <ol>
       <li>you need some Python program in your extension module which
         will call quasar tooling,</li>
       <li>you need to attach some Jinja2 transforms that do your thing
-        (keep them in templates/ directory under your module),<br>
+        (keep them in templates/ directory under your module),
+        <ul>
+          <li>
+            Your Jinja transform should indent by two (2) spaces on every block, either Jinja block or whatever is being generated (e.g. C++).<br/>
+            Example from actual transform generating C++: (note that indent level increases both with new Jinja control blocks as well as with C++ blocks)<br/>
+            <div class="mycode">
+              {% for sv in this.sourcevariable %}<br/>
+                &nbsp;&nbsp;{% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;UaStatus D{{className}}::read{{sv.get('name')|capFirst}} ()<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;{  <br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return OpcUa_BadNotImplemented;<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+                &nbsp;&nbsp;{% endif %}<br/>
+              {% endfor %}<br/>
+            </div>
+          </li>
+        </ul>
+        <br>
       </li>
       <li>if you need some in-Python processing which is difficult to
         do in Jinja, then the guildelines are:</li>
