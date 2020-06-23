@@ -33,6 +33,7 @@
 #include <Configuration.hxx>
 
 #include <CalculatedVariablesEngine.h>
+#include <FreeVariablesEngine.h>
 
 #include <meta.h>
 
@@ -164,6 +165,12 @@
         const auto& xmlObj(config.CalculatedVariable()[xmlIndex]);
         LOG(Log::DBG)<<__FUNCTION__<<" Configuring type [id:"<<xmlType<<", nm:CalculatedVariable] ordering index ["<<xmlIndex<<"]";
         CalculatedVariables::Engine::instantiateCalculatedVariable(nm, {{parentNodeId}}, xmlObj);
+      }
+      break;
+      case Configuration::{{xsdParentType}}::FreeVariable_id:
+      {
+        const auto& freeVariableXmlElement(config.FreeVariable()[xmlIndex]);
+        AddressSpace::FreeVariablesEngine::instantiateFreeVariable(nm, {{parentNodeId}}, freeVariableXmlElement);
       }
       break;
       default:    
