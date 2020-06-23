@@ -39,6 +39,7 @@ from externalToolCheck import checkExternalDependencies
 from optionalModules import enableModule, disableModule, listModules, listEnabledModules, removeModules, removeModule
 from transformDesign import transformByKey, TransformKeys
 from quasar_basic_utils import extract_argument
+import quasar_basic_utils
 
 # format is: [command name], callable, for_users
 # where for_users is True for non-internal commands
@@ -75,13 +76,17 @@ commands = [
         [['validate_design'], validateDesign, True],
         [['doxygen'], runDoxygen, True],
         [['external_tool_check'], checkExternalDependencies, True],
+        # commands for optional modules
         [['enable_module'], enableModule, True],
         [['disable_module'], disableModule, True],
         [['list_modules'], listModules, True],
         [['list_enabled_modules'], listEnabledModules, True],
+        # commands for build config(s)
         [['build_config'], build_config, True],
         [['set_build_config'], set_build_config, True],
-        [['symlink_runtime_deps'],       symlinkRuntimeDeps, True]
+        # various commands for developers
+        [['symlink_runtime_deps'],       symlinkRuntimeDeps, True],
+        [['quasar_version'],              quasar_basic_utils.print_quasar_version, True],
         ]
 
 def printCommandList():

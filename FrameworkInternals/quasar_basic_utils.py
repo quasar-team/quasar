@@ -59,3 +59,12 @@ def quasaric_exception_handler():
         print(Fore.GREEN
               + ("Export QUASAR_RUN_PDB to your environment if you wish to automatically start "
                  "Python debugger! (e.g. 'export QUASAR_RUN_PDB=1' in bash)") + Style.RESET_ALL)
+
+def get_quasar_version():
+    """Returns version of quasar deployed in the current project"""
+    version_f = open(os.path.sep.join(['Design', 'quasarVersion.txt']))
+    return version_f.readline().rstrip()
+    
+def print_quasar_version():
+    """Prints currently deployed quasar version"""
+    print("quasar version: " + Fore.GREEN + get_quasar_version() + Style.RESET_ALL)
