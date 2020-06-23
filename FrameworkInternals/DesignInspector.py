@@ -121,15 +121,6 @@ class DesignInspector():
         else:
             return None  # child class w/o DeviceLogic, so no device lo
 
-    def get_parent_struct(self, class_name):
-        """ Returns whatever should be typedef'ed as Parent_DX for X = class_name """
-        # a case where device logic parent cant be established
-        parent = self.get_parent(class_name)
-        if parent is None:
-            return 'struct{/*No exact Parent of the class*/}'
-        else:
-            return 'D'+parent
-
     def get_class_has_objects(self, class_name):
         """Returns a list of names of all classes that are 'children'
         (in has_objects) sense of given class."""

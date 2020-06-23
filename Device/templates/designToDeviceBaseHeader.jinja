@@ -19,6 +19,15 @@
 {# Authors:                                                                      #}
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
+{% macro get_parent_struct(class_name) %}
+  {% set parent = designInspector.get_parent(class_name) %}
+  {% if parent == None -%}
+    struct{/*No exact Parent of the class*/}
+  {%- else -%}
+    D{{parent}}
+  {%- endif -%}
+{% endmacro %}
+
 {% import 'headers.jinja' as headers %}
 {{ headers.cppFullGeneratedHeader() }}
 
@@ -44,10 +53,10 @@ namespace Configuration { class {{className}}; }
 namespace Device
 {
   {% if designInspector.class_has_legit_device_parent(className) %}
-  class {{designInspector.get_parent_struct(className)}};
+  class {{get_parent_struct(className)}};
   {% endif %}
 
-  typedef {{designInspector.get_parent_struct(className)}} Parent_D{{className}};
+  typedef {{get_parent_struct(className)}} Parent_D{{className}};
 
   class D{{className}};
 
