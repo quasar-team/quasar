@@ -27,19 +27,19 @@ void FreeVariablesEngine::instantiateFreeVariable(
           config.name().c_str(),
       nm->getNameSpaceIndex(),
       UaVariant(),
-      OpcUa_AccessLevels_CurrentRead | OpcUa_AccessLevels_CurrentWrite,
+      OpcUa_AccessLevels_CurrentReadOrWrite,
       nm);
 
     // type-dependent business
     UaVariant initialValue;
     if (config.type() == "String")
     {
-        freeVariable->setDataType(UaNodeId(OpcUaId_String, 0));
+        freeVariable->setDataType(UaNodeId(OpcUaType_String, 0));
         initialValue.setString( config.initialValue().present()? config.initialValue().get().c_str() : "");
     }
     else if (config.type() == "Double")
     {
-        freeVariable->setDataType(UaNodeId(OpcUaId_Double, 0));
+        freeVariable->setDataType(UaNodeId(OpcUaType_Double, 0));
         initialValue.setDouble( config.initialValue().present()? std::stod(config.initialValue().get()) : 0.0 ); // TODO std::stod doesn't catch very well
         CalculatedVariables::Engine::registerVariableForCalculatedVariables(freeVariable);
     }
