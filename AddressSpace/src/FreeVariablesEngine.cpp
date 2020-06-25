@@ -1,18 +1,134 @@
-/*
+/* © Copyright CERN, 2020.  All rights not expressly granted are reserved.
  * FreeVariablesEngine.cpp
  *
  *  Created on: 23 Jun 2020
  *      Author: pnikiel
+ *
+ *  This file is part of Quasar.
+ *
+ *  Quasar is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public Licence as published by
+ *  the Free Software Foundation, either version 3 of the Licence.
+ *
+ *  Quasar is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public Licence for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <stdint.h>
+#include <string>
 
 #include <ASNodeManager.h>
 #include <FreeVariablesEngine.h>
 #include <ChangeNotifyingVariable.h>
 #include <Utils.h>
 #include <CalculatedVariablesEngine.h>
+#include <LogIt.h>
 
 namespace AddressSpace
 {
+
+//! Convert from textual representation of type into its OPC-UA type definition identifier.
+UaNodeId freeVariableTypeToBuiltInType (const std::string& type)
+{
+    if (type == "Boolean")
+        return UaNodeId(OpcUaType_Boolean, 0);
+    else if (type == "Byte")
+        return UaNodeId(OpcUaType_Byte, 0);
+    else if (type == "SByte")
+        return UaNodeId(OpcUaType_SByte, 0);
+    else if (type == "UInt16")
+        return UaNodeId(OpcUaType_UInt16, 0);
+    else if (type == "Int16")
+        return UaNodeId(OpcUaType_Int16, 0);
+    else if (type == "UInt32")
+        return UaNodeId(OpcUaType_UInt32, 0);
+    else if (type == "Int32")
+        return UaNodeId(OpcUaType_Int32, 0);
+    else if (type == "UInt64")
+        return UaNodeId(OpcUaType_UInt64, 0);
+    else if (type == "Int64")
+        return UaNodeId(OpcUaType_Int64, 0);
+    else if (type == "Double")
+        return UaNodeId(OpcUaType_Double, 0);
+    else if (type == "Float")
+        return UaNodeId(OpcUaType_Float, 0);
+    else if (type == "String")
+        return UaNodeId(OpcUaType_String, 0);
+    else
+        throw_runtime_error_with_origin("FreeVariable requested type is not supported: '" + type + "'");
+}
+
+template<typename T>
+static T veryIntelligentWrapperOfConversionFunction (const std::string& str, T(*convFunc)(const std::string&, std::size_t*) )
+{
+    size_t pos; // we'll use it to detect potential garbage at the end of the string.
+
+    auto result = (*convFunc)(str, &pos);
+    if (pos != str.length())
+        throw_runtime_error_with_origin("didn't manage to convert full literal '" + str + "' into a number of chosen type, garbage somewhere?");
+    return result;
+}
+
+template<typename T, typename Twider>
+static T veryIntelligentWrapperOfConversionFunctionWithRangeCheck (
+        const std::string& str,
+        Twider(*convFunc)(const std::string&, std::size_t*, int base))
+{
+    T rangeMin = std::numeric_limits<T>::min();
+    T rangeMax = std::numeric_limits<T>::max();
+    size_t pos; // we'll use it to detect potential garbage at the end of the string.
+
+    Twider convertedNumber;
+    try
+    {
+        convertedNumber = (*convFunc)(str, &pos, /*base*/10);
+    }
+    catch (const std::exception& e)
+    {
+        LOG(Log::ERR) << "While converting '" << str << "' into integer, exception: " << e.what();
+        throw;
+    }
+    if (pos != str.length())
+        throw_runtime_error_with_origin("didn't manage to convert full literal '" + str + "' into a number of chosen type, garbage somewhere?");
+    if (convertedNumber < rangeMin || convertedNumber > rangeMax)
+        throw_runtime_error_with_origin("value '" + str + "' out of allowed range '" + std::to_string(rangeMin) + "," + std::to_string(rangeMax) + "'");
+    return convertedNumber;
+
+}
+
+//! The version for integer does range check, the version for floating points does not do it.
+template<typename T, typename Twider> // T here will be e.g. OpcUa_UInt16 and Twider wider will be uint32_t for which a standard conversion function exists
+static void initializeIntegerNumeric (
+        UaVariant& out,
+        void (UaVariant::*setter)(T),
+        Twider(*convFunc)(const std::string&, std::size_t*, int base),
+        bool isPresent,
+        const std::string& valueWhenPresent)
+{
+    T initialValue (0);
+    if (isPresent)
+        initialValue = veryIntelligentWrapperOfConversionFunctionWithRangeCheck<T, Twider>( valueWhenPresent, convFunc );
+    (out.*setter)(initialValue);
+}
+
+template<typename T> // T here will be e.g. OpcUa_Float or OpcUa_Double
+static void initializeFloatingPointNumeric (
+        UaVariant& out,
+        void (UaVariant::*setter)(T),
+        T(*convFunc)(const std::string&, std::size_t*),
+        bool isPresent,
+        const std::string& valueWhenPresent)
+{
+    T initialValue (0);
+    if (isPresent)
+        initialValue = veryIntelligentWrapperOfConversionFunction( valueWhenPresent, convFunc );
+    (out.*setter)(initialValue);
+}
 
 void FreeVariablesEngine::instantiateFreeVariable(
     AddressSpace::ASNodeManager* nm,
@@ -30,25 +146,66 @@ void FreeVariablesEngine::instantiateFreeVariable(
       OpcUa_AccessLevels_CurrentReadOrWrite,
       nm);
 
-    // type-dependent business
+    // data type
+    freeVariable->setDataType(freeVariableTypeToBuiltInType(config.type()));
+
+    // type-dependent business, the order is as per Oracle.AllQuasarDataTypes
     UaVariant initialValue;
-    if (config.type() == "String")
+    if (config.type() == "Boolean")
     {
-        freeVariable->setDataType(UaNodeId(OpcUaType_String, 0));
-        initialValue.setString( config.initialValue().present()? config.initialValue().get().c_str() : "");
+        OpcUa_Boolean value = OpcUa_False; // default if not present
+        if (config.initialValue().present())
+        {
+            std::string initialValueAsString = config.initialValue().get();
+            if (initialValueAsString != "1" && initialValueAsString != "0") // booleans are from discrete set.
+            {
+                throw_runtime_error_with_origin("While instantiating FreeVariable '"
+                        + config.name() + "' under '"
+                        + parentNodeId.toString().toUtf8()
+                        + " boolean literal is wrong '" + initialValueAsString + "'. Allowed values are 0 or 1.");
+            }
+            value = initialValueAsString == "1" ? OpcUa_True : OpcUa_False;
+        }
+        initialValue.setBool( value );
     }
+    else if (config.type() == "Byte")
+        initializeIntegerNumeric( initialValue, &UaVariant::setByte, &std::stoul, config.initialValue().present(), config.initialValue().get() );
+    else if (config.type() == "SByte")
+        initializeIntegerNumeric( initialValue, &UaVariant::setSByte, &std::stol, config.initialValue().present(), config.initialValue().get() );
+    else if (config.type() == "UInt16")
+        initializeIntegerNumeric( initialValue, &UaVariant::setUInt16, &std::stoul, config.initialValue().present(), config.initialValue().get() );
+    else if (config.type() == "Int16")
+        initializeIntegerNumeric( initialValue, &UaVariant::setInt16, &std::stol, config.initialValue().present(), config.initialValue().get() );
+    else if (config.type() == "UInt32")
+        initializeIntegerNumeric( initialValue, &UaVariant::setUInt32, &std::stoul, config.initialValue().present(), config.initialValue().get() );
+    else if (config.type() == "Int32")
+        initializeIntegerNumeric( initialValue, &UaVariant::setInt32, &std::stol, config.initialValue().present(), config.initialValue().get() );
+    else if (config.type() == "UInt64")
+        initializeIntegerNumeric( initialValue, &UaVariant::setUInt64, &std::stoul, config.initialValue().present(), config.initialValue().get() );
+    else if (config.type() == "Int64")
+        initializeIntegerNumeric( initialValue, &UaVariant::setInt64, &std::stol, config.initialValue().present(), config.initialValue().get() );
     else if (config.type() == "Double")
-    {
-        freeVariable->setDataType(UaNodeId(OpcUaType_Double, 0));
-        initialValue.setDouble( config.initialValue().present()? std::stod(config.initialValue().get()) : 0.0 ); // TODO std::stod doesn't catch very well
-        CalculatedVariables::Engine::registerVariableForCalculatedVariables(freeVariable);
-    }
+        initializeFloatingPointNumeric( initialValue, &UaVariant::setDouble, &std::stod, config.initialValue().present(), config.initialValue().get() );
+    else if (config.type() == "Float")
+        initializeFloatingPointNumeric( initialValue, &UaVariant::setFloat, &std::stof, config.initialValue().present(), config.initialValue().get() );
+    else if (config.type() == "String")
+        initialValue.setString( config.initialValue().present()? config.initialValue().get().c_str() : "");
     else
         throw_runtime_error_with_origin("Free variable: given type seems invalid: '"+config.type()+"'");
-    freeVariable->setValue(/*session*/0, UaDataValue(initialValue, OpcUa_Good, UaDateTime::now(), UaDateTime::now()), /* check access*/ OpcUa_False);
-    // add to address space
 
-    nm->addNodeAndReference( parentNodeId, freeVariable, OpcUaId_Organizes );
+    // if declared as numeric data type, make it available as input for calculated variables.
+    if (config.type() == "Byte"   || config.type() == "SByte" || config.type() == "UInt16" || config.type() == "Int16" ||
+        config.type() == "UInt32" || config.type() == "Int32" || config.type() == "UInt64" || config.type() == "Int64" ||
+        config.type() == "Float"  || config.type() == "Double")
+        CalculatedVariables::Engine::registerVariableForCalculatedVariables(freeVariable);
+
+    // set the initial value (important do it after registration for calc vars, not to lose the initial update)
+    freeVariable->setValue(/*session*/0, UaDataValue(initialValue, OpcUa_Good, UaDateTime::now(), UaDateTime::now()), /* check access*/ OpcUa_False);
+
+    // add to address space
+    UaStatus status = nm->addNodeAndReference( parentNodeId, freeVariable, OpcUaId_Organizes );
+    if (!status.isGood())
+        throw_runtime_error_with_origin("When adding the free variable '" + config.name() + "' to the address space: " + status.toString().toUtf8());
 }
 
 } /* namespace AddressSpace */
