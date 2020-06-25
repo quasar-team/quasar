@@ -107,12 +107,11 @@ static void initializeIntegerNumeric (
         UaVariant& out,
         void (UaVariant::*setter)(T),
         Twider(*convFunc)(const std::string&, std::size_t*, int base),
-        bool isPresent,
-        const std::string& valueWhenPresent)
+        const Configuration::FreeVariable::initialValue_optional& configInitialValue)
 {
     T initialValue (0);
-    if (isPresent)
-        initialValue = veryIntelligentWrapperOfConversionFunctionWithRangeCheck<T, Twider>( valueWhenPresent, convFunc );
+    if (configInitialValue.present())
+        initialValue = veryIntelligentWrapperOfConversionFunctionWithRangeCheck<T, Twider>( configInitialValue.get(), convFunc );
     (out.*setter)(initialValue);
 }
 
@@ -121,12 +120,11 @@ static void initializeFloatingPointNumeric (
         UaVariant& out,
         void (UaVariant::*setter)(T),
         T(*convFunc)(const std::string&, std::size_t*),
-        bool isPresent,
-        const std::string& valueWhenPresent)
+        const Configuration::FreeVariable::initialValue_optional& configInitialValue)
 {
     T initialValue (0);
-    if (isPresent)
-        initialValue = veryIntelligentWrapperOfConversionFunction( valueWhenPresent, convFunc );
+    if (configInitialValue.present())
+        initialValue = veryIntelligentWrapperOfConversionFunction( configInitialValue.get(), convFunc );
     (out.*setter)(initialValue);
 }
 
@@ -169,25 +167,25 @@ void FreeVariablesEngine::instantiateFreeVariable(
         initialValue.setBool( value );
     }
     else if (config.type() == "Byte")
-        initializeIntegerNumeric( initialValue, &UaVariant::setByte, &std::stoul, config.initialValue().present(), config.initialValue().get() );
+        initializeIntegerNumeric( initialValue, &UaVariant::setByte, &std::stoul, config.initialValue());
     else if (config.type() == "SByte")
-        initializeIntegerNumeric( initialValue, &UaVariant::setSByte, &std::stol, config.initialValue().present(), config.initialValue().get() );
+        initializeIntegerNumeric( initialValue, &UaVariant::setSByte, &std::stol, config.initialValue());
     else if (config.type() == "UInt16")
-        initializeIntegerNumeric( initialValue, &UaVariant::setUInt16, &std::stoul, config.initialValue().present(), config.initialValue().get() );
+        initializeIntegerNumeric( initialValue, &UaVariant::setUInt16, &std::stoul, config.initialValue());
     else if (config.type() == "Int16")
-        initializeIntegerNumeric( initialValue, &UaVariant::setInt16, &std::stol, config.initialValue().present(), config.initialValue().get() );
+        initializeIntegerNumeric( initialValue, &UaVariant::setInt16, &std::stol, config.initialValue());
     else if (config.type() == "UInt32")
-        initializeIntegerNumeric( initialValue, &UaVariant::setUInt32, &std::stoul, config.initialValue().present(), config.initialValue().get() );
+        initializeIntegerNumeric( initialValue, &UaVariant::setUInt32, &std::stoul, config.initialValue());
     else if (config.type() == "Int32")
-        initializeIntegerNumeric( initialValue, &UaVariant::setInt32, &std::stol, config.initialValue().present(), config.initialValue().get() );
+        initializeIntegerNumeric( initialValue, &UaVariant::setInt32, &std::stol, config.initialValue());
     else if (config.type() == "UInt64")
-        initializeIntegerNumeric( initialValue, &UaVariant::setUInt64, &std::stoul, config.initialValue().present(), config.initialValue().get() );
+        initializeIntegerNumeric( initialValue, &UaVariant::setUInt64, &std::stoul, config.initialValue());
     else if (config.type() == "Int64")
-        initializeIntegerNumeric( initialValue, &UaVariant::setInt64, &std::stol, config.initialValue().present(), config.initialValue().get() );
+        initializeIntegerNumeric( initialValue, &UaVariant::setInt64, &std::stol, config.initialValue());
     else if (config.type() == "Double")
-        initializeFloatingPointNumeric( initialValue, &UaVariant::setDouble, &std::stod, config.initialValue().present(), config.initialValue().get() );
+        initializeFloatingPointNumeric( initialValue, &UaVariant::setDouble, &std::stod, config.initialValue());
     else if (config.type() == "Float")
-        initializeFloatingPointNumeric( initialValue, &UaVariant::setFloat, &std::stof, config.initialValue().present(), config.initialValue().get() );
+        initializeFloatingPointNumeric( initialValue, &UaVariant::setFloat, &std::stof, config.initialValue());
     else if (config.type() == "String")
         initialValue.setString( config.initialValue().present()? config.initialValue().get().c_str() : "");
     else
