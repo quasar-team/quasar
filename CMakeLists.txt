@@ -29,6 +29,7 @@ endif()
 
 add_definitions(
 	-DSUPPORT_XML_CONFIG
+	-DNOMINMAX  # doesn't include windows' min() and max() which break std c++ code. Should be neutral to non-windows code.
 )
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)

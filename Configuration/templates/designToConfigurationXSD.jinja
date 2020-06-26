@@ -126,6 +126,29 @@
     <xs:attribute name="name" type="tns:ObjectName" use="required"/>
     <xs:attribute name="formula" type="xs:string" use="required"/>
   </xs:complexType>
+  
+  <xs:complexType name="FreeVariable">
+    <xs:attribute name="name" type="tns:ObjectName" use="required"/>
+    <xs:attribute name="type" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Boolean"/>
+          <xs:enumeration value="Byte"/>
+          <xs:enumeration value="SByte"/>
+          <xs:enumeration value="UInt16"/>
+          <xs:enumeration value="Int16"/>
+          <xs:enumeration value="UInt32"/>
+          <xs:enumeration value="Int32"/>
+          <xs:enumeration value="UInt64"/>
+          <xs:enumeration value="Int64"/>
+          <xs:enumeration value="Double"/>
+          <xs:enumeration value="Float"/>
+          <xs:enumeration value="String"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="initialValue" type="xs:string" use="optional"/>
+  </xs:complexType>/home/pnikiel/gitProjects/OPCUA-1896_FreeVariable
  
 {% for className in designInspector.get_names_of_all_classes() %}
   <xs:complexType name="{{className}}">
@@ -133,6 +156,7 @@
     <xs:sequence>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="CalculatedVariable" type="tns:CalculatedVariable" />
+        <xs:element name="FreeVariable" type="tns:FreeVariable" />
         {% for innerClassByConfig in designInspector.objectify_has_objects(className) %}
           <xs:element name="{{innerClassByConfig.get('class')}}" type="tns:{{innerClassByConfig.get('class')}}"/>
         {% endfor %}
@@ -204,6 +228,7 @@
     </xs:choice>
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element name="CalculatedVariable" type="tns:CalculatedVariable"/>
+      <xs:element name="FreeVariable" type="tns:FreeVariable" />
     </xs:choice>
   </xs:sequence>
 </xs:complexType>
