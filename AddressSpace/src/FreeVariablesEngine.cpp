@@ -21,6 +21,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <map>
 
 #include <ASNodeManager.h>
 #include <FreeVariablesEngine.h>
@@ -32,35 +33,28 @@
 namespace AddressSpace
 {
 
+static const std::map<std::string, UaNodeId> g_freeVariableTypeToBuiltInType = {
+        {"Boolean", UaNodeId(OpcUaType_Boolean, 0)},
+        {"Byte",    UaNodeId(OpcUaType_Byte, 0)},
+        {"SByte",   UaNodeId(OpcUaType_SByte, 0)},
+        {"UInt16",  UaNodeId(OpcUaType_UInt16, 0)},
+        {"Int16",   UaNodeId(OpcUaType_Int16, 0)},
+        {"UInt32",  UaNodeId(OpcUaType_UInt32, 0)},
+        {"Int32",   UaNodeId(OpcUaType_Int32, 0)},
+        {"UInt64",  UaNodeId(OpcUaType_UInt64, 0)},
+        {"Int64",   UaNodeId(OpcUaType_Int64, 0)},
+        {"Double",  UaNodeId(OpcUaType_Double, 0)},
+        {"Float",   UaNodeId(OpcUaType_Float, 0)},
+        {"String",  UaNodeId(OpcUaType_String, 0)}
+};
+
 //! Convert from textual representation of type into its OPC-UA type definition identifier.
-UaNodeId freeVariableTypeToBuiltInType (const std::string& type)
+static UaNodeId freeVariableTypeToBuiltInType (const std::string& type)
 {
-    if (type == "Boolean")
-        return UaNodeId(OpcUaType_Boolean, 0);
-    else if (type == "Byte")
-        return UaNodeId(OpcUaType_Byte, 0);
-    else if (type == "SByte")
-        return UaNodeId(OpcUaType_SByte, 0);
-    else if (type == "UInt16")
-        return UaNodeId(OpcUaType_UInt16, 0);
-    else if (type == "Int16")
-        return UaNodeId(OpcUaType_Int16, 0);
-    else if (type == "UInt32")
-        return UaNodeId(OpcUaType_UInt32, 0);
-    else if (type == "Int32")
-        return UaNodeId(OpcUaType_Int32, 0);
-    else if (type == "UInt64")
-        return UaNodeId(OpcUaType_UInt64, 0);
-    else if (type == "Int64")
-        return UaNodeId(OpcUaType_Int64, 0);
-    else if (type == "Double")
-        return UaNodeId(OpcUaType_Double, 0);
-    else if (type == "Float")
-        return UaNodeId(OpcUaType_Float, 0);
-    else if (type == "String")
-        return UaNodeId(OpcUaType_String, 0);
-    else
-        throw_runtime_error_with_origin("FreeVariable requested type is not supported: '" + type + "'");
+    const auto it = g_freeVariableTypeToBuiltInType.find(type);
+    if(it != g_freeVariableTypeToBuiltInType.end())
+        return it->second;
+    throw_runtime_error_with_origin("FreeVariable requested type is not supported: '" + type + "'");
 }
 
 template<typename T>
@@ -155,14 +149,14 @@ void FreeVariablesEngine::instantiateFreeVariable(
         if (config.initialValue().present())
         {
             std::string initialValueAsString = config.initialValue().get();
-            if (initialValueAsString != "1" && initialValueAsString != "0") // booleans are from discrete set.
+            if (initialValueAsString != "true" && initialValueAsString != "false") // booleans are from discrete set.
             {
                 throw_runtime_error_with_origin("While instantiating FreeVariable '"
                         + config.name() + "' under '"
                         + parentNodeId.toString().toUtf8()
-                        + " boolean literal is wrong '" + initialValueAsString + "'. Allowed values are 0 or 1.");
+                        + " boolean literal is wrong '" + initialValueAsString + "'. Allowed values are 'true' or 'false'.");
             }
-            value = initialValueAsString == "1" ? OpcUa_True : OpcUa_False;
+            value = initialValueAsString == "true" ? OpcUa_True : OpcUa_False;
         }
         initialValue.setBool( value );
     }
