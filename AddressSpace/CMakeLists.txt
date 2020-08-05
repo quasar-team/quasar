@@ -32,7 +32,12 @@ DEPENDS ${DESIGN_FILE} designToInformationModelHeader.xslt designToInformationMo
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/src/SourceVariables.cpp ${PROJECT_BINARY_DIR}/AddressSpace/include/SourceVariables.h
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND ${PYTHON_COMMAND} quasar.py generate source_variables --project_binary_dir ${PROJECT_BINARY_DIR}
-DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/designToSourceVariablesBody.xslt  ${PROJECT_SOURCE_DIR}/AddressSpace/designToSourceVariablesHeader.xslt DeviceBase
+DEPENDS 
+	${DESIGN_FILE}
+	${PROJECT_SOURCE_DIR}/AddressSpace/designToSourceVariablesBody.xslt
+	${PROJECT_SOURCE_DIR}/AddressSpace/designToSourceVariablesHeader.xslt
+	${PROJECT_SOURCE_DIR}/AddressSpace/templates/designToSourceVariablesHeader.jinja
+	DeviceBase
 )
 
 add_library (AddressSpace OBJECT
