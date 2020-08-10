@@ -50,7 +50,6 @@ namespace AddressSpace
   //! Fully auto-generated class to represent {{className}} in the OPC UA AddressSpace
   class AS{{className}}: public OpcUa::BaseObjectType
   {
-  UA_DISABLE_COPY(AS{{className}}); {# TODO @pnikiel improve this to use =delete #}
   public:
   //! Constructor. Used in Configurator.cpp. You NEVER use it directly.
   AS{{className}} (
@@ -58,6 +57,9 @@ namespace AddressSpace
     const UaNodeId& typeNodeId,
     ASNodeManager *nm,
     const Configuration::{{className}}& config);
+    
+  AS{{className}} ( AS{{className}}& other ) = delete;
+  AS{{className}}& operator= ( AS{{className}}& other ) = delete;  
 
   /*dtor*/
   ~AS{{className}} ();

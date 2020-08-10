@@ -35,9 +35,13 @@ namespace AddressSpace
 
     class ASNodeManager : public NodeManagerBase
     {
-	UA_DISABLE_COPY(ASNodeManager);
+
     public:
 	ASNodeManager();
+  
+  ASNodeManager(const ASNodeManager& other) = delete;
+  ASNodeManager& operator= (const ASNodeManager& other) = delete;
+  
 	virtual ~ASNodeManager();
 
 	virtual UaStatus afterStartUp();
