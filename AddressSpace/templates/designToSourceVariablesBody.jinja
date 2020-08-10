@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+
 {# <!-- © Copyright CERN, 2015.                                                       -->
 <!-- All rights not expressly granted are reserved.                                -->
 <!-- This file is part of Quasar.                                                  -->
@@ -60,131 +60,148 @@ Quasar::ThreadPool* SourceVariables_getThreadPool () { return sourceVariableThre
 #include <stdexcept>
 
 #include <QuasarThreadPool.h>
-
-{# <xsl:for-each select="/d:design/d:class">
-<xsl:if test="count(d:sourcevariable)>0">
-#include <<xsl:value-of select="fnc:ASClassName(@name)"/>.h>
-<xsl:if test="fnc:classHasDeviceLogic(/,@name)='true'">
-#include <<xsl:value-of select="fnc:DClassName(@name)"/>.h>
-</xsl:if>
-</xsl:if>
-</xsl:for-each> #}
+  
+{% for className in designInspector.get_names_of_all_classes() %}
+  {% if designInspector.objectify_source_variables(className)|length > 0 %}
+    #include <AS{{className}}.h>
+    {% if designInspector.class_has_device_logic(className) %}
+      #include <D{{className}}.h>
+    {% endif %}
+  {% endif %}
+{% endfor %}
 
 namespace AddressSpace
 {
 
-{# <xsl:for-each select="/d:design/d:class[d:devicelogic]">
-<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
-<xsl:for-each select="d:sourcevariable">
-<xsl:if test="@addressSpaceRead='asynchronous' or @addressSpaceRead='synchronous' ">
-<xsl:call-template name="ReadJob">
-<xsl:with-param name="className"><xsl:value-of select="$className"/></xsl:with-param>
-<xsl:with-param name="variableName"><xsl:value-of select="@name"/></xsl:with-param>
+{% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
+  {% for sv in designInspector.objectify_source_variables(className, restrict_by="[@addressSpaceRead='asynchronous' or @addressSpaceRead='synchronous']") %}
+    class IoJob_{{className}}_READ_{{sv.get('name')}} : public Quasar::ThreadPoolJob
+    {
+      public:
+        IoJob_{{className}}_READ_{{sv.get('name')}} (
+          IOManagerCallback *callback,
+          OpcUa_UInt32 hTransaction,
+          OpcUa_UInt32 callbackHandle,
+          const UaNode* parentObjectNode
+        ):
+          m_callback(callback),
+          m_hTransaction(hTransaction),
+          m_callbackHandle (callbackHandle),
+          m_parentObjectNode (parentObjectNode)
+        {}
+        
+      virtual void execute ()
+      {
+        LOG(Log::DBG) << 
+          "Executing IoJob read: className={{className}} varName={{sv.get('name')}}" <<
+          " hTransaction:" << m_hTransaction << 
+          " cbkhandle " << m_callbackHandle;
+        UaStatus s;
+        {{sv.get('dataType')}} value;
+        UaDateTime sourceTime;
+        // Obtain Device Logic object
+        const AS{{className}}* addressSpaceObject (nullptr);
+        addressSpaceObject = dynamic_cast<const AS{{className}}*> ( m_parentObjectNode );
+        if (addressSpaceObject == m_parentObjectNode)
+        { /* OK. Proper cast. */
+          Device::D{{className}}* device = addressSpaceObject->getDeviceLink();
+          if (device != 0)
+          {
+            /* OK - Device Logic linked. */
+            {% if sv.get('addressSpaceReadUseMutex') == 'of_this_operation' %}
+              device->lockVariableRead_{{sv.get('name')}} ();
+            {% elif sv.get('addressSpaceReadUseMutex') == 'of_this_variable' %}
+              device->lockVariable_{{sv.get('name')}} ();
+            {% elif sv.get('addressSpaceReadUseMutex') == 'of_containing_object' %}
+              device->lock();
+            {% elif sv.get('addressSpaceReadUseMutex') == 'of_parent_of_containing_object' %}  
+              device->getParent()->lock();
+            {% endif %}
+            try
+            {
+              s = device->read{{sv.get('name')|capFirst}} (value, sourceTime );
+            }
+            catch (...)
+            {
+              /* TODO -- how to signalize error from here */
+              LOG(Log::ERR) << "An exception was thrown from read{{sv.get('name')|capFirst}}";
+              s = OpcUa_BadInternalError;
+            }
+            {% if sv.get('addressSpaceReadUseMutex') == 'of_this_operation' %}
+              device->unlockVariableRead_{{sv.get('name')}} ();
+            {% elif sv.get('addressSpaceReadUseMutex') == 'of_this_variable' %}
+              device->unlockVariable_{{sv.get('name')}} ();
+            {% elif sv.get('addressSpaceReadUseMutex') == 'of_containing_object' %}
+              device->unlock();
+            {% elif sv.get('addressSpaceReadUseMutex') == 'of_parent_of_containing_object' %}  
+              device->getParent()->unlock();
+            {% endif %}
+          }
+          else
+            s = OpcUa_BadInternalError;
+        }
+        else
+          s = OpcUa_BadInternalError; // dynamic_cast failure, TODO move away from execute()
+        UaDataValue result (UaVariant(value), s.statusCode(), sourceTime, UaDateTime::now());
+        // get appropriate object
+        s = m_callback->finishRead (
+          m_hTransaction,
+          m_callbackHandle,
+          result
+        );
+        LOG(Log::DBG) << "After finishRead status:" << s.toString().toUtf8();
+      }
 
-<xsl:template  name="ReadJob">
-<xsl:param name="className"/>
-<xsl:param name="variableName"/>
-
-class IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="$variableName"/> : public Quasar::ThreadPoolJob
-{
-public:
-IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="$variableName"/> (
-IOManagerCallback *callback,
-OpcUa_UInt32 hTransaction,
-OpcUa_UInt32 callbackHandle,
-const UaNode* parentObjectNode
-):
-m_callback(callback),
-m_hTransaction(hTransaction),
-m_callbackHandle (callbackHandle),
-m_parentObjectNode (parentObjectNode)
-{}
-virtual void execute ()
-{
-LOG(Log::DBG) << "Executing IoJob read: className=<xsl:value-of select="$className"/> varName=<xsl:value-of select="$variableName"/>" << "hTransaction:"<<m_hTransaction<<" cbkhandle "<< m_callbackHandle<<endl;
-UaStatus s;
-<xsl:value-of select="@dataType"/> value;
-UaDateTime sourceTime;
-// Obtain Device Logic object
-const <xsl:value-of select="fnc:ASClassName($className)"/> *addressSpaceObject;
-addressSpaceObject = dynamic_cast<const <xsl:value-of select="fnc:ASClassName($className)"/>* > ( m_parentObjectNode );
-if (addressSpaceObject == m_parentObjectNode)
-{ /* OK. Proper cast. */
-Device::<xsl:value-of select="fnc:DClassName($className)"/> *device = addressSpaceObject->getDeviceLink();
-if (device != 0)
-{
-/* OK - Device Logic linked. */
-<xsl:choose >
-<xsl:when test="@addressSpaceReadUseMutex='of_this_operation'">
-device->lockVariableRead_<xsl:value-of select="@name"/> ();
-</xsl:when>
-<xsl:when test="@addressSpaceReadUseMutex='of_this_variable'">
-device->lockVariable_<xsl:value-of select="@name"/> ();
-</xsl:when>
-<xsl:when test="@addressSpaceReadUseMutex='of_containing_object'">
-device->lock();
-</xsl:when>
-<xsl:when test="@addressSpaceReadUseMutex='of_parent_of_containing_object'">
-device->getParent()->lock();
-</xsl:when>
-</xsl:choose>
-try
-{
-s = device->read<xsl:value-of select="fnc:capFirst($variableName)"/> (value, sourceTime );
-}
-catch (...)
-{
-/* TODO -- how to signalize error from here */
-LOG(Log::ERR) << "An exception was thrown from read<xsl:value-of select="fnc:capFirst($variableName)"/>" << std::endl;
-s = OpcUa_BadInternalError;
-}
-<xsl:choose >
-<xsl:when test="@addressSpaceReadUseMutex='of_this_operation'">
-device->unlockVariableRead_<xsl:value-of select="@name"/> ();
-</xsl:when>
-<xsl:when test="@addressSpaceReadUseMutex='of_this_variable'">
-device->unlockVariable_<xsl:value-of select="@name"/> ();
-</xsl:when>
-<xsl:when test="@addressSpaceReadUseMutex='of_containing_object'">
-device->unlock();
-</xsl:when>
-<xsl:when test="@addressSpaceReadUseMutex='of_parent_of_containing_object'">
-device->getParent()->unlock();
-</xsl:when>
-</xsl:choose>
-}
-else
-s = OpcUa_BadInternalError;
-}
-else
-s = OpcUa_BadInternalError;
-UaDataValue result (UaVariant(value), s.statusCode(), sourceTime, UaDateTime::now());
-// get appropriate object
-s = m_callback->finishRead (
-m_hTransaction,
-m_callbackHandle,
-result
-);
-LOG(Log::DBG) << "After finishRead status:" << s.toString().toUtf8() << endl;
-
-}
       virtual std::string describe() const
       {
-          return std::string("read sourcevariable <xsl:value-of select="$variableName"/> of object ") + m_parentObjectNode->nodeId().toString().toUtf8();
+        return std::string("read sourcevariable {{sv.get('name')}} of object ") + m_parentObjectNode->nodeId().toString().toUtf8();
       }
-private:
-IOManagerCallback *m_callback;
-OpcUa_UInt32 m_hTransaction;
-OpcUa_UInt32 m_callbackHandle;
-const UaNode* m_parentObjectNode;
-};
 
-</xsl:template>
+      private:
+        IOManagerCallback* m_callback;
+        OpcUa_UInt32       m_hTransaction;
+        OpcUa_UInt32       m_callbackHandle;
+        const UaNode*      m_parentObjectNode;
 
-
-</xsl:call-template>
-</xsl:if>
-
+    };
+  {% endfor %}
+  
+  {% for sv in designInspector.objectify_source_variables(className, restrict_by="[@addressSpaceWrite='asynchronous' or @addressSpaceWrite='synchronous']") %}
+    class IoJob_{{className}}_WRITE_{{sv.get('name')}} : public Quasar::ThreadPoolJob
+    {
+      public:
+        IoJob_{{className}}_WRITE_{{sv.get('name')}} (
+          IOManagerCallback* callback,
+          OpcUa_UInt32       hTransaction,
+          OpcUa_UInt32       callbackHandle,
+          const UaNode*      parentObjectNode,
+          OpcUa_WriteValue*  writeValue
+        ):
+          m_callback(callback),
+          m_hTransaction(hTransaction),
+          m_callbackHandle (callbackHandle),
+          m_parentObjectNode (parentObjectNode),
+          m_variant (writeValue->Value.Value)    
+        {
+        }
+        
+        virtual std::string describe() const
+        {
+            return std::string("write sourcevariable <xsl:value-of select="$variableName"/> of object ") + m_parentObjectNode->nodeId().toString().toUtf8();
+        }
+        
+        
+      private:
+        IOManagerCallback* m_callback;
+        OpcUa_UInt32       m_hTransaction;
+        OpcUa_UInt32       m_callbackHandle;
+        const UaNode*      m_parentObjectNode;
+        UaVariant          m_variant;
+    };
+  {% endfor %}
+  
+{% endfor %}
+{#
 <xsl:if test="@addressSpaceWrite='asynchronous' or @addressSpaceWrite='synchronous'">
 <xsl:call-template name="WriteJob">
 <xsl:with-param name="className"><xsl:value-of select="$className"/></xsl:with-param>
@@ -193,26 +210,7 @@ const UaNode* m_parentObjectNode;
           <xsl:template  name="WriteJob">
           <xsl:param name="className"/>
             <xsl:param name="variableName"/>
-          
-          class IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="$variableName"/> : public Quasar::ThreadPoolJob
-          {
-          public:
-          IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="$variableName"/> (
-          IOManagerCallback *callback,
-          OpcUa_UInt32 hTransaction,
-          OpcUa_UInt32 callbackHandle,
-          const UaNode* parentObjectNode,
-          OpcUa_WriteValue* writeValue
-          ):
-          m_callback(callback),
-          m_hTransaction(hTransaction),
-          m_callbackHandle (callbackHandle),
-          m_parentObjectNode (parentObjectNode),
-          m_variant (writeValue->Value.Value)
-          
-          {
 
-          }
           virtual void execute ()
           {
               LOG(Log::DBG) << "Executing IoJob write: className=<xsl:value-of select="$className"/> varName=<xsl:value-of select="@name"/>" << "hTransaction:"<<m_hTransaction<<" cbkhandle "<< m_callbackHandle<<endl;
@@ -307,16 +305,7 @@ const UaNode* m_parentObjectNode;
           LOG(Log::TRC) << "After finishWrite status:" << s.toString().toUtf8() << endl;
           
           }
-                virtual std::string describe() const
-                {
-                    return std::string("write sourcevariable <xsl:value-of select="$variableName"/> of object ") + m_parentObjectNode->nodeId().toString().toUtf8();
-                }
-          private:
-          IOManagerCallback *m_callback;
-          OpcUa_UInt32 m_hTransaction;
-          OpcUa_UInt32 m_callbackHandle;
-          const UaNode* m_parentObjectNode;
-          UaVariant m_variant;
+
           };
           
           </xsl:template>
@@ -328,158 +317,123 @@ const UaNode* m_parentObjectNode;
 </xsl:for-each> #}
 
 UaStatus SourceVariables_spawnIoJobRead (		
-ASSourceVariableJobId jobId,
-IOManagerCallback *callback,
-OpcUa_UInt32 hTransaction,
-OpcUa_UInt32        callbackHandle,
-const UaNode *parentNode
+  ASSourceVariableJobId jobId,
+  IOManagerCallback *callback,
+  OpcUa_UInt32 hTransaction,
+  OpcUa_UInt32        callbackHandle,
+  const UaNode *parentNode
 )
 {
-if (! sourceVariableThreads)
-throw std::runtime_error("Attempted Source Variable operation, but Source Variable threads are not up.");
-switch (jobId)
-{
-<xsl:for-each select="/d:design/d:class">
-<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
-<xsl:for-each select="d:sourcevariable[@addressSpaceRead!='forbidden']">
-      case ASSOURCEVARIABLE_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/>:
-          <xsl:choose>
-              <xsl:when test="fnc:classHasDeviceLogic(/,$className)!='true'">
-                  return OpcUa_BadNotImplemented; // because this class has no device logic
-              </xsl:when>
-              <xsl:otherwise>
-                  <xsl:if test="@addressSpaceRead='asynchronous' or @addressSpaceRead='synchronous'">      
-                      
-                      {
-                          <xsl:choose>
-                              <xsl:when test="@addressSpaceRead='asynchronous'">
-                              IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> *job =
-                              new IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> (
-                              callback,
-                              hTransaction,
-                              callbackHandle,
-                              parentNode
-                              ); 
-                              UaStatus s = sourceVariableThreads->addJob (job);
-                              if (!s.isGood())
-                              {
-                                  LOG(Log::ERR) << "While addJob(): " << s.toString().toUtf8();
-                              }
-                              return s;
-                              </xsl:when>
-                              <xsl:when test="@addressSpaceRead='synchronous'">
-                              IoJob_<xsl:value-of select="$className"/>_READ_<xsl:value-of select="@name"/> job (
-                              callback,
-                              hTransaction,
-                              callbackHandle,
-                              parentNode
-                              ); 
-                              job.execute();
-                              </xsl:when>
-                          <xsl:otherwise>
-                          <xsl:message terminate="yes">Something got wrong.</xsl:message>
-                          </xsl:otherwise>
-                          </xsl:choose>
-                      }
-                          return OpcUa_Good;
-          
-                      </xsl:if>
-                  
-              </xsl:otherwise>
-          </xsl:choose>
-
-</xsl:for-each>
-</xsl:for-each>
-default:
-return OpcUa_Bad;
-}
+  if (! sourceVariableThreads)
+    throw std::runtime_error("Attempted Source Variable operation, but Source Variable threads are not up.");
+  switch (jobId)
+  {
+    {% for className in designInspector.get_names_of_all_classes() %}
+      {% set class = designInspector.objectify_class(className) %}
+      {% for sv in class.sourcevariable %}
+        {% if sv.get('addressSpaceRead') != 'forbidden' %}
+        case ASSOURCEVARIABLE_{{className}}_READ_{{sv.get('name')}}:
+          {% if not designInspector.class_has_device_logic(className) %}
+            return OpcUa_BadNotImplemented; // because this class has no device logic
+          {% else %}
+            {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
+              {
+                {% if sv.get('addressSpaceRead') == 'asynchronous' %}
+                  IoJob_{{className}}_READ_{{sv.get('name')}}* job =
+                    new IoJob_{{className}}_READ_{{sv.get('name')}} (
+                      callback,
+                      hTransaction,
+                      callbackHandle,
+                      parentNode
+                      ); 
+                  UaStatus s = sourceVariableThreads->addJob (job);
+                  if (!s.isGood())
+                  {
+                    LOG(Log::ERR) << "While addJob(): " << s.toString().toUtf8();
+                  }
+                  return s;
+                {% elif sv.get('addressSpaceRead') == 'synchronous' %}
+                  IoJob_{{className}}_READ_<xsl:value-of select="@name"/> job (
+                    callback,
+                    hTransaction,
+                    callbackHandle,
+                    parentNode
+                    ); 
+                  job.execute();
+                {% else %}
+                  {{debug("Source-variable mode is unsupported and the generated code will probably be faulty. Mode was: ", sv.get('addressSpaceRead'))}}
+                {% endif %}
+              }
+              return OpcUa_Good;
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+    default:
+      return OpcUa_Bad;
+  }
 }
 
 UaStatus SourceVariables_spawnIoJobWrite (		
-ASSourceVariableJobId jobId,
-IOManagerCallback *callback,
-OpcUa_UInt32 hTransaction,
-OpcUa_UInt32        callbackHandle,
-const UaNode *parentNode,
-OpcUa_WriteValue*   pWriteValue
+  ASSourceVariableJobId jobId,
+  IOManagerCallback *callback,
+  OpcUa_UInt32 hTransaction,
+  OpcUa_UInt32        callbackHandle,
+  const UaNode *parentNode,
+  OpcUa_WriteValue*   pWriteValue
 )
 {
-if (! sourceVariableThreads)
-throw std::runtime_error("Attempted Source Variable operation, but Source Variable threads are not up.");
-switch (jobId)
-{
-<xsl:for-each select="/d:design/d:class">
-<xsl:variable name="className"><xsl:value-of select="@name"/></xsl:variable>
-<xsl:for-each select="d:sourcevariable">
-      
-
-<xsl:if test="@addressSpaceWrite!='forbidden'">
-        
-case <xsl:value-of select="fnc:sourceVariableWriteJobId($className,@name)"/>:
-          <xsl:choose>
-              <xsl:when test="fnc:classHasDeviceLogic(/,$className)!='true'">
-                  return OpcUa_BadNotImplemented; // because this class has no device logic
-              </xsl:when>
-
-              <xsl:otherwise>
-                 {
-                  <xsl:if test="@addressSpaceWrite='asynchronous' or @addressSpaceWrite='synchronous'">
-                  <xsl:choose>
-                      <xsl:when test="@addressSpaceWrite='asynchronous'">
-              
-                      IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> *job =
-                      new IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> (
+  if (! sourceVariableThreads)
+  throw std::runtime_error("Attempted Source Variable operation, but Source Variable threads are not up.");
+  switch (jobId)
+  {
+    {% for className in designInspector.get_names_of_all_classes() %}
+      {% set class = designInspector.objectify_class(className) %}
+      {% for sv in class.sourcevariable %}
+        {% if sv.get('addressSpaceWrite') != 'forbidden' %}
+          case ASSOURCEVARIABLE_{{className}}_READ_{{sv.get('name')}}:
+            {% if not designInspector.class_has_device_logic(className) %}
+              return OpcUa_BadNotImplemented; // because this class has no device logic
+            {% else %}
+              {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
+                {
+                  {% if sv.get('addressSpaceWrite') == 'asynchronous' %}
+                    IoJob_{{className}}_WRITE_{{sv.get('name')}} *job =
+                      new IoJob_{{className}}_WRITE_{{sv.get('name')}} (
+                        callback,
+                        hTransaction,
+                        callbackHandle,
+                        parentNode,
+                        pWriteValue
+                      ); 
+                    UaStatus s = sourceVariableThreads->addJob (job);
+                    if (!s.isGood())
+                        LOG(Log::ERR) << "While addJob(): " << s.toString().toUtf8();
+                    return s;
+                  {% elif sv.get('addressSpaceWrite') == 'synchronous' %}
+                    IoJob_{{className}}_WRITE_{{sv.get('name')}} job (
                       callback,
                       hTransaction,
                       callbackHandle,
                       parentNode,
                       pWriteValue
-                      ); 
-                      UaStatus s = sourceVariableThreads->addJob (job);
-                      if (!s.isGood())
-                      {
-                          LOG(Log::ERR) << "While addJob(): " << s.toString().toUtf8();
-                      }
-                      return s;
-                      </xsl:when>
-                      <xsl:when test="@addressSpaceWrite='synchronous'">
-                      
-                      IoJob_<xsl:value-of select="$className"/>_WRITE_<xsl:value-of select="@name"/> job (
-                      callback,
-                      hTransaction,
-                      callbackHandle,
-                      parentNode,
-                      pWriteValue
-                      ); 
-                      job.execute();
-                      
-                      </xsl:when>
-                      <xsl:otherwise>
-                          <xsl:message terminate="yes">Something got wrong.</xsl:message>
-                      </xsl:otherwise>
-                  </xsl:choose>
-              
-              
-                 }
-                 return OpcUa_Good;
-
-          </xsl:if>
-              
-              </xsl:otherwise>
-          </xsl:choose>
-          
-          </xsl:if>
-
-
-</xsl:for-each>
-</xsl:for-each>
-default:
-return OpcUa_Bad;
-}
-}
-
+                    ); 
+                    job.execute();
+                  {% else %}
+                    {{debug("Source-variable mode is unsupported and the generated code will probably be faulty. Mode was: ", sv.get('addressSpaceWrite'))}}
+                  {% endif %}
+                }  
+              {% endif %}
+            {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+    default:
+      return OpcUa_Bad;
   }
+}
+
+}
 
 #endif // BACKEND_OPEN62541
-
-</xsl:template>

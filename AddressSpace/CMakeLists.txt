@@ -37,6 +37,7 @@ DEPENDS
 	${PROJECT_SOURCE_DIR}/AddressSpace/designToSourceVariablesBody.xslt
 	${PROJECT_SOURCE_DIR}/AddressSpace/designToSourceVariablesHeader.xslt
 	${PROJECT_SOURCE_DIR}/AddressSpace/templates/designToSourceVariablesHeader.jinja
+	${PROJECT_SOURCE_DIR}/AddressSpace/templates/designToSourceVariablesBody.jinja
 	DeviceBase
 )
 
