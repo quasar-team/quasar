@@ -57,7 +57,8 @@ namespace AddressSpace
     const UaNodeId& typeNodeId,
     ASNodeManager *nm,
     const Configuration::{{className}}& config);
-    
+
+  // Note: we get rid off copy ctr and assignment operator, implicitly getting rid of move ctr + oper.
   AS{{className}} ( AS{{className}}& other ) = delete;
   AS{{className}}& operator= ( AS{{className}}& other ) = delete;  
 
