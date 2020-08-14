@@ -19,6 +19,9 @@
 {# Authors:                                                                      #}
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
+{% import 'headers.jinja' as headers %}
+{{ headers.cppFullGeneratedHeader() }}
+
 #include <SourceVariables.h>
 #include <LogIt.h>
 using namespace std;
