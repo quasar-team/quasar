@@ -27,7 +27,7 @@
 using namespace std;
 
 {% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
-  #include <Base_D{{className}}.h>
+  #include <D{{className}}.h>
 {% endfor %}
 
 namespace AddressSpace
