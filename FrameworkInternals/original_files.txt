@@ -40,6 +40,8 @@ File designToClassBody.jinja                   must_exist,must_be_versioned,md5=
 File designToInformationModelHeader.jinja      must_exist,must_be_versioned,md5=check,install=overwrite
 File designToInformationModelBody.jinja        must_exist,must_be_versioned,md5=check,install=overwrite
 File designToAddressSpaceDocHtml.jinja         must_exist,must_be_versioned,md5=check,install=overwrite
+File designToSourceVariablesHeader.jinja       must_exist,must_be_versioned,md5=check,install=overwrite
+File designToSourceVariablesBody.jinja         must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory bin install=create
 File ServerConfig.xml                       must_exist,must_be_versioned,install=copy_if_not_existing

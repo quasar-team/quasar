@@ -1,0 +1,85 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014 (the original XSLT version)                               #}
+{#            10 Aug 2020 (translated to Jinja2)                                 #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% import 'headers.jinja' as headers %}
+{{ headers.cppFullGeneratedHeader() }}
+
+#ifndef __SOURCEVARIABLES_H__
+#define __SOURCEVARIABLES_H__
+
+#include <QuasarThreadPool.h>
+namespace AddressSpace
+{
+void SourceVariables_initSourceVariablesThreadPool (unsigned int minThreads=0, unsigned int maxThreads=10, unsigned int maxJobs=1000);
+void SourceVariables_destroySourceVariablesThreadPool ();
+Quasar::ThreadPool* SourceVariables_getThreadPool ();
+}
+
+#ifndef BACKEND_OPEN62541
+
+#include <iomanager.h>
+#include <uathreadpool.h>
+#include <uabasenodes.h>
+
+namespace AddressSpace
+{
+
+enum ASSourceVariableJobId
+{
+  ASSOURCEVARIABLE_NOTHING
+  {% for className in designInspector.get_names_of_all_classes() %}
+    {% set class = designInspector.objectify_class(className) %}
+    {% for sv in class.sourcevariable %}
+      {% if sv.get('addressSpaceRead') != 'forbidden' %}
+        ,ASSOURCEVARIABLE_{{className}}_READ_{{sv.get('name')}}
+      {% endif %}
+      {% if sv.get('addressSpaceWrite') != 'forbidden' %}
+        ,ASSOURCEVARIABLE_{{className}}_WRITE_{{sv.get('name')}}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+};
+
+UaStatus SourceVariables_spawnIoJobRead (
+  ASSourceVariableJobId jobId,
+  IOManagerCallback*    callback,
+  OpcUa_UInt32          hTransaction,
+  OpcUa_UInt32          callbackHandle,
+  const UaNode*         parentNode
+  
+  );
+  
+UaStatus SourceVariables_spawnIoJobWrite (
+  ASSourceVariableJobId jobId,
+  IOManagerCallback*    callback,
+  OpcUa_UInt32          hTransaction,
+  OpcUa_UInt32          callbackHandle,
+  const UaNode*         parentNode,
+  OpcUa_WriteValue*     pWriteValue
+  );
+  
+
+}
+
+#endif // BACKEND_OPEN62541
+
+
+#endif // __SOURCEVARIABLES_H__
