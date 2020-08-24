@@ -81,8 +81,8 @@ class FieldIds(enum.Enum):
 
 QuasarTransforms = [
     #(0)key                                 (1)where XSLT is                                             (2)output                                       (3) source or b (4)c++format    (5)req merge  (6)additional params
-    [TransformKeys.AS_SOURCEVARIABLES_H,    'AddressSpace/designToSourceVariablesHeader.xslt',           'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
-    [TransformKeys.AS_SOURCEVARIABLES_CPP,  'AddressSpace/designToSourceVariablesBody.xslt',             'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
+    [TransformKeys.AS_SOURCEVARIABLES_H,    ['AddressSpace','designToSourceVariablesHeader.jinja'],      'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
+    [TransformKeys.AS_SOURCEVARIABLES_CPP,  ['AddressSpace','designToSourceVariablesBody.jinja'],        'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
     [TransformKeys.AS_CLASS_H,              ['AddressSpace','designToClassHeader.jinja'],                'AddressSpace/include/AS{className}.h',         'B',            True,           False,        ['className']],
     [TransformKeys.AS_CLASS_CPP_ALL,        ['AddressSpace','designToClassBody.jinja'],                  'AddressSpace/src/AddressSpaceClasses.cpp',     'B',            True,           False,        None],
     [TransformKeys.AS_INFOMODEL_H,          ['AddressSpace','designToInformationModelHeader.jinja'],     'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
