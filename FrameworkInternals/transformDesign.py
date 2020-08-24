@@ -185,7 +185,10 @@ def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, ad
 
         if astyleRun:
             try:
-                subprocess.call([getCommand('astyle'), outputFile])
+                return_code = subprocess.call([getCommand('astyle'), outputFile])
+                if return_code != 0:
+                    raise Exception(("astyle called on {0} returned non-zero code: {1}, "
+                                    "something went wrong.").format(outputFile, return_code))
             except Exception as e:
                 try:
                     subprocess.call([getCommand('indent'), outputFile, '-o', outputFile])
