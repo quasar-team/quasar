@@ -4,14 +4,14 @@
 # Please note that files.txt is a derivative of this file, which replaces md5=check with the result of md5 check.
 Directory AddressSpace install=create
 File CMakeLists.txt                           must_exist,must_be_versioned,md5=check,install=overwrite
-File designToClassBody.xslt                   must_exist,must_be_versioned,md5=check,install=overwrite
-File designToClassHeader.xslt                 must_exist,must_be_versioned,md5=check,install=overwrite
-File designToInformationModelBody.xslt        must_exist,must_be_versioned,md5=check,install=overwrite
-File designToInformationModelHeader.xslt      must_exist,must_be_versioned,md5=check,install=overwrite
-File designToSourceVariablesBody.xslt         must_exist,must_be_versioned,md5=check,install=overwrite
-File designToSourceVariablesHeader.xslt       must_exist,must_be_versioned,md5=check,install=overwrite
-File designToGeneratedCmakeAddressSpace.xslt  must_exist,must_be_versioned,md5=check,install=overwrite
-File designToAddressSpaceDocHtml.xslt         must_exist,must_be_versioned,md5=check,install=overwrite
+File designToClassBody.xslt                   deprecated
+File designToClassHeader.xslt                 deprecated
+File designToInformationModelBody.xslt        deprecated
+File designToInformationModelHeader.xslt      deprecated
+File designToSourceVariablesBody.xslt         deprecated
+File designToSourceVariablesHeader.xslt       deprecated
+File designToGeneratedCmakeAddressSpace.xslt  deprecated
+File designToAddressSpaceDocHtml.xslt         deprecated
 
 Directory AddressSpace/include install=create
 File ASDelegatingMethod.h                   must_exist,must_be_versioned,md5=check,install=overwrite
@@ -93,10 +93,10 @@ File headers.jinja                          must_exist,must_be_versioned, md5=ch
 Directory Configuration install=create
 File CMakeLists.txt                         must_exist,must_be_versioned, md5=check, install=overwrite
 File Configurator.h                         must_exist,must_be_versioned, md5=check, install=overwrite
-File designToConfigurationXSD.xslt          must_exist,must_be_versioned, md5=check, install=overwrite
-File designToConfigurator.xslt              must_exist,must_be_versioned, md5=check, install=overwrite
-File designToConfigValidator.xslt           must_exist,must_be_versioned, md5=check, install=overwrite
-File designToConfigDocumentationHtml.xslt   must_exist,must_be_versioned, md5=check, install=overwrite
+File designToConfigurationXSD.xslt          deprecated
+File designToConfigurator.xslt              deprecated
+File designToConfigValidator.xslt           deprecated
+File designToConfigDocumentationHtml.xslt   deprecated
 
 Directory Configuration/templates install=create
 File designToConfigDocumentationHtml.jinja  must_exist,must_be_versioned, md5=check, install=overwrite
@@ -108,27 +108,28 @@ Directory Configuration/include install=create
 File ConfigurationDecorationUtils.h         must_exist,must_be_versioned, md5=check, install=overwrite
 
 Directory Design install=create
-File CommonFunctions.xslt                   must_exist,must_be_versioned,md5=check,install=overwrite
-File designToDot.xslt                       must_exist,must_be_versioned,md5=check,install=overwrite
+File CommonFunctions.xslt                   deprecated
+File designToDot.xslt                       deprecated
 File Design.xml                             must_exist,must_be_versioned,install=copy_if_not_existing
 File Design.xsd                             must_exist,must_be_versioned,md5=check,install=overwrite
 File quasarVersion.txt                      must_exist,must_be_versioned,md5=check,install=overwrite
-File saxon9he.jar                           must_exist,must_be_versioned,md5=check,install=overwrite
-File schema-for-xslt20.xsd                  must_exist,must_be_versioned,md5=check,install=overwrite
-File designToUpgradedDesign.xslt            must_exist,must_be_versioned,md5=check,install=overwrite
-File designValidation.xslt                  must_exist,must_be_versioned,md5=check,install=overwrite
+File saxon9he.jar                           deprecated
+File schema-for-xslt20.xsd                  deprecated
+File designToUpgradedDesign.xslt            deprecated
+File designValidation.xslt                  deprecated
 
 Directory Design/templates install=create
 File designToDot.jinja                      must_exist,must_be_versioned,md5=check,install=overwrite
+
 Directory Device install=create
 File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge
-File designToDeviceBody.xslt                must_exist,must_be_versioned,md5=check,install=overwrite
-File designToDeviceHeader.xslt              must_exist,must_be_versioned,md5=check,install=overwrite
-File designToRootBody.xslt                  must_exist,must_be_versioned,md5=check,install=overwrite
-File designToRootHeader.xslt                must_exist,must_be_versioned,md5=check,install=overwrite
-File designToDeviceBaseBody.xslt            must_exist,must_be_versioned,md5=check,install=overwrite
-File designToDeviceBaseHeader.xslt          must_exist,must_be_versioned,md5=check,install=overwrite
-File designToGeneratedCmakeDevice.xslt      must_exist,must_be_versioned,md5=check,install=overwrite
+File designToDeviceBody.xslt                deprecated
+File designToDeviceHeader.xslt              deprecated
+File designToRootBody.xslt                  deprecated
+File designToRootHeader.xslt                deprecated
+File designToDeviceBaseBody.xslt            deprecated
+File designToDeviceBaseHeader.xslt          deprecated
+File designToGeneratedCmakeDevice.xslt      deprecated
 
 Directory Device/generated install=create
 
@@ -171,7 +172,7 @@ File quasar_engine_small_smooth_square_128x128.png     must_exist,must_be_versio
 Directory Documentation/DoxygenGenerated install=create
 
 Directory Extra install=create
-File designToHonkyTonk.xslt            must_exist,must_be_versioned,md5=check,install=overwrite
+File designToHonkyTonk.xslt            deprecated
 
 Directory FrameworkInternals install=create
 File files.txt                         must_exist,must_be_versioned,install=overwrite
