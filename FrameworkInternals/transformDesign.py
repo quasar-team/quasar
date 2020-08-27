@@ -31,13 +31,9 @@ import subprocess
 import enum
 import jinja2
 from colorama import Fore, Style
-import pdb
 from DesignInspector import DesignInspector
 from Oracle import Oracle
 import transform_filters
-
-# This will be removed when NextGen transforms (Jinja-based) are fully in place
-LEGACY_CODE_GENERATION = False
 
 # here we define all transforms of Design known to Quasar
 # first, IDs
@@ -52,8 +48,6 @@ class TransformKeys(enum.Enum):
     CONFIGURATION_XSD = 7
     CONFIGURATOR = 8
     CONFIG_VALIDATOR = 9
-    DESIGN_VALIDATION = 10
-    UPGRADE_DESIGN = 11
     CREATE_DIAGRAM_DOT = 12
     D_ROOT_H = 13
     D_ROOT_CPP = 14
@@ -61,7 +55,6 @@ class TransformKeys(enum.Enum):
     D_BASE_CPP_ALL = 16
     D_DEVICE_H = 17
     D_DEVICE_CPP = 18
-    HONKYTONK = 19
     AS_CMAKE = 20
     D_CMAKE = 21
     CONFIG_DOCUMENTATION = 22
@@ -80,7 +73,7 @@ class FieldIds(enum.Enum):
 
 
 QuasarTransforms = [
-    #(0)key                                 (1)where XSLT is                                             (2)output                                       (3) source or b (4)c++format    (5)req merge  (6)additional params
+    #(0)key                                 (1)where is the transform                                    (2)output                                       (3) source or b (4)c++format    (5)req merge  (6)additional params
     [TransformKeys.AS_SOURCEVARIABLES_H,    ['AddressSpace','designToSourceVariablesHeader.jinja'],      'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
     [TransformKeys.AS_SOURCEVARIABLES_CPP,  ['AddressSpace','designToSourceVariablesBody.jinja'],        'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
     [TransformKeys.AS_CLASS_H,              ['AddressSpace','designToClassHeader.jinja'],                'AddressSpace/include/AS{className}.h',         'B',            True,           False,        ['className']],
@@ -91,8 +84,6 @@ QuasarTransforms = [
     [TransformKeys.CONFIGURATION_XSD,       ['Configuration','designToConfigurationXSD.jinja'],          'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        ['metaXsdPath']],
     [TransformKeys.CONFIGURATOR,            ['Configuration','designToConfigurator.jinja'],              'Configuration/Configurator.cpp',               'B',            True,           False,        None],
     [TransformKeys.CONFIG_VALIDATOR,        ['Configuration','designToConfigValidator.jinja'],           'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
-    [TransformKeys.DESIGN_VALIDATION,       'Design/designValidation.xslt',                              'Design/validationOutput.removeme',             'B',            False,          False,        None], #TODO: to bo abolished 
-    [TransformKeys.UPGRADE_DESIGN,          'Design/designToUpgradedDesign.xslt',                        'Design/Design.xml.upgraded',                   'S',            False,          False,        '{whatToDo}'],
     [TransformKeys.CREATE_DIAGRAM_DOT,      ['Design','designToDot.jinja'],                              'Design/Design.dot',                            'B',            False,          False,        ['detailLevel']],
     [TransformKeys.D_ROOT_H,                ['Device','designToRootHeader.jinja'],                       'Device/include/DRoot.h',                       'B',            True,           False,        None],
     [TransformKeys.D_ROOT_CPP,              ['Device','designToRootBody.jinja'],                         'Device/src/DRoot.cpp',                         'B',            True,           False,        None],
@@ -101,7 +92,6 @@ QuasarTransforms = [
     [TransformKeys.D_DEVICE_H,              ['Device','designToDeviceHeader.jinja'],                     'Device/include/D{className}.h',                'S',            True,           True,         ['className']],
     [TransformKeys.D_DEVICE_CPP,            ['Device','designToDeviceBody.jinja'],                       'Device/src/D{className}.cpp',                  'S',            True,           True,         ['className']],
     [TransformKeys.D_CMAKE,                 ['Device','designToGeneratedCmakeDevice.jinja'],             'Device/generated/cmake_header.cmake',          'B',            False,          False,        None],
-    [TransformKeys.HONKYTONK,               'Extra/designToHonkyTonk.xslt',                              'Extra/honkyTonky.cc',                          'S',            True,           False,        None],
     [TransformKeys.CONFIG_DOCUMENTATION,    ['Configuration','designToConfigDocumentationHtml.jinja'],   'Documentation/ConfigDocumentation.html',       'S',            False,          False,        None],
     [TransformKeys.AS_DOCUMENTATION,        ['AddressSpace','designToAddressSpaceDocHtml.jinja'],        'Documentation/AddressSpaceDoc.html',           'S',            False,          False,        None]
     ]
@@ -112,12 +102,6 @@ def transformDesignVerbose(transformPath, outputFile, requiresMerge, astyleRun=F
     print("Using the transform [" + transformPath + "] to generate the file [" + outputFile + "] {0}"
                 .format('additionalParam=[{0}]'.format(additionalParam) if additionalParam is not None else ''))
     return transformDesign(transformPath, outputFile, requiresMerge, astyleRun, additionalParam)
-
-def transformDesignByXslt(designXmlPath, transformPath, outputFile, additionalParam):
-    xsltProcPath = os.path.sep.join(['Design', getCommand('saxon')])
-    additionalParamStringified = [ "{0}={1}".format(key, additionalParam[key]) for key in additionalParam.keys() ]
-    #pdb.set_trace()
-    subprocessWithImprovedErrors([getCommand('java'), '-jar', xsltProcPath, designXmlPath, transformPath, '-o:' + outputFile] + additionalParamStringified, getCommand("java"))
 
 def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalParam):
     """ additionalParam - a dictionary that will be passed to the transform """
@@ -143,13 +127,13 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
     else:
         render_args.update(additionalParam)
     fout.write(env.get_template(os.path.basename(transformPath)).render(render_args).encode('utf-8'))
-    print(Fore.BLUE + 
+    print(Fore.BLUE +
         'quasar Jinja2 generator: Generated {0}, wrote {1} bytes'.format(outputFile, fout.tell()) +
         Style.RESET_ALL)
-    
 
-def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, additionalParam=None):
-    """Generates a file, applying a transform (XSLT or Jinja2) to Design.xml
+
+def transformDesign(transform_path, outputFile, requiresMerge, astyleRun, additionalParam=None):
+    """Generates a file, applying a transform (XJinja2) to Design.xml
 
     Keyword arguments:
     transformPath        -- transform file where the transformation is defined, either XSLT or Jinja2
@@ -158,28 +142,18 @@ def transformDesign(xsltTransformation, outputFile, requiresMerge, astyleRun, ad
     astyleRun            -- if True, will run astyle on generated file
     additionalParam      -- Optional extra param to be passed e.g. to XSLT transform.
     """
-    transformPath = xsltTransformation
-    newAdditionalParam = {}
-    if isinstance(additionalParam, list): # this is the legacy mode for certain quasar modules
-        processedAdditionalParam = {}
-        for chunk in additionalParam:
-            [key, value] = chunk.split('=')
-            processedAdditionalParam[key] = value
-    elif additionalParam == None:
-        processedAdditionalParam = {}
-    else:
-        processedAdditionalParam = additionalParam
+    transformPath = transform_path
+
+    processedAdditionalParam = additionalParam if additionalParam is not None else {}
 
     # files
-    designXmlPath = '.' + os.path.sep + 'Design' + os.path.sep + 'Design.xml'  # TODO os.path.join
+    designXmlPath = os.path.sep.join(['Design', 'Design.xml'])
     if requiresMerge:
         originalOutputFile = outputFile
         outputFile = outputFile + '.generated'
     try:
         if transformPath.endswith('.jinja'):
             transformDesignByJinja(designXmlPath, transformPath, outputFile, processedAdditionalParam)
-        elif transformPath.endswith('.xslt'):
-            transformDesignByXslt(designXmlPath, transformPath, outputFile, processedAdditionalParam)
         else:
             raise Exception("Couldnt determine transformation type")
 
@@ -227,24 +201,18 @@ def get_transform_path (key):
     transformSpec = getTransformSpecByKey(key)
 
     if isinstance(transformSpec[FieldIds.TRANSFORM_PATH.value], list):
-        # only for NextGen transforms
+        # only for NextGen transforms: they must reside in "templates/"
         tp = transformSpec[FieldIds.TRANSFORM_PATH.value]
-        if LEGACY_CODE_GENERATION:
-            print(Fore.RED + 
-                'quasar Jinja2 generator: running in legacy mode, forcing XSLT templates!'
-                + Style.RESET_ALL)
-            transformPath = os.path.join(tp[0], tp[1].replace('.jinja', '.xslt'))
-        else:
-            transformPath = os.path.join(tp[0], 'templates', tp[1])
+        transformPath = os.path.join(tp[0], 'templates', tp[1])
     else:
         transformPath = transformSpec[FieldIds.TRANSFORM_PATH.value]
     return transformPath
 
 def transformByKey (keys, supplementaryData={}):
-    """ This runs the transform both for a single key as well as a list of keys. 
+    """ This runs the transform both for a single key as well as a list of keys.
         keys              - a key from TransformKeys enum, or a list of such keys
-        supplementaryData - a dictionary with (at minimum) 'context' key, 
-                            remaining keys are typically className or whatever 
+        supplementaryData - a dictionary with (at minimum) 'context' key,
+                            remaining keys are typically className or whatever
                             comes from command arguments. """
     if isinstance(keys, list): # this is to run multiple transforms
         for key in keys:
@@ -253,14 +221,14 @@ def transformByKey (keys, supplementaryData={}):
         transformSpec = getTransformSpecByKey(keys)
         outputDir = supplementaryData['context']['projectBinaryDir'] if transformSpec[FieldIds.SOURCE_OR_BINARY.value] == 'B' else supplementaryData['context']['projectSourceDir']
         outputFile = getTransformOutput(keys, supplementaryData)
-        if isinstance(transformSpec[FieldIds.ADDITIONAL_PARAM.value], str): 
-            # this case is for XSLT where args are passed as string A=X B=Y etc
-            additionalParam = transformSpec[FieldIds.ADDITIONAL_PARAM.value].format(**supplementaryData)
-        elif isinstance(transformSpec[FieldIds.ADDITIONAL_PARAM.value], list):
+        if isinstance(transformSpec[FieldIds.ADDITIONAL_PARAM.value], list):
             # this case is to pass a sub-dict of supplementaryData wich chosen keys, applies to Jinja2
             additionalParam = { x: supplementaryData[x] for x in transformSpec[FieldIds.ADDITIONAL_PARAM.value]}
-        else:
+        elif transformSpec[FieldIds.ADDITIONAL_PARAM.value] is None:
             additionalParam = None
+        else:
+            raise Exception(("The field additional_params in the transform "
+                             "table can only be None or a list"))
         transformPath = get_transform_path(keys)
         transformDesignVerbose(
             transformPath = transformPath,
