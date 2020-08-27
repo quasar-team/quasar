@@ -6,12 +6,30 @@
     <meta name="robots" content="index,follow">
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="quasar.css">
+    <style>
+    .mycode {
+      font-family: monospace;
+      border-style: dotted;
+      border-width: 1px;
+      background-color:
+        #eeeeff;
+      padding: .5em;
+      margin: 1em;
+      display: inline-block;
+
+    }
+
+    </style>
   </head>
   <body>
     <h1> <span style="color: #225498;"><img
           src="images/quasar_engine_small_smooth_square_128x128.png"
-          alt="[logo]" align="middle" hspace="10/">quasar</span> </h1>
+          alt="[logo]" hspace="10/" align="middle">quasar</span> </h1>
     <p>The <span style="color: #225498;font-size:150%;"><strong>q</strong></span>uick
+
+
+
+
 
 
 
@@ -141,34 +159,33 @@
       <li>RPM Build tools for RPM generation<br>
       </li>
     </ul>
-    <br>
-    <h3><a name="slc6"></a>Quick setup hints for SLC6 users <br>
+    <h3> Quick setup hints for CentOS 8 (the most standard way)<br>
     </h3>
     <ol>
-      <li>Get Eclipse (www.eclipse.org) with :</li>
-      <ol>
-        <li>CDT (C/C++ Development tools) - "Eclipse IDE for C/C++
-          Developers"</li>
-        <li>XML editors - "Eclipse XML Editors and Tools"</li>
-        <li>Subversive SVN and SVN providers</li>
-      </ol>
-      <li>Issue this to install software from official SLC6 RPMs:<br>
-        sudo yum install gcc-c++ gdb boost-devel boost-regex
-        boost-program-options boost-signals jre cmake28 kdiff3 graphviz
-        valgrind doxygen rpm-build subversion xsd openssl-dev
-        libxml2-devel xerces-c-devel<br>
+      <li>Install packages from CentOS 8 default repos:<br>
+        <div class="mycode"> sudo yum install gcc-c++ gdb boost-devel
+          boost-regex boost-program-options boost-signals cmake kdiff3
+          graphviz valgrind doxygen rpm-build xsd openssl-devel
+          libxml2-devel xerces-c-devel python3-colorama python3-jinja2 </div>
       </li>
-      <li>From the ATLAS Central DCS<br>
-        <ul>
-          <li>obtain OPC UA Toolkit 1.3.3 RPM and astyle and install
-            them:<br>
-            sudo yum install OpcUaToolkit-1.3.3-0.x86_64.rpm
-            astyle-2.0.4-0.rpm</li>
-          <li>obtain UaExpert and install it<br>
-            <br>
-          </li>
-        </ul>
+      <li>Install packages from epel repo (by default enabled in CentOS
+        8):<br>
+        <div class="mycode"> sudo yum install astyle
+        </div>
       </li>
+      <li>Note that quasar is compatible both with Python2 and Python3.
+        Even though Python2 is already end-of-life, many users still use
+        it (...) and quasar simply requires that "python" is in your
+        PATH, whether it points to python2 or python3 does not matter.
+        If the command "python" does not exist in your C8 but instead
+        "python3" exists then make a symbolic link from your
+        ~/bin/python pointing to python3.<br>
+        NOTE: quasar soon will switch to Python3 exclusively.<br>
+      </li>
+    </ol>
+    <br>
+    <br>
+    <ol>
     </ol>
     <h3><a name="cc7"></a>Quick setup hints for CC7/CentOs7 users</h3>
     <ol>
@@ -267,8 +284,11 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
     Quasar build system is <a href="quasarBuildSystem.html">documented
       here</a>.<br>
     <h2>Calculated Variables</h2>
-    <p><a
-href="../CalculatedVariables/doc/CalculatedVariables.html">Developer
+    <p><a href="../CalculatedVariables/doc/CalculatedVariables.html">Developer
+
+
+
+
 
 
 
@@ -447,9 +467,17 @@ href="../CalculatedVariables/doc/CalculatedVariables.html">Developer
 
 
 
+
+
+
+
           Defined Runtime Configuration</a></li>
       <li>How do I link libraries, add include directories, use build
         configurations etc... ? See <a href="quasarBuildSystem.html">build
+
+
+
+
 
 
           system doc</a>. <br>
