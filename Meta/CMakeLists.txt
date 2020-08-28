@@ -39,7 +39,7 @@ file(GLOB META_SRCS src/AS*.cpp src/D*.cpp src/Base_*.cpp src/meta.cpp src/MetaU
 add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/MetaAmalgamate.cpp
         DEPENDS ${META_SRCS}
-        COMMAND python ${PROJECT_SOURCE_DIR}/FrameworkInternals/quasar_utils.py amalgamate ${PROJECT_BINARY_DIR}/MetaAmalgamate.cpp ${META_SRCS}
+	COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/FrameworkInternals/quasar_utils.py amalgamate ${PROJECT_BINARY_DIR}/MetaAmalgamate.cpp ${META_SRCS}
         )
         
 
@@ -57,7 +57,7 @@ add_custom_command(OUTPUT alwaysRunBuildInfoGeneratorPy # note output never actu
 	COMMENT "generating meta build info definitions header using python script" 
 	WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
 	DEPENDS ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/meta_build_info.py
-	COMMAND python ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/meta_build_info.py --project_root_dir ${CMAKE_SOURCE_DIR} --target_generation_dir ${PROJECT_BINARY_DIR}/generated --toolkit_libs "${OPCUA_TOOLKIT_LIBS_ESCAPED}"
+	COMMAND ${PYTHON_COMMAND} ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/meta_build_info.py --project_root_dir ${CMAKE_SOURCE_DIR} --target_generation_dir ${PROJECT_BINARY_DIR}/generated --toolkit_libs "${OPCUA_TOOLKIT_LIBS_ESCAPED}"
 	VERBATIM
 )
 
