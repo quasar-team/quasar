@@ -73,23 +73,23 @@ install:
 
   # python libraries
   - ps : Write-Output "Installing python packages..."
-  - ps : python -m pip install --upgrade pip
-  - ps : python -W ignore -m pip install lxml six jinja2 colorama
+  - ps : python3 -m pip install --upgrade pip
+  - ps : python3 -W ignore -m pip install lxml six jinja2 colorama
   - ps : Write-Output "Installed python packages"
   - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py # checks to see if required python libs are OK.
 
 build_script:
   - cmd : git config --global user.email "quasar-developers@cern.ch"
   - cmd : git config --global user.name "Quasar Developer"
-  - cmd : python quasar.py create_project %QUASAR_TEST_PROJECT_DIR%
+  - cmd : python3 quasar.py create_project %QUASAR_TEST_PROJECT_DIR%
   - cmd : copy open6_win_configuration.cmake %QUASAR_TEST_PROJECT_DIR%
   - cmd : cd %QUASAR_TEST_PROJECT_DIR%
   - cmd : dir %QUASAR_TEST_PROJECT_DIR%
 
-  - cmd : python quasar.py set_build_config open6_win_configuration.cmake
-  - cmd : python quasar.py enable_module open62541-compat
-  - cmd : python quasar.py prepare_build Release
-  - cmd : python quasar.py build Release
+  - cmd : python3 quasar.py set_build_config open6_win_configuration.cmake
+  - cmd : python3 quasar.py enable_module open62541-compat
+  - cmd : python3 quasar.py prepare_build Release
+  - cmd : python3 quasar.py build Release
 
 after_build:
   - ps : Write-Output "Build completed!"
