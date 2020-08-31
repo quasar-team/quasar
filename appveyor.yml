@@ -15,7 +15,7 @@ notifications:
 
 environment:
   PYTHON_DIR: C:\Python38
-  PATH: ${PYTHON_DIR};C:\Python38\Scripts;C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;C:\ProgramData\chocolatey\bin\xmllint;$(PATH)
+  PATH: ${PYTHON_DIR};${PYTHON_DIR}\Scripts;C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;C:\ProgramData\chocolatey\bin\xmllint;$(PATH)
   WINDOWS_DEPENDENCIES_DIR: C:\workspace\OPC-UA\quasar-windows-dependencies
   QUASAR_TEST_PROJECT_DIR: C:\workspace\OPC-UA\quasar-test-project
   CODE_SYNTHESYS_XSD_PATH_HEADERS: C:\Program Files (x86)\CodeSynthesis XSD 4.0\include
