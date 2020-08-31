@@ -14,7 +14,8 @@ notifications:
   on_build_status_changed: true
 
 environment:
-  PATH: C:\Python38;C:\Python38\Scripts;C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;C:\ProgramData\chocolatey\bin\xmllint;$(PATH)
+  PYTHON_DIR: C:\Python38
+  PATH: ${PYTHON_DIR};C:\Python38\Scripts;C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;C:\ProgramData\chocolatey\bin\xmllint;$(PATH)
   WINDOWS_DEPENDENCIES_DIR: C:\workspace\OPC-UA\quasar-windows-dependencies
   QUASAR_TEST_PROJECT_DIR: C:\workspace\OPC-UA\quasar-test-project
   CODE_SYNTHESYS_XSD_PATH_HEADERS: C:\Program Files (x86)\CodeSynthesis XSD 4.0\include
@@ -73,7 +74,7 @@ install:
 
   # python and libraries
   - ps : Write-Output "aliasing python.exe to python3.exe..."
-  - ps : Copy-Item -Path "C:\Python38\python.exe" -Destination "C:\Python38\python3.exe"
+  - ps : Copy-Item -Path "${env:PYTHON_DIR}\python.exe" -Destination "${env:PYTHON_DIR}\python3.exe"
   - ps : python3 --version
   - ps : Write-Output "Installing python packages..."
   - ps : python -m pip install --upgrade pip
