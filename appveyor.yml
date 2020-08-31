@@ -72,8 +72,8 @@ install:
   - ps : Write-Output "Installed xsdcxx"
 
   # python and libraries
-  - ps : Write-Output "Symlinking python.exe to python3.exe..."
-  - ps : Create-Symlink -LinkTarget "C:\Python38\python.exe" -LinkFile "C:\Python38\python3.exe"
+  - ps : Write-Output "aliasing python.exe to python3.exe..."
+  - ps : Copy-Item -Path "C:\Python38\python.exe" -Destination "C:\Python38\python3.exe"
   - ps : python3 --version
   - ps : Write-Output "Installing python packages..."
   - ps : python -m pip install --upgrade pip
