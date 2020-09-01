@@ -76,7 +76,6 @@ install:
   - ps : python3 -m pip install --upgrade pip
   - ps : python3 -W ignore -m pip install lxml six jinja2 colorama
   - ps : Write-Output "Installed python packages"
-  - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py # checks to see if required python libs are OK.
 
 build_script:
   - cmd : git config --global user.email "quasar-developers@cern.ch"
