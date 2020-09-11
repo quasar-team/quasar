@@ -21,7 +21,7 @@
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/Base_All.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-COMMAND python quasar.py generate base_cpp_all --project_binary_dir ${PROJECT_BINARY_DIR}
+COMMAND ${PYTHON_COMMAND} quasar.py generate base_cpp_all --project_binary_dir ${PROJECT_BINARY_DIR}
 DEPENDS
   ${DESIGN_FILE}
   ${PROJECT_SOURCE_DIR}/quasar.py
@@ -36,7 +36,7 @@ DEPENDS
 {% for className in designInspector.get_names_of_all_classes() %}
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/Base_D{{className}}.h
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-COMMAND python quasar.py generate base_h {{className}} --project_binary_dir ${PROJECT_BINARY_DIR}
+COMMAND ${PYTHON_COMMAND} quasar.py generate base_h {{className}} --project_binary_dir ${PROJECT_BINARY_DIR}
 DEPENDS
   ${DESIGN_FILE}
   validateDesign

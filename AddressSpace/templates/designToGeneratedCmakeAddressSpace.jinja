@@ -25,14 +25,14 @@
 {% for className in designInspector.get_names_of_all_classes() %}
   add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/include/AS{{className}}.h
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-  COMMAND python quasar.py generate asclass {{className}} --project_binary_dir ${PROJECT_BINARY_DIR}
+  COMMAND python3 quasar.py generate asclass {{className}} --project_binary_dir ${PROJECT_BINARY_DIR}
   DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/templates/designToClassHeader.jinja Configuration.hxx_GENERATED validateDesign ${QUASAR_TRANSFORM_SENSITIVE_FILES}
   )
 {% endfor %}
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/src/AddressSpaceClasses.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-COMMAND python quasar.py generate asclass_cpp_all --project_binary_dir ${PROJECT_BINARY_DIR}
+COMMAND ${PYTHON_COMMAND} quasar.py generate asclass_cpp_all --project_binary_dir ${PROJECT_BINARY_DIR}
 DEPENDS ${DESIGN_FILE} ${PROJECT_SOURCE_DIR}/AddressSpace/templates/designToClassBody.jinja Configuration.hxx_GENERATED validateDesign
 )
 

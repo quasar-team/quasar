@@ -14,7 +14,8 @@ notifications:
   on_build_status_changed: true
 
 environment:
-  PATH: C:\Python38;C:\Python38\Scripts;C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;C:\ProgramData\chocolatey\bin\xmllint;$(PATH)
+  PYTHON_DIR: C:\Python38
+  PATH: ${PYTHON_DIR};${PYTHON_DIR}\Scripts;C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;C:\ProgramData\chocolatey\bin\xmllint;$(PATH)
   WINDOWS_DEPENDENCIES_DIR: C:\workspace\OPC-UA\quasar-windows-dependencies
   QUASAR_TEST_PROJECT_DIR: C:\workspace\OPC-UA\quasar-test-project
   CODE_SYNTHESYS_XSD_PATH_HEADERS: C:\Program Files (x86)\CodeSynthesis XSD 4.0\include
@@ -71,25 +72,27 @@ install:
          }
   - ps : Write-Output "Installed xsdcxx"
 
-  # python libraries
+  # python and libraries
+  - ps : Write-Output "aliasing python.exe to python3.exe..."
+  - ps : Copy-Item -Path "${env:PYTHON_DIR}\python.exe" -Destination "${env:PYTHON_DIR}\python3.exe"
+  - ps : python3 --version
   - ps : Write-Output "Installing python packages..."
-  - ps : python -m pip install --upgrade pip
-  - ps : python -W ignore -m pip install lxml six jinja2 colorama
+  - ps : python3 -m pip install --upgrade pip
+  - ps : python3 -W ignore -m pip install lxml six jinja2 colorama
   - ps : Write-Output "Installed python packages"
-  - ps : python C:\workspace\OPC-UA\quasar\FrameworkInternals\manage_files.py # checks to see if required python libs are OK.
 
 build_script:
   - cmd : git config --global user.email "quasar-developers@cern.ch"
   - cmd : git config --global user.name "Quasar Developer"
-  - cmd : python quasar.py create_project %QUASAR_TEST_PROJECT_DIR%
+  - cmd : python3 quasar.py create_project %QUASAR_TEST_PROJECT_DIR%
   - cmd : copy open6_win_configuration.cmake %QUASAR_TEST_PROJECT_DIR%
   - cmd : cd %QUASAR_TEST_PROJECT_DIR%
   - cmd : dir %QUASAR_TEST_PROJECT_DIR%
 
-  - cmd : python quasar.py set_build_config open6_win_configuration.cmake
-  - cmd : python quasar.py enable_module open62541-compat
-  - cmd : python quasar.py prepare_build Release
-  - cmd : python quasar.py build Release
+  - cmd : python3 quasar.py set_build_config open6_win_configuration.cmake
+  - cmd : python3 quasar.py enable_module open62541-compat
+  - cmd : python3 quasar.py prepare_build Release
+  - cmd : python3 quasar.py build Release
 
 after_build:
   - ps : Write-Output "Build completed!"
@@ -105,5 +108,5 @@ after_build:
          }
 
 # uncomment to block VM deletion for investigating broken builds.
-#on_finish:
-#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
