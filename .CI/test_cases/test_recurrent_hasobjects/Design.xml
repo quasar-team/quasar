@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<d:design projectShortName="" xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
+  <d:class name="TopClass">
+  	<d:devicelogic></d:devicelogic>
+  	<d:cachevariable initializeWith="configuration"
+  		dataType="OpcUa_Double" name="cv1" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden">
+  	</d:cachevariable>
+  	<d:hasobjects instantiateUsing="configuration" class="MiddleClass"></d:hasobjects>
+  	<d:hasobjects instantiateUsing="configuration" class="BottomClass"></d:hasobjects>
+  	<d:hasobjects instantiateUsing="configuration" class="TopClass"></d:hasobjects>
+  </d:class>
+  <d:class name="MiddleClass">
+  	<d:devicelogic></d:devicelogic>
+  	<d:cachevariable initializeWith="configuration"
+  		dataType="OpcUa_Double" name="cv2" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden">
+  	</d:cachevariable>
+  	<d:hasobjects instantiateUsing="configuration" class="BottomClass"></d:hasobjects>
+  	<d:hasobjects instantiateUsing="configuration" class="MiddleClass"></d:hasobjects>
+  </d:class>
+  <d:class name="BottomClass">
+  	<d:cachevariable initializeWith="configuration"
+  		dataType="OpcUa_Double" name="cv3" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden">
+  	</d:cachevariable>
+  	<d:hasobjects instantiateUsing="configuration" class="BottomClass"></d:hasobjects>
+  </d:class>
+  <d:root>
+  	<d:hasobjects instantiateUsing="configuration" class="TopClass"></d:hasobjects></d:root>
+</d:design>
