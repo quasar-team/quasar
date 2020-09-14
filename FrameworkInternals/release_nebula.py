@@ -86,7 +86,7 @@ def store_version(version):
     f_txt.write(version)
 
     f_cpp = open(os.path.sep.join(['Server', 'include', 'QuasarVersion.h']), 'w')
-    f_cpp.write('#define QUASAR_VERSION_STR "{0}"'.format(version))
+    f_cpp.write('#define QUASAR_VERSION_STR "{0}"\n'.format(version))
 
 def main():
     print(Fore.BLUE + "Note: you are about to release quasar-nebula!" + Style.RESET_ALL)
@@ -109,6 +109,13 @@ def main():
     os_system_with_check('git commit -a -m "by release_nebula.py for given tag: {0}"'.format(given_tag), [256])
 
     os_system_with_check('git push origin nebula-master')
+
+    os_system_with_check('git tag -a {0}'.format(version))
+
+    os_system_with_check('git push origin {0}'.format(version))
+
+    print('quasar-nebula version ' + Fore.GREEN + version + Style.RESET_ALL +
+        ' apparently released')
 
 
 
