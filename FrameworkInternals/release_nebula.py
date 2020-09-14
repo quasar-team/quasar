@@ -50,10 +50,12 @@ def assert_tag_valid(tag):
     match = given_tag_regex.match(tag)
     if match is None:
         raise Exception("Given tag is in wrong format. Correct examples: A1, M42, K133")
+    print("Tag in valid format:    " + Fore.GREEN + "PASS" + Style.RESET_ALL)
 
 def assert_correct_workdir():
     if not os.path.isfile("quasar.py"):
         raise Exception("You are running me from wrong directory... (no quasar.py here!)")
+    print("Correct work directory: " + Fore.GREEN + "PASS" + Style.RESET_ALL)
 
 def assert_all_files_committed():
     '''Raises for any non-versioned, modified or staged files without a commit.'''
@@ -63,6 +65,7 @@ def assert_all_files_committed():
     for file_name in file_names:
         if not repo.path_is_ignored(file_name):
             raise Exception("Ooops... seems you've got uncommitted files, check with git status.")
+    print("All files committed:    " + Fore.GREEN + "PASS" + Style.RESET_ALL)
 
 def main():
     print(Fore.BLUE + "Note: you are about to release quasar-nebula!" + Style.RESET_ALL)
