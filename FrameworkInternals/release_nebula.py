@@ -110,7 +110,7 @@ def main():
 
     os_system_with_check('git push origin nebula-master')
 
-    os_system_with_check('git tag -a {0}'.format(version))
+    os_system_with_check('git tag -a {0} -m {0}'.format(version))
 
     os_system_with_check('git push origin {0}'.format(version))
 
