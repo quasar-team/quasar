@@ -45,8 +45,10 @@ import pygit2
 import quasar_basic_utils
 
 def assert_correct_branch():
-    pass
-    # TODO
+    repo = pygit2.Repository(".")
+    if repo.head.shorthand != "nebula-master":
+        raise Exception("You are on branch: {0} and that is so BAD!!!!".format(repo.head.shorthand))
+    print("On correct branch:      " + Fore.GREEN + "PASS" + Style.RESET_ALL)
 
 def assert_tag_valid(tag):
     '''Makes sure given tag adheres to the schema'''
@@ -87,10 +89,10 @@ def main():
     args = parser.parse_args()
     given_tag = args.tag
 
+    assert_correct_workdir()
     assert_correct_branch()
     assert_tag_valid(given_tag)
-    assert_correct_workdir()
-    #assert_all_files_committed()
+    assert_all_files_committed()
 
     version = "nebula." + given_tag
     store_version(version)
