@@ -44,7 +44,7 @@ import pygit2
 
 import quasar_basic_utils
 
-def os_system_with_check(cmd, valid_codes):
+def os_system_with_check(cmd, valid_codes=[]):
     valid_codes.append(0)  # 0 is always valid.
     print('Executing: ' + cmd)
     rval = os.system(cmd)
