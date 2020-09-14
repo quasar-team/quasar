@@ -81,7 +81,7 @@ if __name__ == '__main__':
             args = args[len(matched_command[0]):]
             callee = matched_command[1]
             # TODO throw WrongArguments here if not enough args
-            if 'context' in inspect.getargspec(callee).args:
+            if 'context' in inspect.getfullargspec(callee).args:
                 callee( makeContext(), *args )  # pack arguments after the last chunk of the command
             else:
                 callee( *args )
@@ -91,4 +91,3 @@ if __name__ == '__main__':
         except:
             quasar_basic_utils.quasaric_exception_handler()
             sys.exit(1)
-
