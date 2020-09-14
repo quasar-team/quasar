@@ -44,6 +44,12 @@ import pygit2
 
 import quasar_basic_utils
 
+def os_system_with_check(cmd):
+    print('Executing: ' + cmd)
+    rval = os.system(cmd)
+    if rval != 0:
+        raise Exception('Wrong return value ({0}) from last call'.format(rval))
+
 def assert_correct_branch():
     repo = pygit2.Repository(".")
     if repo.head.shorthand != "nebula-master":
@@ -97,9 +103,13 @@ def main():
     version = "nebula." + given_tag
     store_version(version)
 
-    os.system('./quasar.py create_release')
+    os_system_with_check('./quasar.py create_release')
 
-    os.system('git commit -a -m "by release_nebula.py for given tag: {0}"'.format(given_tag))
+    os_system_with_check('git commit -a -m "by release_nebula.py for given tag: {0}"'.format(given_tag))
+
+    os_system_with_check('git push origin nebula-master')
+
+
 
 if __name__ == "__main__":
     try:
