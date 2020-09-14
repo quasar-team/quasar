@@ -44,6 +44,10 @@ import pygit2
 
 import quasar_basic_utils
 
+def assert_correct_branch():
+    pass
+    # TODO
+
 def assert_tag_valid(tag):
     '''Makes sure given tag adheres to the schema'''
     given_tag_regex = re.compile(r"[A-Z]\d+")
@@ -67,6 +71,14 @@ def assert_all_files_committed():
             raise Exception("Ooops... seems you've got uncommitted files, check with git status.")
     print("All files committed:    " + Fore.GREEN + "PASS" + Style.RESET_ALL)
 
+def store_version(version):
+    '''Puts quasar version in respective files'''
+    f_txt = open(os.path.sep.join(['Design', 'quasarVersion.txt']), 'w')
+    f_txt.write(version)
+
+    f_cpp = open(os.path.sep.join(['Server', 'include', 'QuasarVersion.h']), 'w')
+    f_cpp.write('#define QUASAR_VERSION_STR "{0}"'.format(version))
+
 def main():
     print(Fore.BLUE + "Note: you are about to release quasar-nebula!" + Style.RESET_ALL)
     parser = argparse.ArgumentParser()
@@ -74,10 +86,18 @@ def main():
 
     args = parser.parse_args()
     given_tag = args.tag
+
+    assert_correct_branch()
     assert_tag_valid(given_tag)
     assert_correct_workdir()
-    assert_all_files_committed()
+    #assert_all_files_committed()
 
+    version = "nebula." + given_tag
+    store_version(version)
+
+    os.system('./quasar.py create_release')
+
+    os.system('git commit -a -m "by release_nebula.py for given tag: {0}"'.format(given_tag))
 
 if __name__ == "__main__":
     try:
