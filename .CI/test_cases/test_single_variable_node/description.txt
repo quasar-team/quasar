@@ -1,0 +1,3 @@
+by Piotr Nikiel, 15-Sep-2020
+
+This test case is inspired by the power supply server which massively use singleVariableNode feature.
