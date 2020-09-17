@@ -45,7 +45,7 @@ install:
 
   # chocolatey: package manager for installing applications
   - ps : Write-Output "Installing chocolatey packages..."
-  - ps : choco install git astyle xsltproc nuget.commandline --yes --limit-output # xsltproc provides xmllint
+  - ps : choco install git astyle xsltproc nuget.commandline --yes --limit-output --no-progress # xsltproc provides xmllint
   - ps : Write-Output "Installed chocolatey packages"
 
   # nuget: package manager for installing libs
@@ -78,13 +78,13 @@ install:
   - ps : python3 --version
   - ps : Write-Output "Installing python packages..."
   - ps : python3 -m pip install --upgrade pip
-  - ps : python3 -W ignore -m pip install lxml six jinja2 colorama
+  - ps : python3 -Wignore -m pip install lxml six jinja2 colorama
   - ps : Write-Output "Installed python packages"
 
 build_script:
   - ps : git config --global user.email "quasar-developers@cern.ch"
   - ps : git config --global user.name "Quasar Developer"
-  - ps : python3 quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR}
+  - ps : python3 -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} #ignore all warnings
   - ps : Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR}
   - ps : cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls
 
