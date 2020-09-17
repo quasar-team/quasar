@@ -84,13 +84,13 @@ install:
 build_script:
   - ps : git config --global user.email "quasar-developers@cern.ch"
   - ps : git config --global user.name "Quasar Developer"
-  - ps : python3 -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} #ignore all warnings
+  - ps : python3 -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} # -Wignore: ignore all warnings (deprecation/syntax etc)
   - ps : Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR}
   - ps : cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls
 
-  - ps : python3 quasar.py set_build_config open6_win_configuration.cmake
-  - ps : python3 quasar.py enable_module open62541-compat
-  - ps : python3 quasar.py build Release
+  - ps : python3 -Wignore quasar.py set_build_config open6_win_configuration.cmake
+  - ps : python3 -Wignore quasar.py enable_module open62541-compat
+  - ps : python3 -Wignore quasar.py build Release
 
 after_build:
   - ps : Write-Output "Build completed!"
