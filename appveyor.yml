@@ -25,10 +25,6 @@ environment:
   OPENSSL_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release
   XERCESC_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\include
   XERCESC_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\lib\x64\v110\Release
-  #
-  # Set environment variables in powershell using command
-  #   [System.Environment]::SetEnvironmentVariable("VAR", "C:/target/path", "Machine")')
-  #
 
 install:
   # initialize submodules (e.g. LogIt)
@@ -45,7 +41,7 @@ install:
 
   # chocolatey: package manager for installing applications
   - ps : Write-Output "Installing chocolatey packages..."
-  - ps : choco install git astyle xsltproc nuget.commandline --yes --limit-output --no-progress # xsltproc provides xmllint
+  - ps : choco install git astyle xsltproc nuget.commandline ninja --yes --limit-output --no-progress # xsltproc provides xmllint
   - ps : Write-Output "Installed chocolatey packages"
 
   # nuget: package manager for installing libs
@@ -80,6 +76,13 @@ install:
   - ps : python3 -m pip install --upgrade pip
   - ps : python3 -Wignore -m pip install lxml six jinja2 colorama
   - ps : Write-Output "Installed python packages"
+  
+  # permanently set PATH for user + machine (ensures powershell/cmd.exe use same PATH)
+  - ps : [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH, "User")')
+  - ps : [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH, "Machine")')
+  - ps : python3 -Wignore -m pip list
+  - cmd : python3 -Wignore -m pip list
+  
 
 build_script:
   - ps : git config --global user.email "quasar-developers@cern.ch"
@@ -90,7 +93,7 @@ build_script:
 
   - ps : python3 -Wignore quasar.py set_build_config open6_win_configuration.cmake
   - ps : python3 -Wignore quasar.py enable_module open62541-compat
-  - ps : python3 -Wignore quasar.py build Release
+  - ps : python3 -Wignore quasar.py build Release --builder Ninja
 
 after_build:
   - ps : Write-Output "Build completed!"
