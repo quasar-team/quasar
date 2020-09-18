@@ -77,12 +77,11 @@ install:
   - ps : python3 -Wignore -m pip install lxml six jinja2 colorama
   - ps : Write-Output "Installed python packages"
   
-  # permanently set PATH for user + machine (ensures powershell/cmd.exe use same PATH)
-  - ps : [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH, "User")')
-  - ps : [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH, "Machine")')
+  # permanently set PATH for user and machine: powershell and cmd.exe need same PATH
+  - ps : [System.Environment]::SetEnvironmentVariable("PATH", ${env:PATH}, "User")
+  - ps : [System.Environment]::SetEnvironmentVariable("PATH", ${env:PATH}, "Machine")
   - ps : python3 -Wignore -m pip list
   - cmd : python3 -Wignore -m pip list
-  
 
 build_script:
   - ps : git config --global user.email "quasar-developers@cern.ch"
