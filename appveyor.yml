@@ -69,34 +69,35 @@ install:
   - ps : Write-Output "Installed xsdcxx"
 
   # python and libraries
-  - ps : Write-Output "aliasing python.exe to python3.exe..."
-  - ps : Copy-Item -Path "${env:PYTHON_DIR}\python.exe" -Destination "${env:PYTHON_DIR}\python3.exe"
-  - ps : python3 --version
-  - ps : Write-Output "Installing python packages..."
-  - ps : python3 -m pip install --upgrade pip
-  - ps : python3 -Wignore -m pip install lxml six jinja2 colorama
-  - ps : Write-Output "Installed python packages"
-  
-  # permanently set PATH for user and machine: powershell and cmd.exe need same PATH
   - ps : |
          [System.Environment]::SetEnvironmentVariable("PATH", ${env:PATH}, "User");
          [System.Environment]::SetEnvironmentVariable("PY_PYTHON", "3.8", "User")
   - ps : |
          [System.Environment]::SetEnvironmentVariable("PATH", ${env:PATH}, "Machine");
-         [System.Environment]::SetEnvironmentVariable("PY_PYTHON", "3.8", "Machine");
-  - ps : python3 -Wignore -m pip list
-  - cmd : python3 -Wignore -m pip list
+         [System.Environment]::SetEnvironmentVariable("PY_PYTHON", "3.8", "Machine");  
+  - ps : Write-Output "aliasing python.exe to python3.exe..."
+  - ps : Copy-Item -Path "${env:PYTHON_DIR}\python.exe" -Destination "${env:PYTHON_DIR}\python3.exe"
+  - ps : py --version
+  - ps : Write-Output "Installing python packages..."
+  - ps : py -m pip install --upgrade pip
+  - ps : py -Wignore -m pip install lxml six jinja2 colorama
+  - ps : Write-Output "Installed python packages"
+  
+  # permanently set PATH for user and machine: powershell and cmd.exe need same PATH
+  - ps : py -Wignore -m pip list
+  - cmd : py -Wignore -m pip list
 
 build_script:
   - ps : git config --global user.email "quasar-developers@cern.ch"
   - ps : git config --global user.name "Quasar Developer"
-  - ps : python3 -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} # -Wignore: ignore all warnings (deprecation/syntax etc)
+  - ps : py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} # -Wignore: ignore all warnings (deprecation/syntax etc)
   - ps : Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR}
   - ps : cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls
 
-  - ps : python3 -Wignore quasar.py set_build_config open6_win_configuration.cmake
-  - ps : $ErrorActionPreference = “Continue”; python3 -Wignore quasar.py enable_module open62541-compat
-  - ps : $ErrorActionPreference = “Continue”; python3 -Wignore quasar.py build Release --builder Ninja
+  - ps : py -Wignore quasar.py set_build_config open6_win_configuration.cmake
+  - ps : $env:GIT_REDIRECT_STDERR = '2>&1'; py -Wignore quasar.py enable_module open62541-compat # redirect git stderr to stdout
+  - ps : cat .\log.txt
+  - ps : py -Wignore quasar.py build Release --builder Ninja
 
 after_build:
   - ps : Write-Output "Build completed!"
