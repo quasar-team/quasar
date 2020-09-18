@@ -97,7 +97,7 @@ build_script:
 
   - ps : py -Wignore quasar.py set_build_config open6_win_configuration.cmake
   - ps : $env:GIT_REDIRECT_STDERR = '2>&1'; py -Wignore quasar.py enable_module open62541-compat # redirect git stderr to stdout
-  - ps : py -Wignore quasar.py build Release --builder Ninja
+  - ps : py -Wignore quasar.py build Release --builder Ninja --project_build_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" 2>&1
 
 after_build:
   - ps : Write-Output "Build completed!"
