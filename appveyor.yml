@@ -93,7 +93,7 @@ build_script:
   - ps : cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls
 
   - ps : python3 -Wignore quasar.py set_build_config open6_win_configuration.cmake
-  - ps : python3 -Wignore quasar.py enable_module open62541-compat
+  - ps : $(python3 -Wignore quasar.py enable_module open62541-compat) 2>&1 | out-null # ignore stderr output
   - ps : python3 -Wignore quasar.py build Release --builder Ninja
 
 after_build:
