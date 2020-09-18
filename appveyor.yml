@@ -41,7 +41,7 @@ install:
 
   # chocolatey: package manager for installing applications
   - ps : Write-Output "Installing chocolatey packages..."
-  - ps : choco install git astyle xsltproc nuget.commandline ninja --yes --limit-output --no-progress # xsltproc provides xmllint
+  - ps : choco install astyle xsltproc nuget.commandline ninja --yes --limit-output --no-progress # xsltproc provides xmllint
   - ps : Write-Output "Installed chocolatey packages"
 
   # nuget: package manager for installing libs
