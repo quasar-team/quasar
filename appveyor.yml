@@ -91,13 +91,30 @@ install:
 build_script:
   - ps : git config --global user.email "quasar-developers@cern.ch"
   - ps : git config --global user.name "Quasar Developer"
-  - ps : py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} # -Wignore: ignore all warnings (deprecation/syntax etc)
-  - ps : Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR}
+  #- ps : py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} # -Wignore: ignore all warnings (deprecation/syntax etc)
+  #- ps : Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR}
   - ps : cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls
 
-  - ps : py -Wignore quasar.py set_build_config open6_win_configuration.cmake
-  - ps : $env:GIT_REDIRECT_STDERR = '2>&1'; py -Wignore quasar.py enable_module open62541-compat # redirect git stderr to stdout
-  - ps : $ErrorActionPreference = 'Continue'; py -Wignore quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" 2>&1
+  #- ps : py -Wignore quasar.py set_build_config open6_win_configuration.cmake
+  - ps : |
+         try {
+           $env:GIT_REDIRECT_STDERR = '2>&1';
+           $ErrorActionPreference = 'Continue';
+           py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} 2>&1;
+           Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR};
+           py -Wignore quasar.py set_build_config open6_win_configuration.cmake 2>&1;
+           py -Wignore quasar.py enable_module open62541-compat 2>&1;
+           py -Wignore quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" 2>&1;
+           Write-Output "got to end of try block!";
+         }
+         catch {
+           Write-Output "urgh, fell in catch...";
+           Write-Output $_;
+         }
+           
+           
+  #- ps : $env:GIT_REDIRECT_STDERR = '2>&1'; py -Wignore quasar.py enable_module open62541-compat # redirect git stderr to stdout
+  #- ps : $ErrorActionPreference = 'Continue'; py -Wignore quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" 2>&1
 
 after_build:
   - ps : Write-Output "Build completed!"
