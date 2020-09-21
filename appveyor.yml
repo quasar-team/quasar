@@ -83,43 +83,32 @@ install:
   - ps : Write-Output "Installing python packages..."
   - ps : py -m pip install --upgrade pip
   - ps : py -Wignore -m pip install lxml six jinja2 colorama
-  - ps : Write-Output "Installed python packages"
-  
-  # permanently set PATH for user and machine: powershell and cmd.exe need same PATH
-  - ps : py -Wignore -m pip list
-  - cmd : py -Wignore -m pip list
+  - ps : Write-Output "Installed python packages"; py -Wignore -m pip list
 
 build_script:
   - ps : cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls
   - ps : |
          try {
-           # $env:GIT_REDIRECT_STDERR = '2>&1';
-           $ErrorActionPreference = 'Continue';
-           py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} 2>&1;
+           $env:REDIRECT_STDERR = '2>&1'; # some non-critical info logs to stderr, which stops build. Redirect to stdout.
+           $ErrorActionPreference = 'Continue'; # errors will be logged, but processing continues
+           py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} ${env:REDIRECT_STDERR};
            Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR};
-           py -Wignore quasar.py set_build_config open6_win_configuration.cmake 2>&1;
-           py -Wignore quasar.py enable_module open62541-compat 2>&1;
-           py -Wignore quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" 2>&1;
-           Write-Output "got to end of try block!";
+           py -Wignore quasar.py set_build_config open6_win_configuration.cmake ${env:REDIRECT_STDERR};
+           py -Wignore quasar.py enable_module open62541-compat ${env:REDIRECT_STDERR};
+           py -Wignore quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" ${env:REDIRECT_STDERR};
+           Write-Output "build try block completed";
          }
          catch {
-           Write-Output "urgh, fell in catch...";
-           Write-Output $_;
+           Write-Output "exception caught during build..."; Write-Output $_; Exit 1;           
          }
-           
-           
-  #- ps : $env:GIT_REDIRECT_STDERR = '2>&1'; py -Wignore quasar.py enable_module open62541-compat # redirect git stderr to stdout
-  #- ps : $ErrorActionPreference = 'Continue'; py -Wignore quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" 2>&1
 
 after_build:
   - ps : Write-Output "Build completed!"
   - ps : |
-         if(Test-Path "${env:QUASAR_TEST_PROJECT_DIR}\build\bin\OpcUaServer.exe")
-         {
+         if(Test-Path "${env:QUASAR_TEST_PROJECT_DIR}\build\bin\OpcUaServer.exe") {
           Write-Output "Succesfully Built QUASAR test project: ${env:QUASAR_TEST_PROJECT_DIR}" ;
          }
-         else
-         {
+         else {
           Write-Output "ERROR! The script will terminate. There was a problem building QUASAR test project - ${env:QUASAR_TEST_PROJECT_DIR}";
           Exit 1;
          }
