@@ -86,19 +86,18 @@ install:
   - ps : Write-Output "Installed python packages"; py -Wignore -m pip list
 
 build_script:
-  - ps : 
   - ps : |
          try {
-           $env:REDIRECT_STDERR = 2>&1; # 2>&1 redirection required because some non-critical info logs to stderr, which stops build
+           # 2>&1 redirection required on py calls - some non-build-fail info logs to stderr, which stops build
            $ErrorActionPreference = 'Continue'; # errors will be logged, but processing continues
            
-           py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} ${env:REDIRECT_STDERR};           
+           py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} 2>&1;
            Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR};           
-           cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls
+           cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls;
            
-           py -Wignore quasar.py set_build_config open6_win_configuration.cmake ${env:REDIRECT_STDERR};
-           py -Wignore quasar.py enable_module open62541-compat ${env:REDIRECT_STDERR};
-           py -Wignore quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" ${env:REDIRECT_STDERR};           
+           py -Wignore quasar.py set_build_config open6_win_configuration.cmake 2>&1;
+           py -Wignore quasar.py enable_module open62541-compat 2>&1;
+           py -Wignore quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" 2>&1;
            Write-Output "build try block completed";
          }
          catch {
