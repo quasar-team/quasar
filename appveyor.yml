@@ -82,8 +82,8 @@ install:
   - ps : py --version
   - ps : Write-Output "Installing python packages..."
   - ps : py -m pip install --upgrade pip
-  - ps : py -Wignore -m pip install lxml six jinja2 colorama
-  - ps : Write-Output "Installed python packages"; py -Wignore -m pip list
+  - ps : py -m pip install lxml six jinja2 colorama
+  - ps : Write-Output "Installed python packages"; py -m pip list
 
 build_script:
   - ps : |
@@ -91,13 +91,13 @@ build_script:
            # 2>&1 redirection required on py calls - some non-build-fail info logs to stderr, which stops build
            $ErrorActionPreference = 'Continue'; # errors will be logged, but processing continues
            
-           py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} 2>&1;
+           py quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} 2>&1;
            Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR};           
            cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls;
            
-           py -Wignore quasar.py set_build_config open6_win_configuration.cmake 2>&1;
-           py -Wignore quasar.py enable_module open62541-compat 2>&1;
-           py -Wignore quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" 2>&1;
+           py quasar.py set_build_config open6_win_configuration.cmake 2>&1;
+           py quasar.py enable_module open62541-compat 2>&1;
+           py quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" 2>&1;
            Write-Output "build try block completed";
          }
          catch {
