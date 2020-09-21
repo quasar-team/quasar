@@ -27,9 +27,9 @@ environment:
   XERCESC_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\lib\x64\v110\Release
 
 install:
-  - ps : git config --global user.email "quasar-developers@cern.ch"
-  - ps : git config --global user.name "Quasar Developer"
-  - ps : git submodule update --init --recursive # initialize submodules (e.g. LogIt)
+  - git config --global user.email "quasar-developers@cern.ch"
+  - git config --global user.name "Quasar Developer"
+  - git submodule update --init --recursive # initialize submodules (e.g. LogIt)
 
   # delete and recreate clean directory for windows dependencies.
   - ps : |
