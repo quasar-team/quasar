@@ -14,7 +14,7 @@ notifications:
   on_build_status_changed: true
 
 environment:
-  PYTHON_DIR: C:\Python38
+  PYTHON_DIR: C:\Python38-x64
   PATH: ${PYTHON_DIR};${PYTHON_DIR}\Scripts;C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;C:\ProgramData\chocolatey\bin\xmllint;$(PATH)
   WINDOWS_DEPENDENCIES_DIR: C:\workspace\OPC-UA\quasar-windows-dependencies
   QUASAR_TEST_PROJECT_DIR: C:\workspace\OPC-UA\quasar-test-project
@@ -25,14 +25,11 @@ environment:
   OPENSSL_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\openssl-vc141-static-x86_64\build\native\lib\x64\static\Release
   XERCESC_PATH_HEADERS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\include
   XERCESC_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\lib\x64\v110\Release
-  #
-  # Set environment variables in powershell using command
-  #   [System.Environment]::SetEnvironmentVariable("VAR", "C:/target/path", "Machine")')
-  #
 
 install:
-  # initialize submodules (e.g. LogIt)
-  - git submodule update --init --recursive
+  - git config --global user.email "quasar-developers@cern.ch"
+  - git config --global user.name "Quasar Developer"
+  - git submodule update --init --recursive # initialize submodules (e.g. LogIt)
 
   # delete and recreate clean directory for windows dependencies.
   - ps : |
@@ -45,14 +42,21 @@ install:
 
   # chocolatey: package manager for installing applications
   - ps : Write-Output "Installing chocolatey packages..."
-  - ps : choco install git astyle xsltproc nuget.commandline --yes --limit-output # xsltproc provides xmllint
+  - ps : choco install astyle xsltproc nuget.commandline ninja --yes --limit-output --no-progress # xsltproc provides xmllint
   - ps : Write-Output "Installed chocolatey packages"
 
   # nuget: package manager for installing libs
   - ps : Write-Output "Installing nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : nuget install xercesc -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : nuget install openssl-vc141-static-x86_64 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
-  - ps : nuget install boost-vc141 -Version 1.67.0 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install boost_program_options-vc141 -Version 1.67.0 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install boost_system-vc141 -Version 1.67.0 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install boost_filesystem-vc141 -Version 1.67.0 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install boost_chrono-vc141 -Version 1.67.0 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install boost_date_time-vc141 -Version 1.67.0 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install boost_thread-vc141 -Version 1.67.0 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install boost_log-vc141 -Version 1.67.0 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
+  - ps : nuget install boost_log_setup-vc141 -Version 1.67.0 -NonInteractive -ExcludeVersion -OutputDirectory "${env:WINDOWS_DEPENDENCIES_DIR}"
   - ps : Write-Output "Installed nuget packages to ${env:WINDOWS_DEPENDENCIES_DIR}"
 
   # code synthesis stuff has no managed package: manual install
@@ -73,40 +77,51 @@ install:
   - ps : Write-Output "Installed xsdcxx"
 
   # python and libraries
+  - ps : |         
+         [System.Environment]::SetEnvironmentVariable("PY_PYTHON", "3.8", "User");
+         [System.Environment]::SetEnvironmentVariable("PY_PYTHON", "3.8", "Machine")
+  - ps : |
+         [System.Environment]::SetEnvironmentVariable("PATH", ${env:PATH}, "User");
+         [System.Environment]::SetEnvironmentVariable("PATH", ${env:PATH}, "Machine")
+          
   - ps : Write-Output "aliasing python.exe to python3.exe..."
   - ps : Copy-Item -Path "${env:PYTHON_DIR}\python.exe" -Destination "${env:PYTHON_DIR}\python3.exe"
-  - ps : python3 --version
+  - ps : py --version
   - ps : Write-Output "Installing python packages..."
-  - ps : python3 -m pip install --upgrade pip
-  - ps : python3 -W ignore -m pip install lxml six jinja2 colorama
-  - ps : Write-Output "Installed python packages"
+  - ps : py -m pip install --upgrade pip
+  - ps : py -m pip install lxml six jinja2 colorama
+  - ps : Write-Output "Installed python packages"; py -m pip list
 
 build_script:
-  - cmd : git config --global user.email "quasar-developers@cern.ch"
-  - cmd : git config --global user.name "Quasar Developer"
-  - cmd : python3 quasar.py create_project %QUASAR_TEST_PROJECT_DIR%
-  - cmd : copy open6_win_configuration.cmake %QUASAR_TEST_PROJECT_DIR%
-  - cmd : cd %QUASAR_TEST_PROJECT_DIR%
-  - cmd : dir %QUASAR_TEST_PROJECT_DIR%
-
-  - cmd : python3 quasar.py set_build_config open6_win_configuration.cmake
-  - cmd : python3 quasar.py enable_module open62541-compat
-  - cmd : python3 quasar.py prepare_build Release
-  - cmd : python3 quasar.py build Release
+  - ps : |
+         try {
+           # 2>&1 redirection required on py calls - some non-build-fail info logs to stderr, which stops build
+           $ErrorActionPreference = 'Continue'; # errors will be logged, but processing continues
+           
+           py quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} 2>&1;
+           Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR};           
+           cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls;
+           
+           py quasar.py set_build_config open6_win_configuration.cmake 2>&1;
+           py quasar.py enable_module open62541-compat 2>&1;
+           py quasar.py build Release --builder Ninja --project_binary_dir "${env:QUASAR_TEST_PROJECT_DIR}\build" 2>&1;
+           Write-Output "build try block completed";
+         }
+         catch {
+           Write-Output "exception caught during build..."; Write-Output $_; Exit 1;           
+         }
 
 after_build:
   - ps : Write-Output "Build completed!"
   - ps : |
-         if(Test-Path "${env:QUASAR_TEST_PROJECT_DIR}\build\bin\OpcUaServer.exe")
-         {
+         if(Test-Path "${env:QUASAR_TEST_PROJECT_DIR}\build\bin\OpcUaServer.exe") {
           Write-Output "Succesfully Built QUASAR test project: ${env:QUASAR_TEST_PROJECT_DIR}" ;
          }
-         else
-         {
+         else {
           Write-Output "ERROR! The script will terminate. There was a problem building QUASAR test project - ${env:QUASAR_TEST_PROJECT_DIR}";
           Exit 1;
          }
 
 # uncomment to block VM deletion for investigating broken builds.
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
