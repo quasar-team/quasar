@@ -89,7 +89,7 @@ build_script:
   - ps : cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls
   - ps : |
          try {
-           $env:REDIRECT_STDERR = '2>&1'; # some non-critical info logs to stderr, which stops build. Redirect to stdout.
+           $env:REDIRECT_STDERR = 2>&1; # 2>&1 redirection required because some non-critical info logs to stderr, which stops build
            $ErrorActionPreference = 'Continue'; # errors will be logged, but processing continues
            py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} ${env:REDIRECT_STDERR};
            Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR};
