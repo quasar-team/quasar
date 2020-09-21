@@ -27,8 +27,9 @@ environment:
   XERCESC_PATH_LIBS: $(WINDOWS_DEPENDENCIES_DIR)\xercesc\build\native\lib\x64\v110\Release
 
 install:
-  # initialize submodules (e.g. LogIt)
-  - git submodule update --init --recursive
+  - ps : git config --global user.email "quasar-developers@cern.ch"
+  - ps : git config --global user.name "Quasar Developer"
+  - ps : git submodule update --init --recursive # initialize submodules (e.g. LogIt)
 
   # delete and recreate clean directory for windows dependencies.
   - ps : |
@@ -89,16 +90,10 @@ install:
   - cmd : py -Wignore -m pip list
 
 build_script:
-  - ps : git config --global user.email "quasar-developers@cern.ch"
-  - ps : git config --global user.name "Quasar Developer"
-  #- ps : py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} # -Wignore: ignore all warnings (deprecation/syntax etc)
-  #- ps : Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR}
   - ps : cd ${env:QUASAR_TEST_PROJECT_DIR} ; ls
-
-  #- ps : py -Wignore quasar.py set_build_config open6_win_configuration.cmake
   - ps : |
          try {
-           $env:GIT_REDIRECT_STDERR = '2>&1';
+           # $env:GIT_REDIRECT_STDERR = '2>&1';
            $ErrorActionPreference = 'Continue';
            py -Wignore quasar.py create_project ${env:QUASAR_TEST_PROJECT_DIR} 2>&1;
            Copy-Item -Path .\open6_win_configuration.cmake -Destination ${env:QUASAR_TEST_PROJECT_DIR};
