@@ -74,7 +74,7 @@ digraph  {
           <td colspan="2" align="center"><b><font point-size="18" >{{className}}</font>{% if detailLevel|int >= 2 %}<font point-size="10" color="blue" >DL={{designInspector.class_has_device_logic(className)|replace('True','1')|replace('False','0')}}</font>{% endif %}</b></td>  
         </tr>
         <hr/>
-        {%- if class.cachevariable|length + class.sourcevariable|length + class.configentry|length + class.method|length == 0 -%} {# the class is basically empty #}
+        {%- if class.cachevariable|length + class.sourcevariable|length + class.configentry|length == 0 -%} {# the class is basically empty #}
           <tr>
             <td colspan="4"> </td>
           </tr>
