@@ -48,7 +48,7 @@ else()
     include_directories(${BOOST_PATH_HEADERS})  # this falls back to the old solution when we didn't yet use find_package(Boost)
 endif()
 
-set(PYTHON_COMMAND python)
+set(PYTHON_COMMAND python3)
 set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
 
 include_directories (

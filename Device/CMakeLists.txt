@@ -30,7 +30,7 @@ endif(EXISTS ${PROJECT_SOURCE_DIR}/Device/DeviceCustom.cmake)
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/include/DRoot.h ${PROJECT_BINARY_DIR}/Device/src/DRoot.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-COMMAND python quasar.py generate root --project_binary_dir ${PROJECT_BINARY_DIR}
+COMMAND ${PYTHON_COMMAND} quasar.py generate root --project_binary_dir ${PROJECT_BINARY_DIR}
 DEPENDS ${DESIGN_FILE}
 	${PROJECT_SOURCE_DIR}/quasar.py
 	validateDesign
