@@ -73,7 +73,7 @@
     Configuration::{{className}} emptyConfig("{{instanceName}}");
 
     // build address space side object
-    AddressSpace::AS{{className}} *asItem =
+    AddressSpace::AS{{className}} *asItemChildByDesign =
     new AddressSpace::AS{{className}}(
       {{parentNodeId}},
       nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_{{className|upper}}),
@@ -82,15 +82,15 @@
 
     {% if designInspector.class_has_device_logic(className) %}
       // build device side object
-      Device::D{{className}} *dItem = new Device::D{{className}}(emptyConfig, dRoot);
+      Device::D{{className}} *dItemChildByDesign = new Device::D{{className}}(emptyConfig, {{parentDevice}});
 
       // link address space and device side objects
-      asItem->linkDevice( dItem );
-      dItem->linkAddressSpace( asItem, asItem->nodeId().toString().toUtf8() );
-      {{parentDevice}}->add(dItem);
+      asItemChildByDesign->linkDevice( dItemChildByDesign );
+      dItemChildByDesign->linkAddressSpace( asItemChildByDesign, asItemChildByDesign->nodeId().toString().toUtf8() );
+      {{parentDevice}}->add(dItemChildByDesign);
     {% else %}
       // avoid unused variable warning (constructor above was required)
-      (void)*asItem;
+      (void)*asItemChildByDesign;
     {% endif %}
   }
 {% endmacro %}
@@ -209,7 +209,7 @@
   {% for hasObjectElement in designInspector.objectify_has_objects(className, "[@instantiateUsing='design']") %}
     {% set objClass = hasObjectElement.get('class') %}
     {% for obj in hasObjectElement.getchildren() %}
-      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asRootNodeId", "dRoot")}}
+      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asItem->nodeId()", "dItem")}}
     {% endfor %}
   {% endfor %}
 
