@@ -82,12 +82,12 @@
 
     {% if designInspector.class_has_device_logic(className) %}
       // build device side object
-      Device::D{{className}} *dItem = new Device::D{{className}}(emptyConfig, {{parentDevice}});
+      Device::D{{className}} *dItemChildByDesign = new Device::D{{className}}(emptyConfig, {{parentDevice}});
 
       // link address space and device side objects
-      asItemChildByDesign->linkDevice( dItem );
-      dItem->linkAddressSpace( asItemChildByDesign, asItemChildByDesign->nodeId().toString().toUtf8() );
-      {{parentDevice}}->add(dItem);
+      asItemChildByDesign->linkDevice( dItemChildByDesign );
+      dItemChildByDesign->linkAddressSpace( asItemChildByDesign, asItemChildByDesign->nodeId().toString().toUtf8() );
+      {{parentDevice}}->add(dItemChildByDesign);
     {% else %}
       // avoid unused variable warning (constructor above was required)
       (void)*asItemChildByDesign;
