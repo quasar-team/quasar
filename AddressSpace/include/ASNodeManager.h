@@ -38,11 +38,27 @@ namespace AddressSpace
 
     public:
 	ASNodeManager();
-  
+
   ASNodeManager(const ASNodeManager& other) = delete;
   ASNodeManager& operator= (const ASNodeManager& other) = delete;
-  
+
 	virtual ~ASNodeManager();
+
+  /* Wrapper on top of UA-SDK that throws when the call wasn't successful */
+  UaStatus addNodeAndReferenceThrows(
+    const UaNodeId&   parentNodeId,
+    UaReferenceLists* pNewNode,
+    const UaNodeId&   referenceTypeId,
+    const UaNodeId&   targetNodeId);
+
+  UaStatus addNodeAndReferenceThrows(
+    UaReferenceLists* pSourceNode,
+    UaReferenceLists* pNewNode,
+    const UaNodeId&   referenceTypeId,
+    const UaNodeId&   sourceNodeId,
+    const UaNodeId&   targetNodeId);
+
+
 
 	virtual UaStatus afterStartUp();
 	virtual UaStatus beforeShutDown();
