@@ -103,7 +103,31 @@ def transformDesignVerbose(transformPath, outputFile, requiresMerge, astyleRun=F
                 .format('additionalParam=[{0}]'.format(additionalParam) if additionalParam is not None else ''))
     return transformDesign(transformPath, outputFile, requiresMerge, astyleRun, additionalParam)
 
-def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalParam):
+def run_indent_tool(unindented_content, fout):
+    """Runs indentation tool, preferably astyle.
+       unindented_content - stream of bytes (e.g. encoded string) to pass to the tool,
+       fout - a file object to which the output will be written"""
+    try:
+        completed_indenter_process = subprocess.run(['astyle'], input=unindented_content,
+                                                    stdout=subprocess.PIPE, check=True)
+    except FileNotFoundError:
+        print(Fore.YELLOW +
+            ("Achtung, achtung. 'astyle' was not found in your system. This violates the "
+            "requirements for running quasar. We will try now with 'indent' tool as fallback "
+            "(maybe it's Friday afternoon now and you want to go home). "
+            "If this message is annoying to you, it's good and intended. Get astyle "
+            "installed asap, latest Monday morning.") +
+            Style.RESET_ALL)
+        try:
+            completed_indenter_process = subprocess.run(['indent'], input=unindented_content,
+                                                        stdout=subprocess.PIPE, check=True)
+        except FileNotFoundError:
+            raise Exception(("None of supported indent tools - astyle or indent - was found. Can't "
+                             "continue. Please see quasar documentation on organizing "
+                             "dependencies."))
+    fout.write(completed_indenter_process.stdout)
+
+def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalParam, indent_cpp=False):
     """ additionalParam - a dictionary that will be passed to the transform """
     outputDirectory = os.path.dirname(outputFile)
     try:
@@ -126,11 +150,20 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
         render_args.update({'additionalParam':additionalParam})
     else:
         render_args.update(additionalParam)
-    fout.write(env.get_template(os.path.basename(transformPath)).render(render_args).encode('utf-8'))
-    print(Fore.BLUE +
-        'quasar Jinja2 generator: Generated {0}, wrote {1} bytes'.format(outputFile, fout.tell()) +
-        Style.RESET_ALL)
-
+    unindented_content = env.get_template(os.path.basename(transformPath)).render(render_args).encode('utf-8')
+    if indent_cpp:
+        run_indent_tool(unindented_content, fout)
+        print(Fore.BLUE +
+            'quasar Jinja2 generator: Generated+indented {0}, wrote {1} bytes (unindented size: {2})'.format(
+                outputFile,
+                fout.tell(),
+                len(unindented_content)) +
+            Style.RESET_ALL)
+    else:
+        fout.write(unindented_content)
+        print(Fore.BLUE +
+            'quasar Jinja2 generator: Generated {0}, wrote {1} bytes'.format(outputFile, fout.tell()) +
+            Style.RESET_ALL)
 
 def transformDesign(transform_path, outputFile, requiresMerge, astyleRun, additionalParam=None):
     """Generates a file, applying a transform (XJinja2) to Design.xml
@@ -153,26 +186,9 @@ def transformDesign(transform_path, outputFile, requiresMerge, astyleRun, additi
         outputFile = outputFile + '.generated'
     try:
         if transformPath.endswith('.jinja'):
-            transformDesignByJinja(designXmlPath, transformPath, outputFile, processedAdditionalParam)
+            transformDesignByJinja(designXmlPath, transformPath, outputFile, processedAdditionalParam, astyleRun)
         else:
             raise Exception("Couldnt determine transformation type")
-
-        if astyleRun:
-            try:
-                return_code = subprocess.call([getCommand('astyle'), outputFile])
-                if return_code != 0:
-                    raise Exception(("astyle called on {0} returned non-zero code: {1}, "
-                                    "something went wrong.").format(outputFile, return_code))
-            except Exception as e:
-                try:
-                    subprocess.call([getCommand('indent'), outputFile, '-o', outputFile])
-                    print("We indented your code using 'indent' tool which is a fall-back tool. For best user satisfaction, please install astyle as described in the quasar documentation.  ")
-                except Exception as e:
-                    print("We didnt manage to run neither 'astyle' nor 'indent' tool. We're running a fall-back tool now. For best user satisfaction, please install astyle as described in the quasar documentation.  ")
-                    astyleSubstitute.do_indentation(outputFile)
-
-
-
         if requiresMerge:
             # If the file existed previously and it is different from the old one we run kdiff3
             if (os.path.isfile(originalOutputFile)) and (filecmp.cmp(originalOutputFile, outputFile) == False):
