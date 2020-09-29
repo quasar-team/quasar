@@ -55,7 +55,7 @@ def yes_or_no(question):
     while True:
         print(question+' type y or n; then enter   ')
         sys.stdout.flush()
-        yn = raw_input()
+        yn = input()
         if yn in ['y','n']:
             return yn
 
