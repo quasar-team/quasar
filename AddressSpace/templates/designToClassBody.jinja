@@ -293,6 +293,8 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       UaStatus status;
       UaString methodName;
       {% for m in this.method %}
+
+        /* Now working on method: {{m.get('name')}} */
         methodName = fixChildNameWhenSingleNodeClass(
           "{{m.get('name')}}",
           config.name().c_str());
@@ -308,7 +310,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
         {% if m.argument|length>0 %}
           {
-            UaPropertyMethodArgument * prop = new UaPropertyMethodArgument (
+            UaPropertyMethodArgument* propertyArguments = new UaPropertyMethodArgument (
               nm->makeChildNodeId( m_{{m.get('name')}}->nodeId(), "args" ),
               OpcUa_AccessLevels_CurrentRead,
               {{m.argument|length}},
@@ -322,7 +324,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
                 {% else %}
                   OpcUa_Int32 valueRank = -1; // this argument is a scalar
                 {% endif %}
-                prop->setArgument(
+                propertyArguments->setArgument(
                   {{loop.index0}},
                   UaString("{{arg.get('name')}}"),
                   UaNodeId( {{oracle.data_type_to_builtin_type(arg.get('dataType'))}}, 0),
@@ -333,7 +335,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
             {% endfor %}
             status = nm->addNodeAndReference(
               m_{{m.get('name')}},
-              prop,
+              propertyArguments,
               OpcUaId_HasProperty);
             if (!status.isGood())
               throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
@@ -364,15 +366,13 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
                 dimensions,
                 UaLocalizedText("en_US", "{{rv.get('name')}}") );
           	}
+            {% endfor %}
             status = nm->addNodeAndReferenceThrows(
           	  m_{{m.get('name')}},
               propReturn,
               OpcUaId_HasProperty,
               m_{{m.get('name')}}->nodeId(),
               propReturn->nodeId());
-            if (!status.isGood())
-              throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8() + "from:" + m_{{m.get('name')}}->nodeId().toString().toUtf8());
-            {% endfor %}
           }
         {% endif %}
         status = nm->addNodeAndReferenceThrows(
