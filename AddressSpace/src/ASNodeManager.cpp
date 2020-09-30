@@ -27,7 +27,7 @@
 #include <ASNodeManager.h>
 #include <ASInformationModel.h>
 #include <ASSourceVariable.h>
-
+#include <Utils.h>
 
 using namespace std;
 
@@ -52,7 +52,38 @@ ASNodeManager::~ASNodeManager()
 
 }
 
+UaStatus ASNodeManager::addNodeAndReferenceThrows(
+	const UaNodeId&   parentNodeId,
+	UaReferenceLists* pNewNode,
+	const UaNodeId&   referenceTypeId,
+	const UaNodeId&   targetNodeId)
+	{
+		UaStatus status = this->addNodeAndReference(parentNodeId, pNewNode, referenceTypeId);
+		if (!status.isGood())
+		  throw_runtime_error_with_origin(
+				std::string("While adding node: ")
+				+ status.toString().toUtf8()
+				+ "(from: " + parentNodeId.toString().toUtf8()
+				+ " to: " + targetNodeId.toString().toUtf8() + " )");
+		return status;
+	}
 
+	UaStatus ASNodeManager::addNodeAndReferenceThrows(
+		UaReferenceLists* pSourceNode,
+		UaReferenceLists* pNewNode,
+		const UaNodeId&   referenceTypeId,
+		const UaNodeId&   sourceNodeId,
+		const UaNodeId&   targetNodeId)
+		{
+			UaStatus status = this->addNodeAndReference(pSourceNode, pNewNode, referenceTypeId);
+			if (!status.isGood())
+				throw_runtime_error_with_origin(
+					std::string("While adding node: ")
+					+ status.toString().toUtf8()
+					+ "(from: " + sourceNodeId.toString().toUtf8()
+					+ " to: " + targetNodeId.toString().toUtf8() + " )");
+			return status;
+		}
 
 UaStatus ASNodeManager::createTypeNodes ()
 {

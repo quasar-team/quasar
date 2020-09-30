@@ -93,10 +93,8 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {% if designInspector.is_class_single_variable_node(className) %}
         status = nm->addUnreferencedNode( this );
       {% else %}
-        status = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent );
+        status = nm->addNodeAndReferenceThrows( parentNodeId, this, OpcUaId_HasComponent, this->nodeId() );
       {% endif %}
-      if (!status.isGood())
-        throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
 
       createCacheVariables(nm, config);
       initializeArrayCacheVariablesFromConfiguration(nm, config);
@@ -176,12 +174,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               /*check access level*/ OpcUa_False);
         {% endif %}
 
-        status = nm->addNodeAndReference(
+        nm->addNodeAndReferenceThrows(
           m_effectiveParentNodeIdForChildren,
           m_{{cv.get('name')}},
-          OpcUaId_HasComponent);
-        if (!status.isGood())
-          throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+          OpcUaId_HasComponent,
+          m_{{cv.get('name')}}->nodeId());
 
         {% if cv.get('addressSpaceWrite') == 'delegated' %}
           m_{{cv.get('name')}}->assignHandler(
@@ -281,12 +278,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           {{oracle.source_var_write_job_id(className, sv.get('name'), sv.get('addressSpaceWrite'))}}
           );
         m_{{sv.get('name')}}->setDataType( UaNodeId( {{oracle.data_type_to_builtin_type(sv.get('dataType'))}}, 0 ));
-        status = nm->addNodeAndReference(
+        nm->addNodeAndReferenceThrows(
           m_effectiveParentNodeIdForChildren,
           m_{{sv.get('name')}},
-          OpcUaId_HasComponent);
-        if (!status.isGood())
-          throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+          OpcUaId_HasComponent,
+          m_{{sv.get('name')}}->nodeId());
       {% endfor %}
     }
 
@@ -371,20 +367,19 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
                 UaLocalizedText("en_US", "{{rv.get('name')}}") );
           	}
             {% endfor %}
-            status = nm->addNodeAndReference(
+            status = nm->addNodeAndReferenceThrows(
           	  m_{{m.get('name')}},
               propReturn,
-              OpcUaId_HasProperty);
-            if (!status.isGood())
-              throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+              OpcUaId_HasProperty,
+              m_{{m.get('name')}}->nodeId(),
+              propReturn->nodeId());
           }
         {% endif %}
-        status = nm->addNodeAndReference(
+        status = nm->addNodeAndReferenceThrows(
 	        m_effectiveParentNodeIdForChildren,
           m_{{m.get('name')}},
-          OpcUaId_HasComponent);
-        if (!status.isGood())
-          throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+          OpcUaId_HasComponent,
+          m_{{m.get('name')}}->nodeId());
       {% endfor %}
     }
 
