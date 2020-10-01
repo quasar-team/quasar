@@ -97,9 +97,11 @@
 
 
 
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
 
 
 
@@ -578,11 +580,18 @@
           <td valign="top">A service release with many minor
             improvements<br>
           </td>
-          <td valign="top">Consider moving your custom sources listed in
-            Device/CMakeLists.txt to a newly added file
-            Device/DeviceCustom.cmake<br>
-            Device/CMakeLists.txt will become a file owned by the quasar
-            framework in one of future releases!<br>
+          <td valign="top">
+            <ul>
+              <li>Consider moving your custom sources listed in
+                Device/CMakeLists.txt to a newly added file
+                Device/DeviceCustom.cmake -- Device/CMakeLists.txt will
+                become a file owned by the quasar framework in one of
+                future releases!</li>
+              <li>If you use open62541-compat, please use version 1.2.2
+                or newer.<br>
+              </li>
+            </ul>
+            <br>
           </td>
           <td valign="top"> <br>
             Bug <br>
