@@ -19,7 +19,7 @@
   </d:class>
   <d:root>
     <!-- the power supplies are just identified by their ipAddress -->
-    <d:hasobjects instantiateUsing="configuration" class="PowerSupply" minOccurs="1" maxOccurs="100">
+    <d:hasobjects instantiateUsing="configuration" class="PowerSupply"  maxOccurs="100">
 
    </d:hasobjects>
   </d:root>
