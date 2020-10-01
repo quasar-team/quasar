@@ -26,7 +26,6 @@ import sys
 import filecmp
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
-import astyleSubstitute
 import subprocess
 import enum
 import jinja2
