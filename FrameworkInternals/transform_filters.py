@@ -56,7 +56,7 @@ def sorted_by_objectified_attr(items, attribute):
 
 def node_text_contents_to_string(node):
     """Returns text equivalent to TEXT of given element, assuming processing was skipped"""
-    text = lxml.etree.tostring(node)
+    text = lxml.etree.tostring(node).decode()
     # the following regex will generate two groups named "tag" (less relevant here) and "text" that
     # will match TEXT of given node, like if processing of children elements was skipped
     regex = re.compile(r"<(?P<tag>\S+)[^>]*>(?P<text>.*)</(?P=tag)>", re.DOTALL)
