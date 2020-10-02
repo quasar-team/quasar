@@ -38,7 +38,8 @@ jobs:
             ./quasar.py build Release ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
-            ./quasar.py build Release ;"
+            ./quasar.py build Release ;
+            ./.CI/travis/server_fixture.py ;"
 
     - name: open62541_test_recurrent_hasobjects
       script:
@@ -55,7 +56,8 @@ jobs:
             ./quasar.py set_build_config open62541_config.cmake ;
             cp .CI/test_cases/test_recurrent_hasobjects/Design.xml Design ;
             ./quasar.py generate device --all ;
-            ./quasar.py build Release ;"
+            ./quasar.py build Release ;
+            ./.CI/travis/server_fixture.py ;"
 
     - name: open62541_test_single_variable_node
       script:
@@ -72,7 +74,8 @@ jobs:
             ./quasar.py set_build_config open62541_config.cmake ;
             cp .CI/test_cases/test_single_variable_node/Design.xml Design ;
             ./quasar.py generate device --all ;
-            ./quasar.py build Release ;"
+            ./quasar.py build Release ;
+            ./.CI/travis/server_fixture.py ;"
 
     - name: open62541_test_methods
       script:
@@ -110,7 +113,8 @@ jobs:
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
-            ./quasar.py build ;"
+            ./quasar.py build ;
+            ./.CI/travis/server_fixture.py ;"
 
     - name: uasdk_test_sync_methods
       script:
@@ -120,7 +124,8 @@ jobs:
             cp .CI/test_cases/test_methods/Design.xml Design ;
             ./quasar.py generate device --all ;
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
-            ./quasar.py build ;"
+            ./quasar.py build ;
+            ./.CI/travis/server_fixture.py ;"
 
     - name: uasdk_test_cache_variables
       script:
@@ -133,7 +138,8 @@ jobs:
             ./quasar.py build ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
-            ./quasar.py build ;"
+            ./quasar.py build ;
+            ./.CI/travis/server_fixture.py ;"
 
     - name: uasdk_test_source_variables
       script:
@@ -143,4 +149,5 @@ jobs:
             cp .CI/test_cases/test_source_variables/Design.xml Design ;
             ./quasar.py generate device --all ;
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
-            ./quasar.py build ;"
+            ./quasar.py build ;
+            ./.CI/travis/server_fixture.py ;"
