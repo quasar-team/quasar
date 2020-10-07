@@ -9,28 +9,22 @@ jobs:
   include:
     - name: open62541_default_quasar_design
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541-next /bin/bash -c "
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
-            git config --global user.email quasar-developers@cern.ch ;
-            git config --global user.name QuasarDeveloper ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            source .CI/travis/job_prologue.sh ;
             source .CI/travis/job_epilogue.sh ;"
 
     - name: open62541_test_cache_variables
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541-next /bin/bash -c "
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
-            git config --global user.email quasar-developers@cern.ch ;
-            git config --global user.name QuasarDeveloper ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            source .CI/travis/job_prologue.sh ;
             ./quasar.py enable_module open62541-compat ;
             ./quasar.py set_build_config open62541_config.cmake ;
             cp .CI/test_cases/test_cache_variables/Design.xml Design ;
@@ -42,15 +36,12 @@ jobs:
 
     - name: open62541_test_methods
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541-next /bin/bash -c "
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
-            git config --global user.email quasar-developers@cern.ch ;
-            git config --global user.name QuasarDeveloper ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            source .CI/travis/job_prologue.sh ;
             cp .CI/test_cases/test_methods/Design.xml Design ;
             ./quasar.py generate device --all ;
             source .CI/travis/job_epilogue.sh ;"
