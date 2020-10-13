@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://cern.ch/quasar/Configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Configuration ../Configuration/Configuration.xsd ">
+	<TopClass name="tc1" cv1="0.0">
+		<TopClass name="tc2" cv1="0.0">
+			<BottomClass name="bc4" cv3="0.0"></BottomClass></TopClass>
+		<MiddleClass name="mc1" cv2="0.0">
+			<BottomClass name="bc1" cv3="0.0"></BottomClass>
+			<BottomClass name="bc2" cv3="0.0">
+				<BottomClass name="bc3" cv3="0.0"></BottomClass></BottomClass>
+			<MiddleClass name="mc2" cv2="0.0"></MiddleClass></MiddleClass></TopClass>
+
+</configuration>
