@@ -39,6 +39,7 @@ jobs:
             cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
             ./quasar.py build Release ;
+            cp .CI/test_cases/test_cache_variables/config.xml build/bin ;
             ./.CI/travis/server_fixture.py ;"
 
     - name: open62541_test_recurrent_hasobjects
