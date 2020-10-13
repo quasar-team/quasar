@@ -104,8 +104,9 @@ jobs:
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             source .CI/travis/job_prologue.sh ;
-            cp .CI/test_cases/test_instantiation_from_design/Design.xml Design ;
+            cp -v .CI/test_cases/test_instantiation_from_design/Design.xml Design ;
             ./quasar.py generate device --all ;
+            cp -v .CI/test_cases/test_instantiation_from_design/config.xml bin/ ;
             source .CI/travis/job_epilogue.sh ;"
 
     - name: uasdk_default_quasar_design
