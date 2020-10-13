@@ -1,1 +1,1 @@
-#define QUASAR_VERSION_STR "nebula.A5"
+#define QUASAR_VERSION_STR "nebula.A6"
