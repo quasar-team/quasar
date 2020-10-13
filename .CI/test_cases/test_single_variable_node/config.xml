@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://cern.ch/quasar/Configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Configuration ../Configuration/Configuration.xsd ">
+	<CanBus name="can0">
+		<ReadOnlyProperty propertyName="prop1" dataType="UaString" name="prop1"></ReadOnlyProperty></CanBus>
+
+</configuration>
