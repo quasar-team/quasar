@@ -38,8 +38,8 @@ jobs:
             ./quasar.py build Release ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
+            cp -v .CI/test_cases/test_cache_variables/config.xml build/bin ;
             ./quasar.py build Release ;
-            cp .CI/test_cases/test_cache_variables/config.xml build/bin ;
             ./.CI/travis/server_fixture.py ;"
 
     - name: open62541_test_recurrent_hasobjects
@@ -129,6 +129,7 @@ jobs:
             cp .CI/test_cases/test_methods/Design.xml Design ;
             ./quasar.py generate device --all ;
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
+            cp -v .CI/test_cases/test_methods/config.xml bin/ ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py ;"
 
@@ -143,6 +144,7 @@ jobs:
             ./quasar.py build ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
+            cp -v .CI/test_cases/test_cache_variables/config.xml build/bin ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py ;"
 
@@ -154,5 +156,6 @@ jobs:
             cp .CI/test_cases/test_source_variables/Design.xml Design ;
             ./quasar.py generate device --all ;
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
+            cp -v .CI/test_cases/test_source_variables/config.xml bin/ ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py ;"
