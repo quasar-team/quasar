@@ -100,6 +100,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       initializeArrayCacheVariablesFromConfiguration(nm, config);
       createSourceVariables(nm, config);
       createMethods(nm, config);
+      createPropertiesFromConfigEntries(nm, config);
 
     }
 
@@ -382,6 +383,30 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           m_{{m.get('name')}}->nodeId());
       {% endfor %}
     }
+
+    void AS{{className}}::createPropertiesFromConfigEntries(
+      ASNodeManager* nm,
+      const Configuration::{{className}}& config)
+      {
+          {% for ce in this.configentry %}
+            {
+              UaPropertyCache* property = new UaPropertyCache(
+                "{{ce.get('name')}}",
+                nm->makeChildNodeId(
+                  m_effectiveParentNodeIdForChildren,
+                  "{{ce.get('name')}}"),
+                  UaVariant(),
+                  OpcUa_AccessLevels_CurrentRead,
+                  "");
+              nm->addNodeAndReferenceThrows(
+                m_effectiveParentNodeIdForChildren,
+                property,
+                OpcUaId_HasProperty,
+                property->nodeId());
+
+            }
+          {% endfor %}
+      }
 
     AS{{className}}::~AS{{className}} ()
     {
