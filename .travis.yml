@@ -175,3 +175,14 @@ jobs:
             cp -v .CI/test_cases/test_source_variables/config.xml bin/ ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py ;"
+
+    - name: uasdk_test_config_entries
+      script:
+        - docker run  --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            cd quasar ;
+            cp -v .CI/test_cases/test_config_entries/Design.xml Design ;
+            cp -v .CI/test_cases/test_config_entries/config.xml bin/ ;
+            ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
+            ./quasar.py build ;
+            ./.CI/travis/server_fixture.py ;"
