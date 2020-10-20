@@ -391,12 +391,16 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           {% for ce in this.configentry %}
             {% if ce.array|length == 0 %}
               {
+                UaVariant defaultValue;
+                defaultValue.{{oracle.data_type_to_variant_setter(ce.get('dataType'))}} (
+                  config.{{ce.get('name')}}(){% if ce.get('dataType') == 'UaString' %}.c_str(){% endif %}
+                  );
                 UaPropertyCache* property = new UaPropertyCache(
                   "{{ce.get('name')}}",
                   nm->makeChildNodeId(
                     m_effectiveParentNodeIdForChildren,
                     "{{ce.get('name')}}"),
-                    UaVariant(),
+                    defaultValue,
                     OpcUa_AccessLevels_CurrentRead,
                     "");
                 nm->addNodeAndReferenceThrows(
