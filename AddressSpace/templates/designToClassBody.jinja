@@ -389,22 +389,25 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       const Configuration::{{className}}& config)
       {
           {% for ce in this.configentry %}
-            {
-              UaPropertyCache* property = new UaPropertyCache(
-                "{{ce.get('name')}}",
-                nm->makeChildNodeId(
+            {% if ce.array|length == 0 %}
+              {
+                UaPropertyCache* property = new UaPropertyCache(
+                  "{{ce.get('name')}}",
+                  nm->makeChildNodeId(
+                    m_effectiveParentNodeIdForChildren,
+                    "{{ce.get('name')}}"),
+                    UaVariant(),
+                    OpcUa_AccessLevels_CurrentRead,
+                    "");
+                nm->addNodeAndReferenceThrows(
                   m_effectiveParentNodeIdForChildren,
-                  "{{ce.get('name')}}"),
-                  UaVariant(),
-                  OpcUa_AccessLevels_CurrentRead,
-                  "");
-              nm->addNodeAndReferenceThrows(
-                m_effectiveParentNodeIdForChildren,
-                property,
-                OpcUaId_HasProperty,
-                property->nodeId());
-
-            }
+                  property,
+                  OpcUaId_HasProperty,
+                  property->nodeId());
+              }
+            {% else %}
+              // Note: config-entry {{ce.get('name')}} skipped because it's an array (not supported yet for propagation into properties)
+            {% endif %}
           {% endfor %}
       }
 
