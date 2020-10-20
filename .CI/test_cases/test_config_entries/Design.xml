@@ -14,28 +14,40 @@
 <d:configentry name="OpcUaFloat_scalar" dataType="OpcUa_Float"/>
 <d:configentry name="UaString_scalar" dataType="UaString"/>
 <d:configentry name="OpcUaBoolean_array" dataType="OpcUa_Boolean">
+<d:array/>
 </d:configentry>
 <d:configentry name="OpcUaByte_array" dataType="OpcUa_Byte">
+<d:array/>
 </d:configentry>
 <d:configentry name="OpcUaSByte_array" dataType="OpcUa_SByte">
+<d:array/>
 </d:configentry>
 <d:configentry name="OpcUaUInt16_array" dataType="OpcUa_UInt16">
+<d:array/>
 </d:configentry>
 <d:configentry name="OpcUaInt16_array" dataType="OpcUa_Int16">
+<d:array/>
 </d:configentry>
 <d:configentry name="OpcUaUInt32_array" dataType="OpcUa_UInt32">
+<d:array/>
 </d:configentry>
 <d:configentry name="OpcUaInt32_array" dataType="OpcUa_Int32">
+<d:array/>
 </d:configentry>
 <d:configentry name="OpcUaUInt64_array" dataType="OpcUa_UInt64">
+<d:array/>
 </d:configentry>
 <d:configentry name="OpcUaInt64_array" dataType="OpcUa_Int64">
+<d:array/>
 </d:configentry>
 <d:configentry name="OpcUaDouble_array" dataType="OpcUa_Double">
+<d:array/>
 </d:configentry>
 <d:configentry name="OpcUaFloat_array" dataType="OpcUa_Float">
+<d:array/>
 </d:configentry>
 <d:configentry name="UaString_array" dataType="UaString">
+<d:array/>
 </d:configentry>
 </d:class>
 <d:root>
