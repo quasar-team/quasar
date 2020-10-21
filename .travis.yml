@@ -112,6 +112,22 @@ jobs:
             cp -v .CI/test_cases/test_instantiation_from_design/config.xml bin/ ;
             source .CI/travis/job_epilogue.sh ;"
 
+    - name: open62541_test_config_entries
+      script:
+        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+            echo '********************************************************************' ;
+            echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
+            echo '********************************************************************' ;
+            git config --global user.email quasar-developers@cern.ch ;
+            git config --global user.name QuasarDeveloper ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            cd quasar ;
+            source .CI/travis/job_prologue.sh ;
+            cp -v .CI/test_cases/test_config_entries/Design.xml Design ;
+            ./quasar.py generate device --all ;
+            cp -v .CI/test_cases/test_config_entries/config.xml bin/ ;
+            source .CI/travis/job_epilogue.sh ;"
+
     - name: uasdk_default_quasar_design
       script:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
@@ -157,5 +173,16 @@ jobs:
             ./quasar.py generate device --all ;
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             cp -v .CI/test_cases/test_source_variables/config.xml bin/ ;
+            ./quasar.py build ;
+            ./.CI/travis/server_fixture.py ;"
+
+    - name: uasdk_test_config_entries
+      script:
+        - docker run  --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            cd quasar ;
+            cp -v .CI/test_cases/test_config_entries/Design.xml Design ;
+            cp -v .CI/test_cases/test_config_entries/config.xml bin/ ;
+            ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py ;"
