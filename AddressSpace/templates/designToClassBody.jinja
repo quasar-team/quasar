@@ -237,7 +237,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
                 vect.begin(),
                 [](bool x){ return x ? OpcUa_True : OpcUa_False; }  );
           {% else %}
-            vect = config.{{cv.get('name')}}().value();
+            vect.assign(dim, 0);
+            std::copy(
+              config.{{cv.get('name')}}().value().begin(),
+              config.{{cv.get('name')}}().value().end(),
+              vect.begin());
           {% endif %}
           UaVariant variant;
           {{oracle.vector_to_uavariant_function(cv.get('dataType'))}} (vect, variant);
