@@ -100,6 +100,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       initializeArrayCacheVariablesFromConfiguration(nm, config);
       createSourceVariables(nm, config);
       createMethods(nm, config);
+      createPropertiesFromConfigEntries(nm, config);
 
     }
 
@@ -382,6 +383,37 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           m_{{m.get('name')}}->nodeId());
       {% endfor %}
     }
+
+    void AS{{className}}::createPropertiesFromConfigEntries(
+      ASNodeManager* nm,
+      const Configuration::{{className}}& config)
+      {
+          {% for ce in this.configentry %}
+            {% if ce.array|length == 0 %}
+              {
+                UaVariant defaultValue;
+                defaultValue.{{oracle.data_type_to_variant_setter(ce.get('dataType'))}} (
+                  config.{{ce.get('name')}}(){% if ce.get('dataType') == 'UaString' %}.c_str(){% endif %}
+                  );
+                UaPropertyCache* property = new UaPropertyCache(
+                  "{{ce.get('name')}}",
+                  nm->makeChildNodeId(
+                    m_effectiveParentNodeIdForChildren,
+                    "{{ce.get('name')}}"),
+                    defaultValue,
+                    OpcUa_AccessLevels_CurrentRead,
+                    "");
+                nm->addNodeAndReferenceThrows(
+                  m_effectiveParentNodeIdForChildren,
+                  property,
+                  OpcUaId_HasProperty,
+                  property->nodeId());
+              }
+            {% else %}
+              // Note: config-entry {{ce.get('name')}} skipped because it's an array (not supported yet for propagation into properties)
+            {% endif %}
+          {% endfor %}
+      }
 
     AS{{className}}::~AS{{className}} ()
     {
