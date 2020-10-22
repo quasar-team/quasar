@@ -62,7 +62,7 @@ def main():
             job_result['duration'] = math.ceil(t1-t0)
             job_results[job['name']] = job_result
 
-    print ('\n\n----- Final results -----\n\n')
+    print ('\n\n----- Final results (test branch: {0}) -----\n\n'.format(travis_pull_request_branch))
 
     print('{0:40} | {1:8} | {2:15}'.format('test name', 'ret code', 'time spent [s]'))
     print('{0:-<40} + {1:-<8} + {2:-<15}'.format('','',''))
