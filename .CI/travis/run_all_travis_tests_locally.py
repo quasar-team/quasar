@@ -55,7 +55,7 @@ def main():
         for cmd in cmd_list:
             print('Lets execute: ' + cmd)
             t0 = datetime.datetime.now().timestamp()
-            return_code = os.system('export TRAVIS_PULL_REQUEST_BRANCH={0};'.format(travis_pull_request_branch, cmd))
+            return_code = os.system('export TRAVIS_PULL_REQUEST_BRANCH={0}; {1}'.format(travis_pull_request_branch, cmd))
             t1 = datetime.datetime.now().timestamp()
             job_result = {}
             job_result['return_code'] = return_code
