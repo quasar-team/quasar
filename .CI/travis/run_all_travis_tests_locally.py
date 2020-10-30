@@ -37,6 +37,27 @@ import math
 import pygit2
 import sys
 from colorama import Fore, Style
+import threading
+
+def worker(lock, jobs_to_do, travis_pull_request_branch, job_results):
+    while True:
+        with lock:
+            if len(jobs_to_do) == 0:
+                return
+            job = jobs_to_do.pop(0)
+        print(Fore.GREEN + "Now at job: " + job['name'] + Style.RESET_ALL)
+        cmd_list = job['script']
+        for cmd in cmd_list:
+            print('Lets execute: ' + cmd)
+            t0 = datetime.datetime.now().timestamp()
+            return_code = os.system('export TRAVIS_PULL_REQUEST_BRANCH={0}; {1}'.format(travis_pull_request_branch, cmd))
+            t1 = datetime.datetime.now().timestamp()
+            job_result = {}
+            job_result['return_code'] = return_code
+            job_result['duration'] = math.ceil(t1-t0)
+        with lock:
+            job_results[job['name']] = job_result
+
 
 def main():
     repo = pygit2.Repository("../../.")
@@ -48,27 +69,32 @@ def main():
 
     job_results = {}
 
-    for job in yaml_repr['jobs']['include']:
-        print(Fore.GREEN + "Now at job: " + job['name'] + Style.RESET_ALL)
-        print('job name: ' + job['name'])
-        cmd_list = job['script']
-        for cmd in cmd_list:
-            print('Lets execute: ' + cmd)
-            t0 = datetime.datetime.now().timestamp()
-            return_code = os.system('export TRAVIS_PULL_REQUEST_BRANCH={0}; {1}'.format(travis_pull_request_branch, cmd))
-            t1 = datetime.datetime.now().timestamp()
-            job_result = {}
-            job_result['return_code'] = return_code
-            job_result['duration'] = math.ceil(t1-t0)
-            job_results[job['name']] = job_result
+    jobs_to_do = yaml_repr['jobs']['include']
+    lock = threading.Lock()
+    threads = []
+    NumWorkers = 3
+    for i in range(NumWorkers):
+        w = threading.Thread(target=worker, args=(lock, jobs_to_do, travis_pull_request_branch, job_results,))
+        w.start()
+        threads.append(w)
+    for t in threads:
+        t.join()
 
+
+    os.system('reset')  # docker messes with terminal ...
+    print ('... terminal was reset because docker messed it usually.')
     print ('\n\n----- Final results (test branch: {0}) -----\n\n'.format(travis_pull_request_branch))
 
     print('{0:40} | {1:8} | {2:15}'.format('test name', 'ret code', 'time spent [s]'))
     print('{0:-<40} + {1:-<8} + {2:-<15}'.format('','',''))
     for name in job_results:
         job_result = job_results[name]
-        print('{0:40} | {1:8} | {2:15}'.format(name, job_result['return_code'], job_result['duration']))
+        return_code = job_result['return_code']
+        if return_code != 0:
+            return_code = Fore.RED + '{0:8}'.format(return_code) + Style.RESET_ALL
+        else:
+            return_code = Fore.GREEN + '{0:8}'.format(return_code) + Style.RESET_ALL
+        print('{0:40} | {1} | {2:15}'.format(name, return_code, job_result['duration']))
 
 if __name__ == "__main__":
     main()
