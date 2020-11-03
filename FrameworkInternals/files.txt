@@ -174,7 +174,7 @@ File quasar_basic_utils.py must_exist,must_be_versioned,md5=e9279d61183f92021505
 File quasar_utils.py must_exist,must_be_versioned,md5=51dfb8f4f2b45da28da82e8d4aa72334,install=overwrite,
 File DesignInspector.py must_exist,must_be_versioned,md5=0122f7dd78b4eb390cc3f2a30bc7558a,install=overwrite,
 File DesignValidator.py must_exist,must_be_versioned,md5=7defb3f7bca9e4745857fb3a95ad0edd,install=overwrite,
-File Oracle.py must_exist,must_be_versioned,md5=3a2fcdab0820a5ed47f93535d7e9f627,install=overwrite,
+File Oracle.py must_exist,must_be_versioned,md5=9f1737a67188f3761ae9baf96ba7a35a,install=overwrite,
 Directory Server install=create,
 File CMakeLists.txt must_exist,must_be_versioned,install=ask_to_merge,
 Directory Server/include install=create,
