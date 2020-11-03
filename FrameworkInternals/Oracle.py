@@ -217,15 +217,20 @@ class Oracle():
                     'OpcUa_StatusCode statusCode, {2})').format(
                         cap_first(name), quasar_data_type, source_time_stamp)
 
-    def get_cache_variable_setter_array(self, name, quasar_data_type, for_header):
+    def get_cache_variable_setter_array(self, name, quasar_data_type, for_header, new_style_null=False):
         """ TODO: description """
         source_time_stamp = 'const UaDateTime& srcTime'
         if for_header:
             source_time_stamp += '= UaDateTime::now()'
         if quasar_data_type is None:
-            return 'setNull{0}( OpcUa_StatusCode statusCode, {1})'.format(
-                cap_first(name),
-                source_time_stamp)
+            if new_style_null:
+                return ('set{0}( QuasarNullDataType null, '
+                        'OpcUa_StatusCode statusCode, {1})').format(
+                            cap_first(name), source_time_stamp)
+            else:
+                return 'setNull{0}( OpcUa_StatusCode statusCode, {1})'.format(
+                    cap_first(name),
+                    source_time_stamp)
         else:
             return ('set{0}(const std::vector<{1}>& value, '
                     'OpcUa_StatusCode statusCode, {2})').format(
