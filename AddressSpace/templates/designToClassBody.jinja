@@ -495,8 +495,22 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {% endif %}
 
       {% if cv.get('nullPolicy') == 'nullAllowed' %}
-        /* null-setter (possible because nullPolicy=nullAllowed) */
+        /* null-setter (possible because nullPolicy=nullAllowed) -- old style -- will be deprecated */
         UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), None, False) }}
+        {
+          UaVariant v;
+          return m_{{cv.get('name')}}->setValue (
+            /*session*/ nullptr,
+            UaDataValue (
+              v,
+              statusCode,
+              srcTime,
+              UaDateTime::now()),
+            /*check access*/OpcUa_False );
+        }
+
+        /* null-setter (possible because nullPolicy=nullAllowed) -- new style */
+        UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), None, False, True) }}
         {
           UaVariant v;
           return m_{{cv.get('name')}}->setValue (

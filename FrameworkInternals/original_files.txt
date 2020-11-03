@@ -14,6 +14,7 @@ File designToGeneratedCmakeAddressSpace.xslt  deprecated
 File designToAddressSpaceDocHtml.xslt         deprecated
 
 Directory AddressSpace/include install=create
+File ASCommon.h                             must_exist,must_be_versioned,md5=check,install=overwrite
 File ASDelegatingMethod.h                   must_exist,must_be_versioned,md5=check,install=overwrite
 File ASDelegatingVariable.h                 must_exist,must_be_versioned,md5=check,install=overwrite
 File ASNodeManager.h                        must_exist,must_be_versioned,md5=check,install=overwrite
