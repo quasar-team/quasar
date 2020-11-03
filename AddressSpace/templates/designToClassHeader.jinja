@@ -26,17 +26,19 @@
 #ifndef __AS{{className}}__H__
 #define __AS{{className}}__H__
 
+/* From relevant OPC-UA toolkit ... */
 #include <opcua_baseobjecttype.h>
-
 #include <methodhandleuanode.h>
+
+/* From quasar's address-space module ... */
+#include <ASCommon.h>
 #include <ASDelegatingMethod.h>
-
-#include <Configuration.hxx>
-
 #include <ASNodeManager.h>
 #include <ASDelegatingVariable.h>
-
 #include <ASSourceVariable.h>
+
+/* From quasar's configuration module ... */
+#include <Configuration.hxx>
 
 {% if designInspector.class_has_device_logic(className) %}
   /* forward declaration */
@@ -67,6 +69,7 @@ namespace AddressSpace
 
   /* setters and getters for variables */
   {% for cv in this.cachevariable %}
+  /* setters and getters for cache-variable "{{cv.get('name')}}" */
     {% if cv.array|length>0 %}
       OpcUa_UInt32 {{cv.get('name')}}_minimumSize();
       OpcUa_UInt32 {{cv.get('name')}}_maximumSize();
@@ -77,8 +80,10 @@ namespace AddressSpace
         std::vector<{{cv.get('dataType')}}> get{{cv.get('name')|capFirst}} () const;
       {% endif %}
       {% if cv.get('nullPolicy') == 'nullAllowed' %}
-        /* null-setter (possible because nullPolicy=nullAllowed) */
+        /* null-setter (possible because nullPolicy=nullAllowed) - first the 'old-style' setter */
         UaStatus {{ oracle.get_cache_variable_setter_array(cv.get('name'), None, True) }};
+        /* now the new-style setter */
+        UaStatus {{ oracle.get_cache_variable_setter_array(cv.get('name'), None, True, True) }};
       {% endif %}
     {% else %}
       UaStatus get{{cv.get('name')|capFirst}} ({{cv.get('dataType')}}& out) const;
@@ -90,8 +95,11 @@ namespace AddressSpace
       {% if cv.get('nullPolicy') == 'nullAllowed' %}
         /* null-setter (possible because nullPolicy=nullAllowed) */
         UaStatus {{ oracle.get_cache_variable_setter(cv.get('name'), None, True) }};
+        /* now the new-style setter */
+        UaStatus {{ oracle.get_cache_variable_setter(cv.get('name'), None, True, True) }};
       {% endif %}
     {% endif %}
+
   {% endfor %}
 
   /* delegators for cachevariables  */
