@@ -19,7 +19,7 @@
 # Author: Stefan Schlenker
 
 project(opc_ua)
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 
 if(NOT ${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 message("Building out-of-source")
