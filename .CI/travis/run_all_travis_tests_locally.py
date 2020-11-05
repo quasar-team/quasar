@@ -30,6 +30,7 @@ ANY WAY OUT OF  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
 @contact:    quasar-developers@cern.ch
 '''
 
+import argparse
 import yaml
 import os
 import datetime
@@ -66,23 +67,33 @@ def main():
 
     yaml_file = open('../../.travis.yml')
     yaml_repr = yaml.load(yaml_file)
+    job_names_in_yaml = [job['name'] for job in yaml_repr['jobs']['include']]
+    print('note: jobs declared in the yaml are:', job_names_in_yaml)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--select-jobs", help="A comma-separated list of jobs to execute instead of all jobs", default = ','.join(job_names_in_yaml))
+    parser.add_argument("--no-term-reset", help="Dont reset the terminal", action='store_true')
+    parser.add_argument("--num-workers", default=3, type=int, help="Number of jobs to run concurrently.")
+    args = parser.parse_args()
+
+    job_names_selected = args.select_jobs.split(',')
+    jobs_to_do = [job for job in yaml_repr['jobs']['include'] if job['name'] in job_names_selected]
+    print('The following jobs were selected to be executed:', '\n'.join([job['name'] for job in jobs_to_do]))
 
     job_results = {}
 
-    jobs_to_do = yaml_repr['jobs']['include']
     lock = threading.Lock()
     threads = []
-    NumWorkers = 3
-    for i in range(NumWorkers):
+    for i in range(args.num_workers):
         w = threading.Thread(target=worker, args=(lock, jobs_to_do, travis_pull_request_branch, job_results,))
         w.start()
         threads.append(w)
     for t in threads:
         t.join()
 
-
-    os.system('reset')  # docker messes with terminal ...
-    print ('... terminal was reset because docker messed it usually.')
+    if not args.no_term_reset:
+        os.system('reset')  # docker messes with terminal ...
+        print ('... terminal was reset because docker messed it usually.')
     print ('\n\n----- Final results (test branch: {0}) -----\n\n'.format(travis_pull_request_branch))
 
     print('{0:40} | {1:8} | {2:15}'.format('test name', 'ret code', 'time spent [s]'))
