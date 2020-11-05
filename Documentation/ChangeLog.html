@@ -103,9 +103,13 @@
 
 
 
+
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
+
 
 
 
@@ -197,6 +201,42 @@
           </td>
         </tr>
         <tr>
+          <td valign="top">nebula.A8<br>
+            <font size="-1">(05-Nov-2020)</font><br>
+          </td>
+          <td valign="top">Quasar is now much more consistent on null
+            setters.<br>
+            Also, see the new improvements.<br>
+          </td>
+          <td valign="top">(none known)<br>
+          </td>
+          <td valign="top">New Feature
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1273">OPCUA-1273</a>]
+                - Use overloads with QUASAR_NULL (or so) data-type to
+                improve null setters
+              </li>
+            </ul>
+            <br>
+            Improvement
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1770">OPCUA-1770</a>]
+                - quasar.py build, determine chosen builder from the
+                "build" directory if possible
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2033">OPCUA-2033</a>]
+                - Improve travis runner for concurrency
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2038">OPCUA-2038</a>]
+                - quasar to require cmake version at least 3.10 (issues
+                with 3.3 were identified)
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
           <td valign="top">nebula.A7<br>
             <font size="-1">(22-Oct-2020)</font><br>
           </td>
@@ -205,30 +245,23 @@
           </td>
           <td valign="top">If you use open62541-compat, you need version
             1.3.4 or later.</td>
-          <td valign="top">Bug
-            <br>
+          <td valign="top">Bug <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1603">OPCUA-1603</a>]
                 - quasar arrays with config initializer, with value
-                restrictions, do not build
-              </li>
+                restrictions, do not build </li>
             </ul>
-            Task
-            <br>
+            Task <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1971">OPCUA-1971</a>]
-                - Expose configentry as OPC-UA property - for scalars
-              </li>
+                - Expose configentry as OPC-UA property - for scalars </li>
             </ul>
-            Improvement
-            <br>
+            Improvement <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2019">OPCUA-2019</a>]
-                - New CI test dedicated to config entries
-              </li>
+                - New CI test dedicated to config entries </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2022">OPCUA-2022</a>]
-                - Add a script to run CI test locally
-              </li>
+                - Add a script to run CI test locally </li>
             </ul>
           </td>
         </tr>
