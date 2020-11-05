@@ -165,7 +165,7 @@ namespace AddressSpace
 
   /* Variables */
   {% for cv in this.cachevariable %}
-    {{oracle.cache_variable_cpp_type(cv.get('addressSpaceWrite'), className)}}* m_{{cv.get('name')}};
+    {{oracle.cache_variable_cpp_type(cv.get('addressSpaceWrite'), className, cv.array|length>0 )}}* m_{{cv.get('name')}};
   {% endfor %}
 
   {% for sv in this.sourcevariable %}

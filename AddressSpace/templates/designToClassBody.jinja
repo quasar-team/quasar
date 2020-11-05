@@ -181,7 +181,7 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           OpcUaId_HasComponent,
           m_{{cv.get('name')}}->nodeId());
 
-        {% if cv.get('addressSpaceWrite') == 'delegated' %}
+        {% if cv.get('addressSpaceWrite') == 'delegated' or (cv.array|length>0 and cv.get('addressSpaceWrite') == 'regular') %}
           m_{{cv.get('name')}}->assignHandler(
             this,
             &AS{{className}}::write{{cv.get('name')|capFirst}});
@@ -616,9 +616,33 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 {### DELEGATES ###}
     /* generate delegates (if requested) */
     {% for cv in this.cachevariable %}
-      {% if cv.get('addressSpaceWrite') in ['delegated','regular'] %}
+      {% if cv.get('addressSpaceWrite') in ['delegated','regular'] %} // @note Piotr: regular to be there only for arrays, for scalars it is not necessary.
         {{ oracle.get_delegated_write_header(cv.get('name'), className, 'body') }}
         {
+          {% if cv.array|length>0 %} // array size check.
+            {
+              UaVariant v (*dataValue.value());
+              if (!v.isArray())
+              {
+                LOG(Log::ERR) << "Received a scalar where an array was expected.";
+                return OpcUa_BadDataEncodingInvalid;
+              }
+              OpcUa_Int32 stackArraySize = v.arraySize();
+              if (stackArraySize < 0)
+              {
+                LOG(Log::ERR) << "Received an array with size that can be determined, or the encoding is unknown.";
+                return OpcUa_BadDataEncodingInvalid;
+              }
+              OpcUa_UInt32 arraySize = stackArraySize; // that is safe cause negatives was filtered above.
+              if (arraySize < this->{{cv.get('name')}}_minimumSize() || arraySize > {{cv.get('name')}}_maximumSize())
+              {
+                LOG(Log::ERR) <<
+                  "Received an array of size out of design-established bounds (received [" << arraySize <<
+                  "] expected in range [(" << {{cv.get('name')}}_minimumSize() << "," << {{cv.get('name')}}_maximumSize() << "]) inclusive)";
+                return OpcUa_BadIndexRangeInvalid;
+              }
+            }
+          {% endif %}
           {% if cv.get('dataType') != 'UaVariant' %}
             /* ensure that data type passed by OPC UA client matches specification */
             UaVariant v (*dataValue.value()); // TODO : do we really need this copy?

@@ -269,14 +269,24 @@ class Oracle():
         else:
             return quasar_data_type
 
-    def cache_variable_cpp_type(self, address_space_write, in_which_class):
+    def cache_variable_cpp_type(self, address_space_write, in_which_class, is_array=True):
         """Returns C++ class to represent this cache-var in address-space"""
-        if address_space_write in ['regular', 'forbidden']:
-            return 'ChangeNotifyingVariable'
-        elif address_space_write == 'delegated':
-            return 'ASDelegatingVariable<AS{0}>'.format(in_which_class)
+        if is_array:
+            if address_space_write in ['regular', 'delegated']:
+                #note @piotr: the reason for having 'regular' routed via delegating variable is that
+                #we have to do size validation.
+                return 'ASDelegatingVariable<AS{0}>'.format(in_which_class)
+            else:
+                #note @piotr: it could be BaseDataVariableType as well, because for the moment
+                #there is no way to run CalculatedVariable on ChangeNotifyingVariable
+                return 'ChangeNotifyingVariable'
         else:
-            raise Exception("Unsupported address_space_write mode")
+            if address_space_write in ['regular', 'forbidden']:
+                return 'ChangeNotifyingVariable'
+            elif address_space_write == 'delegated':
+                return 'ASDelegatingVariable<AS{0}>'.format(in_which_class)
+            else:
+                raise Exception("Unsupported address_space_write mode")
 
     def cache_variable_access_level(self, address_space_write):
         """Returns value of OPC-UA accessLevel attribute"""
