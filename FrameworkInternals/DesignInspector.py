@@ -226,37 +226,25 @@ class DesignInspector():
         the_class = self.objectify_class(class_name)
         return the_class.get('singleVariableNode') == 'true'
         
-    def get_restrictions(self, className, cachevar_or_configentry_name):
-        xpath_str="\
-            /d:design/d:class[@name='{0}']/d:cachevariable[@name='{1}']/d:configRestriction \
-            | \
-            /d:design/d:class[@name='{0}']/d:configentry[@name='{1}']/d:configRestriction".format(className, cachevar_or_configentry_name)
-        restrictionElems=self.objectify_any(xpath_str)
-        return self.parseRestrictions(restrictionElems)
-        
-    def parseRestrictions(self, restrictionElems):
-        """ Method returns dict list, populated according to (objectified) restrictions"""
-        result=[]
-        for restrictionElem in restrictionElems:
-            for restrictionSpec in restrictionElem.iterchildren():
-                restriction={'type' : 'ERROR'}
-                if 'restrictionByEnumeration' in restrictionSpec.tag:
-                    restriction['type']='byEnumeration'
-                    restriction['enumerationValues']=[]
-                    for enumerationValue in restrictionSpec.iterchildren():
-                        restriction['enumerationValues'].append(enumerationValue.get('value'))
-                elif 'restrictionByPattern' in restrictionSpec.tag:
-                    restriction['type']='byPattern'
-                    restriction['pattern']=restrictionSpec.get('pattern')
-                elif 'restrictionByBounds' in restrictionSpec.tag:
-                    restriction['type']='byBounds'
-                    restriction['minInclusive']=restrictionSpec.get('minInclusive')
-                    restriction['maxInclusive']=restrictionSpec.get('maxInclusive')
-                    restriction['minExclusive']=restrictionSpec.get('minExclusive')
-                    restriction['maxExclusive']=restrictionSpec.get('maxExclusive')
-                result.append(restriction)
-        return result
-        
+    def get_restrictions(self, class_name, name, what):
+        """Returns a list of tuples(type, value) where type is one of [enumeration, pattern,
+           minExclusive, minInclusive, maxInclusive, maxExclusive] and value is plug'n'play value
+           attribute of chosen XSD restriction.
+
+           what - either 'cachevariable' or 'configentry'"""
+
+        list_of_tuples = []
+
+        xpath_prefix = "/d:design/d:class[@name='{0}']/d:{1}[@name='{2}']/d:configRestriction".format(class_name, what, name)
+        for enumerationValue in self.objectify_any(xpath_prefix + "/d:restrictionByEnumeration/d:enumerationValue"):
+            list_of_tuples.append(('enumeration', enumerationValue.get('value'), ))
+        for restrictionByPattern in self.objectify_any(xpath_prefix + "/d:restrictionByPattern"):
+            list_of_tuples.append(('pattern', restrictionByPattern.get('pattern'), ))
+        for restrictionByBounds in self.objectify_any(xpath_prefix + "/d:restrictionByBounds"):
+            list_of_tuples.extend([(key, restrictionByBounds.attrib[key]) for key in restrictionByBounds.attrib.keys()])
+
+        return list_of_tuples
+
     def getProjectName(self):
         return self.xpath("/d:design/@projectShortName")[0]
         

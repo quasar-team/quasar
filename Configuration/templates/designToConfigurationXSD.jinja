@@ -3,11 +3,11 @@
 {# All rights not expressly granted are reserved.                                #}
 {# This file is part of Quasar.                                                  #}
 {#                                                                               #}
-{# Quasar is free software: you can redistribute it and/or modify                #}     
-{# it under the terms of the GNU Lesser General Public Licence as published by   #}     
-{# the Free Software Foundation, either version 3 of the Licence.                #}     
-{# Quasar is distributed in the hope that it will be useful,                     #}     
-{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}     
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
 {#                                                                               #}
 {# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
 {# GNU Lesser General Public Licence for more details.                           #}
@@ -33,36 +33,17 @@
       {% endfor %}
       </xs:documentation>
     </xs:annotation>
-  {% endif %}  
+  {% endif %}
 {% endmacro %}
 
 {% macro writeRestrictions(className, varName, dataType, restrictions) %}
   <!--processing [{{restrictions|length}}] restrictions for class [{{className}}] name: {{varName}} dataType [{{dataType}}]-->  
   <xs:simpleType>
     <xs:restriction base="{{dataType}}">
-    {% for restriction in restrictions %}
-      {% if restriction['type'] == 'byEnumeration' %}
-        {% for enumerationValue in restriction['enumerationValues']%}
-          <xs:enumeration value="{{enumerationValue}}"/>
-        {% endfor %}
-      {% elif restriction['type'] == 'byPattern' %}
-        <xs:pattern value="{{restriction['pattern']}}"/>
-      {% elif restriction['type'] == 'byBounds' %}
-        {% if restriction['minExclusive'] %}
-          <xs:minExclusive value="{{restriction['minExclusive']}}"/>
-        {% endif %}
-        {% if restriction['maxExclusive'] %}
-          <xs:maxExclusive value="{{restriction['maxExclusive']}}"/>
-        {% endif %}
-        {% if restriction['minInclusive'] %}
-         <xs:minInclusive value="{{restriction['minInclusive']}}"/>
-       {% endif %}
-       {% if restriction['maxInclusive'] %}
-         <xs:maxInclusive value="{{restriction['maxInclusive']}}"/>
-       {% endif %}
-     {% endif %}
-    {% endfor %}         
-   </xs:restriction>
+      {% for restriction in restrictions %}
+        <xs:{{restriction[0]}} value="{{restriction[1]}}"/>
+      {% endfor %}
+    </xs:restriction>
   </xs:simpleType>
 {% endmacro %}
 
@@ -74,11 +55,11 @@
   {% endif -%}
 {% endmacro %}
 
-{% macro writeArrayCacheVarOrConfigEntry(className, targetVar) %}
+{% macro writeArrayCacheVarOrConfigEntry(className, targetVar, what) %}
   {% set targetName = targetVar.get('name') %}
   {% set dataType = oracle.quasar_data_type_to_xsd_type(targetVar.get('dataType')) %}
   {% set arrayObject = designInspector.xpath_relative_to_object(targetVar, "d:array")[0] %}
-  {% set restrictions = designInspector.get_restrictions(className, targetName) %}
+  {% set restrictions = designInspector.get_restrictions(className, targetName, what) %}
   <!-- add array cacheVariable/configEntry name [{{targetName}}] type [{{dataType}}] -->
   <xs:element name="{{targetName}}">
     <xs:complexType>
@@ -94,7 +75,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-{% endmacro %}	      
+{% endmacro %}
 
 <xs:schema xmlns:tns="http://cern.ch/quasar/Configuration"
   xmlns:xi="http://www.w3.org/2003/XInclude"
@@ -164,12 +145,12 @@
     
 	    <!-- processing array cache vars (by configuration) for class [{{className}}] -->
 	    {% for arrayCacheVarByConfig in designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration' and d:array]") %}
-	      {{writeArrayCacheVarOrConfigEntry(className, arrayCacheVarByConfig) }}
+	      {{writeArrayCacheVarOrConfigEntry(className, arrayCacheVarByConfig, "cachevariable") }}
 	    {% endfor %}
-	    
+
 	    <!-- processing array config entries for class [{{className}}] -->
 	    {% for arrayConfigEntry in designInspector.objectify_config_entries(className, restrict_by="[d:array]") %}
-	      {{writeArrayCacheVarOrConfigEntry(className, arrayConfigEntry) }}
+	      {{writeArrayCacheVarOrConfigEntry(className, arrayConfigEntry, "configentry") }}
 	    {% endfor %}
 	    
     </xs:sequence>
@@ -180,7 +161,7 @@
     {% for scalarCacheVarByConfig in designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration' and not(d:array)]") %}
       {% set cacheVarName = scalarCacheVarByConfig.get('name') %}
       {% set dataType = oracle.quasar_data_type_to_xsd_type(scalarCacheVarByConfig.get('dataType')) %}
-      {% set restrictions = designInspector.get_restrictions(className, cacheVarName) %}
+      {% set restrictions = designInspector.get_restrictions(className, cacheVarName, "cachevariable") %}
       <!-- add scalarCacheVarByConfig name [{{cacheVarName}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
       {% if restrictions|length>0 %}
         <xs:attribute name="{{cacheVarName}}" use="required">
@@ -197,7 +178,7 @@
     {% for scalarConfigEntry in designInspector.objectify_config_entries(className, restrict_by="[not(d:array)]") %}
       {% set configEntryName = scalarConfigEntry.get('name') %}
       {% set dataType = oracle.quasar_data_type_to_xsd_type(scalarConfigEntry.get('dataType')) %}
-      {% set restrictions = designInspector.get_restrictions(className, configEntryName) %}
+      {% set restrictions = designInspector.get_restrictions(className, configEntryName, "configentry") %}
       <!-- add scalarConfigEntry name [{{configEntryName}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
       {% if restrictions|length>0 %}
        <xs:attribute name="{{configEntryName}}" {{writeUsageAndDefaultValue(scalarConfigEntry)}}>
