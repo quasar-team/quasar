@@ -410,6 +410,7 @@ elementFormDefault="qualified">
         </sequence>
         <attribute name="name" type="tns:VariableName" use="required"></attribute>
         <attribute name="executionSynchronicity" type="tns:MethodExecutionSynchronicity" use="required"></attribute>
+        <attribute name="addressSpaceCallUseMutex" type="tns:MethodCallUseMutex" use="optional" default="no"/>
     </complexType>
 
     <complexType name="MethodArgument">
@@ -436,6 +437,14 @@ elementFormDefault="qualified">
         <restriction base="string">
             <enumeration value="synchronous"></enumeration>
             <enumeration value="asynchronous"></enumeration>
+        </restriction>
+    </simpleType>
+    
+    <simpleType name="MethodCallUseMutex">
+        <restriction base="string">
+            <enumeration value="no"></enumeration>
+            <enumeration value="of_this_method"></enumeration>
+            <enumeration value="of_containing_object"></enumeration>
         </restriction>
     </simpleType>
 

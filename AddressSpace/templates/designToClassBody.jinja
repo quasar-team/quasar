@@ -771,6 +771,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
           try
           {
+            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
+              getDeviceLink()->lockMethodCall_{{m.get('name')}}();
+            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
+              getDeviceLink()->lock();
+            {% endif %}
             UaStatus stat = getDeviceLink()->call{{m.get('name')|capFirst}} (
               {% for arg in m.argument %}
                 arg_{{arg.get('name')}}{% if loop.index < (m.argument|length+m.returnvalue|length) %},
@@ -782,6 +787,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               {% endfor %}
 
             );
+            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
+              getDeviceLink()->unlockMethodCall_{{m.get('name')}}();
+            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
+              getDeviceLink()->unlock();
+            {% endif %}
             {% if m.returnvalue|length>0 %}
               UaVariant helper;
               outputArguments.create( {{m.returnvalue|length}} );
@@ -807,6 +817,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           }
           catch (const std::exception& e)
           {
+            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
+              getDeviceLink()->unlockMethodCall_{{m.get('name')}}();
+            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
+              getDeviceLink()->unlock();
+            {% endif %}
             LOG(Log::ERR) << "method call of method {{m.get('name')}} thrown an exception (should have been handled in the method body...): " << e.what();
             UaStatus badStatus = OpcUa_BadInternalError;
             pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );
