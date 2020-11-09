@@ -49,10 +49,16 @@
 #include <meta.h>
 
 #include <signal.h>
-#ifndef __GNUC__
+#ifdef __linux__
+#include <unistd.h>
+#include <pwd.h>
+#elif _WIN32
 #include <windows.h>
+#include <Lmcons.h>
 #endif
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string/join.hpp>
 
 #include <MetaBuildInfo.h>
 #include <CalculatedVariablesEngine.h>
@@ -198,6 +204,73 @@ std::string BaseQuasarServer::getApplicationPath() const
     return std::string(serverSettingsPath);
 }
 
+std::string BaseQuasarServer::getProcessEnvironmentVariables() const
+{
+    std::ostringstream result;
+#ifdef __linux__
+    extern char **environ;
+    char *s = *environ;
+    for (int i = 0; s; ++i)
+    {
+        result << "env var [" << i << "] - value [" << s << "]" << std::endl;
+        s = *(environ + i);
+    }
+#elif _WIN32
+    auto envBlockDeleterFn = [](LPTCH p) { FreeEnvironmentStrings(p); };
+    auto envBlock = std::unique_ptr<TCHAR, decltype(envBlockDeleterFn)>{ GetEnvironmentStrings(), envBlockDeleterFn };
+    // envBlock format: "keyA=valA\0keyB=valB\0...keyXXX=valXXX\0\0". Double \0\0 denotes end of block
+    for (TCHAR* pos = envBlock.get(); pos != nullptr && *pos != TCHAR('\0'); )
+    {
+        const std::string envVar(pos); // capture from pos up to '\0'
+        result << envVar << std::endl;
+        pos += envVar.length() + 1; // +1 ? wind pos past '\0' at end of current key/val pair
+    }
+#endif
+    return result.str();
+}
+
+/**
+* Returns string in format: logged in user (effective process owner).
+* Examples, where a user 'quasar' is logged in...
+* == posix ==
+* 'quasar' runs process regular - returns 'quasar(quasar)'
+* 'quasar' runs process with sudo - returns 'quasar(root)'
+* == windows ==
+* 'quasar' runs process regular - returns 'quasar(normal)'
+* 'quasar' runs process with admin rights (or admin shell) 'quasar(elevated)'
+*/
+std::string BaseQuasarServer::getProcessOwner() const
+{
+    std::ostringstream result;
+#ifdef __linux__
+    const auto userID = getlogin();
+    result << (userID != nullptr ? userID : "unknown");
+
+    std::string effectiveUserID = "unknown";
+    auto pwuid = getpwuid(getuid());
+    if (pwuid != nullptr && pwuid->pw_name != nullptr)
+    {
+        effectiveUserID = std::string(pwuid->pw_name);
+    }
+    result << "(" << effectiveUserID << ")";
+#elif _WIN32
+    char userID[UNLEN];
+    memset(userID, 0, UNLEN);
+    DWORD len = UNLEN;
+    result << (GetUserName(userID, &len) ? userID : "unknown");
+
+    DWORD bytesUsed = 0;
+    TOKEN_ELEVATION_TYPE elevationType = TokenElevationTypeDefault;
+    std::string elevationString = "unknown";
+    if (GetTokenInformation(GetCurrentProcessToken(), TokenElevationType, &elevationType, sizeof(elevationType), &bytesUsed))
+    {
+        elevationString = (elevationType == TokenElevationTypeFull ? "elevated" : "normal");
+    }
+    result << "(" << elevationString << ")";
+#endif
+    return result.str();
+}
+
 int BaseQuasarServer::parseCommandLine(
         int argc, 
         char *argv[], 
@@ -206,6 +279,8 @@ int BaseQuasarServer::parseCommandLine(
         std::string *configurationFileName, 
         std::string& opcUaBackendConfigurationFile)
 {
+    for (int i = 0; i < argc; m_commandLineArgs.push_back(std::string(argv[i++]))) {};
+
     bool createCertificateOnly = false;
     bool printVersion = false;
     string logFile;
@@ -284,8 +359,19 @@ int BaseQuasarServer::initializeEnvironment()
     const int ret = 0;
 #endif    
     initializeLogIt();
+    logEnvironment();
     CalculatedVariables::Engine::initialize();
     return ret;
+}
+void BaseQuasarServer::logEnvironment() const
+{
+    LOG(Log::INF) << __FUNCTION__ << std::endl << \
+        "\t Command line args: "<< boost::algorithm::join(m_commandLineArgs, " ") << std::endl << \
+        "\t Current working directory: " << boost::filesystem::current_path() << std::endl << \
+        "\t Directory of executable " << getApplicationPath() << std::endl << \
+        "\t Process owner: " << getProcessOwner();
+    LOG(Log::DBG) << __FUNCTION__ << std::endl << \
+        "\t Environment vars: " << getProcessEnvironmentVariables();
 }
 void BaseQuasarServer::initializeLogIt()
 {
