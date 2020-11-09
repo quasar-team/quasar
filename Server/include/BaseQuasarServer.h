@@ -99,10 +99,17 @@ private:
     int parseCommandLine(int argc, char *argv[], bool *isHelpOrVersion, bool *isCreateCertificateOnly, std::string *configurationFileName, std::string& opcUaBackendConfigurationFile);
     //initialize XML parser, logging and UA stack (in that order)
     int initializeEnvironment();
+    //Dump calling environment, cmd line args etc. to Log file
+    void logEnvironment() const;
+    // Gets the current process environment variables
+    std::string getProcessEnvironmentVariables() const;
+    // Gets the current process owner
+    std::string getProcessOwner() const;
     //Cleans the server before exiting.
     void shutdownEnvironment();
     //Handler for initializing the node manager configuration only when the server is ready
     UaStatus configurationInitializerHandler(const std::string& configFileName, AddressSpace::ASNodeManager *nm);
 
+    std::list<std::string> m_commandLineArgs;
 };
 #endif // include guard
