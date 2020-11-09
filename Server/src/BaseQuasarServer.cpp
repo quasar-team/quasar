@@ -212,7 +212,7 @@ std::string BaseQuasarServer::getProcessEnvironmentVariables() const
     char *s = *environ;
     for (int i = 0; s; ++i)
     {
-        result << "env var [" << i << "] - value [" << s << "]" << std::endl;
+        result << s << std::endl;
         s = *(environ + i);
     }
 #elif _WIN32
@@ -370,8 +370,6 @@ void BaseQuasarServer::logEnvironment() const
         "\t Current working directory: " << boost::filesystem::current_path() << std::endl << \
         "\t Directory of executable " << getApplicationPath() << std::endl << \
         "\t Process owner: " << getProcessOwner();
-    LOG(Log::DBG) << __FUNCTION__ << std::endl << \
-        "\t Environment vars: " << getProcessEnvironmentVariables();
 }
 void BaseQuasarServer::initializeLogIt()
 {
@@ -429,6 +427,7 @@ UaStatus BaseQuasarServer::configurationInitializerHandler(const std::string& co
     LOG(Log::INF) << "Configuration Initializer Handler";
     if (!overridableConfigure(configFileName, nm))
         return OpcUa_Bad; // error is already printed in configure()
+    LOG(Log::DBG) << __FUNCTION__ << " Environment vars: " << std::endl << getProcessEnvironmentVariables();
     validateDeviceTree();
     CalculatedVariables::Engine::printInstantiationStatistics();
     CalculatedVariables::Engine::optimize();
