@@ -43,7 +43,7 @@ def generate():
             if dataType in oracle.IntegerDataTypesRange:
                 range_tuple = oracle.IntegerDataTypesRange[dataType]
                 output('<d:restrictionByBounds minInclusive="{0}" maxInclusive="{1}"/>'.format(range_tuple[0]+1, range_tuple[1]-1))
-            output('<d:configRestriction/>')
+            output('</d:configRestriction>')
             output('</d:configentry>')
 
 
