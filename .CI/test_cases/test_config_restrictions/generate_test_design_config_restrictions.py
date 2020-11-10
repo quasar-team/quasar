@@ -38,10 +38,10 @@ sys.path.insert(0, '../../../FrameworkInternals')
 from Oracle import Oracle
 from transform_filters import cap_first
 
-def create_scenario_name(dataType, scalarArray):
+def create_scenario_name(what, dataType, scalarArray):
     assert dataType in Oracle.AllQuasarDataTypes
     assert scalarArray in ['scalar', 'array']
-    return '{0}_{1}'.format(dataType.replace('_',''), scalarArray)
+    return '{0}_{1}_{2}'.format(what, dataType.replace('_',''), scalarArray)
 
 f=open('Design.out', 'w')
 
@@ -56,34 +56,39 @@ def output(s):
 
 def generate():
     oracle = Oracle()
-    for scalarArray in ['scalar', 'array']:
-        dataTypes = Oracle.InitializeFromConfigDataTypes
-        for dataType in dataTypes:
-            scenario_name = create_scenario_name(dataType, scalarArray)
-            print(scenario_name)
-            output('<d:configentry name="{0}" dataType="{1}">'.format(
-                    scenario_name,
-                    dataType,
-                    ))
-            if scalarArray == 'array':
-                output('<d:array/>')
+    for what in ['configentry', 'cachevariable']:
+        for scalarArray in ['scalar', 'array']:
+            dataTypes = Oracle.InitializeFromConfigDataTypes
+            for dataType in dataTypes:
+                scenario_name = create_scenario_name(what, dataType, scalarArray)
+                print(scenario_name)
+                output('<d:{0} name="{1}" dataType="{2}" '.format(
+                        what,
+                        scenario_name,
+                        dataType,
+                        ))
+                if what == "cachevariable":
+                    output('initializeWith="configuration" nullPolicy="nullForbidden" addressSpaceWrite="forbidden" ')
+                output('>')
+                if scalarArray == 'array':
+                    output('<d:array/>')
 
-            output('<d:configRestriction>')
-            # for integer data types we can easily "invent" the restriction to be just a bit tighter
-            # that nominal numeric limits
-            if dataType in oracle.IntegerDataTypesRange:
-                range_tuple = oracle.IntegerDataTypesRange[dataType]
-                output('<d:restrictionByBounds minInclusive="{0}" maxInclusive="{1}"/>'.format(range_tuple[0]+1, range_tuple[1]-1))
-            elif dataType in ['OpcUa_Double', 'OpcUa_Float']:
-                output('<d:restrictionByBounds minInclusive="-12345678.999" maxInclusive="1234567890.999"/>')
-            elif dataType in ['UaString']:
-                output('<d:restrictionByEnumeration>')
-                output('<d:enumerationValue value="Parting is such sweet sorrow"/>')
-                output('<d:enumerationValue value="That I shall say good night till it be morrow."/>')
-                output('</d:restrictionByEnumeration>')
-            output('<d:restrictionByPattern pattern=".*"/>')
-            output('</d:configRestriction>')
-            output('</d:configentry>')
+                output('<d:configRestriction>')
+                # for integer data types we can easily "invent" the restriction to be just a bit tighter
+                # that nominal numeric limits
+                if dataType in oracle.IntegerDataTypesRange:
+                    range_tuple = oracle.IntegerDataTypesRange[dataType]
+                    output('<d:restrictionByBounds minInclusive="{0}" maxInclusive="{1}"/>'.format(range_tuple[0]+1, range_tuple[1]-1))
+                elif dataType in ['OpcUa_Double', 'OpcUa_Float']:
+                    output('<d:restrictionByBounds minInclusive="-12345678.999" maxInclusive="1234567890.999"/>')
+                elif dataType in ['UaString']:
+                    output('<d:restrictionByEnumeration>')
+                    output('<d:enumerationValue value="Parting is such sweet sorrow"/>')
+                    output('<d:enumerationValue value="That I shall say good night till it be morrow."/>')
+                    output('</d:restrictionByEnumeration>')
+                output('<d:restrictionByPattern pattern=".*"/>')
+                output('</d:configRestriction>')
+                output('</d:{0}>'.format(what))
 
 
 def main():
