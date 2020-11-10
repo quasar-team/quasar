@@ -1,132 +1,168 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="OpcUaSca" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">
-<d:class name="TestClass">
-<d:configentry name="OpcUaBoolean_scalar" dataType="OpcUa_Boolean">
-<d:configRestriction>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaByte_scalar" dataType="OpcUa_Byte">
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="1" maxInclusive="254"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaSByte_scalar" dataType="OpcUa_SByte">
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="-127" maxInclusive="126"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaUInt16_scalar" dataType="OpcUa_UInt16">
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="1" maxInclusive="65534"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaInt16_scalar" dataType="OpcUa_Int16">
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="-32767" maxInclusive="32766"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaUInt32_scalar" dataType="OpcUa_UInt32">
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="1" maxInclusive="2147483646"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaInt32_scalar" dataType="OpcUa_Int32">
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="-2147483647" maxInclusive="2147483646"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaUInt64_scalar" dataType="OpcUa_UInt64">
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="1" maxInclusive="9223372036854775806"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaInt64_scalar" dataType="OpcUa_Int64">
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="-9223372036854775807" maxInclusive="9223372036854775806"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaDouble_scalar" dataType="OpcUa_Double">
-<d:configRestriction>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaFloat_scalar" dataType="OpcUa_Float">
-<d:configRestriction>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="UaString_scalar" dataType="UaString">
-<d:configRestriction>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaBoolean_array" dataType="OpcUa_Boolean">
-<d:array/>
-<d:configRestriction>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaByte_array" dataType="OpcUa_Byte">
-<d:array/>
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="1" maxInclusive="254"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaSByte_array" dataType="OpcUa_SByte">
-<d:array/>
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="-127" maxInclusive="126"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaUInt16_array" dataType="OpcUa_UInt16">
-<d:array/>
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="1" maxInclusive="65534"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaInt16_array" dataType="OpcUa_Int16">
-<d:array/>
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="-32767" maxInclusive="32766"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaUInt32_array" dataType="OpcUa_UInt32">
-<d:array/>
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="1" maxInclusive="2147483646"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaInt32_array" dataType="OpcUa_Int32">
-<d:array/>
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="-2147483647" maxInclusive="2147483646"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaUInt64_array" dataType="OpcUa_UInt64">
-<d:array/>
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="1" maxInclusive="9223372036854775806"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaInt64_array" dataType="OpcUa_Int64">
-<d:array/>
-<d:configRestriction>
-<d:restrictionByBounds minInclusive="-9223372036854775807" maxInclusive="9223372036854775806"/>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaDouble_array" dataType="OpcUa_Double">
-<d:array/>
-<d:configRestriction>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="OpcUaFloat_array" dataType="OpcUa_Float">
-<d:array/>
-<d:configRestriction>
-</d:configRestriction>
-</d:configentry>
-<d:configentry name="UaString_array" dataType="UaString">
-<d:array/>
-<d:configRestriction>
-</d:configRestriction>
-</d:configentry>
-</d:class>
-<d:root>
-<d:hasobjects instantiateUsing="configuration" class="TestClass"/>
-</d:root>
+  <d:class name="TestClass">
+    <d:configentry name="OpcUaBoolean_scalar" dataType="OpcUa_Boolean">
+      <d:configRestriction>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaByte_scalar" dataType="OpcUa_Byte">
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="1" maxInclusive="254"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaSByte_scalar" dataType="OpcUa_SByte">
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-127" maxInclusive="126"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaUInt16_scalar" dataType="OpcUa_UInt16">
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="1" maxInclusive="65534"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaInt16_scalar" dataType="OpcUa_Int16">
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-32767" maxInclusive="32766"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaUInt32_scalar" dataType="OpcUa_UInt32">
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="1" maxInclusive="2147483646"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaInt32_scalar" dataType="OpcUa_Int32">
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-2147483647" maxInclusive="2147483646"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaUInt64_scalar" dataType="OpcUa_UInt64">
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="1" maxInclusive="9223372036854775806"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaInt64_scalar" dataType="OpcUa_Int64">
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-9223372036854775807" maxInclusive="9223372036854775806"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaDouble_scalar" dataType="OpcUa_Double">
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-12345678.999" maxInclusive="1234567890.999"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaFloat_scalar" dataType="OpcUa_Float">
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-12345678.999" maxInclusive="1234567890.999"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="UaString_scalar" dataType="UaString">
+      <d:configRestriction>
+        <d:restrictionByEnumeration>
+          <d:enumerationValue value="Parting is such sweet sorrow"/>
+          <d:enumerationValue value="That I shall say good night till it be morrow."/>
+        </d:restrictionByEnumeration>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaBoolean_array" dataType="OpcUa_Boolean">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaByte_array" dataType="OpcUa_Byte">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="1" maxInclusive="254"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaSByte_array" dataType="OpcUa_SByte">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-127" maxInclusive="126"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaUInt16_array" dataType="OpcUa_UInt16">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="1" maxInclusive="65534"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaInt16_array" dataType="OpcUa_Int16">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-32767" maxInclusive="32766"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaUInt32_array" dataType="OpcUa_UInt32">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="1" maxInclusive="2147483646"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaInt32_array" dataType="OpcUa_Int32">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-2147483647" maxInclusive="2147483646"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaUInt64_array" dataType="OpcUa_UInt64">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="1" maxInclusive="9223372036854775806"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaInt64_array" dataType="OpcUa_Int64">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-9223372036854775807" maxInclusive="9223372036854775806"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaDouble_array" dataType="OpcUa_Double">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-12345678.999" maxInclusive="1234567890.999"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="OpcUaFloat_array" dataType="OpcUa_Float">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByBounds minInclusive="-12345678.999" maxInclusive="1234567890.999"/>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+    <d:configentry name="UaString_array" dataType="UaString">
+      <d:array/>
+      <d:configRestriction>
+        <d:restrictionByEnumeration>
+          <d:enumerationValue value="Parting is such sweet sorrow"/>
+          <d:enumerationValue value="That I shall say good night till it be morrow."/>
+        </d:restrictionByEnumeration>
+        <d:restrictionByPattern pattern=".*"/>
+      </d:configRestriction>
+    </d:configentry>
+  </d:class>
+  <d:root>
+    <d:hasobjects instantiateUsing="configuration" class="TestClass"/>
+  </d:root>
 </d:design>
