@@ -56,6 +56,7 @@
 
 #include <MetaBuildInfo.h>
 #include <CalculatedVariablesEngine.h>
+#include <Utils.h>
 
 using namespace std;
 using namespace boost::program_options;
@@ -94,7 +95,7 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
     }
     catch (std::runtime_error &e)
     {
-        LOG(Log::ERR) << "Caught runtime exception with msg: [" << e.what() << "]";
+        LOG(Log::ERR) << "Caught runtime exception with msg: [" << Quasar::TermColors::ForeRed() << e.what() << Quasar::TermColors::StyleReset() << "]";
         return 1;
     }
 }
@@ -153,7 +154,7 @@ int BaseQuasarServer::serverRun(
     }
     catch (const std::exception &e)
     {
-        LOG(Log::ERR) << "Exception caught in BaseQuasarServer::serverRun:  [" << e.what() << "]";
+        LOG(Log::ERR) << "Exception caught in BaseQuasarServer::serverRun:  [" << Quasar::TermColors::ForeRed() << e.what() << Quasar::TermColors::StyleReset() << "]";
         serverReturnCode = 1;
     }
     AddressSpace::SourceVariables_destroySourceVariablesThreadPool ();
