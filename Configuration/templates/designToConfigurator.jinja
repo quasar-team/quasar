@@ -82,7 +82,11 @@
 
     {% if designInspector.class_has_device_logic(className) %}
       // build device side object
-      Device::D{{className}} *dItemChildByDesign = new Device::D{{className}}(emptyConfig, {{parentDevice}});
+      {% if designInspector.get_parent(className) == None %}
+        Device::D{{className}} *dItemChildByDesign = new Device::D{{className}}(emptyConfig, nullptr);
+      {% else %}
+        Device::D{{className}} *dItemChildByDesign = new Device::D{{className}}(emptyConfig, {{parentDevice}});
+      {% endif %}
 
       // link address space and device side objects
       asItemChildByDesign->linkDevice( dItemChildByDesign );
@@ -100,7 +104,7 @@
   that can have itself as a child). Quasar recursive type is a class with hasobjects
   of itself.
   In this case, in order not to confuse calls to child collection (parent.RecType())
-  and constructor RecType::RecType() xsdcxx generation appends '1' when parent is also 
+  and constructor RecType::RecType() xsdcxx generation appends '1' when parent is also
   RecType to:
   a) collection name: parent.RecType1()
   b) content order id: Configuration::RecType::RecType1_id
@@ -122,9 +126,9 @@
 
 {% macro writeConfigureObjectByConfiguration(parentClassName, parentNodeId, parentDevice, innerObjects) %}
   {% set xsdParentType = 'Configuration' if 'Root' == parentClassName else parentClassName %}
-  
+
   {{validateContentOrder(xsdParentType, innerObjects)}}
-  
+
   // configure child nodes - content_order retains order from configuration XMl file
   for(const auto& orderedIter : config.content_order())
   {
@@ -141,7 +145,7 @@
           {% if not designInspector.class_has_device_logic(innerClass) %}
             // class [{{innerClass}}] has no device logic: configure only address space object
             configure{{innerClass}} (xmlObj, nm, {{parentNodeId}});
-          {% else %}        
+          {% else %}
             // class [{{innerClass}}] has device logic: configure device object
             {% if designInspector.class_has_legit_device_parent(innerClass) %}
               Device::Parent_D{{innerClass}}* pInnerItemParent = {{parentDevice}};
@@ -149,14 +153,14 @@
               Device::Parent_D{{innerClass}}* pInnerItemParent = nullptr;
             {% endif %}
             auto dInnerObj = configure{{innerClass}}(xmlObj, nm, {{parentNodeId}}, pInnerItemParent);
-  
+
             // register class {{innerClass}}] with parent (or register orphan)
             {% if ((designInspector.class_has_device_logic(parentClassName)) or ('Root' == parentClassName)) %}
               {{parentDevice}}->add(dInnerObj);
             {% else %}
               Device::D{{innerClass}}::registerOrphanedObject(dInnerObj);
            {% endif %}
-          {% endif %}        
+          {% endif %}
         }
         break;
       {% endfor %}
@@ -173,7 +177,7 @@
         AddressSpace::FreeVariablesEngine::instantiateFreeVariable(nm, {{parentNodeId}}, freeVariableXmlElement);
       }
       break;
-      default:    
+      default:
         LOG(Log::DBG)<<__FUNCTION__<<" Ignoring type [id:"<<xmlType<<"] ordering index ["<<xmlIndex<<"]"; // valid to ignore, StandardMeta etc
         break;
     }
@@ -216,7 +220,7 @@
   // process each 'instatiated by config' as XML nodes - order significant (calc'd vars)
   {% set innerObjects=designInspector.objectify_has_objects(className, restrict_by="[@instantiateUsing='configuration']") %}
   {{writeConfigureObjectByConfiguration(className, "asItem->nodeId()", "dItem", innerObjects) }}
-  
+
   {% if designInspector.class_has_device_logic(className) %}
     return dItem;
   {% endif %}
