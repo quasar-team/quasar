@@ -207,7 +207,7 @@ std::string BaseQuasarServer::getProcessEnvironmentVariables() const
 {
     std::ostringstream result;
 #ifdef __linux__
-    extern char **environ;
+    extern char **environ; // POSIX interface (https://pubs.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap08.html)
     char *s = *environ;
     for (int i = 0; s; ++i)
     {
