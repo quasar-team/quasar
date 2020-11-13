@@ -21,6 +21,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 import errno
 from colorama import Fore, Style
+from DesignInspector import DesignInspector
+import pdb
 
 try:
     import sys
@@ -60,20 +62,6 @@ def yes_or_no(question):
             return yn
 
 
-
-def get_list_classes(design_file_name):
-    output=[]
-    f = open(design_file_name,'r')
-    tree = etree.parse(f)
-    classes = tree.findall('{http://cern.ch/quasar/Design}class')
-    for c in classes:
-        d={'name':c.get('name')}
-        d['has_device_logic']=(len(c.findall('{http://cern.ch/quasar/Design}devicelogic'))>0)
-        output.append(d)
-    return output
-
-
-
 def get_key_value_pairs(options, allowed_keys, dictionary):
     pairs=[]
     chunks = options.split(",")
@@ -108,8 +96,11 @@ class File(dict):
         chunks = textLine.split()
         if chunks[0] != 'File':
             raise Exception ("A textline given to File() doesnt start with File: "+chunks[0])
-        self['path']=directory+chunks[1]
+        if directory[-1] != os.path.sep:
+            directory += os.path.sep
+        self['path']=directory + chunks[1]
         self['name']=chunks[1]
+        print('Registering file with dir {0} and path {1}'.format(directory, self['path']))
         get_key_value_pairs(' '.join(chunks[2:]), File.allowed_keys, self)
 
 
@@ -134,7 +125,7 @@ class File(dict):
                 hash_md5.update(chunk)
         return hash_md5.hexdigest()
 
-    
+
     def check_md5(self):
         if verbose: print("---> Checking md5 of file: "+self.path())
         if not os.path.isfile(self.path()):
@@ -191,17 +182,12 @@ class File(dict):
 
         return problems
 
-
-    
     def make_md5(self):
         self['md5'] = self.compute_md5(self.path())
 
-        
-        
     def make_text_line(self):
         s="File "+os.path.basename(self.path())+" "+export_key_value_pairs(File.allowed_keys, self)
         return s
-
 
 class Directory(dict):
     allowed_keys=['install']
@@ -227,8 +213,10 @@ class Directory(dict):
 
 def check_consistency(directories, project_directory, vci):
     # to the files loaded from files.txt we have to add files that would be generated for defined classes
-    classes = get_list_classes(project_directory+os.path.sep+"Design"+os.path.sep+"Design.xml")
+    designInspector = DesignInspector(os.path.sep.join([project_directory, 'Design', 'Design.xml']))
+    classes = designInspector.get_names_of_all_classes(only_with_device_logic=True)
 
+    # TODO @Piotr: refactor this code: in fact we're searching here
     directory_Device_include = None
     directory_Device_src = None
     directory_AddressSpace_include = None
@@ -243,14 +231,13 @@ def check_consistency(directories, project_directory, vci):
         elif d['name']=="AddressSpace/src":
             directory_AddressSpace_src = d
 
-    for c in classes:
-        if c['has_device_logic']:
-            directory_Device_include.add_file(File("File D"+c['name']+".h must_exist,must_be_versioned", project_directory+os.path.sep+"Device"+os.path.sep+"include"+os.path.sep))
-            directory_Device_src.add_file(File("File D"+c['name']+".cpp must_exist,must_be_versioned", project_directory+os.path.sep+"Device"+os.path.sep+"src"+os.path.sep))
+    # Add design-derived checks such that device classes exist
+    device_module_path = os.path.sep.join([project_directory, "Device"])
+    for klass in classes:
+        directory_Device_include.add_file(File("File D{0}.h must_exist,must_be_versioned".format(klass), os.path.sep.join([device_module_path, 'include'])))
+        directory_Device_src.add_file(File("File D{0}.cpp must_exist,must_be_versioned".format(klass), os.path.sep.join([device_module_path, 'src'])))
 
     problems=[]
-
-
 
     for d in directories:
         problems.extend(d.check_consistency(vci))
@@ -415,18 +402,7 @@ def check_file_for_mtime ( design_mtime, p, project_directory, type, c ):
     if not os.path.isfile(p):
         print('*** ERROR: Following device file doesnt exist:')
         print('  '+p)
-        print('  Without it, the build will most certainly fail.')
-        yn = yes_or_no('Would you like to generate an empty stub of this class?')
-        if yn == 'y':
-            print('  Trying to generate the empty stub')
-            what=''
-            if type=='h':
-                what='Header'
-            elif type=='cpp':
-                what='Body'
-            else:
-                raise Exception('Internal error -- type not in enumeration:'+str(type))
-            os.system('cd '+project_directory+'; cd Device; ./generateDevice'+what+'.sh '+c['name'])
+
 
     else:
         file_mtime = os.path.getmtime( p )
@@ -441,13 +417,13 @@ def design_vs_device(project_directory):
     # get modification time of the file
     design_mtime = os.path.getmtime(project_directory+os.path.sep+'Design'+os.path.sep+'Design.xml')
     # now run over all human-managed device files
-    classes = get_list_classes(project_directory+os.path.sep+"Design"+os.path.sep+"Design.xml")
-    for c in classes:
-        if c['has_device_logic']:
-            check_file_for_mtime( design_mtime, project_directory+os.path.sep+'Device'+os.path.sep+'src'+os.path.sep+'D'+c['name']+'.cpp', project_directory, 'cpp', c)
-            check_file_for_mtime( design_mtime, project_directory+os.path.sep+'Device'+os.path.sep+'include'+os.path.sep+'D'+c['name']+'.h', project_directory, 'h', c)
-    pass
 
+    designInspector = DesignInspector(os.path.sep.join([project_directory, 'Design', 'Design.xml']))
+    classes = designInspector.get_names_of_all_classes(only_with_device_logic=True)
+
+    for klass in classes:
+        check_file_for_mtime( design_mtime, os.path.sep.join([project_directory, 'Device', 'src', 'D{0}.cpp'.format(klass)]), project_directory, 'cpp', klass)
+        check_file_for_mtime( design_mtime, os.path.sep.join([project_directory, 'Device', 'include', 'D{0}.h'.format(klass)]), project_directory, 'h', klass)
 
 #manage files API starts here
 def mfCheckConsistency(param=None):
