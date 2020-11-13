@@ -365,16 +365,15 @@ int BaseQuasarServer::initializeEnvironment()
 }
 std::string BaseQuasarServer::getWorkingDirectory() const
 {
-	char* result = nullptr;
+    char* result = nullptr;
 #ifdef __linux__
-    static const size_t g_sPathLength = PATH_MAX;
-	char pathBuff[PATH_MAX];
-	memset(pathBuff, 0, PATH_MAX);
-	result = getcwd(pathBuff, PATH_MAX);
+    char pathBuff[PATH_MAX];
+    memset(pathBuff, 0, PATH_MAX);
+    result = getcwd(pathBuff, PATH_MAX);
 #elif _WIN32
-	char pathBuff[MAX_PATH];
-	memset(pathBuff, 0, MAX_PATH);
-	result = _getcwd(pathBuff, MAX_PATH);
+    char pathBuff[MAX_PATH];
+    memset(pathBuff, 0, MAX_PATH);
+    result = _getcwd(pathBuff, MAX_PATH);
 #endif
 	return std::string(result != nullptr ? result : "unknown");
 }
