@@ -55,9 +55,9 @@
 #elif _WIN32
 #include <windows.h>
 #include <Lmcons.h>
+#include <direct.h>
 #endif
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string/join.hpp>
 
 #include <MetaBuildInfo.h>
@@ -359,11 +359,22 @@ int BaseQuasarServer::initializeEnvironment()
     CalculatedVariables::Engine::initialize();
     return ret;
 }
+std::string getCurrentPath()
+{
+#ifdef __linux__
+    static const size_t g_sPathLength = PATH_MAX;
+#elif _WIN32
+    static const int g_sPathLength = PATH_MAX;
+#endif
+    char pathBuff[g_sPathLength];
+    memset(pathBuff, 0, g_sPathLength);
+    return std::string(getcwd(pathBuff, PATH_MAX) != nullptr ? pathBuff : "unknown");
+}
 void BaseQuasarServer::logEnvironment() const
 {
     LOG(Log::INF) << __FUNCTION__ << std::endl << \
         "\t Command line args: "<< boost::algorithm::join(m_commandLineArgs, " ") << std::endl << \
-        "\t Current working directory: " << boost::filesystem::current_path() << std::endl << \
+        "\t Current working directory: " << getCurrentPath() << std::endl << \
         "\t Directory of executable " << getApplicationPath() << std::endl << \
         "\t Process owner: " << getProcessOwner();
 }
