@@ -232,8 +232,8 @@ std::string BaseQuasarServer::getProcessEnvironmentVariables() const
 * Returns string in format: logged in user (effective process owner).
 * Examples, where a user 'quasar' is logged in...
 * == posix ==
-* 'quasar' runs process regular - returns 'quasar(quasar)'
-* 'quasar' runs process with sudo - returns 'quasar(root)'
+* 'quasar' runs process regular - returns 'quasar(54321:quasar)'
+* 'quasar' runs process with sudo - returns 'quasar(0:root)'
 * == windows ==
 * 'quasar' runs process regular - returns 'quasar(normal)'
 * 'quasar' runs process with admin rights (or admin shell) 'quasar(elevated)'
@@ -245,13 +245,10 @@ std::string BaseQuasarServer::getProcessOwner() const
     const auto userID = getlogin();
     result << (userID != nullptr ? userID : "unknown");
 
-    std::string effectiveUserID = "unknown";
-    auto pwuid = getpwuid(getuid());
-    if (pwuid != nullptr && pwuid->pw_name != nullptr)
-    {
-        effectiveUserID = std::string(pwuid->pw_name);
-    }
-    result << "(" << effectiveUserID << ")";
+    const auto euid = geteuid();
+    const auto pweuid = getpwuid(euid);
+    const std::string effectiveUserID(pweuid != nullptr && pweuid->pw_name != nullptr ? pweuid->pw_name : "unknown");
+    result << "(" << euid << ":" << effectiveUserID << ")";
 #elif _WIN32
     char userID[UNLEN];
     memset(userID, 0, UNLEN);
