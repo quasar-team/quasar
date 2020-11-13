@@ -359,7 +359,7 @@ int BaseQuasarServer::initializeEnvironment()
     CalculatedVariables::Engine::initialize();
     return ret;
 }
-std::string getCurrentPath()
+std::string BaseQuasarServer::getWorkingDirectory() const
 {
 #ifdef __linux__
     static const size_t g_sPathLength = PATH_MAX;
@@ -374,7 +374,7 @@ void BaseQuasarServer::logEnvironment() const
 {
     LOG(Log::INF) << __FUNCTION__ << std::endl << \
         "\t Command line args: "<< boost::algorithm::join(m_commandLineArgs, " ") << std::endl << \
-        "\t Current working directory: " << getCurrentPath() << std::endl << \
+        "\t Current working directory: " << getWorkingDirectory() << std::endl << \
         "\t Directory of executable " << getApplicationPath() << std::endl << \
         "\t Process owner: " << getProcessOwner();
 }
