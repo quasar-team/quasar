@@ -101,6 +101,8 @@ private:
     int initializeEnvironment();
     //Dump calling environment, cmd line args etc. to Log file
     void logEnvironment() const;
+    // Get current working directory
+    std::string getWorkingDirectory() const;
     // Gets the current process environment variables
     std::string getProcessEnvironmentVariables() const;
     // Gets the current process owner
