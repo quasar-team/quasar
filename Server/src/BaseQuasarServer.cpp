@@ -232,28 +232,31 @@ std::string BaseQuasarServer::getProcessEnvironmentVariables() const
 * Returns string in format: logged in user (effective process owner).
 * Examples, where a user 'quasar' is logged in...
 * == posix ==
-* 'quasar' runs process regular - returns 'quasar(54321:quasar)'
-* 'quasar' runs process with sudo - returns 'quasar(0:root)'
+* 'quasar' runs process regular - returns 'login:quasar uid:54321,quasar euid:54321,quasar'
+* 'quasar' runs process with sudo - returns 'login:quasar uid:0,root euid:0,root'
 * == windows ==
-* 'quasar' runs process regular - returns 'quasar(normal)'
-* 'quasar' runs process with admin rights (or admin shell) 'quasar(elevated)'
+* 'quasar' runs process regular - returns 'login:quasar(priv:normal)'
+* 'quasar' runs process with admin rights (or admin shell) 'login:quasar(priv:elevated)'
 */
 std::string BaseQuasarServer::getProcessOwner() const
 {
     std::ostringstream result;
 #ifdef __linux__
-    const auto userID = getlogin();
-    result << (userID != nullptr ? userID : "unknown");
+    auto getUser = [](const uid_t& uid){
+        const auto pswd = getpwuid(uid);
+        const std::string name(pswd != nullptr && pswd->pw_name != nullptr ? pswd->pw_name : "unknown");
+        std::ostringstream s;
+        s << uid << "," << name;
+        return s.str();
+    };
 
-    const auto euid = geteuid();
-    const auto pweuid = getpwuid(euid);
-    const std::string effectiveUserID(pweuid != nullptr && pweuid->pw_name != nullptr ? pweuid->pw_name : "unknown");
-    result << "(" << euid << ":" << effectiveUserID << ")";
+    const auto userID = getlogin();
+    result << "login:" << (userID != nullptr ? userID : "unknown") <<" uid:"<<getUser(getuid()) <<" euid:"<<getUser(geteuid());
 #elif _WIN32
     char userID[UNLEN];
     memset(userID, 0, UNLEN);
     DWORD len = UNLEN;
-    result << (GetUserName(userID, &len) ? userID : "unknown");
+    result << "login:" << (GetUserName(userID, &len) ? userID : "unknown");
 
     DWORD bytesUsed = 0;
     TOKEN_ELEVATION_TYPE elevationType = TokenElevationTypeDefault;
@@ -262,7 +265,7 @@ std::string BaseQuasarServer::getProcessOwner() const
     {
         elevationString = (elevationType == TokenElevationTypeFull ? "elevated" : "normal");
     }
-    result << "(" << elevationString << ")";
+    result << "(priv:" << elevationString << ")";
 #endif
     return result.str();
 }
