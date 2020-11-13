@@ -62,7 +62,6 @@
 
 #include <MetaBuildInfo.h>
 #include <CalculatedVariablesEngine.h>
-#include <Utils.h>
 
 using namespace std;
 using namespace boost::program_options;
@@ -101,7 +100,7 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
     }
     catch (std::runtime_error &e)
     {
-        LOG(Log::ERR) << "Caught runtime exception with msg: [" << Quasar::TermColors::ForeRed() << e.what() << Quasar::TermColors::StyleReset() << "]";
+        LOG(Log::ERR) << "Caught runtime exception with msg: [" << e.what() << "]";
         return 1;
     }
 }
@@ -160,7 +159,7 @@ int BaseQuasarServer::serverRun(
     }
     catch (const std::exception &e)
     {
-        LOG(Log::ERR) << "Exception caught in BaseQuasarServer::serverRun:  [" << Quasar::TermColors::ForeRed() << e.what() << Quasar::TermColors::StyleReset() << "]";
+        LOG(Log::ERR) << "Exception caught in BaseQuasarServer::serverRun:  [" << e.what() << "]";
         serverReturnCode = 1;
     }
     AddressSpace::SourceVariables_destroySourceVariablesThreadPool ();
@@ -208,7 +207,7 @@ std::string BaseQuasarServer::getProcessEnvironmentVariables() const
 {
     std::ostringstream result;
 #ifdef __linux__
-    extern char **environ;
+    extern char **environ; // POSIX interface (https://pubs.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap08.html)
     char *s = *environ;
     for (int i = 0; s; ++i)
     {
@@ -233,31 +232,31 @@ std::string BaseQuasarServer::getProcessEnvironmentVariables() const
 * Returns string in format: logged in user (effective process owner).
 * Examples, where a user 'quasar' is logged in...
 * == posix ==
-* 'quasar' runs process regular - returns 'quasar(quasar)'
-* 'quasar' runs process with sudo - returns 'quasar(root)'
+* 'quasar' runs process regular - returns 'login:quasar uid:54321,quasar euid:54321,quasar'
+* 'quasar' runs process with sudo - returns 'login:quasar uid:0,root euid:0,root'
 * == windows ==
-* 'quasar' runs process regular - returns 'quasar(normal)'
-* 'quasar' runs process with admin rights (or admin shell) 'quasar(elevated)'
+* 'quasar' runs process regular - returns 'login:quasar(priv:normal)'
+* 'quasar' runs process with admin rights (or admin shell) 'login:quasar(priv:elevated)'
 */
 std::string BaseQuasarServer::getProcessOwner() const
 {
     std::ostringstream result;
 #ifdef __linux__
-    const auto userID = getlogin();
-    result << (userID != nullptr ? userID : "unknown");
+    auto getUser = [](const uid_t& uid){
+        const auto pswd = getpwuid(uid);
+        const std::string name(pswd != nullptr && pswd->pw_name != nullptr ? pswd->pw_name : "unknown");
+        std::ostringstream s;
+        s << uid << "," << name;
+        return s.str();
+    };
 
-    std::string effectiveUserID = "unknown";
-    auto pwuid = getpwuid(getuid());
-    if (pwuid != nullptr && pwuid->pw_name != nullptr)
-    {
-        effectiveUserID = std::string(pwuid->pw_name);
-    }
-    result << "(" << effectiveUserID << ")";
+    const auto userID = getlogin();
+    result << "login:" << (userID != nullptr ? userID : "unknown") <<" uid:"<<getUser(getuid()) <<" euid:"<<getUser(geteuid());
 #elif _WIN32
     char userID[UNLEN];
     memset(userID, 0, UNLEN);
     DWORD len = UNLEN;
-    result << (GetUserName(userID, &len) ? userID : "unknown");
+    result << "login:" << (GetUserName(userID, &len) ? userID : "unknown");
 
     DWORD bytesUsed = 0;
     TOKEN_ELEVATION_TYPE elevationType = TokenElevationTypeDefault;
@@ -266,7 +265,7 @@ std::string BaseQuasarServer::getProcessOwner() const
     {
         elevationString = (elevationType == TokenElevationTypeFull ? "elevated" : "normal");
     }
-    result << "(" << elevationString << ")";
+    result << "(priv:" << elevationString << ")";
 #endif
     return result.str();
 }
