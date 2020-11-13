@@ -23,7 +23,7 @@
 # and optionally added ones for the project via ADDITIONAL_BOOST_LIBS
 #
 set(Boost_NO_BOOST_CMAKE ON) # workaround for boost-1.7.0 cmake config modules: disabling search for boost-cmake to use FindBoost instead
-find_package(Boost REQUIRED regex chrono program_options thread system filesystem ${ADDITIONAL_BOOST_LIBS} )
+find_package(Boost REQUIRED regex chrono program_options thread system ${ADDITIONAL_BOOST_LIBS} )
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Failed to find boost installation")
 else()
