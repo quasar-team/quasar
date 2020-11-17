@@ -216,22 +216,9 @@ def check_consistency(directories, project_directory, vci):
     designInspector = DesignInspector(os.path.sep.join([project_directory, 'Design', 'Design.xml']))
     classes = designInspector.get_names_of_all_classes(only_with_device_logic=True)
 
-    # TODO @Piotr: refactor this code: in fact we're searching here
-    directory_Device_include = None
-    directory_Device_src = None
-    directory_AddressSpace_include = None
-    directory_AddressSpace_src = None
-    for d in directories:
-        if d['name']=="Device/include":
-            directory_Device_include = d
-        elif d['name']=="Device/src":
-            directory_Device_src = d
-        elif d['name']=="AddressSpace/include":
-            directory_AddressSpace_include = d
-        elif d['name']=="AddressSpace/src":
-            directory_AddressSpace_src = d
-
-    # Add design-derived checks such that device classes exist
+    # Add design-derived checks such that device classes are taken into account for a check.
+    directory_Device_include = [dir for dir in directories if dir['name'] == "Device/include"][0]
+    directory_Device_src = [dir for dir in directories if dir['name'] == "Device/src"][0]
     device_module_path = os.path.sep.join([project_directory, "Device"])
     for klass in classes:
         directory_Device_include.add_file(File("File D{0}.h must_exist,must_be_versioned".format(klass), os.path.sep.join([device_module_path, 'include'])))
