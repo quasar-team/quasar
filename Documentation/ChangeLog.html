@@ -107,9 +107,13 @@
 
 
 
+
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
+
 
 
 
@@ -205,6 +209,49 @@
           </td>
         </tr>
         <tr>
+          <td valign="top">nebula.A10<br>
+            <font size="-1">(18-Nov=2020)</font><br>
+          </td>
+          <td valign="top">A critical bug fixed that prevented an user
+            from using quasar. Added logging of startup info. Other
+            improvements for simplified maintenance of the project.<br>
+          </td>
+          <td valign="top">(none known)<br>
+          </td>
+          <td valign="top">Bug
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1668">OPCUA-1668</a>]
+                - Class with different parents leads to compile error
+              </li>
+            </ul>
+            <br>
+            New Feature
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2048">OPCUA-2048</a>]
+                - Log server startup information (command line args,
+                working directory etc) -- nebula context
+              </li>
+            </ul>
+            <br>
+            Improvement
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1815">OPCUA-1815</a>]
+                - Improve restriction parsing
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2062">OPCUA-2062</a>]
+                - Simplify manage_files module: use DesignInspector to
+                parse Design
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2066">OPCUA-2066</a>]
+                - Simplify manage_files module: 1. refactoring
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
           <td valign="top">nebula.A9<br>
             <font size="-1">(10-Nov-2020)</font><br>
           </td>
@@ -213,36 +260,28 @@
           </td>
           <td valign="top">If you use open62541-compat, you need version
             1.3.5 or later. </td>
-          <td valign="top">Bug
-            <br>
+          <td valign="top">Bug <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1041">OPCUA-1041</a>]
                 - Non-delegated arrays don't respect per-design size
-                constraints
-              </li>
+                constraints </li>
             </ul>
             <br>
-            New Feature
-            <br>
+            New Feature <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1259">OPCUA-1259</a>]
-                - Synchronization support for methods
-              </li>
+                - Synchronization support for methods </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2049">OPCUA-2049</a>]
-                - Test for config restrictions (part 1: Design)
-              </li>
+                - Test for config restrictions (part 1: Design) </li>
             </ul>
             <br>
-            Improvement
-            <br>
+            Improvement <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2042">OPCUA-2042</a>]
-                - Selective travis CI test
-              </li>
+                - Selective travis CI test </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2050">OPCUA-2050</a>]
                 - Schema restriction: restrictionByPattern's pattern
-                can't by empty
-              </li>
+                can't by empty </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2052">OPCUA-2052</a>]
                 - Make global exception message more striking (visible)
               </li>
