@@ -79,10 +79,6 @@
 
 {% macro deviceLogicFindByKeyHeaders(this, designInspector, oracle) %}
   {% for hasobjects in this.hasobjects %}
-    {% for cv in designInspector.objectify_cache_variables(hasobjects.get('class'), "[@isKey='true']") %}
-      D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}} (
-        const {{oracle.data_type_to_device_type(cv.get('dataType'))}} key );
-    {% endfor %}
     {% for ce in designInspector.objectify_config_entries(hasobjects.get('class'), "[@isKey='true']") %}
       D{{hasobjects.get('class')}}* get{{hasobjects.get('class')}}By{{ce.get('name')|capFirst}} (
         const {{oracle.data_type_to_device_type(ce.get('dataType'))}} key );
@@ -108,17 +104,5 @@
           return nullptr;
         }
     {% endfor %}{# for ce #}
-    {% for cv in designInspector.objectify_cache_variables(hasobjects.get('class'), "[@isKey='true']") %}
-      D{{hasobjects.get('class')}}* {{fullClassName}}::get{{hasobjects.get('class')}}By{{cv.get('name')|capFirst}} (
-        const {{oracle.data_type_to_device_type(cv.get('dataType'))}} key )
-        {
-          for( auto* test : this->{{hasobjects.get('class')|lower}}s() )
-          {
-            if (test->{{cv.get('name')}}() == key)
-              return test;
-          }
-          return nullptr;
-        }
-    {% endfor %}{# for cv #}
   {% endfor %}{# for hasobjects #}
 {% endmacro %}

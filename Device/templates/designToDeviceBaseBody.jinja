@@ -46,9 +46,6 @@ Base_D{{className}}::Base_D{{className}} (
   m_parent(parent),
   m_addressSpaceLink(nullptr),
   m_stringAddress("**NB**")
-  {% for cv in designInspector.objectify_cache_variables(className, "[@isKey='true']") %} {# TODO #}
-  , m_{{cv.get('name')}} ( config.{{cv.get('name')}}() ) {# TODO @pnikiel move to body #}
-  {% endfor %}
   {% for ce in designInspector.objectify_config_entries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
   , m_{{ce.get('name')}}( config.{{ce.get('name')}}() ) {# TODO @pnikiel move to body #}
   {% endfor %}

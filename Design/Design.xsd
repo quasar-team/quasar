@@ -157,15 +157,6 @@ elementFormDefault="qualified">
      		</documentation>
     		</annotation>
     	</attribute>
-    	<attribute name="isKey" type="boolean">
-    		<annotation>
-    		<documentation>
-    		When "true", generates convenience functions for traversing device logic tree from Device Logic code.
-    		I.e. when any children class' cachevariable has "isKey=true" then the parent class device logic will have function
-    		getChildByVariable, assuming Child is the class name and Variable is the variable name.
-    		</documentation>
-    		</annotation>
-    	</attribute>
     	<attribute name="nullPolicy" type="tns:NullPolicy" use="required">
     	    <annotation>
     		<documentation>

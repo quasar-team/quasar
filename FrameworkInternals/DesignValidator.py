@@ -201,13 +201,6 @@ class DesignValidator():
                                            'when data type is UaVariant', locator)
                     assert_attribute_absent(cache_variable, 'initialValue',
                                             'when data type is UaVariant', locator)
-                if 'isKey' in cache_variable.attrib:
-                    if not self.design_inspector.class_has_device_logic(class_name):
-                        raise DesignFlaw(("isKey can only be used with device logic"
-                                          "(at: {0})").format(stringify_locator(locator)))
-                    if count_children(cache_variable, 'array') != 0:
-                        raise DesignFlaw('isKey can not be used with arrays (at: {0})'.format(
-                            stringify_locator(locator)))
 
     def assert_mutex_present(self, class_name, locator, extra_info=''):
         """Raises DesignFlaw if class 'class_name' doesnt have a mutex"""
@@ -219,7 +212,7 @@ class DesignValidator():
         if count_children(cls.devicelogic, 'mutex') < 1:
             raise DesignFlaw('Class {2} needs a mutex in its device logic(at: {0}) {1}'.format(
                 stringify_locator(locator), extra_info, class_name))
-            
+
     def validate_source_variables(self):
         for class_name in self.design_inspector.get_names_of_all_classes():
             locator = {'class':class_name}
@@ -248,7 +241,7 @@ class DesignValidator():
                             option))
                     else:
                         raise NotImplementedError("Don't know how to validate '{0}'".format(option))
-                
+
 
     def validate_config_entries(self):
         """Performs validation of all config entries in the design"""

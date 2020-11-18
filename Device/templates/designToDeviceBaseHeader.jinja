@@ -100,9 +100,6 @@ class Base_D{{className}}
 
   /* getters for values which are keys */
   {# TODO @pnikiel review the data-types below, both headers should be equal regarding types #}
-  {% for cv in designInspector.objectify_cache_variables(className, "[@isKey='true']") %}
-    const {{cv.get('dataType')}} {{cv.get('name')}} () { return m_{{cv.get('name')}}; }
-  {% endfor %}
   {% for ce in designInspector.objectify_config_entries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
     const {{oracle.data_type_to_device_type(ce.get('dataType'))}} {{ce.get('name')}}() { return m_{{ ce.get('name') }}; }
   {% endfor %}
@@ -152,10 +149,6 @@ private:
   {{ commonDeviceTemplates.hasobjectsChildrenCollection(this, designInspector, oracle) }}
 
   /* if any of our cachevariables has isKey=true then we shall keep its copy here for find functions  (it is const, either way) */
-  {% for cv in designInspector.objectify_cache_variables(className, "[@isKey='true']") %}
-    const {{oracle.data_type_to_device_type(cv.get('dataType'))}} m_{{cv.get('name')}};
-  {% endfor %}
-
   {% for ce in designInspector.objectify_config_entries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
     const {{oracle.data_type_to_device_type(ce.get('dataType'))}} m_{{ce.get('name')}};
   {% endfor %}
