@@ -128,7 +128,7 @@ class DesignValidator():
         data_type = cachevariable.get('dataType')
         if data_type == 'UaString':
             return  # any text is valid for string
-        elif data_type == 'OpcUa_Boolean':
+        if data_type == 'OpcUa_Boolean':
             valid_choices = ['OpcUa_True', 'OpcUa_False']
             if initial_value not in valid_choices:
                 raise DesignFlaw('initialValue wrong literal, only {0} allowed (at: {1})'.format(
@@ -230,7 +230,7 @@ class DesignValidator():
                 for option in mutex_options:
                     if option == 'of_containing_object':
                         self.assert_mutex_present(class_name, locator,
-                            'to support setting "{0}"'.format(option))
+                                                  'to support setting "{0}"'.format(option))
                     elif option == 'of_parent_of_containing_object':
                         parent = self.design_inspector.get_parent(class_name)
                         if parent is None:
@@ -256,6 +256,10 @@ class DesignValidator():
                 if is_array:
                     assert_attribute_absent(config_entry, 'defaultValue', "when it's an array",
                                             locator)
+                if 'isKey' in config_entry.attrib:
+                    if not self.design_inspector.class_has_device_logic(class_name):
+                        raise DesignFlaw(("isKey can only be used with device logic"
+                                          "(at: {0})").format(stringify_locator(locator)))
 
     def validate_hasobjects(self, hasobjects, locator):
         """Performs validation of particular hasobjects element"""
