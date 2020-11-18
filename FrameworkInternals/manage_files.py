@@ -190,6 +190,8 @@ class File(dict):
         return s
 
 class Directory(dict):
+    '''Represents a 'Directory' entry in files.txt / original_files.txt'''
+
     allowed_keys=['install']
     def __init__(self,basename,textLine):
         self['files']=[]
@@ -198,8 +200,10 @@ class Directory(dict):
         if chunks[0] != 'Directory':
             raise Exception ("A textline given to Directory() doesnt start with Directory: "+chunks[0])
         get_key_value_pairs(' '.join(chunks[2:]), Directory.allowed_keys, self)
+
     def add_file(self,file):
         self['files'].append(file)
+
     def make_text(self):
         s="Directory "+self['name']+" "+export_key_value_pairs(Directory.allowed_keys, self)+"\n"
         for f in self['files']:
@@ -210,6 +214,11 @@ class Directory(dict):
         for f in self['files']:
             problems.extend(f.check_consistency(vci))
         return problems
+
+    def install_action(self):
+        '''Returns the x from install=x entry that governs how the installer should behave, None if
+           field missing.'''
+        return self.get('install', None)
 
 def check_consistency(directories, project_directory, vci):
     # to the files loaded from files.txt we have to add files that would be generated for defined classes
@@ -319,62 +328,71 @@ def create_release(directories):
     f.write(s)
     print('file files.txt was created')
 
-def perform_installation(directories, source_directory, target_directory):
-    if not os.path.isdir(target_directory):
-        print('given target_directory='+target_directory+' doesnt exist or is not a directory')
-        return False
-    for d in directories:
-        source_dir_path = source_directory+os.path.sep+d['name']
-        target_dir_path = target_directory+os.path.sep+d['name']
-        if 'install' in d:
-            dir_action = d['install']
-            if dir_action=='create':
-                if not os.path.isdir(target_dir_path):
-                    print('Creating directory '+target_dir_path)
-                    os.mkdir(target_dir_path)
-            else:
-                raise Exception ('directory '+d['name']+' install='+dir_action+' is not valid')
-        for f in d['files']:
-            source_file_path = source_dir_path+os.path.sep+f['name']
-            target_file_path = target_dir_path+os.path.sep+f['name']
-            print("at file="+f.path())
-            if 'install' in f:
-                file_action = f['install']
-                if file_action=='overwrite':
-                    if not os.path.isfile(target_file_path):
-                        print('Copying '+source_file_path+' -> '+target_file_path)
-                        shutil.copy2(source_file_path,  target_file_path)
-                    else:
-                        print('Overwriting: '+target_file_path)
-                        shutil.copy2(source_file_path,  target_file_path)
-                elif file_action=='ask_to_merge':
-                    # if the target file doesnt exist, just copy it
-                    if not os.path.isfile(target_file_path):
-                        print('Copying '+source_file_path+' -> '+target_file_path)
-                        shutil.copy2(source_file_path,  target_file_path)
-                    else:
-                        # maybe the files are the same and it is not needed to merge ??
-                        if os.system('diff '+source_file_path+' '+target_file_path)==0:
-                            print('Files the same; merging not needed')
+class Installer():
+    '''The thing that installs quasar projects'''
+
+    def __init__(self, files_txt_list_of_dirs):
+        '''files_txt_list_of_dirs is the structure loaded from files.txt'''
+        self.files_txt_list_of_dirs = files_txt_list_of_dirs
+
+    def __install_directory(self, dir, target_dir_path):
+        if dir.install_action() == 'create':
+            if not os.path.isdir(target_dir_path):
+                print('Creating directory ' + target_dir_path) # refactor for logging.
+                os.mkdir(target_dir_path)
+        elif dir.install_action() is None:
+            pass # nothing to do
+        else:
+            raise Exception (('The install action {0} for directory {1} seems invalid, file a '
+                              'quasar bug report.').format(dir.install_action(), dir['name']))
+
+    def install(self, source_directory, target_directory):
+        if not os.path.isdir(target_directory):
+            raise Exception(('given target_directory {0} does not exist or is not '
+                             'a directory').format(target_directory))
+        for dir in self.files_txt_list_of_dirs:
+            source_dir_path = os.path.sep.join([source_directory, dir['name']])
+            target_dir_path = os.path.sep.join([target_directory, dir['name']])
+            self.__install_directory(dir, target_dir_path)
+            for f in dir['files']:
+                source_file_path = source_dir_path+os.path.sep+f['name']
+                target_file_path = target_dir_path+os.path.sep+f['name']
+                print("at file="+f.path())
+                if 'install' in f:
+                    file_action = f['install']
+                    if file_action=='overwrite':
+                        if not os.path.isfile(target_file_path):
+                            print('Copying '+source_file_path+' -> '+target_file_path)
+                            shutil.copy2(source_file_path,  target_file_path)
                         else:
-                            print('Filed differ; merging needed')
-                            merge_val=os.system('kdiff3 -o '+target_file_path+' '+source_file_path+' '+target_file_path)
-                            print('Merge tool returned: '+str(merge_val))
-                            if merge_val!=0:
-                                yn=yes_or_no('Merge tool returned non-zero, wanna continue?')
-                                if yn=='n':
-                                    sys.exit(1)
-                elif file_action=='copy_if_not_existing':
-                    if not os.path.isfile(target_file_path):
-                        print('Copying '+source_file_path+' -> '+target_file_path)
-                        shutil.copy2(source_file_path,  target_file_path)
-                elif file_action=='dont_touch':
-                    pass
-                else:
-                    raise Exception ( 'install='+file_action+' not valid' )
+                            print('Overwriting: '+target_file_path)
+                            shutil.copy2(source_file_path,  target_file_path)
+                    elif file_action=='ask_to_merge':
+                        # if the target file doesnt exist, just copy it
+                        if not os.path.isfile(target_file_path):
+                            print('Copying '+source_file_path+' -> '+target_file_path)
+                            shutil.copy2(source_file_path,  target_file_path)
+                        else:
+                            # maybe the files are the same and it is not needed to merge ??
+                            if os.system('diff '+source_file_path+' '+target_file_path)==0:
+                                print('Files the same; merging not needed')
+                            else:
+                                print('Filed differ; merging needed')
+                                merge_val=os.system('kdiff3 -o '+target_file_path+' '+source_file_path+' '+target_file_path)
+                                print('Merge tool returned: '+str(merge_val))
+                                if merge_val!=0:
+                                    yn=yes_or_no('Merge tool returned non-zero, wanna continue?')
+                                    if yn=='n':
+                                        sys.exit(1)
+                    elif file_action=='copy_if_not_existing':
+                        if not os.path.isfile(target_file_path):
+                            print('Copying '+source_file_path+' -> '+target_file_path)
+                            shutil.copy2(source_file_path,  target_file_path)
+                    elif file_action=='dont_touch':
+                        pass
+                    else:
+                        raise Exception ( 'install='+file_action+' not valid' )
 
-
-    return True
 
 
 def project_setup_svn_ignore(project_directory):
@@ -444,8 +462,9 @@ def mfInstall(sourceDirectory, targetDirectory):
     sourceDirectory -- The directory where the framework is currently
     targetDirectory -- The target directory where the framework will be installed or upgraded
     """
-    directories = load_file('FrameworkInternals' + os.path.sep + 'files.txt', os.getcwd())
-    perform_installation(directories, sourceDirectory, targetDirectory)
+    files_txt_list_of_dirs = load_file('FrameworkInternals' + os.path.sep + 'files.txt', os.getcwd())
+    installer = Installer(files_txt_list_of_dirs)
+    installer.install(sourceDirectory, targetDirectory)
 
 def mfSetupSvnIgnore():
     """Setups the .svnignore hidden file, so the generated files will be ignored in your svn repository."""
