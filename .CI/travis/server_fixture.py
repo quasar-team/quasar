@@ -33,6 +33,7 @@ import sys
 import os
 import subprocess
 import time
+import argparse
 from colorama import Fore, Style
 
 def print_msg(msg):
@@ -57,6 +58,14 @@ def make_sure_the_bastard_dies(process):
 
 def main():
     """Main program"""
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--command_to_run",
+        default=None,
+        type=str,
+        help='Supplementary command to run when server successfully started. Not mandatory.')
+    args = parser.parse_args()
+
     os.chdir(os.path.sep.join(['build', 'bin']))
 
     process = subprocess.Popen('./OpcUaServer')
@@ -71,7 +80,13 @@ def main():
         sys.exit(1) # Let now the CI that the test failed.
     else:
         # Ask kindly the process to terminate.
-        print_msg("So far, so good. Asking the server to stop.")
+        print_msg("So far, so good.")
+        if args.command_to_run is not None:
+            print_msg("Was requested to run this command: {0}".format(args.command_to_run))
+            ret_code = os.system(args.command_to_run)
+            print_msg("The command exited with code {0}. We can quit now.".format(ret_code))
+        else:
+            print_msg("Will exit now as no command was requested to be run")
         make_sure_the_bastard_dies(process)
         if process.returncode == 0:
             print_msg('Process exited, return code zero -- all tests passed.')
