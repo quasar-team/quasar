@@ -23,7 +23,7 @@ jobs:
 
     - name: open62541_test_cache_variables
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+        - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
@@ -41,11 +41,11 @@ jobs:
             cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
             cp -v .CI/test_cases/test_cache_variables/config.xml build/bin ;
             ./quasar.py build Release ;
-            ./.CI/travis/server_fixture.py ;"
+            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;"
 
     - name: open62541_test_recurrent_hasobjects
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+        - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
@@ -60,11 +60,11 @@ jobs:
             ./quasar.py generate device --all ;
             cp -v .CI/test_cases/test_recurrent_hasobjects/config.xml bin/ ;
             ./quasar.py build Release ;
-            ./.CI/travis/server_fixture.py ;"
+            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;"
 
     - name: open62541_test_single_variable_node
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+        - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
@@ -79,11 +79,11 @@ jobs:
             ./quasar.py generate device --all ;
             cp -v .CI/test_cases/test_single_variable_node/config.xml bin/ ;
             ./quasar.py build Release ;
-            ./.CI/travis/server_fixture.py ;"
+            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;"
 
     - name: open62541_test_methods
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+        - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
@@ -99,7 +99,7 @@ jobs:
 
     - name: open62541_test_instantiation_from_design
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+        - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
@@ -115,7 +115,7 @@ jobs:
 
     - name: open62541_test_config_entries
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+        - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
@@ -131,7 +131,7 @@ jobs:
 
     - name: open62541_test_config_restrictions
       script:
-        - docker run  --interactive --tty bfarnham/quasar:quasar-open62541 /bin/bash -c "
+        - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
@@ -150,7 +150,7 @@ jobs:
             cd quasar ;
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             ./quasar.py build ;
-            ./.CI/travis/server_fixture.py ;"
+            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;"
 
     - name: uasdk_test_sync_methods
       script:
@@ -162,7 +162,7 @@ jobs:
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             cp -v .CI/test_cases/test_methods/config.xml bin/ ;
             ./quasar.py build ;
-            ./.CI/travis/server_fixture.py ;"
+            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;"
 
     - name: uasdk_test_cache_variables
       script:
@@ -177,7 +177,7 @@ jobs:
             cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
             cp -v .CI/test_cases/test_cache_variables/config.xml build/bin ;
             ./quasar.py build ;
-            ./.CI/travis/server_fixture.py ;"
+            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;"
 
     - name: uasdk_test_source_variables
       script:
@@ -189,7 +189,7 @@ jobs:
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             cp -v .CI/test_cases/test_source_variables/config.xml bin/ ;
             ./quasar.py build ;
-            ./.CI/travis/server_fixture.py ;"
+            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;"
 
     - name: uasdk_test_config_entries
       script:
@@ -200,4 +200,4 @@ jobs:
             cp -v .CI/test_cases/test_config_entries/config.xml bin/ ;
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             ./quasar.py build ;
-            ./.CI/travis/server_fixture.py ;"
+            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;"
