@@ -76,11 +76,11 @@ def generate():
 
 						if initializer == 'valueAndStatus' and dataType == 'UaVariant' and nullPolicy == 'nullForbidden':
 							continue # this setting is clearly invalid!
-							
+
 						generateDeviceLogicCase(dataType, scalarArray, initializer, asWrite, nullPolicy)
-						
+
 						if initializer == 'valueAndStatus':
-							if dataType != 'UaVariant':		
+							if dataType != 'UaVariant':
 								initialValue = SampleInitialValue[dataType]
 								extra = 'initialStatus="OpcUa_Good" initialValue="{0}"'.format(initialValue)
 							else:
@@ -110,7 +110,7 @@ def generate():
 
 
 output('<?xml version="1.0" encoding="UTF-8"?>')
-output('<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="OpcUaSca" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">')
+output('<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="TestProject" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">')
 output('<d:class name="TestClass">')
 output('<d:devicelogic/>')
 generate()

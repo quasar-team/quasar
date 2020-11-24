@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- note: this file was taken from the Iseg OPC-UA server: https://gitlab.cern.ch/iseg/iseg-opcua-server on 15-Sep-2020 -->
-<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="" xsi:schemaLocation="http://www.example.org/Design Design.xsd ">
+<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="TestProject" xsi:schemaLocation="http://www.example.org/Design Design.xsd ">
 
   <d:class name="CanBus">
     <d:devicelogic/>
