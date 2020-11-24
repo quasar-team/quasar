@@ -110,9 +110,11 @@
 
 
 
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
 
 
 
@@ -215,25 +217,34 @@
           </td>
           <td valign="top"><br>
           </td>
-          <td valign="top">Important if you build any shared objects
-            from quasar build system: with nebula.A8 we started
-            requiring CMake version at least 3.10. However that also
-            brings <a
-              href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
-            If you build any shared objects within your quasar project
-            build system (e.g. for quasar Poverty, or for Common CAN
-            module, etc ...) you might want to double check if
-            ENABLE_EXPORTS is set on the .so targets. This release
-            provides transitional protection for CMP0065 by setting the
-            behaviour to old, however the old behaviour might be
-            discontinued by CMake in future.<br>
+          <td valign="top">
+            <ul>
+              <li>In this version it is required that the
+                "projectShortName" field in your Design is non-empty. If
+                you haven't named your project so far, it's time to do
+                it. This name will propagate into automatically
+                generated documentation and in future also to build
+                scripts, etc.<br>
+              </li>
+              <li>Important if you build any shared objects from quasar
+                build system: with nebula.A8 we started requiring CMake
+                version at least 3.10. However that also brings <a
+                  href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
+                If you build any shared objects within your quasar
+                project build system (e.g. for quasar Poverty, or for
+                Common CAN module, etc ...) you might want to double
+                check if ENABLE_EXPORTS is set on the .so targets. This
+                release provides transitional protection for CMP0065 by
+                setting the behaviour to old, however the old behaviour
+                might be discontinued by CMake in future.</li>
+            </ul>
           </td>
           <td valign="top"><br>
           </td>
         </tr>
         <tr>
           <td valign="top">nebula.A10<br>
-            <font size="-1">(18-Nov=2020)</font><br>
+            <font size="-1">(18-Nov-2020)</font><br>
           </td>
           <td valign="top">A critical bug fixed that prevented an user
             from using quasar. Added logging of startup info. Other
