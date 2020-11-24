@@ -84,7 +84,10 @@ def main():
         if args.command_to_run is not None:
             print_msg("Was requested to run this command: {0}".format(args.command_to_run))
             ret_code = os.system(args.command_to_run)
-            print_msg("The command exited with code {0}. We can quit now.".format(ret_code))
+            print_msg("The command exited with code {0}. Nothing more to do.".format(ret_code))
+            if ret_code != 0:
+                make_sure_the_bastard_dies(process)
+                sys.exit(1)
         else:
             print_msg("Will exit now as no command was requested to be run")
         make_sure_the_bastard_dies(process)
