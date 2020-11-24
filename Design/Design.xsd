@@ -64,10 +64,7 @@ elementFormDefault="qualified">
             </element>
 
     	</sequence>
-    	<attribute name="projectShortName" type="string"
-    		use="required">
-    	</attribute>
-
+    	<attribute name="projectShortName" type="tns:NonEmptyString" use="required" />
     	<attribute name="author" type="string"></attribute>
     </complexType>
 
@@ -457,14 +454,14 @@ elementFormDefault="qualified">
         </sequence>
     </complexType>
 
+	<simpleType name="NonEmptyString">
+	    <restriction base="string">
+            <minLength value="1"/>
+        </restriction>
+	</simpleType>
+
     <complexType name="EnumerationValue">
-        <attribute name="value" use="required">
-          <simpleType>
-            <restriction base="string">
-              <minLength value="1"/>
-            </restriction>
-          </simpleType>
-        </attribute>
+        <attribute name="value" use="required" type="tns:NonEmptyString"/>
     </complexType>
 
     <complexType name="RestrictionByBounds">
