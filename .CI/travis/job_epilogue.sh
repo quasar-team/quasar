@@ -1,4 +1,4 @@
-           ./quasar.py enable_module open62541-compat v1.3.5 ;
+           ./quasar.py enable_module open62541-compat v1.3.6-rc0 ;
            ./quasar.py set_build_config open62541_config.cmake ;
            ./quasar.py prepare_build Release ;
            ./quasar.py build Release ;
