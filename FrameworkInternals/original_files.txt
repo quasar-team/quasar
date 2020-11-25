@@ -81,7 +81,7 @@ File CMakeLists.txt                         must_exist,must_be_versioned,install
 
 Directory Common/include install=create
 File ASUtils.h                              must_exist,must_be_versioned,md5=check,install=ask_to_merge
-File Utils.h                                must_exist,must_be_versioned,install=ask_to_merge
+File Utils.h                                must_exist,must_be_versioned,md5=check,install=overwrite
 File QuasarThreadPool.h                     must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Common/src install=create
@@ -201,7 +201,7 @@ File OptionalModule.cmake              must_exist,must_be_versioned,md5=check,in
 File OptionalModules.cmake             must_exist,must_be_versioned,md5=check,install=overwrite,
 File UrlHandling.cmake                 must_exist,must_be_versioned,md5=check,install=overwrite,
 File BoostSetup.cmake                  must_exist,must_be_versioned,md5=check,install=overwrite,
-File astyleSubstitute.py               deprecated 
+File astyleSubstitute.py               deprecated
 File quasarExceptions.py               must_exist,must_be_versioned,md5=check,install=overwrite,
 File quasar_basic_utils.py             must_exist,must_be_versioned,md5=check,install=overwrite,
 File quasar_utils.py                   must_exist,must_be_versioned,md5=check,install=overwrite,
