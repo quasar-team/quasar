@@ -112,9 +112,13 @@
 
 
 
+
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
+
 
 
 
@@ -216,14 +220,21 @@
         </tr>
         <tr>
           <td valign="top">nebula.B1<br>
+            <font size="-1">(25-Nov-2020)</font><br>
           </td>
-          <td valign="top"><br>
+          <td valign="top">The reason for move between A.x and B.x
+            branch is (not so likely) Design schema backwards-incompat
+            change. In addition we get extensions of CI testing and some
+            smaller improvements.<br>
+            Pay attention to the column on the right, there might be
+            some incompatibilities.<br>
           </td>
           <td valign="top">
             <ul>
               <li>Common/include/Utils.h is finally a 100% quasar file.
                 If (unlikely) you have custom mods to this file, please
-                spawn these as a separate, user-supplied file.<br>
+                spawn these as a separate, user-supplied file. Otherwise
+                you will lose your custom changes.<br>
               </li>
               <li>In this version it is required that the
                 "projectShortName" field in your Design is non-empty. If
@@ -245,7 +256,46 @@
                 might be discontinued by CMake in future.</li>
             </ul>
           </td>
-          <td valign="top"><br>
+          <td valign="top">Bug
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2074">OPCUA-2074</a>]
+                - CMake required 3.4 (in 3.3 still OK) breaks
+                compatibility for shared objects
+              </li>
+            </ul>
+            <br>
+            New Feature
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2007">OPCUA-2007</a>]
+                - Travis CI extensions: dump address space
+              </li>
+            </ul>
+            <br>
+            Task
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1775">OPCUA-1775</a>]
+                - Restrict isKey usage to config-entry
+                (backwards-incompatible Design schema change)
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2075">OPCUA-2075</a>]
+                - Common/Utils.h to get into quasar control
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2076">OPCUA-2076</a>]
+                - supply default of project short name, force usage.
+              </li>
+            </ul>
+            <br>
+            Improvement
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2072">OPCUA-2072</a>]
+                - Extend design validation for isKey without device
+                logic
+              </li>
+            </ul>
           </td>
         </tr>
         <tr>
