@@ -14,12 +14,10 @@
 # GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Author: Piotr Nikiel <piotr@nikiel.info>
-#
-# Server developers are invited to edit this file.
+# Initial author: Piotr Nikiel <piotr@nikiel.info> <-- specific users: remove this line and put your own name ;-)
+# This file *WILL NOT* be overwritten by quasar tools.
 
-
-set(DEVICE_CUSTOM_SOURCES 
+set(DEVICE_CUSTOM_SOURCES
 	# here place the list of your custom sources from Device module,
 	# e.g. src/MyFile1.cpp src/DeviceClass.cpp
 	)

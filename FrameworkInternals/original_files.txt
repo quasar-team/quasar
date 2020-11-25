@@ -1,4 +1,4 @@
-# © Copyright CERN, 2015. All rights not expressly granted are reserved.
+# (C) Copyright CERN, 2015. All rights not expressly granted are reserved.
 #
 # This file lists files of Quasar which should be installed in the target project.
 # Please note that files.txt is a derivative of this file, which replaces md5=check with the result of md5 check.
@@ -123,7 +123,8 @@ Directory Design/templates install=create
 File designToDot.jinja                      must_exist,must_be_versioned,md5=check,install=overwrite
 
 Directory Device install=create
-File CMakeLists.txt                         must_exist,must_be_versioned,install=ask_to_merge
+File CMakeLists.txt                         must_exist,must_be_versioned,install=overwrite
+File DeviceCustom.cmake                     must_exist,must_be_versioned,install=copy_if_not_existing
 File designToDeviceBody.xslt                deprecated
 File designToDeviceHeader.xslt              deprecated
 File designToRootBody.xslt                  deprecated
