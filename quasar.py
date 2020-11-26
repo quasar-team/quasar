@@ -43,6 +43,9 @@ if project_binary_dir is None:
         print('If you need in-source build, try:  ./quasar.py build --project_binary_dir . ')
     project_binary_dir = os.path.join(os.getcwd(),'build')
 
+
+
+
 def makeContext():
     """Generates a dictionary specifying the context.
     A context contains information necessary for build like:
@@ -55,7 +58,7 @@ def makeContext():
     return context
 
 if __name__ == '__main__':
-
+    quasar_basic_utils.initialize_logging()
     if len(args) < 1:
         print('The script was run without specifying what to do. Here are available commands:')
         printCommandList()

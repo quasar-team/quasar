@@ -33,6 +33,7 @@ ANY WAY OUT OF  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
 '''
 
 import errno
+import logging
 from colorama import Fore, Style
 from DesignInspector import DesignInspector
 import pdb
@@ -59,8 +60,6 @@ except Exception as e:
     print("For another operating system, contact piotr@nikiel.info for assistance in setting up this project")
     raise e
 
-
-verbose=False
 ask=False
 
 def yes_or_no(question):
@@ -142,7 +141,7 @@ class File(dict):
 
 
     def check_md5(self):
-        if verbose: print("---> Checking md5 of file: "+self.path())
+        logging.debug("---> Checking md5 of file: %s", self.path())
         if not os.path.isfile(self.path()):
             return ['Cant checksum because the file doesnt exist: '+self.path()]
         else:
@@ -154,7 +153,7 @@ class File(dict):
 
 
     def check_consistency(self, vci):
-        if verbose: print("--> check_consistency called on File "+self.path())
+        logging.debug("--> check_consistency called on File: %s ", self.path())
         problems=[]
         if self.must_exist():
             if not os.path.isfile(self.path()):
@@ -163,7 +162,7 @@ class File(dict):
         if self.must_be_versioned():
             # this applies only if file exists
             if os.path.isfile(self.path()):
-                if verbose: print("----> checking if versioned: "+self.path())
+                logging.debug("----> checking if versioned: %s", self.path())
                 if not vci.is_versioned(self.path()):
                     if ask:
                         print("File is not versioned: "+self.path())
@@ -401,7 +400,7 @@ class Installer():
             for file in dir['files']:
                 source_file_path = source_dir_path+os.path.sep+file['name']
                 target_file_path = target_dir_path+os.path.sep+file['name']
-                print("at file="+file.path()) # to go to logging at level TRC or so
+                logging.debug("at file %s", file.path())
                 self.__install_file(file, source_file_path, target_file_path)
 
 def project_setup_svn_ignore(project_directory):

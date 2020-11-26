@@ -20,6 +20,7 @@ import os
 import sys
 import traceback
 import pdb
+import logging
 from colorama import Fore, Back, Style
 
 def extract_argument(inData, key):
@@ -64,7 +65,24 @@ def get_quasar_version():
     """Returns version of quasar deployed in the current project"""
     version_f = open(os.path.sep.join(['Design', 'quasarVersion.txt']))
     return version_f.readline().rstrip()
-    
+
 def print_quasar_version():
     """Prints currently deployed quasar version"""
     print("quasar version: " + Fore.GREEN + get_quasar_version() + Style.RESET_ALL)
+
+def initialize_logging():
+    """Initializes Python's logging"""
+    log_levels = {
+        'INF' : logging.INFO,
+        'DBG' : logging.DEBUG
+    }
+    log_level_str = os.getenv('QUASAR_LOG_LEVEL', 'INF')
+    if log_level_str not in log_levels:
+        print(("The log level exported in the environment variable QUASAR_LOG_LEVEL of value {0} "
+               "is invalid. Please supply a valid one from the set {1}").format(
+                   log_level_str,
+                   ', '.join(log_levels)))
+        sys.exit(1)
+    logging.basicConfig(level=log_levels[log_level_str])
+    logging.debug('quasar tooling is running in log level %s',
+                  logging.getLogger().getEffectiveLevel())
