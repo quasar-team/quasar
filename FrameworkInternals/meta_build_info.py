@@ -40,7 +40,7 @@ def open_generation_target_file(target_generation_dir):
         sys.exit('Generation Failed! Could not find target generation dir [{}]'.format(target_generation_dir))
     generation_file_path = os.path.join(target_generation_dir,  'MetaBuildInfoGenerated.h')
     try:
-        return open(generation_file_path, 'w')
+        return open(generation_file_path, 'w', encoding='utf-8')
     except Exception as e:
         sys.exit('Generation Failed! Could not open/create target generation file [{}]'.format(generation_file_path))
 

@@ -12,12 +12,12 @@ DesignInspector.py
 Copyright (c) 2015, CERN.
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted 
+Redistribution and use in source and binary forms, with or without modification, are permitted
 provided that the following conditions are met:
 1. Redistributions of source code must retain the above copyright notice, this
    list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
-   and the following disclaimer in the documentation and/or other materials provided with the 
+   and the following disclaimer in the documentation and/or other materials provided with the
    distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS  OR
@@ -45,7 +45,7 @@ QUASAR_NAMESPACES = {'d':'http://cern.ch/quasar/Design'}
 class DesignInspector():
     """This class is to dig out data of interest for quasar NextGen transforms"""
     def __init__(self, designPath):
-        design_file = open(designPath, 'r')
+        design_file = open(designPath, 'r', encoding='utf-8')
         self.tree = etree.parse(design_file)
         # TODO: get root here if it is guaranteed to exist?
 
@@ -58,7 +58,7 @@ class DesignInspector():
                 xpath_expr, result)
                   + Style.RESET_ALL)
         return result
-    
+
     def xpath_relative_to_object(self, object, xpath_expression):
         """ Executes xpath query relative to 'object'. Expectation is that
         object is of type ObjectifiedElement, or at least has method xpath
@@ -225,7 +225,7 @@ class DesignInspector():
         """Returns True if the class is a singleVariableNode"""
         the_class = self.objectify_class(class_name)
         return the_class.get('singleVariableNode') == 'true'
-        
+
     def get_restrictions(self, class_name, name, what):
         """Returns a list of tuples(type, value) where type is one of [enumeration, pattern,
            minExclusive, minInclusive, maxInclusive, maxExclusive] and value is plug'n'play value
@@ -247,7 +247,7 @@ class DesignInspector():
 
     def getProjectName(self):
         return self.xpath("/d:design/@projectShortName")[0]
-        
+
     def objectifyAllParents(self, className, restrict_to_by_configuration=False):
         #pdb.set_trace()
         xpath_string="//d:hasobjects[@class='{0}'".format(className)
@@ -255,7 +255,7 @@ class DesignInspector():
             xpath_string+=" and @instantiateUsing='configuration'"
         xpath_string+="]/.."
         return self.xpath(xpath_string)
-        
+
     def objectifyDocumentation(self, className, cachevar_or_configentry_name=''):
         """ if cachevar_or_config_entry_name empty, returns class documentation element as object """
         """ otherwise returns specified cachevar/configentry documentation element as object """
@@ -267,7 +267,7 @@ class DesignInspector():
             | \
             /d:design/d:class[@name='{0}']/d:configentry[@name='{1}']/d:documentation".format(className, cachevar_or_configentry_name)
             return self.objectify_any(xpath_str)
-            
+
     def strip_documentation_for_xsd(self, documentation_object):
         """ documentation_object is as returned from objectify_documentation; an objectified
         documentation element. Required since documentation may require markup tags (e.g HTML)
@@ -281,7 +281,7 @@ class DesignInspector():
             return list(iterable)
         except ValueError:
             return []
-        
+
 if __name__ == "__main__":
     """Mostly as test fixture"""
     di = DesignInspector('../Design/Design.xml')

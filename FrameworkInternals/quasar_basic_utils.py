@@ -63,7 +63,7 @@ def quasaric_exception_handler():
 
 def get_quasar_version():
     """Returns version of quasar deployed in the current project"""
-    version_f = open(os.path.sep.join(['Design', 'quasarVersion.txt']))
+    version_f = open(os.path.sep.join(['Design', 'quasarVersion.txt']), 'r', encoding='utf-8')
     return version_f.readline().rstrip()
 
 def print_quasar_version():

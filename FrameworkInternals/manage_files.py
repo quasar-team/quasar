@@ -283,7 +283,7 @@ def load_file(file_name, project_directory):
     '''Loads files.txt or original_files.txt, returns a list of Directory entries'''
     line_no = 0
     directories = []
-    files_txt = open(file_name, 'r')
+    files_txt = open(file_name, 'r', encoding='utf-8')
     try:
         for line in files_txt:
             line_no += 1
@@ -321,7 +321,7 @@ def load_file(file_name, project_directory):
 
 def create_release(directories):
     '''Internal (quasar-devs only) function to regenerate files.txt file'''
-    files_txt = open(os.path.sep.join(['FrameworkInternals', 'files.txt']), 'w')
+    files_txt = open(os.path.sep.join(['FrameworkInternals', 'files.txt']), 'w', encoding='utf-8')
     files_txt.write((
         '# (C) Copyright CERN, 2015. All rights not expressly granted are reserved.\n'
         '# \n'
