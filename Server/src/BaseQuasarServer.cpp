@@ -389,6 +389,7 @@ void BaseQuasarServer::initializeLogIt()
 {
     Log::initializeLogging();
     Log::registerLoggingComponent("CalcVars", Log::INF);
+    Log::registerLoggingComponent("AddressSpace", Log::INF);
 }
 void BaseQuasarServer::mainLoop()
 {

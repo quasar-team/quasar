@@ -29,6 +29,8 @@
 #include <ASSourceVariable.h>
 #include <Utils.h>
 
+#include <LogIt.h>
+
 using namespace std;
 
 namespace AddressSpace
@@ -58,6 +60,9 @@ UaStatus ASNodeManager::addNodeAndReferenceThrows(
 	const UaNodeId&   referenceTypeId,
 	const UaNodeId&   targetNodeId)
 	{
+
+		LOG(Log::TRC, "AddressSpace") << "addNodeAndReferenceThrows: adding target node at [" <<
+				targetNodeId.toString().toUtf8() << "] from parent at [" << parentNodeId.toString().toUtf8() << "]";
 		UaStatus status = this->addNodeAndReference(parentNodeId, pNewNode, referenceTypeId);
 		if (!status.isGood())
 		  throw_runtime_error_with_origin(
@@ -75,6 +80,8 @@ UaStatus ASNodeManager::addNodeAndReferenceThrows(
 		const UaNodeId&   sourceNodeId,
 		const UaNodeId&   targetNodeId)
 		{
+			LOG(Log::TRC, "AddressSpace") << "addNodeAndReferenceThrows: adding target node at [" <<
+					targetNodeId.toString().toUtf8() << "] from parent at [" << sourceNodeId.toString().toUtf8() << "]";
 			UaStatus status = this->addNodeAndReference(pSourceNode, pNewNode, referenceTypeId);
 			if (!status.isGood())
 				throw_runtime_error_with_origin(
