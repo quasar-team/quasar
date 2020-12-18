@@ -61,9 +61,10 @@ def quasaric_exception_handler():
               + ("Export QUASAR_RUN_PDB to your environment if you wish to automatically start "
                  "Python debugger! (e.g. 'export QUASAR_RUN_PDB=1' in bash)") + Style.RESET_ALL)
 
-def get_quasar_version():
-    """Returns version of quasar deployed in the current project"""
-    version_f = open(os.path.sep.join(['Design', 'quasarVersion.txt']), 'r', encoding='utf-8')
+def get_quasar_version(where=''):
+    """Returns version of quasar deployed in the current project or anothe project if
+       where is given"""
+    version_f = open(os.path.join(where, 'Design', 'quasarVersion.txt'), 'r', encoding='utf-8')
     return version_f.readline().rstrip()
 
 def print_quasar_version():
@@ -86,3 +87,12 @@ def initialize_logging():
     logging.basicConfig(level=log_levels[log_level_str])
     logging.debug('quasar tooling is running in log level %s',
                   logging.getLogger().getEffectiveLevel())
+
+def yes_or_no(question):
+    '''A simple user interaction asking for yes or no.'''
+    while True:
+        print(question+' type y or n; then enter   ')
+        sys.stdout.flush()
+        yn = input()
+        if yn in ['y','n']:
+            return yn
