@@ -74,7 +74,7 @@ namespace AddressSpace
     const UaNodeId getTypeNodeId (unsigned int numericalType);
     void setAfterStartupDelegate( std::function<UaStatus ()> afterStartUpDelegate );
 
-	UaStatus addUnreferencedNode( UaNode* node ) { m_unreferencedNodes.push_back(node); return OpcUa_Good; }
+	UaStatus addUnreferencedNode( UaNode* node );
 	const std::list<UaNode*>& getUnreferencedNodes () const { return m_unreferencedNodes; }
 
   private:

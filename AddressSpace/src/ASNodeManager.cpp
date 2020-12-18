@@ -175,5 +175,11 @@ UaStatus ASNodeManager::beforeShutDown()
 		m_afterStartUpDelegate = afterStartUpDelegate;
 	}
 
+	UaStatus ASNodeManager::addUnreferencedNode( UaNode* node )
+	{
+		LOG(Log::TRC, "AddressSpace") << "Adding unreferenced node with nodeId: " << node->nodeId().toString().toUtf8();
+		m_unreferencedNodes.push_back(node);
+		return OpcUa_Good;
+	}
 
 }
