@@ -83,6 +83,8 @@ def main():
             r[dir]['files'][file].pop('name')
             # if 'apply_file_defaults' in r[dir]['files'][file]:
             #     r[dir]['files'][file] = "<FILE_DEFAULTS_OF_DIR>"
+            # if 'apply_file_defaults' in r[dir]['files'][file]:
+            #     r[dir]['files'][file] = "<FILE_DEFAULTS_OF_DIR>"
 
 
 
