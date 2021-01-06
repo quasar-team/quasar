@@ -80,6 +80,7 @@ class File():
     # or lists or something else.
     Attrs = ['md5', 'use_defaults', 'install']
 
+
     def __init__(self, base_name, specification, directory, directory_spec):
         """Makes a File entry
 
@@ -94,11 +95,13 @@ class File():
         self.name = base_name
         self.path = os.path.join(directory, base_name)
         self.specification = specification
+        input_specification = directory_spec['file_defaults'] if 'use_defaults' in specification else {}
+        input_specification.update(specification)
         for flag in File.Flags:
-            flag_val = specification.get(flag, False)
+            flag_val = input_specification.get(flag, False)
             self.__setattr__(flag, flag_val)
         for attr in File.Attrs:
-            attr_val = specification.get(attr, None)
+            attr_val = input_specification.get(attr, None)
             self.__setattr__(attr, attr_val)
 
     def must_be_md5_checked(self):
@@ -180,11 +183,14 @@ class File():
         self.md5 = self.compute_md5(self.path)
 
     def json_repr(self):
-        flags_dict = {flag:self.__getattribute__(flag) for flag in File.Flags if self.__getattribute__(flag)}
-        attrs_dict = {attr:self.__getattribute__(attr) for attr in File.Attrs if self.__getattribute__(attr) is not None}
-        overall = flags_dict
-        overall.update(attrs_dict)
-        return overall
+        if self.use_defaults:
+            return {'use_defaults':'file_defaults_of_directory', 'md5':self.md5}
+        else:
+            flags_dict = {flag:self.__getattribute__(flag) for flag in File.Flags if self.__getattribute__(flag)}
+            attrs_dict = {attr:self.__getattribute__(attr) for attr in File.Attrs if self.__getattribute__(attr) is not None}
+            overall = flags_dict
+            overall.update(attrs_dict)
+            return overall
 
 # TODO subclassing dict is probably not worth stating.
 class Directory(dict):
@@ -238,6 +244,7 @@ class Directory(dict):
         answer['files'] = files_repr
         if 'file_defaults' in self.specification:
             answer['file_defaults'] = self.specification['file_defaults']
+            answer['file_defaults'].pop('use_defaults', None)
         return answer
 
 def check_consistency(directories, project_directory, vci):
@@ -287,6 +294,7 @@ def check_uncovered(directories,project_directory):
 
 def load_file(file_name, project_directory):
     '''Loads files.txt or original_files.txt, returns a list of Directory entries'''
+    logging.debug(f'Loading file {file_name}')
     files_txt = open(file_name, 'r', encoding='utf-8')
     json_repr = json.load(files_txt)
     # json_repr at this stage should be a dictionary with directory name as key and
@@ -369,13 +377,13 @@ class Installer():
             raise Exception(('given target_directory {0} does not exist or is not '
                              'a directory').format(target_directory))
         for dir in self.files_txt_list_of_dirs:
-            source_dir_path = os.path.sep.join([source_directory, dir['name']])
-            target_dir_path = os.path.sep.join([target_directory, dir['name']])
+            source_dir_path = os.path.join(source_directory, dir['name'])
+            target_dir_path = os.path.join(target_directory, dir['name'])
             self.__install_directory(dir, target_dir_path)
             for file in dir['files']:
-                source_file_path = source_dir_path+os.path.sep+file['name']
-                target_file_path = target_dir_path+os.path.sep+file['name']
-                logging.debug("at file %s", file.path())
+                source_file_path = os.path.join(source_dir_path, file.name)
+                target_file_path = os.path.join(target_dir_path, file.name)
+                logging.debug("at file %s", file.path)
                 self.__install_file(file, source_file_path, target_file_path)
 
 def project_setup_svn_ignore(project_directory):
@@ -445,7 +453,7 @@ def mfInstall(sourceDirectory, targetDirectory):
     sourceDirectory -- The directory where the framework is currently
     targetDirectory -- The target directory where the framework will be installed or upgraded
     """
-    files_txt_list_of_dirs = load_file('FrameworkInternals' + os.path.sep + 'files.txt', os.getcwd())
+    files_txt_list_of_dirs = load_file(os.path.join('FrameworkInternals', 'files.json'), os.getcwd())
     installer = Installer(files_txt_list_of_dirs)
     installer.install(sourceDirectory, targetDirectory)
 
