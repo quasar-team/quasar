@@ -69,7 +69,7 @@ def main():
             for file in dir['files']:
                 for key in common_part:
                     file.pop(key)
-                file['apply_file_defaults'] = True
+                file['use_defaults'] = 'file_defaults_of_directory'
 
     print('--- after 3 ---')
     print(files_txt_list_of_dirs)
@@ -81,8 +81,10 @@ def main():
         #pdb.set_trace()
         for file in r[dir]['files']:
             r[dir]['files'][file].pop('name')
-            if 'apply_file_defaults' in r[dir]['files'][file]:
-                r[dir]['files'][file] = "<FILE_DEFAULTS_OF_DIR>"
+            # if 'apply_file_defaults' in r[dir]['files'][file]:
+            #     r[dir]['files'][file] = "<FILE_DEFAULTS_OF_DIR>"
+            # if 'apply_file_defaults' in r[dir]['files'][file]:
+            #     r[dir]['files'][file] = "<FILE_DEFAULTS_OF_DIR>"
 
 
 
