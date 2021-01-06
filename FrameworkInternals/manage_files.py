@@ -34,26 +34,17 @@ ANY WAY OUT OF  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
 
 import errno
 import logging
-from colorama import Fore, Style
-from DesignInspector import DesignInspector
-import pdb
 import json
-
-
 import sys
 import os
 import platform
-import os.path
-import subprocess
-import traceback
-from optparse import OptionParser
 import hashlib
-import version_control_interface
-
 import shutil  # for copying files, etc
 import glob
+from colorama import Fore, Style
 from quasar_basic_utils import yes_or_no
-
+import version_control_interface
+from DesignInspector import DesignInspector
 
 
 ask=False
@@ -257,8 +248,9 @@ def check_consistency(directories, project_directory, vci):
     directory_Device_src = [dir for dir in directories if dir['name'] == "Device/src"][0]
     device_module_path = os.path.sep.join([project_directory, "Device"])
     for klass in classes:
-        directory_Device_include.add_file(File("File D{0}.h must_exist,must_be_versioned".format(klass), os.path.sep.join([device_module_path, 'include'])))
-        directory_Device_src.add_file(File("File D{0}.cpp must_exist,must_be_versioned".format(klass), os.path.sep.join([device_module_path, 'src'])))
+        spec = {'must_exist': True, 'must_be_versioned': True}
+        directory_Device_include.add_file(File(f"D{klass}.h", spec, os.path.join(device_module_path, 'include'), {}))
+        directory_Device_include.add_file(File(f"D{klass}.cpp", spec, os.path.join(device_module_path, 'src'), {}))
 
     problems=[]
 
