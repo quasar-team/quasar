@@ -37,6 +37,10 @@
 
 
 
+
+
+
+
       opc<span style="color: #225498;font-size:150%;"><strong>ua</strong>
         <strong>s</strong></span>erver gener<span style="color:
         #225498;font-size:150%;"><strong>a</strong></span>tion f<span
@@ -170,8 +174,7 @@
       </li>
       <li>Install packages from epel repo (by default enabled in CentOS
         8):<br>
-        <div class="mycode"> sudo yum install astyle
-        </div>
+        <div class="mycode"> sudo yum install astyle </div>
       </li>
       <li>Note that quasar is compatible both with Python2 and Python3.
         Even though Python2 is already end-of-life, many users still use
@@ -294,6 +297,10 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
 
 
 
+
+
+
+
         documentation of Calculated Variables</a><br>
     </p>
     <h2>Logging</h2>
@@ -311,16 +318,13 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
       <li>How to build an executable with<span style="font-weight:
           bold;"> debug symbols</span>?<br>
         Just append Debug to your "quasar.py build" invocation, i.e.:<br>
-        <span style="font-family: monospace;">./quasar.py build Debug</span><br>
-        or<br>
-        <span style="font-family: monospace;">./quasar.py build
-          &lt;build_config_name&gt; Debug</span><br>
+        <span style="font-family: monospace;">./quasar.py build Debug</span><span
+          style="font-family: monospace;"></span><br>
       </li>
       <li>Build fails<br>
         Try to read carefully the output.<br>
         If you can't figure the issue on your own, try contacting
-        quasar-developers@cern.ch, at the last resort contact
-        piotr.nikiel@cern.ch<br>
+        quasar-developers@cern.ch<br>
       </li>
       <li>The server starts up, but crashes.<br>
         There are plenty of possibilities here. The best way is to build
@@ -334,6 +338,33 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
         seems that the crash is within quasar itself, please don't
         hesitate and file a report to us. <br>
       </li>
+      <li>quasar (itself) misbehaves (not to confuse with quasar-made
+        OPC-UA components). What can I do?</li>
+      <ol>
+        <li>You can increase verbosity of quasar tooling itself. This
+          might point you to a problem (e.g. file permissions issues) or
+          can help quasar developers diagnose the problem.<br>
+          The verbosity is controlled by environment variable called
+          "QUASAR_LOG_LEVEL" and the most relevant levels are "INF" (the
+          default, about no debug) and "DBG" (a lot of debug).<br>
+          If you use bash, you can increase the verbosity by invoking:<br>
+          <div class="mycode"> export QUASAR_LOG_LEVEL=DBG </div>
+        </li>
+        <li>Sometimes quasar tooling (e.g. anything you run via
+          quasar.py command) will terminate with error. We did pay
+          attention to be verbose enough but sometimes it might help to
+          drop in the Python Debugger (pdb) to debug post-mortem rather
+          than to drop to shell. This can be achieved by exporting the
+          variable QUASAR_RUN_PDB to 1, e.g. in bash:<br>
+          <br>
+          <div class="mycode"> export QUASAR_RUN_PDB=1</div>
+        </li>
+        <li>The general support email is quasar-developers@cern.ch. You
+          can get some support there or you can file a bug ticket
+          directly via GitHub.<br>
+        </li>
+        <br>
+      </ol>
       <li>How to create a <span style="font-weight: bold;">RPM</span>
         package with my server?<br>
         RPM builder is provided with the quasar. RPM builder builds
@@ -376,7 +407,7 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
       </ol>
       <li>How to <span style="font-weight: bold;">upgrade</span> to
         newer <span style="font-weight: bold;">release</span> of
-        Generic Server Framework?</li>
+        quasar?</li>
       <ol>
         <ol>
           <li>Download quasar in the version of your choice</li>
@@ -472,9 +503,17 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
 
 
 
+
+
+
+
           Defined Runtime Configuration</a></li>
       <li>How do I link libraries, add include directories, use build
         configurations etc... ? See <a href="quasarBuildSystem.html">build
+
+
+
+
 
 
 
