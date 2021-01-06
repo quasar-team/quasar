@@ -300,7 +300,7 @@ def load_file(file_name, project_directory):
 
 def create_release(directories):
     '''Internal (quasar-devs only) function to regenerate files.txt file'''
-    files_txt = open(os.path.join('FrameworkInternals', 'files.json'), 'w', encoding='utf-8')
+    files_txt = open(os.path.join('FrameworkInternals', 'files.txt'), 'w', encoding='utf-8')
 
     for dir in directories:
         for file in dir['files']:
@@ -422,7 +422,7 @@ def mfCheckConsistency(param=None):
     global ask
     if param == "--ask":
         ask = True
-    directories = load_file(os.path.join('FrameworkInternals', 'files.json'), os.getcwd())
+    directories = load_file(os.path.join('FrameworkInternals', 'files.txt'), os.getcwd())
     problems=check_consistency(directories, os.getcwd(), vci)
     check_uncovered(directories,os.getcwd())
     if len(problems)>0:
@@ -435,7 +435,7 @@ def mfCheckConsistency(param=None):
 def mfCreateRelease(context):
     """Upgrades files.txt with the contents of original_files.txt. Expert command, only to be used by developers of the framework when creating a new release"""
     os.chdir(context['projectSourceDir'])
-    directories = load_file(os.path.join('FrameworkInternals','original_files.json'), os.getcwd())
+    directories = load_file(os.path.join('FrameworkInternals','original_files.txt'), os.getcwd())
     create_release(directories)
 
 def mfInstall(sourceDirectory, targetDirectory):
@@ -445,7 +445,7 @@ def mfInstall(sourceDirectory, targetDirectory):
     sourceDirectory -- The directory where the framework is currently
     targetDirectory -- The target directory where the framework will be installed or upgraded
     """
-    files_txt_list_of_dirs = load_file(os.path.join('FrameworkInternals', 'files.json'), os.getcwd())
+    files_txt_list_of_dirs = load_file(os.path.join('FrameworkInternals', 'files.txt'), os.getcwd())
     installer = Installer(files_txt_list_of_dirs)
     installer.install(sourceDirectory, targetDirectory)
 
