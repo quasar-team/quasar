@@ -60,7 +60,7 @@ ask=False
 
 
 
-class File(dict):
+class File():
     '''Represents the File entry from files.txt or original_files.txt
 
     Fields:
@@ -91,7 +91,7 @@ class File(dict):
         """
 
         logging.debug(f"Processing File entry, base_name is {base_name}")
-        self['name'] = base_name
+        self.name = base_name
         self.path = os.path.join(directory, base_name)
         self.specification = specification
         for flag in File.Flags:
@@ -120,6 +120,7 @@ class File(dict):
 
 
     def check_md5(self):
+        '''Returns a list of problems related to md5 issues, or empty list if things are OK'''
         logging.debug("---> Checking md5 of file: %s", self.path)
         if not os.path.isfile(self.path):
             return ['Cant checksum because the file doesnt exist: '+self.path]
@@ -130,7 +131,6 @@ class File(dict):
                 return [f'MD5 Failure at file: {self.path} md5_obtained={md5} md5_expected={self.md5}']
             else:
                 return []
-
 
     def check_consistency(self, vci):
         logging.debug("--> check_consistency called on File: %s ", self.path)
@@ -180,8 +180,11 @@ class File(dict):
         self.md5 = self.compute_md5(self.path)
 
     def json_repr(self):
-        #if self.use_defaults == N
-        return {key:self[key] for key in File.allowed_keys if key in self}
+        flags_dict = {flag:self.__getattribute__(flag) for flag in File.Flags if self.__getattribute__(flag)}
+        attrs_dict = {attr:self.__getattribute__(attr) for attr in File.Attrs if self.__getattribute__(attr) is not None}
+        overall = flags_dict
+        overall.update(attrs_dict)
+        return overall
 
 # TODO subclassing dict is probably not worth stating.
 class Directory(dict):
@@ -210,7 +213,7 @@ class Directory(dict):
             # TODO: dir path is likely totally wrong
             file = File(file_name, specification['files'][file_name], dir_path, specification)
             self.add_file(file)
-
+        self.specification = specification
 
     def add_file(self,file):
         self['files'].append(file)
@@ -231,8 +234,10 @@ class Directory(dict):
         answer = {}
         if self.install_action():
             answer['install'] = self.install_action()
-        files_repr = {file['name']:file.json_repr() for file in self['files']}
+        files_repr = {file.name:file.json_repr() for file in self['files']}
         answer['files'] = files_repr
+        if 'file_defaults' in self.specification:
+            answer['file_defaults'] = self.specification['file_defaults']
         return answer
 
 def check_consistency(directories, project_directory, vci):
