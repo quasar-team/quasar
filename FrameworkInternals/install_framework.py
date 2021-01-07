@@ -38,7 +38,7 @@ import shutil
 from colorama import Fore, Style
 from manage_files import mfInstall
 from DesignInspector import DesignInspector
-from quasar_basic_utils import yes_or_no, get_quasar_version
+from quasar_basic_utils import yes_or_no, get_quasar_version, print_logo
 
 def fix_empty_project_short_name(destination):
     '''Fixes empty attribute of projectShortName in Design, now required since quasar nebula.B1'''
@@ -72,6 +72,19 @@ def fix_empty_project_short_name(destination):
         else:
             print('Remember: you have to do it yourself ;-) ')
 
+def __print_post_install_notes():
+    print(f'Welcome to quasar {Style.BRIGHT}{get_quasar_version()}{Style.RESET_ALL} !')
+    print()
+    print('For reference on using quasar see:')
+    print('1. Documentation/quasar.html (from your current directory),')
+    print('2. YouTube tutorials: https://www.youtube.com/watch?v=v212aPmbahM&list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b')
+    print('3. Wiki on our GitHub page: https://github.com/quasar-team/quasar/wiki')
+    print('')
+    print('For support, contact quasar-developers@cern.ch')
+    print()
+    print(f'Good luck with creating your OPCUA software with quasar {Style.BRIGHT + Fore.GREEN};-){Style.RESET_ALL}')
+    print()
+
 def upgradeProject(destination):
     """Upgrades the framework in a given directory
 
@@ -82,12 +95,12 @@ def upgradeProject(destination):
         destination = os.path.abspath(destination)
         print( "Selected installation folder: " + destination)
     else:
-        raise Exception("There was a problem when trying to ugrade a project, invalid path.")
+        print('The chosen directory doesn\'t seem to contain a quasar project or the project is somehow broken.')
 
     incumbent_quasar_version = get_quasar_version(destination)
     target_quasar_version = get_quasar_version()
-    print((f'You are upgrading from version {Fore.BLUE}{incumbent_quasar_version}{Style.RESET_ALL}'
-           f' to {Fore.BLUE}{target_quasar_version}{Style.RESET_ALL}. \n'
+    print((f'You are upgrading from version {Style.BRIGHT}{Fore.GREEN}{incumbent_quasar_version}{Style.RESET_ALL}'
+           f' to {Style.BRIGHT}{Fore.GREEN}{target_quasar_version}{Style.RESET_ALL}. \n'
            f"It is advised that you read quasar's Documentation/ChangeLog.html and check what "
            f'needs to be done for upgrade between current and target version.'))
     yn = yes_or_no('Have you read the changelog and understood the remarks and want to upgrade?')
@@ -96,6 +109,10 @@ def upgradeProject(destination):
         return
     installFramework(destination)
     fix_empty_project_short_name(destination)
+    print_logo(skip_top=2, skip_bottom=2)
+    print(f'Your quasar project in {Style.BRIGHT}{destination}{Style.RESET_ALL} was upgraded')
+    print()
+    __print_post_install_notes()
 
 def createProject(destination):
     """Installs the framework in a given directory. If the directory doesn't exist, it gets created
@@ -103,14 +120,19 @@ def createProject(destination):
     Keyword arguments:
     destination -- The target directory where the framework will be installed or upgraded
     """
+
     if os.path.exists(destination):
-        destination = os.path.abspath(destination)
-        print( "Selected installation folder: " + destination)
-    else:
-        destination = os.path.abspath(destination)
-        os.makedirs(destination)
-        print( "Created installation folder: " + destination)
+        print(f'The chosen directory {Fore.RED}already exists{Style.RESET_ALL} so we can\'t create a new project there.')
+        print(f'If the existing directory already contains a quasar project, try {Style.BRIGHT}upgrade_project{Style.RESET_ALL} command instead.')
+        return
+    destination = os.path.abspath(destination)
+    os.makedirs(destination)
+    print('Created installation folder: ' + destination)
     installFramework(destination)
+    print_logo(skip_top=2, skip_bottom=2)
+    print(f'A new quasar project was created in {Style.BRIGHT}{destination}{Style.RESET_ALL}')
+    print()
+    __print_post_install_notes()
 
 def installFramework(destination):
     """Installs or upgrades the framework in a given directory
