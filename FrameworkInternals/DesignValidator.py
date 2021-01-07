@@ -285,6 +285,11 @@ class DesignValidator():
                                           'config-dependent cachevariables are allowed (at: {0})')
                                          .format(stringify_locator(locator)))
 
+        if hasobjects.get('instantiateUsing') == 'configuration':
+            # as per OPCUA-1983, there should be no d:object entries in such instantiation./
+            if count_children(hasobjects, 'object') > 0:
+                raise DesignFlaw(("You can't have d:object when instantiation by configuration is "
+                                  "chosen (at: {0})").format(stringify_locator(locator)))
 
     def validate_hasobjects_wrapper(self):
         """Performs validation of all hasobjects in the design, from all classes and root"""
