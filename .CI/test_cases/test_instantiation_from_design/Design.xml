@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- from Michael's LXI server. Only taken the part of object instantiation. -->
-<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
+<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="TestProject" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
   <d:class name="StatusPs">
     <d:devicelogic/>
     <d:cachevariable dataType="OpcUa_Boolean" name="STATUS_PS_CH_ON" nullPolicy="nullAllowed" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" initialStatus="OpcUa_BadWaitingForInitialData">
@@ -19,7 +19,7 @@
   </d:class>
   <d:root>
     <!-- the power supplies are just identified by their ipAddress -->
-    <d:hasobjects instantiateUsing="configuration" class="PowerSupply" minOccurs="1" maxOccurs="100">
+    <d:hasobjects instantiateUsing="configuration" class="PowerSupply"  maxOccurs="100">
 
    </d:hasobjects>
   </d:root>

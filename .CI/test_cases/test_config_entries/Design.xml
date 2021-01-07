@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="TestProject" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">
+<d:class name="TestClass">
+<d:configentry name="OpcUaBoolean_scalar" dataType="OpcUa_Boolean"/>
+<d:configentry name="OpcUaByte_scalar" dataType="OpcUa_Byte"/>
+<d:configentry name="OpcUaSByte_scalar" dataType="OpcUa_SByte"/>
+<d:configentry name="OpcUaUInt16_scalar" dataType="OpcUa_UInt16"/>
+<d:configentry name="OpcUaInt16_scalar" dataType="OpcUa_Int16"/>
+<d:configentry name="OpcUaUInt32_scalar" dataType="OpcUa_UInt32"/>
+<d:configentry name="OpcUaInt32_scalar" dataType="OpcUa_Int32"/>
+<d:configentry name="OpcUaUInt64_scalar" dataType="OpcUa_UInt64"/>
+<d:configentry name="OpcUaInt64_scalar" dataType="OpcUa_Int64"/>
+<d:configentry name="OpcUaDouble_scalar" dataType="OpcUa_Double"/>
+<d:configentry name="OpcUaFloat_scalar" dataType="OpcUa_Float"/>
+<d:configentry name="UaString_scalar" dataType="UaString"/>
+<d:configentry name="OpcUaBoolean_array" dataType="OpcUa_Boolean">
+<d:array/>
+</d:configentry>
+<d:configentry name="OpcUaByte_array" dataType="OpcUa_Byte">
+<d:array/>
+</d:configentry>
+<d:configentry name="OpcUaSByte_array" dataType="OpcUa_SByte">
+<d:array/>
+</d:configentry>
+<d:configentry name="OpcUaUInt16_array" dataType="OpcUa_UInt16">
+<d:array/>
+</d:configentry>
+<d:configentry name="OpcUaInt16_array" dataType="OpcUa_Int16">
+<d:array/>
+</d:configentry>
+<d:configentry name="OpcUaUInt32_array" dataType="OpcUa_UInt32">
+<d:array/>
+</d:configentry>
+<d:configentry name="OpcUaInt32_array" dataType="OpcUa_Int32">
+<d:array/>
+</d:configentry>
+<d:configentry name="OpcUaUInt64_array" dataType="OpcUa_UInt64">
+<d:array/>
+</d:configentry>
+<d:configentry name="OpcUaInt64_array" dataType="OpcUa_Int64">
+<d:array/>
+</d:configentry>
+<d:configentry name="OpcUaDouble_array" dataType="OpcUa_Double">
+<d:array/>
+</d:configentry>
+<d:configentry name="OpcUaFloat_array" dataType="OpcUa_Float">
+<d:array/>
+</d:configentry>
+<d:configentry name="UaString_array" dataType="UaString">
+<d:array/>
+</d:configentry>
+</d:class>
+<d:root>
+<d:hasobjects instantiateUsing="configuration" class="TestClass"/>
+</d:root>
+</d:design>

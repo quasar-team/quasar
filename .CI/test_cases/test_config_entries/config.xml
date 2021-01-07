@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://cern.ch/quasar/Configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Configuration ../Configuration/Configuration.xsd ">
+	<TestClass OpcUaInt32_scalar="-666" name="tc1" OpcUaByte_scalar="66"
+		OpcUaBoolean_scalar="true" OpcUaUInt64_scalar="666666"
+		OpcUaInt16_scalar="-666" OpcUaSByte_scalar="-66" OpcUaUInt32_scalar="666"
+		UaString_scalar="abcdef" OpcUaFloat_scalar="1.234" OpcUaInt64_scalar="-666666"
+		OpcUaUInt16_scalar="666" OpcUaDouble_scalar="1.2345678987654321">
+		<OpcUaBoolean_array>
+			<value>true</value>
+			<value>false</value>
+			<value>true</value>
+		</OpcUaBoolean_array>
+		<OpcUaByte_array>
+			<value>66</value>
+			<value>67</value>
+			<value>68</value>
+		</OpcUaByte_array>
+		<OpcUaSByte_array>
+			<value>-66</value>
+			<value>-67</value>
+			<value>-68</value>		
+		</OpcUaSByte_array>
+		<OpcUaUInt16_array>
+			<value>6666</value>
+			<value>6667</value>
+			<value>6668</value>			
+		</OpcUaUInt16_array>
+		<OpcUaInt16_array>
+			<value>-6666</value>
+			<value>-6667</value>
+			<value>-6668</value>		
+		</OpcUaInt16_array>
+		<OpcUaUInt32_array>
+			<value>6666</value>
+			<value>6667</value>
+			<value>6668</value>				
+		</OpcUaUInt32_array>
+		<OpcUaInt32_array>
+			<value>-6666</value>
+			<value>-6667</value>
+			<value>-6668</value>				
+		</OpcUaInt32_array>
+		<OpcUaUInt64_array>
+			<value>666666</value>
+			<value>666667</value>
+			<value>666668</value>				
+		</OpcUaUInt64_array>
+		<OpcUaInt64_array>
+			<value>-666666</value>
+			<value>-666667</value>
+			<value>-666668</value>			
+		</OpcUaInt64_array>
+		<OpcUaDouble_array>
+			<value>1.23456789</value>
+		</OpcUaDouble_array>
+		<OpcUaFloat_array>
+			<value>1.234</value>
+		</OpcUaFloat_array>
+		<UaString_array>
+			<value>abcdef</value>
+			<value>rst</value>
+		</UaString_array>
+	</TestClass>
+
+</configuration>

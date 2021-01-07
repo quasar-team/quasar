@@ -93,15 +93,14 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {% if designInspector.is_class_single_variable_node(className) %}
         status = nm->addUnreferencedNode( this );
       {% else %}
-        status = nm->addNodeAndReference( parentNodeId, this, OpcUaId_HasComponent );
+        status = nm->addNodeAndReferenceThrows( parentNodeId, this, OpcUaId_HasComponent, this->nodeId() );
       {% endif %}
-      if (!status.isGood())
-        throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
 
       createCacheVariables(nm, config);
       initializeArrayCacheVariablesFromConfiguration(nm, config);
       createSourceVariables(nm, config);
       createMethods(nm, config);
+      createPropertiesFromConfigEntries(nm, config);
 
     }
 
@@ -176,14 +175,13 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               /*check access level*/ OpcUa_False);
         {% endif %}
 
-        status = nm->addNodeAndReference(
+        nm->addNodeAndReferenceThrows(
           m_effectiveParentNodeIdForChildren,
           m_{{cv.get('name')}},
-          OpcUaId_HasComponent);
-        if (!status.isGood())
-          throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+          OpcUaId_HasComponent,
+          m_{{cv.get('name')}}->nodeId());
 
-        {% if cv.get('addressSpaceWrite') == 'delegated' %}
+        {% if cv.get('addressSpaceWrite') == 'delegated' or (cv.array|length>0 and cv.get('addressSpaceWrite') == 'regular') %}
           m_{{cv.get('name')}}->assignHandler(
             this,
             &AS{{className}}::write{{cv.get('name')|capFirst}});
@@ -239,7 +237,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
                 vect.begin(),
                 [](bool x){ return x ? OpcUa_True : OpcUa_False; }  );
           {% else %}
-            vect = config.{{cv.get('name')}}().value();
+            vect.assign(dim, 0);
+            std::copy(
+              config.{{cv.get('name')}}().value().begin(),
+              config.{{cv.get('name')}}().value().end(),
+              vect.begin());
           {% endif %}
           UaVariant variant;
           {{oracle.vector_to_uavariant_function(cv.get('dataType'))}} (vect, variant);
@@ -281,12 +283,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           {{oracle.source_var_write_job_id(className, sv.get('name'), sv.get('addressSpaceWrite'))}}
           );
         m_{{sv.get('name')}}->setDataType( UaNodeId( {{oracle.data_type_to_builtin_type(sv.get('dataType'))}}, 0 ));
-        status = nm->addNodeAndReference(
+        nm->addNodeAndReferenceThrows(
           m_effectiveParentNodeIdForChildren,
           m_{{sv.get('name')}},
-          OpcUaId_HasComponent);
-        if (!status.isGood())
-          throw_runtime_error_with_origin(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+          OpcUaId_HasComponent,
+          m_{{sv.get('name')}}->nodeId());
       {% endfor %}
     }
 
@@ -371,22 +372,55 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
                 UaLocalizedText("en_US", "{{rv.get('name')}}") );
           	}
             {% endfor %}
-            status = nm->addNodeAndReference(
+            status = nm->addNodeAndReferenceThrows(
           	  m_{{m.get('name')}},
               propReturn,
-              OpcUaId_HasProperty);
-            if (!status.isGood())
-              throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+              OpcUaId_HasProperty,
+              m_{{m.get('name')}}->nodeId(),
+              propReturn->nodeId());
           }
         {% endif %}
-        status = nm->addNodeAndReference(
+        status = nm->addNodeAndReferenceThrows(
 	        m_effectiveParentNodeIdForChildren,
           m_{{m.get('name')}},
-          OpcUaId_HasComponent);
-        if (!status.isGood())
-          throw std::runtime_error(std::string("Couldnt insert node: ") + status.toString().toUtf8());
+          OpcUaId_HasComponent,
+          m_{{m.get('name')}}->nodeId());
       {% endfor %}
     }
+
+    void AS{{className}}::createPropertiesFromConfigEntries(
+      ASNodeManager* nm,
+      const Configuration::{{className}}& config)
+      {
+        {% if designInspector.is_class_single_variable_node(className) %}
+          return; /* we don't support properties on single-variable nodes currently */
+        {% endif %}
+        {% for ce in this.configentry %}
+          {% if ce.array|length == 0 %}
+            {
+              UaVariant defaultValue;
+              defaultValue.{{oracle.data_type_to_variant_setter(ce.get('dataType'))}} (
+                config.{{ce.get('name')}}(){% if ce.get('dataType') == 'UaString' %}.c_str(){% endif %}
+                );
+              UaPropertyCache* property = new UaPropertyCache(
+                "{{ce.get('name')}}",
+                nm->makeChildNodeId(
+                  m_effectiveParentNodeIdForChildren,
+                  "{{ce.get('name')}}"),
+                  defaultValue,
+                  OpcUa_AccessLevels_CurrentRead,
+                  "");
+              nm->addNodeAndReferenceThrows(
+                m_effectiveParentNodeIdForChildren,
+                property,
+                OpcUaId_HasProperty,
+                property->nodeId());
+            }
+          {% else %}
+            // Note: config-entry {{ce.get('name')}} skipped because it's an array (not supported yet for propagation into properties)
+          {% endif %}
+        {% endfor %}
+      }
 
     AS{{className}}::~AS{{className}} ()
     {
@@ -464,8 +498,22 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
       {% endif %}
 
       {% if cv.get('nullPolicy') == 'nullAllowed' %}
-        /* null-setter (possible because nullPolicy=nullAllowed) */
+        /* null-setter (possible because nullPolicy=nullAllowed) -- old style -- will be deprecated */
         UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), None, False) }}
+        {
+          UaVariant v;
+          return m_{{cv.get('name')}}->setValue (
+            /*session*/ nullptr,
+            UaDataValue (
+              v,
+              statusCode,
+              srcTime,
+              UaDateTime::now()),
+            /*check access*/OpcUa_False );
+        }
+
+        /* null-setter (possible because nullPolicy=nullAllowed) -- new style */
+        UaStatus AS{{className}}::{{ oracle.get_cache_variable_setter(cv.get('name'), None, False, True) }}
         {
           UaVariant v;
           return m_{{cv.get('name')}}->setValue (
@@ -571,9 +619,33 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 {### DELEGATES ###}
     /* generate delegates (if requested) */
     {% for cv in this.cachevariable %}
-      {% if cv.get('addressSpaceWrite') in ['delegated','regular'] %}
+      {% if cv.get('addressSpaceWrite') in ['delegated','regular'] %} // @note Piotr: regular to be there only for arrays, for scalars it is not necessary.
         {{ oracle.get_delegated_write_header(cv.get('name'), className, 'body') }}
         {
+          {% if cv.array|length>0 %} // array size check.
+            {
+              UaVariant v (*dataValue.value());
+              if (!v.isArray())
+              {
+                LOG(Log::ERR) << "Received a scalar where an array was expected.";
+                return OpcUa_BadDataEncodingInvalid;
+              }
+              OpcUa_Int32 stackArraySize = v.arraySize();
+              if (stackArraySize < 0)
+              {
+                LOG(Log::ERR) << "Received an array with size that can be determined, or the encoding is unknown.";
+                return OpcUa_BadDataEncodingInvalid;
+              }
+              OpcUa_UInt32 arraySize = stackArraySize; // that is safe cause negatives was filtered above.
+              if (arraySize < this->{{cv.get('name')}}_minimumSize() || arraySize > {{cv.get('name')}}_maximumSize())
+              {
+                LOG(Log::ERR) <<
+                  "Received an array of size out of design-established bounds (received [" << arraySize <<
+                  "] expected in range [(" << {{cv.get('name')}}_minimumSize() << "," << {{cv.get('name')}}_maximumSize() << "]) inclusive)";
+                return OpcUa_BadIndexRangeInvalid;
+              }
+            }
+          {% endif %}
           {% if cv.get('dataType') != 'UaVariant' %}
             /* ensure that data type passed by OPC UA client matches specification */
             UaVariant v (*dataValue.value()); // TODO : do we really need this copy?
@@ -702,6 +774,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
 
           try
           {
+            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
+              getDeviceLink()->lockMethodCall_{{m.get('name')}}();
+            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
+              getDeviceLink()->lock();
+            {% endif %}
             UaStatus stat = getDeviceLink()->call{{m.get('name')|capFirst}} (
               {% for arg in m.argument %}
                 arg_{{arg.get('name')}}{% if loop.index < (m.argument|length+m.returnvalue|length) %},
@@ -713,6 +790,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
               {% endfor %}
 
             );
+            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
+              getDeviceLink()->unlockMethodCall_{{m.get('name')}}();
+            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
+              getDeviceLink()->unlock();
+            {% endif %}
             {% if m.returnvalue|length>0 %}
               UaVariant helper;
               outputArguments.create( {{m.returnvalue|length}} );
@@ -738,6 +820,11 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
           }
           catch (const std::exception& e)
           {
+            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
+              getDeviceLink()->unlockMethodCall_{{m.get('name')}}();
+            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
+              getDeviceLink()->unlock();
+            {% endif %}
             LOG(Log::ERR) << "method call of method {{m.get('name')}} thrown an exception (should have been handled in the method body...): " << e.what();
             UaStatus badStatus = OpcUa_BadInternalError;
             pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );

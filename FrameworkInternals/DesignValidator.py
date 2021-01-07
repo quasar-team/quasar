@@ -128,7 +128,7 @@ class DesignValidator():
         data_type = cachevariable.get('dataType')
         if data_type == 'UaString':
             return  # any text is valid for string
-        elif data_type == 'OpcUa_Boolean':
+        if data_type == 'OpcUa_Boolean':
             valid_choices = ['OpcUa_True', 'OpcUa_False']
             if initial_value not in valid_choices:
                 raise DesignFlaw('initialValue wrong literal, only {0} allowed (at: {1})'.format(
@@ -201,13 +201,6 @@ class DesignValidator():
                                            'when data type is UaVariant', locator)
                     assert_attribute_absent(cache_variable, 'initialValue',
                                             'when data type is UaVariant', locator)
-                if 'isKey' in cache_variable.attrib:
-                    if not self.design_inspector.class_has_device_logic(class_name):
-                        raise DesignFlaw(("isKey can only be used with device logic"
-                                          "(at: {0})").format(stringify_locator(locator)))
-                    if count_children(cache_variable, 'array') != 0:
-                        raise DesignFlaw('isKey can not be used with arrays (at: {0})'.format(
-                            stringify_locator(locator)))
 
     def assert_mutex_present(self, class_name, locator, extra_info=''):
         """Raises DesignFlaw if class 'class_name' doesnt have a mutex"""
@@ -219,7 +212,7 @@ class DesignValidator():
         if count_children(cls.devicelogic, 'mutex') < 1:
             raise DesignFlaw('Class {2} needs a mutex in its device logic(at: {0}) {1}'.format(
                 stringify_locator(locator), extra_info, class_name))
-            
+
     def validate_source_variables(self):
         for class_name in self.design_inspector.get_names_of_all_classes():
             locator = {'class':class_name}
@@ -237,7 +230,7 @@ class DesignValidator():
                 for option in mutex_options:
                     if option == 'of_containing_object':
                         self.assert_mutex_present(class_name, locator,
-                            'to support setting "{0}"'.format(option))
+                                                  'to support setting "{0}"'.format(option))
                     elif option == 'of_parent_of_containing_object':
                         parent = self.design_inspector.get_parent(class_name)
                         if parent is None:
@@ -248,7 +241,7 @@ class DesignValidator():
                             option))
                     else:
                         raise NotImplementedError("Don't know how to validate '{0}'".format(option))
-                
+
 
     def validate_config_entries(self):
         """Performs validation of all config entries in the design"""
@@ -263,6 +256,10 @@ class DesignValidator():
                 if is_array:
                     assert_attribute_absent(config_entry, 'defaultValue', "when it's an array",
                                             locator)
+                if 'isKey' in config_entry.attrib:
+                    if not self.design_inspector.class_has_device_logic(class_name):
+                        raise DesignFlaw(("isKey can only be used with device logic"
+                                          "(at: {0})").format(stringify_locator(locator)))
 
     def validate_hasobjects(self, hasobjects, locator):
         """Performs validation of particular hasobjects element"""

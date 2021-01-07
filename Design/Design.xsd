@@ -3,11 +3,11 @@
 <!-- All rights not expressly granted are reserved.                                -->
 <!-- This file is part of Quasar.                                                  -->
 <!--                                                                               -->
-<!-- Quasar is free software: you can redistribute it and/or modify                -->     
-<!-- it under the terms of the GNU Lesser General Public Licence as published by   -->     
-<!-- the Free Software Foundation, either version 3 of the Licence.                -->     
-<!-- Quasar is distributed in the hope that it will be useful,                     -->     
-<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of                -->     
+<!-- Quasar is free software: you can redistribute it and/or modify                -->
+<!-- it under the terms of the GNU Lesser General Public Licence as published by   -->
+<!-- the Free Software Foundation, either version 3 of the Licence.                -->
+<!-- Quasar is distributed in the hope that it will be useful,                     -->
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of                -->
 <!--                                                                               -->
 <!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 -->
 <!-- GNU Lesser General Public Licence for more details.                           -->
@@ -19,9 +19,9 @@
 <!-- Authors:                                                                      -->
 <!--   Piotr Nikiel <piotr@nikiel.info>                                            -->
 
-<schema xmlns="http://www.w3.org/2001/XMLSchema" 
-targetNamespace="http://cern.ch/quasar/Design" 
-xmlns:tns="http://cern.ch/quasar/Design" 
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://cern.ch/quasar/Design"
+xmlns:tns="http://cern.ch/quasar/Design"
 elementFormDefault="qualified">
 
     <complexType name="Design">
@@ -62,17 +62,14 @@ elementFormDefault="qualified">
                     <field xpath="@class"/>
                 </unique>
             </element>
-            
-    	</sequence>
-    	<attribute name="projectShortName" type="string"
-    		use="required">
-    	</attribute>
 
+    	</sequence>
+    	<attribute name="projectShortName" type="tns:NonEmptyString" use="required" />
     	<attribute name="author" type="string"></attribute>
     </complexType>
 
     <element name="design" type="tns:Design">
-    
+
     <!--  Restriction: no duplicate class names.  -->
     <key name="classKey">
     	<selector xpath="tns:class"/>
@@ -86,8 +83,8 @@ elementFormDefault="qualified">
 		<selector xpath="tns:root/tns:hasobjects" />
 		<field xpath="@class" />
 	</keyref>
-	
-	
+
+
     </element>
 
     <complexType name="Class">
@@ -155,15 +152,6 @@ elementFormDefault="qualified">
     		<documentation>
 			Meaningful only when initializeWith="valueAndStatus", and then this is mandatory field.
      		</documentation>
-    		</annotation>
-    	</attribute>
-    	<attribute name="isKey" type="boolean">
-    		<annotation>
-    		<documentation>
-    		When "true", generates convenience functions for traversing device logic tree from Device Logic code.
-    		I.e. when any children class' cachevariable has "isKey=true" then the parent class device logic will have function
-    		getChildByVariable, assuming Child is the class name and Variable is the variable name.
-    		</documentation>
     		</annotation>
     	</attribute>
     	<attribute name="nullPolicy" type="tns:NullPolicy" use="required">
@@ -278,9 +266,9 @@ elementFormDefault="qualified">
  		 <annotation>
          <documentation>
          When "forbidden", any OPCUA write transaction will be denied with BadUserAccessDenied status.
-         For "synchronous" and "asynchronous", OPCUA write transactions matching chosen data type (or NULL if allowed) will be routed to the handler generated in Device Logic class. 
+         For "synchronous" and "asynchronous", OPCUA write transactions matching chosen data type (or NULL if allowed) will be routed to the handler generated in Device Logic class.
          When "synchronous", the handler will be executed in the thread processing the request, so it must be non-blocking.
-         When "asynchronous", the handler will be executed in a separate thread from the source variables thread pool.  
+         When "asynchronous", the handler will be executed in a separate thread from the source variables thread pool.
          </documentation>
          </annotation>
     	</attribute>
@@ -288,9 +276,9 @@ elementFormDefault="qualified">
     	<annotation>
          <documentation>
     	 When "forbidden", any OPCUA read transaction will be denied with BadUserAccessDenied status.
-         For "synchronous" and "asynchronous", OPCUA read transactions will be routed to the handler generated in Device Logic class. 
+         For "synchronous" and "asynchronous", OPCUA read transactions will be routed to the handler generated in Device Logic class.
          When "synchronous", the handler will be executed in the thread processing the request, so it must be non-blocking.
-         When "asynchronous", the handler will be executed in a separate thread from the source variables thread pool.  
+         When "asynchronous", the handler will be executed in a separate thread from the source variables thread pool.
          </documentation>
          </annotation>
     	</attribute>
@@ -300,15 +288,15 @@ elementFormDefault="qualified">
     	If different than "no", the lock of chosen object will be acquired before calling the handler, and released afterwards.
     	This is especially useful for "asynchronous" handler.
     	</documentation>
-         </annotation> 
+         </annotation>
     	</attribute>
     	<attribute name="addressSpaceReadUseMutex" type="tns:SourceVariableAddressSpaceOperationUseMutex" use="required">
     	<annotation>
         <documentation>
         If different than "no", the lock of chosen object will be acquired before calling the handler, and released afterwards.
-        This is especially useful for "asynchronous" handler.    	
+        This is especially useful for "asynchronous" handler.
         </documentation>
-         </annotation>    	
+         </annotation>
     	</attribute>
     </complexType>
 
@@ -337,7 +325,7 @@ elementFormDefault="qualified">
     		<enumeration value="of_parent_of_containing_object"></enumeration>
     	</restriction>
     </simpleType>
-    
+
     <simpleType name="ConfigEntryDataType">
     <!--  this is essentially anything that variable data type might be apart from UaVariant -->
     	<restriction base="string">
@@ -355,7 +343,7 @@ elementFormDefault="qualified">
     		<enumeration value="UaString"></enumeration>
     	</restriction>
     </simpleType>
-    
+
     <complexType name="ConfigEntry">
         <all>
             <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"></element>
@@ -382,14 +370,14 @@ elementFormDefault="qualified">
         </sequence>
     </complexType>
 
- 	
+
  	<simpleType name="ArraySizeLimits">
    		<restriction base="unsignedInt">
 	      	<minInclusive value="0"/>
 	      	<maxInclusive value="104857600"/>
    		</restriction>
 	</simpleType>
-	
+
 	<complexType name="Array">
       	<attribute name="minimumSize" type="tns:ArraySizeLimits"></attribute>
  	 	<attribute name="maximumSize" type="tns:ArraySizeLimits"></attribute>
@@ -399,7 +387,7 @@ elementFormDefault="qualified">
     		<element name="mutex" type="tns:DeviceLogicMutex" minOccurs="0" maxOccurs="1"></element>
     	</sequence>
     </complexType>
-    
+
     <complexType name="DeviceLogicMutex"></complexType>
 
     <complexType name="Method">
@@ -410,6 +398,7 @@ elementFormDefault="qualified">
         </sequence>
         <attribute name="name" type="tns:VariableName" use="required"></attribute>
         <attribute name="executionSynchronicity" type="tns:MethodExecutionSynchronicity" use="required"></attribute>
+        <attribute name="addressSpaceCallUseMutex" type="tns:MethodCallUseMutex" use="optional" default="no"/>
     </complexType>
 
     <complexType name="MethodArgument">
@@ -431,11 +420,19 @@ elementFormDefault="qualified">
     	</attribute>
     	<attribute name="name" type="tns:VariableName" use="required"></attribute>
     </complexType>
-    
+
     <simpleType name="MethodExecutionSynchronicity">
         <restriction base="string">
             <enumeration value="synchronous"></enumeration>
             <enumeration value="asynchronous"></enumeration>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="MethodCallUseMutex">
+        <restriction base="string">
+            <enumeration value="no"></enumeration>
+            <enumeration value="of_this_method"></enumeration>
+            <enumeration value="of_containing_object"></enumeration>
         </restriction>
     </simpleType>
 
@@ -456,9 +453,15 @@ elementFormDefault="qualified">
             <element name="enumerationValue" type="tns:EnumerationValue"></element>
         </sequence>
     </complexType>
-    
+
+	<simpleType name="NonEmptyString">
+	    <restriction base="string">
+            <minLength value="1"/>
+        </restriction>
+	</simpleType>
+
     <complexType name="EnumerationValue">
-        <attribute name="value" type="string" use="required"></attribute>
+        <attribute name="value" use="required" type="tns:NonEmptyString"/>
     </complexType>
 
     <complexType name="RestrictionByBounds">
@@ -467,5 +470,5 @@ elementFormDefault="qualified">
         <attribute name="maxExclusive" type="double" use="optional"/>
         <attribute name="maxInclusive" type="double" use="optional"/>
     </complexType>
-    
+
 </schema>

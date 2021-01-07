@@ -59,5 +59,17 @@ static unsigned int fromHexString (const std::string &s)
 
 };
 
+namespace Quasar
+{
+class TermColors
+/** These are simple ANSI control codes. Implemented as static methods in case we had to deal with runtime platform dependencies */
+{
+public:
+	static std::string ForeRed () { return "\033[1;31m"; }
+	static std::string ForeBlue () { return "\033[1;32m"; }
+	static std::string StyleReset () { return "\033[0m"; }
+};
+}
+
 
 #endif /* UTILS_H_ */

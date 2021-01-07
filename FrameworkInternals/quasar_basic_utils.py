@@ -20,6 +20,7 @@ import os
 import sys
 import traceback
 import pdb
+import logging
 from colorama import Fore, Back, Style
 
 def extract_argument(inData, key):
@@ -60,11 +61,76 @@ def quasaric_exception_handler():
               + ("Export QUASAR_RUN_PDB to your environment if you wish to automatically start "
                  "Python debugger! (e.g. 'export QUASAR_RUN_PDB=1' in bash)") + Style.RESET_ALL)
 
-def get_quasar_version():
-    """Returns version of quasar deployed in the current project"""
-    version_f = open(os.path.sep.join(['Design', 'quasarVersion.txt']))
+def get_quasar_version(where=''):
+    """Returns version of quasar deployed in the current project or anothe project if
+       where is given"""
+    version_f = open(os.path.join(where, 'Design', 'quasarVersion.txt'), 'r', encoding='utf-8')
     return version_f.readline().rstrip()
-    
+
 def print_quasar_version():
     """Prints currently deployed quasar version"""
     print("quasar version: " + Fore.GREEN + get_quasar_version() + Style.RESET_ALL)
+
+def initialize_logging():
+    """Initializes Python's logging"""
+    log_levels = {
+        'INF' : logging.INFO,
+        'DBG' : logging.DEBUG
+    }
+    log_level_str = os.getenv('QUASAR_LOG_LEVEL', 'INF')
+    if log_level_str not in log_levels:
+        print(("The log level exported in the environment variable QUASAR_LOG_LEVEL of value {0} "
+               "is invalid. Please supply a valid one from the set {1}").format(
+                   log_level_str,
+                   ', '.join(log_levels)))
+        sys.exit(1)
+    logging.basicConfig(level=log_levels[log_level_str])
+    logging.debug('quasar tooling is running in log level %s',
+                  logging.getLogger().getEffectiveLevel())
+
+def yes_or_no(question):
+    '''A simple user interaction asking for yes or no.'''
+    while True:
+        print(question+' type y or n; then enter   ')
+        sys.stdout.flush()
+        yn = input()
+        if yn in ['y','n']:
+            return yn
+
+def print_logo(skip_top=0, skip_bottom=0):
+    lines='''
+                         ▄▄▄▄▄░░░
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▒                ▓▓▓▌      ▓▓▓▄    ▄▓▓▓▓▓▓▓▓▌▄
+                  ░▓▓▓▓▓▓▓▓▓▓▓▌░                 ▓▓▓▌      ▌▓▓▌  ░▓▓▓▌▀▀▀▀▀▓▓▓▓
+                 ▄▓▓▓▓▓▓▓▓▓▓▓░                   ▌▓▓▌      ▌▓▓▌  ▀▀▀▀      ▒▌▓▓
+                ▒▓▓▓▓▓▓▓▓▓▓░      ▐▄▄▄▄▄▄▄▄░     ▓▓▓▌      ▌▓▓▒    ▄▄▓▓▓▓▓▓▓▓▓▓
+  ░░           ▓▓▓▓▓▓▓▓▓▓▀      ░▓▓▓▓▓▓▓▓▓▓▓▀░   ▓▓▓▌      ▌▓▓▒  ▄▓▓▓▌▀▀▀░░▒▌▓▓
+    ░▀▄░      ▓▓▓▓▓▓▓▓▓▌░      ▄▓▓▓▓▓▓▓▓▓▓▀      ▓▓▓▌     ▄▓▓▓▒ ▐▓▓▓▌     ▐█▓▓▓
+       ░▀▄▄  ▓▓▓▓▓▓▓▓▓▀      ▄▓▓▓▓▓▓▓▓▓▓▀        ▐▓▓▓▓▓▓▓▓▓▓▓▓▒  ▀▓▓▓▓▄▄▓▓▓▓▓▓▓░
+           ▀▓▓▓▓▓▓▓▓▓░     ▐▓▓▓▓▓▓▓▓▓▓▀            ▐▀▀▓▓▀▀░▀▀▀░   ░▀▀▓▓▓▀▀░ ▀▀▀▀
+           ▓▓▓▓▓▓▓▓▌      ▄▓▓▓▓▓▓▓▓█▀
+          ▄▓▓▓▓▓▓▓█▄     ▓▓▓▓▓▓▓▓█▌                  ▒▒▄▓▓▓▓
+         ▐▓▓▓▓▓▓▓▀  ▀▓▄▄▓▓▓▓▓▓▓▓▓░  ▄▄▄▄▄▄░░           ░▓█▓▓░
+         ▓▓▓▓▓▓▓▒     ▐█▓▓▓▓▓▓▓▀  ░████████▀   ░▄▄██▓▄   ▓█░
+        ▄▓▓▓▓▓▓▀      ▓▓▓▓▓▓▓▓░  ▄███████▀  ▄▄█████████  ▐▓▄░
+        ▓▓▓▓▓▓▌      ▓▓▓▓▓▓▓▀▀██████████░ ▄█████▀▀▀▀███  ▒█▓▓▒
+       ▐▓▓▓▓▓▓░     ▐▓▓▓▓▓▓▌  ░███████░ ▄███▀░      ▐█▌ ▄▓█▓▓░
+       ▐▓▓▓▓▓▀      █▓▓▓▓▓▀  ▐██████▀█████▀         ▓█ ░▓▌░
+       ▒▓▓▓▓▓░     ▐▓▓▓▓▓▌  ░██████░ ▄████▄         ▀ ▐▓▓░
+       ▒▓▓▓▓▓░     ▐█▓▓▓▓   ██████  ▄██░ ░▀██▄       ▄▓█▓▌
+       ▀▓▓▓▓▓      ▐█▓▓█▌  ▐█████  ░█▌      ░▀██▄   ▓▓█▓▓▀
+       ▐▓▓▓▓▓░     ▐▓▓▓█░  █████░  ▄▌          ▐▀███▌░ ▐
+       ▐▓▓▓▓▓▄      ▓▓▓█  ▐████▌                ░▓▓▀██▄░
+        ▀▓▓▓▓▓      ░▓▓▓░ ▐████▌          ▄▓░ ▐▓▓▓▓░ ▐▀██▄░
+         ▓▓▓▓▓▌      ░▓▓▌  █████       ▄▄█▀ ▄▓▓▓▓▓▓▓    ░▀██▄░
+          ▓▓▓▓▓▌       ▀▓▌ ▐█████▓▄▄▓███▀░▄▓▓█▓▓▓▓▀        ▐▀███▄
+           ▀▓▓▓▓▓▄       ▐░  ▀▀█████▀▀░▄▓▓▓▀    ░             ▐▀███▄
+            ▐▓▓▓▓▓▓▄               ▄▒▓▓▓▓▌                       ▐▀███▄
+    '''
+    for i in range(0,skip_top):
+        print()
+    print(Fore.BLUE)
+    print(lines)
+    print(Style.RESET_ALL)
+    for i in range(0,skip_bottom):
+        print()

@@ -82,10 +82,10 @@ def assert_all_files_committed():
 
 def store_version(version):
     '''Puts quasar version in respective files'''
-    f_txt = open(os.path.sep.join(['Design', 'quasarVersion.txt']), 'w')
+    f_txt = open(os.path.sep.join(['Design', 'quasarVersion.txt']), 'w', encoding='utf-8')
     f_txt.write(version)
 
-    f_cpp = open(os.path.sep.join(['Server', 'include', 'QuasarVersion.h']), 'w')
+    f_cpp = open(os.path.sep.join(['Server', 'include', 'QuasarVersion.h']), 'w', encoding='utf-8')
     f_cpp.write('#define QUASAR_VERSION_STR "{0}"\n'.format(version))
 
 def main():

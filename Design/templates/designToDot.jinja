@@ -71,7 +71,7 @@ digraph  {
         <tr> 
           <td width="0"></td>
           <td width="0"></td>
-          <td colspan="2" align="center"><b><font point-size="18" >{{className}}</font>{% if detailLevel|int >= 2 %}<font point-size="10" color="blue" >DL={{designInspector.class_has_device_logic(className)|replace('True','1')|replace('False','0')}}</font>{% endif %}</b></td>  
+          <td colspan="2" align="center"><b><font point-size="18" >{{className}}</font>{% if detailLevel|int >= 2 %}<font point-size="10" color="blue" >DL={{designInspector.class_has_device_logic(className)|replace('True','1')|replace('False','0')}}</font>{% endif %}</b></td>
         </tr>
         <hr/>
         {%- if class.cachevariable|length + class.sourcevariable|length + class.configentry|length == 0 -%} {# the class is basically empty #}
@@ -83,7 +83,7 @@ digraph  {
             <tr>
             <!-- don't indent the lines below: you will break the graphical layout -->
             <td align="left" width="0">{%- if detailLevel|int>=3 -%}<font point-size="16">{{getArrowForCacheVariable(cv)}}</font>{%- endif %}</td>
-            <td align="left" width="0">{% if detailLevel|int >= 1 %}<font point-size="10" color="blue" >CV{% if cv.get('isKey') %},K{% endif %}{% if detailLevel|int>=4 and cv.configRestriction|length>0 %},R{% endif %}</font>{% endif %}</td>
+            <td align="left" width="0">{% if detailLevel|int >= 1 %}<font point-size="10" color="blue" >CV{% if detailLevel|int>=4 and cv.configRestriction|length>0 %},R{% endif %}</font>{% endif %}</td>
             <td align="left" >{{cv.get('name')}}</td>
             <td align="left" >: {{printTypeNicely(cv)}}</td>
             </tr>
@@ -106,7 +106,7 @@ digraph  {
             <td align="left" >: {{printTypeNicely(ce)}}</td>
             </tr>
           {%- endfor -%}
-          
+
           {% if class.method|length > 0 %}
             <hr/>
             {% for m in class.method %}
@@ -115,25 +115,25 @@ digraph  {
                 <td align="left" width="0"></td>
                 <td align="left" width="4">{% if detailLevel|int >= 1 %}<font point-size="10" color="blue" >M</font>{% endif %}</td>
                 <td align="left">{{m.get('name')}}({% for arg in m.argument %}{{printTypeNicely(arg)}}{% if not loop.last %},{% endif %}{% endfor %})</td>
-                <td align="left" >: {% if m.returnvalue|length>0 %}{% for rv in m.returnvalue %}{{printTypeNicely(rv)}}{% if not loop.last %},{% endif %}{% endfor %}{% else %}void{% endif %}</td>  
-              </tr>	
+                <td align="left" >: {% if m.returnvalue|length>0 %}{% for rv in m.returnvalue %}{{printTypeNicely(rv)}}{% if not loop.last %},{% endif %}{% endfor %}{% else %}void{% endif %}</td>
+              </tr>
             {% endfor %}
           {% endif %}
         {% endif %}
       </table>>]
   {% endfor %}
-  
+
   {# Now we add relations between classes #}
   {% for className in designInspector.get_names_of_all_classes() %}
     {% for ho in designInspector.objectify_class(className).hasobjects %}
       {{hasObjectsRelation(className, ho)}}
     {% endfor %}
   {% endfor %}
-  
+
   {# And now, ROOT "class" and connections to its children #}
   class_ROOT [label="ROOT"]
   {% for ho in designInspector.objectify_root().hasobjects %}
     {{hasObjectsRelation('ROOT', ho)}}
   {% endfor %}
-  
+
 }

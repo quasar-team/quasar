@@ -43,7 +43,7 @@ def generate():
 
 
 output('<?xml version="1.0" encoding="UTF-8"?>')
-output('<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="OpcUaSca" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">')
+output('<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="TestProject" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">')
 output('<d:class name="TestClass">')
 output('<d:devicelogic><d:mutex/></d:devicelogic>')
 generate()

@@ -21,8 +21,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 import os
 from transformDesign import TransformKeys, transformByKey
-from manage_files import get_list_classes
 from quasarExceptions import WrongArguments
+from DesignInspector import DesignInspector
 
 def generateOneDeviceClass(context, className):
     transformByKey([TransformKeys.D_DEVICE_H, TransformKeys.D_DEVICE_CPP], {'context':context, 'className':className})
@@ -41,6 +41,7 @@ def generateDeviceClass(context, *classList):
 
 def generateAllDevices(context):
     """Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
-    classes = get_list_classes(os.path.join(context['projectSourceDir'],'Design','Design.xml'))
-    for aClass in [x for x in classes if x['has_device_logic']]:
-        generateOneDeviceClass(context, aClass['name'])
+    designInspector = DesignInspector(os.path.sep.join([context['projectSourceDir'], 'Design', 'Design.xml']))
+    classes = designInspector.get_names_of_all_classes(only_with_device_logic=True)
+    for aClass in classes:
+        generateOneDeviceClass(context, aClass)

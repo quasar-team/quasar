@@ -154,7 +154,7 @@ class Oracle():
         'UaByteString'   : 'OpcUaType_ByteString',
         'UaVariant'      : 'OpcUaType_Variant'
     }
-    
+
     QuasarTypeToXsdType = {
         'UaString'      : 'xs:string',
         'OpcUa_SByte'   : 'xs:byte',
@@ -169,7 +169,7 @@ class Oracle():
         'OpcUa_Double'  : 'xs:double',
         'OpcUa_Float'   : 'xs:float'
     }
-    
+
     IntegerDataTypesRange = {
         'OpcUa_SByte'   : (-2**7, 2**7-1),
         'OpcUa_Byte'    : (0, 2**8-1),
@@ -188,10 +188,12 @@ class Oracle():
         else:
             return quasar_data_type
 
-    def get_cache_variable_setter(self, name, quasar_data_type, for_header):
+    def get_cache_variable_setter(self, name, quasar_data_type, for_header, new_style_null=False):
         """This function is based on its XSLT version, CommonFunctions,
            fnc:varSetter from quasar 1.3.12
-           TODO @pnikiel should be reworked to profit from other functions """
+           TODO @pnikiel should be reworked to profit from other functions
+           TODO @pnikiel: new_style_null at some point should replace the old-style null.
+            """
         source_time_stamp = 'const UaDateTime& srcTime'
         if for_header:
             source_time_stamp += '= UaDateTime::now()'
@@ -202,23 +204,33 @@ class Oracle():
                     'OpcUa_StatusCode statusCode, {2} )').format(
                         cap_first(name), quasar_data_type, source_time_stamp)
         elif quasar_data_type is None:  # formerly null
-            return 'setNull{0}( OpcUa_StatusCode statusCode, {1})'.format(
-                cap_first(name),
-                source_time_stamp)
+            if new_style_null:
+                return ('set{0}( QuasarNullDataType null, '
+                        'OpcUa_StatusCode statusCode, {1} )').format(
+                           cap_first(name), source_time_stamp)
+            else: # this branch to be removed in one of next releases, TODO.
+                return 'setNull{0}( OpcUa_StatusCode statusCode, {1})'.format(
+                    cap_first(name),
+                    source_time_stamp)
         else:
             return ('set{0}( const {1}& value, '
                     'OpcUa_StatusCode statusCode, {2})').format(
                         cap_first(name), quasar_data_type, source_time_stamp)
 
-    def get_cache_variable_setter_array(self, name, quasar_data_type, for_header):
+    def get_cache_variable_setter_array(self, name, quasar_data_type, for_header, new_style_null=False):
         """ TODO: description """
         source_time_stamp = 'const UaDateTime& srcTime'
         if for_header:
             source_time_stamp += '= UaDateTime::now()'
         if quasar_data_type is None:
-            return 'setNull{0}( OpcUa_StatusCode statusCode, {1})'.format(
-                cap_first(name),
-                source_time_stamp)
+            if new_style_null:
+                return ('set{0}( QuasarNullDataType null, '
+                        'OpcUa_StatusCode statusCode, {1})').format(
+                            cap_first(name), source_time_stamp)
+            else:
+                return 'setNull{0}( OpcUa_StatusCode statusCode, {1})'.format(
+                    cap_first(name),
+                    source_time_stamp)
         else:
             return ('set{0}(const std::vector<{1}>& value, '
                     'OpcUa_StatusCode statusCode, {2})').format(
@@ -257,14 +269,24 @@ class Oracle():
         else:
             return quasar_data_type
 
-    def cache_variable_cpp_type(self, address_space_write, in_which_class):
+    def cache_variable_cpp_type(self, address_space_write, in_which_class, is_array=True):
         """Returns C++ class to represent this cache-var in address-space"""
-        if address_space_write in ['regular', 'forbidden']:
-            return 'ChangeNotifyingVariable'
-        elif address_space_write == 'delegated':
-            return 'ASDelegatingVariable<AS{0}>'.format(in_which_class)
+        if is_array:
+            if address_space_write in ['regular', 'delegated']:
+                #note @piotr: the reason for having 'regular' routed via delegating variable is that
+                #we have to do size validation.
+                return 'ASDelegatingVariable<AS{0}>'.format(in_which_class)
+            else:
+                #note @piotr: it could be BaseDataVariableType as well, because for the moment
+                #there is no way to run CalculatedVariable on ChangeNotifyingVariable
+                return 'ChangeNotifyingVariable'
         else:
-            raise Exception("Unsupported address_space_write mode")
+            if address_space_write in ['regular', 'forbidden']:
+                return 'ChangeNotifyingVariable'
+            elif address_space_write == 'delegated':
+                return 'ASDelegatingVariable<AS{0}>'.format(in_which_class)
+            else:
+                raise Exception("Unsupported address_space_write mode")
 
     def cache_variable_access_level(self, address_space_write):
         """Returns value of OPC-UA accessLevel attribute"""

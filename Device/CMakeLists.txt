@@ -18,26 +18,26 @@
 
 # QUASAR_IS_CMAKE_BUILD_ENTRY_POINT should evaluate to true whenever plain CMake is the entry point, like in Yocto
 if(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
-	include(${PROJECT_SOURCE_DIR}/Device/generated/cmake_header.cmake)
+    include(${PROJECT_SOURCE_DIR}/Device/generated/cmake_header.cmake)
 else(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
-	include(${PROJECT_BINARY_DIR}/Device/generated/cmake_header.cmake)
+    include(${PROJECT_BINARY_DIR}/Device/generated/cmake_header.cmake)
 endif(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
 
 # check quasar/Device/DeviceCustom.cmake.example for an example!
 if(EXISTS ${PROJECT_SOURCE_DIR}/Device/DeviceCustom.cmake)
-	include (DeviceCustom.cmake)
+  include (DeviceCustom.cmake)
 endif(EXISTS ${PROJECT_SOURCE_DIR}/Device/DeviceCustom.cmake)
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/include/DRoot.h ${PROJECT_BINARY_DIR}/Device/src/DRoot.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND ${PYTHON_COMMAND} quasar.py generate root --project_binary_dir ${PROJECT_BINARY_DIR}
 DEPENDS ${DESIGN_FILE}
-	${PROJECT_SOURCE_DIR}/quasar.py
-	validateDesign
-	templates/designToRootHeader.jinja
-	templates/designToRootBody.jinja
-	templates/commonDeviceTemplates.jinja
-	${QUASAR_TRANSFORM_SENSITIVE_FILES}
+    ${PROJECT_SOURCE_DIR}/quasar.py
+    validateDesign
+    templates/designToRootHeader.jinja
+    templates/designToRootBody.jinja
+    templates/commonDeviceTemplates.jinja
+    ${QUASAR_TRANSFORM_SENSITIVE_FILES}
 )
 
 add_library (Device OBJECT
@@ -46,12 +46,10 @@ add_library (Device OBJECT
     ${DEVICE_CLASSES}
     ${DEVICE_CUSTOM_SOURCES} # if used, would come from DeviceCustom.cmake
 
-    # Your custom Device logic code - begin. Skip classes! (They are declared
-    # in ${DEVICE_CLASSES)
-    # Note: since quasar 1.3.14 you should rather list such files in DeviceCustom.cmake
-
-
-    # Your custom Device logic code - end
+    # Your custom Device logic code - Note:
+    # since quasar 1.5.x / nebula.B2 you *MUST* list such files in DeviceCustom.cmake
+    # rather than in here. This file will be overwritten each time you upgrade your quasar project,
+    # so you will lose your changes.
 
 )
 
