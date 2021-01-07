@@ -151,21 +151,25 @@ def enableModule(moduleName, tag="master", serverString=""):
 
     if not _getModuleInfo(serverString): return False
 
-    print("Checking module to be compatible...")
-    quasarVersion = None
-    try:
-        quasarVersion = open("Design/quasarVersion.txt").readline().rstrip()
-    except Exception as ex:
-        print(ex)
-    if not quasarVersion:
-        print("Error reading version info from Design/quasarVersion.txt")
-        return False
-    moduleMinVersion = moduleInfo[moduleName]["minVersion"]
-    if parse_version(quasarVersion) >= parse_version(moduleMinVersion):
-        print("Module {0} tag {1} required version {2} is compatible with installed quasar version {3}".format(moduleName, tag, moduleMinVersion, quasarVersion))
-    else:
-        print("Cannot enable module "+moduleName+". Minimum required version "+moduleMinVersion+" is newer than installed quasar version "+quasarVersion)
-        return False
+    # From Piotr (TODO) the following commented-out code needs rework because:
+    # --> nebula's tagging is different from 'original' quasar's one,
+    # --> either way that minVersion was kind of flaky ... we need N:M relationship of what works with what
+
+    # print("Checking module to be compatible...")
+    # quasarVersion = None
+    # try:
+    #     quasarVersion = open("Design/quasarVersion.txt").readline().rstrip()
+    # except Exception as ex:
+    #     print(ex)
+    # if not quasarVersion:
+    #     print("Error reading version info from Design/quasarVersion.txt")
+    #     return False
+    # moduleMinVersion = moduleInfo[moduleName]["minVersion"]
+    # if parse_version(quasarVersion) >= parse_version(moduleMinVersion):
+    #     print("Module {0} tag {1} required version {2} is compatible with installed quasar version {3}".format(moduleName, tag, moduleMinVersion, quasarVersion))
+    # else:
+    #     print("Cannot enable module "+moduleName+". Minimum required version "+moduleMinVersion+" is newer than installed quasar version "+quasarVersion)
+    #     return False
 
     # Check tag to be existing
     #
