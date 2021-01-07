@@ -1,1 +1,1 @@
-#define QUASAR_VERSION_STR "nebula.B3"
+#define QUASAR_VERSION_STR "1.5.0-rc0"
