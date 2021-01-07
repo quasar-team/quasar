@@ -100,7 +100,7 @@ def main():
     assert_tag_valid(given_tag)
     assert_all_files_committed()
 
-    version = given_tag
+    version = 'v'+given_tag
     store_version(version)
 
     os_system_with_check('./quasar.py create_release')
