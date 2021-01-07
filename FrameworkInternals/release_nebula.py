@@ -5,13 +5,12 @@
 release_nebula.py
 
 @author:     Piotr Nikiel <piotr@nikiel.info>
-@author:     Damian Abalo Miron <damian.abalo@cern.ch>
 
-@copyright:  2015 CERN
+@copyright:  2020 CERN
 
 @license:
 
-Copyright (c) 2015, CERN, Universidad de Oviedo.
+Copyright (c) 2020, CERN
 All rights reserved.
 
 Redistribution and  use in  source and  binary forms, with  or  without modification, are  permitted
@@ -53,16 +52,16 @@ def os_system_with_check(cmd, valid_codes=[]):
 
 def assert_correct_branch():
     repo = pygit2.Repository(".")
-    if repo.head.shorthand != "nebula-master":
+    if repo.head.shorthand != "master":
         raise Exception("You are on branch: {0} and that is so BAD!!!!".format(repo.head.shorthand))
     print("On correct branch:      " + Fore.GREEN + "PASS" + Style.RESET_ALL)
 
 def assert_tag_valid(tag):
     '''Makes sure given tag adheres to the schema'''
-    given_tag_regex = re.compile(r"[A-Z]\d+")
+    given_tag_regex = re.compile(r"^1.([1-9]+\d*|0).([1-9]+\d*|0)(-rc\d+)?$")
     match = given_tag_regex.match(tag)
     if match is None:
-        raise Exception("Given tag is in wrong format. Correct examples: A1, M42, K133")
+        raise Exception("Given tag is in wrong format. Correct examples: 1.5.2, 1.5.3-rc23")
     print("Tag in valid format:    " + Fore.GREEN + "PASS" + Style.RESET_ALL)
 
 def assert_correct_workdir():
@@ -89,7 +88,7 @@ def store_version(version):
     f_cpp.write('#define QUASAR_VERSION_STR "{0}"\n'.format(version))
 
 def main():
-    print(Fore.BLUE + "Note: you are about to release quasar-nebula!" + Style.RESET_ALL)
+    print(Fore.BLUE + "Note: you are about to release quasar" + Style.RESET_ALL)
     parser = argparse.ArgumentParser()
     parser.add_argument("tag")
 
@@ -101,7 +100,7 @@ def main():
     assert_tag_valid(given_tag)
     assert_all_files_committed()
 
-    version = "nebula." + given_tag
+    version = given_tag
     store_version(version)
 
     os_system_with_check('./quasar.py create_release')
@@ -114,7 +113,7 @@ def main():
 
     os_system_with_check('git push origin {0}'.format(version))
 
-    print('quasar-nebula version ' + Fore.GREEN + version + Style.RESET_ALL +
+    print('quasar version ' + Fore.GREEN + version + Style.RESET_ALL +
         ' apparently released')
 
 
