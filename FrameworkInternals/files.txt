@@ -455,7 +455,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "24989d0b6a35e0f4abdc6e3314d45f0e",
+                "md5": "b121ef8d6bf90c24b3a7eb22c681672d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -579,7 +579,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "c7f2c043f9075a0bd334588f9346d3fd",
+                "md5": "ae36ecf428586921fd7df0267ad6b5f7",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -625,7 +625,7 @@
             },
             "quasar.html": {
                 "install": "overwrite",
-                "md5": "8bffb0712821568b109b0af86c24fdb5",
+                "md5": "bea550083ee640cdaa9f06830aa85877",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -793,7 +793,7 @@
             },
             "install_framework.py": {
                 "install": "overwrite",
-                "md5": "74f95619ba63bea49d4ee3347f059d1e",
+                "md5": "a751091fd34cc134262d654e6a1b85bb",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -829,7 +829,7 @@
             },
             "quasar_basic_utils.py": {
                 "install": "overwrite",
-                "md5": "c9e93a216fb2a06ac4c641eaf9faa2d3",
+                "md5": "c877219edb05d8e7021224f7bebf7ead",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1278,7 +1278,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "8d5ea5363396a2f3ba3aaf80ef81c660",
+                "md5": "49d617ed6af68784d32fd03fe0a34c12",
                 "must_be_versioned": true,
                 "must_exist": true
             },
