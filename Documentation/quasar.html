@@ -42,6 +42,9 @@
 
 
 
+
+
+
       opc<span style="color: #225498;font-size:150%;"><strong>ua</strong>
         <strong>s</strong></span>erver gener<span style="color:
         #225498;font-size:150%;"><strong>a</strong></span>tion f<span
@@ -49,6 +52,9 @@
     </p>
     <p>For quick start-up, see our <a
 href="https://www.youtube.com/watch?v=v212aPmbahM&amp;list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b">YouTube
+
+
+
         tutorial</a>.<br>
     </p>
     <p>Primary contact: <a href="mailto:quasar-developers@cern.ch">quasar-developers@cern.ch</a><br>
@@ -114,6 +120,9 @@ href="https://www.youtube.com/watch?v=v212aPmbahM&amp;list=PLz6bxFrT1-KBZxoSxr4Z
     systems:<br>
     <ul>
       <li>CentOS / RHEL (and dependent distributions): <a href="#cc8">version
+
+
+
           8</a> (i.e. CentOS 8, RHEL 8), <a href="#cc7">version 7</a>
         (i.e. CentOS 7, RHEL 7).<br>
       </li>
@@ -135,6 +144,9 @@ href="https://www.youtube.com/watch?v=v212aPmbahM&amp;list=PLz6bxFrT1-KBZxoSxr4Z
         <li><i>(free and open-source)</i> <a
             href="https://github.com/quasar-team/open62541-compat/">open62541-compat</a>
           (made by quasar team). <a href="AlternativeBackends.html">More
+
+
+
             info on alternative backends</a>.<br>
         </li>
       </ul>
@@ -214,15 +226,17 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
         <meta http-equiv="content-type" content="text/html;
           charset=UTF-8">
         <br>
-        sudo yum install gcc-c++ gdb boost-devel boost-regex
-        boost-program-options boost-signals jre cmake kdiff3 graphviz
-        valgrind doxygen rpm-build subversion xsd openssl-devel
-        libxml2-devel xerces-c-devel python2-pip libgit2 libgit2-devel
-        python-colorama python-jinja2</li>
+        <div class="mycode"> sudo yum install gcc-c++ gdb boost-devel
+          boost-regex boost-program-options boost-signals jre cmake
+          kdiff3 graphviz valgrind doxygen rpm-build subversion xsd
+          openssl-devel libxml2-devel xerces-c-devel python2-pip libgit2
+          libgit2-devel python-colorama python-jinja2</div>
+      </li>
       <li>Deploy Python's pygit2 (recommended)<br>
         WARNING: the version of pygit2 should match the version of
         libgit2-devel! At the time of writing it was 0.26.4<br>
-        sudo pip install pygit2==0.26.4<br>
+        <div class="mycode">sudo pip install pygit2==0.26.4</div>
+        <br>
       </li>
       <li>If you have access to the UA SDK, install it (the evaluation
         version works fine). Quasar should work with UA SDK versions
@@ -234,16 +248,19 @@ https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)<br
     </ol>
     <h3><a name="ubuntu"></a>Quick setup hints for Ubuntu 19.04</h3>
     <p>Execute:<br>
-      sudo apt install cmake g++ libboost-all-dev libxml2-utils astyle
-      xsdcxx libxerces-c-dev libssl-dev kdiff3 default-jre libxml2-utils
-      python-enum34 python-lxml<br>
     </p>
+    <div class="mycode"> sudo apt install cmake g++ libboost-all-dev
+      libxml2-utils astyle xsdcxx libxerces-c-dev libssl-dev kdiff3
+      default-jre libxml2-utils python-enum34 python-lxml</div>
+    <br>
     <ol>
     </ol>
     <h3><a name="ubuntu1404"></a>Quick setup hints for Ubuntu 14.04</h3>
     Execute:<br>
-    sudo apt-get install cmake g++ libboost-all-dev libxml2-utils astyle
-    xsdcxx libxerces-c-dev libssl-dev kdiff3 default-jre libxml2-utils<br>
+    <div class="mycode"> sudo apt-get install cmake g++
+      libboost-all-dev libxml2-utils astyle xsdcxx libxerces-c-dev
+      libssl-dev kdiff3 default-jre libxml2-utils</div>
+    <br>
     Note you will need the UA SDK (i.e. evaluation version) or
     alternative backend (consider open62541 with quasar integration).<br>
     <br>
@@ -302,6 +319,9 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
       here</a>.<br>
     <h2>Calculated Variables</h2>
     <p><a href="../CalculatedVariables/doc/CalculatedVariables.html">Developer
+
+
+
 
 
 
@@ -462,10 +482,8 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
         of the UA Toolkit to create an OPC UA server using this
         framework?<br>
         You can.<br>
-        Beware that at the time of writing the evaluation version is
-        only available in 32 bits. Therefore we recommend to create a
-        build configuration specifically for compiling in 32 bits with
-        evaluation version of the toolkit.&nbsp;</li>
+        Note that for many basic features you can use free and open-source open62541-compat
+        backend instead of paid UA Toolkit.</li>
       <li>How to use upgrade_design tool?<br>
         Rarely - but sometimes - XML stylesheet of Design file
         (Design.xsd) changes in backwards-incompatible way. For all such
@@ -522,9 +540,15 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
 
 
 
+
+
+
           Defined Runtime Configuration</a></li>
       <li>How do I link libraries, add include directories, use build
         configurations etc... ? See <a href="quasarBuildSystem.html">build
+
+
+
 
 
 
@@ -544,7 +568,7 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
     <hr style="width: 100%; height: 2px;"> Written by Piotr Nikiel
     &lt;piotr.nikiel@cern.ch&gt;<br>
     Report inconsistencies and bugs to the email above.<br>
-    (C) CERN 2015. All rights not expressly granted are reserved.<br>
+    (C) CERN 2015-. All rights not expressly granted are reserved.<br>
     <br>
   </body>
 </html>
