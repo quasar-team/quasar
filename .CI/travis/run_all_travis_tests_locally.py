@@ -67,15 +67,6 @@ def main():
 
     yaml_file = open('../../.travis.yml')
     yaml_repr = yaml.load(yaml_file)
-
-    non_public_yaml_file = open('non_public_tests.yml', 'r')
-    non_public_yaml_repr = yaml.load(non_public_yaml_file)
-
-    print(f"Note: loading {len(yaml_repr['jobs']['include'])} jobs from main travis file and "
-        f"{len(non_public_yaml_repr['jobs']['include'])} jobs from non_public_tests")
-
-    yaml_repr['jobs']['include'].extend(non_public_yaml_repr['jobs']['include'])
-
     job_names_in_yaml = [job['name'] for job in yaml_repr['jobs']['include']]
     print('note: jobs declared in the yaml are:', job_names_in_yaml)
 
