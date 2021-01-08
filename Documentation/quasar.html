@@ -41,10 +41,18 @@
 
 
 
+
       opc<span style="color: #225498;font-size:150%;"><strong>ua</strong>
         <strong>s</strong></span>erver gener<span style="color:
         #225498;font-size:150%;"><strong>a</strong></span>tion f<span
-        style="color: #225498;font-size:150%;"><strong>r</strong></span>amework.</p>
+        style="color: #225498;font-size:150%;"><strong>r</strong></span>amework.<br>
+    </p>
+    <p>For quick start-up, see our <a
+href="https://www.youtube.com/watch?v=v212aPmbahM&amp;list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b">YouTube
+        tutorial</a>.<br>
+    </p>
+    <p>Primary contact: <a href="mailto:quasar-developers@cern.ch">quasar-developers@cern.ch</a><br>
+    </p>
     <h2>Versions</h2>
     <a href="ChangeLog.html">Changelog</a><br>
     <h2>Credits</h2>
@@ -102,68 +110,78 @@
       </ul>
     </ul>
     <h2>Dependencies</h2>
-    Note: there are direct instructions for the following operating
-    systems: <a href="#slc6">SLC6</a> (~ Red Hat Enterprise Linux 6), <a
-      href="#cc7">CC7</a> (~ CentOS 7, Red Hat Enterprise Linux 7), <a
-      href="#ubuntu">Ubuntu</a>, <a href="#windows">MS Windows</a>.<br>
-    <br>
+    Note: we have specific instructions for the following operating
+    systems:<br>
+    <ul>
+      <li>CentOS / RHEL (and dependent distributions): <a href="#cc8">version
+          8</a> (i.e. CentOS 8, RHEL 8), <a href="#cc7">version 7</a>
+        (i.e. CentOS 7, RHEL 7).<br>
+      </li>
+      <li><a href="#ubuntu">Ubuntu</a></li>
+      <li><a href="#windows">MS Windows</a></li>
+    </ul>
+    <h3> For remaining systems (other distros of Linux, other Unix,
+      embedded Linux: PetaLinux, Yocto)<br>
+    </h3>
     Mandatory:<br>
     <ul>
-      <li>Suitable C++ compiler (gcc is assumed by default)<br>
+      <li>C++ compiler with C++11 support (gcc 4.8x or newer is just
+        fine)</li>
+      <li>OPCUA protocol stacks / toolkits (either of them is needed):<br>
       </li>
-      <li>The Unified Automation OPC UA Toolkit in versions 1.3.x, 1.4.x
-        or 1.5.x&nbsp; or&nbsp; another OPC-UA toolkit with compatible
-        API (e.g. open62541 + open62541-compat). <a
-          href="AlternativeBackends.html">More info on alternative
-          backends</a>.<br>
-      </li>
+      <ul>
+        <li><i>(paid product)</i> The Unified Automation OPC UA C++
+          server toolkit in versions 1.5.x, 1.6.x, 1.7.x</li>
+        <li><i>(free and open-source)</i> <a
+            href="https://github.com/quasar-team/open62541-compat/">open62541-compat</a>
+          (made by quasar team). <a href="AlternativeBackends.html">More
+            info on alternative backends</a>.<br>
+        </li>
+      </ul>
       <li>Boost development libraries. (In principle, boost-regex,
-        boost-devel and boost-program-options should be sufficient)<br>
+        boost-devel, boost-thread and boost-program-options should be
+        sufficient).<br>
       </li>
-      <li>XSLT processor capable of XSLT2.0 processing. We use <a
-          href="http://www.saxonica.com/">The Saxon XSLT and XQuery
-          Processor from Saxonica Limited</a> which is re-distributed
-        with the Quasar package (version 9.5 HE). Conditions of
-        redistribution are explained <a
-          href="http://www.saxonica.com/documentation/#%21conditions">at
-          this link</a>.<br>
+      <li>Python3 and some libraries (Jinja2, colorama, lxml, pygit2)<br>
       </li>
-      <li>Java run time environment, to run the Saxon XSLT Processor.<br>
+      <li>cmake3, version 3.10 + (for older versions you could try older
+        quasar versions)</li>
+      <li>kdiff3 for occasional merges.<br>
       </li>
-      <li>Cmake version 2.8 or later. Available in SLC6 as cmake28
-        package.</li>
     </ul>
     Recommended:<br>
     <ul>
-      <li>Schema-aware XML editor. We use Eclipse, as can be seen in the
-        screencasts.</li>
-      <li>Good C++ IDE / editor. We use Eclipse, as can be seen in the
-        screencasts.<br>
+      <li>Schema-aware XML editor for editing the design file. We use
+        Eclipse, as can be seen in the screen casts. Any text editor
+        will do but few of them are really convenient for editing XML
+        files according to XSD schema.<br>
+      </li>
+      <li>Good C++ development environment (or IDE, ...). Eclipse CDT
+        does just fine.<br>
       </li>
       <li>Good merge tool. We use kdiff3 (available as kdiff3 RPM in
         SLC6 Linux).</li>
       <li>ArtisticStyle ( <a href="http://astyle.sourceforge.net/">http://astyle.sourceforge.net/</a>
         ) for automatic formatting of generated code. If you don't use
         it, the generated code will look like a shipwreck (but will
-        still work). <br>
-        ArtisticStyle RPM for SLC6 can be obtained from Piotr Nikiel, or
-        you can compile it yourself from sources.<br>
+        still work). Astyle is easy to get (e.g. standard in Ubuntu) so
+        get it.<br>
       </li>
       <li>graphviz, if you want to visualize your object design in
-        UML-alike class diagram. Available in SLC6 as graphviz RPM
-        package.</li>
+        UML-alike class diagram.<br>
+      </li>
       <li>UnifiedAutomation UaExpert or any other OPC UA Client for
         exploring OPC UA address space.<br>
       </li>
-      <li>Valgrind, for checking memory-related problems. (valgrind RPM
-        in SLC6)</li>
+      <li>Valgrind, for checking memory-related problems</li>
       <li>PDF viewer for opening UML-like diagrams created from design
         file.</li>
       <li>Doxygen for generating documentation.</li>
       <li>RPM Build tools for RPM generation<br>
       </li>
     </ul>
-    <h3> Quick setup hints for CentOS 8 (the most standard way)<br>
+    <h3> <a name="cc8"></a>Quick setup hints for CentOS 8 (the most
+      standard way)<br>
     </h3>
     <ol>
       <li>Install packages from CentOS 8 default repos:<br>
@@ -176,17 +194,12 @@
         8):<br>
         <div class="mycode"> sudo yum install astyle </div>
       </li>
-      <li>Note that quasar is compatible both with Python2 and Python3.
-        Even though Python2 is already end-of-life, many users still use
-        it (...) and quasar simply requires that "python" is in your
-        PATH, whether it points to python2 or python3 does not matter.
-        If the command "python" does not exist in your C8 but instead
-        "python3" exists then make a symbolic link from your
-        ~/bin/python pointing to python3.<br>
-        NOTE: quasar soon will switch to Python3 exclusively.<br>
+      <li>Note that currently quasar is compatible only with Python3 and
+        it expects "python3" executable to be somehow available.<br>
+        NOTE: users stuck on Python2 can use earlier version of quasar,
+        e.g. 1.4.2.<br>
       </li>
     </ol>
-    <br>
     <br>
     <ol>
     </ol>
@@ -289,6 +302,7 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
       here</a>.<br>
     <h2>Calculated Variables</h2>
     <p><a href="../CalculatedVariables/doc/CalculatedVariables.html">Developer
+
 
 
 
@@ -507,9 +521,11 @@ https://www.youtube.com/playlist?list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b<br>
 
 
 
+
           Defined Runtime Configuration</a></li>
       <li>How do I link libraries, add include directories, use build
         configurations etc... ? See <a href="quasarBuildSystem.html">build
+
 
 
 
