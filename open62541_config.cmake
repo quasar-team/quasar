@@ -31,7 +31,7 @@ add_definitions(-Wall -Wno-deprecated)
 set (LOGIT_HAS_UATRACE FALSE)
 
 # open62541-compat with server config loader - load ServerConfig.xml by default
-set (SERVERCONFIG_LOADER TRUE)
+set (SERVERCONFIG_LOADER ON CACHE BOOL "Since quasar 1.5.1 the open62541-compat will also load ServerConfig.xml same way UA-SDK does")
 
 # need C++11
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
