@@ -13,6 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
+                "md5": "check",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1244,6 +1245,12 @@
         "files": {
             "ServerConfig.xml": {
                 "install": "copy_if_not_existing",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
+            "ServerConfig.xsd": {
+                "install": "overwrite",
+                "md5": "check",
                 "must_be_versioned": true,
                 "must_exist": true
             },
