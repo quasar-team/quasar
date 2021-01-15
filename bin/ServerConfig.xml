@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<OpcServerConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<OpcServerConfig xmlns="http://cern.ch/quasar/ServerConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/ServerConfig ServerConfig.xsd">
 <UaServerConfig>
   <!--Maximum age of a request the server allows. Default value 0 is unlimited-->
   <MaxRequestAge>0</MaxRequestAge>
-  
+
   <!--Maximum number of sessions the server allows to create. Default value 0 is unlimited-->
   <MaxSessionCount>100</MaxSessionCount>
   <!--Minimum timeout in ms for a sessions the server allows to set. Default value 0 is unlimited-->
@@ -114,12 +114,12 @@
   <!--List of configured Endpoints end-->
   <UaEndpoint>
     <SerializerType>Binary</SerializerType>
-    <!-- URL of the Endpoint 
+    <!-- URL of the Endpoint
          This URL is used for Discovery and to open the Endpoints in the UA stack if no StackUrl ist configured.
          [NodeName] can be used as placeholder for the computer name. -->
     <Url>opc.tcp://[NodeName]:4841</Url>
     <!-- Optional URL that allows to define a specific address the stack should use to bind to.
-         Can be used to bind the endpoint to a specific network card or to localhost only. 
+         Can be used to bind the endpoint to a specific network card or to localhost only.
     <StackUrl>opc.tcp://192.168.0.15:4841</StackUrl>-->
     <!-- Flag indicating if the endpoint is provided in GetEndpoints and is therefore visible to a client. Default is true. -->
     <IsVisible>true</IsVisible>
@@ -139,7 +139,7 @@
       <!--Windows based certificate store.
         - <StoreLocation> location of the store. Valid values are LocalMachine and CurrentUser
         - <StoreName> is the name of the certificate store in the local computer
-        - <ServerCertificateThumbprint> is the thumbprint of the server certificate used to load from store 
+        - <ServerCertificateThumbprint> is the thumbprint of the server certificate used to load from store
       <WindowsStore>
         <StoreLocation>LocalMachine</StoreLocation>
         <StoreName>UnifiedAutomationUaServerCPP</StoreName>
@@ -161,7 +161,7 @@
         <State></State>
         <!--Two letter code for country where the OPC UA server is running e.g. DE or US-->
         <Country>CH</Country>
-        <!--The number of years the certificate is valid for. The maximum accepted number is 20 
+        <!--The number of years the certificate is valid for. The maximum accepted number is 20
             but it is stronlgy recommended to use a shorter time. -->
         <YearsValidFor>5</YearsValidFor>
       </CertificateSettings>
@@ -191,7 +191,7 @@
   <DiscoveryRegistration>
     <!--Flag indicating if the certificates should be exchanged with the windows certificate store -->
     <AutomaticCertificateExchange>true</AutomaticCertificateExchange>
-    <!--File name and path of the discovery server certificate to be stored in a file based sever trust list 
+    <!--File name and path of the discovery server certificate to be stored in a file based sever trust list
         This parameter is ignored if the Windows certificate store is used for the first configured endpoint -->
     <DiscoveryServerCertificateFile>[ApplicationPath]/PKI/CA/certs/LocalDiscoveryServer.der</DiscoveryServerCertificateFile>
     <!--Store name used for the local discovery server in the windows certificate store -->
@@ -201,7 +201,7 @@
     <!--Interval in milliseconds for registration with discovery server(s) -->
     <RegistrationInterval>30000</RegistrationInterval>
     <!--List of discovery servers to register with.
-        If the list is empty, no registration is executed. 
+        If the list is empty, no registration is executed.
         Default ist opc.tcp://localhost:4840 for the local discovery server.
         Additional remot discovery servers can be added-->
     <!--<Url>opc.tcp://localhost:4840</Url>-->
@@ -224,7 +224,7 @@
     <MaxMessageSize>4194304</MaxMessageSize>
   </Serializer>
   <!--Serializer configuration end-->
-  
+
   <!--Settings for the thread pools used in the OPC UA Stack-->
   <StackThreadPoolSettings>
     <!--Controls wether the secure listener uses a thread pool to dispatch received requests-->

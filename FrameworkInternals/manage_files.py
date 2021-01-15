@@ -499,6 +499,9 @@ def symlinkRuntimeDeps(context, wildcard=None):
             linkerFunction(
                     os.path.join(context['projectSourceDir'], 'bin', 'ServerConfig.xml'),
                     os.path.join(context['projectBinaryDir'], 'bin', 'ServerConfig.xml'))
+            linkerFunction(
+                    os.path.join(context['projectSourceDir'], 'bin', 'ServerConfig.xsd'),
+                    os.path.join(context['projectBinaryDir'], 'bin', 'ServerConfig.xsd'))
             config_files = glob.glob(os.path.join(context['projectSourceDir'], 'bin', 'config*.xml'))
             for config_file in config_files:
                 linkerFunction(config_file, os.path.join(context['projectBinaryDir'], 'bin', os.path.basename(config_file)))

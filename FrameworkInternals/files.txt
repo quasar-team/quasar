@@ -13,6 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
+                "md5": "811696cceaf104d26cfdca43f7dd36d3",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -799,7 +800,7 @@
             },
             "manage_files.py": {
                 "install": "overwrite",
-                "md5": "aea12d8bf7ed2926cd512e603384c45e",
+                "md5": "441af59ec903e9cf547ebf22a685351d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1370,6 +1371,12 @@
         "files": {
             "ServerConfig.xml": {
                 "install": "copy_if_not_existing",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
+            "ServerConfig.xsd": {
+                "install": "overwrite",
+                "md5": "1b515543edbb1a1d1cc9650971685288",
                 "must_be_versioned": true,
                 "must_exist": true
             },

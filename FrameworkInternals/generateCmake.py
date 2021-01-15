@@ -59,6 +59,7 @@ def generateCmake(context, *args):
         os.mkdir(os.path.join(projectBinaryDir, "bin"))
         print("Creating symlinks for xml files in the build directory")
         symlinkRuntimeDeps(context, '*.xml')
+        symlinkRuntimeDeps(context, 'ServerConfig.xsd')
 
     transformByKey(TransformKeys.AS_CMAKE, {'context':context})
     transformByKey(TransformKeys.D_CMAKE, {'context':context})
