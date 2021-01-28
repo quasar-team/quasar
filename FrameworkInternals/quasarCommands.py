@@ -28,6 +28,7 @@ from manage_files import mfCreateRelease
 from manage_files import mfSetupSvnIgnore
 from manage_files import mfDesignVsDevice
 from manage_files import symlinkRuntimeDeps
+import manage_files
 from deviceGenerators import generateDeviceClass, generateAllDevices
 from configurationGenerators import generateConfiguration
 from designTools import validateDesign
@@ -87,6 +88,7 @@ commands = [
         # various commands for developers
         [['symlink_runtime_deps'],       symlinkRuntimeDeps, True],
         [['quasar_version'],              quasar_basic_utils.print_quasar_version, True],
+        [['style_it'],                    manage_files.command_style_it, True]
         ]
 
 def printCommandList():

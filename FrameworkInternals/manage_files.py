@@ -42,10 +42,11 @@ import hashlib
 import shutil  # for copying files, etc
 import glob
 from colorama import Fore, Style
+import pygit2
 from quasar_basic_utils import yes_or_no
 import version_control_interface
 from DesignInspector import DesignInspector
-
+from transformDesign import run_indent_tool
 
 ask=False
 
@@ -517,3 +518,33 @@ def symlinkRuntimeDeps(context, wildcard=None):
             print(Fore.GREEN + 'E.g. run it after running "quasar.py build"' + Style.RESET_ALL)
         else:
             raise
+
+def _style_it(file_path):
+    # check if file in the VCS (so, safe)
+    # TODO: can put it on the quasar's VCS interface
+    repo = pygit2.Repository(".")
+    status = repo.status()
+    if file_path in status:
+        print(f'{file_path}: {Fore.RED}Cowardly refusing to touch a file which is new or modified{Style.RESET_ALL} (i.e. not committed), because you won\'t have any backup')
+        return
+    # perform styling
+    with open(file_path, 'rb') as file:
+        unindented_content = file.read()
+    with open(file_path, 'wb') as file:
+        run_indent_tool(unindented_content, file)
+    print (f'{file_path}: {Fore.GREEN}Style fixed{Style.RESET_ALL}')
+
+def command_style_it(context, *args):
+    '''Will run source code styler for listed files (or --device)'''
+    for item in args:
+        if item[0] != '-': # no hyphen at the beginning of the command.
+            _style_it(item)
+        else:
+            if item == '--device':
+                for header_file in glob.glob('Device/include/*.h'):
+                    _style_it(header_file)
+                for body_file in glob.glob('Device/src/*.cpp'):
+                    _style_it(body_file)
+
+            else:
+                print('Unable to interprete command options')
