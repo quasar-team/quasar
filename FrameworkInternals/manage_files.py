@@ -42,7 +42,6 @@ import hashlib
 import shutil  # for copying files, etc
 import glob
 from colorama import Fore, Style
-import pygit2
 from quasar_basic_utils import yes_or_no
 import version_control_interface
 from DesignInspector import DesignInspector
