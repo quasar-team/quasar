@@ -115,3 +115,11 @@ class VersionControlInterface:
             commitID = 'Exception: {}'.format(str(e))
         return 'VCS type [{}] commit ID [{}]'.format(self.vcs_type, commitID)
 
+    def file_has_uncommitted_changes(self, file_path):
+        '''Returns True if file is entirely committed (i.e. it can be reverted just in case)'''
+        if file_path[0] == os.path.sep:
+            raise NotImplementedError("not impl for absolute paths")
+        if self.vcs_type == 'git':
+            return file_path in self.repo.status()
+        else:
+            raise NotImplementedError("not impl for other backends")
