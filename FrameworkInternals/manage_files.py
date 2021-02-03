@@ -45,7 +45,8 @@ from colorama import Fore, Style
 from quasar_basic_utils import yes_or_no
 import version_control_interface
 from DesignInspector import DesignInspector
-
+from transformDesign import run_indent_tool
+from version_control_interface import VersionControlInterface
 
 ask=False
 
@@ -517,3 +518,35 @@ def symlinkRuntimeDeps(context, wildcard=None):
             print(Fore.GREEN + 'E.g. run it after running "quasar.py build"' + Style.RESET_ALL)
         else:
             raise
+
+def _style_it(file_path, vcs):
+    # check if file in the VCS (so, safe)
+    # TODO: can put it on the quasar's VCS interface
+    if vcs.file_has_uncommitted_changes(file_path):
+        print(f'{file_path}: {Fore.RED}Cowardly refusing to touch a file which is new or modified'
+            f'{Style.RESET_ALL} (i.e. not committed), because you won\'t have any backup')
+        return
+    # perform styling
+    with open(file_path, 'rb') as file:
+        unindented_content = file.read()
+    with open(file_path, 'wb') as file:
+        run_indent_tool(unindented_content, file)
+    if vcs.file_has_uncommitted_changes(file_path):
+        print (f'{file_path}: {Fore.GREEN}Style fixed, commit if happy.{Style.RESET_ALL}')
+    else:
+        print (f'{file_path}: {Fore.BLUE}Nothing changed{Style.RESET_ALL}')
+
+def command_style_it(context, *args):
+    '''Will run source code styler for listed files (or --device)'''
+    vcs = VersionControlInterface('.') # need it to only perform it on committed files for safety
+    for item in args:
+        if item[0] != '-': # no hyphen at the beginning of the command.
+            _style_it(item, vcs)
+        else:
+            if item == '--device':
+                for header_file in glob.glob('Device/include/*.h'):
+                    _style_it(header_file, vcs)
+                for body_file in glob.glob('Device/src/*.cpp'):
+                    _style_it(body_file, vcs)
+            else:
+                print('Unable to interprete command options')
