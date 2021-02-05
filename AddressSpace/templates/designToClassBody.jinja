@@ -43,7 +43,7 @@
 namespace AddressSpace
 {
 
-static std::string decorateSingleVariableNodeName (const std::string& basicName, bool isSingleVariableNode)
+std::string decorateSingleVariableNodeName (const std::string& basicName, bool isSingleVariableNode)
 {
   if (isSingleVariableNode)
     return "__single_item_node__" + basicName;
