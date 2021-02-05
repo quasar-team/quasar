@@ -136,6 +136,7 @@ int BaseQuasarServer::serverRun(
 
     if (onlyCreateCertificate)
     {
+    	LOG(Log::WRN) << Quasar::TermColors::ForeYellow() << "Note: the argument to create server certificate will be deprecated soon. Please stop using it." << Quasar::TermColors::StyleReset();
         return m_pServer->createCertificate(opcUaBackendConfigurationFile.c_str(), serverSettingsPath.c_str());
     }
 

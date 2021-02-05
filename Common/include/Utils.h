@@ -66,7 +66,9 @@ class TermColors
 {
 public:
 	static std::string ForeRed () { return "\033[1;31m"; }
-	static std::string ForeBlue () { return "\033[1;32m"; }
+	static std::string ForeGreen () { return "\033[1;32m"; }
+	static std::string ForeYellow () { return "\033[1;33m"; }
+	static std::string ForeBlue () { return "\033[1;34m"; }
 	static std::string StyleReset () { return "\033[0m"; }
 };
 }
