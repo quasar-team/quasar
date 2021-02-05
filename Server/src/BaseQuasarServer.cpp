@@ -186,7 +186,8 @@ std::string BaseQuasarServer::getApplicationPath() const
 #ifdef __linux__
     char serverSettingsPath[PATH_MAX];
     memset(serverSettingsPath, 0, sizeof serverSettingsPath);
-    readlink("/proc/self/exe", serverSettingsPath, sizeof(serverSettingsPath));
+    if (readlink("/proc/self/exe", serverSettingsPath, sizeof serverSettingsPath) < 0)
+      throw std::runtime_error("Can't obtain self path -- /proc/self/exe not there?");
     char *pszFind = strrchr(serverSettingsPath, '/');
 #elif _WIN32
     char serverSettingsPath[MAX_PATH];
@@ -273,11 +274,11 @@ std::string BaseQuasarServer::getProcessOwner() const
 }
 
 int BaseQuasarServer::parseCommandLine(
-        int argc, 
-        char *argv[], 
-        bool *isHelpOrVersion, 
+        int argc,
+        char *argv[],
+        bool *isHelpOrVersion,
         bool *isCreateCertificateOnly,
-        std::string *configurationFileName, 
+        std::string *configurationFileName,
         std::string& opcUaBackendConfigurationFile)
 {
     for (int i = 0; i < argc; m_commandLineArgs.push_back(std::string(argv[i++]))) {};
@@ -292,7 +293,7 @@ int BaseQuasarServer::parseCommandLine(
     desc.add_options()
             ("config_file", value<string>(), "A path to the config file")
             ("opcua_backend_config", value<string>(&opcUaBackendConfigurationFile)
-	         ->default_value(defaultOpcUaBackendConfigurationFile), 
+	         ->default_value(defaultOpcUaBackendConfigurationFile),
                  "(Optional) path to the OPC-UA settings file")
             ("create_certificate", bool_switch(&createCertificateOnly), "Create new certificate and exit")
             ("help,h", "Print help")
@@ -358,7 +359,7 @@ int BaseQuasarServer::initializeEnvironment()
 
 #else
     const int ret = 0;
-#endif    
+#endif
     initializeLogIt();
     logEnvironment();
     CalculatedVariables::Engine::initialize();
@@ -426,7 +427,7 @@ void BaseQuasarServer::serverStartFailLogError(int ret, const std::string& logFi
     else
     {
 	LOG(Log::ERR) << "The exact reason is unknown because you haven't enabled logging in your ServerConfig file.";
-	LOG(Log::ERR) << "To enable, change value of <UaAppTraceEnabled> content to true.";			
+	LOG(Log::ERR) << "To enable, change value of <UaAppTraceEnabled> content to true.";
     }
 }
 
