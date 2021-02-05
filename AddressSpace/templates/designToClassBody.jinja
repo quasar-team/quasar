@@ -828,7 +828,19 @@ static std::string decorateSingleVariableNodeName (const std::string& basicName,
             LOG(Log::ERR) << "method call of method {{m.get('name')}} thrown an exception (should have been handled in the method body...): " << e.what();
             UaStatus badStatus = OpcUa_BadInternalError;
             pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );
-            return OpcUa_BadInternalError;
+            return OpcUa_Good;
+          }
+          catch (...)
+          {
+            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
+              getDeviceLink()->unlockMethodCall_{{m.get('name')}}();
+            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
+              getDeviceLink()->unlock();
+            {% endif %}
+            LOG(Log::ERR) << "method call of method {{m.get('name')}} thrown an exception of non standard type ... please ... don't do it Mr/Ms programmer ;-) ";
+            UaStatus badStatus = OpcUa_BadInternalError;
+            pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );
+            return OpcUa_Good;
           }
 
           {% if m.get('executionSynchronicity') == 'asynchronous' %}
