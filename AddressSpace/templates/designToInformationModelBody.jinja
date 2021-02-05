@@ -33,17 +33,19 @@ namespace AddressSpace
 void ASInformationModel::createNodesOfTypes (ASNodeManager *nm)
 {
 #ifndef BACKEND_OPEN62541  // TODO: @pnikiel: we actually could make it work for open62541 as well!
-	UaObjectTypeSimple * type;
-	UaStatus addStatus;
-  {% for className in designInspector.get_names_of_all_classes() %}
-    type = new UaObjectTypeSimple ("{{className}}", UaNodeId(AS_TYPE_{{className|upper}}, nm->getNameSpaceIndex()), /* locale id*/UaString(""), /*is abstract*/OpcUa_False);
-    addStatus = nm->addNodeAndReference(OpcUaId_BaseObjectType, type, OpcUaId_HasSubtype);
-    if (!addStatus.isGood())
-    {
-      LOG(Log::ERR) << "While adding a type definition node: " << addStatus.toString().toUtf8();
-      throw std::runtime_error (std::string("in ASInformationModel::createNodesOfTypes: ") + addStatus.toString().toUtf8());
-    }
-  {% endfor %}
+  {% if designInspector.get_names_of_all_classes() %}
+    UaObjectTypeSimple * type;
+    UaStatus addStatus;
+    {% for className in designInspector.get_names_of_all_classes() %}
+      type = new UaObjectTypeSimple ("{{className}}", UaNodeId(AS_TYPE_{{className|upper}}, nm->getNameSpaceIndex()), /* locale id*/UaString(""), /*is abstract*/OpcUa_False);
+      addStatus = nm->addNodeAndReference(OpcUaId_BaseObjectType, type, OpcUaId_HasSubtype);
+      if (!addStatus.isGood())
+      {
+        LOG(Log::ERR) << "While adding a type definition node: " << addStatus.toString().toUtf8();
+        throw std::runtime_error (std::string("in ASInformationModel::createNodesOfTypes: ") + addStatus.toString().toUtf8());
+      }
+    {% endfor %}
+  {% endif %}
 #endif // BACKEND_OPEN62541
 }
 

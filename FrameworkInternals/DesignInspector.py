@@ -36,6 +36,7 @@ from lxml import etree, objectify
 from colorama import Fore, Style
 from lxml.objectify import ObjectifiedDataElement
 from copy import deepcopy
+import logging
 
 DEBUG = False
 DEBUG_XPATH = False
@@ -73,7 +74,8 @@ class DesignInspector():
         if only_with_device_logic:
             xpath_expression += '[d:devicelogic]'
         classes = self.xpath(xpath_expression)
-        classes_names = map(lambda x: x.attrib['name'], classes)
+        classes_names = [klass.attrib['name'] for klass in classes]
+        logging.debug(f'Names of all classes: {classes_names}')
         return classes_names
 
     def class_has_device_logic(self, class_name):
