@@ -99,9 +99,15 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
         LOG(Log::INF) << "OpcServerMain() exited with code [" << ret << "]";
         return ret;
     }
-    catch (std::runtime_error &e)
+    catch (const std::exception &e)
     {
-        LOG(Log::ERR) << "Caught runtime exception with msg: [" << Quasar::TermColors::ForeRed() << e.what() << Quasar::TermColors::StyleReset() << "]";
+        LOG(Log::ERR) << "Caught exception with msg: [" << Quasar::TermColors::ForeRed() << e.what() << Quasar::TermColors::StyleReset() << "]";
+        return 1;
+    }
+    catch (...)
+    {
+        LOG(Log::ERR) << Quasar::TermColors::ForeRed() << "Caught exception of *UNKNOWN* type in the server global scope " << Quasar::TermColors::StyleReset() <<
+        		"(and BTW have some mercy please and only throw subclasses of std::exception!)";
         return 1;
     }
 }
