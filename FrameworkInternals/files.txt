@@ -166,7 +166,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "35a88512515f290cf042768826c5da3a",
+                "md5": "e5120eb6bbf970347fa4e178aa8ccde3",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
@@ -178,7 +178,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToInformationModelBody.jinja": {
-                "md5": "fdc90855cb3ef45b8b12430fd3313e2c",
+                "md5": "aec1b92e42d63cfbe98c22c8feac37cb",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToInformationModelHeader.jinja": {
@@ -326,7 +326,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "Utils.h": {
-                "md5": "bef56544c580e177bce9c36ed5cc4061",
+                "md5": "81aa56e57b8bf5f385115dff3f98f8e0",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "65723b51c4e9514759d46bfce0abd6ab",
+                "md5": "b3745f81984d1d9b2aadc9c84109cebc",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "0f46713cbc50cfaeca3576489b7b632d",
+                "md5": "7dc6fea0bf00ced0c36683aea4d180d7",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -684,7 +684,7 @@
             },
             "DesignInspector.py": {
                 "install": "overwrite",
-                "md5": "9f974215c2497aed5b0ebfe78b5ff3eb",
+                "md5": "2486efc100298c09ca581548e3f37ffb",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -782,7 +782,7 @@
             },
             "generateCmake.py": {
                 "install": "overwrite",
-                "md5": "a5dd500030cdf14851df051dada23fa3",
+                "md5": "a796009bec788f624275802e1dc7d9f3",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -800,7 +800,7 @@
             },
             "manage_files.py": {
                 "install": "overwrite",
-                "md5": "441af59ec903e9cf547ebf22a685351d",
+                "md5": "2764cbc6e0363c397c398869b4fe4dd0",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -818,7 +818,7 @@
             },
             "quasarCommands.py": {
                 "install": "overwrite",
-                "md5": "1c5de27d449254db23228528ff623b76",
+                "md5": "e24d551e7aa34f66c65e63b83ecd9a50",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -860,7 +860,7 @@
             },
             "version_control_interface.py": {
                 "install": "overwrite",
-                "md5": "ba8f729feaf966d4eaf44727c49bd4a5",
+                "md5": "fd3aad48b296228d6eba3b6e6887e551",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -1279,7 +1279,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "0633934096ac2cedb1010468c788a391",
+                "md5": "ecd5b5df30aaf10cec90d96c09779694",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1320,7 +1320,7 @@
         "files": {
             "BaseQuasarServer.cpp": {
                 "install": "overwrite",
-                "md5": "b2df55cbfe50551868f23e34b7764f83",
+                "md5": "887d79c2e641a66e879ef1a40305011b",
                 "must_be_versioned": true,
                 "must_exist": true
             },
