@@ -22,8 +22,8 @@
 {% import 'headers.jinja' as headers %}
 {% set this = designInspector.objectify_root() %}
 
-{% macro writeRestrictions(containingClassName, objectName) %}
-  {% set restrictions=designInspector.get_restrictions(containingClassName, objectName) %}
+{% macro writeRestrictions(containingClassName, objectName, what) %}
+  {% set restrictions=designInspector.get_restrictions(containingClassName, objectName, what) %}
 
   {% if restrictions|length>0 %}
     <div style="background-color: #ffefef"><font color="red">Value restrictions</font>
@@ -61,7 +61,7 @@
   {% endif %}
 {% endmacro %}
 
-{% macro writeCacheVarOrConfigEntry(containingClassName, elementObject) %}
+{% macro writeCacheVarOrConfigEntry(containingClassName, elementObject, what) %}
   {% set objectName=elementObject.get('name') %}
   {% set objectType=elementObject.get('dataType') %}
   {% set optionalityMsg = 'optional, the default value shown below will be used if not present' if elementObject.get('defaultValue') else 'mandatory' %}
@@ -75,7 +75,7 @@
   {% if elementObject.get('defaultValue') %}
     <div style="background-color: #efffef"><b>Default value:</b> {{elementObject.get('defaultValue')}}</div>
   {% endif %}
-  {{ writeRestrictions(containingClassName, objectName) }}
+  {{ writeRestrictions(containingClassName, objectName, what) }}
 {% endmacro %}
     
 <html>
@@ -107,7 +107,7 @@
       {% if configEntries|length > 0 %}
         {% for configEntry in configEntries %}
           <li>
-          {{ writeCacheVarOrConfigEntry(className, configEntry) }}
+          {{ writeCacheVarOrConfigEntry(className, configEntry, "configentry") }}
           </li>
         {% endfor %}
       {% else %}
@@ -118,7 +118,7 @@
       {% if configuredCacheVars |length > 0 %}
         {% for cacheVar in configuredCacheVars %}
           <li>
-          {{ writeCacheVarOrConfigEntry(className, cacheVar) }}
+          {{ writeCacheVarOrConfigEntry(className, cacheVar, "cachevariable") }}
           </li>
         {% endfor %}
       {% else %}
