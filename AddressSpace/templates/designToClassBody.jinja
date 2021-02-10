@@ -828,7 +828,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
             LOG(Log::ERR) << "method call of method {{m.get('name')}} thrown an exception (should have been handled in the method body...): " << e.what();
             UaStatus badStatus = OpcUa_BadInternalError;
             pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );
-            return OpcUa_Good;
+            return (OpcUa_StatusCode)OpcUa_Good;
           }
           catch (...)
           {
@@ -840,7 +840,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
             LOG(Log::ERR) << "method call of method {{m.get('name')}} thrown an exception of non standard type ... please ... don't do it Mr/Ms programmer ;-) ";
             UaStatus badStatus = OpcUa_BadInternalError;
             pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );
-            return OpcUa_Good;
+            return (OpcUa_StatusCode)OpcUa_Good;
           }
 
           {% if m.get('executionSynchronicity') == 'asynchronous' %}
