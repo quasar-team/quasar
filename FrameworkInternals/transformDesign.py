@@ -107,6 +107,13 @@ def run_indent_tool(unindented_content, fout):
        unindented_content - stream of bytes (e.g. encoded string) to pass to the tool,
        fout - a file object to which the output will be written"""
     try:
+        astyle_version_check_process = subprocess.run(['astyle', '--version'],
+                                                    stdout=subprocess.PIPE, check=True)
+        if 'Artistic Style Version 3' not in astyle_version_check_process.stdout:
+            raise Exception(('Found astyle with incompatible version. Astyle versions prior to 3 '
+                             'are known to have a bug which makes them impossible to use with '
+                             'quasar. The version string returned was: '
+                             f'{astyle_version_check_process.stdout}'))
         completed_indenter_process = subprocess.run(['astyle'], input=unindented_content,
                                                     stdout=subprocess.PIPE, check=True)
     except FileNotFoundError:
