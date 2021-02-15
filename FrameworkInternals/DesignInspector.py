@@ -278,6 +278,14 @@ class DesignInspector():
         etree.strip_tags(mutable_documentation_object, '*')
         return mutable_documentation_object.text
 
+    def strip_documentation_tag(self, documentation_element):
+        """Returns the stringified meat from XML documentation element <d:documentation...>"""
+        stringified = etree.tostring(documentation_element).decode('utf-8')
+        opening_tag_ends = stringified.find('>')
+        closing_tag_starts = stringified.rfind('<')
+        meat = stringified[opening_tag_ends+1 : closing_tag_starts]
+        return meat
+
     def to_list_if_exists(self, iterable):
         try:
             return list(iterable)

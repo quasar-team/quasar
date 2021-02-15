@@ -67,7 +67,9 @@
   {% set docElements=designInspector.objectifyDocumentation(containingClassName, objectName) %}
   {% if docElements|length > 0 %}
     <div style="background-color:#eeeeff"><font color="blue">DOC</font>
-    {{docElements[0].text}}
+      {% for docElement in docElements %}
+        {{ designInspector.strip_documentation_tag(docElement) }}
+      {% endfor %}
     </div>
   {% endif %}
   {% if elementObject.get('defaultValue') %}
@@ -99,7 +101,9 @@
       {% set documentation=designInspector.objectifyDocumentation(className) %}
       {% if documentation %}
         <div style="background-color:#eeeeff"><font color="blue">DOC</font>
-            {{ documentation[0].text }}
+          {% for docElement in documentation %}
+            {{ designInspector.strip_documentation_tag(docElement) }}
+          {% endfor %}
         </div>
         <br/>
       {% endif %}
