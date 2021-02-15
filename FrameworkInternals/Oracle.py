@@ -388,3 +388,21 @@ class Oracle():
                     quasar_data_type
                 ))
         return Oracle.QuasarTypeToXsdType[quasar_data_type]
+
+    def classify_xsd_restrictions(self, xsd_restrictions):
+        """xsd_restrictions should be a list of tuples in which first element is XSD restriction
+           type (pattern, minInclusive, ...) and the 2nd element is the XSD restriction value
+
+           Returns None if the classification can't be done (e.g. mixed types)"""
+
+        if len(xsd_restrictions) < 1:
+            return None
+        RESTRICTIONS = {
+            'bounds' : ('minInclusive', 'maxInclusive'),
+            'pattern' : ('pattern',),
+            'enumeration' : ('enumeration',)
+            }
+        for klass in RESTRICTIONS:
+            if all([element[0] in RESTRICTIONS[klass] for element in xsd_restrictions]):
+                return klass
+        return None
