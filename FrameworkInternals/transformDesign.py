@@ -108,8 +108,8 @@ def run_indent_tool(unindented_content, fout):
        fout - a file object to which the output will be written"""
     try:
         astyle_version_check_process = subprocess.run(['astyle', '--version'],
-                                                    stdout=subprocess.PIPE, check=True)
-        astyle_version_text = astyle_version_check_process.stdout.decode('utf-8')
+                                                    stderr=subprocess.PIPE, check=True)
+        astyle_version_text = astyle_version_check_process.stderr.decode('utf-8')
         if 'Artistic Style Version 3' not in astyle_version_text:
             raise Exception(('Found astyle with incompatible version. Astyle versions prior to 3 '
                              'are known to have a bug which makes them impossible to use with '
