@@ -27,36 +27,34 @@
 
   {% if restrictions|length>0 %}
     <div style="background-color: #ffefef"><font color="red">Value restrictions</font>
-    {% for restriction in restrictions %}
-      {% if restriction['type'] == 'byEnumeration' %}
+      {% set restrictionType = oracle.classify_xsd_restrictions(restrictions) %}
+      {% if restrictionType == 'enumeration' %}
         <br/>Enumeration:
-        {% for enumerationValue in restriction['enumerationValues'] -%}
-          <code>{{enumerationValue}}{{'|' if not loop.last}}</code>          
+        {% for restriction in restrictions -%}
+          <code>{{restriction[1]}}{{'|' if not loop.last}}</code>
         {%- endfor %}
-      {% elif restriction['type'] == 'byPattern' %}
+      {% elif restrictionType == 'pattern' %}
         <br/>Pattern:
-        <code>{{restriction['pattern']}}</code>
-      {% elif restriction['type'] == 'byBounds' %}
+        {% for restriction in restrictions -%}
+          <code>{{restriction[1]}}</code>
+        {% endfor %}
+      {% elif restrictionType == 'bounds' %}
         <br/>Bounds:
-        {% set boundsRestrictionPrefix="" %}
-        {% if restriction['minExclusive'] %}
-          <code>{{boundsRestrictionPrefix}}{{objectName}}&gt;{{restriction['minExclusive']}}</code>
-          {% set boundsRestrictionPrefix=" AND " %}
-        {% endif %}
-        {% if restriction['maxExclusive'] %}
-          <code>{{boundsRestrictionPrefix}}{{objectName}}&lt;{{restriction['maxExclusive']}}</code>
-          {% set boundsRestrictionPrefix=" AND " %}
-        {% endif %}
-        {% if restriction['minInclusive'] %}
-          <code>{{boundsRestrictionPrefix}}{{objectName}}&gt;={{restriction['minInclusive']}}</code>
-          {% set boundsRestrictionPrefix=" AND " %}
-        {% endif %}
-        {% if restriction['maxInclusive'] %}
-          <code>{{boundsRestrictionPrefix}}{{objectName}}&lt;={{restriction['maxInclusive']}}</code>
-          {% set boundsRestrictionPrefix=" AND " %}
-        {% endif %}
+        {% for restriction in restrictions|sort(attribute=0, reverse=True) -%}
+          {% if restriction[0] == 'minExclusive' %}
+            <code>{{boundsRestrictionPrefix}}{{objectName}}&gt;{{restriction[1]}}{{' AND ' if not loop.last}}</code>
+          {% endif %}
+          {% if restriction[0] == 'maxExclusive' %}
+            <code>{{boundsRestrictionPrefix}}{{objectName}}&lt;{{restriction[1]}}{{' AND ' if not loop.last}}</code>
+          {% endif %}
+          {% if restriction[0] == 'minInclusive' %}
+            <code>{{boundsRestrictionPrefix}}{{objectName}}&gt;={{restriction[1]}}{{' AND ' if not loop.last}}</code>
+          {% endif %}
+          {% if restriction[0] == 'maxInclusive' %}
+            <code>{{boundsRestrictionPrefix}}{{objectName}}&lt;={{restriction[1]}}{{' AND ' if not loop.last}}</code>
+          {% endif %}
+        {% endfor %}
       {% endif %}
-    {% endfor %}
     </div>
   {% endif %}
 {% endmacro %}
@@ -71,7 +69,7 @@
     <div style="background-color:#eeeeff"><font color="blue">DOC</font>
     {{docElements[0].text}}
     </div>
-  {% endif %}  
+  {% endif %}
   {% if elementObject.get('defaultValue') %}
     <div style="background-color: #efffef"><b>Default value:</b> {{elementObject.get('defaultValue')}}</div>
   {% endif %}
@@ -79,6 +77,11 @@
 {% endmacro %}
     
 <html>
+<head>
+  <style>
+    li {margin-bottom: 10pt;}
+  </style>
+</head>
   <h1>Configuration documentation for {{designInspector.getProjectName()}}</h1>
   
   Jump to:
@@ -103,7 +106,7 @@
       
       Configuration attributes:
       <ul>
-      {% set configEntries= designInspector.objectify_config_entries(className) %}      
+      {% set configEntries= designInspector.objectify_config_entries(className) %}
       {% if configEntries|length > 0 %}
         {% for configEntry in configEntries %}
           <li>
@@ -143,9 +146,9 @@
   The required attributes are:
   <ul>
     <li>name - will be the last part of the address</li>
-    <li>value - analytical formula used to calculate value of the variable. 
+    <li>value - analytical formula used to calculate value of the variable.
         E.g. to calculate square of another variable with address x.y you should put <code>x.y^2</code></li>
   </ul>
-  Detailed documentation of all features of CalculatedVariables is available in quasar Documentation.    
-  
+  Detailed documentation of all features of CalculatedVariables is available in quasar Documentation.
+
 </html>
