@@ -166,7 +166,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "e5120eb6bbf970347fa4e178aa8ccde3",
+                "md5": "689a0a3886ddda724fddeabfbaa6d4a6",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
@@ -411,7 +411,7 @@
         },
         "files": {
             "designToConfigDocumentationHtml.jinja": {
-                "md5": "e7272a81673e468741d839b35df7bd62",
+                "md5": "88fa9d2d28e8eef23833861750572d53",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigValidator.jinja": {
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "b3745f81984d1d9b2aadc9c84109cebc",
+                "md5": "28b2c5db818ec3f56f6d53e4068d5b89",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "7dc6fea0bf00ced0c36683aea4d180d7",
+                "md5": "851f1781ba8aa9f4b8d98ce0f5518934",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -684,7 +684,7 @@
             },
             "DesignInspector.py": {
                 "install": "overwrite",
-                "md5": "2486efc100298c09ca581548e3f37ffb",
+                "md5": "1960ce6d7fdfc9c4bc46ad0dd090fbda",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -708,7 +708,7 @@
             },
             "Oracle.py": {
                 "install": "overwrite",
-                "md5": "a914e43accac32d9b505b2fb411279f4",
+                "md5": "344a13556f321508434dc00e9e09525b",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -848,7 +848,7 @@
             },
             "transformDesign.py": {
                 "install": "overwrite",
-                "md5": "372c7d97274fca24c1cb0eea5ac91371",
+                "md5": "c51a23be18bc77519fdf6f2a7f7ff986",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1279,7 +1279,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "ecd5b5df30aaf10cec90d96c09779694",
+                "md5": "254a2a47e1cb77ec3e11fd495a7318a2",
                 "must_be_versioned": true,
                 "must_exist": true
             },
