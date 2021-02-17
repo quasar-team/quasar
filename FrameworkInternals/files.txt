@@ -311,7 +311,7 @@
     },
     "Common/include": {
         "file_defaults": {
-            "install": "ask_to_merge",
+            "install": "overwrite",
             "md5": "check",
             "must_be_versioned": true,
             "must_exist": true
