@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "65723b51c4e9514759d46bfce0abd6ab",
+                "md5": "7a74dc529539d2fd75af331c9d5b7407",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1279,7 +1279,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "0633934096ac2cedb1010468c788a391",
+                "md5": "ed2f349dd400f1de3a457dd55d6dc49a",
                 "must_be_versioned": true,
                 "must_exist": true
             },
