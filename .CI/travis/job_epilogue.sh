@@ -1,4 +1,4 @@
-           ./quasar.py enable_module open62541-compat v1.3.6-rc0 ;
+           ./quasar.py enable_module open62541-compat OPCUA-1389_cache_variables_from_datasource_to_variable ;
            ./quasar.py set_build_config open62541_config.cmake ;
            ./quasar.py prepare_build Release ;
            ./quasar.py build Release ;
