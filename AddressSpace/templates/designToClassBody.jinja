@@ -352,7 +352,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
             UaPropertyMethodArgument * propReturn = new UaPropertyMethodArgument (
             	nm->makeChildNodeId( m_{{m.get('name')}}->nodeId(), "return_values" ),
             	OpcUa_AccessLevels_CurrentRead,
-            	{{m.argument|length}},
+            	{{m.returnvalue|length}},
             	UaPropertyMethodArgument::OUTARGUMENTS
             	);
             {% for rv in m.returnvalue %}
