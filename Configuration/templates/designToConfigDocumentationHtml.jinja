@@ -77,7 +77,7 @@
   {% endif %}
   {{ writeRestrictions(containingClassName, objectName, what) }}
 {% endmacro %}
-    
+
 <html>
 <head>
   <style>
@@ -85,7 +85,7 @@
   </style>
 </head>
   <h1>Configuration documentation for {{designInspector.getProjectName()}}</h1>
-  
+
   Jump to:
   {% for className in designInspector.get_names_of_all_classes()|sort() %}
     {% set parentObjects = designInspector.objectifyAllParents(className, restrict_to_by_configuration=True) %}
@@ -107,7 +107,7 @@
         </div>
         <br/>
       {% endif %}
-      
+
       Configuration attributes:
       <ul>
       {% set configEntries= designInspector.objectify_config_entries(className) %}
@@ -120,7 +120,7 @@
       {% else %}
 	      Class {{className}} has no configuration entries.
       {% endif %}
-    
+
       {% set configuredCacheVars = designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration']") %}
       {% if configuredCacheVars |length > 0 %}
         {% for cacheVar in configuredCacheVars %}
@@ -132,18 +132,19 @@
 	      Class {{className}} has no cache variables initialized from the configuration.
       {% endif %}
       </ul>
-      
+
       Possible children:
       <a href="#class_CalculatedVariable">CalculatedVariable</a>
+      <a href="#class_FreeVariable">FreeVariable</a>
       {% for hasObject in designInspector.get_class_has_objects(className) %}
         {% if hasObject.get('instantiateUsing')=='configuration' %}
           <a href="#class_{{hasObject.get('class')}}">{{hasObject.get('class')}}</a>
         {% endif %}
       {% endfor %}
-      
+
     {% endif %}
   {% endfor %}
-  
+
   <a id="class_CalculatedVariable"><h2>CalculatedVariable</h2></a>
   A CalculatedVariable is a "synthetic" variable which is based on other "real" variables of the address-space.
   You can declare a CalculatedVariable under any object in the configuration file.
@@ -154,5 +155,17 @@
         E.g. to calculate square of another variable with address x.y you should put <code>x.y^2</code></li>
   </ul>
   Detailed documentation of all features of CalculatedVariables is available in quasar Documentation.
+
+  <a id="class_FreeVariable"><h2>FreeVariable</h2></a>
+  A FreeVariable is an OPC-UA variable which can be added anywhere in the address-space. It is not governed at all by given server
+  Design and in fact the server can't even communicate with that variable (or, at least, there is no direct support for it).
+  A free variable can be always written to by any OPCUA clients.
+  <br>
+  The required attributes are:
+  <ul>
+    <li>name</li>
+    <li>type, one of: Boolean, Byte, SByte, UInt16, Int16, UInt32, Int32, UInt64, Int64, Float, Double, String.</li>
+  </ul>
+  In addition, initialValue attribute might be given.
 
 </html>
