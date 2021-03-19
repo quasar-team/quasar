@@ -151,14 +151,14 @@
   The required attributes are:
   <ul>
     <li>name - will be the last part of the address</li>
-    <li>value - analytical formula used to calculate value of the variable.
-        E.g. to calculate square of another variable with address x.y you should put <code>x.y^2</code></li>
+    <li>value - analytical formula used to calculate the value of the variable.
+        E.g. to calculate the square of another variable with address x.y you should put <code>x.y^2</code></li>
   </ul>
-  Detailed documentation of all features of CalculatedVariables is available in quasar Documentation.
+  Detailed documentation of all features of CalculatedVariables is available in the quasar Documentation.
 
   <a id="class_FreeVariable"><h2>FreeVariable</h2></a>
-  A FreeVariable is an OPC-UA variable which can be added anywhere in the address-space. It is not governed at all by given server
-  Design and in fact the server can't even communicate with that variable (or, at least, there is no direct support for it).
+  A FreeVariable is an OPC-UA variable which can be added anywhere in the address-space. It is not governed at all by the given server
+  Design and, in fact, the server can't even communicate with that variable (or, at least, there is no direct support for it).
   A free variable can be always written to by any OPCUA clients.
   <br>
   The required attributes are:
@@ -166,6 +166,6 @@
     <li>name</li>
     <li>type, one of: Boolean, Byte, SByte, UInt16, Int16, UInt32, Int32, UInt64, Int64, Float, Double, String.</li>
   </ul>
-  In addition, initialValue attribute might be given.
+  In addition, an initialValue attribute might be given.
 
 </html>
