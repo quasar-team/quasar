@@ -128,9 +128,11 @@
 
 
 
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
 
 
 
@@ -247,6 +249,61 @@
           </td>
         </tr>
         <tr>
+          <td valign="top">1.5.2<br>
+            <font size="-1">(13-Apr-2021)</font><br>
+          </td>
+          <td valign="top">The primer to testing quasar (in its CI) via
+            comparing dumped node-sets against reference node-sets.<br>
+            <br>
+            Plus a couple of usual fixes and improvements.<br>
+          </td>
+          <td valign="top">(none known)<br>
+          </td>
+          <td valign="top">
+            <main role="main" id="main" class="aui-page-panel-content">
+              <meta http-equiv="content-type" content="text/html;
+                charset=windows-1252">
+              Bug<br>
+              <ul>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2232">OPCUA-2232</a>]
+                  - Design diagram: empty class visualization for
+                  pure-methods class</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2246">OPCUA-2246</a>]
+                  - OutputArguments badly propagated</li>
+              </ul>
+              <br>
+              Task<br>
+              <ul>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-1340">OPCUA-1340</a>]
+                  - --create-certificate fails when server instance is
+                  running (i.e. can't open new connections)</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2182">OPCUA-2182</a>]
+                  - quasar's Utils.h, ASUtils.h and QusarThreadPool.h to
+                  go Quasar managed</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2244">OPCUA-2244</a>]
+                  - Document FreeVariable in config_doc of quasar
+                  servers</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2257">OPCUA-2257</a>]
+                  - Apply NodeSetCompare in the CI, primer</li>
+              </ul>
+              <br>
+              Improvement<br>
+              <ul>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2264">OPCUA-2264</a>]
+                  - "All tests passed" message to be printed AFTER all
+                  tests</li>
+              </ul>
+            </main>
+          </td>
+        </tr>
+        <tr>
           <td valign="top">1.5.1<br>
             <font size="-1">(16-Feb-2021)</font><br>
           </td>
@@ -261,71 +318,54 @@
               </li>
             </ul>
           </td>
-          <td valign="top">Bug
-            <br>
+          <td valign="top">Bug <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2137">OPCUA-2137</a>]
                 - Quasar methods, with device logic, with uncaught
-                exception from inside, can crash server?
-              </li>
+                exception from inside, can crash server? </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2155">OPCUA-2155</a>]
-                - symlink_runtime_deps broken with style_it branch
-              </li>
+                - symlink_runtime_deps broken with style_it branch </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2170">OPCUA-2170</a>]
-                - ./quasar generate config_doc fails
-              </li>
+                - ./quasar generate config_doc fails </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2171">OPCUA-2171</a>]
-                - async_methods bad casting between OpcUa_StatusCode
-              </li>
+                - async_methods bad casting between OpcUa_StatusCode </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2177">OPCUA-2177</a>]
-                - Missing "Value restrictions" in the config doc
-              </li>
+                - Missing "Value restrictions" in the config doc </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2186">OPCUA-2186</a>]
-                - ConfigurationDocumentation HTML: missing content
-              </li>
+                - ConfigurationDocumentation HTML: missing content </li>
             </ul>
             <br>
-            New Feature
-            <br>
+            New Feature <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2121">OPCUA-2121</a>]
-                - Make SERVERCONFIG_LOADER default
-              </li>
+                - Make SERVERCONFIG_LOADER default </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2138">OPCUA-2138</a>]
-                - 'project-wise' astyle invocation (proposal)
-              </li>
+                - 'project-wise' astyle invocation (proposal) </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2172">OPCUA-2172</a>]
                 - Duplicate CI test "uasdk_test_sync_methods" into the
-                async version
-              </li>
+                async version </li>
             </ul>
             <br>
-            Task
-            <br>
+            Task <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2086">OPCUA-2086</a>]
                 - Split travis CI tests into limited (open62541-only)
                 and full (open62541 + UASDK) versions </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2162">OPCUA-2162</a>]
                 - Deprecation warning on certificate creation for quasar
-                servers
-              </li>
+                servers </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2176">OPCUA-2176</a>]
-                - Can detect too old astyle?
-              </li>
+                - Can detect too old astyle? </li>
             </ul>
             <br>
-            Improvement
-            <br>
+            Improvement <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2163">OPCUA-2163</a>]
                 - Fix occasional "unused result", "unused function"
-                warning in quasar builds
-              </li>
+                warning in quasar builds </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2164">OPCUA-2164</a>]
                 - Server-wide catching of exceptions that are not
-                derived from std::exception
-              </li>
+                derived from std::exception </li>
             </ul>
           </td>
         </tr>
