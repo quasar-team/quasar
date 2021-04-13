@@ -166,7 +166,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "689a0a3886ddda724fddeabfbaa6d4a6",
+                "md5": "62428de2b9a40d0b4056be743fdf4adc",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
@@ -411,7 +411,7 @@
         },
         "files": {
             "designToConfigDocumentationHtml.jinja": {
-                "md5": "88fa9d2d28e8eef23833861750572d53",
+                "md5": "d83dafe6d98c62c6e88f97a542253399",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigValidator.jinja": {
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "7a74dc529539d2fd75af331c9d5b7407",
+                "md5": "f0bced6c7073e7ff4b7aaed908e3a08c",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -473,7 +473,7 @@
         "files": {
             "designToDot.jinja": {
                 "install": "overwrite",
-                "md5": "bee52e47c7120c66a0e777b8f6819726",
+                "md5": "bce2b6f27e669733445af4ba8b5c96f6",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "851f1781ba8aa9f4b8d98ce0f5518934",
+                "md5": "41682e8008046d35d7b6e882d385278e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1279,7 +1279,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "ed2f349dd400f1de3a457dd55d6dc49a",
+                "md5": "d148f19b16913969b65019589b6840e0",
                 "must_be_versioned": true,
                 "must_exist": true
             },
