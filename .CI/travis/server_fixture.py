@@ -76,11 +76,11 @@ def main():
 
     if process.poll() is not None:
         # Bad: process already terminated. This is no good!
-        print_msg("ERROR! Process terminated prematurely! Test failed.")
+        print_msg("ERROR! Server process terminated prematurely! Test failed.")
         sys.exit(1) # Let now the CI that the test failed.
     else:
         # Ask kindly the process to terminate.
-        print_msg("So far, so good.")
+        print_msg("So far, so good - server process is up.")
         if args.command_to_run is not None:
             print_msg("Was requested to run this command: {0}".format(args.command_to_run))
             ret_code = os.system(args.command_to_run)
@@ -92,9 +92,9 @@ def main():
             print_msg("Will exit now as no command was requested to be run")
         make_sure_the_bastard_dies(process)
         if process.returncode == 0:
-            print_msg('Process exited, return code zero -- all tests passed.')
+            print_msg('Server exited, return code zero.')
         else:
-            print_msg('Process exited with invalid return code of {0}'.format(process.returncode))
+            print_msg('Server exited with invalid return code of {0}'.format(process.returncode))
             sys.exit(1)
 
 if __name__ == "__main__":
