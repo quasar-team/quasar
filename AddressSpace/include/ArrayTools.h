@@ -23,6 +23,7 @@
 #define QUASAR_COMMON_SRC_ARRAYUTILS_H_
 
 #include <vector>
+#include <string>
 #include <uavariant.h>
 
 namespace AddressSpace
