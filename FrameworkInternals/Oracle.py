@@ -188,10 +188,8 @@ class Oracle():
         else:
             return quasar_data_type
 
-    def get_cache_variable_setter(self, name, quasar_data_type, for_header, new_style_null=False):
-        """This function is based on its XSLT version, CommonFunctions,
-           fnc:varSetter from quasar 1.3.12
-           TODO @pnikiel should be reworked to profit from other functions
+    def get_cache_variable_setter_args(self, quasar_data_type, for_header, new_style_null=False):
+        """Returns the arguments part of SCALAR! cache variable setter
            TODO @pnikiel: new_style_null at some point should replace the old-style null.
             """
         source_time_stamp = 'const UaDateTime& srcTime'
@@ -200,22 +198,29 @@ class Oracle():
         if quasar_data_type in Oracle.PassByValueDataTypes:
             # TODO @pnikiel BELOW: when settled down, we should remove
             # const from PassByValue things as that looks stupid
-            return ('set{0}( const {1} value, '
-                    'OpcUa_StatusCode statusCode, {2} )').format(
-                        cap_first(name), quasar_data_type, source_time_stamp)
+            return ('const {0} value, OpcUa_StatusCode statusCode, {1}').format(
+                        quasar_data_type, source_time_stamp)
         elif quasar_data_type is None:  # formerly null
             if new_style_null:
-                return ('set{0}( QuasarNullDataType null, '
-                        'OpcUa_StatusCode statusCode, {1} )').format(
-                           cap_first(name), source_time_stamp)
+                return ('QuasarNullDataType null, OpcUa_StatusCode statusCode, {0}').format(
+                           source_time_stamp)
             else: # this branch to be removed in one of next releases, TODO.
-                return 'setNull{0}( OpcUa_StatusCode statusCode, {1})'.format(
-                    cap_first(name),
+                return 'OpcUa_StatusCode statusCode, {0}'.format(
                     source_time_stamp)
         else:
-            return ('set{0}( const {1}& value, '
-                    'OpcUa_StatusCode statusCode, {2})').format(
-                        cap_first(name), quasar_data_type, source_time_stamp)
+            return ('const {0}& value, OpcUa_StatusCode statusCode, {1}').format(
+                        quasar_data_type, source_time_stamp)
+
+    def get_cache_variable_setter(self, name, quasar_data_type, for_header, new_style_null=False):
+        """This function is based on its XSLT version, CommonFunctions,
+           fnc:varSetter from quasar 1.3.12
+           TODO @pnikiel should be reworked to profit from other functions
+           TODO @pnikiel: new_style_null at some point should replace the old-style null.
+            """
+        if quasar_data_type is None and not new_style_null: #old-style Null
+            return f'setNull{cap_first(name)}({self.get_cache_variable_setter_args(quasar_data_type, for_header, new_style_null)})'
+        else:
+            return f'set{cap_first(name)}({self.get_cache_variable_setter_args(quasar_data_type, for_header, new_style_null)})'
 
     def get_cache_variable_setter_array(self, name, quasar_data_type, for_header, new_style_null=False):
         """ TODO: description """
