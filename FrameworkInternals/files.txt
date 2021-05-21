@@ -108,7 +108,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ArrayTools.h": {
-                "md5": "852d3ade8e1c09cd4172ade175f4b36a",
+                "md5": "32130960fc20daf86516c9b5109b9af7",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ChangeNotifyingVariable.h": {
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "de044b0f96401f88842a29a682e81b5c",
+                "md5": "c704df9608161af836391373ea2d4c6d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "41682e8008046d35d7b6e882d385278e",
+                "md5": "8e3a9122f511a499c943dc673da0abcb",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -708,7 +708,7 @@
             },
             "Oracle.py": {
                 "install": "overwrite",
-                "md5": "344a13556f321508434dc00e9e09525b",
+                "md5": "77483dce48acafb165eae55c57e64f6e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1279,7 +1279,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "3ce170fafc6b45e6ea73bdb8ffdf9a33",
+                "md5": "54e31f0b69f2d3f2dbc78a35efb578c9",
                 "must_be_versioned": true,
                 "must_exist": true
             },
