@@ -196,20 +196,14 @@ class Oracle():
         if for_header:
             source_time_stamp += '= UaDateTime::now()'
         if quasar_data_type in Oracle.PassByValueDataTypes:
-            # TODO @pnikiel BELOW: when settled down, we should remove
-            # const from PassByValue things as that looks stupid
-            return ('const {0} value, OpcUa_StatusCode statusCode, {1}').format(
-                        quasar_data_type, source_time_stamp)
+            return f'{quasar_data_type} value, OpcUa_StatusCode statusCode, {source_time_stamp}'
         elif quasar_data_type is None:  # formerly null
             if new_style_null:
-                return ('QuasarNullDataType null, OpcUa_StatusCode statusCode, {0}').format(
-                           source_time_stamp)
+                return f'QuasarNullDataType null, OpcUa_StatusCode statusCode, {source_time_stamp}'
             else: # this branch to be removed in one of next releases, TODO.
-                return 'OpcUa_StatusCode statusCode, {0}'.format(
-                    source_time_stamp)
+                return f'OpcUa_StatusCode statusCode, {source_time_stamp}'
         else:
-            return ('const {0}& value, OpcUa_StatusCode statusCode, {1}').format(
-                        quasar_data_type, source_time_stamp)
+            return f'const {quasar_data_type}& value, OpcUa_StatusCode statusCode, {source_time_stamp}'
 
     def get_cache_variable_setter(self, name, quasar_data_type, for_header, new_style_null=False):
         """This function is based on its XSLT version, CommonFunctions,
