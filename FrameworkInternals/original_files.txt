@@ -5,7 +5,7 @@
                 "must_be_versioned": true
             },
             ".gitignore": {
-                "install": "ask_to_merge",
+                "install": "copy_if_not_existing",
                 "must_be_versioned": true
             },
             ".project": {
