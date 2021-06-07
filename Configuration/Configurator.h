@@ -66,7 +66,7 @@ void validateContentOrder(const TParent& parent, const TChildren& children, cons
 	msg<<__FUNCTION__<<" ERROR parent has ["<<validChildIndices.size()<<"] child objects unregistered in content order";
     throw std::range_error(msg.str());
   }
-};
+}
 
 void unlinkAllDevices (AddressSpace::ASNodeManager *nm);
 
