@@ -85,7 +85,7 @@ private:
 
 };
 
-};
+}
 
 
 #endif /* ADDRESSSPACE_INCLUDE_ASDELEGATINGMETHOD_H_ */
