@@ -65,7 +65,7 @@ namespace ArrayTools
 	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaByteString>& vect );
 	UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaVariant>& vect );
 
-	std::vector<std::string> convertStdStringsToUaStrings( const std::vector<std::string>& input );
+	std::vector<UaString> convertStdStringsToUaStrings( const std::vector<std::string>& input );
 }
 
 }

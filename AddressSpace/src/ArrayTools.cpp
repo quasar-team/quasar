@@ -215,7 +215,7 @@ UaStatus convertUaVariantToVector( const UaVariant& input, std::vector <UaVarian
     return uaVariantToVector<UaVariant, UaVariantArray>(input, output, &UaVariant::toVariantArray);
 }
 
-std::vector<std::string> convertStdStringsToUaStrings( const std::vector<std::string>& input )
+std::vector<UaString> convertStdStringsToUaStrings( const std::vector<std::string>& input )
 {
     std::vector<std::string> output (input.size());
     std::transform( input.begin(), input.end(), output.begin(), [](const std::string& x) {
