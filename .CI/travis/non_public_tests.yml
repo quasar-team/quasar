@@ -20,7 +20,9 @@ jobs:
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             cp -v .CI/test_cases/test_methods/config.xml bin/ ;
             ./quasar.py build ;
-            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;"
+            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_methods/reference_ns2.xml build/bin/dump.xml ;
+            "
 
     - name: uasdk_test_async_methods
       script:
@@ -32,7 +34,8 @@ jobs:
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             cp -v .CI/test_cases/test_async_methods/config.xml bin/ ;
             ./quasar.py build ;
-            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;"
+            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_methods/reference_ns2.xml build/bin/dump.xml;"
 
     - name: uasdk_test_cache_variables
       script:
