@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd ../Configuration/Configuration.xsd">
+  <UAObject BrowseName="StandardMetaData" NodeId="ns=2;s=StandardMetaData"/>
+  <UAObject BrowseName="Log" NodeId="ns=2;s=StandardMetaData.Log"/>
+  <UAObject BrowseName="GeneralLogLevel" NodeId="ns=2;s=StandardMetaData.Log.GeneralLogLevel"/>
+  <UAObject BrowseName="ComponentLogLevels" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels"/>
+  <UAObject BrowseName="CalcVars" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars"/>
+  <UAObject BrowseName="AddressSpace" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace"/>
+  <UAObject BrowseName="SourceVariableThreadPool" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool"/>
+  <UAObject BrowseName="Quasar" NodeId="ns=2;s=StandardMetaData.Quasar"/>
+  <UAObject BrowseName="Server" NodeId="ns=2;s=StandardMetaData.Server"/>
+  <UAObject BrowseName="BuildInformation" NodeId="ns=2;s=StandardMetaData.BuildInformation"/>
+  <UAObject BrowseName="tc1" NodeId="ns=2;s=tc1"/>
+  <UAVariable BrowseName="logLevel" NodeId="ns=2;s=StandardMetaData.Log.GeneralLogLevel.logLevel"/>
+  <UAVariable BrowseName="logLevel" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars.logLevel"/>
+  <UAVariable BrowseName="logLevel" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace.logLevel"/>
+  <UAVariable BrowseName="minThreads" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool.minThreads"/>
+  <UAVariable BrowseName="maxThreads" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool.maxThreads"/>
+  <UAVariable BrowseName="version" NodeId="ns=2;s=StandardMetaData.Quasar.version"/>
+  <UAVariable BrowseName="remainingCertificateValidity" NodeId="ns=2;s=StandardMetaData.Server.remainingCertificateValidity"/>
+  <UAVariable BrowseName="BuildHost" NodeId="ns=2;s=StandardMetaData.BuildInformation.BuildHost"/>
+  <UAVariable BrowseName="BuildTimestamp" NodeId="ns=2;s=StandardMetaData.BuildInformation.BuildTimestamp"/>
+  <UAVariable BrowseName="CommitID" NodeId="ns=2;s=StandardMetaData.BuildInformation.CommitID"/>
+  <UAVariable BrowseName="ToolkitLibs" NodeId="ns=2;s=StandardMetaData.BuildInformation.ToolkitLibs"/>
+  <UAVariable BrowseName="OpcUaBoolean_scalar" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar"/>
+  <UAVariable BrowseName="OpcUaByte_scalar" NodeId="ns=2;s=tc1.OpcUaByte_scalar"/>
+  <UAVariable BrowseName="OpcUaSByte_scalar" NodeId="ns=2;s=tc1.OpcUaSByte_scalar"/>
+  <UAVariable BrowseName="OpcUaUInt16_scalar" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar"/>
+  <UAVariable BrowseName="OpcUaInt16_scalar" NodeId="ns=2;s=tc1.OpcUaInt16_scalar"/>
+  <UAVariable BrowseName="OpcUaUInt32_scalar" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar"/>
+  <UAVariable BrowseName="OpcUaInt32_scalar" NodeId="ns=2;s=tc1.OpcUaInt32_scalar"/>
+  <UAVariable BrowseName="OpcUaUInt64_scalar" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar"/>
+  <UAVariable BrowseName="OpcUaInt64_scalar" NodeId="ns=2;s=tc1.OpcUaInt64_scalar"/>
+  <UAVariable BrowseName="OpcUaDouble_scalar" NodeId="ns=2;s=tc1.OpcUaDouble_scalar"/>
+  <UAVariable BrowseName="OpcUaFloat_scalar" NodeId="ns=2;s=tc1.OpcUaFloat_scalar"/>
+  <UAVariable BrowseName="UaString_scalar" NodeId="ns=2;s=tc1.UaString_scalar"/>
+</UANodeSet>
