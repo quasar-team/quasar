@@ -3,4 +3,3 @@
            ./quasar.py prepare_build Release ;
            ./quasar.py build Release ;
            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-           exit ;
