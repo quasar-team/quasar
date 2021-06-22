@@ -11,41 +11,66 @@ externalToolCheck.py
 @license:
 Copyright (c) 2016, CERN, Universidad de Oviedo.
 All rights reserved.
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted
+provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
+   and the following disclaimer in the documentation and/or other materials provided with the
+   distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS  OR
+IMPLIED  WARRANTIES, INCLUDING, BUT NOT  LIMITED TO, THE IMPLIED WARRANTIES  OF  MERCHANTABILITY
+AND  FITNESS  FOR  A  PARTICULAR  PURPOSE  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,  SPECIAL, EXEMPLARY, OR  CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT  NOT LIMITED TO,  PROCUREMENT OF  SUBSTITUTE GOODS OR  SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS  INTERRUPTION) HOWEVER CAUSED AND ON ANY  THEORY  OF  LIABILITY,
+WHETHER IN  CONTRACT, STRICT  LIABILITY,  OR  TORT (INCLUDING  NEGLIGENCE OR OTHERWISE)  ARISING IN
+ANY WAY OUT OF  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @contact:    quasar-developers@cern.ch
 '''
+
 import os
 import platform
 import subprocess
 from subprocess import Popen
 from commandMap import getCommand
 from quasarExceptions import WrongReturnValue
+from colorama import Fore, Back, Style
+
+StandardMessage = 'Check Documentation/quasar.html for instructions'
 
 def checkExecutableExists(executableKeyName, doesNotExistErrorMessage, executableArgument='-h'):
-    errorMessage = "executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \n"+doesNotExistErrorMessage
+    errorMessage = (
+        f'executable [key: {executableKeyName}, command: {getCommand(executableKeyName)}]'
+        ' cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \n'
+        f'{doesNotExistErrorMessage}')
     try:
-        returnCode = subprocess.call([getCommand(executableKeyName), executableArgument], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+        returnCode = subprocess.call([getCommand(executableKeyName), executableArgument],
+            stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
         if returnCode == 0:
-            print("executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] exists")
+            print((
+                f"executable [key:{executableKeyName}, command: "
+                f"{getCommand(executableKeyName)}] {Fore.GREEN}exists{Style.RESET_ALL}"))
         else:
             raise Exception(errorMessage)
     except:
         raise Exception(errorMessage)
 
 def checkAstyle():
-    checkExecutableExists('astyle', 'Astyle can be downloaded in http://astyle.sourceforge.net/')
+    checkExecutableExists('astyle', StandardMessage)
 
 def checkKdiff3():
     if platform.system() == "Linux":
-        return checkExecutableExists('diff', 'kdiff3 can be downloaded in http://kdiff3.sourceforge.net/', '--help')
+        return checkExecutableExists('diff', StandardMessage, '--version')
     #if the system is a windows machine then:
     errorMessageWindows = "kdiff3 cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nkdiff3 can be downloaded in http://kdiff3.sourceforge.net/ "
     try:
-        returnCode = subprocess.call(['where', getCommand('diff')], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+        returnCode = subprocess.call(['where', getCommand('diff')],
+            stdout=open(os.devnull, 'wb'),
+            stderr=subprocess.STDOUT)
         if returnCode == 0:
             print("kdiff3 does exist")
         else:
@@ -54,7 +79,7 @@ def checkKdiff3():
         raise Exception(errorMessageWindows)
 
 def checkCMake():
-    checkExecutableExists('cmake', 'CMake can be downloaded in https://cmake.org/')
+    checkExecutableExists('cmake', StandardMessage)
 
 def checkCompiler():
     if platform.system() == "Linux":
@@ -62,22 +87,22 @@ def checkCompiler():
         return checkExecutableExists('gcc', 'Please, install the package gcc using the package manager of your distribution.', '--help')
 
 def checkXMLLint():
-    checkExecutableExists('xmllint', 'XML Lint can be downloaded in http://xmlsoft.org/', '--version')
+    checkExecutableExists('xmllint', StandardMessage, '--version')
 
 #Non compulsory dependancy (Needed for generating graphs, but QUASAR will perfectly work without GraphViz)
 def checkGraphViz():
-    checkExecutableExists('graphviz', 'GraphViz can be downloaded in http://www.graphviz.org/', '-V')
+    checkExecutableExists('graphviz', StandardMessage, '-V')
 
 #Non compulsory dependancy (Needed for generating documentation, but QUASAR will perfectly work without DoxyGen)
 def checkDoxyGen():
-    checkExecutableExists('doxygen', 'DoxyGen can be downloaded in http://www.stack.nl/~dimitri/doxygen/', '--version')
+    checkExecutableExists('doxygen', StandardMessage, '--version')
 
 def tryDependency(functionCheck, critical=True):
     try:
         functionCheck()
     except Exception as e:
         if(critical):
-            print("CRITICAL dependency missing: " + str(e))
+            print(f"{Fore.RED}CRITICAL dependency missing: {str(e)}{Style.RESET_ALL}")
         else:
             print("Optional dependency missing: " + str(e))
 
