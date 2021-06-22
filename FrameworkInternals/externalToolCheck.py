@@ -25,19 +25,12 @@ from subprocess import Popen
 from commandMap import getCommand
 from quasarExceptions import WrongReturnValue
 
-VERBOSE = 1
-
-
-def printIfVerbose(msg):
-    if VERBOSE > 0:
-        print(msg)
-
 def checkExecutableExists(executableKeyName, doesNotExistErrorMessage, executableArgument='-h'):
     errorMessage = "executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \n"+doesNotExistErrorMessage
     try:
         returnCode = subprocess.call([getCommand(executableKeyName), executableArgument], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
         if returnCode == 0:
-            printIfVerbose("executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] exists")
+            print("executable [key:"+executableKeyName+", command: "+getCommand(executableKeyName)+"] exists")
         else:
             raise Exception(errorMessage)
     except:
@@ -54,7 +47,7 @@ def checkKdiff3():
     try:
         returnCode = subprocess.call(['where', getCommand('diff')], stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
         if returnCode == 0:
-            printIfVerbose("kdiff3 does exist")
+            print("kdiff3 does exist")
         else:
             raise Exception(errorMessageWindows)
     except:
