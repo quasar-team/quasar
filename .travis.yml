@@ -87,7 +87,7 @@ jobs:
             ./quasar.py generate device --all ;
             cp -v .CI/test_cases/test_methods/config.xml bin/ ;
             source .CI/travis/job_epilogue.sh ;
-            \# /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_methods/reference_ns2.xml build/bin/dump.xml ;
+            
             "
 
     - name: open62541_test_instantiation_from_design
