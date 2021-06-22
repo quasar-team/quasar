@@ -43,9 +43,6 @@ def checkExecutableExists(executableKeyName, doesNotExistErrorMessage, executabl
     except:
         raise Exception(errorMessage)
 
-def checkJava():
-    checkExecutableExists('java', 'Java can be downloaded in https://www.java.com/en/download/')
-
 def checkAstyle():
     checkExecutableExists('astyle', 'Astyle can be downloaded in http://astyle.sourceforge.net/')
 
@@ -93,7 +90,6 @@ def tryDependency(functionCheck, critical=True):
 
 def checkExternalDependencies():
     """Checks all of QUASAR dependencies to see if everything is setup as expected, and prints apropiate messages to point out what is missing."""
-    tryDependency(checkJava)
     tryDependency(checkKdiff3)
     tryDependency(checkCMake)
     tryDependency(checkCompiler)
