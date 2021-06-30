@@ -28,7 +28,7 @@ jobs:
             echo '********************************************************************' ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            ./quasar.py enable_module open62541-compat OPCUA-2364_open62541_v1.2.2 ;
+            ./quasar.py enable_module open62541-compat OPCUA-2363_profit_from_uaprint ;
             ./quasar.py set_build_config open62541_config.cmake ;
             cp .CI/test_cases/test_cache_variables/Design.xml Design ;
             ./quasar.py generate device --all ;
@@ -50,7 +50,7 @@ jobs:
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             source .CI/travis/job_prologue.sh ;
-            ./quasar.py enable_module open62541-compat OPCUA-2364_open62541_v1.2.2 ;
+            ./quasar.py enable_module open62541-compat OPCUA-2363_profit_from_uaprint ;
             ./quasar.py set_build_config open62541_config.cmake ;
             cp -v .CI/test_cases/test_recurrent_hasobjects/Design.xml Design ;
             ./quasar.py generate device --all ;
@@ -67,7 +67,7 @@ jobs:
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             source .CI/travis/job_prologue.sh ;
-            ./quasar.py enable_module open62541-compat OPCUA-2364_open62541_v1.2.2 ;
+            ./quasar.py enable_module open62541-compat OPCUA-2363_profit_from_uaprint ;
             ./quasar.py set_build_config open62541_config.cmake ;
             cp -v .CI/test_cases/test_single_variable_node/Design.xml Design ;
             ./quasar.py generate device --all ;
