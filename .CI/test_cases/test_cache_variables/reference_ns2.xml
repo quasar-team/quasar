@@ -1,39 +1,249 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd ../Configuration/Configuration.xsd">
-  <UAObject BrowseName="StandardMetaData" NodeId="ns=2;s=StandardMetaData"/>
-  <UAObject BrowseName="Log" NodeId="ns=2;s=StandardMetaData.Log"/>
-  <UAObject BrowseName="GeneralLogLevel" NodeId="ns=2;s=StandardMetaData.Log.GeneralLogLevel"/>
-  <UAObject BrowseName="ComponentLogLevels" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels"/>
-  <UAObject BrowseName="CalcVars" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars"/>
-  <UAObject BrowseName="AddressSpace" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace"/>
-  <UAObject BrowseName="SourceVariableThreadPool" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool"/>
-  <UAObject BrowseName="Quasar" NodeId="ns=2;s=StandardMetaData.Quasar"/>
-  <UAObject BrowseName="Server" NodeId="ns=2;s=StandardMetaData.Server"/>
-  <UAObject BrowseName="BuildInformation" NodeId="ns=2;s=StandardMetaData.BuildInformation"/>
-  <UAObject BrowseName="tc1" NodeId="ns=2;s=tc1"/>
-  <UAVariable BrowseName="logLevel" NodeId="ns=2;s=StandardMetaData.Log.GeneralLogLevel.logLevel"/>
-  <UAVariable BrowseName="logLevel" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars.logLevel"/>
-  <UAVariable BrowseName="logLevel" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace.logLevel"/>
-  <UAVariable BrowseName="minThreads" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool.minThreads"/>
-  <UAVariable BrowseName="maxThreads" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool.maxThreads"/>
-  <UAVariable BrowseName="version" NodeId="ns=2;s=StandardMetaData.Quasar.version"/>
-  <UAVariable BrowseName="remainingCertificateValidity" NodeId="ns=2;s=StandardMetaData.Server.remainingCertificateValidity"/>
-  <UAVariable BrowseName="BuildHost" NodeId="ns=2;s=StandardMetaData.BuildInformation.BuildHost"/>
-  <UAVariable BrowseName="BuildTimestamp" NodeId="ns=2;s=StandardMetaData.BuildInformation.BuildTimestamp"/>
-  <UAVariable BrowseName="CommitID" NodeId="ns=2;s=StandardMetaData.BuildInformation.CommitID"/>
-  <UAVariable BrowseName="ToolkitLibs" NodeId="ns=2;s=StandardMetaData.BuildInformation.ToolkitLibs"/>
-  <UAVariable BrowseName="configuration_OpcUaBoolean_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaByte_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaByte_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaSByte_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt16_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt16_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt32_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt32_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt64_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt64_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaDouble_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaFloat_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_UaString_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_UaString_scalar_forbidden_nullForbidden"/>
+  <UAObject BrowseName="StandardMetaData" NodeId="ns=2;s=StandardMetaData">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1000</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.SourceVariableThreadPool</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Quasar</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Server</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.BuildInformation</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="Log" NodeId="ns=2;s=StandardMetaData.Log">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1001</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.GeneralLogLevel</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="GeneralLogLevel" NodeId="ns=2;s=StandardMetaData.Log.GeneralLogLevel">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1002</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.GeneralLogLevel.logLevel</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="ComponentLogLevels" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1005</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="CalcVars" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1004</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars.logLevel</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="AddressSpace" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1004</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace.logLevel</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="SourceVariableThreadPool" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1003</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.SourceVariableThreadPool.minThreads</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.SourceVariableThreadPool.maxThreads</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="Quasar" NodeId="ns=2;s=StandardMetaData.Quasar">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1006</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Quasar.version</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="Server" NodeId="ns=2;s=StandardMetaData.Server">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1007</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Server.remainingCertificateValidity</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="BuildInformation" NodeId="ns=2;s=StandardMetaData.BuildInformation">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1008</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.BuildInformation.BuildHost</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.BuildInformation.BuildTimestamp</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.BuildInformation.CommitID</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.BuildInformation.ToolkitLibs</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="tc1" NodeId="ns=2;s=tc1">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=2;i=1009</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaBoolean_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaByte_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaSByte_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt16_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt16_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt32_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt32_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt64_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt64_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaDouble_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaFloat_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_UaString_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaBoolean_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaByte_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaSByte_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt16_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt16_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt32_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt32_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt64_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt64_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaDouble_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaFloat_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_UaString_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaBoolean_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaByte_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaSByte_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt16_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt16_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt32_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt32_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt64_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt64_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaDouble_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaFloat_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_UaString_array_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaBoolean_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaByte_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaSByte_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt16_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt16_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt32_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt32_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt64_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt64_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaDouble_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaFloat_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_UaString_array_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaBoolean_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaByte_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaSByte_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt16_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt16_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt32_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt32_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt64_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt64_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaDouble_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaFloat_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_UaString_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaBoolean_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaByte_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaSByte_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt16_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt16_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt32_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt32_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt64_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt64_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaDouble_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaFloat_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_UaString_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaBoolean_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaByte_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaSByte_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt16_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt16_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt32_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt32_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt64_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt64_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaDouble_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaFloat_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_UaString_array_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaBoolean_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaByte_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaSByte_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt16_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt16_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt32_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt32_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaUInt64_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaInt64_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaDouble_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_OpcUaFloat_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.configuration_UaString_array_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt16_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt16_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt32_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt32_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt64_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt64_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaDouble_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_UaString_scalar_forbidden_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt16_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt16_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt32_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt32_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt64_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt64_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaDouble_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_UaString_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_UaVariant_scalar_forbidden_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt16_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt16_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt32_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt32_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt64_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt64_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaDouble_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_UaString_scalar_delegated_nullForbidden</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt16_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt16_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt32_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt32_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaUInt64_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaInt64_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaDouble_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_UaString_scalar_delegated_nullAllowed</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.valueAndStatus_UaVariant_scalar_delegated_nullAllowed</Reference>
+    </References>
+  </UAObject>
+  <UAVariable AccessLevel="3" BrowseName="logLevel" DataType="i=12" NodeId="ns=2;s=StandardMetaData.Log.GeneralLogLevel.logLevel"/>
+  <UAVariable AccessLevel="3" BrowseName="logLevel" DataType="i=12" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars.logLevel"/>
+  <UAVariable AccessLevel="3" BrowseName="logLevel" DataType="i=12" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace.logLevel"/>
+  <UAVariable BrowseName="minThreads" DataType="i=7" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool.minThreads"/>
+  <UAVariable BrowseName="maxThreads" DataType="i=7" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool.maxThreads"/>
+  <UAVariable BrowseName="version" DataType="i=12" NodeId="ns=2;s=StandardMetaData.Quasar.version"/>
+  <UAVariable BrowseName="remainingCertificateValidity" DataType="i=12" NodeId="ns=2;s=StandardMetaData.Server.remainingCertificateValidity"/>
+  <UAVariable BrowseName="BuildHost" DataType="i=12" NodeId="ns=2;s=StandardMetaData.BuildInformation.BuildHost"/>
+  <UAVariable BrowseName="BuildTimestamp" DataType="i=12" NodeId="ns=2;s=StandardMetaData.BuildInformation.BuildTimestamp"/>
+  <UAVariable BrowseName="CommitID" DataType="i=12" NodeId="ns=2;s=StandardMetaData.BuildInformation.CommitID"/>
+  <UAVariable BrowseName="ToolkitLibs" DataType="i=12" NodeId="ns=2;s=StandardMetaData.BuildInformation.ToolkitLibs"/>
+  <UAVariable BrowseName="configuration_OpcUaBoolean_scalar_forbidden_nullForbidden" DataType="i=1" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaByte_scalar_forbidden_nullForbidden" DataType="i=3" NodeId="ns=2;s=tc1.configuration_OpcUaByte_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaSByte_scalar_forbidden_nullForbidden" DataType="i=2" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaUInt16_scalar_forbidden_nullForbidden" DataType="i=5" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaInt16_scalar_forbidden_nullForbidden" DataType="i=4" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaUInt32_scalar_forbidden_nullForbidden" DataType="i=7" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaInt32_scalar_forbidden_nullForbidden" DataType="i=6" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaUInt64_scalar_forbidden_nullForbidden" DataType="i=9" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaInt64_scalar_forbidden_nullForbidden" DataType="i=8" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaDouble_scalar_forbidden_nullForbidden" DataType="i=11" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaFloat_scalar_forbidden_nullForbidden" DataType="i=10" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_UaString_scalar_forbidden_nullForbidden" DataType="i=12" NodeId="ns=2;s=tc1.configuration_UaString_scalar_forbidden_nullForbidden"/>
   <UAVariable BrowseName="configuration_OpcUaBoolean_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_scalar_forbidden_nullAllowed"/>
   <UAVariable BrowseName="configuration_OpcUaByte_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaByte_scalar_forbidden_nullAllowed"/>
   <UAVariable BrowseName="configuration_OpcUaSByte_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_scalar_forbidden_nullAllowed"/>
@@ -46,90 +256,90 @@
   <UAVariable BrowseName="configuration_OpcUaDouble_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_scalar_forbidden_nullAllowed"/>
   <UAVariable BrowseName="configuration_OpcUaFloat_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_scalar_forbidden_nullAllowed"/>
   <UAVariable BrowseName="configuration_UaString_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_UaString_scalar_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaBoolean_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaByte_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaByte_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaSByte_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt16_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt16_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt32_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt32_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt64_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt64_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaDouble_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaFloat_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_UaString_array_forbidden_nullForbidden" NodeId="ns=2;s=tc1.configuration_UaString_array_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaBoolean_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaByte_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaByte_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaSByte_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt16_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaInt16_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt32_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaInt32_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt64_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaInt64_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaDouble_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaFloat_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_UaString_array_forbidden_nullAllowed" NodeId="ns=2;s=tc1.configuration_UaString_array_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaBoolean_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaByte_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaByte_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaSByte_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt16_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt16_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt32_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt32_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt64_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt64_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaDouble_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaFloat_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_UaString_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_UaString_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaBoolean_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaByte_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaByte_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaSByte_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt16_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaInt16_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt32_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaInt32_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt64_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaInt64_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaDouble_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaFloat_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_UaString_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_UaString_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaBoolean_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaByte_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaByte_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaSByte_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt16_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt16_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt32_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt32_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt64_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaInt64_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaDouble_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaFloat_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_UaString_array_delegated_nullForbidden" NodeId="ns=2;s=tc1.configuration_UaString_array_delegated_nullForbidden"/>
-  <UAVariable BrowseName="configuration_OpcUaBoolean_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaByte_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaByte_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaSByte_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt16_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaInt16_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt32_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaInt32_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaUInt64_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaInt64_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaDouble_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_OpcUaFloat_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="configuration_UaString_array_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_UaString_array_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaBoolean_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaByte_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaSByte_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaUInt16_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt16_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaInt16_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt16_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaUInt32_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt32_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaInt32_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt32_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaUInt64_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt64_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaInt64_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt64_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaDouble_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaDouble_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaFloat_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_forbidden_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_UaString_scalar_forbidden_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_UaString_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="configuration_OpcUaBoolean_array_forbidden_nullForbidden" DataType="i=1" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaByte_array_forbidden_nullForbidden" DataType="i=3" NodeId="ns=2;s=tc1.configuration_OpcUaByte_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaSByte_array_forbidden_nullForbidden" DataType="i=2" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaUInt16_array_forbidden_nullForbidden" DataType="i=5" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaInt16_array_forbidden_nullForbidden" DataType="i=4" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaUInt32_array_forbidden_nullForbidden" DataType="i=7" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaInt32_array_forbidden_nullForbidden" DataType="i=6" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaUInt64_array_forbidden_nullForbidden" DataType="i=9" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaInt64_array_forbidden_nullForbidden" DataType="i=8" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaDouble_array_forbidden_nullForbidden" DataType="i=11" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaFloat_array_forbidden_nullForbidden" DataType="i=10" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_UaString_array_forbidden_nullForbidden" DataType="i=12" NodeId="ns=2;s=tc1.configuration_UaString_array_forbidden_nullForbidden" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaBoolean_array_forbidden_nullAllowed" DataType="i=1" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaByte_array_forbidden_nullAllowed" DataType="i=3" NodeId="ns=2;s=tc1.configuration_OpcUaByte_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaSByte_array_forbidden_nullAllowed" DataType="i=2" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaUInt16_array_forbidden_nullAllowed" DataType="i=5" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaInt16_array_forbidden_nullAllowed" DataType="i=4" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaUInt32_array_forbidden_nullAllowed" DataType="i=7" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaInt32_array_forbidden_nullAllowed" DataType="i=6" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaUInt64_array_forbidden_nullAllowed" DataType="i=9" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaInt64_array_forbidden_nullAllowed" DataType="i=8" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaDouble_array_forbidden_nullAllowed" DataType="i=11" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_OpcUaFloat_array_forbidden_nullAllowed" DataType="i=10" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="configuration_UaString_array_forbidden_nullAllowed" DataType="i=12" NodeId="ns=2;s=tc1.configuration_UaString_array_forbidden_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaBoolean_scalar_delegated_nullForbidden" DataType="i=1" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaByte_scalar_delegated_nullForbidden" DataType="i=3" NodeId="ns=2;s=tc1.configuration_OpcUaByte_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaSByte_scalar_delegated_nullForbidden" DataType="i=2" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt16_scalar_delegated_nullForbidden" DataType="i=5" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt16_scalar_delegated_nullForbidden" DataType="i=4" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt32_scalar_delegated_nullForbidden" DataType="i=7" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt32_scalar_delegated_nullForbidden" DataType="i=6" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt64_scalar_delegated_nullForbidden" DataType="i=9" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt64_scalar_delegated_nullForbidden" DataType="i=8" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaDouble_scalar_delegated_nullForbidden" DataType="i=11" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaFloat_scalar_delegated_nullForbidden" DataType="i=10" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_UaString_scalar_delegated_nullForbidden" DataType="i=12" NodeId="ns=2;s=tc1.configuration_UaString_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaBoolean_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaByte_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaByte_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaSByte_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt16_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt16_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt32_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt32_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt64_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt64_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaDouble_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaFloat_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_UaString_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.configuration_UaString_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaBoolean_array_delegated_nullForbidden" DataType="i=1" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaByte_array_delegated_nullForbidden" DataType="i=3" NodeId="ns=2;s=tc1.configuration_OpcUaByte_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaSByte_array_delegated_nullForbidden" DataType="i=2" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt16_array_delegated_nullForbidden" DataType="i=5" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt16_array_delegated_nullForbidden" DataType="i=4" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt32_array_delegated_nullForbidden" DataType="i=7" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt32_array_delegated_nullForbidden" DataType="i=6" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt64_array_delegated_nullForbidden" DataType="i=9" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt64_array_delegated_nullForbidden" DataType="i=8" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaDouble_array_delegated_nullForbidden" DataType="i=11" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaFloat_array_delegated_nullForbidden" DataType="i=10" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_UaString_array_delegated_nullForbidden" DataType="i=12" NodeId="ns=2;s=tc1.configuration_UaString_array_delegated_nullForbidden" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaBoolean_array_delegated_nullAllowed" DataType="i=1" NodeId="ns=2;s=tc1.configuration_OpcUaBoolean_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaByte_array_delegated_nullAllowed" DataType="i=3" NodeId="ns=2;s=tc1.configuration_OpcUaByte_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaSByte_array_delegated_nullAllowed" DataType="i=2" NodeId="ns=2;s=tc1.configuration_OpcUaSByte_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt16_array_delegated_nullAllowed" DataType="i=5" NodeId="ns=2;s=tc1.configuration_OpcUaUInt16_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt16_array_delegated_nullAllowed" DataType="i=4" NodeId="ns=2;s=tc1.configuration_OpcUaInt16_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt32_array_delegated_nullAllowed" DataType="i=7" NodeId="ns=2;s=tc1.configuration_OpcUaUInt32_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt32_array_delegated_nullAllowed" DataType="i=6" NodeId="ns=2;s=tc1.configuration_OpcUaInt32_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaUInt64_array_delegated_nullAllowed" DataType="i=9" NodeId="ns=2;s=tc1.configuration_OpcUaUInt64_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaInt64_array_delegated_nullAllowed" DataType="i=8" NodeId="ns=2;s=tc1.configuration_OpcUaInt64_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaDouble_array_delegated_nullAllowed" DataType="i=11" NodeId="ns=2;s=tc1.configuration_OpcUaDouble_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_OpcUaFloat_array_delegated_nullAllowed" DataType="i=10" NodeId="ns=2;s=tc1.configuration_OpcUaFloat_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable AccessLevel="3" BrowseName="configuration_UaString_array_delegated_nullAllowed" DataType="i=12" NodeId="ns=2;s=tc1.configuration_UaString_array_delegated_nullAllowed" ValueRank="1"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaBoolean_scalar_forbidden_nullForbidden" DataType="i=1" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaByte_scalar_forbidden_nullForbidden" DataType="i=3" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaSByte_scalar_forbidden_nullForbidden" DataType="i=2" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaUInt16_scalar_forbidden_nullForbidden" DataType="i=5" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt16_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaInt16_scalar_forbidden_nullForbidden" DataType="i=4" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt16_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaUInt32_scalar_forbidden_nullForbidden" DataType="i=7" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt32_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaInt32_scalar_forbidden_nullForbidden" DataType="i=6" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt32_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaUInt64_scalar_forbidden_nullForbidden" DataType="i=9" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt64_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaInt64_scalar_forbidden_nullForbidden" DataType="i=8" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt64_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaDouble_scalar_forbidden_nullForbidden" DataType="i=11" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaDouble_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_OpcUaFloat_scalar_forbidden_nullForbidden" DataType="i=10" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_forbidden_nullForbidden"/>
+  <UAVariable BrowseName="valueAndStatus_UaString_scalar_forbidden_nullForbidden" DataType="i=12" NodeId="ns=2;s=tc1.valueAndStatus_UaString_scalar_forbidden_nullForbidden"/>
   <UAVariable BrowseName="valueAndStatus_OpcUaBoolean_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_forbidden_nullAllowed"/>
   <UAVariable BrowseName="valueAndStatus_OpcUaByte_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_forbidden_nullAllowed"/>
   <UAVariable BrowseName="valueAndStatus_OpcUaSByte_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_forbidden_nullAllowed"/>
@@ -143,29 +353,29 @@
   <UAVariable BrowseName="valueAndStatus_OpcUaFloat_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_forbidden_nullAllowed"/>
   <UAVariable BrowseName="valueAndStatus_UaString_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_UaString_scalar_forbidden_nullAllowed"/>
   <UAVariable BrowseName="valueAndStatus_UaVariant_scalar_forbidden_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_UaVariant_scalar_forbidden_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaBoolean_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaByte_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaSByte_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaUInt16_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt16_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaInt16_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt16_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaUInt32_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt32_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaInt32_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt32_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaUInt64_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt64_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaInt64_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt64_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaDouble_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaDouble_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaFloat_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_UaString_scalar_delegated_nullForbidden" NodeId="ns=2;s=tc1.valueAndStatus_UaString_scalar_delegated_nullForbidden"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaBoolean_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaByte_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaSByte_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaUInt16_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt16_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaInt16_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt16_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaUInt32_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt32_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaInt32_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt32_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaUInt64_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt64_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaInt64_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt64_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaDouble_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaDouble_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_OpcUaFloat_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_UaString_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_UaString_scalar_delegated_nullAllowed"/>
-  <UAVariable BrowseName="valueAndStatus_UaVariant_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_UaVariant_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaBoolean_scalar_delegated_nullForbidden" DataType="i=1" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaByte_scalar_delegated_nullForbidden" DataType="i=3" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaSByte_scalar_delegated_nullForbidden" DataType="i=2" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaUInt16_scalar_delegated_nullForbidden" DataType="i=5" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt16_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaInt16_scalar_delegated_nullForbidden" DataType="i=4" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt16_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaUInt32_scalar_delegated_nullForbidden" DataType="i=7" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt32_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaInt32_scalar_delegated_nullForbidden" DataType="i=6" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt32_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaUInt64_scalar_delegated_nullForbidden" DataType="i=9" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt64_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaInt64_scalar_delegated_nullForbidden" DataType="i=8" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt64_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaDouble_scalar_delegated_nullForbidden" DataType="i=11" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaDouble_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaFloat_scalar_delegated_nullForbidden" DataType="i=10" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_UaString_scalar_delegated_nullForbidden" DataType="i=12" NodeId="ns=2;s=tc1.valueAndStatus_UaString_scalar_delegated_nullForbidden"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaBoolean_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaBoolean_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaByte_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaByte_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaSByte_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaSByte_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaUInt16_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt16_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaInt16_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt16_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaUInt32_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt32_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaInt32_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt32_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaUInt64_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaUInt64_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaInt64_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaInt64_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaDouble_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaDouble_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_OpcUaFloat_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_OpcUaFloat_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_UaString_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_UaString_scalar_delegated_nullAllowed"/>
+  <UAVariable AccessLevel="3" BrowseName="valueAndStatus_UaVariant_scalar_delegated_nullAllowed" NodeId="ns=2;s=tc1.valueAndStatus_UaVariant_scalar_delegated_nullAllowed"/>
 </UANodeSet>
