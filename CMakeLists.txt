@@ -42,6 +42,10 @@ endif()
 
 include( ProjectSettings.cmake )
 
+if(${BUILD_SERVER_SHARED_LIB})
+	add_definitions(-DBUILDING_SHARED_OBJECT)
+endif(${BUILD_SERVER_SHARED_LIB})
+
 if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP STREQUAL "OFF" ) )
     message( STATUS "Setting up boost location and libraries using FrameworkInternals/BoostSetup.cmake")
     include( FrameworkInternals/BoostSetup.cmake )
@@ -143,7 +147,6 @@ if(BUILD_SERVER_SHARED_LIB)
         set( SERVER_SHARED_LIB_TARGET "${EXECUTABLE}Object" )
         add_library ( ${SERVER_SHARED_LIB_TARGET} SHARED ${MODULES_OBJECTS} )
         set_target_properties( ${SERVER_SHARED_LIB_TARGET} PROPERTIES LIBRARY_OUTPUT_DIRECTORY bin/ )
-        target_compile_definitions( ${SERVER_SHARED_LIB_TARGET} BUILDING_SHARED_OBJECT )
 	target_link_libraries( ${SERVER_SHARED_LIB_TARGET} ${TARGET_LIBS})
 endif(BUILD_SERVER_SHARED_LIB)
 
