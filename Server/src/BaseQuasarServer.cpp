@@ -81,7 +81,10 @@ BaseQuasarServer::~BaseQuasarServer()
 
 int BaseQuasarServer::startApplication(int argc, char *argv[])
 {
+    #ifndef BUILDING_SHARED_OBJECT
+    // note from Piotr as per OPCUA-2355: shared objects will be loaded by some parent app so we shouldn't steal Ctrl-C from them.
     RegisterSignalHandler();
+    #endif // BUILDING_SHARED_OBJECT
 
     bool isHelpOrVersion = false;
     string configurationFileName = "config.xml";
