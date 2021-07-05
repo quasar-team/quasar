@@ -153,4 +153,34 @@
   <UAVariable BrowseName="InputArguments" DataType="i=296" NodeId="ns=2;s=tc1.args2_rvs2_it2.args" ValueRank="1"/>
   <UAVariable BrowseName="OutputArguments" DataType="i=296" NodeId="ns=2;s=tc1.args2_rvs2_it2.return_values" ValueRank="1"/>
   <UAVariable BrowseName="OutputArguments" DataType="i=296" NodeId="ns=2;s=tc1.args0_rvs1_it3.return_values" ValueRank="1"/>
+  <UAMethod BrowseName="args0_rvs0_it0" NodeId="ns=2;s=tc1.args0_rvs0_it0"/>
+  <UAMethod BrowseName="args0_rvs1_it0" NodeId="ns=2;s=tc1.args0_rvs1_it0"/>
+  <UAMethod BrowseName="args0_rvs2_it0" NodeId="ns=2;s=tc1.args0_rvs2_it0"/>
+  <UAMethod BrowseName="args1_rvs0_it0" NodeId="ns=2;s=tc1.args1_rvs0_it0"/>
+  <UAMethod BrowseName="args1_rvs1_it0" NodeId="ns=2;s=tc1.args1_rvs1_it0"/>
+  <UAMethod BrowseName="args1_rvs2_it0" NodeId="ns=2;s=tc1.args1_rvs2_it0"/>
+  <UAMethod BrowseName="args2_rvs0_it0" NodeId="ns=2;s=tc1.args2_rvs0_it0"/>
+  <UAMethod BrowseName="args2_rvs1_it0" NodeId="ns=2;s=tc1.args2_rvs1_it0"/>
+  <UAMethod BrowseName="args2_rvs2_it0" NodeId="ns=2;s=tc1.args2_rvs2_it0"/>
+  <UAMethod BrowseName="args0_rvs0_it1" NodeId="ns=2;s=tc1.args0_rvs0_it1"/>
+  <UAMethod BrowseName="args0_rvs1_it1" NodeId="ns=2;s=tc1.args0_rvs1_it1"/>
+  <UAMethod BrowseName="args0_rvs2_it1" NodeId="ns=2;s=tc1.args0_rvs2_it1"/>
+  <UAMethod BrowseName="args1_rvs0_it1" NodeId="ns=2;s=tc1.args1_rvs0_it1"/>
+  <UAMethod BrowseName="args1_rvs1_it1" NodeId="ns=2;s=tc1.args1_rvs1_it1"/>
+  <UAMethod BrowseName="args1_rvs2_it1" NodeId="ns=2;s=tc1.args1_rvs2_it1"/>
+  <UAMethod BrowseName="args2_rvs0_it1" NodeId="ns=2;s=tc1.args2_rvs0_it1"/>
+  <UAMethod BrowseName="args2_rvs1_it1" NodeId="ns=2;s=tc1.args2_rvs1_it1"/>
+  <UAMethod BrowseName="args2_rvs2_it1" NodeId="ns=2;s=tc1.args2_rvs2_it1"/>
+  <UAMethod BrowseName="args0_rvs0_it2" NodeId="ns=2;s=tc1.args0_rvs0_it2"/>
+  <UAMethod BrowseName="args0_rvs1_it2" NodeId="ns=2;s=tc1.args0_rvs1_it2"/>
+  <UAMethod BrowseName="args0_rvs2_it2" NodeId="ns=2;s=tc1.args0_rvs2_it2"/>
+  <UAMethod BrowseName="args1_rvs0_it2" NodeId="ns=2;s=tc1.args1_rvs0_it2"/>
+  <UAMethod BrowseName="args1_rvs1_it2" NodeId="ns=2;s=tc1.args1_rvs1_it2"/>
+  <UAMethod BrowseName="args1_rvs2_it2" NodeId="ns=2;s=tc1.args1_rvs2_it2"/>
+  <UAMethod BrowseName="args2_rvs0_it2" NodeId="ns=2;s=tc1.args2_rvs0_it2"/>
+  <UAMethod BrowseName="args2_rvs1_it2" NodeId="ns=2;s=tc1.args2_rvs1_it2"/>
+  <UAMethod BrowseName="args2_rvs2_it2" NodeId="ns=2;s=tc1.args2_rvs2_it2"/>
+  <UAMethod BrowseName="args0_rvs0_it3" NodeId="ns=2;s=tc1.args0_rvs0_it3"/>
+  <UAMethod BrowseName="args0_rvs1_it3" NodeId="ns=2;s=tc1.args0_rvs1_it3"/>
+  <UAMethod BrowseName="args0_rvs2_it3" NodeId="ns=2;s=tc1.args0_rvs2_it3"/>
 </UANodeSet>
