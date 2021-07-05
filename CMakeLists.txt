@@ -42,6 +42,10 @@ endif()
 
 include( ProjectSettings.cmake )
 
+if(${BUILD_SERVER_SHARED_LIB})
+	add_definitions(-DBUILDING_SHARED_OBJECT)
+endif(${BUILD_SERVER_SHARED_LIB})
+
 if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP STREQUAL "OFF" ) )
     message( STATUS "Setting up boost location and libraries using FrameworkInternals/BoostSetup.cmake")
     include( FrameworkInternals/BoostSetup.cmake )
