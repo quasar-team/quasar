@@ -175,6 +175,22 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
               /*check access level*/ OpcUa_False);
         {% endif %}
 
+        {# init data for arrays -- note this is just to fill in basic Value, more comes in subsequent functions. Otherwise we could not construct the AS in a compliant way. #}
+        {% if cv.get('nullPolicy') == 'nullForbidden' and cv.array|length > 0 %}
+          {
+            std::vector<{{cv.get('dataType')}}> emptyVector;
+            {{oracle.vector_to_uavariant_function(cv.get('dataType'))}} (emptyVector, helperVariant);
+            m_{{cv.get('name')}}->setValue(
+              /*pSession*/ nullptr,
+              UaDataValue(
+                helperVariant,
+                OpcUa_Good,
+                UaDateTime::now(),
+                UaDateTime::now() ),
+              /*check access level*/ OpcUa_False);
+          }
+        {% endif %}
+
         nm->addNodeAndReferenceThrows(
           m_effectiveParentNodeIdForChildren,
           m_{{cv.get('name')}},
