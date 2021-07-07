@@ -21,10 +21,10 @@ Certificate* Certificate::_pInstance = NULL;
 const std::string Certificate::DEFAULT_PUBLIC_CERT_FILENAME("./PKI/CA/certs/OpcUaServer.der");
 const std::string Certificate::DEFAULT_PRIVATE_CERT_FILENAME("./PKI/CA/private/OpcUaServer.pem");
 
-Certificate* Certificate::Instance( string certfn, string privkeyfn, enum behaviour_t beh )
+Certificate* Certificate::Instance( std::vector<string> vfn )
 {
 	if (!_pInstance)   // Only allow one instance of class to be generated.
-		_pInstance = new Certificate( certfn, privkeyfn, beh );
+		_pInstance = new Certificate( vfn );
 	return _pInstance;
 }
 
@@ -37,17 +37,19 @@ Certificate* Certificate::Instance( )
 	return _pInstance;
 }
 
-Certificate::Certificate( string certfn, string privkeyfn, enum behaviour_t beh  )
-:m_certfn(certfn), m_privkeyfn(privkeyfn), m_behaviour(beh), m_ssl(NULL), m_time_end(0), m_status(STATUS_UNKNOWN), m_remaining_validity_in_seconds(0)
-// :m_certfn(certfn), m_privkeyfn(privkeyfn), m_behaviour(beh), m_ssl(NULL), m_time_end(NULL), m_status(STATUS_UNKNOWN), m_remaining_validity_in_seconds(0)
+// only use the first certificate in the list. Need to modify if you have
+// several endpoints per server, which have each their own certificate.
+Certificate::Certificate( std::vector<string> vfn ) :
+		m_certfn(vfn[0]),
+		m_privkeyfn(vfn[1]),
+		m_ssl(NULL),
+		m_time_end(0),
+		m_status(STATUS_UNKNOWN),
+		m_remaining_validity_in_seconds(0)
 {
 	setTypeDER();
-
-	if (m_behaviour != BEHAVIOR_NONE )
-	{
-		SSL_load_error_strings();            /* readable error messages */
-		SSL_library_init();                  /* initialize library */
-	}
+	SSL_load_error_strings();            /* readable error messages */
+	SSL_library_init();                  /* initialize library */
 }
 
 Certificate::~Certificate()
@@ -57,8 +59,7 @@ Certificate::~Certificate()
 
 int Certificate::validateCertificateFilename(const std::string& certificateFilename) const
 {
-	if ( m_privkeyfn.length() < 5 )
-	{
+	if ( m_privkeyfn.length() < 5 ) {
 		LOG(Log::ERR) << "refuse to open certificate " << m_privkeyfn << " : filename seems to short ( \"a.der\" at least )";
 		return -2;
 	}
@@ -74,7 +75,6 @@ int Certificate::validateCertificateFilename(const std::string& certificateFilen
 		LOG(Log::ERR) << "unable to open file  " << m_privkeyfn;
 		return -1;
 	}
-
 	return 0;
 }
 
@@ -210,37 +210,18 @@ time_t Certificate::_timeASN1toTIME_T( ASN1_TIME* time )
 
 int Certificate::init( void ){
 	int ret = 0;
-	switch ( m_behaviour ) {
-	case BEHAVIOR_NONE: {
-		m_status = Certificate::STATUS_OK;
-		break;
-	}
-	case BEHAVIOR_TRY: {
-		ret = Certificate::loadCertificateFromFile();
-		m_status = ret < 0 ? Certificate::STATUS_FAILED : Certificate::STATUS_OK;
-		break;
-	}
-	case BEHAVIOR_TRYCA:
-	case BEHAVIOR_CERT:
-	case BEHAVIOR_CERTCA:{
-		m_status = Certificate::STATUS_UNKNOWN;
-		break;
-	}
-	} // switch
+	ret = Certificate::loadCertificateFromFile();
+	m_status = ret < 0 ? Certificate::STATUS_FAILED : Certificate::STATUS_OK;
 	return( ret );
 }
 
 string Certificate::remainingTime( void ){
-	if ( m_behaviour == BEHAVIOR_NONE )
-		return( "SSL NOT INITIALIZED" );
-	if (( m_behaviour == BEHAVIOR_TRY ) && ( m_status == Certificate::STATUS_FAILED ))
-		return( "Not Applicable: No Certificate Found" );
-
 	if ( m_status == Certificate::STATUS_FAILED ){
 		LOG(Log::ERR) << "certificate status failed, a problem occurred";
 		return( "CERTIFICATE STATUS FAILED" );
 	}
 	if ( m_status == Certificate::STATUS_UNKNOWN ){
+		LOG(Log::WRN) << "certificate status failed, a problem occurred";
 		return( "CERTIFICATE STATUS UNKNOWN" );
 	}
 	remainingValidityTime();
