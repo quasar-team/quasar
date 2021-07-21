@@ -1,3 +1,4 @@
+	   echo "Value of OPEN62541_COMPAT_VERSION is [ ${OPEN62541_COMPAT_VERSION} ] ";
            ./quasar.py enable_module open62541-compat ${OPEN62541_COMPAT_VERSION} ;
            ./quasar.py set_build_config open62541_config.cmake ;
            ./quasar.py prepare_build Release ;
