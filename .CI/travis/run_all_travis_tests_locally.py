@@ -39,8 +39,9 @@ import pygit2
 import sys
 from colorama import Fore, Style
 import threading
+import pdb
 
-def worker(lock, jobs_to_do, travis_pull_request_branch, job_results):
+def worker(lock, jobs_to_do, travis_pull_request_branch, global_exports, job_results):
     while True:
         with lock:
             if len(jobs_to_do) == 0:
@@ -49,9 +50,10 @@ def worker(lock, jobs_to_do, travis_pull_request_branch, job_results):
         print(Fore.GREEN + "Now at job: " + job['name'] + Style.RESET_ALL)
         cmd_list = job['script']
         for cmd in cmd_list:
+
             print('Lets execute: ' + cmd)
             t0 = datetime.datetime.now().timestamp()
-            return_code = os.system('export TRAVIS_PULL_REQUEST_BRANCH={0}; {1}'.format(travis_pull_request_branch, cmd))
+            return_code = os.system(f'{global_exports}export TRAVIS_PULL_REQUEST_BRANCH={travis_pull_request_branch}; {cmd}')
             t1 = datetime.datetime.now().timestamp()
             job_result = {}
             job_result['return_code'] = return_code
@@ -89,12 +91,20 @@ def main():
     jobs_to_do = [job for job in yaml_repr['jobs']['include'] if job['name'] in job_names_selected]
     print('The following jobs were selected to be executed:', '\n'.join([job['name'] for job in jobs_to_do]))
 
+    try:
+        global_exports = ';'.join(['export {0}'.format(core) for core in yaml_repr['env']['global']])
+        global_exports = global_exports + ';'
+    except KeyError:
+        global_exports = ''
+
+    print(f'Global exports will be: {global_exports}')
+
     job_results = {}
 
     lock = threading.Lock()
     threads = []
     for i in range(args.num_workers):
-        w = threading.Thread(target=worker, args=(lock, jobs_to_do, travis_pull_request_branch, job_results,))
+        w = threading.Thread(target=worker, args=(lock, jobs_to_do, travis_pull_request_branch, global_exports, job_results,))
         w.start()
         threads.append(w)
     for t in threads:
