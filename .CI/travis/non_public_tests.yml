@@ -9,7 +9,7 @@ jobs:
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_default_quasar_design/reference_ns2.xml build/bin/dump.xml ;
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_default_quasar_design/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
             "
 
     - name: uasdk_test_sync_methods
@@ -23,7 +23,7 @@ jobs:
             cp -v .CI/test_cases/test_methods/config.xml bin/ ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_methods/reference_ns2.xml build/bin/dump.xml ;
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_methods/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
             "
 
     - name: uasdk_test_async_methods
@@ -37,7 +37,7 @@ jobs:
             cp -v .CI/test_cases/test_async_methods/config.xml bin/ ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_methods/reference_ns2.xml build/bin/dump.xml;"
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_methods/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData  ;"
 
     - name: uasdk_test_cache_variables
       script:
@@ -53,7 +53,7 @@ jobs:
             cp -v .CI/test_cases/test_cache_variables/config.xml build/bin ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_cache_variables/reference_ns2.xml build/bin/dump.xml ;
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_cache_variables/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
             "
 
     - name: uasdk_test_source_variables
@@ -67,7 +67,7 @@ jobs:
             cp -v .CI/test_cases/test_source_variables/config.xml bin/ ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_source_variables/reference_ns2.xml build/bin/dump.xml ;
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_source_variables/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
             "
 
     - name: uasdk_test_config_entries
@@ -80,5 +80,5 @@ jobs:
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_config_entries/reference_ns2.xml build/bin/dump.xml ;
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_config_entries/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
             "

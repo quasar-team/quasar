@@ -20,7 +20,7 @@ jobs:
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             sh .CI/travis/job_epilogue.sh ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_default_quasar_design/reference_ns2.xml build/bin/dump.xml ;
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_default_quasar_design/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
 
             "
 
@@ -42,7 +42,7 @@ jobs:
             cp -v .CI/test_cases/test_cache_variables/config.xml build/bin ;
             ./quasar.py build Release ;
             ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_cache_variables/reference_ns2.xml build/bin/dump.xml ;
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_cache_variables/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
             "
 
     - name: open62541_test_recurrent_hasobjects
@@ -121,7 +121,7 @@ jobs:
             ./quasar.py generate device --all ;
             cp -v .CI/test_cases/test_config_entries/config.xml bin/ ;
             source .CI/travis/job_epilogue.sh ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_config_entries/reference_ns2.xml build/bin/dump.xml ;
+            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_config_entries/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
             "
 
     - name: open62541_test_config_restrictions
