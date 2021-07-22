@@ -4,6 +4,14 @@
 import os
 import argparse
 import shutil
+import sys
+from colorama import Fore, Style
+
+def invoke_and_check(cmd):
+    print(f'{Fore.BLUE}Will invoke{Style.RESET_ALL} {cmd}')
+    ret_val = os.system(cmd)
+    if ret_val != 0:
+        raise Exception ('Stopping because the command {cmd} returned wrong return value of {ret_val}')
 
 def clone_quasar(test_branch):
     os.system(f'git clone --recursive -b {test_branch} --depth=1 https://github.com/quasar-team/quasar.git')
@@ -16,13 +24,13 @@ def prepare_opcua_backend(opcua_backend, open62541_compat_branch):
         raise Exception("backend unsupported")
 
 def build():
-    os.system(f'./quasar.py build Release')
+    invoke_and_check('./quasar.py build Release')
 
 def run_and_dump_address_space():
-    os.system('./.CI/travis/server_fixture.py --command_to_run uasak_dump')
+    invoke_and_check('./.CI/travis/server_fixture.py --command_to_run uasak_dump')
 
 def compare_with_nodeset(reference_ns):
-    os.system(f'/opt/NodeSetTools/nodeset_compare.py {reference_ns} build/bin/dump.xml --ignore_nodeids StandardMetaData')
+    invoke_and_check(f'/opt/NodeSetTools/nodeset_compare.py {reference_ns} build/bin/dump.xml --ignore_nodeids StandardMetaData')
 
 def main():
     parser = argparse.ArgumentParser()
@@ -58,4 +66,8 @@ def main():
     pass
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as ex:
+        print(f'Caught {str(ex)}, returning as failed')
+        sys.exit(1)
