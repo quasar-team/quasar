@@ -4,7 +4,7 @@ jobs:
     - name: uasdk_default_quasar_design
       script:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
-            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
             ./quasar.py build ;
@@ -15,7 +15,7 @@ jobs:
     - name: uasdk_test_sync_methods
       script:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
-            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             cp .CI/test_cases/test_methods/Design.xml Design ;
             ./quasar.py generate device --all ;
@@ -29,7 +29,7 @@ jobs:
     - name: uasdk_test_async_methods
       script:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
-            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             cp .CI/test_cases/test_async_methods/Design.xml Design ;
             ./quasar.py generate device --all ;
@@ -42,7 +42,7 @@ jobs:
     - name: uasdk_test_cache_variables
       script:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
-            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             cp .CI/test_cases/test_cache_variables/Design.xml Design ;
             ./quasar.py generate device --all ;
@@ -59,7 +59,7 @@ jobs:
     - name: uasdk_test_source_variables
       script:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
-            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             cp .CI/test_cases/test_source_variables/Design.xml Design ;
             ./quasar.py generate device --all ;
@@ -73,7 +73,7 @@ jobs:
     - name: uasdk_test_config_entries
       script:
         - docker run  --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
-            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} https://github.com/quasar-team/quasar.git ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             cp -v .CI/test_cases/test_config_entries/Design.xml Design ;
             cp -v .CI/test_cases/test_config_entries/config.xml bin/ ;
