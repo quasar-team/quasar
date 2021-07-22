@@ -52,7 +52,7 @@ jobs:
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} --design .CI/test_cases/test_recurrent_hasobjects/Design.xml --config .CI/test_cases/test_recurrent_hasobjects/config.xml;
-            ./quasar.py generate device --all ;"
+            "
 
     - name: open62541_test_single_variable_node
       script:

@@ -11,7 +11,7 @@ def invoke_and_check(cmd):
     print(f'{Fore.BLUE}Will invoke{Style.RESET_ALL} {cmd}')
     ret_val = os.system(cmd)
     if ret_val != 0:
-        raise Exception ('Stopping because the command {cmd} returned wrong return value of {ret_val}')
+        raise Exception (f'Stopping because the command {cmd} returned wrong return value of {ret_val}')
 
 def clone_quasar(test_branch):
     os.system(f'git clone --recursive -b {test_branch} --depth=1 https://github.com/quasar-team/quasar.git')
@@ -69,5 +69,5 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as ex:
-        print(f'Caught {str(ex)}, returning as failed')
+        print(f'{Fore.RED}Caught exception{Style.RESET_ALL} {str(ex)}, returning as failed')
         sys.exit(1)
