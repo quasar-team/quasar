@@ -17,7 +17,7 @@ jobs:
             echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             echo '********************************************************************' ;
-            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
+            python3 .CI/run_test_case.py --clone --quasar_branch ${TRAVIS_PULL_REQUEST_BRANCH} ;
             cd quasar ;
             sh .CI/travis/job_epilogue.sh ;
             /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_default_quasar_design/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
