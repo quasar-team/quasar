@@ -40,14 +40,16 @@ def main():
     if args.clone:
         clone_quasar(args.quasar_branch)
 
+    prepare_opcua_backend(args.opcua_backend, args.open62541_compat_branch)
+
     if args.design:
         shutil.copyfile(args.design, 'Design/Design.xml')
+
+    build()
 
     if args.config:
         shutil.copyfile(args.config, 'build/bin/config.xml')
 
-    prepare_opcua_backend(args.opcua_backend, args.open62541_compat_branch)
-    build()
     run_and_dump_address_space()
     if args.compare_with_nodeset:
         compare_with_nodeset(args.compare_with_nodeset)
