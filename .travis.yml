@@ -108,7 +108,6 @@ jobs:
             echo '********************************************************************' ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            source .CI/travis/job_prologue.sh ;
             cp -v .CI/test_cases/test_config_entries/Design.xml Design ;
             ./quasar.py generate device --all ;
             cp -v .CI/test_cases/test_config_entries/config.xml bin/ ;
@@ -124,6 +123,4 @@ jobs:
             echo '********************************************************************' ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            source .CI/travis/job_prologue.sh ;
-            cp -v .CI/test_cases/test_config_restrictions/Design.xml Design ;
-            source .CI/travis/job_epilogue.sh ;"
+            .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} --design .CI/test_cases/test_config_restrictions/Design.xml;"
