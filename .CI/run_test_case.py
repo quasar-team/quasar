@@ -10,7 +10,12 @@ def clone_quasar(test_branch):
 def prepare_opcua_backend(opcua_backend, open62541_compat_branch):
     if opcua_backend == 'o6':
         os.system(f'./quasar.py enable_module open62541-compat {open62541_compat_branch}')
-    pass
+        os.system(f'./quasar.py set_build_config open62541_config.cmake')
+    else:
+        raise Exception("backend unsupported")
+
+def build():
+    os.system(f'./quasar.py build Release')
 
 def main():
     parser = argparse.ArgumentParser()
@@ -26,6 +31,7 @@ def main():
         clone_quasar(args.quasar_branch)
 
     prepare_opcua_backend(args.opcua_backend, args.open62541_compat_branch)
+    build()
 
     print('a')
     pass
