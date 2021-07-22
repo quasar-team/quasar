@@ -17,6 +17,9 @@ def prepare_opcua_backend(opcua_backend, open62541_compat_branch):
 def build():
     os.system(f'./quasar.py build Release')
 
+def run_and_dump_address_space():
+    os.system('./.CI/travis/server_fixture.py --command_to_run uasak_dump')
+
 def main():
     parser = argparse.ArgumentParser()
 
@@ -32,6 +35,7 @@ def main():
 
     prepare_opcua_backend(args.opcua_backend, args.open62541_compat_branch)
     build()
+    run_and_dump_address_space()
 
     print('a')
     pass
