@@ -3,6 +3,7 @@
 #TODO authors etc
 import os
 import argparse
+import shutil
 
 def clone_quasar(test_branch):
     os.system(f'git clone --recursive -b {test_branch} --depth=1 https://github.com/quasar-team/quasar.git')
