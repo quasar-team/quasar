@@ -30,12 +30,20 @@ def main():
     parser.add_argument('--quasar_branch', default='master')
     parser.add_argument('--opcua_backend')
     parser.add_argument('--open62541_compat_branch')
+    parser.add_argument('--design', default=None)
+    parser.add_argument('--config', default=None)
     parser.add_argument('--compare_with_nodeset', default=None)
 
     args = parser.parse_args()
 
     if args.clone:
         clone_quasar(args.quasar_branch)
+
+    if args.design:
+        shutil.copyfile(args.design, 'Design/Design.xml')
+
+    if args.config:
+        shutil.copyfile(args.config, 'build/bin/config.xml')
 
     prepare_opcua_backend(args.opcua_backend, args.open62541_compat_branch)
     build()
