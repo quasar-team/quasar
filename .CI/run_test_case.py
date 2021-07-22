@@ -8,7 +8,7 @@ import sys
 from colorama import Fore, Style
 
 def invoke_and_check(cmd):
-    print(f'{Fore.BLUE}Will invoke{Style.RESET_ALL} {cmd}')
+    print(f'{Fore.BLUE}{Style.BRIGHT}Will invoke{Style.RESET_ALL} {cmd}')
     ret_val = os.system(cmd)
     if ret_val != 0:
         raise Exception (f'Stopping because the command {cmd} returned wrong return value of {ret_val}')
@@ -42,7 +42,7 @@ def main():
     parser.add_argument('--design', default=None)
     parser.add_argument('--config', default=None)
     parser.add_argument('--compare_with_nodeset', default=None)
-
+    parser.add_argument('--generate_all_devices', action='store_true')
     args = parser.parse_args()
 
     if args.clone:
@@ -52,6 +52,9 @@ def main():
 
     if args.design:
         shutil.copyfile(args.design, 'Design/Design.xml')
+
+    if args.generate_all_devices:
+        invoke_and_check('./quasar.py generate device --all')
 
     build()
 
