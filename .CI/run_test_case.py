@@ -20,6 +20,9 @@ def build():
 def run_and_dump_address_space():
     os.system('./.CI/travis/server_fixture.py --command_to_run uasak_dump')
 
+def compare_with_nodeset(reference_ns):
+    os.system(f'/opt/NodeSetTools/nodeset_compare.py {reference_ns} build/bin/dump.xml --ignore_nodeids StandardMetaData')
+
 def main():
     parser = argparse.ArgumentParser()
 
@@ -27,6 +30,7 @@ def main():
     parser.add_argument('--quasar_branch', default='master')
     parser.add_argument('--opcua_backend')
     parser.add_argument('--open62541_compat_branch')
+    parser.add_argument('--compare_with_nodeset', default=None)
 
     args = parser.parse_args()
 
@@ -36,6 +40,8 @@ def main():
     prepare_opcua_backend(args.opcua_backend, args.open62541_compat_branch)
     build()
     run_and_dump_address_space()
+    if args.compare_with_nodeset:
+        compare_with_nodeset(args.compare_with_nodeset)
 
     print('a')
     pass

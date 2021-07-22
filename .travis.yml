@@ -19,9 +19,7 @@ jobs:
             echo '********************************************************************' ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_default_quasar_design/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
-
+            .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml;
             "
 
     - name: open62541_test_cache_variables
