@@ -19,8 +19,8 @@ def clone_quasar(test_branch):
 
 def prepare_opcua_backend(opcua_backend, open62541_compat_branch):
     if opcua_backend == 'o6':
-        os.system(f'./quasar.py enable_module open62541-compat {open62541_compat_branch}')
-        os.system(f'./quasar.py set_build_config open62541_config.cmake')
+        invoke_and_check(f'./quasar.py enable_module open62541-compat {open62541_compat_branch}')
+        invoke_and_check(f'./quasar.py set_build_config open62541_config.cmake')
     elif opcua_backend == 'uasdk':
         invoke_and_check('./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake')
     else:
