@@ -14,7 +14,7 @@ jobs:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_methods/Design.xml --generate-all-devices --config .CI/test_cases/test_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml ;
+            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_methods/Design.xml --generate_all_devices --config .CI/test_cases/test_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml ;
             "
 
     - name: uasdk_test_async_methods
@@ -22,7 +22,7 @@ jobs:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_async_methods/Design.xml --generate-all-devices --config .CI/test_cases/test_async_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
+            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_async_methods/Design.xml --generate_all_devices --config .CI/test_cases/test_async_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
             "
 
     - name: uasdk_test_cache_variables
@@ -47,7 +47,7 @@ jobs:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_source_variables/Design.xml --generate-all-devices --config .CI/test_cases/test_source_variables/config.xml --compare_with_nodeset .CI/test_cases/test_source_variables/reference_ns2.xml
+            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_source_variables/Design.xml --generate_all_devices --config .CI/test_cases/test_source_variables/config.xml --compare_with_nodeset .CI/test_cases/test_source_variables/reference_ns2.xml
             "
 
     - name: uasdk_test_config_entries
@@ -55,5 +55,5 @@ jobs:
         - docker run  --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_config_entries/Design.xml --generate-all-devices --config .CI/test_cases/test_config_entries/config.xml --compare_with_nodeset .CI/test_cases/test_config_entries/reference_ns2.xml
+            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_config_entries/Design.xml --generate_all_devices --config .CI/test_cases/test_config_entries/config.xml --compare_with_nodeset .CI/test_cases/test_config_entries/reference_ns2.xml
             "
