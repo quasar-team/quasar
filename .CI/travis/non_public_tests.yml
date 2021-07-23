@@ -6,10 +6,7 @@ jobs:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
-            ./quasar.py build ;
-            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_default_quasar_design/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
+            .CI/run_test_case.py --opcua_backend uasdk --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml ;
             "
 
     - name: uasdk_test_sync_methods
