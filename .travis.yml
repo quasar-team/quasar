@@ -14,9 +14,7 @@ jobs:
     - name: open62541_default_quasar_design
       script:
         - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
-            echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
-            echo '********************************************************************' ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
             .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml;
@@ -25,19 +23,12 @@ jobs:
     - name: open62541_test_cache_variables
       script:
         - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
-            echo '********************************************************************' ;
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
-            echo '********************************************************************' ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            ./quasar.py enable_module open62541-compat ${OPEN62541_COMPAT_VERSION} ;
-            ./quasar.py set_build_config open62541_config.cmake ;
-            cp .CI/test_cases/test_cache_variables/Design.xml Design ;
-            ./quasar.py generate device --all ;
-            ./quasar.py build Release ;
+            .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} --design .CI/test_cases/test_cache_variables/Design.xml --generate_all_devices --config .CI/test_cases/test_cache_variables/config.xml;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h ;
             cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp ;
-            cp -v .CI/test_cases/test_cache_variables/config.xml build/bin ;
             ./quasar.py build Release ;
             ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
             /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_cache_variables/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
@@ -76,11 +67,8 @@ jobs:
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            source .CI/travis/job_prologue.sh ;
-            cp -v .CI/test_cases/test_instantiation_from_design/Design.xml Design ;
-            ./quasar.py generate device --all ;
-            cp -v .CI/test_cases/test_instantiation_from_design/config.xml bin/ ;
-            source .CI/travis/job_epilogue.sh ;"
+            .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} --design .CI/test_cases/test_instantiation_from_design/Design.xml --generate_all_devices --config .CI/test_cases/test_instantiation_from_design/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
+            "
 
     - name: open62541_test_config_entries
       script:
@@ -88,11 +76,7 @@ jobs:
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            cp -v .CI/test_cases/test_config_entries/Design.xml Design ;
-            ./quasar.py generate device --all ;
-            cp -v .CI/test_cases/test_config_entries/config.xml bin/ ;
-            source .CI/travis/job_epilogue.sh ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_config_entries/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
+            .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} --design .CI/test_cases/test_config_entries/Design.xml --generate_all_devices --config .CI/test_cases/test_config_entries/config.xml --compare_with_nodeset .CI/test_cases/test_config_entries/reference_ns2.xml
             "
 
     - name: open62541_test_config_restrictions
