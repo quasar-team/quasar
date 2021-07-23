@@ -14,7 +14,8 @@ def invoke_and_check(cmd):
         raise Exception (f'Stopping because the command {cmd} returned wrong return value of {ret_val}')
 
 def clone_quasar(test_branch):
-    os.system(f'git clone --recursive -b {test_branch} --depth=1 https://github.com/quasar-team/quasar.git')
+    invoke_and_check(f'git clone --recursive -b {test_branch} --depth=1 https://github.com/quasar-team/quasar.git')
+    os.chdir('quasar')
 
 def prepare_opcua_backend(opcua_backend, open62541_compat_branch):
     if opcua_backend == 'o6':
