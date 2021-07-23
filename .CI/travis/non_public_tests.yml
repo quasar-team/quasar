@@ -14,13 +14,7 @@ jobs:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            cp .CI/test_cases/test_methods/Design.xml Design ;
-            ./quasar.py generate device --all ;
-            ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
-            cp -v .CI/test_cases/test_methods/config.xml bin/ ;
-            ./quasar.py build ;
-            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_methods/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
+            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_methods/Design.xml --generate-all-devices --config .CI/test_cases/test_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml ;
             "
 
     - name: uasdk_test_async_methods
@@ -28,13 +22,8 @@ jobs:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            cp .CI/test_cases/test_async_methods/Design.xml Design ;
-            ./quasar.py generate device --all ;
-            ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
-            cp -v .CI/test_cases/test_async_methods/config.xml bin/ ;
-            ./quasar.py build ;
-            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_methods/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData  ;"
+            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_async_methods/Design.xml --generate-all-devices --config .CI/test_cases/test_async_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
+            "
 
     - name: uasdk_test_cache_variables
       script:
@@ -58,13 +47,7 @@ jobs:
         - docker run --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            cp .CI/test_cases/test_source_variables/Design.xml Design ;
-            ./quasar.py generate device --all ;
-            ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
-            cp -v .CI/test_cases/test_source_variables/config.xml bin/ ;
-            ./quasar.py build ;
-            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_source_variables/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
+            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_source_variables/Design.xml --generate-all-devices --config .CI/test_cases/test_source_variables/config.xml --compare_with_nodeset .CI/test_cases/test_source_variables/reference_ns2.xml
             "
 
     - name: uasdk_test_config_entries
@@ -72,10 +55,5 @@ jobs:
         - docker run  --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            cp -v .CI/test_cases/test_config_entries/Design.xml Design ;
-            cp -v .CI/test_cases/test_config_entries/config.xml bin/ ;
-            ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake ;
-            ./quasar.py build ;
-            ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_config_entries/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
+            .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_config_entries/Design.xml --generate-all-devices --config .CI/test_cases/test_config_entries/config.xml --compare_with_nodeset .CI/test_cases/test_config_entries/reference_ns2.xml
             "
