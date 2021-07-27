@@ -15,10 +15,15 @@
     <table style="text-align: left; width: 100%;" cellspacing="1"
       cellpadding="4" border="0">
       <tbody>
-        <tr style="background-color: rgb(34, 84, 152);">
+        <tr style="background-color: rgb(34, 84, 152); color: rgb(255,
+          255, 255);">
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Version</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Changes
+
+
+
+
 
 
 
@@ -250,10 +255,87 @@
 
 
 
+
+
+
+
               backward incompatibilites</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"
             width="50%"><strong>JIRA Release notes</strong><br>
+          </td>
+          <td valign="top"><strong>Testing outcome</strong><br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">1.5.5<br>
+            <font size="-1">(27-Jul-2021)</font><br>
+          </td>
+          <td valign="top">Optimized the CI testing, reworked some
+            scripts, cleaned-up. quasar fixed some noncompliance wrt
+            address-space info model. <br>
+          </td>
+          <td valign="top">If you use open62541-compat, please use 1.4.0
+            or later.<br>
+          </td>
+          <td valign="top">
+            <main role="main" id="main" class="aui-page-panel-content">
+              <meta http-equiv="content-type" content="text/html;
+                charset=windows-1252">
+              Bug<br>
+              <ul>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2365">OPCUA-2365</a>]
+                  - quasar CI test "test_cache_variables" non passing as
+                  non-OPCUA compliant</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2418">OPCUA-2418</a>]
+                  - test_config_entry missing DataType (i.e. defaults to
+                  BaseDataType)</li>
+              </ul>
+              <br>
+              Task<br>
+              <ul>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2355">OPCUA-2355</a>]
+                  - quasar servers, when used as shared objects, not to
+                  cannibalize Ctrl-C handler</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2400">OPCUA-2400</a>]
+                  - "nullAllowed" arrays (config-initialized) should
+                  have DataType of BaseDataType</li>
+              </ul>
+              <br>
+              Improvement<br>
+              <ul>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2372">OPCUA-2372</a>]
+                  - quasar to use open2541 1.2X (i.e. open62541-compat
+                  1.4.x) for CI</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2373">OPCUA-2373</a>]
+                  - travis.yml global variable for open62541-compat
+                  version to test against</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2374">OPCUA-2374</a>]
+                  - augment reference NS2 w/ additions from UaSak 0.6</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2421">OPCUA-2421</a>]
+                  - shallow clone of quasar in quasar CI</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2422">OPCUA-2422</a>]
+                  - quasar CI: ignore StandardMetaData for current
+                  (temporary) incompliance with UA data model</li>
+                <li>[<a
+                    href="https://its.cern.ch/jira/browse/OPCUA-2423">OPCUA-2423</a>]
+                  - Put common parts of CI scripts into block scripts</li>
+              </ul>
+            </main>
+          </td>
+          <td valign="top">open62541_test_methods not passing for the
+            method arguments behaving differently from UASDK. This will
+            be <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+              investigated</a>.<br>
           </td>
         </tr>
         <tr>
@@ -265,46 +347,39 @@
           </td>
           <td valign="top">(none known)<br>
           </td>
-          <td valign="top">Task
-            <br>
+          <td valign="top">Task <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2274">OPCUA-2274</a>]
-                - Simplify travis.yml
-              </li>
+                - Simplify travis.yml </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2330">OPCUA-2330</a>]
-                - "./quasar.py style_it" missing doc
-              </li>
+                - "./quasar.py style_it" missing doc </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2352">OPCUA-2352</a>]
                 - CI, reference nodesets checks for cases:
                 cache_variables, source_variables, methods,
-                config_entries
-              </li>
+                config_entries </li>
             </ul>
             <br>
-            Improvement
-            <br>
+            Improvement <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2323">OPCUA-2323</a>]
                 - .gitignore in quasar-based servers to go user-managed
               </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2334">OPCUA-2334</a>]
-                - Unwrackify quasarCommands.html
-              </li>
+                - Unwrackify quasarCommands.html </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2336">OPCUA-2336</a>]
                 - warning: extra ‘;’ [-Wpedantic] in
                 ../AddressSpace/include/ASDelegatingMethod.h and few
-                more
-              </li>
+                more </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2339">OPCUA-2339</a>]
-                - The output of external_tool_check might be confusing
-              </li>
+                - The output of external_tool_check might be confusing </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2340">OPCUA-2340</a>]
-                - Something fishy about ArrayTools
-              </li>
+                - Something fishy about ArrayTools </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2348">OPCUA-2348</a>]
-                - Fix mixed indent/style of Design.xsd
-              </li>
+                - Fix mixed indent/style of Design.xsd </li>
             </ul>
+          </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)<br>
           </td>
         </tr>
         <tr>
@@ -332,6 +407,8 @@
                 cleanup </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.5.2<br>
@@ -387,6 +464,8 @@
               </ul>
             </main>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.5.1<br>
@@ -453,6 +532,8 @@
                 derived from std::exception </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.5.0<br>
@@ -473,6 +554,8 @@
                 updated </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.B3<br>
@@ -499,6 +582,8 @@
                 directory </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.B2<br>
@@ -550,6 +635,8 @@
               </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.B1<br>
@@ -622,6 +709,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 logic </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.A10<br>
@@ -657,6 +746,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Simplify manage_files module: 1. refactoring </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.A9<br>
@@ -694,6 +785,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
               </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.A8<br>
@@ -724,6 +817,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 with 3.3 were identified) </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.A7<br>
@@ -753,6 +848,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Add a script to run CI test locally </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.A6<br>
@@ -781,6 +878,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Travis CI extensions: supply actual config files </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.A5<br>
@@ -805,6 +904,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Improve error message for address space construction </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.A4<br>
@@ -829,6 +930,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 BadNodeIdExists) </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.A3<br>
@@ -854,6 +957,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 empty </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.A2<br>
@@ -877,6 +982,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Test singleVariableNode </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">nebula.A1<br>
@@ -907,6 +1014,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Rework of module compat check: part1: removal </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.4.2<br>
@@ -959,6 +1068,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
             <br>
             <br>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.4.1<br>
@@ -1058,6 +1169,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 transformations </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.4.0<br>
@@ -1168,6 +1281,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 transformations </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.14<br>
@@ -1225,6 +1340,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Lot of stale code to remove in ASNodeManager.cpp </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.13<br>
@@ -1279,6 +1396,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 (subject to gcc 4.8.5 avail) </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.12<br>
@@ -1355,6 +1474,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 Configuration xsd generator</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.11<br>
@@ -1385,6 +1506,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - boost -&gt; std migration (where possible) </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.10<br>
@@ -1439,6 +1562,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Quasar fails to compile in C++17 mode</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.9<br>
@@ -1471,6 +1596,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 no 'getstatusoutput' (In Python 2.7)) </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.8<br>
@@ -1500,6 +1627,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 parenthesis-operand </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.7<br>
@@ -1537,6 +1666,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - misleading build error message</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.6<br>
@@ -1572,6 +1703,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 case-insensitive</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.5<br>
@@ -1632,6 +1765,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 information 'commitID'</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.4<br>
@@ -1702,6 +1837,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Add windows debugger console sink to LogIt</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.3<br>
@@ -1729,6 +1866,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 backends</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.2<br>
@@ -1754,6 +1893,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 generation</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.1<br>
@@ -1776,6 +1917,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Unfreed memory in open62541 server config object</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.3.0<br>
@@ -1829,6 +1972,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Make out-of-source build default</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.2.7<br>
@@ -1910,6 +2055,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 error message</li>
             </ul>
             <a name="editarea"></a> </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.2.6<br>
@@ -1957,6 +2104,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
             <ul>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.2.5<br>
@@ -2006,6 +2155,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Embedded commands help into quasarCommands.html</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.2.4<br>
@@ -2063,6 +2214,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 designToClassBody.xslt to CommonFunctions</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.2.3<br>
@@ -2121,6 +2274,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Cannot document methods in Design.xml</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.2.2<br>
@@ -2152,6 +2307,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 candidate' tags</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.2.1<br>
@@ -2184,6 +2341,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 present, warn when not</li>
             </ul>
             <a name="editarea"></a> </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td valign="top">1.2.0<br>
@@ -2265,6 +2424,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Model visualization improvements</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.1.8<br>
@@ -2308,6 +2469,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 messages, refactoring, and other improvements</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.1.7<br>
@@ -2351,6 +2514,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Improve VCS ignore lists</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.1.6<br>
@@ -2381,6 +2546,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 impossible find alternative deployment</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.1.5<br>
@@ -2406,6 +2573,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Missing copyright header in ASNodeQueries.h</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.1.4<br>
@@ -2440,6 +2609,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 2013</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.1.3<br>
@@ -2477,6 +2648,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 diagram) to see presence of device lgoic</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.1.2<br>
@@ -2523,6 +2696,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Add header for files.txt and original_files.txt</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.1.1<br>
@@ -2549,6 +2724,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Python commands renaming</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.1.0<br>
@@ -2613,6 +2790,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Source variables should be logged using LogIt</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.0.2<br>
@@ -2668,6 +2847,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Fix example.org namespace </li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.0.1<br>
@@ -2695,6 +2876,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Datatype UINT16 for QUASAR</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">1.0.0<br>
@@ -2734,6 +2917,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Windows-enabled Generic Server</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">0.99<br>
@@ -2838,6 +3023,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 in all OPC UA srv logs</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">0.98<br>
@@ -2898,6 +3085,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 config file</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">0.97<br>
@@ -2973,6 +3162,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 bails out</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">0.96<br>
@@ -3013,6 +3204,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 framework in existing projects</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">0.95<br>
@@ -3045,6 +3238,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 be default argument for time</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">0.94<br>
@@ -3084,6 +3279,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 DeviceLogicTypeName not defined</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">0.93<br>
@@ -3131,6 +3328,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
                 - Create script for tagging Generic Server releases</li>
             </ul>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
         <tr>
           <td style="vertical-align: top;">0.92<br>
@@ -3158,6 +3357,8 @@ href="https://cmake.org/cmake/help/v3.4/policy/CMP0065.html">CMP0065</a>.
           </td>
           <td style="vertical-align: top;"><br>
           </td>
+          <td valign="top">(potential remarks were sent in the release
+            email)</td>
         </tr>
       </tbody>
     </table>
