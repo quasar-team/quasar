@@ -7,7 +7,7 @@ services:
 
 env:
   global:
-    - OPEN62541_COMPAT_VERSION=OPCUA-2419_add_property_node_ref_not_setting_datatype_correctly
+    - OPEN62541_COMPAT_VERSION=OPCUA-2427_missing_ids
 
 jobs:
   include:
