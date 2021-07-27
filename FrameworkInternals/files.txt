@@ -13,7 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "811696cceaf104d26cfdca43f7dd36d3",
+                "md5": "a265c252f04ba50af8ad684ab6a1bb8a",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -166,7 +166,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "62428de2b9a40d0b4056be743fdf4adc",
+                "md5": "d9ac66ad972b9c6ccd3eed6ffb23e5ef",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "2dd7af8b9440bf3a04f8acde670e1dbc",
+                "md5": "a1c2504b913327036b490b36abf5433a",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "278f9499464716416d6a2e7e629652a2",
+                "md5": "117f22dd8498c5ccdc76279c241bd265",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1279,7 +1279,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "85b81a0424e1e852c9ecd0702612e05d",
+                "md5": "8e28ea2ceb6eaef846bfe3853ad5d958",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1320,7 +1320,7 @@
         "files": {
             "BaseQuasarServer.cpp": {
                 "install": "overwrite",
-                "md5": "887d79c2e641a66e879ef1a40305011b",
+                "md5": "c64f97f230afddec8a0155488dd34360",
                 "must_be_versioned": true,
                 "must_exist": true
             },
