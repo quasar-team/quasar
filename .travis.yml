@@ -7,7 +7,7 @@ services:
 
 env:
   global:
-    - OPEN62541_COMPAT_VERSION=OPCUA-2427_missing_ids
+    - OPEN62541_COMPAT_VERSION=v1.4.0-rc1
 
 jobs:
   include:
