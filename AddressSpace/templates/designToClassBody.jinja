@@ -261,7 +261,12 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           {% endif %}
           UaVariant variant;
           {{oracle.vector_to_uavariant_function(cv.get('dataType'))}} (vect, variant);
-          m_{{cv.get('name')}}->setDataType( UaNodeId({{oracle.data_type_to_builtin_type(cv.get('dataType'))}}, 0) );
+          {% if cv.get('nullPolicy') == 'nullForbidden' %}
+            m_{{cv.get('name')}}->setDataType( UaNodeId({{oracle.data_type_to_builtin_type(cv.get('dataType'))}}, 0) );
+          {% else %}
+            m_{{cv.get('name')}}->setDataType( UaNodeId(OpcUaId_BaseDataType, 0) );
+          {% endif %}
+
           m_{{cv.get('name')}}->setValue(
             /*pSession*/ nullptr,
             UaDataValue(
