@@ -7,7 +7,7 @@ services:
 
 env:
   global:
-    - OPEN62541_COMPAT_VERSION=v1.4.0-rc1
+    - OPEN62541_COMPAT_VERSION=OPCUA-2413-open62541-enhancements-for-mirror-variable-optional-module-compatibility
 
 jobs:
   include:
