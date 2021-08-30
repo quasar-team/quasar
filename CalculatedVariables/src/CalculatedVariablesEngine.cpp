@@ -226,7 +226,7 @@ std::string CalculatedVariables::Engine::elaborateFormula (
                 formulaInWork.replace(
                         /*from*/ matched[0].first,
                         /*to*/ matched[0].second,
-                        elaborateParent(parentObjectAddress, numLevelsUp, thisFormulaAddress));
+						escapeSpecialCharactersInParserVariableName(elaborateParent(parentObjectAddress, numLevelsUp, thisFormulaAddress)));
                 LOG(Log::TRC, logComponentId) << "After expanding parentObjectAddress, formulaInWork=" << formulaInWork;
             }
             else
