@@ -43,6 +43,13 @@ using namespace boost::xpressive;
 namespace CalculatedVariables
 {
 
+const std::string DashSignVariableRepr {"__dash__"};
+const std::string SlashSignVariableRepr {"__slash__"};
+
+std::string escapeSpecialCharactersInFormula (const std::string& inputFormula);
+std::string escapeSpecialCharactersInParserVariableName (const std::string& input);
+static std::string replaceAll (const std::string& input, const std::string& from, const std::string& to);
+
 void Engine::initialize()
 {
     logComponentId = Log::getComponentHandle("CalcVars");
@@ -51,7 +58,10 @@ void Engine::initialize()
 ParserVariable& Engine::registerVariableForCalculatedVariables(AddressSpace::ChangeNotifyingVariable* variable)
 {
     LOG(Log::TRC, logComponentId) << "Putting on list of ParserVariables: " << variable->nodeId().toString().toUtf8();
-    s_parserVariables.emplace_back(variable);
+    /* see if we have to do some substitutions of minus sign, etc. */
+    s_parserVariables.emplace_back(
+    		variable,
+			escapeSpecialCharactersInParserVariableName(variable->nodeId().toString().toUtf8())); // might be different from the variable name! (OPCUA-2456)
     variable->addChangeListener(ChangeListener(s_parserVariables.back())); // using back() because we just added it a line above
     return s_parserVariables.back();
 }
@@ -114,6 +124,35 @@ static std::string elaborateParent(
     return result;
 }
 
+static std::string replaceAll (const std::string& input, const std::string& from, const std::string& to)
+{
+	std::string replica (input);
+	std::string::size_type pos;
+	do
+	{
+		pos = replica.find(from);
+		if (pos != std::string::npos)
+		{
+			replica.replace(pos, from.length(), to);
+		}
+	}
+	while (pos != std::string::npos);
+	return replica;
+}
+
+std::string escapeSpecialCharactersInFormula (
+		const std::string& inputFormula)
+{
+	std::string dashReplaced { replaceAll(inputFormula, "\\-", DashSignVariableRepr) };
+	return replaceAll(dashReplaced, "\\/", SlashSignVariableRepr);
+}
+
+std::string escapeSpecialCharactersInParserVariableName (const std::string& input)
+{
+	std::string dashReplaced { replaceAll(input, "-", DashSignVariableRepr) };
+	return replaceAll(dashReplaced, "/", SlashSignVariableRepr);
+}
+
 std::string CalculatedVariables::Engine::elaborateFormula (
         const Configuration::CalculatedVariable& config,
         const std::string& parentObjectAddress
@@ -154,7 +193,7 @@ std::string CalculatedVariables::Engine::elaborateFormula (
                 if (argumentPresent)
                     LOG_AND_THROW_ERROR(thisFormulaAddress, "$"+operation+" expression does not take arguments!");
                 LOG(Log::TRC, logComponentId) << "Before expanding $_, formulaInWork=" << formulaInWork;
-                formulaInWork.replace(/*from*/ matched[0].first, /*to*/ matched[0].second, parentObjectAddress);
+                formulaInWork.replace(/*from*/ matched[0].first, /*to*/ matched[0].second, escapeSpecialCharactersInParserVariableName(parentObjectAddress));
                 LOG(Log::TRC, logComponentId) << "After expanding $_, formulaInWork=" << formulaInWork;
             }
             else if (operation == "applyGenericFormula")
@@ -195,7 +234,7 @@ std::string CalculatedVariables::Engine::elaborateFormula (
         }
     }
     while (matchedAnything);
-
+    formulaInWork = escapeSpecialCharactersInFormula(formulaInWork);
     return formulaInWork;
 }
 
@@ -220,9 +259,11 @@ void Engine::instantiateCalculatedVariable(
         const Configuration::CalculatedVariable& config)
 {
     // check if see any magic expression in the formula
+	LOG(Log::TRC, logComponentId) << "Formula before elaboration: " <<  config.value();
     std::string elaboratedFormula = elaborateFormula(
             config,
             parentNodeId.toString().toUtf8());
+    LOG(Log::TRC, logComponentId) << "Formula after elaboration: " << elaboratedFormula;
 
     CalculatedVariable* calculatedVariable = new CalculatedVariable(
             nm->makeChildNodeId(parentNodeId, config.name().c_str()),
