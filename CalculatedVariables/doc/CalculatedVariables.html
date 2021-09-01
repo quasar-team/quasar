@@ -687,13 +687,13 @@ counter-increment: h3counter;
     <p>Imagine the following config file:<br>
     </p>
     <pre class="mycode">&lt;MyDevice name="Bus1/Device2-A"&gt;<br>  &lt;CalculatedVariable name="calibrationConstant" value="2.35"/&gt;<br>&lt;/MyDevice&gt;<br><br></pre>
-    <br/>
+    <br>
     Such a config file is fine; among different address-space entities
     instantiated it'd have the CalculatedVariable under address
     "Bus1/Device2-A.calibrationConstant".<br>
     However, now imagine that somewhere "later" in the config file,
-    another CalculatedVariable would be introduced and it would refer to the
-    calibrationConstant:<br>
+    another CalculatedVariable would be introduced and it would refer to
+    the calibrationConstant:<br>
     <br>
     <pre class="mycode">&lt;CalculatedVariable name="voltage" value="X -&nbsp; Bus1/Device2-A.calibrationConstant"/&gt;</pre>
     <br>
@@ -710,8 +710,8 @@ counter-increment: h3counter;
     are to refer to variable names. Thus, the aforementioned example
     would be fixed this way:<br>
     <br>
-    <pre class="mycode">&nbsp;&lt;CalculatedVariable name="voltage" value="X -&nbsp; Bus1\/Device2-A.calibrationConstant"/&gt;</pre>
-    <br/>
+    <pre class="mycode">&nbsp;&lt;CalculatedVariable name="voltage" value="X -&nbsp; Bus1\/Device2\-A.calibrationConstant"/&gt;</pre>
+    <br>
     <b>Note</b> that those using $thisObjectAddress and/or
     $parentObjectAddress to derive the input variable address do not
     have to do anything because both of the meta-functions will escape
@@ -772,10 +772,10 @@ counter-increment: h3counter;
       and the operands, e.g. this is legal:<br>
     </p>
     <pre class="mycode">&lt;CalculatedVariable name="V300" value="cos(x + 1.4)"/&gt;</pre>
-    <br/>
+    <br>
     and this is illegal:<br>
     <pre class="mycode">&lt;CalculatedVariable name="V300" value="cos (x + 1.4)"/&gt;</pre>
-    <br/>
+    <br>
     <h1>Advanced documentation for quasar developers</h1>
     <h2>Selection of expression parser</h2>
     <p>There exist many open-source parsers potentially suitable for the
