@@ -17,6 +17,7 @@ counter-increment: h1counter;
 
 h1 {
 counter-reset: h2counter;
+
 }
 
 h2:before {
@@ -24,13 +25,57 @@ content: counter(h1counter) "." counter(h2counter) ". " ;
 counter-increment: h2counter;
 }
 
+h2 {
+  counter-reset: h3counter;
+}
+
+h3:before {
+content: counter(h1counter) "." counter(h2counter) "." counter(h3counter) ". " ;
+counter-increment: h3counter;
+}
+
+
+
+
+    table {
+        border-width: 10px;
+        border-collapse: collapse;
+    }
+
+    td, th {
+        border: 1px solid black;
+        padding: 4px;
+    }
+
+    th
+    {
+        background-color: #4CAF50;
+        color: white;
+        text-align: left;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .mycode {
+      font-family: monospace;
+      border-style: dotted;
+      border-width: 1px;
+      background-color:
+        #eeeeff;
+      padding: .5em;
+      margin: 1em;
+      display: inline-block;
+
+    }
+
+
 </style>
   </head>
   <body>
     <font size="+3">Calculated Variables</font><br>
     <br>
     by: Piotr Nikiel, Oct-Nov 2018<br>
-    Updated Nov 2019<br>
+    Updated August 2021<br>
     <br>
     <h1>Overview and end-user documentation<br>
     </h1>
@@ -40,7 +85,9 @@ counter-increment: h2counter;
     "CalculatedItems" concept in the CANopen OPC-UA server.<br>
     I'd like to acknowledge his contribution as my inspiration (even
     though the CalculatedVariables module is designed entirely from
-    scratch and using different concepts and technologies).<br>
+    scratch and using original architecture as well as different
+    concepts and technologies).<br>
+    <br>
     <h2>Rationale</h2>
     <p>A quasar-based OPC-UA server is based on a model of a system it
       is made for. This model is called a design. The model explains (in
@@ -72,25 +119,21 @@ counter-increment: h2counter;
         Variable might be attached with a formula that recomputes the
         ADC value (in volts) into temperature.</li>
     </ul>
-    <h2>Design-based variables vs Calculated Variables<br>
+    <h2>Design-based variables vs CalculatedVariables<br>
     </h2>
-    <table border="1" cellspacing="2" cellpadding="2" width="100%">
-      <tbody>
-        <tr>
-          <td valign="top"><b>Aspect</b><b><br>
-            </b></td>
-          <td valign="top"><b>Design-based variable</b><b><br>
-            </b><b>(cache-variable or source-variable)</b><br>
-          </td>
-          <td valign="top"><b>Calculated Variable</b><b><br>
-            </b></td>
+    <table>
+      <thead> <tr>
+          <th>Aspect</th>
+          <th>Design-based variable (cache-variable or source-variable)</th>
+          <th>Calculated Variable</th>
         </tr>
+      </thead> <tbody>
         <tr>
           <td valign="top">Instantiation<br>
           </td>
           <td valign="top">The variable always belongs to an object of a
             quasar class which is defined by the model (Design).<br>
-            Therefore in fact it's the design which determines its type,
+            Therefore it's the design which determines its type,
             behaviour, limitations etc.<br>
           </td>
           <td valign="top">The variable is defined in the configuration
@@ -105,9 +148,15 @@ counter-increment: h2counter;
             programming can be used.<br>
           </td>
           <td valign="top">Is a result of an analytical expression
-            evaluation. The inputs to the expression can be constants
-            and other variables (including previously defined Calculated
-            Variables).<br>
+            evaluation. The inputs to the expression can be:<br>
+            <ul>
+              <li>literal constants (e.g. 1000.0 or _pi)</li>
+              <li>scalar cache variables which output numbers (i.e. are
+                of any numeric quasar data type)</li>
+              <li>other calculated variables</li>
+              <li>free variables</li>
+              <li>config entries of numeric data-type</li>
+            </ul>
           </td>
         </tr>
         <tr>
@@ -115,7 +164,7 @@ counter-increment: h2counter;
           </td>
           <td valign="top">Any supported by quasar, including arrays.<br>
           </td>
-          <td valign="top">Double or boolean.<br>
+          <td valign="top">Double or boolean scalar.<br>
           </td>
         </tr>
         <tr>
@@ -130,7 +179,7 @@ counter-increment: h2counter;
       </tbody>
     </table>
     <h2>Feature list</h2>
-    <table border="1" cellspacing="2" cellpadding="2">
+    <table>
       <tbody>
         <tr>
           <td valign="top"><b>Feature</b><br>
@@ -209,7 +258,7 @@ counter-increment: h2counter;
         <tr>
           <td valign="top">Formula templates<br>
           </td>
-          <td valign="top">Future<br>
+          <td valign="top">Yes<br>
           </td>
         </tr>
       </tbody>
@@ -222,7 +271,7 @@ counter-increment: h2counter;
     </p>
     <p>Built-in functions<br>
     </p>
-    <table border="1">
+    <table>
       <tbody>
         <tr>
           <td><b>Name</b></td>
@@ -362,7 +411,7 @@ counter-increment: h2counter;
     Built-in operators<br>
     <br>
     <br>
-    <table border="1">
+    <table>
       <thead><tr>
           <td><b>Operator</b></td>
           <td><b>Description</b></td>
@@ -451,18 +500,18 @@ counter-increment: h2counter;
     <p>The XML element type is called CalculatedVariable and it has the
       following attributes:<br>
     </p>
-    <table border="1" cellspacing="2" cellpadding="2">
-      <tbody>
-        <tr>
-          <td valign="top"><b>Name</b><b><br>
-            </b></td>
-          <td valign="top"><b>Obligatory?</b><b><br>
-            </b></td>
-          <td valign="top"><b>XSD Type</b><br>
-          </td>
-          <td valign="top"><b>Meaning</b><b><br>
-            </b></td>
+    <table>
+      <thead> <tr>
+          <th valign="top"><b>Name</b><b><br>
+            </b></th>
+          <th valign="top"><b>Obligatory?</b><b><br>
+            </b></th>
+          <th valign="top"><b>XSD Type</b><br>
+          </th>
+          <th valign="top"><b>Meaning</b><b><br>
+            </b></th>
         </tr>
+      </thead><tbody>
         <tr>
           <td valign="top">name<br>
           </td>
@@ -535,6 +584,82 @@ counter-increment: h2counter;
     <p>The XML element CalculatedVariable can be attached under any
       quasar object declaration as well as on global scope.<br>
     </p>
+    <h2>Meta-functions and meta-operators (dollar signs in the formulas)</h2>
+    <p>It is often practical to perform some sort of elaboration of
+      configured formulas before they are given to be compiled by the
+      formula parser. Such elaboration steps are achieved by placing
+      dollar-sign operators and functions in the formulas. For all
+      examples below, the following quasar design diagram is used:<br>
+    </p>
+    <img moz-do-not-send="true" src="sample_design.png" alt=""
+      width="10%"><br>
+    <h3> $thisObjectAddress</h3>
+    $thisObjectAddress evaluates to the string address of the object
+    under which the calculated variable was instantiated. It finds a
+    very practical application to build generalized formulas, which can
+    be applied "under" multiple places in the address-space, so
+    $thisObjectAddress serves as the relative pointer to the object
+    address.<br>
+    Using the design as above, the following config file shows a sample
+    application:<br>
+    <br>
+    <pre class="mycode">	&lt;TestClass name="tc"&gt;<br>		&lt;CalculatedVariable name="test_var_multiplied" value="$thisObjectAddress.testVariable * 1000" /&gt;<br>	&lt;/TestClass&gt;<br></pre>
+    <h3> $parentObjectAddress(numLevelsUp=N)</h3>
+    $parentObjectAddress is a generalization of $thisObjectAddress. For
+    N=0 it evaluates to $thisObjectAddress, for N=1 to its parent object
+    and so on.<br>
+    Using the design as above, the following config file shows a sample
+    application:<br>
+    <br>
+    <pre class="mycode">	&lt;TestClass name="tc"&gt;<br>		&lt;TestSubClass name="tsc"&gt;<br>			&lt;CalculatedVariable name="test_var_multiplied" value="$parentObjectAddress(numLevelsUp=1).testVariable * 1000" /&gt;<br>		&lt;/TestSubClass&gt;<br>	&lt;/TestClass&gt;<br><br></pre>
+    <h3>$applyGenericFormula(formula)</h3>
+    <p>$applyGenericFormula is used in the context of generalized
+      function templates and <a moz-do-not-send="true"
+        href="#Generalized_formula_templates">documented there</a>.<br>
+    </p>
+    <ul>
+    </ul>
+    <h2><a name="Generalized_formula_templates"></a>Generalized formula
+      templates<br>
+    </h2>
+    Multiple sensors of same type are likely to use same formulas (with
+    possibly different calibration constants). Thus it is economical to
+    share formulas between them if configuration file
+    readibility/clarity would profit.<br>
+    <br>
+    The basic application of generalized formula templates is composed
+    of the following steps:<br>
+    <ul>
+      <li>defining the generalized formula at the top of the
+        configuration file using the CalculatedVariableGenericFormula
+        XML element</li>
+      <li>applying the formula at the point of use using
+        $applyGenericFormula meta-function.</li>
+    </ul>
+    <p>Technically, the job done by quasar for applying the formula at
+      the point of use boils down to pasting the formula in place of the
+      meta-function. In the future, extending this operation by optional
+      arguments, might be considered.<br>
+    </p>
+    <p>An example of the generalized formula template from a real system
+      (CERN - ATLAS DCS - New Small Wheel project, courtesy of P.
+      Tzanis) is given. The generalized formula is put at the top of the
+      configuration file:<br>
+    </p>
+    <pre class="mycode"><meta http-equiv="content-type" content="text/html; charset=UTF-8"><pre class="code-java">&lt;CalculatedVariableGenericFormula name=<span class="code-quote">"thermistorTemperature"</span>
+      formula=<span class="code-quote">"1/( 3.3540154*10^(-3)+(2.5627725*10^(-4)*log(1000*$thisObjectAddress.value/500))+(2.0829210*10^(-6)*(log(1000*$thisObjectAddress.value/500))^2)+(7.3003206*10^(-8)*(log(1000*$thisObjectAddress.value/500))^3)) -273.15"</span>/&gt;</pre></pre>
+
+      <br/>
+    As can be seen, the formula profits from $thisObjectAddress
+    meta-function which enables its reuse at any place of the
+    configuration (so, consequently, the address-space) which has a
+    sibling variable called "value" (which, in the case of the
+    particular application, is the converted voltage expressed in
+    volts).<br>
+    <br>
+    Then, the application of the formula is done in the following way:<br>
+    <br>
+    <pre class="mycode"><meta http-equiv="content-type" content="text/html; charset=UTF-8"><pre class="code-java">&lt;AnalogInput id=<span class="code-quote">"0"</span> name=<span class="code-quote">"GBTX1_TEMP"</span> enableCurrentSource=<span class="code-quote">"<span class="code-keyword">true</span>"</span> &gt; &lt;CalculatedVariable name=<span class="code-quote">"temperature"</span> value=<span class="code-quote">"$applyGenericFormula(thermistorTemperature)"</span> /&gt; &lt;/AnalogInput&gt; <br>&lt;AnalogInput id=<span class="code-quote">"1"</span> name=<span class="code-quote">"GBTX2_TEMP"</span> enableCurrentSource=<span class="code-quote">"<span class="code-keyword">true</span>"</span> &gt; &lt;CalculatedVariable name=<span class="code-quote">"temperature"</span> value=<span class="code-quote">"$applyGenericFormula(thermistorTemperature)"</span> /&gt; &lt;/AnalogInput&gt;</pre></pre>
     <h2>Examples<br>
     </h2>
     <h3>NTC sensors: converting resistance into temperature in Celsius
@@ -560,17 +685,28 @@ counter-increment: h2counter;
       In the example below we also add some CalculatedVariables to hold
       B, T0 and R0 constants.<br>
     </p>
-    <pre>&lt;CalculatedVariable name="T0" value="298.15"/&gt;<br>&lt;CalculatedVariable name="B" value="3977"/&gt;<br>&lt;CalculatedVariable name="R0" value="10E3"/&gt;<br>&lt;CalculatedVariable name="temperatureK" value="T0*B/(T0*ln(NTC1.resistance/R0)+B)" /&gt;</pre>
+    <pre class="mycode">&lt;CalculatedVariable name="T0" value="298.15"/&gt;<br>&lt;CalculatedVariable name="B" value="3977"/&gt;<br>&lt;CalculatedVariable name="R0" value="10E3"/&gt;<br>&lt;CalculatedVariable name="temperatureK" value="T0*B/(T0*ln(NTC1.resistance/R0)+B)" /&gt;</pre>
     <p>We also add two Calculated Variables that will recomputer Kelvins
       into Celsius degrees and Fahrenheit degrees:<br>
     </p>
-    <pre>&lt;CalculatedVariable name="temperatureC" value="temperatureK-273.15"/&gt;<br>&lt;CalculatedVariable name="temperatureF" value="temperatureC*1.8+32"/&gt;<br>
+    <pre class="mycode">&lt;CalculatedVariable name="temperatureC" value="temperatureK-273.15"/&gt;<br>&lt;CalculatedVariable name="temperatureF" value="temperatureC*1.8+32"/&gt;
 </pre>
     <p>In addition, we can add a boolean variable which subjectively
       indicates whether it's warm enough. It's an example of usage of
       logical operators as well as isBoolean attribute:<br>
     </p>
-    <pre>&lt;CalculatedVariable name="isWarmEnough" value="temperatureC &gt; 20" isBoolean="true" /&gt;<br></pre>
+    <pre class="mycode">&lt;CalculatedVariable name="isWarmEnough" value="temperatureC &gt; 20" isBoolean="true" /&gt;<br></pre>
+    <h3>CalculatedVariable attached to multiple different quasar entities</h3>
+    <p>This example shall illustrate that a CalculatedVariable can be
+      attached (i.e. its inputs might be) different quasar entities such
+      as: cache-variables, free-variables, other calculated-variables
+      and even config-entries (if they are of some numeric data-type).<br>
+    </p>
+    <pre class="mycode">	&lt;TestClass name="tc" configentry="125"/&gt;<br>	&lt;FreeVariable name="free_variable" type="Double"/&gt;<br>	&lt;CalculatedVariable name="a_calc_var" value="500" /&gt;<br>	&lt;CalculatedVariable<br>		name="sum_of_free_cache_variables_and_configentry" <br>		value="free_variable + tc.testVariable + tc.configentry - a_calc_var" /&gt;<br></pre>
+    <p>As can be seen, the last calculated variable is a function
+      computed of values of many different quasar entities which all
+      corresponds to address-space variables.<br>
+    </p>
     <h2>Counter-examples</h2>
     <h3>Place no white-space between unary operation (e.g. a function)
       and the parenthesis around its operand</h3>
@@ -776,7 +912,7 @@ href="https://github.com/ArashPartow/math-parser-benchmark-project">https://gith
       1.5.5 as the OPC-UA backend.<br>
     </p>
     <p>Aspect </p>
-    <table class="confluenceTable" border="1">
+    <table>
       <tbody>
         <tr>
           <th class="confluenceTh"><br>
