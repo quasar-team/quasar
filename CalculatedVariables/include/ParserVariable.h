@@ -51,7 +51,7 @@ public:
         Bad
     };
 
-    ParserVariable(AddressSpace::ChangeNotifyingVariable* notifyingVariable);
+    ParserVariable(AddressSpace::ChangeNotifyingVariable* notifyingVariable, const std::string& name);
 
     double value() const { return m_value; }
     double* valuePtr()  { return &m_value; }
@@ -75,6 +75,8 @@ public:
 private:
     //! Ptr to our Address Space counterpart, will notify us on change
     AddressSpace::ChangeNotifyingVariable* const m_notifyingVariable;
+
+    const std::string m_name;
 
     //! This is the current numerical value
     double                                 m_value;
