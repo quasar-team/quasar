@@ -648,8 +648,7 @@ counter-increment: h3counter;
     </p>
     <pre class="mycode"><meta http-equiv="content-type" content="text/html; charset=UTF-8"><pre class="code-java">&lt;CalculatedVariableGenericFormula name=<span class="code-quote">"thermistorTemperature"</span>
       formula=<span class="code-quote">"1/( 3.3540154*10^(-3)+(2.5627725*10^(-4)*log(1000*$thisObjectAddress.value/500))+(2.0829210*10^(-6)*(log(1000*$thisObjectAddress.value/500))^2)+(7.3003206*10^(-8)*(log(1000*$thisObjectAddress.value/500))^3)) -273.15"</span>/&gt;</pre></pre>
-
-      <br/>
+    <br>
     As can be seen, the formula profits from $thisObjectAddress
     meta-function which enables its reuse at any place of the
     configuration (so, consequently, the address-space) which has a
@@ -660,6 +659,63 @@ counter-increment: h3counter;
     Then, the application of the formula is done in the following way:<br>
     <br>
     <pre class="mycode"><meta http-equiv="content-type" content="text/html; charset=UTF-8"><pre class="code-java">&lt;AnalogInput id=<span class="code-quote">"0"</span> name=<span class="code-quote">"GBTX1_TEMP"</span> enableCurrentSource=<span class="code-quote">"<span class="code-keyword">true</span>"</span> &gt; &lt;CalculatedVariable name=<span class="code-quote">"temperature"</span> value=<span class="code-quote">"$applyGenericFormula(thermistorTemperature)"</span> /&gt; &lt;/AnalogInput&gt; <br>&lt;AnalogInput id=<span class="code-quote">"1"</span> name=<span class="code-quote">"GBTX2_TEMP"</span> enableCurrentSource=<span class="code-quote">"<span class="code-keyword">true</span>"</span> &gt; &lt;CalculatedVariable name=<span class="code-quote">"temperature"</span> value=<span class="code-quote">"$applyGenericFormula(thermistorTemperature)"</span> /&gt; &lt;/AnalogInput&gt;</pre></pre>
+    <h2>CalculatedVariables logging and tracing</h2>
+    CalculatedVariables module has its own LogIt component called
+    "CalcVars".<br>
+    <br>
+    As it's the case with any LogIt logging component, its log levels
+    can be configured via the address-space as well as in the
+    configuration file. The latter is often needed because most of
+    potential issues (formula errors) would happen at the server
+    initialization, i.e. before it is possible and practical to raise
+    verbosity using the address-space. <br>
+    <br>
+    Thus, in case of issues with formulas, it is advised to put the
+    CalcVars log level to TRC, for instance by means of the XML
+    configuration:<br>
+    <br>
+    <pre class="mycode">        &lt;StandardMetaData&gt;<br>                &lt;Log&gt;<br>                        &lt;ComponentLogLevels&gt;<br>                                &lt;ComponentLogLevel componentName="CalcVars" logLevel="TRC" /&gt;<br>                        &lt;/ComponentLogLevels&gt;<br>                 &lt;/Log&gt;<br>        &lt;/StandardMetaData&gt;<br><br></pre>
+    <h2>Escaping variable names containing dashes ("-") and slashes
+      ("/")</h2>
+    <p>Users of quasar-based servers sometimes choose to name their
+      quasar objects (i.e. the <i>name</i> attribute of XML elements in
+      the configuration files) with names containing dashes or slashes.<br>
+      This is legit in the quasar world. However, it poses some problems
+      if CalculatedVariables inputs connect to such named objects (i.e.
+      its variables).<br>
+    </p>
+    <p>Imagine the following config file:<br>
+    </p>
+    <pre class="mycode">&lt;MyDevice name="Bus1/Device2-A"&gt;<br>  &lt;CalculatedVariable name="calibrationConstant" value="2.35"/&gt;<br>&lt;/MyDevice&gt;<br><br></pre>
+    <br/>
+    Such a config file is fine; among different address-space entities
+    instantiated it'd have the CalculatedVariable under address
+    "Bus1/Device2-A.calibrationConstant".<br>
+    However, now imagine that somewhere "later" in the config file,
+    another CalculatedVariable would be introduced and it would refer to the
+    calibrationConstant:<br>
+    <br>
+    <pre class="mycode">&lt;CalculatedVariable name="voltage" value="X -&nbsp; Bus1/Device2-A.calibrationConstant"/&gt;</pre>
+    <br>
+    A problem is clearly seen: in the formula, it is impossible to
+    distinguish if the dashes "-" and slashes "/" refer to input
+    variable names or the subtraction and/or division operators (in
+    simpler cases like in this example one could "guess" the meaning but
+    in general quasar architecture prefers to be more explicit rather
+    than to guess). Note that due to the grammar imposed by the parser
+    engine, the precedence of dashes and slashes will always be given to
+    operators rather than operands.<br>
+    <br>
+    Therefore one needs to escape the dash and slash signs in case these
+    are to refer to variable names. Thus, the aforementioned example
+    would be fixed this way:<br>
+    <br>
+    <pre class="mycode">&nbsp;&lt;CalculatedVariable name="voltage" value="X -&nbsp; Bus1\/Device2-A.calibrationConstant"/&gt;</pre>
+    <br/>
+    <b>Note</b> that those using $thisObjectAddress and/or
+    $parentObjectAddress to derive the input variable address do not
+    have to do anything because both of the meta-functions will escape
+    dashes and slashes behind the scenes.<br>
     <h2>Examples<br>
     </h2>
     <h3>NTC sensors: converting resistance into temperature in Celsius
@@ -696,7 +752,8 @@ counter-increment: h3counter;
       logical operators as well as isBoolean attribute:<br>
     </p>
     <pre class="mycode">&lt;CalculatedVariable name="isWarmEnough" value="temperatureC &gt; 20" isBoolean="true" /&gt;<br></pre>
-    <h3>CalculatedVariable attached to multiple different quasar entities</h3>
+    <h3>CalculatedVariable attached to multiple different quasar
+      entities</h3>
     <p>This example shall illustrate that a CalculatedVariable can be
       attached (i.e. its inputs might be) different quasar entities such
       as: cache-variables, free-variables, other calculated-variables
