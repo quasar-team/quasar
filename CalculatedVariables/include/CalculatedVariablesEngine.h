@@ -51,7 +51,7 @@ public:
             );
 
     static ParserVariable& registerVariableForCalculatedVariables( AddressSpace::ChangeNotifyingVariable* variable);
-    static ParserVariable& registerConstantForCalculatedVariables( const std::string& name, double value);
+    static void registerConstantForCalculatedVariables( const std::string& name, double value);
 
     //! userData should be the 'this' of a CalculatedVariable this is being requested
     static double* parserVariableRequestHandler(const char* name, void* userData);
@@ -74,8 +74,12 @@ public:
     static void loadGenericFormulas (
             const Configuration::Configuration::CalculatedVariableGenericFormula_sequence& config);
 
+    static bool isConstantDefined (const std::string& id);
+    static double getValueOfConstant (const std::string& id);
+
 private:
     static std::list <ParserVariable> s_parserVariables;
+    static std::map <std::string, double> s_parserConstants;
     static size_t s_numSynchronizers;
     static size_t s_numCalculatedVariables;
     static std::map<std::string, std::string> s_genericFormulas;

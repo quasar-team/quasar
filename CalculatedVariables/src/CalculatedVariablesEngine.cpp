@@ -66,14 +66,10 @@ ParserVariable& Engine::registerVariableForCalculatedVariables(AddressSpace::Cha
     return s_parserVariables.back();
 }
 
-ParserVariable& Engine::registerConstantForCalculatedVariables( const std::string& name, double value)
+void Engine::registerConstantForCalculatedVariables( const std::string& name, double value)
 {
 	LOG(Log::TRC, logComponentId) << "Putting *const* on list of ParserVariables: " << name << ", value=" << value;
-	s_parserVariables.emplace_back(/* ChangeNotifyingVariable*/ nullptr, name);
-	ParserVariable& pv (s_parserVariables.back());
-	pv.setValue(value, ParserVariable::State::Good);
-	pv.setIsConstant(true);
-	return pv;
+    s_parserConstants.emplace(name, value);
 }
 
 double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* name, void* userData)
@@ -328,7 +324,7 @@ void Engine::optimize()
     decltype(s_parserVariables)::iterator it;
     for (it = std::begin(s_parserVariables); it!=std::end(s_parserVariables); )
     {
-        if (it->notifiedVariables().size() == 0)
+        if (it->notifiedVariables().size() == 0) // i.e. there is no formula 
         {
             if (it->notifyingVariable()->changeListenerSize() <= 1)
             {
@@ -408,8 +404,19 @@ void Engine::setupSynchronization()
     }
 }
 
+bool Engine::isConstantDefined (const std::string& id)
+{
+    return s_parserConstants.count(id) > 0;
+}
+
+double Engine::getValueOfConstant (const std::string& id)
+{
+    return s_parserConstants.at(id);
+}
+
 Log::LogComponentHandle logComponentId = Log::INVALID_HANDLE;
 std::list <ParserVariable> Engine::s_parserVariables;
+std::map <std::string, double> Engine::s_parserConstants;
 size_t Engine::s_numSynchronizers = 0;
 size_t Engine::s_numCalculatedVariables = 0;
 std::map<std::string, std::string> Engine::s_genericFormulas;
