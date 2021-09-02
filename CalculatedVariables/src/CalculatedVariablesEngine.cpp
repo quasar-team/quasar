@@ -66,6 +66,16 @@ ParserVariable& Engine::registerVariableForCalculatedVariables(AddressSpace::Cha
     return s_parserVariables.back();
 }
 
+ParserVariable& Engine::registerConstantForCalculatedVariables( const std::string& name, double value)
+{
+	LOG(Log::TRC, logComponentId) << "Putting *const* on list of ParserVariables: " << name << ", value=" << value;
+	s_parserVariables.emplace_back(/* ChangeNotifyingVariable*/ nullptr, name);
+	ParserVariable& pv (s_parserVariables.back());
+	pv.setValue(value, ParserVariable::State::Good);
+	pv.setIsConstant(true);
+	return pv;
+}
+
 double* CalculatedVariables::Engine::parserVariableRequestHandler(const char* name, void* userData)
 {
     ParserVariableRequestUserData* requestUserData = static_cast<ParserVariableRequestUserData*> (userData);

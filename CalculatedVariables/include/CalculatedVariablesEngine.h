@@ -51,6 +51,7 @@ public:
             );
 
     static ParserVariable& registerVariableForCalculatedVariables( AddressSpace::ChangeNotifyingVariable* variable);
+    static ParserVariable& registerConstantForCalculatedVariables( const std::string& name, double value);
 
     //! userData should be the 'this' of a CalculatedVariable this is being requested
     static double* parserVariableRequestHandler(const char* name, void* userData);

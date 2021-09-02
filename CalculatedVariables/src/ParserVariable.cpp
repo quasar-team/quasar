@@ -43,7 +43,10 @@ ParserVariable::ParserVariable(AddressSpace::ChangeNotifyingVariable* notifyingV
         m_state(State::WaitingInitialData),
         m_isConstant(false)
 {
-    LOG(Log::TRC, logComponentId) << "Created ParserVariable id: " << name << " for a variable identified as: " << notifyingVariable->nodeId().toString().toUtf8();
+	if (notifyingVariable)
+		LOG(Log::TRC, logComponentId) << "Created ParserVariable id: " << name << " for a variable identified as: " << notifyingVariable->nodeId().toString().toUtf8();
+	else
+		LOG(Log::TRC, logComponentId) << "Created ParserVariable id: " << name << " for a constant";
 }
 
 std::string ParserVariable::name() const
