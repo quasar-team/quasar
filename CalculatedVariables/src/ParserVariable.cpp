@@ -31,18 +31,27 @@
 namespace CalculatedVariables
 {
 
-ParserVariable::ParserVariable(AddressSpace::ChangeNotifyingVariable* notifyingVariable):
+/* a note regarding name: in the first implementation, the name of the ParserVariable (which is the id presented in a formula) used to be identical
+ * to the name under which the variable was present in the address-space. However we saw that there was a need for names with dashes ("-", minus sign)
+ * for which the address-space name was containing the dash but the parser name must have been substituted, otherwise the dash would have been considered
+ * the subtraction operator. So now this name can be freely chosen.
+ */
+ParserVariable::ParserVariable(AddressSpace::ChangeNotifyingVariable* notifyingVariable, const std::string& name):
         m_notifyingVariable(notifyingVariable),
+        m_name(name),
         m_value(0),
         m_state(State::WaitingInitialData),
         m_isConstant(false)
 {
-    LOG(Log::TRC, logComponentId) << "Created ParserVariable for: " << name();
+	if (notifyingVariable)
+		LOG(Log::TRC, logComponentId) << "Created ParserVariable id: " << name << " for a variable identified as: " << notifyingVariable->nodeId().toString().toUtf8();
+	else
+		LOG(Log::TRC, logComponentId) << "Created ParserVariable id: " << name << " for a constant";
 }
 
 std::string ParserVariable::name() const
 {
-    return m_notifyingVariable->nodeId().toString().toUtf8();
+    return m_name;
 }
 
 void ParserVariable::setValue(double v, State state)

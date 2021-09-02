@@ -122,6 +122,21 @@ void CalculatedVariable::initializeParser(
     {
         parser.DefineNameChars("0123456789_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.");
         parser.SetExpr(formula);
+        // after SetExpr parser knows the symbols(tokens),
+        // we can supply constants.
+        auto usedVariables = parser.GetUsedVar();
+        LOG(Log::TRC, logComponentId) << "At CalculatedVariable " << this->nodeId().toString().toUtf8() << " recognized these operands:";
+        for (auto& x : usedVariables)
+        {
+            // check if we're dealing with a constant?
+            LOG(Log::TRC, logComponentId) << "name: " << x.first; // no sense to print the value as it is not initialized yet
+            if (Engine::isConstantDefined(x.first))
+            {
+                double value = Engine::getValueOfConstant(x.first);
+                LOG(Log::TRC, logComponentId) << "Recognized use of constant, name: " << x.first << " value: " << value;
+                parser.DefineConst(x.first, value);
+            }
+        }
         ParserVariableRequestUserData userData;
         userData.type = formulaType;
         userData.requestor = this;

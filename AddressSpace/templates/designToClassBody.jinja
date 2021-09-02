@@ -436,6 +436,10 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
                 property,
                 OpcUaId_HasProperty,
                 property->nodeId());
+              {% if oracle.is_data_type_numeric(ce.get('dataType')) and ce.array|length==0 %}
+                CalculatedVariables::Engine::registerConstantForCalculatedVariables( property->nodeId().toString().toUtf8(), config.{{ce.get('name')}}() );
+              {% endif %}
+
             }
           {% else %}
             // Note: config-entry {{ce.get('name')}} skipped because it's an array (not supported yet for propagation into properties)
