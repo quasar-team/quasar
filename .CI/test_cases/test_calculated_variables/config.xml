@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://cern.ch/quasar/Configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Configuration ../Configuration/Configuration.xsd ">
+        <StandardMetaData>
+                <Log>
+                        <ComponentLogLevels>
+                                <ComponentLogLevel componentName="CalcVars" logLevel="TRC" />
+                        </ComponentLogLevels>
+                 </Log>
+        </StandardMetaData>
+	<CalculatedVariableGenericFormula
+		name="AddsEleven" formula="$thisObjectAddress.fv + 11" />
+	<TestClass name="tc" cv_init_from_config="3" ce="4">
+	
+		<FreeVariable name="fv" type="Double" initialValue="5" />
+		<CalculatedVariable name="calc_var_const" value="7" />
+		<CalculatedVariable name="calc_var_fv_plus_const" value="$thisObjectAddress.fv + $thisObjectAddress.calc_var_const" />
+		<CalculatedVariable name="calc_var_fv_plus_const_plus_cv_init_from_config"
+		   value="tc.fv + tc.calc_var_const + $thisObjectAddress.cv_init_from_config" />
+		<CalculatedVariable name="calc_var_fv_plus_const_plus_cv_init_from_value_status"
+           value="tc.fv + tc.calc_var_const + $thisObjectAddress.cv_init_from_value_status" />
+        <CalculatedVariable name="fv_plus_11" value="$applyGenericFormula(AddsEleven)"/>
+    </TestClass>
+	<CalculatedVariable name="altogether" value="tc.calc_var_const*tc.calc_var_fv_plus_const*tc.ce*tc.cv_init_from_config*tc.cv_init_from_value_status*tc.fv*tc.calc_var_fv_plus_const_plus_cv_init_from_config*tc.calc_var_fv_plus_const_plus_cv_init_from_value_status*tc.fv_plus_11
+	" />
+
+</configuration>

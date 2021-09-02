@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="test_cache_variables" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">
+  <d:class name="TestClass">
+  	<d:cachevariable initializeWith="configuration"
+  		dataType="OpcUa_Double" name="cv_init_from_config" nullPolicy="nullAllowed"
+  		addressSpaceWrite="regular">
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Double" name="cv_init_from_value_status" nullPolicy="nullAllowed"
+  		addressSpaceWrite="regular" initialStatus="OpcUa_Good"
+  		initialValue="50">
+  	</d:cachevariable>
+  	<d:configentry dataType="OpcUa_Double" name="ce"></d:configentry>
+  </d:class>
+
+  <d:root>
+  	<d:hasobjects instantiateUsing="configuration" class="TestClass"></d:hasobjects>
+
+  </d:root>
+</d:design>
