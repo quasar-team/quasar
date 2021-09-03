@@ -166,7 +166,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "d9ac66ad972b9c6ccd3eed6ffb23e5ef",
+                "md5": "ed5f3e30c05fbfc13a20f008a125121a",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
@@ -254,7 +254,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesEngine.h": {
-                "md5": "2279474a0d36f1855acee8735198bae3",
+                "md5": "09046897bfda43cdf29fac4d07807d8e",
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesLogComponentId.h": {
@@ -262,7 +262,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ParserVariable.h": {
-                "md5": "1a2d0983324f03281f7c0f43efc2e5ed",
+                "md5": "2d18642cfb73a88e5923845c26a64744",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ParserVariableRequestUserData.h": {
@@ -281,7 +281,7 @@
         },
         "files": {
             "CalculatedVariable.cpp": {
-                "md5": "09dd31fd2be20492c9ccfaf837b469d2",
+                "md5": "de0f7a35d12bc60fb57c90f54bb077f2",
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesChangeListener.cpp": {
@@ -289,11 +289,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesEngine.cpp": {
-                "md5": "59e3ee07e0e7596eb2524ba63fb12887",
+                "md5": "a2565bcf3ba8deceba5981e55d0e50be",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ParserVariable.cpp": {
-                "md5": "fd7f340073d365a4be61478f18751829",
+                "md5": "49b185a0ee6743628a20fee991f2c495",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "1a4e4dacca33618eac6c14aac6eabf0c",
+                "md5": "46195e34608205b67ea79c5f2f9916ec",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "e473322d618061fb98fe056606a5a5f2",
+                "md5": "e0046a3c8d01501dbae93710617795e6",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -626,7 +626,7 @@
             },
             "quasar.html": {
                 "install": "overwrite",
-                "md5": "fe74705f4620ab0802faecec46610b2d",
+                "md5": "aa351b2988a214ffa6ad56630b8fc8bd",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1279,7 +1279,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "392471e478489486dc755c9f26bfb08d",
+                "md5": "9ef45a65e166935f13fe99fc482ef3df",
                 "must_be_versioned": true,
                 "must_exist": true
             },
