@@ -143,6 +143,11 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           m_{{cv.get('name')}}->setValueRank( -1 ); // scalar
         {% endif %}
 
+        {# registering the variable for calc vars needs to happen before initial setValue is done #}
+        {% if oracle.is_data_type_numeric(cv.get('dataType')) and cv.array|length==0 %}
+          CalculatedVariables::Engine::registerVariableForCalculatedVariables( m_{{cv.get('name')}} );
+        {% endif %}
+
         {# handle valueAndStatus initialization for scalars #}
         {% if cv.get('initializeWith') == 'valueAndStatus' and cv.array|length == 0 %}
           {% if cv.get('initialValue') %}
@@ -201,10 +206,6 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           m_{{cv.get('name')}}->assignHandler(
             this,
             &AS{{className}}::write{{cv.get('name')|capFirst}});
-        {% endif %}
-
-        {% if oracle.is_data_type_numeric(cv.get('dataType')) and cv.array|length==0 %}
-          CalculatedVariables::Engine::registerVariableForCalculatedVariables( m_{{cv.get('name')}} );
         {% endif %}
 
       {% endfor %}
