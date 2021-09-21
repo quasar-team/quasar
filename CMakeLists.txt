@@ -21,7 +21,7 @@
 project(opc_ua)
 cmake_minimum_required(VERSION 3.10)
 # the line below is added to quasar to keep backwards compatibility for the transition period.
-cmake_policy(SET CMP0065 OLD)
+cmake_policy(SET CMP0065 NEW)
 
 if(NOT ${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 message("Building out-of-source")
