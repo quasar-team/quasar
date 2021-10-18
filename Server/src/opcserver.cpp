@@ -142,7 +142,7 @@ int OpcServer::createCertificate (
 int OpcServer::start()
 {
     if (UaServerApplication::start() != 0)
-        throw_runtime_error_with_origin("Failed to start-up the server.");
+        throw_runtime_error_with_origin("Failed to start-up the server. Is the server port already in use?");
 
     UaString sRejectedCertificateDirectory;
     OpcUa_UInt32 rejectedCertificateCount;
