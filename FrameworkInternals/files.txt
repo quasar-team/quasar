@@ -13,7 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "a265c252f04ba50af8ad684ab6a1bb8a",
+                "md5": "ae06392fde8e0b07ef61d615ecc6e512",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1342,7 +1342,7 @@
             },
             "opcserver.cpp": {
                 "install": "overwrite",
-                "md5": "c9d38acd76a94a6d16957493aae9d1e4",
+                "md5": "5bcb2a2d44b6a5b87649efc15001645f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
