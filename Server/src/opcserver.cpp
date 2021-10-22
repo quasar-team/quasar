@@ -25,6 +25,8 @@
 #include <LogIt.h>
 #include <Utils.h>
 
+#include <QuasarUaTraceHook.hpp>
+
 using namespace std;
 
 //For future switch in SDK version:
@@ -141,8 +143,38 @@ int OpcServer::createCertificate (
  */
 int OpcServer::start()
 {
+
+    UaTraceHook* quasarUaTraceHook = new QuasarUaTraceHook();
+    UaTrace::setTraceHook(quasarUaTraceHook);
+
+    LOG(Log::INF) << "Hook to UaTrace established";
+
+    /*
+     *  Optionally one can skip the extra log file and rely on quasar's output
+     *  That can be done by adding the following line:
+     *
+     *  UaTrace::setSkipTraceAfterHook(true);
+     *
+     *  That is to be discussed since it has the pro to eliminate 1 out of the 3 log files of each server
+     */
+
     if (UaServerApplication::start() != 0)
-        throw_runtime_error_with_origin("Failed to start-up the server. Is the server port already in use?");
+    {
+        std::list<UaString> errorList = SrvT::getPreFileTraces();
+        if ( errorList.size() > 0 )
+        {
+            std::list<UaString>::iterator it;
+            for ( it = errorList.begin(); it != errorList.end(); it++ )
+            {
+                LOG(Log::ERR) << it->toUtf8();
+            }
+        }
+        else
+        {
+            LOG(Log::WRN) << "Check UaAppTraceFile log file for more details";
+        }
+        throw_runtime_error_with_origin("Failed to start-up the server.");
+    }
 
     UaString sRejectedCertificateDirectory;
     OpcUa_UInt32 rejectedCertificateCount;
@@ -156,6 +188,7 @@ int OpcServer::start()
     for ( OpcUa_UInt32 idx=0; idx<uaEndpointArray.length(); idx++ )
         LOG(Log::INF) << "Opened endpoint: " << uaEndpointArray[idx]->sEndpointUrl().toUtf8();
     return 0;
+
 }
 
 #endif // BACKEND_UATOOLKIT
