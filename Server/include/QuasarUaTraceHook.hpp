@@ -19,13 +19,20 @@
  *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #ifdef BACKEND_UATOOLKIT
 
 #include <srvtrace.h>
 
 class QuasarUaTraceHook : public UaTraceHook
 {
+public:
     void traceOutput(UaTrace::TraceLevel traceLevel, const char * sContent, int nModule) override;
+private:
+    inline const std::string getCurrentDateAndTime();
+    inline const std::string baseName(const std::string & filepath);
+    inline void logMessage(const std::string & traceLevel, const char * sContent);
 };
 
 #endif // BACKEND_UATOOLKIT

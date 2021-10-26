@@ -21,27 +21,65 @@
 
 #ifdef BACKEND_UATOOLKIT
 
-#include <LogIt.h>
 #include <QuasarUaTraceHook.hpp>
+#include <chrono>
+#include <iostream>
+#include <sstream>
 
 void QuasarUaTraceHook::traceOutput(UaTrace::TraceLevel traceLevel, const char * sContent, int nModule)
 {
+
     switch (traceLevel) {
     case UaTrace::TraceLevel::NoTrace: ;
         break;
-    case UaTrace::TraceLevel::Errors: LOG(Log::ERR) << "UaTrace: " << sContent;
+    case UaTrace::TraceLevel::Errors: logMessage("ERR", sContent);
         break;
-    case UaTrace::TraceLevel::Warning: LOG(Log::WRN) << "UaTrace: " << sContent;
+    case UaTrace::TraceLevel::Warning: logMessage("WRN", sContent);
         break;
-    case UaTrace::TraceLevel::Info: LOG(Log::INF) << "UaTrace: " << sContent;
+    case UaTrace::TraceLevel::Info: logMessage("INF", sContent);
         break;
-    case UaTrace::TraceLevel::InterfaceCall: 
-    case UaTrace::TraceLevel::CtorDtor: 
-    case UaTrace::TraceLevel::ProgramFlow: 
+    case UaTrace::TraceLevel::InterfaceCall:
+    case UaTrace::TraceLevel::CtorDtor:
+    case UaTrace::TraceLevel::ProgramFlow:
     case UaTrace::TraceLevel::Data:
-    default: LOG(Log::TRC) << "UaTrace: " << sContent;
+    default: logMessage("TRC", sContent);
         break;
     }
+
 };
+
+inline void QuasarUaTraceHook::logMessage(const std::string & traceLevel, const char * sContent)
+{
+
+    std::cout << getCurrentDateAndTime() << "[" << baseName(__FILE__) << ":" << __LINE__ << ", " << traceLevel << "] " << "UaTrace: " << sContent << std::endl;
+
+}
+
+inline const std::string QuasarUaTraceHook::getCurrentDateAndTime()
+{
+
+    using namespace std::chrono;
+    auto currentDateAndTime_tp = std::chrono::system_clock::now();
+    std::time_t currentDateAndTime = std::chrono::system_clock::to_time_t(currentDateAndTime_tp);
+    tm currentDateAndTime_tm = *localtime(&currentDateAndTime);
+
+    std::ostringstream now;
+    now << currentDateAndTime_tm.tm_year + 1900 << '-'
+        << currentDateAndTime_tm.tm_mon + 1 << '-'
+        << currentDateAndTime_tm.tm_mday << ' '
+        << currentDateAndTime_tm.tm_hour << ':'
+        << currentDateAndTime_tm.tm_min << ':'
+        << currentDateAndTime_tm.tm_sec << ' ';
+
+    return now.str();
+
+}
+
+inline const std::string QuasarUaTraceHook::baseName(const std::string & filepath)
+{
+
+    return filepath.substr(filepath.find_last_of("/\\") + 1);
+
+}
 
 #endif // BACKEND_UATOOLKIT
