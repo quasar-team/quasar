@@ -25,8 +25,6 @@
 #include <LogIt.h>
 #include <Utils.h>
 
-#include <QuasarUaTraceHook.hpp>
-
 using namespace std;
 
 //For future switch in SDK version:
@@ -144,8 +142,8 @@ int OpcServer::createCertificate (
 int OpcServer::start()
 {
 
-    UaTraceHook* quasarUaTraceHook = new QuasarUaTraceHook();
-    UaTrace::setTraceHook(quasarUaTraceHook);
+    UaTrace::setTraceHook(&m_quasarUaTraceHook);
+    UaTrace::setPrintDateInTrace(true);
 
     LOG(Log::INF) << "Hook to UaTrace established";
 
@@ -155,7 +153,8 @@ int OpcServer::start()
      *
      *  UaTrace::setSkipTraceAfterHook(true);
      *
-     *  That is to be discussed since it has the pro to eliminate 1 out of the 3 log files of each server
+     *  That is to be discussed, it has the pro to eliminate 1 out of the 3 log files of each server
+     *  on the other hand it is a big change that should be considered
      */
 
     if (UaServerApplication::start() != 0)
