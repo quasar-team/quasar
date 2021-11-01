@@ -32,26 +32,33 @@ void QuasarUaTraceHook::traceOutput(UaTrace::TraceLevel traceLevel, const char *
     switch (traceLevel) {
     case UaTrace::TraceLevel::NoTrace: ;
         break;
-    case UaTrace::TraceLevel::Errors: logMessage("ERR", sContent);
+    case UaTrace::TraceLevel::Errors: logMessage("ERR", nModule, sContent);
         break;
-    case UaTrace::TraceLevel::Warning: logMessage("WRN", sContent);
+    case UaTrace::TraceLevel::Warning: logMessage("WRN", nModule, sContent);
         break;
-    case UaTrace::TraceLevel::Info: logMessage("INF", sContent);
+    case UaTrace::TraceLevel::Info: logMessage("INF", nModule, sContent);
         break;
     case UaTrace::TraceLevel::InterfaceCall:
     case UaTrace::TraceLevel::CtorDtor:
     case UaTrace::TraceLevel::ProgramFlow:
     case UaTrace::TraceLevel::Data:
-    default: logMessage("TRC", sContent);
+    default: logMessage("TRC", nModule, sContent);
         break;
     }
 
 };
 
-inline void QuasarUaTraceHook::logMessage(const std::string & traceLevel, const char * sContent)
+inline void QuasarUaTraceHook::logMessage(const std::string & traceLevel, int nModule, const char * sContent)
 {
 
-    std::cout << getCurrentDateAndTime() << "[" << baseName(__FILE__) << ":" << __LINE__ << ", " << traceLevel << "] " << "UaTrace: " << sContent << std::endl;
+    #ifdef OPCUA_TRACE_RAW
+    if ( nModule == ModuleNumber::UaStack )
+        std::cout << getCurrentDateAndTime() << "[" << baseName(__FILE__) << ":" << __LINE__ << "] " << "UaTrace module "<< nModule << ": " << sContent << std::endl;
+    else
+        std::cout << getCurrentDateAndTime() << "[" << baseName(__FILE__) << ":" << __LINE__ << ", " << traceLevel << "] " << "UaTrace module "<< nModule << ": " << sContent << std::endl;
+    #else
+        std::cout << getCurrentDateAndTime() << "[" << baseName(__FILE__) << ":" << __LINE__ << ", " << traceLevel << "] " << "UaTrace module "<< nModule << ": " << sContent << std::endl;
+    #endif
 
 }
 

@@ -32,7 +32,11 @@ public:
 private:
     inline const std::string getCurrentDateAndTime();
     inline const std::string baseName(const std::string & filepath);
-    inline void logMessage(const std::string & traceLevel, const char * sContent);
+    inline void logMessage(const std::string & traceLevel, int nModule, const char * sContent);
+    enum ModuleNumber
+    {
+        UaStack = 5
+    };
 };
 
 #endif // BACKEND_UATOOLKIT
