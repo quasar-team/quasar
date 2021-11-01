@@ -24,15 +24,23 @@
 #ifdef BACKEND_UATOOLKIT
 
 #include <srvtrace.h>
+#include <iostream>
 
 class QuasarUaTraceHook : public UaTraceHook
 {
 public:
+    QuasarUaTraceHook(): m_iteration(0), m_duration(0)
+    {};
+    ~QuasarUaTraceHook(){
+        std::cout << "Average execution time: " << (float)m_duration / (float)m_iteration << "us" << std::endl;
+    };
     void traceOutput(UaTrace::TraceLevel traceLevel, const char * sContent, int nModule) override;
 private:
-    inline const std::string getCurrentDateAndTime();
-    inline const std::string baseName(const std::string & filepath);
-    inline void logMessage(const std::string & traceLevel, const char * sContent);
+    std::string getCurrentDateAndTime();
+    std::string baseName(const std::string & filepath);
+    void logMessage(const std::string & traceLevel, const char * sContent);
+    int m_iteration;
+    int m_duration;
 };
 
 #endif // BACKEND_UATOOLKIT

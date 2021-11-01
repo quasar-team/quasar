@@ -25,10 +25,11 @@
 #include <chrono>
 #include <iostream>
 #include <sstream>
+#include <Instrumentor.hpp>
 
 void QuasarUaTraceHook::traceOutput(UaTrace::TraceLevel traceLevel, const char * sContent, int nModule)
 {
-
+    std::chrono::time_point<std::chrono::high_resolution_clock> startTimepoint = std::chrono::high_resolution_clock::now();
     switch (traceLevel) {
     case UaTrace::TraceLevel::NoTrace: ;
         break;
@@ -45,17 +46,23 @@ void QuasarUaTraceHook::traceOutput(UaTrace::TraceLevel traceLevel, const char *
     default: logMessage("TRC", sContent);
         break;
     }
+    auto endTimepoint = std::chrono::high_resolution_clock::now();
+
+    long long start = std::chrono::time_point_cast<std::chrono::microseconds>(startTimepoint).time_since_epoch().count();
+    long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
+    m_duration += (end - start);
+    m_iteration++;
 
 };
 
-inline void QuasarUaTraceHook::logMessage(const std::string & traceLevel, const char * sContent)
+ void QuasarUaTraceHook::logMessage(const std::string & traceLevel, const char * sContent)
 {
 
     std::cout << getCurrentDateAndTime() << "[" << baseName(__FILE__) << ":" << __LINE__ << ", " << traceLevel << "] " << "UaTrace: " << sContent << std::endl;
 
 }
 
-inline const std::string QuasarUaTraceHook::getCurrentDateAndTime()
+ std::string QuasarUaTraceHook::getCurrentDateAndTime()
 {
 
     using namespace std::chrono;
@@ -75,7 +82,7 @@ inline const std::string QuasarUaTraceHook::getCurrentDateAndTime()
 
 }
 
-inline const std::string QuasarUaTraceHook::baseName(const std::string & filepath)
+ std::string QuasarUaTraceHook::baseName(const std::string & filepath)
 {
 
     return filepath.substr(filepath.find_last_of("/\\") + 1);
