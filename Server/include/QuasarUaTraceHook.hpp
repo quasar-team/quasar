@@ -1,4 +1,4 @@
-/* © Copyright CERN, Universidad de Oviedo, 2015.  All rights not expressly granted are reserved.
+/* © Copyright CERN, 2021.  All rights not expressly granted are reserved.
  * QuasarUaTraceHook.hpp
  *
  *  Created on: Oct 22, 2021
