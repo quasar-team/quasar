@@ -51,12 +51,12 @@ void QuasarUaTraceHook::traceOutput(UaTrace::TraceLevel traceLevel, const char *
 inline void QuasarUaTraceHook::logMessage(const std::string & traceLevel, int nModule, const char * sContent)
 {
 
-    #ifdef OPCUA_TRACE_RAW
-    if ( nModule == ModuleNumber::UaStack )
-        std::cout << getCurrentDateAndTime() << "[" << baseName(__FILE__) << ":" << __LINE__ << "] " << "UaTrace module "<< nModule << ": " << sContent << std::endl;
-    else
+    #if OPCUA_TRACE_RAW
         std::cout << getCurrentDateAndTime() << "[" << baseName(__FILE__) << ":" << __LINE__ << ", " << traceLevel << "] " << "UaTrace module "<< nModule << ": " << sContent << std::endl;
     #else
+        if ( nModule == ModuleNumber::UaStack )
+        std::cout << getCurrentDateAndTime() << "[" << baseName(__FILE__) << ":" << __LINE__ << "] " << "UaTrace module "<< nModule << ": " << sContent << std::endl;
+    else
         std::cout << getCurrentDateAndTime() << "[" << baseName(__FILE__) << ":" << __LINE__ << ", " << traceLevel << "] " << "UaTrace module "<< nModule << ": " << sContent << std::endl;
     #endif
 
