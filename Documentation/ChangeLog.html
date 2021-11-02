@@ -141,9 +141,13 @@
 
 
 
+
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
+
 
 
 
@@ -274,6 +278,41 @@
           </td>
         </tr>
         <tr>
+          <td valign="top">1.5.7<br>
+            <font size="-1">(02-Nov-2021)</font><br>
+          </td>
+          <td valign="top">The main feature is the output from UASDK
+            tracing into stdout, which very much simplifies diagnosing
+            issues related to network, files, permissions and other
+            OS-alike aspects when starting up and running the server.<br>
+            <br>
+            We encourage UASDK-based server developers to turn on
+            UaStackTraceEnabled in the shipped ServerConfig.xml and
+            files and set UaStackTraceLevel to SYSTEM.<br>
+          </td>
+          <td valign="top">CMP00065 is now turned on. See also release
+            notes from quasar nebula.b1 (this table, some rows below).<br>
+          </td>
+          <td valign="top">New Feature
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2492">OPCUA-2492</a>]
+                - UaTrace output to the std out
+              </li>
+            </ul>
+            <br>
+            Task
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2463">OPCUA-2463</a>]
+                - Port CMP0065 policy to new
+              </li>
+            </ul>
+          </td>
+          <td valign="top"><br>
+          </td>
+        </tr>
+        <tr>
           <td valign="top">1.5.6<br>
             <font size="-1">(03-Sep-2021)</font><br>
           </td>
@@ -282,45 +321,34 @@
           </td>
           <td valign="top">(none known)<br>
           </td>
-          <td valign="top">
-            Bug
-            <br>
+          <td valign="top"> Bug <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2466">OPCUA-2466</a>]
                 - No initial computation for any formulas with
-                cache_variables as inputs
-              </li>
+                cache_variables as inputs </li>
             </ul>
             <br>
-            New Feature
-            <br>
+            New Feature <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2456">OPCUA-2456</a>]
                 - Escape dash and slash in CalculatedVariables formulas
-                and variable names
-              </li>
+                and variable names </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2461">OPCUA-2461</a>]
-                - (Initial) test for Calculated Variables
-              </li>
+                - (Initial) test for Calculated Variables </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2464">OPCUA-2464</a>]
-                - config-entries to instantiate ParserVariables
-              </li>
+                - config-entries to instantiate ParserVariables </li>
             </ul>
             <br>
-            Task
-            <br>
+            Task <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2465">OPCUA-2465</a>]
-                - Fix test_cache_variables
-              </li>
+                - Fix test_cache_variables </li>
             </ul>
             <br>
-            Improvement
-            <br>
+            Improvement <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2462">OPCUA-2462</a>]
-                - Update/extend calc vars doc (esp. generic formulas)
-              </li>
+                - Update/extend calc vars doc (esp. generic formulas) </li>
             </ul>
           </td>
           <td valign="top">quasar test suite notes:<br>
@@ -328,6 +356,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -407,6 +437,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
