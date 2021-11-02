@@ -29,6 +29,9 @@
 void QuasarUaTraceHook::traceOutput(UaTrace::TraceLevel traceLevel, const char * sContent, int nModule)
 {
 
+    if ( nModule == ModuleNumber::Shredder )
+        return;
+
     switch (traceLevel) {
     case UaTrace::TraceLevel::NoTrace: ;
         break;
