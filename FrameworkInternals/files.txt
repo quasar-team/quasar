@@ -13,7 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "a265c252f04ba50af8ad684ab6a1bb8a",
+                "md5": "ae06392fde8e0b07ef61d615ecc6e512",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1277,6 +1277,12 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
+            "QuasarUaTraceHook.hpp": {
+                "install": "overwrite",
+                "md5": "dda81b94903c0a482791f3befb2f5414",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
             "QuasarVersion.h": {
                 "install": "overwrite",
                 "md5": "1b56b3d540d830d5038feee6c2b431b3",
@@ -1335,6 +1341,12 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
+            "QuasarUaTraceHook.cpp": {
+                "install": "overwrite",
+                "md5": "f4bb991c4e4a3d3f5020152b1747a2cd",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
             "main.cpp": {
                 "install": "ask_to_merge",
                 "must_be_versioned": true,
@@ -1342,7 +1354,7 @@
             },
             "opcserver.cpp": {
                 "install": "overwrite",
-                "md5": "c9d38acd76a94a6d16957493aae9d1e4",
+                "md5": "cc5e4d497062b875a0708299a1b4b454",
                 "must_be_versioned": true,
                 "must_exist": true
             },

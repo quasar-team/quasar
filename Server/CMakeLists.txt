@@ -25,6 +25,7 @@ add_library (Server OBJECT
 	src/QuasarServerCallback.cpp
 	src/BaseQuasarServer.cpp
 	src/QuasarServer.cpp
+	src/QuasarUaTraceHook.cpp
 )
 # Ensure that this module is built as the very last one.
 add_dependencies( Server ${SERVER_MODULES} ) 
