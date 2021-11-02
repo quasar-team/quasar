@@ -35,6 +35,7 @@ private:
     inline void logMessage(const std::string & traceLevel, int nModule, const char * sContent);
     enum ModuleNumber
     {
+        Shredder = 0,
         UaStack = 5
     };
 };
