@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "35a6f06991218046531feaf9a522ef21",
+                "md5": "99a4c340261e01b599f2a3b82e28100f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1279,13 +1279,13 @@
             },
             "QuasarUaTraceHook.hpp": {
                 "install": "overwrite",
-                "md5": "3acb2c9c58176c4438009ac1745c8114",
+                "md5": "fa09fc14309e7cc4ebad4ff42a86e76e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "b3cbbcd0bb48ccaff3d308b162132da1",
+                "md5": "9c7545abc10296b5d3c73ee845e4eb2d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1343,7 +1343,7 @@
             },
             "QuasarUaTraceHook.cpp": {
                 "install": "overwrite",
-                "md5": "268bdb7fea2d1559280b1d640891909f",
+                "md5": "66f665df3b7e862819af6726ca6e8bab",
                 "must_be_versioned": true,
                 "must_exist": true
             },
