@@ -144,9 +144,13 @@
 
 
 
+
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
+
 
 
 
@@ -292,19 +296,33 @@
             UaStackTraceEnabled in the shipped ServerConfig.xml and
             files and set UaStackTraceLevel to SYSTEM.<br>
           </td>
-          <td valign="top">CMP00065 is now turned on. See also release
-            notes from quasar nebula.b1 (this table, some rows below).<br>
+          <td valign="top">CMP00065 is now turned on (i.e. "NEW"
+            behaviour). See also release notes from quasar nebula.b1
+            (this table, some rows below). The proposed way of dealing
+            with it is adding the following entry in your
+            CMakeEpilogue.cmake (and adding this file, in case you do
+            not have it):<br>
+            <br>
+            <pre class="code-java"><meta http-equiv="content-type" content="text/html; charset=windows-1252"><pre class="code-java">set_property(TARGET ${EXECUTABLE} PROPERTY ENABLE_EXPORTS TRUE) </pre></pre>
+            <br>
           </td>
-          <td valign="top">New Feature <br>
+          <td valign="top">
+            New Feature
+            <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2492">OPCUA-2492</a>]
-                - UaTrace output to the std out </li>
+                - UaTrace output to the std out
+              </li>
             </ul>
+            Task
             <br>
-            Task <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2463">OPCUA-2463</a>]
-                - Port CMP0065 policy to new </li>
+                - Port CMP0065 policy to new
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2510">OPCUA-2510</a>]
+                - Document CMP00065-related changes in quasar ChangeLog
+              </li>
             </ul>
           </td>
           <td valign="top">quasar test suite notes:<br>
@@ -312,6 +330,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -368,6 +388,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -450,6 +472,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
