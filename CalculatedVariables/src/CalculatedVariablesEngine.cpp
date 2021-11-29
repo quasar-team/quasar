@@ -159,6 +159,7 @@ std::string escapeSpecialCharactersInParserVariableName (const std::string& inpu
 }
 
 std::string CalculatedVariables::Engine::elaborateFormula (
+    const std::string& rawFormula,
     const Configuration::CalculatedVariable& config,
     const std::string& parentObjectAddress)
 {
@@ -177,7 +178,7 @@ std::string CalculatedVariables::Engine::elaborateFormula (
     basic_regex<std::string::iterator> cvSubstitutionRegex = basic_regex<std::string::iterator>::compile("\\$([A-Za-z0-9_]+)(?:(?:\\()([^ \r\n\t()]+)(?:\\)))?");
 
     match_results<std::string::iterator> matched;
-    std::string formulaInWork (config.value());
+    std::string formulaInWork (rawFormula);
     bool matchedAnything (false);
     do
     {
@@ -262,21 +263,33 @@ void Engine::instantiateCalculatedVariable(
         const Configuration::CalculatedVariable& config)
 {
     // check if see any magic expression in the formula
-    LOG(Log::TRC, logComponentId) << "Formula before elaboration: " <<  config.value();
-    std::string elaboratedFormula = elaborateFormula(
+    LOG(Log::TRC, logComponentId) << "Value formula before elaboration: " <<  config.value();
+    std::string elaboratedValueFormula = elaborateFormula(
+        config.value(),
         config,
         parentNodeId.toString().toUtf8());
-    LOG(Log::TRC, logComponentId) << "Formula after elaboration: " << elaboratedFormula;
+    LOG(Log::TRC, logComponentId) << "Value formula after elaboration: " << elaboratedValueFormula;
+
+    std::string elaboratedStatusFormula;
+    if (config.status().present())
+    {
+        LOG(Log::TRC, logComponentId) << "Status formula before elaboration: " <<  config.status();
+        elaboratedStatusFormula = elaborateFormula(
+            config.status().get(), 
+            config,
+            parentNodeId.toString().toUtf8());
+        LOG(Log::TRC, logComponentId) << "Status formula after elaboration: " << elaboratedStatusFormula;
+    }
 
     CalculatedVariable* calculatedVariable = new CalculatedVariable(
         nm->makeChildNodeId(parentNodeId, config.name().c_str()),
         config.name().c_str(),
         nm->getNameSpaceIndex(),
         nm,
-        elaboratedFormula,
+        elaboratedValueFormula,
         config.isBoolean(),
         config.status().present(),
-        config.status().present() ? *config.status() : "");
+        elaboratedStatusFormula);
 
     UaStatus status = nm->addNodeAndReference( parentNodeId, calculatedVariable, OpcUaId_Organizes);
     if (!status.isGood())

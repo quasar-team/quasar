@@ -67,6 +67,7 @@ public:
 
     //! Resolves all dollar operators until a formuls is free of them.
     static std::string elaborateFormula (
+            const std::string& rawFormula,
             const Configuration::CalculatedVariable& config,
             const std::string& parentObjectAddress
             );
