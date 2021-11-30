@@ -4,6 +4,7 @@
  *
  *  Created on: May 14, 2020
  *      Author: Ben Farnham
+ *      Author: Piotr Nikiel
  *
  *  This file is part of Quasar.
  *
@@ -52,6 +53,20 @@ namespace Configuration
       const xml_schema::content_order orderingElement(childTypeId, children.size()-1);
       parent.content_order().push_back(orderingElement);
     };
+
+    template< typename TParent, typename TChildren>
+    void clear(TParent& parent, TChildren& children, const size_t childTypeId)
+    {
+
+      children.clear();
+
+      auto one_past_removed_iter = std::remove_if(
+          std::begin(parent.content_order()),
+          std::end(parent.content_order()),
+          [childTypeId](decltype(parent.content_order().front())& content_order_elem){return content_order_elem.id == childTypeId;});
+
+      parent.content_order().erase(one_past_removed_iter, std::end(parent.content_order()));
+    }
 
   } // namespace DecorationUtils
 } // namespace Configuration
