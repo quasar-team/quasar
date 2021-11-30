@@ -185,10 +185,19 @@ bool configure (std::string fileName,
     The object addition above (<font color="#006600"><b>in dark green</b></font>)
     are calls to quasar's helper function, required to append new
     objects to the configuration.<br>
+    <br>
+    What if removal of elements is required? Trivial removal (e.g.
+    invoking clear() on children sequence) would of course break the
+    content order data. For some applications (e.g. clear()) we provide
+    functions in the DecorationUtils, e.g.<br>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <div style="color: #333333;background-color: #f5f5f5;font-family: 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback';font-weight: normal;font-size: 14px;line-height: 19px;white-space: pre;"><div><span style="color: #7a3e9d;font-weight: bold;">Configuration::DecorationUtils</span><span style="color: #777777;">::</span><span style="color: #aa3731;font-weight: bold;">clear</span><span style="color: #777777;">(</span><span style="color: #7a3e9d;">theConfig</span><span style="color: #777777;">,</span><span style="color: #333333;"> theConfig.ConfiguredClass()</span><span style="color: #777777;">,</span><span style="color: #333333;"> </span><span style="color: #7a3e9d;font-weight: bold;">Configuration::Configuration::ConfiguredClass_id</span><span style="color: #777777;">);</span></div></div>
+    <br>
     <h4><a name="mozTocId444708" class="mozTocH4"></a>Function
       validateContentOrder</h4>
     <p>This section is here for information: There is no action required
       by server developers. Internally, quasar calls <i>validateContentOrder
+
 
       </i>during initialisation to verify the configuration object tree
       is valid with respect to the content order mechanism, including
@@ -234,6 +243,7 @@ bool configure (std::string fileName,
 </pre>
     </code>
     <h2 id="persist"><a name="mozTocId11314" class="mozTocH2"></a>Persisting
+
 
 
 
