@@ -19,6 +19,8 @@
  *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <math.h>
+
 #include <algorithm>
 
 #include <CalculatedVariable.h>
@@ -119,7 +121,8 @@ void CalculatedVariable::initializeParser(
 {
     const std::string typeAsStr = formulaType == ParserVariableRequestUserData::Type::Value ? "value" : "status";
     try
-    {
+    {   
+        parser.DefineFun("pow", [](double x, double y){return pow(x, y);}); // power to be available also as pow(x,y) in addition to x^y
         parser.DefineNameChars("0123456789_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.");
         parser.SetExpr(formula);
         // after SetExpr parser knows the symbols(tokens),
