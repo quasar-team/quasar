@@ -24,6 +24,7 @@
 #ifdef BACKEND_UATOOLKIT
 
 #include <srvtrace.h>
+#include <string>
 
 class QuasarUaTraceHook : public UaTraceHook
 {
