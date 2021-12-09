@@ -146,9 +146,13 @@
 
 
 
+
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
+
 
 
 
@@ -284,6 +288,64 @@
           </td>
         </tr>
         <tr>
+          <td valign="top">1.5.8<br>
+            <font size="-1">(09-Dec-2021)</font><br>
+          </td>
+          <td valign="top">Service releases bringing gradual
+            improvements.<br>
+          </td>
+          <td valign="top">(none known)<br>
+          </td>
+          <td valign="top">Bug
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2536">OPCUA-2536</a>]
+                - Formula elaboration is forgotten for status formulas
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2544">OPCUA-2544</a>]
+                - quasar 1.5.7 compilation error with gcc 11.1.0
+              </li>
+            </ul>
+            <br>
+            New Feature
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2533">OPCUA-2533</a>]
+                - "pow" in CalculatedVariables, as the alternative to
+                "^" operator
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2537">OPCUA-2537</a>]
+                - Content-order-aware sequence removal in configuration
+                decorators
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2538">OPCUA-2538</a>]
+                - Have Configuration.xsd automatically indented/
+                pretty-printed
+              </li>
+            </ul>
+          </td>
+          <td valign="top">quasar test suite notes:<br>
+            <ol>
+              <li>open62541_test_methods not passing for the method
+                arguments behaving differently from UASDK. This will be
+                <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
+
+
+
+
+
+
+
+
+                  investigated</a>.</li>
+              <li> StandardMetaData is ignored from testing in all tests
+                due to some existing noncompliance.</li>
+            </ol>
+          </td>
+        </tr>
+        <tr>
           <td valign="top">1.5.7<br>
             <font size="-1">(02-Nov-2021)</font><br>
           </td>
@@ -306,20 +368,15 @@
             <pre class="code-java"><meta http-equiv="content-type" content="text/html; charset=windows-1252"><pre class="code-java">set_property(TARGET ${EXECUTABLE} PROPERTY ENABLE_EXPORTS TRUE) </pre></pre>
             <br>
           </td>
-          <td valign="top">
-            New Feature
-            <br>
+          <td valign="top"> New Feature <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2492">OPCUA-2492</a>]
-                - UaTrace output to the std out
-              </li>
+                - UaTrace output to the std out </li>
             </ul>
-            Task
-            <br>
+            Task <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2463">OPCUA-2463</a>]
-                - Port CMP0065 policy to new
-              </li>
+                - Port CMP0065 policy to new </li>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2510">OPCUA-2510</a>]
                 - Document CMP00065-related changes in quasar ChangeLog
               </li>
@@ -330,6 +387,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -388,6 +447,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -472,6 +533,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
