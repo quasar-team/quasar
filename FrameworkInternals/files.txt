@@ -254,7 +254,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesEngine.h": {
-                "md5": "09046897bfda43cdf29fac4d07807d8e",
+                "md5": "8f6ad84bf9fa86a2969d9db048ea54ab",
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesLogComponentId.h": {
@@ -281,7 +281,7 @@
         },
         "files": {
             "CalculatedVariable.cpp": {
-                "md5": "de0f7a35d12bc60fb57c90f54bb077f2",
+                "md5": "8fd084693154f8f28da4281bb9962468",
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesChangeListener.cpp": {
@@ -289,7 +289,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesEngine.cpp": {
-                "md5": "a2565bcf3ba8deceba5981e55d0e50be",
+                "md5": "23496f5f1aebe5884a1aa99f7b336d6c",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ParserVariable.cpp": {
@@ -395,7 +395,7 @@
         "files": {
             "ConfigurationDecorationUtils.h": {
                 "install": "overwrite",
-                "md5": "50e80064212c6e580c8d60fbef9e4c22",
+                "md5": "145bf409e355ef403f211cb282bb21c7",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "8e70a0867b740411f533def5e3350648",
+                "md5": "7b51e1508b88a41b2beead0881859dac",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "d1aa3e09eb5a855d9eb320123da2156d",
+                "md5": "b4802773eac4d737b81b4401c73243bd",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -741,7 +741,7 @@
             },
             "configurationGenerators.py": {
                 "install": "overwrite",
-                "md5": "9d2ff2be8a55a53d118c778d05af3852",
+                "md5": "b1d932c02f7c6390b9cdb470116ce2bb",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1279,13 +1279,13 @@
             },
             "QuasarUaTraceHook.hpp": {
                 "install": "overwrite",
-                "md5": "fa09fc14309e7cc4ebad4ff42a86e76e",
+                "md5": "37eaf30cc2147fc0938798731d7660ba",
                 "must_be_versioned": true,
                 "must_exist": true
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "9dded4e6dc70475882995778cdb773bd",
+                "md5": "75aa17a0eef885849a1493683c9f62f5",
                 "must_be_versioned": true,
                 "must_exist": true
             },
