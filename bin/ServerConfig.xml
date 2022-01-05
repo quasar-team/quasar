@@ -170,10 +170,6 @@
       <SecurityPolicy>http://opcfoundation.org/UA/SecurityPolicy#None</SecurityPolicy>
       <MessageSecurityMode>None</MessageSecurityMode>
     </SecuritySetting>
-    <SecuritySetting>
-      <SecurityPolicy>http://opcfoundation.org/UA/SecurityPolicy#Basic128Rsa15</SecurityPolicy>
-      <MessageSecurityMode>SignAndEncrypt</MessageSecurityMode>
-    </SecuritySetting>
   </UaEndpoint>
   <!--Endpoint configuration end-->
 
