@@ -28,4 +28,6 @@ namespace AddressSpace
 type (potentially a void struct) that can be passed as an argument. */
 struct QuasarNullDataType {};
 
+const std::string SingleItemNodeObjectPrefix ("__single_item_node__");
+
 }

@@ -26,6 +26,7 @@
 #include <ASUtils.h>
 #include <ASInformationModel.h>
 #include <ASNodeQueries.h>
+#include <ASCommon.h>
 
 #include <DRoot.h>
 
@@ -90,7 +91,20 @@
 
       // link address space and device side objects
       asItemChildByDesign->linkDevice( dItemChildByDesign );
-      dItemChildByDesign->linkAddressSpace( asItemChildByDesign, asItemChildByDesign->nodeId().toString().toUtf8() );
+      // establish the full name of an object.
+      {% if designInspector.is_class_single_variable_node(className) %}
+        {
+          std::string singleItemNodeFullName = asItemChildByDesign->nodeId().toString().toUtf8();
+          size_t singleItemNodePrefixBegins = singleItemNodeFullName.find(AddressSpace::SingleItemNodeObjectPrefix);
+          singleItemNodeFullName.replace(
+            singleItemNodePrefixBegins,
+            AddressSpace::SingleItemNodeObjectPrefix.length(),
+            "");
+          dItemChildByDesign->linkAddressSpace( asItemChildByDesign, singleItemNodeFullName );
+        }
+      {% else %}
+        dItemChildByDesign->linkAddressSpace( asItemChildByDesign, asItemChildByDesign->nodeId().toString().toUtf8() );
+      {% endif %}
       {{parentDevice}}->add(dItemChildByDesign);
     {% else %}
       // avoid unused variable warning (constructor above was required)
@@ -206,7 +220,19 @@
 
      // link address space side and device side objects
      asItem->linkDevice( dItem );
-     dItem->linkAddressSpace( asItem, asItem->nodeId().toString().toUtf8() );
+    {% if designInspector.is_class_single_variable_node(className) %}
+      {
+        std::string singleItemNodeFullName = asItem->nodeId().toString().toUtf8();
+        size_t singleItemNodePrefixBegins = singleItemNodeFullName.find(AddressSpace::SingleItemNodeObjectPrefix);
+        singleItemNodeFullName.replace(
+          singleItemNodePrefixBegins,
+          AddressSpace::SingleItemNodeObjectPrefix.length(),
+          "");
+        dItem->linkAddressSpace( asItem, singleItemNodeFullName );
+      }
+    {% else %}
+      dItem->linkAddressSpace( asItem, asItem->nodeId().toString().toUtf8() );
+    {% endif %}
    {% endif %}
 
   // process each 'instantiated by design' instance individually - order not important
