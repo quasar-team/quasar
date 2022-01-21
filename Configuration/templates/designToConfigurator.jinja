@@ -51,6 +51,16 @@
   {% endif %}
 {% endfor %}
 
+static std::string mapSingleItemNodeFullName(std::string input)
+{
+  size_t singleItemNodePrefixBegins = input.find(AddressSpace::SingleItemNodeObjectPrefix);
+  input.replace(
+    singleItemNodePrefixBegins,
+    AddressSpace::SingleItemNodeObjectPrefix.length(),
+    "");
+  return input;
+}
+
 {% macro writeConfigureClassFunctionSignature(className) %}
 
   {% if designInspector.class_has_device_logic(className) %}
@@ -94,13 +104,9 @@
       // establish the full name of an object.
       {% if designInspector.is_class_single_variable_node(className) %}
         {
-          std::string singleItemNodeFullName = asItemChildByDesign->nodeId().toString().toUtf8();
-          size_t singleItemNodePrefixBegins = singleItemNodeFullName.find(AddressSpace::SingleItemNodeObjectPrefix);
-          singleItemNodeFullName.replace(
-            singleItemNodePrefixBegins,
-            AddressSpace::SingleItemNodeObjectPrefix.length(),
-            "");
-          dItemChildByDesign->linkAddressSpace( asItemChildByDesign, singleItemNodeFullName );
+          dItemChildByDesign->linkAddressSpace(
+            asItemChildByDesign,
+            mapSingleItemNodeFullName(asItemChildByDesign->nodeId().toString().toUtf8()) );
         }
       {% else %}
         dItemChildByDesign->linkAddressSpace( asItemChildByDesign, asItemChildByDesign->nodeId().toString().toUtf8() );
@@ -222,13 +228,7 @@
      asItem->linkDevice( dItem );
     {% if designInspector.is_class_single_variable_node(className) %}
       {
-        std::string singleItemNodeFullName = asItem->nodeId().toString().toUtf8();
-        size_t singleItemNodePrefixBegins = singleItemNodeFullName.find(AddressSpace::SingleItemNodeObjectPrefix);
-        singleItemNodeFullName.replace(
-          singleItemNodePrefixBegins,
-          AddressSpace::SingleItemNodeObjectPrefix.length(),
-          "");
-        dItem->linkAddressSpace( asItem, singleItemNodeFullName );
+        dItem->linkAddressSpace( asItem, mapSingleItemNodeFullName(asItem->nodeId().toString().toUtf8()) );
       }
     {% else %}
       dItem->linkAddressSpace( asItem, asItem->nodeId().toString().toUtf8() );
