@@ -71,7 +71,7 @@ digraph  {
         <tr>
           <td width="0"></td>
           <td width="0"></td>
-          <td colspan="2" align="center"><b><font point-size="18" >{{className}}</font>{% if detailLevel|int >= 2 %}<font point-size="10" color="blue" >DL={{designInspector.class_has_device_logic(className)|replace('True','1')|replace('False','0')}}</font>{% endif %}</b></td>
+          <td colspan="2" align="center"><b><font point-size="18" >{{className}}</font>{% if detailLevel|int >= 2 %}<font point-size="10" color="blue" >DL={{designInspector.class_has_device_logic(className)|replace('True','1')|replace('False','0')}}</font>{% endif %}{% if detailLevel|int >= 4 %}{% if designInspector.is_class_single_variable_node(className) %}<font point-size="10" color="#800080" > SVN </font>{% endif %}{% endif %}</b></td>
         </tr>
         <hr/>
         {%- if class.cachevariable|length + class.sourcevariable|length + class.configentry|length == 0 -%} {# the class is basically empty #}
