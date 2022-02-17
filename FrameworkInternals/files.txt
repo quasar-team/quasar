@@ -80,7 +80,7 @@
         },
         "files": {
             "ASCommon.h": {
-                "md5": "0a0f1a8d275f2b08c21fafd1889975c2",
+                "md5": "fbb07045af01e6418bc0925f0afc1ad6",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASDelegatingMethod.h": {
@@ -166,7 +166,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "ed5f3e30c05fbfc13a20f008a125121a",
+                "md5": "9d5fdf73221b8c8e618e26dcb1cce041",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
@@ -186,7 +186,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesBody.jinja": {
-                "md5": "e93ec2f84d70ab71efbd9d164bac7142",
+                "md5": "3a81901fa4c27b7f1214a5489774894b",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesHeader.jinja": {
@@ -423,7 +423,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
-                "md5": "a0c21f96093977ae15d85d1a0b6cce02",
+                "md5": "ea6c2bee0ac3d0aff5e5f68949a67d91",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "4858db9ac40638e93f9309908ae9556d",
+                "md5": "1aac4f351afa72eff7c3dbe70e40f31e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -473,7 +473,7 @@
         "files": {
             "designToDot.jinja": {
                 "install": "overwrite",
-                "md5": "bce2b6f27e669733445af4ba8b5c96f6",
+                "md5": "bd899bf7e015c3d89b2fb3fe2725afe3",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "b4802773eac4d737b81b4401c73243bd",
+                "md5": "a4f72a816602c7eb712d832d8803b8b9",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -626,7 +626,7 @@
             },
             "quasar.html": {
                 "install": "overwrite",
-                "md5": "aa351b2988a214ffa6ad56630b8fc8bd",
+                "md5": "91504bae8efd563aa1675c690acce04b",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -729,7 +729,7 @@
             },
             "automated_build.py": {
                 "install": "overwrite",
-                "md5": "d14c2883d73dfbcb0bd1da4cd78786cf",
+                "md5": "e0471d8bba489ba81be59813f6fb81c4",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1285,7 +1285,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "e0e41379d5b972fc5ce54fca91b6a6b2",
+                "md5": "644f6af3986cff92c5760c3f09b4f7eb",
                 "must_be_versioned": true,
                 "must_exist": true
             },
