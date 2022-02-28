@@ -132,7 +132,9 @@
           [ApplicationPath] can be used as placeholder for the application path. -->
       <OpenSSLStore>
         <CertificateTrustListLocation>[ApplicationPath]/PKI/CA/certs/</CertificateTrustListLocation>
-        <CertificateRevocationListLocation>[ApplicationPath]/PKI/CA/crl/OpcUaServer.crl</CertificateRevocationListLocation>
+        <CertificateRevocationListLocation>[ApplicationPath]/PKI/CA/crl/</CertificateRevocationListLocation>
+        <IssuersCertificatesLocation>[ApplicationPath]/PKI/issuers/certs/</IssuersCertificatesLocation>
+        <IssuersRevocationListLocation>[ApplicationPath]/PKI/issuers/crl/</IssuersRevocationListLocation>
         <ServerCertificate>[ApplicationPath]/PKI/CA/certs/OpcUaServer.der</ServerCertificate>
         <ServerPrivateKey>[ApplicationPath]/PKI/CA/private/OpcUaServer.pem</ServerPrivateKey>
       </OpenSSLStore>
