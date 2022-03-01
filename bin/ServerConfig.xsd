@@ -47,6 +47,8 @@
                                 <xs:sequence>
                                     <xs:element name="CertificateTrustListLocation" type="xs:string"></xs:element>
                                     <xs:element name="CertificateRevocationListLocation" type="xs:string"></xs:element>
+                                    <xs:element minOccurs="0" name="IssuersCertificatesLocation" type="xs:string"></xs:element>
+                                    <xs:element minOccurs="0" name="IssuersRevocationListLocation" type="xs:string"></xs:element>
                                     <xs:element name="ServerCertificate" type="xs:string"></xs:element>
                                     <xs:element name="ServerPrivateKey" type="xs:string"></xs:element>
                                 </xs:sequence>
