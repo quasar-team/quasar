@@ -244,9 +244,9 @@
       OPC UA Application.-->
   <Trace>
     <!--Enable UA stack trace true/false-->
-    <UaStackTraceEnabled>false</UaStackTraceEnabled>
+    <UaStackTraceEnabled>true</UaStackTraceEnabled>
     <!--Ua stack trace level. Possible values NONE, ERROR, WARNING, SYSTEM, INFO, DEBUG, CONTENT, ALL-->
-    <UaStackTraceLevel>ALL</UaStackTraceLevel>
+    <UaStackTraceLevel>SYSTEM</UaStackTraceLevel>
     <!--Enable UA server application trace true/false-->
     <UaAppTraceEnabled>true</UaAppTraceEnabled>
     <!--UA server application trace level. Possible values NoTrace, Errors, Warning, Info, InterfaceCall, CtorDtor, ProgramFlow, Data-->
