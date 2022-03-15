@@ -60,16 +60,34 @@
 {% endmacro %}
 
 {% macro writeCacheVarOrConfigEntry(containingClassName, elementObject, what) %}
-  {% set objectName=elementObject.get('name') %}
-  {% set objectType=elementObject.get('dataType') %}
+  {% set objectName = elementObject.get('name') %}
+  {% set objectType = elementObject.get('dataType') %}
   {% set optionalityMsg = 'optional, the default value shown below will be used if not present' if elementObject.get('defaultValue') else 'mandatory' %}
   <b>{{objectName}}</b> ({{objectType}}) {{optionalityMsg}}
-  {% set docElements=designInspector.objectifyDocumentation(containingClassName, objectName) %}
+  {% set docElements = designInspector.objectifyDocumentation(containingClassName, objectName) %}
   {% if docElements|length > 0 %}
     <div style="background-color:#eeeeff"><font color="blue">DOC</font>
       {% for docElement in docElements %}
         {{ designInspector.strip_documentation_tag(docElement) }}
       {% endfor %}
+      {# Add to the docs the enumeration documentation, if any. #}
+      {% if what == 'configentry' %}
+        {% set configEntryObjectified = designInspector.objectify_config_entries(containingClassName, "[@name='" + objectName + "']")[0] %}
+        {% set enumerationValuesWithDocs = designInspector.xpath_relative_to_object(configEntryObjectified, 'd:configRestriction/d:restrictionByEnumeration/d:enumerationValue[d:documentation]') %}
+        {% if enumerationValuesWithDocs|length > 0 %}
+          <ul>
+          {% for enumerationValue in designInspector.xpath_relative_to_object(configEntryObjectified, 'd:configRestriction/d:restrictionByEnumeration/d:enumerationValue') %}
+            <li><code>{{enumerationValue.get('value')}}</code>:
+              {% if enumerationValue.getchildren()|length > 0 %}
+                {{ designInspector.strip_documentation_tag(enumerationValue.getchildren()[0]) }}
+              {% else %}
+                <b>To the developer: complete this documentation entry in your Design.</b>
+              {% endif %}
+            </li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endif %}
     </div>
   {% endif %}
   {% if elementObject.get('defaultValue') %}
@@ -98,7 +116,7 @@
     {% set parentObjects = designInspector.objectifyAllParents(className, restrict_to_by_configuration=True) %}
     {% if parentObjects|length > 0 %}
       <a id="class_{{className}}"><h2>{{className}}</h2></a>
-      {% set documentation=designInspector.objectifyDocumentation(className) %}
+      {% set documentation = designInspector.objectifyDocumentation(className) %}
       {% if documentation %}
         <div style="background-color:#eeeeff"><font color="blue">DOC</font>
           {% for docElement in documentation %}
