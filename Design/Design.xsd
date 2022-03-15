@@ -461,6 +461,9 @@ elementFormDefault="qualified">
         </simpleType>
 
     <complexType name="EnumerationValue">
+        <sequence>
+            <element name="documentation" type="tns:Documentation" maxOccurs="1" minOccurs="0"/>
+        </sequence>
         <attribute name="value" use="required" type="tns:NonEmptyString"/>
     </complexType>
 
