@@ -163,6 +163,7 @@ elementFormDefault="qualified">
                 </documentation>
                 </annotation>
         </attribute>
+        <attribute name="defaultConfigInitializerValue" type="string" use="optional"/>
     </complexType>
 
     <simpleType name="CacheVariableAddressSpaceWrite">

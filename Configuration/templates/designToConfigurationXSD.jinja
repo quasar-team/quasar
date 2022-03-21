@@ -55,6 +55,14 @@
   {% endif -%}
 {% endmacro %}
 
+{% macro writeDefaultConfigInitializerValue(cacheVar) %}
+  {%- if cacheVar.get('defaultConfigInitializerValue') %}
+    use="optional" default="{{cacheVar.get('defaultConfigInitializerValue')}}"
+  {% else %}
+    use="required"
+  {% endif -%}
+{% endmacro %}
+
 {% macro writeArrayCacheVarOrConfigEntry(className, targetVar, what) %}
   {% set targetName = targetVar.get('name') %}
   {% set dataType = oracle.quasar_data_type_to_xsd_type(targetVar.get('dataType')) %}
@@ -164,11 +172,12 @@
       {% set restrictions = designInspector.get_restrictions(className, cacheVarName, "cachevariable") %}
       <!-- add scalarCacheVarByConfig name [{{cacheVarName}}] type [{{dataType}}] restriction count [{{ restrictions|length }}] -->
       {% if restrictions|length>0 %}
-        <xs:attribute name="{{cacheVarName}}" use="required">
+        {# Piotr's note: I think this Ben's condition is for future as cache variables don't have config restrictions #}
+        <xs:attribute name="{{cacheVarName}}" {{writeDefaultConfigInitializerValue(scalarCacheVarByConfig)}} >
         {{ writeDocumentation(designInspector.objectifyDocumentation(className, cacheVarName)) }}
         {{ writeRestrictions(className, cacheVarName, dataType, restrictions) }}
       {% else %}
-        <xs:attribute name="{{cacheVarName}}" use="required" type="{{dataType}}">
+        <xs:attribute name="{{cacheVarName}}" type="{{dataType}}" {{writeDefaultConfigInitializerValue(scalarCacheVarByConfig)}} >
         {{ writeDocumentation(designInspector.objectifyDocumentation(className, cacheVarName)) }}
       {% endif %}      
       </xs:attribute>   

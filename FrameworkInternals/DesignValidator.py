@@ -196,6 +196,8 @@ class DesignValidator():
                     self.validate_array(cache_variable.array, locator)
                     assert_attribute_absent(cache_variable, 'initialValue',
                                             'when array', locator)
+                    assert_attribute_absent(cache_variable, 'defaultConfigInitializerValue',
+                                            'when array', locator)
                 if cache_variable.get('dataType') in ['UaVariant', 'UaByteString']:
                     assert_attribute_equal(cache_variable, 'initializeWith', 'valueAndStatus',
                                            'when data type is UaVariant', locator)
