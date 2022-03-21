@@ -172,7 +172,19 @@
     <li>value - analytical formula used to calculate the value of the variable.
         E.g. to calculate the square of another variable with address x.y you should put <code>x.y^2</code></li>
   </ul>
-  Detailed documentation of all features of CalculatedVariables is available in the quasar Documentation.
+  Detailed documentation of all features of CalculatedVariables is available in the quasar Documentation (see CalculatedVariables/doc/CalculatedVariables.html from the quasar root).
+
+  <a id="class_CalculatedVariableGenericFormula"><h2>CalculatedVariableGenericFormula</h2></a>
+  A CalculatedVariableGenericFormula is a generalized formula that can be used as a template to
+  instantiate CalculatedVariable(s). It helps to avoid redundancy and thus also minimize probability
+  of errors. The basic way of using the CalculatedVariableGenericFormula is using the <code>$applyGenericFormula</code> operator.
+  <p/>
+
+  The CalculatedVariableGenericFormula needs to be instantiated at the very top of a chosen configuration file.
+
+  <p/>
+
+  Detailed documentation of all features of CalculatedVariables is available in the quasar Documentation (see CalculatedVariables/doc/CalculatedVariables.html from the quasar root).
 
   <a id="class_FreeVariable"><h2>FreeVariable</h2></a>
   A FreeVariable is an OPC-UA variable which can be added anywhere in the address-space. It is not governed at all by the given server
