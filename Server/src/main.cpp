@@ -3,7 +3,7 @@
  *
  *  Created on: Nov 6, 2015
  *      Author: Piotr Nikiel <piotr@nikiel.info>
- * 		Author: Damian Abalo Miron <damian.abalo@cern.ch>
+ *      Author: Damian Abalo Miron <damian.abalo@cern.ch>
  *
  *  This file is part of Quasar.
  *
@@ -23,7 +23,15 @@
 #include "QuasarServer.h"
 
 int main (int argc, char *argv[])
-{
-	QuasarServer quasarServer ;
-	return quasarServer.startApplication(argc, argv);
+{   
+    try
+    {
+        QuasarServer quasarServer ;
+        return quasarServer.startApplication(argc, argv);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+
 }
