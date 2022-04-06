@@ -21,7 +21,7 @@
   <body>
     <h1>quasar.py commands help</h1>
     <img src="images/quasar_engine_small_smooth_square_128x128.png"
-      alt="" width="128" height="128">
+      alt="" height="128" width="128">
     <h2><a name="build"></a>build<br>
     </h2>
     <p>This is the main command to build the project (a quasar-based
@@ -82,13 +82,6 @@
       when creating a new release.<br>
       This command is strictly reserved to the quasar heads and it won't
       work in a typical user environment.<br>
-    </p>
-    <h2><a name="design_vs_device"></a>design_vs_device</h2>
-    <p><i>Warning: this command is internally called by the build system
-        and it is not expected to be directly used by users.<br>
-        <br>
-      </i>Checks if the device files are outdated (by comparing with
-      design), and hence if they should be regenerated.<br>
     </p>
     <h2><a name="doxygen"></a>doxygen</h2>
     <p>&nbsp;Runs doxygen in the documentation folder, by default
@@ -249,6 +242,7 @@
     <p>Sets the new build config. Some standard build configs are
       shipped with quasar, e.g. <a
 href="https://github.com/quasar-team/quasar/blob/master/open62541_config.cmake">open62541
+
         build config</a> for building against open62541 (via
       open62541-compat).<br>
     </p>

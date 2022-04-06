@@ -26,7 +26,6 @@ from install_framework import upgradeProject
 from manage_files import mfCheckConsistency
 from manage_files import mfCreateRelease
 from manage_files import mfSetupSvnIgnore
-from manage_files import mfDesignVsDevice
 from manage_files import symlinkRuntimeDeps
 import manage_files
 from deviceGenerators import generateDeviceClass, generateAllDevices
@@ -71,7 +70,6 @@ commands = [
         [['create_project'], createProject, True],
         [['create_release'], mfCreateRelease, False],
         [['upgrade_project'], upgradeProject, True],
-        [['design_vs_device'], mfDesignVsDevice, True],
         [['upgrade_design'], upgradeDesign, True],
         [['format_design'], formatDesign, True],
         [['validate_design'], validateDesign, True],
