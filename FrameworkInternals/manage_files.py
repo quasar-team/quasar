@@ -401,19 +401,6 @@ def check_file_for_mtime ( design_mtime, p, project_directory, type, c ):
             print('  If build goes bananas, this could be one of the reasons.')
 
 
-
-def design_vs_device(project_directory):
-    # get modification time of the file
-    design_mtime = os.path.getmtime(project_directory+os.path.sep+'Design'+os.path.sep+'Design.xml')
-    # now run over all human-managed device files
-
-    designInspector = DesignInspector(os.path.sep.join([project_directory, 'Design', 'Design.xml']))
-    classes = designInspector.get_names_of_all_classes(only_with_device_logic=True)
-
-    for klass in classes:
-        check_file_for_mtime( design_mtime, os.path.sep.join([project_directory, 'Device', 'src', 'D{0}.cpp'.format(klass)]), project_directory, 'cpp', klass)
-        check_file_for_mtime( design_mtime, os.path.sep.join([project_directory, 'Device', 'include', 'D{0}.h'.format(klass)]), project_directory, 'h', klass)
-
 #manage files API starts here
 def mfCheckConsistency(param=None):
     """Checks the consistency of the project, checking that all the files that must exist do exist, everything is in svn and the md5 keys are correct."""
@@ -457,10 +444,6 @@ def mfSetupSvnIgnore():
 def mfCheckSvnIgnore():
     """Checks that the .svnignore hidden file is properly set up to ignore the generated files in your repository."""
     check_svn_ignore_project(os.getcwd())
-
-def mfDesignVsDevice():
-    """Checks if the device files are outdated (By comparing with design), and hence if they should be regenerated."""
-    design_vs_device(os.getcwd())
 
 def copyIfNotExists(src, dst):
     if not os.path.exists( os.path.dirname(dst) ):

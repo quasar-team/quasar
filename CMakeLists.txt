@@ -118,11 +118,6 @@ add_custom_command(
     )
 add_custom_target(validateDesign DEPENDS  ${PROJECT_BINARY_DIR}/Design/validated.tmp )
 
-add_custom_target(dep ALL
-        COMMAND ${PROJECT_SOURCE_DIR}/quasar.py design_vs_device
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        )
-
 link_directories(
 	${OPCUA_TOOLKIT_PATH}/lib
 	${BOOST_PATH_LIBS}
