@@ -145,7 +145,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
         {% endif %}
 
         {# registering the variable for calc vars needs to happen before initial setValue is done #}
-        {% if oracle.is_data_type_numeric(cv.get('dataType')) and cv.array|length==0 %}
+        {% if (oracle.is_data_type_numeric(cv.get('dataType')) or cv.get('dataType') == 'UaVariant') and cv.array|length==0 %}
           CalculatedVariables::Engine::registerVariableForCalculatedVariables( m_{{cv.get('name')}} );
         {% endif %}
 
