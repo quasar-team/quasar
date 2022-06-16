@@ -56,5 +56,5 @@ msgid ""
 "It supports :ref:`Sphinx <sphinx>` docs written with reStructuredText."
 msgstr ""
 "Read the Docs alberga documentación para la comunidad de código abierto."
-"Esta soporta :ref:`Sphinx <sphinx>` documentación estrica con reStructuredText."
+"Esta soporta :ref:`Sphinx <sphinx>` documentación escrita con reStructuredText."
 ```
