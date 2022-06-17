@@ -342,7 +342,11 @@ int BaseQuasarServer::parseCommandLine(
     //Print version if needed
     if (printVersion)
     {
+        #ifdef BACKEND_UATOOLKIT
         std::string uasdkCoreModuleVersionInfo = VersionInfoCoreModule::getCoreModuleVersionInfo().toUtf8();
+        #else
+        std::string uasdkCoreModuleVersionInfo = "N/A";
+        #endif
         auto stringWithoutSlashes = [](std::string& s) {
                                             std::replace( s.begin(), s.end(), '\\', ' ') ;
                                             return s;
