@@ -342,11 +342,18 @@ int BaseQuasarServer::parseCommandLine(
     //Print version if needed
     if (printVersion)
     {
+        std::string uasdkCoreModuleVersionInfo = VersionInfoCoreModule::getCoreModuleVersionInfo().toUtf8();
+        auto stringWithoutSlashes = [](std::string& s) {
+                                            std::replace( s.begin(), s.end(), '\\', ' ') ;
+                                            return s;
+                                        };
+
     	std::cout << VERSION_STR << std::endl << \
     			"\t BuildHost: " << BuildMetaInfo::getBuildHost() << std::endl << \
 				"\t BuildTimestamp: " << BuildMetaInfo::getBuildTime() << std::endl << \
 				"\t CommitID: " << BuildMetaInfo::getCommitID() << std::endl << \
-				"\t ToolkitLibs: " << BuildMetaInfo::getToolkitLibs() << std::endl;
+				"\t ToolkitLibs: " << BuildMetaInfo::getToolkitLibs() << std::endl << \
+				"\t CoreModuleVersionInfo: " << stringWithoutSlashes(uasdkCoreModuleVersionInfo) << std::endl;
         if (isHelpOrVersion)
             *isHelpOrVersion = true;
         return 0;
