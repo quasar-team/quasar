@@ -65,6 +65,7 @@ class TermColors
 /** These are simple ANSI control codes. Implemented as static methods in case we had to deal with runtime platform dependencies */
 {
 public:
+	static std::string ForeBold () { return "\033[1m"; }
 	static std::string ForeRed () { return "\033[1;31m"; }
 	static std::string ForeGreen () { return "\033[1;32m"; }
 	static std::string ForeYellow () { return "\033[1;33m"; }
