@@ -64,6 +64,8 @@
 #include <CalculatedVariablesEngine.h>
 #include <Utils.h>
 
+#include <OpcuaToolkitInfo.hpp>
+
 using namespace std;
 using namespace boost::program_options;
 
@@ -82,15 +84,15 @@ BaseQuasarServer::~BaseQuasarServer()
 int BaseQuasarServer::startApplication(int argc, char *argv[])
 {
 
-    bool isHelpOrVersion = false;
+    bool isHelpOrVersionOrExtra = false;
     string configurationFileName = "config.xml";
     string opcUaBackendConfigFile; // default will come from parseCommandLine invocation
     bool isCreateCertificateOnly = false;
 
-    int ret = parseCommandLine(argc, argv, &isHelpOrVersion, &isCreateCertificateOnly, &configurationFileName,
+    int ret = parseCommandLine(argc, argv, &isHelpOrVersionOrExtra, &isCreateCertificateOnly, &configurationFileName,
             opcUaBackendConfigFile);
 
-    if (ret != 0 || isHelpOrVersion) //If there was a problem parsing the arguments, or it was a help/version call, we finish the execution
+    if (ret != 0 || isHelpOrVersionOrExtra) //If there was a problem parsing the arguments, or it was a help/version call, we finish the execution
         return ret;
     try
     {
@@ -106,7 +108,7 @@ int BaseQuasarServer::startApplication(int argc, char *argv[])
     catch (...)
     {
         LOG(Log::ERR) << Quasar::TermColors::ForeRed() << "Caught exception of *UNKNOWN* type in the server global scope " << Quasar::TermColors::StyleReset() <<
-        		"(and BTW have some mercy please and only throw subclasses of std::exception!)";
+                "(and BTW have some mercy please and only throw subclasses of std::exception!)";
         return 1;
     }
 }
@@ -125,12 +127,12 @@ int BaseQuasarServer::serverRun(
         return initializeEnvironmentReturn;
     }
 
-	#ifndef BUILDING_SHARED_OBJECT
-	// note from Piotr as per OPCUA-2355: shared objects will be loaded by some parent app so we shouldn't steal Ctrl-C from them.
-	RegisterSignalHandler();
-	#else
-	LOG(Log::WRN) << "Not registering SIGINT handler because the target was built as a shared object";
-	#endif // BUILDING_SHARED_OBJECT
+    #ifndef BUILDING_SHARED_OBJECT
+    // note from Piotr as per OPCUA-2355: shared objects will be loaded by some parent app so we shouldn't steal Ctrl-C from them.
+    RegisterSignalHandler();
+    #else
+    LOG(Log::WRN) << "Not registering SIGINT handler because the target was built as a shared object";
+    #endif // BUILDING_SHARED_OBJECT
 
     //- Start up OPC server ---------------------
     // This code can be integrated into a start up
@@ -148,7 +150,7 @@ int BaseQuasarServer::serverRun(
 
     if (onlyCreateCertificate)
     {
-    	LOG(Log::WRN) << Quasar::TermColors::ForeYellow() << "Note: the argument to create server certificate will be deprecated soon. Please stop using it." << Quasar::TermColors::StyleReset();
+        LOG(Log::WRN) << Quasar::TermColors::ForeYellow() << "Note: the argument to create server certificate will be deprecated soon. Please stop using it." << Quasar::TermColors::StyleReset();
         return m_pServer->createCertificate(opcUaBackendConfigurationFile.c_str(), serverSettingsPath.c_str());
     }
 
@@ -288,7 +290,7 @@ std::string BaseQuasarServer::getProcessOwner() const
 int BaseQuasarServer::parseCommandLine(
         int argc,
         char *argv[],
-        bool *isHelpOrVersion,
+        bool *isHelpOrVersionOrExtra,
         bool *isCreateCertificateOnly,
         std::string *configurationFileName,
         std::string& opcUaBackendConfigurationFile)
@@ -297,6 +299,7 @@ int BaseQuasarServer::parseCommandLine(
 
     bool createCertificateOnly = false;
     bool printVersion = false;
+    bool printVersionExtraInfo = false;
     string logFile;
     options_description desc("Allowed options");
 
@@ -305,11 +308,12 @@ int BaseQuasarServer::parseCommandLine(
     desc.add_options()
             ("config_file", value<string>(), "A path to the config file")
             ("opcua_backend_config", value<string>(&opcUaBackendConfigurationFile)
-	         ->default_value(defaultOpcUaBackendConfigurationFile),
+             ->default_value(defaultOpcUaBackendConfigurationFile),
                  "(Optional) path to the OPC-UA settings file")
             ("create_certificate", bool_switch(&createCertificateOnly), "Create new certificate and exit")
             ("help,h", "Print help")
-            ("version,v", bool_switch(&printVersion), "Print version and exit");
+            ("version,v", bool_switch(&printVersion), "Print version and exit")
+            ("version_extra", bool_switch(&printVersionExtraInfo), "Print version extra info and exit");
 
     positional_options_description p;
     p.add("config_file", 1);
@@ -319,12 +323,12 @@ int BaseQuasarServer::parseCommandLine(
     variables_map vm;
     try
     {
-	store(command_line_parser(argc,argv)
-	      .options(desc)
-	      .style(command_line_style::unix_style)
-	      .positional(p)
-	      .run(),
-	      vm);
+    store(command_line_parser(argc,argv)
+          .options(desc)
+          .style(command_line_style::unix_style)
+          .positional(p)
+          .run(),
+          vm);
     }
     catch (boost::exception &e)
     {
@@ -335,27 +339,77 @@ int BaseQuasarServer::parseCommandLine(
     if (vm.count("help"))
     {
         cout << desc << endl;
-        if (isHelpOrVersion)
-            *isHelpOrVersion = true;
+        if (isHelpOrVersionOrExtra)
+            *isHelpOrVersionOrExtra = true;
         return 0;
     }
+
     //Print version if needed
     if (printVersion)
     {
-    	std::cout << VERSION_STR << std::endl << \
-    			"\t BuildHost: " << BuildMetaInfo::getBuildHost() << std::endl << \
-				"\t BuildTimestamp: " << BuildMetaInfo::getBuildTime() << std::endl << \
-				"\t CommitID: " << BuildMetaInfo::getCommitID() << std::endl << \
-				"\t ToolkitLibs: " << BuildMetaInfo::getToolkitLibs() << std::endl;
-        if (isHelpOrVersion)
-            *isHelpOrVersion = true;
+        #ifdef BACKEND_UATOOLKIT
+        std::string uasdkCoreModuleVersionInfo = VersionInfoCoreModule::getCoreModuleVersionInfo().toUtf8();
+        #else
+        std::string uasdkCoreModuleVersionInfo = "N/A in open62541 backend";
+        #endif
+
+        std::cout << VERSION_STR << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t BuildHost: " << Quasar::TermColors::StyleReset() << BuildMetaInfo::getBuildHost() << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t BuildTimestamp: " << Quasar::TermColors::StyleReset() << BuildMetaInfo::getBuildTime() << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t CommitID: " << Quasar::TermColors::StyleReset() << BuildMetaInfo::getCommitID() << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t ToolkitLibs: " << Quasar::TermColors::StyleReset() << BuildMetaInfo::getToolkitLibs() << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t BuildTooliktPath: " << Quasar::TermColors::StyleReset() << OpcuaToolkitInfo::getOpcuaToolkitPath() << std::endl;
+
+        if (isHelpOrVersionOrExtra)
+            *isHelpOrVersionOrExtra = true;
+        return 0;
+    }
+    else if (printVersionExtraInfo)
+    {
+        auto stringWithoutSlashes = [](std::string& s) {
+                                std::replace( s.begin(), s.end(), '\\', ' ') ;
+                                return s;
+                            };
+
+        #ifdef BACKEND_UATOOLKIT
+        std::string uasdkCoreModuleVersionInfo = VersionInfoCoreModule::getCoreModuleVersionInfo().toUtf8();
+        std::string uaStackVersionInfo = VersionInfoCoreModule::getUaStackVersionInfo().toUtf8();
+        std::string uaStackVersion = VersionInfoCoreModule::getUaStackVersion().toUtf8();
+        std::string uaStackStaticConfigInfo = VersionInfoCoreModule::getUaStackStaticConfigInfo().toUtf8();
+        std::string uaStackRuntimeConfigInfo = VersionInfoCoreModule::getUaStackRuntimeConfigInfo().toUtf8();
+        std::string uaStackPlatformLayerVersionInfo = VersionInfoCoreModule::getUaStackPlatformLayerVersionInfo().toUtf8();
+        std::string uaStackPlatformLayerVersion = VersionInfoCoreModule::getUaStackPlatformLayerVersion().toUtf8();
+        std::string uaStackPlatformLayerConfigInfo = VersionInfoCoreModule::getUaStackPlatformLayerVersion().toUtf8();
+        #else
+        std::string uasdkCoreModuleVersionInfo = "N/A in open62541 backend";
+        std::string uaStackVersionInfo = "N/A in open62541 backend";
+        std::string uaStackVersion = "N/A in open62541 backend";
+        std::string uaStackStaticConfigInfo = "N/A in open62541 backend";
+        std::string uaStackRuntimeConfigInfo = "N/A in open62541 backend";
+        std::string uaStackPlatformLayerVersionInfo = "N/A in open62541 backend";
+        std::string uaStackPlatformLayerVersion = "N/A in open62541 backend";
+        std::string uaStackPlatformLayerConfigInfo = "N/A in open62541 backend";
+        #endif
+
+        std::cout <<
+                Quasar::TermColors::ForeBold() << "\t CoreModuleVersionInfo: " << Quasar::TermColors::StyleReset() << stringWithoutSlashes(uasdkCoreModuleVersionInfo) << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t UaStackVersionInfo: " << Quasar::TermColors::StyleReset() << stringWithoutSlashes(uaStackVersionInfo) << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t UaStackVersion: " << Quasar::TermColors::StyleReset() << stringWithoutSlashes(uaStackVersion) << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t UaStackStaticConfigInfo: " << Quasar::TermColors::StyleReset() << stringWithoutSlashes(uaStackStaticConfigInfo) << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t UaStackRuntimeConfigInfo: " << Quasar::TermColors::StyleReset() << stringWithoutSlashes(uaStackRuntimeConfigInfo) << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t UaStackPlatformLayerVersionInfo: " << Quasar::TermColors::StyleReset() << stringWithoutSlashes(uaStackPlatformLayerVersionInfo) << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t UaStackPlatformLayerVersion: " << Quasar::TermColors::StyleReset() << stringWithoutSlashes(uaStackPlatformLayerVersion) << std::endl << \
+                Quasar::TermColors::ForeBold() << "\t UaStackPlatformLayerConfigInfo: " << Quasar::TermColors::StyleReset() << stringWithoutSlashes(uaStackPlatformLayerConfigInfo) << std::endl;
+
+        if (isHelpOrVersionOrExtra)
+            *isHelpOrVersionOrExtra = true;
         return 0;
     }
     else
     {
         if (vm.count("config_file") > 0)
             *configurationFileName = vm["config_file"].as<string>();
-        *isHelpOrVersion = false;
+        *isHelpOrVersionOrExtra = false;
         *isCreateCertificateOnly = createCertificateOnly;
         return 0;
     }
@@ -389,7 +443,7 @@ std::string BaseQuasarServer::getWorkingDirectory() const
     memset(pathBuff, 0, MAX_PATH);
     result = _getcwd(pathBuff, MAX_PATH);
 #endif
-	return std::string(result != nullptr ? result : "unknown");
+    return std::string(result != nullptr ? result : "unknown");
 }
 void BaseQuasarServer::logEnvironment() const
 {
@@ -438,8 +492,8 @@ void BaseQuasarServer::serverStartFailLogError(int ret, const std::string& logFi
         LOG(Log::ERR) << "The reason of failure should have been logged in your server log file: " << logFilePath;
     else
     {
-	LOG(Log::ERR) << "The exact reason is unknown because you haven't enabled logging in your ServerConfig file.";
-	LOG(Log::ERR) << "To enable, change value of <UaAppTraceEnabled> content to true.";
+    LOG(Log::ERR) << "The exact reason is unknown because you haven't enabled logging in your ServerConfig file.";
+    LOG(Log::ERR) << "To enable, change value of <UaAppTraceEnabled> content to true.";
     }
 }
 

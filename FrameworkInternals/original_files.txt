@@ -1175,6 +1175,12 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
+            "OpcuaToolkitInfo.hpp.in": {
+                "install": "overwrite",
+                "md5": "check",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
             "serverconfigxml_quasar.h": {
                 "install": "overwrite",
                 "md5": "check",
