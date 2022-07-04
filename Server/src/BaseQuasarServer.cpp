@@ -299,7 +299,7 @@ int BaseQuasarServer::parseCommandLine(
 
     bool createCertificateOnly = false;
     bool printVersion = false;
-    bool printExtraInfo = false;
+    bool printVersionExtraInfo = false;
     string logFile;
     options_description desc("Allowed options");
 
@@ -313,7 +313,7 @@ int BaseQuasarServer::parseCommandLine(
             ("create_certificate", bool_switch(&createCertificateOnly), "Create new certificate and exit")
             ("help,h", "Print help")
             ("version,v", bool_switch(&printVersion), "Print version and exit")
-            ("extra_info,x", bool_switch(&printExtraInfo), "Print extra info and exit");
+            ("version_extra", bool_switch(&printVersionExtraInfo), "Print version extra info and exit");
 
     positional_options_description p;
     p.add("config_file", 1);
@@ -350,7 +350,7 @@ int BaseQuasarServer::parseCommandLine(
         #ifdef BACKEND_UATOOLKIT
         std::string uasdkCoreModuleVersionInfo = VersionInfoCoreModule::getCoreModuleVersionInfo().toUtf8();
         #else
-        std::string uasdkCoreModuleVersionInfo = "N/A";
+        std::string uasdkCoreModuleVersionInfo = "N/A in open62541 backend";
         #endif
 
         std::cout << VERSION_STR << std::endl << \
@@ -364,7 +364,7 @@ int BaseQuasarServer::parseCommandLine(
             *isHelpOrVersionOrExtra = true;
         return 0;
     }
-    else if (printExtraInfo)
+    else if (printVersionExtraInfo)
     {
         auto stringWithoutSlashes = [](std::string& s) {
                                 std::replace( s.begin(), s.end(), '\\', ' ') ;
@@ -381,14 +381,14 @@ int BaseQuasarServer::parseCommandLine(
         std::string uaStackPlatformLayerVersion = VersionInfoCoreModule::getUaStackPlatformLayerVersion().toUtf8();
         std::string uaStackPlatformLayerConfigInfo = VersionInfoCoreModule::getUaStackPlatformLayerVersion().toUtf8();
         #else
-        std::string uasdkCoreModuleVersionInfo = "N/A";
-        std::string uaStackVersionInfo = "N/A";
-        std::string uaStackVersion = "N/A";
-        std::string uaStackStaticConfigInfo = "N/A";
-        std::string uaStackRuntimeConfigInfo = "N/A";
-        std::string uaStackPlatformLayerVersionInfo = "N/A";
-        std::string uaStackPlatformLayerVersion = "N/A";
-        std::string uaStackPlatformLayerConfigInfo = "N/A";
+        std::string uasdkCoreModuleVersionInfo = "N/A in open62541 backend";
+        std::string uaStackVersionInfo = "N/A in open62541 backend";
+        std::string uaStackVersion = "N/A in open62541 backend";
+        std::string uaStackStaticConfigInfo = "N/A in open62541 backend";
+        std::string uaStackRuntimeConfigInfo = "N/A in open62541 backend";
+        std::string uaStackPlatformLayerVersionInfo = "N/A in open62541 backend";
+        std::string uaStackPlatformLayerVersion = "N/A in open62541 backend";
+        std::string uaStackPlatformLayerConfigInfo = "N/A in open62541 backend";
         #endif
 
         std::cout <<
