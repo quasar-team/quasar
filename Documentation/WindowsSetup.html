@@ -124,7 +124,7 @@ This dependencies are needed to access some functionality of the framework that 
 		<li>Add the folder where you decompress the executable to the Windows PATH environment variable.</li>
 			<ul><li>To make sure everything went well run the command <i>md5sum --help</i> in a Windows Command Prompt. If the command is recognized you are good to go.</li></ul>
 	</ul>
-<h1>Windows cmake toolchain</h1>
+<h2>Windows cmake toolchain</h2>
 Similarly to Linux, in order to build a QUASAR server in Windows, you need to provide a toolchain file, so cmake knows where to find all the different dependancies. Since this dependancies are not as common as in Linux, this makes the toolchain even more complex.
 <br/>
 Taking this into account, a default toolchain for windows is provided, so the user can easily build in a Windows system. <a href="enice_win_configuration.cmake">This file is available in the Documentation folder of quasar, with the name enice_win_configuration.</a>

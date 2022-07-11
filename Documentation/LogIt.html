@@ -17,228 +17,228 @@
 <!-- Created:   Aug 2018                                                           -->
 <!-- Authors:                                                                      -->
 <!--   Ben Farnham <ben.farnham@cern.ch>                                           -->
-<!DOCTYPE html>
-<html>
-  <head>
-
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="UTF-8">
-    <link href="css/shCore.css" rel="stylesheet" type="text/css">
-    <link href="css/shThemeDefault.css" rel="stylesheet" type="text/css">
-    <title>Logging in quasar servers</title>
-  </head>
-  <body>
-    <h1>LogIt</h1>
-    Logging in quasar is handled by the LogIt component. For
-    instructions on how to use LogIt generally, i.e. how to log specific
-    messages from a quasar server please refer to the <a
-      href="https://github.com/quasar-team/LogIt">LogIt repository</a>.
-    <h1>Initializing LogIt in the Quasar Server code</h1>
-    As described above, the general means of logging via LogIt is
-    documented <a href="https://github.com/quasar-team/LogIt">here</a>.
-    However, you will need to initialize LogIt in your quasar server -
-    this section describes the hooks etc. provided by quasar where you,
-    the developer, are expected to insert initialization code.
-    <br>
-    <br>
-    Please read about <a
-      href="https://github.com/quasar-team/LogIt#components">LogIt
-      components</a>. It's not long or complicated and you need to know
-    about them.
-    <br>
-    <br>
-    Presumably, the quasar server you write will perform tasks at
-    runtime relating to different logical/functional/etc aspects of
-    whatever it is the server actually does. Examples may include
-    <ul>
-      <li>sending commands to some target hardware (e.g. calling some
-        3rd party API)</li>
-      <li>accepting input (e.g. handling OPC-UA client item writes and
-        method calls)</li>
-      <li>handling hardware disconnection/reconnection events</li>
-    </ul>
-    The general idea of LogIt components is that each aspect has a
-    dedicated logging component, the benefit of this is that LogIt
-    allows you to raise and lower the logging <a
-      href="https://github.com/quasar-team/LogIt#verbosity">verbosity</a>
-    of these components in order to optimize the logging output
-    according to the aspect you are interested in.
-    <br>
-    <br>
-    Note: You, the quasar server developer, define the components and
-    mark each log message in your code with component and a verbosity
-    tag: TRACE, WARNING etc.
-    <br>
-    <br>
-    The class QuasarServer (in sub-directory Server) is created in your
-    project with a hook method for you to override, to initialize LogIt
-    with the component IDs specific to your server implementation.
-    <!-- HTML generated using hilite.me -->
-    <div style="background: #ffffff;
-      overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
-      .1em .8em;padding:.2em .6em;">
-      <pre style="margin: 0; line-height: 125%"><span style="color: #888888">// file: QuasarServer.h</span>
-<span style="color: #008800; font-weight: bold">virtual</span> <span style="color: #333399; font-weight: bold">void</span> <span style="color: #0066BB; font-weight: bold">initializeLogIt</span>();
-
-<span style="color: #888888">// file: QuasarServer.cpp</span>
-<span style="color: #333399; font-weight: bold">void</span> QuasarServer<span style="color: #333333">::</span>initializeLogIt()
-</pre>
-    </div>
-    <br>
-    <br>
-    The convention (!= rule: you are free to invent something better and
-    let us know) in quasar servers is that LogIt component handles are
-    declared as globals variables in file <em>Common/include/LogItComponentIds.h</em>,
-    as per the sample code below
-    <!-- HTML generated using hilite.me -->
-    <div style="background: #ffffff;
-      overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
-      .1em .8em;padding:.2em .6em;">
-      <pre style="margin: 0; line-height: 125%"><span style="color: #557799">#ifndef COMMON_INCLUDE_LOGITCOMPONENTIDS_H_</span>
-<span style="color: #557799">#define COMMON_INCLUDE_LOGITCOMPONENTIDS_H_</span>
-
-<span style="color: #557799">#include &lt;LogItStaticDefinitions.h&gt;</span>
-
-Log<span style="color: #333333">::</span>LogComponentHandle HW_API_CALLS;
-Log<span style="color: #333333">::</span>LogComponentHandle AS_WRITES;
-Log<span style="color: #333333">::</span>LogComponentHandle AS_UPDATES;
-
-<span style="color: #557799">#endif </span><span style="color: #888888">/* COMMON_INCLUDE_LOGITCOMPONENTIDS_H_ */</span><span style="color: #557799"></span>
-</pre>
-    </div>
-    <br>
-    <br>
-    These handles are then initialized in the hook method <em>QuasarServer::initializeLogIt</em>,
-    as per the sample code below
-    <!-- HTML generated using hilite.me -->
-    <div style="background: #ffffff;
-      overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
-      .1em .8em;padding:.2em .6em;">
-      <pre style="margin: 0; line-height: 125%"><span style="color: #333399; font-weight: bold">void</span> QuasarServer<span style="color: #333333">::</span>initializeLogIt()
-{
-  Log<span style="color: #333333">::</span>initializeLogging();
+  <!DOCTYPE html>
+  <html>
+    <head>
   
-  HW_API_CALLS <span style="color: #333333">=</span> Log<span style="color: #333333">::</span>registerLoggingComponent(<span style="background-color: #fff0f0">"HARDWARE_API_CALLS"</span>);
-  AS_WRITES <span style="color: #333333">=</span> Log<span style="color: #333333">::</span>registerLoggingComponent(<span style="background-color: #fff0f0">"ADDRESS_SPACE_WRITES"</span>);
-  AS_UPDATES <span style="color: #333333">=</span> Log<span style="color: #333333">::</span>registerLoggingComponent(<span style="background-color: #fff0f0">"ADDRESS_SPACE_UPDATES"</span>);
-
-  LOG(Log<span style="color: #333333">::</span>INF) <span style="color: #333333">&lt;&lt;</span> <span style="background-color: #fff0f0">"Logging initialized."</span>;
-}
-</pre>
-    </div>
-    <br>
-    <br>
-    The handles can subsequently be used anywhere in the code (where <em>LogItComponentIds.h</em>
-    is included) to log messages to the specified component, as per this
-    sample code
-    <!-- HTML generated using hilite.me -->
-    <div style="background: #ffffff;
-      overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
-      .1em .8em;padding:.2em .6em;">
-      <pre style="margin: 0; line-height: 125%">LOG(Log<span style="color: #333333">::</span>INF, HW_API_CALLS) <span style="color: #333333">&lt;&lt;</span> <span style="background-color: #fff0f0">"Use the HW_API_CALLS component to log messages related to hardware API calls"</span>;
-LOG(Log<span style="color: #333333">::</span>INF, AS_WRITES) <span style="color: #333333">&lt;&lt;</span> <span style="background-color: #fff0f0">"Use the AS_WRITES component to log messages related to input via the address space, e.g. client writes and method calls"</span>;
-LOG(Log<span style="color: #333333">::</span>INF, AS_UPDATES) <span style="color: #333333">&lt;&lt;</span> <span style="background-color: #fff0f0">"Use the AS_UPDATES component to log messages related to output via the address space, e.g. updating OPC items based on events received from the hardware"</span>;
-</pre>
-    </div>
-    <h1>Setting LogIt Component Verbosity</h1>
-    Logging via LogIt is woven into the fabric of a quasar server. This
-    allows for an integrated approach to logging that allows you to
-    configure the verbosity of logging components both
-    <ul>
-      <li>initially, via the quasar server XML configuration</li>
-      <li>dynamically, via an OPC-UA client</li>
-    </ul>
-    <h2>Initial Verbosity: Via Server Config XML</h2>
-    The initial per-component verbosity can be configured in the server
-    configuration XML file. Taking the component IDs from the sample
-    code above (namely <em>HW_API_CALLS, AS_WRITES, AS_UPDATES</em>),
-    the initial per-component verbosity can be configured in the server
-    configuration file in the <em>StandardMetaData</em> root element as
-    per the sample XML snippet below
-    <!-- HTML generated using hilite.me -->
-    <div style="background: #ffffff;
-      overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
-      .1em .8em;padding:.2em .6em;">
-      <pre style="margin: 0; line-height: 125%">	<span style="color: #007700">&lt;StandardMetaData&gt;</span> 
-		<span style="color: #007700">&lt;Log&gt;</span>
-			<span style="color: #007700">&lt;GeneralLogLevel</span> <span style="color: #0000CC">logLevel=</span><span style="background-color: #fff0f0">"INF"</span><span style="color: #007700">/&gt;</span>
-			<span style="color: #007700">&lt;ComponentLogLevels&gt;</span>
-				<span style="color: #007700">&lt;ComponentLogLevel</span> <span style="color: #0000CC">componentName=</span><span style="background-color: #fff0f0">"HARDWARE_API_CALLS"</span> <span style="color: #0000CC">logLevel=</span><span style="background-color: #fff0f0">"DBG"</span><span style="color: #007700">/&gt;</span>
-				<span style="color: #007700">&lt;ComponentLogLevel</span> <span style="color: #0000CC">componentName=</span><span style="background-color: #fff0f0">"ADDRESS_SPACE_WRITES"</span> <span style="color: #0000CC">logLevel=</span><span style="background-color: #fff0f0">"TRC"</span><span style="color: #007700">/&gt;</span>
-				<span style="color: #007700">&lt;ComponentLogLevel</span> <span style="color: #0000CC">componentName=</span><span style="background-color: #fff0f0">"ADDRESS_SPACE_UPDATES"</span> <span style="color: #0000CC">logLevel=</span><span style="background-color: #fff0f0">"WRN"</span><span style="color: #007700">/&gt;</span>
-			<span style="color: #007700">&lt;/ComponentLogLevels&gt;</span>			
-		<span style="color: #007700">&lt;/Log&gt;</span>
-	<span style="color: #007700">&lt;/StandardMetaData&gt;</span>
-</pre>
-    </div>
-    <h2>Runtime Verbosity: Via an OPC_UA client</h2>
-    Per-component verbosity can be read and set at runtime via standard
-    quasar OPC-UA items (via <em>StandardMetaData.Log.ComponentLogLevels</em>).
-    The screenshot below shows a graphical OPC-UA client (Unified
-    Auomtation's uaexpert client) viewing these items. Writing a new
-    verbosity value, for example, setting component <em>ADDRESS_SPACE_UPDATES</em>
-    verbosity from <em>WRN</em> -&gt; <em>TRC</em>, would result in
-    all messages (TRC is the highest verbosity setting) for that
-    component being delivered to the log.
-    <br>
-    <br>
-    <img src="images/opc-ua-items-for-logging-verbosity.PNG"
-      alt="screenshot of OPC-UA client setting log component verbosity">
-    <h1><a name="maintainers"></a>Quasar Framework Maintainers: Dealing
-      with LogIt as a Git Submodule</h1>
-    Note that LogIt is its own independent component (it is used outside
-    of quasar). So, the quasar repository does not have its own local
-    copy of LogIt source code - quasar references LogIt source code in
-    the LogIt repo as a git submodule. This section describes how
-    maintainers of the quasar framework upgrade to newer versions of
-    LogIt etc.
-    <h2>Which Version of LogIt is Quasar Using Now?</h2>
-    Release versions of quasar should use only tagged versions (i.e.
-    releases) of LogIt. Assuming you have quasar cloned (<b>recursively!</b>)
-    to your development environment... check which LogIt tag is
-    currently in use via command <em>git submodule status</em>
-    <!-- HTML generated using hilite.me -->
-    <div style="background: #ffffff;
-      overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
-      .1em .8em;padding:.2em .6em;">
-      <pre style="margin: 0; line-height: 125%"><span style="color: #996633">$ </span>git submodule status
- 17d9805db6bbbfd94cbd8e80b3e2542c356b7169 LogIt <span style="color: #333333">(</span>v0.1.0<span style="color: #333333">)</span>
-</pre>
-    </div>
-    <br>
-    <br>
-    <h2>Changing the Version of LogIt Quasar Uses</h2>
-    So, let's say there's a new LogIt version -a LogIt tag- that quasar
-    should be using. There are 2 stages to updating to the new version
-    <ul>
-      <li>If LogIt uses new source files then update file <em>FrameworkInternals/original_files.txt</em>
-        to reflect the modified source file list. </li>
-      <li>Update the submodule tag. Described below</li>
-    </ul>
-    According to <a
-href="https://stackoverflow.com/questions/1777854/git-submodules-specify-a-branch-tag">this
-      content</a>, the procedure for updating the LogIt submodule to the
-    next tag is
-    <!-- HTML generated using hilite.me -->
-    <div style="background: #ffffff;
-      overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
-      .1em .8em;padding:.2em .6em;">
-      <pre style="margin: 0; line-height: 125%"><span style="color: #007020">cd </span>LogIt
-git checkout vNewTag
-<span style="color: #007020">cd</span> ..
-git add LogIt
-git commit -m <span style="background-color: #fff0f0">"moved LogIt to vNewTag"</span>
-git push
-</pre>
-    </div>
-    Then your fellow quasar maintainers update their environments with
-    <!-- HTML generated using hilite.me -->
-    <div style="background: #ffffff;
-      overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
-      .1em .8em;padding:.2em .6em;">
-      <pre style="margin: 0; line-height: 125%">git pull
-git submodule update --init --recursive
-</pre>
-    </div>
-  </body>
-</html>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <meta charset="UTF-8">
+      <link href="css/shCore.css" rel="stylesheet" type="text/css">
+      <link href="css/shThemeDefault.css" rel="stylesheet" type="text/css">
+      <title>Logging in quasar servers</title>
+    </head>
+    <body>
+      <h1>LogIt</h1>
+      Logging in quasar is handled by the LogIt component. For
+      instructions on how to use LogIt generally, i.e. how to log specific
+      messages from a quasar server please refer to the <a
+        href="https://github.com/quasar-team/LogIt">LogIt repository</a>.
+      <h2>Initializing LogIt in the Quasar Server code</h2>
+      As described above, the general means of logging via LogIt is
+      documented <a href="https://github.com/quasar-team/LogIt">here</a>.
+      However, you will need to initialize LogIt in your quasar server -
+      this section describes the hooks etc. provided by quasar where you,
+      the developer, are expected to insert initialization code.
+      <br>
+      <br>
+      Please read about <a
+        href="https://github.com/quasar-team/LogIt#components">LogIt
+        components</a>. It's not long or complicated and you need to know
+      about them.
+      <br>
+      <br>
+      Presumably, the quasar server you write will perform tasks at
+      runtime relating to different logical/functional/etc aspects of
+      whatever it is the server actually does. Examples may include
+      <ul>
+        <li>sending commands to some target hardware (e.g. calling some
+          3rd party API)</li>
+        <li>accepting input (e.g. handling OPC-UA client item writes and
+          method calls)</li>
+        <li>handling hardware disconnection/reconnection events</li>
+      </ul>
+      The general idea of LogIt components is that each aspect has a
+      dedicated logging component, the benefit of this is that LogIt
+      allows you to raise and lower the logging <a
+        href="https://github.com/quasar-team/LogIt#verbosity">verbosity</a>
+      of these components in order to optimize the logging output
+      according to the aspect you are interested in.
+      <br>
+      <br>
+      Note: You, the quasar server developer, define the components and
+      mark each log message in your code with component and a verbosity
+      tag: TRACE, WARNING etc.
+      <br>
+      <br>
+      The class QuasarServer (in sub-directory Server) is created in your
+      project with a hook method for you to override, to initialize LogIt
+      with the component IDs specific to your server implementation.
+      <!-- HTML generated using hilite.me -->
+      <div style="background: #ffffff;
+        overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
+        .1em .8em;padding:.2em .6em;">
+        <pre style="margin: 0; line-height: 125%"><span style="color: #888888">// file: QuasarServer.h</span>
+  <span style="color: #008800; font-weight: bold">virtual</span> <span style="color: #333399; font-weight: bold">void</span> <span style="color: #0066BB; font-weight: bold">initializeLogIt</span>();
+  
+  <span style="color: #888888">// file: QuasarServer.cpp</span>
+  <span style="color: #333399; font-weight: bold">void</span> QuasarServer<span style="color: #333333">::</span>initializeLogIt()
+  </pre>
+      </div>
+      <br>
+      <br>
+      The convention (!= rule: you are free to invent something better and
+      let us know) in quasar servers is that LogIt component handles are
+      declared as globals variables in file <em>Common/include/LogItComponentIds.h</em>,
+      as per the sample code below
+      <!-- HTML generated using hilite.me -->
+      <div style="background: #ffffff;
+        overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
+        .1em .8em;padding:.2em .6em;">
+        <pre style="margin: 0; line-height: 125%"><span style="color: #557799">#ifndef COMMON_INCLUDE_LOGITCOMPONENTIDS_H_</span>
+  <span style="color: #557799">#define COMMON_INCLUDE_LOGITCOMPONENTIDS_H_</span>
+  
+  <span style="color: #557799">#include &lt;LogItStaticDefinitions.h&gt;</span>
+  
+  Log<span style="color: #333333">::</span>LogComponentHandle HW_API_CALLS;
+  Log<span style="color: #333333">::</span>LogComponentHandle AS_WRITES;
+  Log<span style="color: #333333">::</span>LogComponentHandle AS_UPDATES;
+  
+  <span style="color: #557799">#endif </span><span style="color: #888888">/* COMMON_INCLUDE_LOGITCOMPONENTIDS_H_ */</span><span style="color: #557799"></span>
+  </pre>
+      </div>
+      <br>
+      <br>
+      These handles are then initialized in the hook method <em>QuasarServer::initializeLogIt</em>,
+      as per the sample code below
+      <!-- HTML generated using hilite.me -->
+      <div style="background: #ffffff;
+        overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
+        .1em .8em;padding:.2em .6em;">
+        <pre style="margin: 0; line-height: 125%"><span style="color: #333399; font-weight: bold">void</span> QuasarServer<span style="color: #333333">::</span>initializeLogIt()
+  {
+    Log<span style="color: #333333">::</span>initializeLogging();
+    
+    HW_API_CALLS <span style="color: #333333">=</span> Log<span style="color: #333333">::</span>registerLoggingComponent(<span style="background-color: #fff0f0">"HARDWARE_API_CALLS"</span>);
+    AS_WRITES <span style="color: #333333">=</span> Log<span style="color: #333333">::</span>registerLoggingComponent(<span style="background-color: #fff0f0">"ADDRESS_SPACE_WRITES"</span>);
+    AS_UPDATES <span style="color: #333333">=</span> Log<span style="color: #333333">::</span>registerLoggingComponent(<span style="background-color: #fff0f0">"ADDRESS_SPACE_UPDATES"</span>);
+  
+    LOG(Log<span style="color: #333333">::</span>INF) <span style="color: #333333">&lt;&lt;</span> <span style="background-color: #fff0f0">"Logging initialized."</span>;
+  }
+  </pre>
+      </div>
+      <br>
+      <br>
+      The handles can subsequently be used anywhere in the code (where <em>LogItComponentIds.h</em>
+      is included) to log messages to the specified component, as per this
+      sample code
+      <!-- HTML generated using hilite.me -->
+      <div style="background: #ffffff;
+        overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
+        .1em .8em;padding:.2em .6em;">
+        <pre style="margin: 0; line-height: 125%">LOG(Log<span style="color: #333333">::</span>INF, HW_API_CALLS) <span style="color: #333333">&lt;&lt;</span> <span style="background-color: #fff0f0">"Use the HW_API_CALLS component to log messages related to hardware API calls"</span>;
+  LOG(Log<span style="color: #333333">::</span>INF, AS_WRITES) <span style="color: #333333">&lt;&lt;</span> <span style="background-color: #fff0f0">"Use the AS_WRITES component to log messages related to input via the address space, e.g. client writes and method calls"</span>;
+  LOG(Log<span style="color: #333333">::</span>INF, AS_UPDATES) <span style="color: #333333">&lt;&lt;</span> <span style="background-color: #fff0f0">"Use the AS_UPDATES component to log messages related to output via the address space, e.g. updating OPC items based on events received from the hardware"</span>;
+  </pre>
+      </div>
+      <h2>Setting LogIt Component Verbosity</h2>
+      Logging via LogIt is woven into the fabric of a quasar server. This
+      allows for an integrated approach to logging that allows you to
+      configure the verbosity of logging components both
+      <ul>
+        <li>initially, via the quasar server XML configuration</li>
+        <li>dynamically, via an OPC-UA client</li>
+      </ul>
+      <h2>Initial Verbosity: Via Server Config XML</h2>
+      The initial per-component verbosity can be configured in the server
+      configuration XML file. Taking the component IDs from the sample
+      code above (namely <em>HW_API_CALLS, AS_WRITES, AS_UPDATES</em>),
+      the initial per-component verbosity can be configured in the server
+      configuration file in the <em>StandardMetaData</em> root element as
+      per the sample XML snippet below
+      <!-- HTML generated using hilite.me -->
+      <div style="background: #ffffff;
+        overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
+        .1em .8em;padding:.2em .6em;">
+        <pre style="margin: 0; line-height: 125%">	<span style="color: #007700">&lt;StandardMetaData&gt;</span> 
+      <span style="color: #007700">&lt;Log&gt;</span>
+        <span style="color: #007700">&lt;GeneralLogLevel</span> <span style="color: #0000CC">logLevel=</span><span style="background-color: #fff0f0">"INF"</span><span style="color: #007700">/&gt;</span>
+        <span style="color: #007700">&lt;ComponentLogLevels&gt;</span>
+          <span style="color: #007700">&lt;ComponentLogLevel</span> <span style="color: #0000CC">componentName=</span><span style="background-color: #fff0f0">"HARDWARE_API_CALLS"</span> <span style="color: #0000CC">logLevel=</span><span style="background-color: #fff0f0">"DBG"</span><span style="color: #007700">/&gt;</span>
+          <span style="color: #007700">&lt;ComponentLogLevel</span> <span style="color: #0000CC">componentName=</span><span style="background-color: #fff0f0">"ADDRESS_SPACE_WRITES"</span> <span style="color: #0000CC">logLevel=</span><span style="background-color: #fff0f0">"TRC"</span><span style="color: #007700">/&gt;</span>
+          <span style="color: #007700">&lt;ComponentLogLevel</span> <span style="color: #0000CC">componentName=</span><span style="background-color: #fff0f0">"ADDRESS_SPACE_UPDATES"</span> <span style="color: #0000CC">logLevel=</span><span style="background-color: #fff0f0">"WRN"</span><span style="color: #007700">/&gt;</span>
+        <span style="color: #007700">&lt;/ComponentLogLevels&gt;</span>			
+      <span style="color: #007700">&lt;/Log&gt;</span>
+    <span style="color: #007700">&lt;/StandardMetaData&gt;</span>
+  </pre>
+      </div>
+      <h2>Runtime Verbosity: Via an OPC_UA client</h2>
+      Per-component verbosity can be read and set at runtime via standard
+      quasar OPC-UA items (via <em>StandardMetaData.Log.ComponentLogLevels</em>).
+      The screenshot below shows a graphical OPC-UA client (Unified
+      Auomtation's uaexpert client) viewing these items. Writing a new
+      verbosity value, for example, setting component <em>ADDRESS_SPACE_UPDATES</em>
+      verbosity from <em>WRN</em> -&gt; <em>TRC</em>, would result in
+      all messages (TRC is the highest verbosity setting) for that
+      component being delivered to the log.
+      <br>
+      <br>
+      <img src="images/opc-ua-items-for-logging-verbosity.PNG"
+        alt="screenshot of OPC-UA client setting log component verbosity">
+      <h2><a name="maintainers"></a>Quasar Framework Maintainers: Dealing
+        with LogIt as a Git Submodule</h2>
+      Note that LogIt is its own independent component (it is used outside
+      of quasar). So, the quasar repository does not have its own local
+      copy of LogIt source code - quasar references LogIt source code in
+      the LogIt repo as a git submodule. This section describes how
+      maintainers of the quasar framework upgrade to newer versions of
+      LogIt etc.
+      <h2>Which Version of LogIt is Quasar Using Now?</h2>
+      Release versions of quasar should use only tagged versions (i.e.
+      releases) of LogIt. Assuming you have quasar cloned (<b>recursively!</b>)
+      to your development environment... check which LogIt tag is
+      currently in use via command <em>git submodule status</em>
+      <!-- HTML generated using hilite.me -->
+      <div style="background: #ffffff;
+        overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
+        .1em .8em;padding:.2em .6em;">
+        <pre style="margin: 0; line-height: 125%"><span style="color: #996633">$ </span>git submodule status
+   17d9805db6bbbfd94cbd8e80b3e2542c356b7169 LogIt <span style="color: #333333">(</span>v0.1.0<span style="color: #333333">)</span>
+  </pre>
+      </div>
+      <br>
+      <br>
+      <h2>Changing the Version of LogIt Quasar Uses</h2>
+      So, let's say there's a new LogIt version -a LogIt tag- that quasar
+      should be using. There are 2 stages to updating to the new version
+      <ul>
+        <li>If LogIt uses new source files then update file <em>FrameworkInternals/original_files.txt</em>
+          to reflect the modified source file list. </li>
+        <li>Update the submodule tag. Described below</li>
+      </ul>
+      According to <a
+  href="https://stackoverflow.com/questions/1777854/git-submodules-specify-a-branch-tag">this
+        content</a>, the procedure for updating the LogIt submodule to the
+      next tag is
+      <!-- HTML generated using hilite.me -->
+      <div style="background: #ffffff;
+        overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
+        .1em .8em;padding:.2em .6em;">
+        <pre style="margin: 0; line-height: 125%"><span style="color: #007020">cd </span>LogIt
+  git checkout vNewTag
+  <span style="color: #007020">cd</span> ..
+  git add LogIt
+  git commit -m <span style="background-color: #fff0f0">"moved LogIt to vNewTag"</span>
+  git push
+  </pre>
+      </div>
+      Then your fellow quasar maintainers update their environments with
+      <!-- HTML generated using hilite.me -->
+      <div style="background: #ffffff;
+        overflow:auto;width:auto;border:solid gray;border-width:.1em .1em
+        .1em .8em;padding:.2em .6em;">
+        <pre style="margin: 0; line-height: 125%">git pull
+  git submodule update --init --recursive
+  </pre>
+      </div>
+    </body>
+  </html>

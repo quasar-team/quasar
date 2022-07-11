@@ -1,0 +1,30 @@
+* {
+  table-layout: fixed !important;
+}
+
+.table-changelog {
+  width: 175% !important;
+}
+
+.table-changelog th, td {
+  white-space: normal !important;
+}
+
+.wy-nav-content-wrap {
+  background: #fcfcfc !important;
+}
+
+#changelog .wy-table-responsive {
+  overflow: visible !important;
+}
+
+.table-changelog  td:nth-child(1) {
+  max-width: 10% !important;
+  width: 10% !important;
+}
+
+.table-changelog  td:nth-child(4) {
+  max-width: 30% !important;
+  width: 30% !important;
+}
+
