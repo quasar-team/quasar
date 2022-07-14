@@ -64,8 +64,8 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
   	OpcUa::BaseObjectType (
   		/*nodeId*/ nm->makeChildNodeId(
         parentNodeId,
-        decorateSingleVariableNodeName(config.name(), {{designInspector.design_boolean_as_cpp_boolean(this.get('singleVariableNode'))}}).c_str()),
-      /*name*/decorateSingleVariableNodeName(config.name(), {{designInspector.design_boolean_as_cpp_boolean(this.get('singleVariableNode'))}}).c_str(),
+        decorateSingleVariableNodeName(getObjectNameFromConfiguration(config), {{designInspector.design_boolean_as_cpp_boolean(this.get('singleVariableNode'))}}).c_str()),
+      /*name*/decorateSingleVariableNodeName(getObjectNameFromConfiguration(config), {{designInspector.design_boolean_as_cpp_boolean(this.get('singleVariableNode'))}}).c_str(),
       nm->getNameSpaceIndex(),
       nm),
   	m_typeNodeId (typeNodeId),
@@ -105,6 +105,25 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
 
     }
 
+    std::string AS{{className}}::getObjectNameFromConfiguration(const Configuration::{{className}}& config)
+    {
+      {% if designInspector.is_class_ever_singleton(className, instantiated_by_filter='configuration') %}
+        // design specifies that class {{className}} is used in singleton mode - name therefore optional in config
+        if(config.name().present())
+        {
+          return config.name().get();
+        }
+        else
+        {
+          LOG(Log::ERR) << __FUNCTION__ << " no name provided in config for singleton class [{{className}}], defaulting to class name. \
+            Quasar internal logic error (configurator generation should supply name if none in user config)";
+          return "{{className}}";
+        }
+      {% else %}
+        return config.name(); // class {{className}} is not singleton - name required in config
+      {% endif %}
+    }
+
     void AS{{className}}::createCacheVariables(
       ASNodeManager* nm,
       const Configuration::{{className}}& config)
@@ -115,7 +134,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
       {% for cv in this.cachevariable %}
         variableName = fixChildNameWhenSingleNodeClass(
           "{{cv.get('name')}}",
-          config.name().c_str());
+          getObjectNameFromConfiguration(config));
         m_{{cv.get('name')}} = new {{oracle.cache_variable_cpp_type(cv.get('addressSpaceWrite'), className)}} (
           nm->makeChildNodeId(
             m_effectiveParentNodeIdForChildren,

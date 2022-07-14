@@ -145,6 +145,16 @@ class DesignInspector():
                 and "maxOccurs" in has_objects.keys()
                 and has_objects.get("minOccurs") == "1"
                 and has_objects.get("maxOccurs") == "1")
+                
+    def is_class_ever_singleton(self, class_name, instantiated_by_filter=None):
+        """Returns True if any instance of the target class is a singleton
+           that gets instantiated by configuration"""
+        xpath_str = f"//d:hasobjects[@class='{class_name}' and @maxOccurs='1' and @minOccurs='1'"
+        if(instantiated_by_filter is not None): # 'design' or 'configuration' 
+             xpath_str += f"and @instantiateUsing='{instantiated_by_filter}'"
+        xpath_str += ']'
+        node_list = self.xpath(xpath_str)
+        return len(node_list) > 0
 
     def has_objects_class_names(self, class_name, only_with_device_logic=False):
         """Returns a list of names of all classes that are 'children' (in has_objects) sense of
