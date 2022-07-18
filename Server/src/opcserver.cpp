@@ -57,8 +57,7 @@ public:
 };
 
 /** Construction. */
-OpcServer::OpcServer():
-        m_quasarCallback(nullptr)
+OpcServer::OpcServer()
 {
 }
 
