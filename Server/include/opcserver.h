@@ -19,7 +19,6 @@
 #include "serverconfig.h"
 #include "nodemanager.h"
 #include <string>
-#include "QuasarServerCallback.h"
 #include <uaserverapplication.h>
 #include <QuasarUaTraceHook.hpp>
 
@@ -43,7 +42,6 @@ public:
 
 private:
     std::string m_logFilePath;
-    QuasarServerCallback* m_quasarCallback;
     QuasarUaTraceHook m_quasarUaTraceHook;
 };
 

@@ -326,7 +326,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "Utils.h": {
-                "md5": "81aa56e57b8bf5f385115dff3f98f8e0",
+                "md5": "e87422fb73f4324981002c44052691ef",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "72bcc56878a1da4075551be7dd5a2564",
+                "md5": "560f1b494194bcc63fec76c33ea5804f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "a07c5941a5ce12dad6b878a7d4cb7184",
+                "md5": "92bc1ec610a7ad12876199c898b6e091",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -854,7 +854,7 @@
             },
             "transform_filters.py": {
                 "install": "overwrite",
-                "md5": "1a0a249a1fc3d2a9d4ca9cbbe53e6d94",
+                "md5": "5dfe3c3a1582bf2c0816e63cc3a7c964",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1266,16 +1266,19 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
+            "OpcuaToolkitInfo.hpp.in": {
+                "install": "overwrite",
+                "md5": "3f65242c70f2536766477d9d6f353142",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
             "QuasarServer.h": {
                 "install": "copy_if_not_existing",
                 "must_be_versioned": true,
                 "must_exist": true
             },
             "QuasarServerCallback.h": {
-                "install": "overwrite",
-                "md5": "6207616adcced9d5c453e0287fd13519",
-                "must_be_versioned": true,
-                "must_exist": true
+                "deprecated": true
             },
             "QuasarUaTraceHook.hpp": {
                 "install": "overwrite",
@@ -1285,13 +1288,13 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "2e210e47f0fb044b6cb5ac34846b4a90",
+                "md5": "bd7a2f367aeff5097c08fd06cb30b5d9",
                 "must_be_versioned": true,
                 "must_exist": true
             },
             "opcserver.h": {
                 "install": "overwrite",
-                "md5": "6aacb88324134c7bc42e07e489c624b5",
+                "md5": "a621f041ac5a69d396cbfdbefd9fedb4",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1326,7 +1329,7 @@
         "files": {
             "BaseQuasarServer.cpp": {
                 "install": "overwrite",
-                "md5": "c64f97f230afddec8a0155488dd34360",
+                "md5": "5fb6a4f56dcef588dea26c0860c93d39",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1336,10 +1339,7 @@
                 "must_exist": true
             },
             "QuasarServerCallback.cpp": {
-                "install": "overwrite",
-                "md5": "b75a291ae4da938e688f5fbbde9c9884",
-                "must_be_versioned": true,
-                "must_exist": true
+                "deprecated": true
             },
             "QuasarUaTraceHook.cpp": {
                 "install": "overwrite",
@@ -1354,7 +1354,7 @@
             },
             "opcserver.cpp": {
                 "install": "overwrite",
-                "md5": "58f3e33388ac981f67dd230e3a86150c",
+                "md5": "db9f0cf71c3d68dba47988e974826821",
                 "must_be_versioned": true,
                 "must_exist": true
             },
