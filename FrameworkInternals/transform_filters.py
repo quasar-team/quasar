@@ -61,7 +61,7 @@ def node_text_contents_to_string(node):
     # will match TEXT of given node, like if processing of children elements was skipped
     regex = re.compile(r"<(?P<tag>\S+)[^>]*>(?P<text>.*)</(?P=tag)>", re.DOTALL)
     match = regex.match(text)
-    return match.group('text')
+    return match.group('text') if match else '' # might not have the text field.
 
 def setup_all_filters(jinja_environment):
     """Decorates jinja2.Environment object attaching custom filters"""
