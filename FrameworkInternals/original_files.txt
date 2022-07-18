@@ -1146,10 +1146,7 @@
                 "must_exist": true
             },
             "QuasarServerCallback.h": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
+                "deprecated": true
             },
             "QuasarUaTraceHook.hpp": {
                 "install": "overwrite",
@@ -1216,10 +1213,7 @@
                 "must_exist": true
             },
             "QuasarServerCallback.cpp": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
+                "deprecated": true
             },
             "QuasarUaTraceHook.cpp": {
                 "install": "overwrite",
