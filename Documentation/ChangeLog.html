@@ -10,7 +10,7 @@
   <body>
     <br>
     <span style="color: rgb(34, 84, 152);">
-      <h1>Changelog</h1>
+      <h1>Quasar Changelog</h1>
     </span> <br>
     <table style="text-align: left; width: 100%;" cellspacing="1"
       cellpadding="4" border="0">
@@ -20,6 +20,8 @@
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Version</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Changes
+
+
 
 
 
@@ -299,12 +301,84 @@
 
 
 
+
+
               backward incompatibilites</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"
             width="50%"><strong>JIRA Release notes</strong><br>
           </td>
           <td valign="top"><strong>Testing outcome</strong><br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">1.5.12<br>
+            <font size="-1">(18-Jul-2022)</font><br>
+          </td>
+          <td valign="top">New features and progress in clean-up of the
+            past artifacts.<br>
+          </td>
+          <td valign="top">(none known)<br>
+          </td>
+          <td valign="top">Bug
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2751">OPCUA-2751</a>]
+                - generate as_doc fails for empty d:documentation
+                content
+              </li>
+            </ul>
+            <p> New Feature
+            </p>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2757">OPCUA-2757</a>]
+                - Information on UA SDK version in quasar servers
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2758">OPCUA-2758</a>]
+                - OPC UA toolkit path in server "extra info"
+              </li>
+            </ul>
+            <br>
+            Task
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2750">OPCUA-2750</a>]
+                - QuasarServerCallback removal (stale code clean-up
+                action)
+              </li>
+            </ul>
+          </td>
+          <td valign="top">quasar test suite notes:<br>
+            <ol>
+              <li>open62541_test_methods not passing for the method
+                arguments behaving differently from UASDK. This will be
+                <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  investigated</a>.</li>
+              <li> StandardMetaData is ignored from testing in all tests
+                due to some existing noncompliance.</li>
+            </ol>
           </td>
         </tr>
         <tr>
@@ -315,22 +389,18 @@
             the main motivation.<br>
           </td>
           <td valign="top">(none known) </td>
-          <td valign="top">New Feature
-            <br>
+          <td valign="top">New Feature <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2739">OPCUA-2739</a>]
                 - Permit CalculatedVariable registration on quasar
-                UaVariant dataType (merge-back from CANopen)
-              </li>
+                UaVariant dataType (merge-back from CANopen) </li>
             </ul>
             <br>
-            Task
-            <br>
+            Task <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2702">OPCUA-2702</a>]
                 - Get rid of quasar "device file is older than design"
-                warning
-              </li>
+                warning </li>
             </ul>
           </td>
           <td valign="top">quasar test suite notes:<br>
@@ -338,6 +408,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -431,6 +503,8 @@
 
 
 
+
+
                   investigated</a>.</li>
               <li> StandardMetaData is ignored from testing in all tests
                 due to some existing noncompliance.</li>
@@ -500,6 +574,8 @@
 
 
 
+
+
                   investigated</a>.</li>
               <li> StandardMetaData is ignored from testing in all tests
                 due to some existing noncompliance.</li>
@@ -541,6 +617,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -629,6 +707,8 @@
 
 
 
+
+
                   investigated</a>.</li>
               <li> StandardMetaData is ignored from testing in all tests
                 due to some existing noncompliance.</li>
@@ -679,6 +759,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -775,6 +857,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
