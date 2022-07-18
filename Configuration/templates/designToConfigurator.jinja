@@ -81,13 +81,7 @@ static std::string mapSingleItemNodeFullName(std::string input)
 {% macro writeConfigureObjectByDesign(className, instanceName, parentNodeId, parentDevice) %}
   { // configure root INSTANTIATE BY DESIGN object: class [{{className}}] instance [{{instanceName}}]
     // create empty configuration object for design instantiated object.
-
-    {% if not designInspector.is_class_ever_singleton(className, instantiated_by_filter='configuration') %}
-      Configuration::{{className}} emptyConfig("{{instanceName}}");
-    {% else %}
-      Configuration::{{className}} emptyConfig; // design contains singleton instance of {{className}}, thus name is optional
-      emptyConfig.name("{{instanceName}}");
-    {% endif %}
+    Configuration::{{className}} emptyConfig("{{instanceName}}");
 
     // build address space side object
     AddressSpace::AS{{className}} *asItemChildByDesign =
@@ -218,15 +212,6 @@ static std::string mapSingleItemNodeFullName(std::string input)
 // configure function bodies
 {% for className in designInspector.get_names_of_all_classes() %}
   {{ writeConfigureClassFunctionSignature(className) }}{
-
-    {% if designInspector.is_class_ever_singleton(className, instantiated_by_filter='configuration') %}
-      if(!config.name().present())
-      {
-        LOG(Log::INF) << __FUNCTION__ << " defaulting to class name for singleton instance of type [{{className}}]";
-        const_cast<Configuration::{{className}}&>(config).name("{{className}}");
-      }
-    {% endif %}
-
     // instantiate address space side object
     AddressSpace::AS{{className}} *asItem = new AddressSpace::AS{{className}}(
       parentNodeId,

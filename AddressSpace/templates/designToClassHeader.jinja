@@ -163,8 +163,6 @@ namespace AddressSpace
     ASNodeManager* nm,
     const Configuration::{{className}}& config);
 
-  static std::string getObjectNameFromConfiguration(const Configuration::{{className}}& config);
-
   /* Variables */
   {% for cv in this.cachevariable %}
     {{oracle.cache_variable_cpp_type(cv.get('addressSpaceWrite'), className, cv.array|length>0 )}}* m_{{cv.get('name')}};

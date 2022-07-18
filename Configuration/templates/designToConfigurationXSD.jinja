@@ -163,8 +163,11 @@
 	    
     </xs:sequence>
     
-    {% set object_name_required_or_optional = 'optional' if designInspector.is_class_ever_singleton(className, instantiated_by_filter='configuration') else 'required' %}
-    <xs:attribute name="name" type="tns:ObjectName" use="{{object_name_required_or_optional}}"/>
+    {% if  designInspector.is_class_always_singleton(className, instantiated_by_filter='configuration') %}
+      <xs:attribute name="name" type="tns:ObjectName" use='optional' default="{{className}}"/>
+    {% else %}
+      <xs:attribute name="name" type="tns:ObjectName" use="required"/>
+    {% endif %}
     
     <!-- processing scalar cache vars for class [{{className}}] -->
     {% for scalarCacheVarByConfig in designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration' and not(d:array)]") %}
