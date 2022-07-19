@@ -1,0 +1,38 @@
+name: Deploy
+
+on:
+  branches:
+    - master
+
+jobs:
+  build_deploy:
+    name: Build and deploy
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.6.x'
+    - name: Install dependencies
+      run: |
+        cd "${GITHUB_WORKSPACE}/"
+        pip install -r requirements.txt
+    - name: Parse legacy documentation
+      run: |
+        cd "${GITHUB_WORKSPACE}/"
+        python3 docs/html2rst.py
+    - name: Build documentation
+      run: |
+        cd "${GITHUB_WORKSPACE}/docs"
+        rm -rf build/
+        make html
+#    - name: Update server
+#      run: |
+#        cd "${GITHUB_WORKSPACE}/docs/build/html"
+#        sudo service nginx stop
+#        sudo rm -rf /var/www/html/*
+#        sudo cp -r . /var/www/html/
+#        sudo service nginx start

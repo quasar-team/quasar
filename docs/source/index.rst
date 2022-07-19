@@ -1,6 +1,3 @@
-.. image:: ./converted/images/quasar_engine_small_smooth_square_128x128.png
-   :alt: [logo]
-
 Quasar
 ======
 
