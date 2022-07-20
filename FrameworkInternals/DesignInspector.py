@@ -145,6 +145,16 @@ class DesignInspector():
                 and "maxOccurs" in has_objects.keys()
                 and has_objects.get("minOccurs") == "1"
                 and has_objects.get("maxOccurs") == "1")
+                
+    def is_class_always_singleton(self, class_name, instantiated_by_filter=None):
+        """Returns True if every instance of the target class is a singleton, with
+           instantiation mechanism (design/configuration) optionally filtered"""
+        filter_str = '' if instantiated_by_filter is None else f"and @instantiateUsing='{instantiated_by_filter}'"
+        has_objects_list = self.objectify_any(f"//d:hasobjects[@class='{class_name}' {filter_str}]")
+        if len(has_objects_list) > 0:
+            is_singleton = lambda has_objects: self.is_has_objects_singleton_any2(has_objects)
+            return all(map(is_singleton, has_objects_list))
+        return False
 
     def has_objects_class_names(self, class_name, only_with_device_logic=False):
         """Returns a list of names of all classes that are 'children' (in has_objects) sense of
