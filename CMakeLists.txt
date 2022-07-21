@@ -55,7 +55,7 @@ else()
 endif()
 
 set(PYTHON_COMMAND python3)
-set(DESIGN_WITH_META_FILE ${PROJECT_BINARY_DIR}/Design/DesignWithMeta.xml)
+set(DESIGN_FILE ${PROJECT_BINARY_DIR}/Design/DesignWithMeta.xml)
 
 include_directories (
 	${PROJECT_BINARY_DIR}/Device/generated
@@ -114,7 +114,7 @@ add_custom_command(
     COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/quasar.py validate_design --project_binary_dir ${PROJECT_BINARY_DIR}
     COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/Design
     COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_BINARY_DIR}/Design/validated.tmp
-    DEPENDS ${DESIGN_WITH_META_FILE}  ${PROJECT_SOURCE_DIR}/Design/Design.xsd
+    DEPENDS ${DESIGN_FILE}  ${PROJECT_SOURCE_DIR}/Design/Design.xsd
     )
 add_custom_target(validateDesign DEPENDS  ${PROJECT_BINARY_DIR}/Design/validated.tmp )
 

@@ -24,7 +24,7 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/Base_D{{classNa
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND ${PYTHON_COMMAND} quasar.py generate base_h {{className}} --project_binary_dir ${PROJECT_BINARY_DIR}
 DEPENDS
-  ${DESIGN_WITH_META_FILE}
+  ${DESIGN_FILE}
   validateDesign
   ${PROJECT_SOURCE_DIR}/quasar.py
   ${PROJECT_SOURCE_DIR}/Device/templates/designToDeviceBaseHeader.jinja

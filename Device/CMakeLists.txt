@@ -35,7 +35,7 @@ endif(EXISTS ${PROJECT_SOURCE_DIR}/Device/DeviceCustom.cmake)
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/include/DRoot.h ${PROJECT_BINARY_DIR}/Device/src/DRoot.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND ${PYTHON_COMMAND} quasar.py generate root --project_binary_dir ${PROJECT_BINARY_DIR}
-DEPENDS ${DESIGN_WITH_META_FILE}
+DEPENDS ${DESIGN_FILE}
     ${PROJECT_SOURCE_DIR}/quasar.py
     validateDesign
     templates/designToRootHeader.jinja
@@ -48,7 +48,7 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/Base_All.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND ${PYTHON_COMMAND} quasar.py generate base_cpp_all --project_binary_dir ${PROJECT_BINARY_DIR}
 DEPENDS
-  ${DESIGN_WITH_META_FILE}
+  ${DESIGN_FILE}
   ${PROJECT_SOURCE_DIR}/quasar.py
   Configuration.hxx_GENERATED
   validateDesign

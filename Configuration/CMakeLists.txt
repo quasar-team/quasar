@@ -16,12 +16,12 @@
 
 # Author: Piotr Nikiel <piotr@nikiel.info>
 
-MESSAGE( STATUS "Design file=" ${DESIGN_WITH_META_FILE} )
+MESSAGE( STATUS "Design file=" ${DESIGN_FILE} )
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configuration.xsd
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 	COMMAND ${PYTHON_COMMAND} quasar.py generate config_xsd --project_binary_dir ${PROJECT_BINARY_DIR}
-	DEPENDS ${DESIGN_WITH_META_FILE} templates/designToConfigurationXSD.jinja validateDesign ${PROJECT_SOURCE_DIR}/quasar.py ${QUASAR_TRANSFORM_SENSITIVE_FILES}
+	DEPENDS ${DESIGN_FILE} templates/designToConfigurationXSD.jinja validateDesign ${PROJECT_SOURCE_DIR}/quasar.py ${QUASAR_TRANSFORM_SENSITIVE_FILES}
 	)
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configuration.cxx ${PROJECT_BINARY_DIR}/Configuration/Configuration.hxx
@@ -35,13 +35,13 @@ add_custom_target(Configuration.hxx_GENERATED DEPENDS ${PROJECT_BINARY_DIR}/Conf
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configurator.cpp
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 	COMMAND ${PYTHON_COMMAND} quasar.py generate config_cpp --project_binary_dir ${PROJECT_BINARY_DIR}
-	DEPENDS ${DESIGN_WITH_META_FILE} templates/designToConfigurator.jinja ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
+	DEPENDS ${DESIGN_FILE} templates/designToConfigurator.jinja ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
 )
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/ConfigValidator.cpp
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 	COMMAND ${PYTHON_COMMAND} quasar.py generate config_validator --project_binary_dir ${PROJECT_BINARY_DIR}
-	DEPENDS ${DESIGN_WITH_META_FILE} templates/designToConfigValidator.jinja ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
+	DEPENDS ${DESIGN_FILE} templates/designToConfigValidator.jinja ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
 )
 
 add_library (Configuration OBJECT

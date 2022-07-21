@@ -56,11 +56,11 @@ add_custom_command(OUTPUT alwaysRunBuildInfoGeneratorPy # note output never actu
 add_custom_target(designWithMeta ALL DEPENDS ${PROJECT_BINARY_DIR}/Design/DesignWithMeta.xml)
 
 add_custom_command(
-	OUTPUT ${DESIGN_WITH_META_FILE}
+	OUTPUT ${DESIGN_FILE}
 	COMMENT "merge user and meta designs one complete design file" 
 	DEPENDS ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/merge_design_and_meta.py
 	WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-	COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/FrameworkInternals/merge_design_and_meta.py --user_file ${PROJECT_SOURCE_DIR}/Design/Design.xml --meta_file ${PROJECT_SOURCE_DIR}/Meta/design/meta-design.xml --merged_file ${DESIGN_WITH_META_FILE}
+	COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/FrameworkInternals/merge_design_and_meta.py --user_file ${PROJECT_SOURCE_DIR}/Design/Design.xml --meta_file ${PROJECT_SOURCE_DIR}/Meta/design/meta-design.xml --merged_file ${DESIGN_FILE}
 	VERBATIM
 )
 
