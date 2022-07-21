@@ -419,7 +419,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurationXSD.jinja": {
-                "md5": "f109de1aa92f53d9c5d99732fc3d311a",
+                "md5": "d655f342ac9a55cf815008804186c7e3",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
