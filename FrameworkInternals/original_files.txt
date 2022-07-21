@@ -512,6 +512,9 @@
             "designToGeneratedCmakeDevice.jinja": {
                 "use_defaults": "file_defaults_of_directory"
             },
+            "designToGeneratedCmakeDeviceBase.jinja": {
+                "use_defaults": "file_defaults_of_directory"
+            },
             "designToRootBody.jinja": {
                 "use_defaults": "file_defaults_of_directory"
             },
@@ -754,6 +757,12 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
+            "merge_design_and_meta.py": {
+                "install": "overwrite",
+                "md5": "check",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
             "meta_build_info.py": {
                 "install": "overwrite",
                 "md5": "check",
@@ -927,9 +936,9 @@
         },
         "install": "create"
     },
-    "Meta/config": {
+    "Meta/design": {
         "files": {
-            "Meta.xsd": {
+            "meta-design.xml": {
                 "install": "overwrite",
                 "md5": "check",
                 "must_be_versioned": true,
@@ -946,76 +955,7 @@
             "must_exist": true
         },
         "files": {
-            "ASBuildInformation.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASComponentLogLevel.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASComponentLogLevels.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASGeneralLogLevel.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASLog.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASQuasar.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASServer.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASSourceVariableThreadPool.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASStandardMetaData.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DBuildInformation.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DComponentLogLevel.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DGeneralLogLevel.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DQuasar.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DServer.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DSourceVariableThreadPool.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DStandardMetaData.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Certificate.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DBuildInformation.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DComponentLogLevel.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DGeneralLogLevel.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DQuasar.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DServer.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DSourceVariableThreadPool.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DStandardMetaData.h": {
+            "DLogLevel.h": {
                 "use_defaults": "file_defaults_of_directory"
             },
             "MetaBuildInfo.h": {
@@ -1025,6 +965,9 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "meta.h": {
+                "use_defaults": "file_defaults_of_directory"
+            },
+            "metaBackwardsCompatibilityUtils.h": {
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -1038,76 +981,7 @@
             "must_exist": true
         },
         "files": {
-            "ASBuildInformation.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASComponentLogLevel.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASComponentLogLevels.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASGeneralLogLevel.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASLog.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASQuasar.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASServer.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASSourceVariableThreadPool.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "ASStandardMetaData.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DBuildInformation.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DComponentLogLevel.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DGeneralLogLevel.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DQuasar.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DServer.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DSourceVariableThreadPool.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Base_DStandardMetaData.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "Certificate.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DBuildInformation.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DComponentLogLevel.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DGeneralLogLevel.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DQuasar.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DServer.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DSourceVariableThreadPool.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "DStandardMetaData.cpp": {
+            "DLogLevel.cpp": {
                 "use_defaults": "file_defaults_of_directory"
             },
             "MetaBuildInfo.cpp": {
@@ -1118,7 +992,10 @@
             },
             "meta.cpp": {
                 "use_defaults": "file_defaults_of_directory"
-            }
+            },
+            "metaBackwardsCompatibilityUtils.cpp": {
+                "use_defaults": "file_defaults_of_directory"
+            }            
         },
         "install": "create"
     },
