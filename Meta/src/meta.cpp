@@ -194,6 +194,30 @@ void validateComponentLogLevels( const Configuration::ComponentLogLevels& compon
 	}
 }
 
+void configureComponentLogLevel(const Log::LogComponentHandle& componentHandle, const std::string componentName, Configuration::ComponentLogLevels& parent)
+{
+    auto& logLevelConfig = getComponentLogLevel(componentName, componentHandle, parent);
+
+    // parse config logLevel string to a LogIt log level.
+    const std::string levelString(logLevelConfig.logLevel());
+    Log::LOG_LEVEL level;
+    if(!Log::logLevelFromString(levelString, level))
+    {
+        LOG(Log::WRN) << __FUNCTION__ << " failed to parse logLevel string ["<<levelString<<"] to valid level ID for logging component [nm:"<<componentName<<", hdl:"<<componentHandle<<"]. Ignoring";
+        return;
+    }
+
+    // set component (should not fail)
+    if(Log::setComponentLogLevel(componentHandle, level))
+    {
+        LOG(Log::INF) << __FUNCTION__ << " set logging component [nm:"<<componentName<<", hdl:"<<componentHandle<<"] to threshold ["<<levelString<<"]";
+    }
+    else
+    {
+        LOG(Log::ERR) << __FUNCTION__ << " programming error: failed to set logging component [nm:"<<componentName<<", hdl:"<<componentHandle<<"] to threshold ["<<levelString<<"]";
+    }    
+}
+
 void configureComponentLogLevels(Configuration::Log& parent)
 {
     auto& componentLogLevels = getComponentLogLevels(parent);
@@ -211,27 +235,7 @@ void configureComponentLogLevels(Configuration::Log& parent)
     {
         const Log::LogComponentHandle& componentHandle = registeredComponent.first;
         const std::string componentName = Log::getComponentName(componentHandle);
-
-        auto& logLevelConfig = getComponentLogLevel(componentName, componentHandle, componentLogLevels);
-
-        // parse config logLevel string to a LogIt log level.
-        const std::string levelString(logLevelConfig.logLevel());
-        Log::LOG_LEVEL level;
-        if(!Log::logLevelFromString(levelString, level))
-        {
-            LOG(Log::WRN) << __FUNCTION__ << " failed to parse logLevel string ["<<levelString<<"] to valid level ID for logging component [nm:"<<componentName<<", hdl:"<<componentHandle<<"]. Ignoring";
-            continue;
-        }
-
-        // set component (should not fail)
-        if(!Log::setComponentLogLevel(componentHandle, level))
-        {
-            LOG(Log::INF) << __FUNCTION__ << " set logging component [nm:"<<componentName<<", hdl:"<<componentHandle<<"] to threshold ["<<levelString<<"]";
-        }
-        else
-        {
-            LOG(Log::ERR) << __FUNCTION__ << " programming error: failed to set logging component [nm:"<<componentName<<", hdl:"<<componentHandle<<"] to threshold ["<<levelString<<"]";
-        }
+        configureComponentLogLevel(componentHandle, componentName, componentLogLevels);
     }
 }
 
