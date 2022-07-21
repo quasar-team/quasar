@@ -49,16 +49,5 @@ namespace Meta
 
 		return children[0];
 	};
-
-	template<typename AddressSpaceType>
-	void unlinkAllAddressSpaceItems(AddressSpace::ASNodeManager *nm)
-	{
-		std::vector< AddressSpaceType* > objects;
-		AddressSpace::findAllByPattern<AddressSpaceType> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, ".*", objects);
-		for(AddressSpaceType *a : objects)
-		{
-			a->unlinkDevice();
-		}
-	}
 } // namespace Meta
 
