@@ -37,7 +37,6 @@ WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND ${PYTHON_COMMAND} quasar.py generate root --project_binary_dir ${PROJECT_BINARY_DIR}
 DEPENDS ${DESIGN_FILE}
     ${PROJECT_SOURCE_DIR}/quasar.py
-    ${META_DEFINED_DEVICE_CLASS_FILES}
     validateDesign
     templates/designToRootHeader.jinja
     templates/designToRootBody.jinja
@@ -69,7 +68,6 @@ add_library (Device OBJECT
 
     ${DEVICEBASE_GENERATED_FILES} # generated from transform
     ${DEVICE_CLASSES} # generated from transform
-    ${META_DEFINED_DEVICE_CLASS_FILES}
     ${DEVICE_CUSTOM_SOURCES} # if used, would come from DeviceCustom.cmake
 
     # Your custom Device logic code - Note:
