@@ -33,7 +33,7 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/src/SourceVariables
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND ${PYTHON_COMMAND} quasar.py generate source_variables --project_binary_dir ${PROJECT_BINARY_DIR}
 DEPENDS
-	${DESIGN_FILE}
+	${DESIGN_WITH_META_FILE}
 	${PROJECT_SOURCE_DIR}/AddressSpace/templates/designToSourceVariablesHeader.jinja
 	${PROJECT_SOURCE_DIR}/AddressSpace/templates/designToSourceVariablesBody.jinja
 	DeviceBase
