@@ -94,9 +94,6 @@
   targetNamespace="http://cern.ch/quasar/Configuration"
   elementFormDefault="qualified">
 
-  <!--meta schema location comes via python transform parameter -->  
-  <xi:include href="{{metaXsdPath}}" xpointer="xmlns(xs=http://www.w3.org/2001/XMLSchema) xpointer(/xs:schema/node())"/>
-
   <xs:simpleType name="ObjectName">
     <xs:restriction base="xs:string">
       <xs:minLength value="1"/>
@@ -139,6 +136,18 @@
     <xs:attribute name="initialValue" type="xs:string" use="optional"/>
   </xs:complexType>
  
+<!-- START BLOCK _META_BACKWARDS_COMPATIBILITY_HACK_ -->
+<!-- For backwards compatibility with older quasar config files, meta configuration
+     need to be able to support elements of the 2 types below -->
+  <xs:complexType name="GeneralLogLevel">
+    <xs:attribute name="logLevel" use="required" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="ComponentLogLevel">
+    <xs:attribute name="componentName" use="required" type="xs:string" />
+    <xs:attribute name="logLevel" use="required" type="xs:string" />
+  </xs:complexType>
+<!-- END BLOCK _META_BACKWARDS_COMPATIBILITY_HACK_ -->
+
 {% for className in designInspector.get_names_of_all_classes() %}
   <xs:complexType name="{{className}}">
    
@@ -149,7 +158,16 @@
         {% for innerClassByConfig in designInspector.objectify_has_objects(className) %}
           <xs:element name="{{innerClassByConfig.get('class')}}" type="tns:{{innerClassByConfig.get('class')}}"/>
         {% endfor %}
-	  </xs:choice>
+        {# START BLOCK _META_BACKWARDS_COMPATIBILITY_HACK_ #}
+        {# add support for GeneralLogLevel and ComponentLogLevel elements for specifically named parents #}
+        {% if className == 'Log' %}
+          <xs:element name="GeneralLogLevel" type="tns:GeneralLogLevel" minOccurs="0" maxOccurs="1" />
+        {% endif %}
+        {% if className == 'ComponentLogLevels' %}
+           <xs:element name="ComponentLogLevel" type="tns:ComponentLogLevel" minOccurs="0" maxOccurs="unbounded" />
+        {% endif %}        
+        {# END BLOCK _META_BACKWARDS_COMPATIBILITY_HACK_ #}
+      </xs:choice>
     
 	    <!-- processing array cache vars (by configuration) for class [{{className}}] -->
 	    {% for arrayCacheVarByConfig in designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration' and d:array]") %}
@@ -209,9 +227,6 @@
 
 <xs:complexType name="Configuration">
   <xs:sequence>
-    <xs:choice minOccurs="0" maxOccurs="1">
-      <xs:element name="StandardMetaData" type="tns:StandardMetaData"/>
-    </xs:choice>
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element name="CalculatedVariableGenericFormula" type="tns:CalculatedVariableGenericFormula"/>
     </xs:choice>

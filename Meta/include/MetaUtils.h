@@ -23,7 +23,11 @@
 #define META_INCLUDE_METAUTILS_H_
 
 #include <ASNodeManager.h>
-#include "DServer.h"
+
+namespace Device
+{
+    class DServer;
+}
 
 namespace MetaUtils
 {

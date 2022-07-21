@@ -28,6 +28,7 @@ from commandMap import getCommand
 from quasarExceptions import Mistake
 from manage_files import symlinkRuntimeDeps
 from quasar_basic_utils import extract_argument
+from merge_design_and_meta import merge_user_and_meta_design
 
 BuilderDefault = "PlatformDefault"
 
@@ -61,8 +62,18 @@ def generateCmake(context, *args):
         symlinkRuntimeDeps(context, '*.xml')
         symlinkRuntimeDeps(context, 'ServerConfig.xsd')
 
-    transformByKey(TransformKeys.AS_CMAKE, {'context':context})
-    transformByKey(TransformKeys.D_CMAKE, {'context':context})
+    projectSourceDesignDir = os.path.join(projectBinaryDir, 'Design')
+    if not os.path.isdir(projectSourceDesignDir):
+        os.mkdir(projectSourceDesignDir)
+    merge_user_and_meta_design(
+        user_file   = open(mode='r', encoding='utf-8', file=os.path.join(projectSourceDir, 'Design', 'Design.xml')),
+        meta_file   = open(mode='r', encoding='utf-8', file=os.path.join(projectSourceDir, 'Meta',   'design', 'meta-design.xml')),
+        merged_file = open(mode='w', encoding='utf-8', file=os.path.join(projectBinaryDir, 'Design', 'DesignWithMeta.xml'))
+    )
+
+    transformByKey(TransformKeys.AS_CMAKE,     {'context':context})
+    transformByKey(TransformKeys.D_BASE_CMAKE, {'context':context})
+    transformByKey(TransformKeys.D_CMAKE,      {'context':context})
     print("Build type [{0}], Builder [{1}]".format(buildType, builder))
     os.chdir(projectBinaryDir)
 

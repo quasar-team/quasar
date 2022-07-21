@@ -21,310 +21,260 @@
  */
 
 #include <meta.h>
-#include <sstream>
-#include <iostream>
-#include <list>
-
 #include <LogIt.h>
-#include <LogLevels.h>
-
-#include <ASUtils.h>
-#include <ASInformationModel.h>
-#include <ASNodeManager.h>
-
-#include <MetaUtils.h>
-
+#include <ConfigurationDecorationUtils.h>
 #include <ASStandardMetaData.h>
-#include <DStandardMetaData.h>
-#include <ASLog.h>
-#include <DRoot.h>
-#include <ASGeneralLogLevel.h>
-#include <ASComponentLogLevel.h>
-#include <DGeneralLogLevel.h>
-#include <DComponentLogLevel.h>
-#include <ASComponentLogLevels.h>
-#include <ASSourceVariableThreadPool.h>
-#include <DSourceVariableThreadPool.h>
 #include <ASBuildInformation.h>
-#include <DBuildInformation.h>
 #include <ASQuasar.h>
-#include <DQuasar.h>
 #include <ASServer.h>
-#include <DServer.h>
+#include <ASSourceVariableThreadPool.h>
 #include "MetaBuildInfo.h"
+#include "QuasarVersion.h"
+#include "metaBackwardsCompatibilityUtils.h"
 
-using std::string;
+using std::begin;
+using std::end;
 
-const string getComponentLogLevelFromConfig(const Log::LogComponentHandle& componentHandle, const Configuration::ComponentLogLevels& config)
+void initializeBuildInformation(AddressSpace::ASNodeManager *nm)
 {
-	// find current level from LogIt (i.e. as default)
-	Log::LOG_LEVEL level;
-	if (!getComponentLogLevel(componentHandle, level))
-	{
-		LOG(Log::ERR) << "logging component handle ["<<componentHandle<<"] name ["<< Log::getComponentName(componentHandle) <<"] has no associated log level (returning [UNKNOWN!]): This should not happen - most likely a quasar programming error";
-		return "UNKNOWN!";
-	}
-	string result = Log::logLevelToString(level);
+    auto buildInformation = Meta::findStandardMetaDataChildObject<AddressSpace::ASBuildInformation>(nm, "BuildInformation");
+    LOG(Log::INF) << __FUNCTION__ << " found StandardMetaData object ["<<std::hex<<buildInformation<<"]. Populating...";
 
-	// find level in configuration
-	for(const Configuration::ComponentLogLevel & componentLogLevelConfig : config.ComponentLogLevel())
-	{
-		const string configuredComponentName = componentLogLevelConfig.componentName();
-		if(configuredComponentName == Log::getComponentName(componentHandle))
-		{
-			result = componentLogLevelConfig.logLevel();
-		}
-	}
-
-	LOG(Log::INF) << "configuration for logging component  handle [" << componentHandle << "] name [" << Log::getComponentName(componentHandle) << "] using value ["<<result<<"]";
-	return result;
+    buildInformation->setBuildHost(BuildMetaInfo::getBuildHost().c_str(), OpcUa_Good);
+    buildInformation->setBuildTimestamp(BuildMetaInfo::getBuildTime().c_str(), OpcUa_Good);
+    buildInformation->setCommitID(BuildMetaInfo::getCommitID().c_str(), OpcUa_Good);
+    buildInformation->setToolkitLibs(BuildMetaInfo::getToolkitLibs().c_str(), OpcUa_Good);
 }
 
-/**
- * This function ensures that:
- * 1) all specified component log levels are registered in the server (to prevent config file typos, etc)
- * 2) that all specified component log levels are present at most once (to not have conflicting levels)
- * @throw std::runtime_error if the logging component level settings are not sane
- * @return void
- */
-void validateComponentLogLevels( const Configuration::ComponentLogLevels& logLevels )
+void intializeQuasar(AddressSpace::ASNodeManager *nm)
+{
+    auto quasar = Meta::findStandardMetaDataChildObject<AddressSpace::ASQuasar>(nm, "Quasar");
+    LOG(Log::INF) << __FUNCTION__ << " found StandardMetaData object ["<<std::hex<<quasar<<"]. Populating...";
+
+    quasar->setVersion(QUASAR_VERSION_STR, OpcUa_Good);
+}
+
+void initializeServer(AddressSpace::ASNodeManager *nm)
+{
+    auto server = Meta::findStandardMetaDataChildObject<AddressSpace::ASServer>(nm, "Server");
+    LOG(Log::INF) << __FUNCTION__ << " found StandardMetaData object ["<<std::hex<<server<<"]. Populating...";
+
+    server->setRemainingCertificateValidity("uninitialized", OpcUa_Good);
+}
+
+void Meta::initializeMeta(AddressSpace::ASNodeManager *nm)
+{
+    LOG(Log::INF) << __FUNCTION__ << " called";
+ 
+    initializeBuildInformation(nm);
+    intializeQuasar(nm);
+    initializeServer(nm);
+}
+
+Configuration::StandardMetaData& getStandardMetaData(Configuration::Configuration & parent)
+{
+    if(parent.StandardMetaData().empty())
+    {
+        LOG(Log::INF) << __FUNCTION__ << " parent does not contain a StandardMetaData element; adding one";
+        Configuration::DecorationUtils::push_back(
+            parent, 
+            parent.StandardMetaData(), 
+            Configuration::StandardMetaData(), 
+            Configuration::Configuration::StandardMetaData_id);
+    }
+    return parent.StandardMetaData().front();
+}
+
+Configuration::Log& getLog(Configuration::StandardMetaData& parent)
+{
+    if(parent.Log().empty())
+    {
+        LOG(Log::INF) << __FUNCTION__ << " parent does not contain a Log element; adding one";
+        Configuration::DecorationUtils::push_back(
+            parent, 
+            parent.Log(), 
+            Configuration::Log(), 
+            Configuration::StandardMetaData::Log_id);        
+    }
+    return parent.Log().front();
+}
+
+Configuration::SourceVariableThreadPool& getSourceVariableThreadPool(Configuration::StandardMetaData& parent)
+{
+    if(parent.SourceVariableThreadPool().empty())
+    {
+        LOG(Log::INF) << __FUNCTION__ << " parent does not contain a SourceVariableThreadPool element; adding one";
+        Configuration::DecorationUtils::push_back(
+            parent, 
+            parent.SourceVariableThreadPool(), 
+            Configuration::SourceVariableThreadPool("10", "1"),
+            Configuration::StandardMetaData::SourceVariableThreadPool_id);                
+    }
+    return parent.SourceVariableThreadPool().front();
+}
+
+Configuration::LogLevel& getGeneralLogLevel(Configuration::Log& parent)
+{
+    if(parent.LogLevel().empty())
+    {
+        const Log::LOG_LEVEL level = Log::getNonComponentLogLevel();
+        LOG(Log::INF) << __FUNCTION__ << " parent does not contain a GeneralLogLevel element; adding one";
+        Configuration::DecorationUtils::push_back(
+            parent, 
+            parent.LogLevel(), 
+            Configuration::LogLevel("GeneralLogLevel", Log::logLevelToString(level)),
+            Configuration::Log::LogLevel_id);        
+    }
+    return parent.LogLevel().front();
+}
+
+Configuration::ComponentLogLevels& getComponentLogLevels(Configuration::Log& parent)
+{
+    if(parent.ComponentLogLevels().empty())
+    {
+        LOG(Log::INF) << __FUNCTION__ << " parent does not contain a ComponentLogLevels element; adding one";
+        Configuration::DecorationUtils::push_back(
+            parent,
+            parent.ComponentLogLevels(),
+            Configuration::ComponentLogLevels(),
+            Configuration::Log::ComponentLogLevels_id);
+    }
+    return parent.ComponentLogLevels().front();
+}
+
+Configuration::LogLevel& getComponentLogLevel(const std::string& name, const Log::LogComponentHandle& componentHandle, Configuration::ComponentLogLevels& parent)
+{
+    const auto matchLogLevelByNameFn = [name](Configuration::LogLevel& logLevel) { return name == logLevel.name(); };
+
+	// find level in configuration
+    auto pos = std::find_if(begin(parent.LogLevel()), end(parent.LogLevel()), matchLogLevelByNameFn);
+    if(pos != end(parent.LogLevel())) return *pos;
+
+    // not found - add. First retrieve component log level (as string)
+    Log::LOG_LEVEL level;
+    if(!Log::getComponentLogLevel(componentHandle, level))
+    {
+        LOG(Log::ERR) << __FUNCTION__ << " programming error - unknown logging component name ["<<name<<"], handle ["<<componentHandle<<"]. Defaulting to [INF]";
+        level = Log::INF;
+    }
+
+    LOG(Log::INF) << __FUNCTION__ << " LogLevel element name ["<<name<<"] not found in ComponentLogLevels, will create and add to config";
+    Configuration::DecorationUtils::push_back(
+        parent,
+        parent.LogLevel(),
+        Configuration::LogLevel(name, Log::logLevelToString(level)),
+        Configuration::ComponentLogLevels::LogLevel_id);
+
+    // should find it now
+    pos = std::find_if(begin(parent.LogLevel()), end(parent.LogLevel()), matchLogLevelByNameFn);
+    if(pos != end(parent.LogLevel())) return *pos;    
+
+    // otherwise error
+    std::ostringstream err;
+    err << __FUNCTION__ << " programming error - failed to find LogLevel with name ["<<name<<"] in ComponentLogLevels";
+    throw std::runtime_error(err.str());
+}
+
+void validateComponentLogLevels( const Configuration::ComponentLogLevels& componentLogLevels )
 {
 	std::list<std::string> checkedComponentNames;
-	const std::map<Log::LogComponentHandle, std::string> registeredComponents = Log::getComponentLogsList();
-	for( const Configuration::ComponentLogLevel &logLevel: logLevels.ComponentLogLevel() )
+
+	for( const Configuration::LogLevel& logLevelConfig: componentLogLevels.LogLevel() )
 	{
-		std::string name (logLevel.componentName());
-
-		/* 1) validate the component is registered - query its id based on name */
-		if (Log::getComponentHandle(name) == Log::INVALID_HANDLE)
+		std::string name(logLevelConfig.name());
+		// check for duplicates
+		if (std::find(begin(checkedComponentNames), end(checkedComponentNames), name) != end(checkedComponentNames))
 		{
 			std::ostringstream err;
-			err << "Component Log Level name [" << name << "] is unknown (not registered).";
-			std::cerr << err.str() << std::endl;
-			throw std::runtime_error(err.str());
-		}
-
-		/* 2) check for duplicates */
-		if (std::find(checkedComponentNames.begin(), checkedComponentNames.end(), name) != checkedComponentNames.end())
-		{
-			std::ostringstream err;
-			err << "Component Log Level name [" << name << "] is given more than once.";
-			std::cerr << err.str() << std::endl;
+			err << __FUNCTION__ << " Configuration contains ComponentLogLevel name [" << name << "] more than once: mis-configuration.";
+            LOG(Log::ERR) << err.str() << " Throwing exception";
 			throw std::runtime_error(err.str());
 		}
 		checkedComponentNames.push_back( name );
 	}
 }
 
-const Configuration::ComponentLogLevels getComponentLogLevels(const Configuration::Log & config)
+void configureComponentLogLevels(Configuration::Log& parent)
 {
-	if(config.ComponentLogLevels().present())
-	{
-		LOG(Log::INF) << "StandardMetaData.Log.ComponentLogLevels configuration found in the configuration file, configuring StandardMetaData.Log.ComponentLogLevels from the configuration file";
-		return config.ComponentLogLevels().get();
-	}
-	else
-	{
-		LOG(Log::INF) << "no StandardMetaData.Log.ComponentLogLevels configuration found in the configuration file, configuring StandardMetaData.Log.ComponentLogLevels with default values";
-		return Configuration::ComponentLogLevels();
-	}
-}
+    auto& componentLogLevels = getComponentLogLevels(parent);
+    Meta::BackwardsCompatibilityUtils::convertOldComponentLogLevel(componentLogLevels);
+    validateComponentLogLevels(componentLogLevels);
 
-const string getGeneralLogLevelFromConfig(const Configuration::Log & config)
-{
-	// default to value used by logger.
-	string result = Log::logLevelToString(Log::getNonComponentLogLevel());
-
-	if( config.GeneralLogLevel().present() )
-	{
-		result = config.GeneralLogLevel().get().logLevel();
-	}
-
-	LOG(Log::INF) << "general non-component log level will be ["<<result<<"]";
-	return result;
-}
-
-void configureGeneralLogLevel(const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASLog* parent)
-{
-    AddressSpace::ASGeneralLogLevel *asGeneralLogLevel = new AddressSpace::ASGeneralLogLevel(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_GENERALLOGLEVEL), nm, logLevel);
-
-    Device::DGeneralLogLevel* dGeneralLogLevel = new Device::DGeneralLogLevel (logLevel);
-    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dGeneralLogLevel, asGeneralLogLevel);
-}
-
-void configureSourceVariableThreadPool(const Configuration::SourceVariableThreadPool& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent)
-{
-    AddressSpace::ASSourceVariableThreadPool *asSourceVariableThreadPool = new AddressSpace::ASSourceVariableThreadPool(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_SOURCEVARIABLESTHREADPOOL), nm, config.minThreads(), config.maxThreads());
-
-    Device::DSourceVariableThreadPool* dSourceVariableThreadPool = new Device::DSourceVariableThreadPool(config.minThreads(), config.maxThreads(), config.maxJobs());
-    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dSourceVariableThreadPool, asSourceVariableThreadPool);
-}
-
-void configureBuildInformation(AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent)
-{
-    const string buildHost(BuildMetaInfo::getBuildHost());
-    const string buildTimestamp(BuildMetaInfo::getBuildTime());
-    const string commitID(BuildMetaInfo::getCommitID());
-    const string toolkitLibs(BuildMetaInfo::getToolkitLibs());
-
-    AddressSpace::ASBuildInformation *asBuildInformation = new AddressSpace::ASBuildInformation(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_BUILDINFORMATION), nm,
-			buildHost, buildTimestamp, commitID, toolkitLibs);
-    Device::DBuildInformation* dBuildInformation = new Device::DBuildInformation(buildHost,
-    		buildTimestamp, commitID, toolkitLibs);
-    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dBuildInformation, asBuildInformation);
-}
-
-void configureQuasar(const Configuration::Quasar& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent, Device::DRoot * deviceParent)
-{
-    AddressSpace::ASQuasar *asQuasar = new AddressSpace::ASQuasar(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_QUASAR), nm, config);
-
-    Device::DQuasar* dQuasar = new Device::DQuasar(config, deviceParent);
-    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dQuasar, asQuasar);
-    dQuasar->updateVersion();
-}
-
-void configureServer(const Configuration::Server& config, AddressSpace::ASNodeManager *nm,  AddressSpace::ASStandardMetaData* parent, Device::DRoot * deviceParent)
-{
-    AddressSpace::ASServer *asServer = new AddressSpace::ASServer(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_SERVER), nm, config);
-
-    Device::DServer* dServer = new Device::DServer(config, deviceParent);
-    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dServer, asServer);
-    MetaUtils::setDServer(dServer);
-
-    //pnikiel: temporary disabled as per OPCUA-1564 due to planned work on OPCUA-1541
-    //dServer->updateRemainingCertificateValidity(MetaUtils::calculateRemainingCertificateValidity());
-}
-
-void configureComponentLogLevel(const Log::LogComponentHandle& componentHandle, const string& logLevel, AddressSpace::ASNodeManager *nm, AddressSpace::ASComponentLogLevels* parent)
-{
-    AddressSpace::ASComponentLogLevel *asComponentLogLevel = new AddressSpace::ASComponentLogLevel(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVEL), nm, Log::getComponentName(componentHandle), logLevel);
-
-    Device::DComponentLogLevel* dComponentLogLevel = new Device::DComponentLogLevel (componentHandle, logLevel);
-    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dComponentLogLevel, asComponentLogLevel);
-}
-
-const Configuration::Log getLogConfig(const Configuration::StandardMetaData & config)
-{
-	if( config.Log().present() )
-	{
-		LOG(Log::INF) << "StandardMetaData.Log configuration found in the configuration file, configuring StandardMetaData.Log from the configuration file";
-		return config.Log().get();
-	}
-	else
-	{
-		LOG(Log::INF) << "no StandardMetaData.Log configuration found in the configuration file, configuring StandardMetaData.Log with default values";
-		return Configuration::Log();
-	}
-}
-
-const Configuration::SourceVariableThreadPool getSourceVariableThreadPoolConfig(const Configuration::StandardMetaData & config)
-{
-	if( config.SourceVariableThreadPool().present() )
-	{
-		LOG(Log::INF) << "StandardMetaData.SourceVariableThreadPool configuration found in the configuration file, configuring StandardMetaData.SourceVariableThreadPool from the configuration file";
-		return config.SourceVariableThreadPool().get();
-	}
-	else
-	{
-		LOG(Log::INF) << "no StandardMetaData.SourceVariableThreadPool configuration found in the configuration file, configuring StandardMetaData.SourceVariableThreadPool with default values";
-		return Configuration::SourceVariableThreadPool();
-	}
-}
-
-const Configuration::Quasar getQuasarConfig(const Configuration::StandardMetaData & config)
-{
-	if( config.Quasar().present() )
-	{
-		LOG(Log::INF) << "StandardMetaData.Quasar configuration found in the configuration file, configuringStandardMetaData.Quasar from the configuration file";
-		return config.Quasar().get();
-	}
-	else
-	{
-		LOG(Log::INF) << "no StandardMetaData.Quasar configuration found in the configuration file, configuring StandardMetaData.Quasar with default values";
-		return Configuration::Quasar();
-	}
-}
-
-const Configuration::Server getServerConfig(const Configuration::StandardMetaData & config)
-{
-	if( config.Server().present() )
-	{
-		LOG(Log::INF) << "StandardMetaData.Server configuration found in the configuration file, configuringStandardMetaData.Server from the configuration file";
-		return config.Server().get();
-	}
-	else
-	{
-		LOG(Log::INF) << "no StandardMetaData.Server configuration found in the configuration file, configuring StandardMetaData.Server with default values";
-		return Configuration::Server();
-	}
-}
-
-void configureComponentLogLevels(const Configuration::ComponentLogLevels& config, AddressSpace::ASNodeManager* nm, AddressSpace::ASLog *parent)
-{
-    AddressSpace::ASComponentLogLevels* asComponentLogLevels = new AddressSpace::ASComponentLogLevels(parent->nodeId(), nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_COMPONENTLOGLEVELS), nm);
-
-	for(const auto& componentMapEntry : Log::getComponentLogsList())
+    // Loop round only those logging components registered with LogIt. 
+    // Config _may_ contain other named logging components
+    // But if LogIt doesn't know them - can only ignore them here.
+    // Perhaps the unknown components will be registered later on 
+    //
+    // Fine: e.g. some shared libray, which registers its own logging 
+    // component, might be dynamically loaded later or something.
+    for(const auto& registeredComponent : Log::getComponentLogsList())
     {
-		const Log::LogComponentHandle& componentHandle = componentMapEntry.first;
-    	const string componentLogLevel = getComponentLogLevelFromConfig(componentHandle, config);
-    	configureComponentLogLevel(componentHandle, componentLogLevel, nm, asComponentLogLevels);
+        const Log::LogComponentHandle& componentHandle = registeredComponent.first;
+        const std::string componentName = Log::getComponentName(componentHandle);
+
+        auto& logLevelConfig = getComponentLogLevel(componentName, componentHandle, componentLogLevels);
+
+        // parse config logLevel string to a LogIt log level.
+        const std::string levelString(logLevelConfig.logLevel());
+        Log::LOG_LEVEL level;
+        if(!Log::logLevelFromString(levelString, level))
+        {
+            LOG(Log::WRN) << __FUNCTION__ << " failed to parse logLevel string ["<<levelString<<"] to valid level ID for logging component [nm:"<<componentName<<", hdl:"<<componentHandle<<"]. Ignoring";
+            continue;
+        }
+
+        // set component (should not fail)
+        if(!Log::setComponentLogLevel(componentHandle, level))
+        {
+            LOG(Log::INF) << __FUNCTION__ << " set logging component [nm:"<<componentName<<", hdl:"<<componentHandle<<"] to threshold ["<<levelString<<"]";
+        }
+        else
+        {
+            LOG(Log::ERR) << __FUNCTION__ << " programming error: failed to set logging component [nm:"<<componentName<<", hdl:"<<componentHandle<<"] to threshold ["<<levelString<<"]";
+        }
     }
 }
 
-void configureLog(const Configuration::Log & config, AddressSpace::ASNodeManager *nm, AddressSpace::ASStandardMetaData* parent)
+void configureGeneralLogLevel(Configuration::Log& parent)
 {
-    AddressSpace::ASLog *asLog = new AddressSpace::ASLog(parent->nodeId(),nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_LOG), nm, config);
+    Meta::BackwardsCompatibilityUtils::convertOldGeneralLogLevel(parent);
 
-    configureGeneralLogLevel(getGeneralLogLevelFromConfig(config), nm, asLog);
-    const Configuration::ComponentLogLevels componentLogLevels = getComponentLogLevels(config);
-	validateComponentLogLevels(componentLogLevels);
-    configureComponentLogLevels(componentLogLevels, nm, asLog);
+    auto& generalLogLevel = getGeneralLogLevel(parent);
+    Log::LOG_LEVEL level;
+    if(Log::logLevelFromString(generalLogLevel.logLevel(), level))
+    {
+        Log::setNonComponentLogLevel(level);
+        LOG(Log::INF) << __FUNCTION__ << " set GeneralLogLevel to threshold ["<<Log::logLevelToString(level)<<"]";
+    }
+    else
+    {
+        LOG(Log::ERR) << __FUNCTION__ << "  failed to parse logLevel string ["<<generalLogLevel.logLevel()<<"] to valid level ID for GeneralLogLevel";
+    }    
 }
 
-const Configuration::StandardMetaData getMetaConfig(const Configuration::Configuration& config)
+void configureLog(Configuration::StandardMetaData& parent)
 {
-	if( config.StandardMetaData().present() )
-	{
-		LOG(Log::INF) << "meta configuration found in the configuration file, configuring StandardMetaData from the configuration file";
-		return config.StandardMetaData().get();
-	}
-	else
-	{
-		LOG(Log::INF) << "no Meta configuration found in the configuration file, configuring StandardMetaData with default values";
-		return Configuration::StandardMetaData ();
-	}
+    auto& log = getLog(parent);
+    configureGeneralLogLevel(log);
+    configureComponentLogLevels(log);
 }
 
-Device::DStandardMetaData* configureMeta( const Configuration::StandardMetaData & config,AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId, Device::DRoot * parent)
+void configureSourceVariableThreadPool(Configuration::StandardMetaData& parent)
 {
-    AddressSpace::ASStandardMetaData *asMeta = new AddressSpace::ASStandardMetaData(parentNodeId, nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_STANDARDMETADATA), nm, config);
-    UaStatus s = nm->addNodeAndReference( parentNodeId, asMeta, OpcUaId_HasComponent);
-    MetaUtils::assertNodeAdded(s, parentNodeId, asMeta->nodeId());
-
-    Device::DStandardMetaData *dMeta = new Device::DStandardMetaData (config, parent);
-    MetaUtils::linkHandlerObjectAndAddressSpaceNode(dMeta, asMeta);
-
-    configureLog(getLogConfig(config), nm, asMeta);
-    configureSourceVariableThreadPool(getSourceVariableThreadPoolConfig(config), nm, asMeta);
-    configureQuasar(getQuasarConfig(config), nm, asMeta, parent);
-	configureServer(getServerConfig(config), nm, asMeta, parent);
-	configureBuildInformation(nm, asMeta);
-	
-    return dMeta;
+    getSourceVariableThreadPool(parent);
 }
 
-Device::DStandardMetaData* configureMeta(Configuration::Configuration & config, AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId)
+void configureStandardMetaData(Configuration::Configuration & parent)
 {
-	return configureMeta(getMetaConfig(config), nm, parentNodeId, Device::DRoot::getInstance());
+    auto& standardMetaData = getStandardMetaData(parent);
+    configureLog(standardMetaData);
+    configureSourceVariableThreadPool(standardMetaData);
 }
 
-void destroyMeta (AddressSpace::ASNodeManager *nm)
+void Meta::configureMeta(Configuration::Configuration & config, AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId)
 {
-	unlinkAllAddressSpaceItems<AddressSpace::ASStandardMetaData>(nm);
-	unlinkAllAddressSpaceItems<AddressSpace::ASGeneralLogLevel>(nm);
-	unlinkAllAddressSpaceItems<AddressSpace::ASComponentLogLevel>(nm);
-	unlinkAllAddressSpaceItems<AddressSpace::ASQuasar>(nm);
-	unlinkAllAddressSpaceItems<AddressSpace::ASServer>(nm);
-	unlinkAllAddressSpaceItems<AddressSpace::ASSourceVariableThreadPool>(nm);
-	unlinkAllAddressSpaceItems<AddressSpace::ASBuildInformation>(nm);
+    LOG(Log::INF) << __FUNCTION__ << " called";
+    configureStandardMetaData(config);
 }
+
+void Meta::destroyMeta (AddressSpace::ASNodeManager *nm){}

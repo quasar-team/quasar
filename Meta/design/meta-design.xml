@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!-- 
+© Copyright CERN, 2015.                                                    
+All rights not expressly granted are reserved.                             
+This file is part of Quasar.                                               
+                                                                    
+Quasar is free software: you can redistribute it and/or modify             
+it under the terms of the GNU Lesser General Public Licence as published by
+the Free Software Foundation, either version 3 of the Licence.             
+Quasar is distributed in the hope that it will be useful,                  
+but WITHOUT ANY WARRANTY; without even the implied warranty of             
+                                                                    
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              
+GNU Lesser General Public Licence for more details.                        
+                                                                    
+You should have received a copy of the GNU Lesser General Public License   
+along with Quasar.  If not, see <http://www.gnu.org/licenses/>             
+                                                                    
+Created:   July 2022                              
+Authors:                                                                   
+  Ben Farnham <ben.farnham@cern.ch>                                         
+ -->
+
+ <!-- 
+File contains an XML snippet containing all classes used by the Meta module. the 
+snippet is intended to be inserted into user's design.xml file (at build time) in
+order that quasar generates the corresponding AS classes.
+
+Note the requirement is that quasar generates the AddressSpace classes; Device 
+class sources are provided (statically) in the Meta module.
+ -->
+<d:design projectShortName="OpcUaSampleServerNameChangeItInDesign" xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
+    
+  <d:class name="BuildInformation">
+    <d:cachevariable name="BuildHost" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="valueAndStatus" initialValue="UNKNOWN" initialStatus="OpcUa_BadWaitingForInitialData" nullPolicy="nullForbidden"/>
+    <d:cachevariable name="BuildTimestamp" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="valueAndStatus" initialValue="UNKNOWN" initialStatus="OpcUa_BadWaitingForInitialData" nullPolicy="nullForbidden"/>
+    <d:cachevariable name="CommitID" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="valueAndStatus" initialValue="UNKNOWN" initialStatus="OpcUa_BadWaitingForInitialData" nullPolicy="nullForbidden"/>
+    <d:cachevariable name="ToolkitLibs" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="valueAndStatus" initialValue="UNKNOWN" initialStatus="OpcUa_BadWaitingForInitialData" nullPolicy="nullForbidden"/>
+  </d:class>
+  
+  <d:class name="LogLevel">
+    <d:devicelogic/>
+    <d:cachevariable name="logLevel" addressSpaceWrite="delegated" dataType="UaString" initializeWith="configuration" nullPolicy="nullForbidden"/>
+  </d:class>
+  
+  <d:class name="ComponentLogLevels">
+    <d:hasobjects instantiateUsing="configuration" class="LogLevel" minOccurs="0"/>
+  </d:class>
+  
+  <d:class name="Log">
+    <d:hasobjects instantiateUsing="configuration" class="LogLevel" minOccurs="1" maxOccurs="1"/>
+    <d:hasobjects class="ComponentLogLevels" instantiateUsing="configuration" minOccurs="1" maxOccurs="1"/>
+  </d:class>
+  
+  <d:class name="Quasar">
+    <d:cachevariable name="version" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="valueAndStatus" initialValue="UNKNOWN" initialStatus="OpcUa_BadWaitingForInitialData" nullPolicy="nullForbidden"/>
+  </d:class>
+  
+  <d:class name="Server">
+    <d:cachevariable name="remainingCertificateValidity" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="valueAndStatus" initialValue="UNKNOWN" initialStatus="OpcUa_BadWaitingForInitialData" nullPolicy="nullForbidden"/>
+  </d:class>
+  
+  <d:class name="SourceVariableThreadPool">
+    <d:cachevariable name="maxThreads" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="configuration" nullPolicy="nullForbidden"/>
+    <d:cachevariable name="minThreads" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="configuration" nullPolicy="nullForbidden"/>
+  </d:class>
+  
+  <d:class name="StandardMetaData">
+    <d:hasobjects class="BuildInformation" instantiateUsing="design" minOccurs="1" maxOccurs="1">
+      <d:object name="BuildInformation"/>
+    </d:hasobjects>
+    <d:hasobjects class="Log" instantiateUsing="configuration" minOccurs="1" maxOccurs="1"/>
+    <d:hasobjects class="Quasar" instantiateUsing="design" minOccurs="1" maxOccurs="1">
+      <d:object name="Quasar"/>
+    </d:hasobjects>
+    <d:hasobjects class="Server" instantiateUsing="design" minOccurs="1" maxOccurs="1">
+      <d:object name="Server"/>
+    </d:hasobjects>
+    <d:hasobjects class="SourceVariableThreadPool" instantiateUsing="configuration" minOccurs="1" maxOccurs="1"/>
+  </d:class>
+
+  <d:root>
+    <d:hasobjects class="StandardMetaData" instantiateUsing="configuration" minOccurs="1" maxOccurs="1">
+      <d:object name="StandardMetaData"/>
+    </d:hasobjects>
+  </d:root>
+
+</d:design>

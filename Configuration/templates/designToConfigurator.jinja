@@ -295,7 +295,7 @@ bool configure (std::string fileName, AddressSpace::ASNodeManager *nm, ConfigXml
   Device::DRoot *dRoot = Device::DRoot::getInstance();
   (void)dRoot; // silence-out the warning from unused variable
 
-  configureMeta( *theConfiguration.get(), nm, asRootNodeId );
+  Meta::configureMeta( *theConfiguration.get(), nm, asRootNodeId );
   if(!runConfigurationDecoration(*theConfiguration, configXmlDecoratorFunction)) return false;
 
   const Configuration::Configuration& config = *theConfiguration;

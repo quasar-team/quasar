@@ -24,19 +24,42 @@
 
 #include <DRoot.h>
 #include <ASNodeManager.h>
-#include <DStandardMetaData.h>
+#include <ASNodeQueries.h>
+#include <Configuration.hxx>
+#include <LogIt.h>
 #include <ASNodeQueries.h>
 
-Device::DStandardMetaData* configureMeta(Configuration::Configuration & config, AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId);
-void destroyMeta (AddressSpace::ASNodeManager *nm);
-
-template<typename AddressSpaceType>
-void unlinkAllAddressSpaceItems(AddressSpace::ASNodeManager *nm)
+namespace Meta
 {
-	std::vector< AddressSpaceType* > objects;
-	AddressSpace::findAllByPattern<AddressSpaceType> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, ".*", objects);
-	for(AddressSpaceType *a : objects)
+	void initializeMeta(AddressSpace::ASNodeManager *nm);
+	void configureMeta(Configuration::Configuration & config, AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId);
+	void destroyMeta (AddressSpace::ASNodeManager *nm);
+
+	template<typename AddressSpaceType>
+	AddressSpaceType* findStandardMetaDataChildObject(AddressSpace::ASNodeManager *nm, const std::string& childName)
 	{
-		a->unlinkDevice();
+		const std::string fullChildName = "StandardMetaData."+childName;
+		std::vector<AddressSpaceType*> children;
+		AddressSpace::findAllObjectsByPatternInNodeManager(nm, fullChildName, children);
+
+		if(children.size() != 1)
+		{
+			LOG(Log::ERR) << __FUNCTION__ << " searched AS for objects matching ["<<fullChildName<<"] found ["<<children.size()<<"] expected exactly [1], this is a configuration error - exiting!";
+			std::exit(1);
+		}
+
+		return children[0];
+	};
+
+	template<typename AddressSpaceType>
+	void unlinkAllAddressSpaceItems(AddressSpace::ASNodeManager *nm)
+	{
+		std::vector< AddressSpaceType* > objects;
+		AddressSpace::findAllByPattern<AddressSpaceType> (nm, nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0)), OpcUa_NodeClass_Object, ".*", objects);
+		for(AddressSpaceType *a : objects)
+		{
+			a->unlinkDevice();
+		}
 	}
-}
+} // namespace Meta
+

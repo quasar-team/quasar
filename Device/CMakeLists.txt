@@ -18,11 +18,15 @@
 
 # QUASAR_IS_CMAKE_BUILD_ENTRY_POINT should evaluate to true whenever plain CMake is the entry point, like in Yocto
 if(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
-    include(${PROJECT_SOURCE_DIR}/Device/generated/cmake_header.cmake)
+    set(GENERATED_DEVICE_CMAKE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/Device/generated)
 else(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
-    include(${PROJECT_BINARY_DIR}/Device/generated/cmake_header.cmake)
+    set(GENERATED_DEVICE_CMAKE_INCLUDE_DIR ${PROJECT_BINARY_DIR}/Device/generated)
 endif(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
-
+include( ${GENERATED_DEVICE_CMAKE_INCLUDE_DIR}/cmake_device_base_header.cmake )
+include( ${GENERATED_DEVICE_CMAKE_INCLUDE_DIR}/cmake_device_header.cmake )
+message( STATUS "DEVICEBASE_GENERATED_FILES [${DEVICEBASE_GENERATED_FILES}]")
+message( STATUS "DEVICE_CLASSES [${DEVICE_CLASSES}]")
+    
 # check quasar/Device/DeviceCustom.cmake.example for an example!
 if(EXISTS ${PROJECT_SOURCE_DIR}/Device/DeviceCustom.cmake)
   include (DeviceCustom.cmake)
@@ -33,6 +37,7 @@ WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND ${PYTHON_COMMAND} quasar.py generate root --project_binary_dir ${PROJECT_BINARY_DIR}
 DEPENDS ${DESIGN_FILE}
     ${PROJECT_SOURCE_DIR}/quasar.py
+    ${META_DEFINED_DEVICE_CLASS_FILES}
     validateDesign
     templates/designToRootHeader.jinja
     templates/designToRootBody.jinja
@@ -40,10 +45,31 @@ DEPENDS ${DESIGN_FILE}
     ${QUASAR_TRANSFORM_SENSITIVE_FILES}
 )
 
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/Base_All.cpp
+WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+COMMAND ${PYTHON_COMMAND} quasar.py generate base_cpp_all --project_binary_dir ${PROJECT_BINARY_DIR}
+DEPENDS
+  ${DESIGN_FILE}
+  ${PROJECT_SOURCE_DIR}/quasar.py
+  Configuration.hxx_GENERATED
+  validateDesign
+  templates/commonDeviceTemplates.jinja
+  ${QUASAR_TRANSFORM_SENSITIVE_FILES}
+  templates/designToDeviceBaseBody.jinja
+)
+
+add_custom_target(DeviceBase DEPENDS ${DEVICEBASE_GENERATED_FILES} )
+
+add_custom_target(DeviceGeneratedHeaders DEPENDS include/DRoot.h ${DEVICEBASE_GENERATED_FILES})
+
+
+message( STATUS "DEVICEBASE_GENERATED_FILES [${DEVICEBASE_GENERATED_FILES}]")
+message( STATUS "DEVICE_CLASSES [${DEVICE_CLASSES}]")
 add_library (Device OBJECT
 
-    ${DEVICEBASE_GENERATED_FILES}
-    ${DEVICE_CLASSES}
+    ${DEVICEBASE_GENERATED_FILES} # generated from transform
+    ${DEVICE_CLASSES} # generated from transform
+    ${META_DEFINED_DEVICE_CLASS_FILES}
     ${DEVICE_CUSTOM_SOURCES} # if used, would come from DeviceCustom.cmake
 
     # Your custom Device logic code - Note:

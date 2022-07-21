@@ -55,7 +55,9 @@ else()
 endif()
 
 set(PYTHON_COMMAND python3)
-set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
+#set(DESIGN_FILE ${PROJECT_SOURCE_DIR}/Design/Design.xml)
+set(DESIGN_WITH_META_FILE ${PROJECT_BINARY_DIR}/Design/DesignWithMeta.xml)
+set(DESIGN_FILE ${DESIGN_WITH_META_FILE})
 
 include_directories (
 	${PROJECT_BINARY_DIR}/Device/generated
@@ -70,6 +72,9 @@ else(${CMAKE_BUILD_TYPE} MATCHES Debug)
     set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
 endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 
+set(META_DEFINED_DEVICE_CLASS_FILES
+	${PROJECT_SOURCE_DIR}/Meta/src/DLogLevel.cpp
+	${PROJECT_SOURCE_DIR}/Meta/include/DLogLevel.h)
 set(QUASAR_TRANSFORM_SENSITIVE_FILES
 	${PROJECT_SOURCE_DIR}/FrameworkInternals/transformDesign.py
 	${PROJECT_SOURCE_DIR}/FrameworkInternals/DesignInspector.py

@@ -55,52 +55,55 @@ class TransformKeys(enum.Enum):
     D_DEVICE_H = 17
     D_DEVICE_CPP = 18
     AS_CMAKE = 20
-    D_CMAKE = 21
-    CONFIG_DOCUMENTATION = 22
-    AS_DOCUMENTATION = 23
+    D_BASE_CMAKE = 21
+    D_CMAKE = 22 
+    CONFIG_DOCUMENTATION = 23
+    AS_DOCUMENTATION = 24
 
 # column IDs
 @enum.unique
 class FieldIds(enum.Enum):
     KEY = 0
     TRANSFORM_PATH = 1  # the path to either XSLT or Jinja2 transform
-    OUT_PATH = 2
-    SOURCE_OR_BINARY = 3
-    CPP_FORMAT = 4
-    REQUIRES_MERGE = 5
-    ADDITIONAL_PARAM = 6
+    DESIGN_WITH_META = 2 # if True transform uses design merged with meta, otherwise only user design
+    OUT_PATH = 3
+    SOURCE_OR_BINARY = 4
+    CPP_FORMAT = 5
+    REQUIRES_MERGE = 6
+    ADDITIONAL_PARAM = 7
 
 
 QuasarTransforms = [
-    #(0)key                                 (1)where is the transform                                    (2)output                                       (3) source or b (4)c++format    (5)req merge  (6)additional params
-    [TransformKeys.AS_SOURCEVARIABLES_H,    ['AddressSpace','designToSourceVariablesHeader.jinja'],      'AddressSpace/include/SourceVariables.h',       'B',            True,           False,        None],
-    [TransformKeys.AS_SOURCEVARIABLES_CPP,  ['AddressSpace','designToSourceVariablesBody.jinja'],        'AddressSpace/src/SourceVariables.cpp',         'B',            True,           False,        None],
-    [TransformKeys.AS_CLASS_H,              ['AddressSpace','designToClassHeader.jinja'],                'AddressSpace/include/AS{className}.h',         'B',            True,           False,        ['className']],
-    [TransformKeys.AS_CLASS_CPP_ALL,        ['AddressSpace','designToClassBody.jinja'],                  'AddressSpace/src/AddressSpaceClasses.cpp',     'B',            True,           False,        None],
-    [TransformKeys.AS_INFOMODEL_H,          ['AddressSpace','designToInformationModelHeader.jinja'],     'AddressSpace/include/ASInformationModel.h',    'B',            True,           False,        None],
-    [TransformKeys.AS_INFOMODEL_CPP,        ['AddressSpace','designToInformationModelBody.jinja'],       'AddressSpace/src/ASInformationModel.cpp',      'B',            True,           False,        None],
-    [TransformKeys.AS_CMAKE,                ['AddressSpace','designToGeneratedCmakeAddressSpace.jinja'], 'AddressSpace/cmake_generated.cmake',           'B',            False,          False,        None],
-    [TransformKeys.CONFIGURATION_XSD,       ['Configuration','designToConfigurationXSD.jinja'],          'Configuration/Configuration-noxinclude.xsd',   'B',            False,          False,        ['metaXsdPath']],
-    [TransformKeys.CONFIGURATOR,            ['Configuration','designToConfigurator.jinja'],              'Configuration/Configurator.cpp',               'B',            True,           False,        None],
-    [TransformKeys.CONFIG_VALIDATOR,        ['Configuration','designToConfigValidator.jinja'],           'Configuration/ConfigValidator.cpp',            'B',            True,           False,        None],
-    [TransformKeys.CREATE_DIAGRAM_DOT,      ['Design','designToDot.jinja'],                              'Design/Design.dot',                            'B',            False,          False,        ['detailLevel']],
-    [TransformKeys.D_ROOT_H,                ['Device','designToRootHeader.jinja'],                       'Device/include/DRoot.h',                       'B',            True,           False,        None],
-    [TransformKeys.D_ROOT_CPP,              ['Device','designToRootBody.jinja'],                         'Device/src/DRoot.cpp',                         'B',            True,           False,        None],
-    [TransformKeys.D_BASE_H,                ['Device','designToDeviceBaseHeader.jinja'],                 'Device/generated/Base_D{className}.h',         'B',            True,           False,        ['className']],
-    [TransformKeys.D_BASE_CPP_ALL,          ['Device','designToDeviceBaseBody.jinja'],                   'Device/generated/Base_All.cpp',                'B',            True,           False,        None],
-    [TransformKeys.D_DEVICE_H,              ['Device','designToDeviceHeader.jinja'],                     'Device/include/D{className}.h',                'S',            True,           True,         ['className']],
-    [TransformKeys.D_DEVICE_CPP,            ['Device','designToDeviceBody.jinja'],                       'Device/src/D{className}.cpp',                  'S',            True,           True,         ['className']],
-    [TransformKeys.D_CMAKE,                 ['Device','designToGeneratedCmakeDevice.jinja'],             'Device/generated/cmake_header.cmake',          'B',            False,          False,        None],
-    [TransformKeys.CONFIG_DOCUMENTATION,    ['Configuration','designToConfigDocumentationHtml.jinja'],   'Documentation/ConfigDocumentation.html',       'S',            False,          False,        None],
-    [TransformKeys.AS_DOCUMENTATION,        ['AddressSpace','designToAddressSpaceDocHtml.jinja'],        'Documentation/AddressSpaceDoc.html',           'S',            False,          False,        None]
+    #(0)key                                 (1)where is the transform                                     (2)meta   (3)output                                          (4) source or b (5)c++format    (6)req merge  (7)additional params
+    [TransformKeys.AS_SOURCEVARIABLES_H,    ['AddressSpace','designToSourceVariablesHeader.jinja'],       True,     'AddressSpace/include/SourceVariables.h',          'B',            True,           False,        None],
+    [TransformKeys.AS_SOURCEVARIABLES_CPP,  ['AddressSpace','designToSourceVariablesBody.jinja'],         True,     'AddressSpace/src/SourceVariables.cpp',            'B',            True,           False,        None],
+    [TransformKeys.AS_CLASS_H,              ['AddressSpace','designToClassHeader.jinja'],                 True,     'AddressSpace/include/AS{className}.h',            'B',            True,           False,        ['className']],
+    [TransformKeys.AS_CLASS_CPP_ALL,        ['AddressSpace','designToClassBody.jinja'],                   True,     'AddressSpace/src/AddressSpaceClasses.cpp',        'B',            True,           False,        None],
+    [TransformKeys.AS_INFOMODEL_H,          ['AddressSpace','designToInformationModelHeader.jinja'],      True,     'AddressSpace/include/ASInformationModel.h',       'B',            True,           False,        None],
+    [TransformKeys.AS_INFOMODEL_CPP,        ['AddressSpace','designToInformationModelBody.jinja'],        True,     'AddressSpace/src/ASInformationModel.cpp',         'B',            True,           False,        None],
+    [TransformKeys.AS_CMAKE,                ['AddressSpace','designToGeneratedCmakeAddressSpace.jinja'],  True,     'AddressSpace/cmake_generated.cmake',              'B',            False,          False,        None],
+    [TransformKeys.CONFIGURATION_XSD,       ['Configuration','designToConfigurationXSD.jinja'],           True,     'Configuration/Configuration-noxinclude.xsd',      'B',            False,          False,        None],
+    [TransformKeys.CONFIGURATOR,            ['Configuration','designToConfigurator.jinja'],               True,     'Configuration/Configurator.cpp',                  'B',            True,           False,        None],
+    [TransformKeys.CONFIG_VALIDATOR,        ['Configuration','designToConfigValidator.jinja'],            True,     'Configuration/ConfigValidator.cpp',               'B',            True,           False,        None],
+    [TransformKeys.CREATE_DIAGRAM_DOT,      ['Design','designToDot.jinja'],                               False,    'Design/Design.dot',                               'B',            False,          False,        ['detailLevel']],
+    [TransformKeys.D_ROOT_H,                ['Device','designToRootHeader.jinja'],                        True,     'Device/include/DRoot.h',                          'B',            True,           False,        None],
+    [TransformKeys.D_ROOT_CPP,              ['Device','designToRootBody.jinja'],                          True,     'Device/src/DRoot.cpp',                            'B',            True,           False,        None],
+    [TransformKeys.D_BASE_H,                ['Device','designToDeviceBaseHeader.jinja'],                  True,     'Device/generated/Base_D{className}.h',            'B',            True,           False,        ['className']],
+    [TransformKeys.D_BASE_CPP_ALL,          ['Device','designToDeviceBaseBody.jinja'],                    True,     'Device/generated/Base_All.cpp',                   'B',            True,           False,        None],
+    [TransformKeys.D_DEVICE_H,              ['Device','designToDeviceHeader.jinja'],                      False,    'Device/include/D{className}.h',                   'S',            True,           True,         ['className']],
+    [TransformKeys.D_DEVICE_CPP,            ['Device','designToDeviceBody.jinja'],                        False,    'Device/src/D{className}.cpp',                     'S',            True,           True,         ['className']],
+    [TransformKeys.D_BASE_CMAKE,            ['Device','designToGeneratedCmakeDeviceBase.jinja'],          True,     'Device/generated/cmake_device_base_header.cmake', 'B',            False,          False,        None],
+    [TransformKeys.D_CMAKE,                 ['Device','designToGeneratedCmakeDevice.jinja'],              False,    'Device/generated/cmake_device_header.cmake',      'B',            False,          False,        None],
+    [TransformKeys.CONFIG_DOCUMENTATION,    ['Configuration','designToConfigDocumentationHtml.jinja'],    True,     'Documentation/ConfigDocumentation.html',          'S',            False,          False,        None],
+    [TransformKeys.AS_DOCUMENTATION,        ['AddressSpace','designToAddressSpaceDocHtml.jinja'],         True,     'Documentation/AddressSpaceDoc.html',              'S',            False,          False,        None]
     ]
 
-def transformDesignVerbose(transformPath, outputFile, requiresMerge, astyleRun=False, additionalParam=None):
+def transformDesignVerbose(transformPath, designXmlPath, outputFile, requiresMerge, astyleRun=False, additionalParam=None):
     """Just a verbose wrapper around transformDesign, for arguments description see transformDesign below.
        Note this is agnostic to transformation type (XSLT or Jinja2) """
-    print("Using the transform [" + transformPath + "] to generate the file [" + outputFile + "] {0}"
+    print("Using the transform [" + transformPath + "] on design file [" + designXmlPath + "] to generate the file [" + outputFile + "] {0}"
                 .format('additionalParam=[{0}]'.format(additionalParam) if additionalParam is not None else ''))
-    return transformDesign(transformPath, outputFile, requiresMerge, astyleRun, additionalParam)
+    return transformDesign(transformPath, designXmlPath, outputFile, requiresMerge, astyleRun, additionalParam)
 
 def run_indent_tool(unindented_content, fout):
     """Runs indentation tool, preferably astyle.
@@ -176,11 +179,12 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
             'quasar Jinja2 generator: Generated {0}, wrote {1} bytes'.format(outputFile, fout.tell()) +
             Style.RESET_ALL)
 
-def transformDesign(transform_path, outputFile, requiresMerge, astyleRun, additionalParam=None):
+def transformDesign(transform_path, designXmlPath, outputFile, requiresMerge, astyleRun, additionalParam=None):
     """Generates a file, applying a transform (XJinja2) to Design.xml
 
     Keyword arguments:
     transformPath        -- transform file where the transformation is defined, either XSLT or Jinja2
+    designXmlPath        -- path to XML file upon which transform will be based
     outputFile           -- name of the file to be generated
     requiresMerge        -- if True, will prevent from overwriting output filename, running merge-tool
     astyleRun            -- if True, will run astyle on generated file
@@ -190,8 +194,6 @@ def transformDesign(transform_path, outputFile, requiresMerge, astyleRun, additi
 
     processedAdditionalParam = additionalParam if additionalParam is not None else {}
 
-    # files
-    designXmlPath = os.path.sep.join(['Design', 'Design.xml'])
     if requiresMerge:
         originalOutputFile = outputFile
         outputFile = outputFile + '.generated'
@@ -235,6 +237,19 @@ def get_transform_path (key):
         transformPath = transformSpec[FieldIds.TRANSFORM_PATH.value]
     return transformPath
 
+def get_design_xml(key, supplementaryData={}):
+    transformSpec = getTransformSpecByKey(key)
+    usesDesignWithMeta = transformSpec[FieldIds.DESIGN_WITH_META.value]
+
+    if usesDesignWithMeta:
+        result = os.path.join(supplementaryData['context']['projectBinaryDir'], 'Design', 'DesignWithMeta.xml')
+    else:
+        result = os.path.join(supplementaryData['context']['projectSourceDir'], 'Design', 'Design.xml')
+    print(Fore.BLUE + 
+        f"key [{key}] uses design with meta? [{usesDesignWithMeta}] returning design XML path [{result}]" + 
+        Style.RESET_ALL)
+    return result
+
 def transformByKey (keys, supplementaryData={}):
     """ This runs the transform both for a single key as well as a list of keys.
         keys              - a key from TransformKeys enum, or a list of such keys
@@ -257,8 +272,10 @@ def transformByKey (keys, supplementaryData={}):
             raise Exception(("The field additional_params in the transform "
                              "table can only be None or a list"))
         transformPath = get_transform_path(keys)
+        designXmlPath = get_design_xml(keys, supplementaryData)
         transformDesignVerbose(
             transformPath = transformPath,
+            designXmlPath = designXmlPath,
             outputFile = outputFile,
             requiresMerge = transformSpec[FieldIds.REQUIRES_MERGE.value],
             astyleRun = transformSpec[FieldIds.CPP_FORMAT.value],

@@ -14,37 +14,31 @@
 {# You should have received a copy of the GNU Lesser General Public License      #}
 {# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
 {#                                                                               #}
-{# Created:   Jun 2014 (the original XSLT version)                               #}
-{#            23 Mar 2020 (translated to Jinja2)                                 #}
+{# Created:   Apr 2015    (XSLT version, pnikiel)                                #}
+{#            05-Mar-2020 (translating XSLT to Jinja2, pnikiel)                  #}
 {# Authors:                                                                      #}
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
-{% import 'headers.jinja' as headers %}
-{{ headers.cppFullGeneratedHeader() }}
+{% for className in designInspector.get_names_of_all_classes() %}
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Device/generated/Base_D{{className}}.h
+WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+COMMAND ${PYTHON_COMMAND} quasar.py generate base_h {{className}} --project_binary_dir ${PROJECT_BINARY_DIR}
+DEPENDS
+  ${DESIGN_FILE}
+  validateDesign
+  ${PROJECT_SOURCE_DIR}/quasar.py
+  ${PROJECT_SOURCE_DIR}/Device/templates/designToDeviceBaseHeader.jinja
+  Configuration.hxx_GENERATED
+  templates/commonDeviceTemplates.jinja
+  ${QUASAR_TRANSFORM_SENSITIVE_FILES}
+)
+{% endfor %}
 
-#ifndef __ASINFORMATIONMODEL__H__
-#define __ASINFORMATIONMODEL__H__
-
-#include <ASNodeManager.h>
-
-namespace AddressSpace
-{
-
-class ASInformationModel
-{
-public:
-
-  enum
-  {
-  AS_TYPE_INTEQUASAR_PLACEHOLDER = 1000
-  {% for className in designInspector.get_names_of_all_classes() -%},
-    AS_TYPE_{{className|upper}}
-  {% endfor %}
-  };
-
-  static void createNodesOfTypes (ASNodeManager *nm);
-};
-
-}
-
-#endif // __ASINFORMATIONMODEL__H__
+set(DEVICEBASE_GENERATED_FILES
+      include/DRoot.h
+      src/DRoot.cpp
+      generated/Base_All.cpp
+      {% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
+      generated/Base_D{{className}}.h
+      {% endfor %}
+)

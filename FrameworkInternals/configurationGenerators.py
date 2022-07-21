@@ -41,10 +41,7 @@ def generateConfiguration(context):
     """Generates the file Configuration.xsd."""
     config_xsd_path = os.path.join(context['projectBinaryDir'], 'Configuration', 'Configuration.xsd')
     try:
-        transformByKey(TransformKeys.CONFIGURATION_XSD, {
-            'context':context,
-            'metaXsdPath':os.path.join(context['projectSourceDir'], 'Meta', 'config', 'Meta.xsd')
-                          .replace('\\', '/')})
+        transformByKey(TransformKeys.CONFIGURATION_XSD, {'context':context})
     except:
         if os.path.isfile(config_xsd_path):
             os.remove(config_xsd_path)

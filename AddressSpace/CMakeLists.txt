@@ -26,7 +26,7 @@ endif(${QUASAR_IS_CMAKE_BUILD_ENTRY_POINT})
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/include/ASInformationModel.h ${PROJECT_BINARY_DIR}/AddressSpace/src/ASInformationModel.cpp
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 COMMAND ${PYTHON_COMMAND} quasar.py generate info_model --project_binary_dir ${PROJECT_BINARY_DIR}
-DEPENDS ${DESIGN_FILE} templates/designToInformationModelHeader.jinja templates/designToInformationModelBody.jinja ${QUASAR_TRANSFORM_SENSITIVE_FILES}
+DEPENDS ${DESIGN_WITH_META_FILE} templates/designToInformationModelHeader.jinja templates/designToInformationModelBody.jinja ${QUASAR_TRANSFORM_SENSITIVE_FILES}
 )
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/AddressSpace/src/SourceVariables.cpp ${PROJECT_BINARY_DIR}/AddressSpace/include/SourceVariables.h

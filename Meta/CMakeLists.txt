@@ -35,15 +35,7 @@
 # The reason that MetaBuildInfo.cpp is not amalgamated is that it depends on a file which is regenerated at each build
 # and there is no reason to rebuild amalgamated files without the factual reason!
 
-file(GLOB META_SRCS src/AS*.cpp src/D*.cpp src/Base_*.cpp src/meta.cpp src/MetaUtils.cpp src/Certificate.cpp)
-add_custom_command(
-        OUTPUT ${PROJECT_BINARY_DIR}/MetaAmalgamate.cpp
-        DEPENDS ${META_SRCS}
-	COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/FrameworkInternals/quasar_utils.py amalgamate ${PROJECT_BINARY_DIR}/MetaAmalgamate.cpp ${META_SRCS}
-        )
-        
-
-add_library (Meta OBJECT ${PROJECT_BINARY_DIR}/MetaAmalgamate.cpp src/MetaBuildInfo.cpp)
+add_library (Meta OBJECT src/meta.cpp src/MetaBuildInfo.cpp src/metaBackwardsCompatibilityUtils.cpp)
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/generated)
 
@@ -61,5 +53,16 @@ add_custom_command(OUTPUT alwaysRunBuildInfoGeneratorPy # note output never actu
 	VERBATIM
 )
 
+add_custom_target(designWithMeta ALL DEPENDS ${PROJECT_BINARY_DIR}/Design/DesignWithMeta.xml)
+
+add_custom_command(
+	OUTPUT ${DESIGN_WITH_META_FILE}
+	COMMENT "merge user and meta designs one complete design file" 
+	DEPENDS ${CMAKE_CURRENT_LIST_DIR}/../FrameworkInternals/merge_design_and_meta.py
+	WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+	COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/FrameworkInternals/merge_design_and_meta.py --user_file ${PROJECT_SOURCE_DIR}/Design/Design.xml --meta_file ${PROJECT_SOURCE_DIR}/Meta/design/meta-design.xml --merged_file ${DESIGN_WITH_META_FILE}
+	VERBATIM
+)
+
 include_directories(${PROJECT_BINARY_DIR}/generated)
-add_dependencies (Meta Configuration.hxx_GENERATED AddressSpace runBuildInfoGeneratorPy)
+add_dependencies (Meta Configuration.hxx_GENERATED AddressSpace runBuildInfoGeneratorPy designWithMeta)
