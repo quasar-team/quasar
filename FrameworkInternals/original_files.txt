@@ -961,9 +961,6 @@
             "MetaBuildInfo.h": {
                 "use_defaults": "file_defaults_of_directory"
             },
-            "MetaUtils.h": {
-                "use_defaults": "file_defaults_of_directory"
-            },
             "meta.h": {
                 "use_defaults": "file_defaults_of_directory"
             },
@@ -985,9 +982,6 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "MetaBuildInfo.cpp": {
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "MetaUtils.cpp": {
                 "use_defaults": "file_defaults_of_directory"
             },
             "meta.cpp": {

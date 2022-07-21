@@ -1035,10 +1035,6 @@
                 "md5": "6e13f222dc2ec1900abfd8bc8e0f581f",
                 "use_defaults": "file_defaults_of_directory"
             },
-            "MetaUtils.h": {
-                "md5": "e40ed59979d494df1fe41d9846606e36",
-                "use_defaults": "file_defaults_of_directory"
-            },
             "meta.h": {
                 "md5": "cedf4c8165a3c2cd79a8ec70269b33d7",
                 "use_defaults": "file_defaults_of_directory"
@@ -1064,10 +1060,6 @@
             },
             "MetaBuildInfo.cpp": {
                 "md5": "076ba2da7ab7748cf4c3e816baf94d70",
-                "use_defaults": "file_defaults_of_directory"
-            },
-            "MetaUtils.cpp": {
-                "md5": "094ea494bfe50447ab09860fa2f27665",
                 "use_defaults": "file_defaults_of_directory"
             },
             "meta.cpp": {
