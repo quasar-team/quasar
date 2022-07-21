@@ -182,7 +182,6 @@ int BaseQuasarServer::serverRun(
     shutdown();  // this is typically overridden by the developer
 
     unlinkAllDevices(m_nodeManager);
-    destroyMeta(m_nodeManager);
     Device::DRoot::getInstance()->unlinkAllChildren();
 
     m_pServer->stop(3, UaLocalizedText("", "User shut down"));
@@ -512,6 +511,7 @@ UaStatus BaseQuasarServer::configurationInitializerHandler(const std::string& co
         return OpcUa_Bad; // error is already printed in configure()
     LOG(Log::DBG) << __FUNCTION__ << " Environment vars: " << std::endl << getProcessEnvironmentVariables();
     validateDeviceTree();
+    Meta::initializeMeta(nm);
     CalculatedVariables::Engine::printInstantiationStatistics();
     CalculatedVariables::Engine::optimize();
     CalculatedVariables::Engine::setupSynchronization();

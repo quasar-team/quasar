@@ -271,10 +271,8 @@ void configureStandardMetaData(Configuration::Configuration & parent)
     configureSourceVariableThreadPool(standardMetaData);
 }
 
-void Meta::configureMeta(Configuration::Configuration & config, AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId)
+void Meta::configureMeta(Configuration::Configuration & config)
 {
     LOG(Log::INF) << __FUNCTION__ << " called";
     configureStandardMetaData(config);
 }
-
-void Meta::destroyMeta (AddressSpace::ASNodeManager *nm){}

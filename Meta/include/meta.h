@@ -32,8 +32,7 @@
 namespace Meta
 {
 	void initializeMeta(AddressSpace::ASNodeManager *nm);
-	void configureMeta(Configuration::Configuration & config, AddressSpace::ASNodeManager *nm, UaNodeId parentNodeId);
-	void destroyMeta (AddressSpace::ASNodeManager *nm);
+	void configureMeta(Configuration::Configuration & config);
 
 	template<typename AddressSpaceType>
 	AddressSpaceType* findStandardMetaDataChildObject(AddressSpace::ASNodeManager *nm, const std::string& childName)
