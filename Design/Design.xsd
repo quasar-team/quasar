@@ -91,6 +91,11 @@ elementFormDefault="qualified">
     </sequence>
     <attribute name="name" type="tns:ClassName" use="required"/>
     <attribute name="singleVariableNode" type="boolean" use="optional"/>
+    <attribute name="defaultInstanceName" type="string" use="optional">
+      <annotation>
+        <documentation>Applicable only to singleton classes. When used, attribute contents becomes the default name.</documentation>
+      </annotation>
+    </attribute>
   </complexType>
   <complexType name="CacheVariable">
     <all>
