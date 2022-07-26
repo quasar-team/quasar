@@ -85,6 +85,17 @@
   </xs:element>
 {% endmacro %}
 
+{% macro writeUniqueConstraintPerHasObjects(hasobjects_element, parent_name) %}
+  {% set class_name = hasobjects_element.get('class') %}
+  {% set config_entries_keys = designInspector.objectify_config_entries(class_name, "[@isKey='true']") %}
+  {% for ce in config_entries_keys %}
+    <xs:unique name="{{class_name}}{{ce.get('name')}}_is_unique_within_{{parent_name}}">
+      <xs:selector xpath="tns:{{class_name}}"/>
+      <xs:field xpath="@{{ce.get('name')}}"/>
+    </xs:unique>
+  {% endfor %}
+{% endmacro %}
+
 <xs:schema xmlns:tns="http://cern.ch/quasar/Configuration"
   xmlns:xi="http://www.w3.org/2003/XInclude"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -147,7 +158,11 @@
         <xs:element name="CalculatedVariable" type="tns:CalculatedVariable" />
         <xs:element name="FreeVariable" type="tns:FreeVariable" />
         {% for innerClassByConfig in designInspector.objectify_has_objects(className) %}
-          <xs:element name="{{innerClassByConfig.get('class')}}" type="tns:{{innerClassByConfig.get('class')}}"/>
+          <xs:element name="{{innerClassByConfig.get('class')}}" type="tns:{{innerClassByConfig.get('class')}}">
+            {% for innerHasObjects in designInspector.objectify_has_objects(innerClassByConfig.get('class')) %}
+              {{ writeUniqueConstraintPerHasObjects(innerHasObjects, innerClassByConfig.get('class')) }}
+            {% endfor %}
+          </xs:element>
         {% endfor %}
 	  </xs:choice>
     
@@ -217,7 +232,11 @@
     </xs:choice>
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       {% for hasobjects in designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']") %}
-        <xs:element name="{{hasobjects.get('class')}}" type="tns:{{hasobjects.get('class')}}" />
+        <xs:element name="{{hasobjects.get('class')}}" type="tns:{{hasobjects.get('class')}}" >
+          {% for innerHasObjects in designInspector.objectify_has_objects(hasobjects.get('class')) %}
+            {{ writeUniqueConstraintPerHasObjects(innerHasObjects, hasobjects.get('class')) }}
+          {% endfor %}
+        </xs:element>
       {% endfor %}
     </xs:choice>
     <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -226,6 +245,11 @@
     </xs:choice>
   </xs:sequence>
 </xs:complexType>
-<xs:element name="configuration" type="tns:Configuration"/>
+
+<xs:element name="configuration" type="tns:Configuration">  {# any of config entries of child elements is isKey=true? #}
+  {% for hasobjects in designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']") %}
+    {{ writeUniqueConstraintPerHasObjects(hasobjects, 'root') }}
+  {% endfor %}
+</xs:element>
 
  </xs:schema>
