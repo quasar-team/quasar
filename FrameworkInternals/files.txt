@@ -419,7 +419,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurationXSD.jinja": {
-                "md5": "f109de1aa92f53d9c5d99732fc3d311a",
+                "md5": "acfa55fc5ba9772da5c6f1311e19a7c8",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
@@ -441,7 +441,7 @@
             },
             "Design.xsd": {
                 "install": "overwrite",
-                "md5": "ae6501907f3f7f905fdfb7577e3f0c64",
+                "md5": "b112b6f30aa10920c30545cdeda4057a",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "a28235dec43a164864574fb2576d9208",
+                "md5": "46ef536428d6bc434f88bce33dcc253b",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "3c7b0dbb492cda0e66e4bf36e61a1e37",
+                "md5": "68c925d21b543d9845e69d26cc62f28a",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -684,13 +684,13 @@
             },
             "DesignInspector.py": {
                 "install": "overwrite",
-                "md5": "3c1e36130af9524b9e54ca94ff259f39",
+                "md5": "362726373c2c62883f1a8d3186c201ae",
                 "must_be_versioned": true,
                 "must_exist": true
             },
             "DesignValidator.py": {
                 "install": "overwrite",
-                "md5": "4d55d3bc7bb36794ba7ff3f2f1595597",
+                "md5": "584d87c3f1580aaf94abe4fccf027e5a",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1288,7 +1288,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "57f347172b637e9ee751a0d1b76bc81f",
+                "md5": "225ff5dec05cc6bcbdd58d06e9eff782",
                 "must_be_versioned": true,
                 "must_exist": true
             },
