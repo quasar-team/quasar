@@ -168,6 +168,10 @@ class DesignValidator():
                     raise DesignFlaw(("class is singleVariableNode but has {0} hasobjects, should"
                                       "have none. (at: {1})").format(
                                           str(len(has_objects_count)), stringify_locator(locator)))
+            if self.design_inspector.get_class_default_instance_name(class_name) is not None:
+                if not self.design_inspector.is_class_always_singleton(class_name):
+                    raise DesignFlaw(("defaultInstanceName can only be used with singleton "
+                                      f"classes (at class {class_name})"))
 
     def validate_cache_variables(self):
         """Performs validation of all cache variables in the design"""
