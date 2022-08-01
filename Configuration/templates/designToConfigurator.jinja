@@ -310,7 +310,7 @@ bool configure (std::string fileName, AddressSpace::ASNodeManager *nm, ConfigXml
   {% endfor %}
 
   // process each 'instatiated by config' as XML nodes - order significant (calc'd vars)
-  {% set innerObjectsByConfig=designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']") %}
+  {% set innerObjectsByConfig=designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='configuration' and not(@class='StandardMetaData')]") %}
   {{ writeConfigureObjectByConfiguration("Root", "asRootNodeId", "dRoot", innerObjectsByConfig) }}
 
   return true;

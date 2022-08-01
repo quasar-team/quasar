@@ -73,16 +73,12 @@ void Meta::initializeMeta(AddressSpace::ASNodeManager *nm)
 
 Configuration::StandardMetaData& getStandardMetaData(Configuration::Configuration & parent)
 {
-    if(parent.StandardMetaData().empty())
+    if(!parent.StandardMetaData().present())
     {
         LOG(Log::INF) << __FUNCTION__ << " parent does not contain a StandardMetaData element; adding one";
-        Configuration::DecorationUtils::push_back(
-            parent, 
-            parent.StandardMetaData(), 
-            Configuration::StandardMetaData(), 
-            Configuration::Configuration::StandardMetaData_id);
+        parent.StandardMetaData(Configuration::StandardMetaData());
     }
-    return parent.StandardMetaData().front();
+    return parent.StandardMetaData().get();
 }
 
 Configuration::Log& getLog(Configuration::StandardMetaData& parent)

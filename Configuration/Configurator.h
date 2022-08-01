@@ -39,8 +39,17 @@ bool configure (std::string fileName,
         AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction
         configXmlDecoratorFunction = ConfigXmlDecoratorFunction()); // 'empty' function by default.
 
+template <typename TParent, typename TChildren, typename TChildTypeId>
+auto validateContentOrderImpl(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
+  -> decltype(children.present(), void())
+{
+  // %%BF: TODO write this function
+  std::cout << __FUNCTION__ << std::endl;
+}
+
 template<typename TParent, typename TChildren, typename TChildTypeId>
-void validateContentOrder(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
+auto validateContentOrderImpl(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
+  -> decltype(children.size(), void())
 {
   std::set<size_t> validChildIndices;
   for(size_t i=0; i<children.size(); validChildIndices.insert(i++));
@@ -67,6 +76,14 @@ void validateContentOrder(const TParent& parent, const TChildren& children, cons
     throw std::range_error(msg.str());
   }
 }
+
+template<typename TParent, typename TChildren, typename TChildTypeId>
+auto validateContentOrder(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
+  -> decltype(validateContentOrderImpl(parent, children, childTypeId), void())
+{
+  validateContentOrderImpl(parent, children, childTypeId);
+}
+
 
 void unlinkAllDevices (AddressSpace::ASNodeManager *nm);
 
