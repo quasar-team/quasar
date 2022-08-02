@@ -160,7 +160,11 @@ static std::string mapSingleItemNodeFullName(std::string input)
         {% set innerClass = innerObject.get('class') %}
         case Configuration::{{xsdParentType}}::{{innerClassName(xsdParentType, innerClass)}}_id:
         {
-          const auto& xmlObj(config.{{innerClassName(xsdParentType, innerClass)}}()[xmlIndex]);
+          {% if 'StandardMetaData' == innerClass %}
+            const auto& xmlObj(config.{{innerClassName(xsdParentType, innerClass)}}().get()); // StandardMetaData optional, but is always present (see configureMeta())
+          {% else %}
+            const auto& xmlObj(config.{{innerClassName(xsdParentType, innerClass)}}()[xmlIndex]);
+          {% endif %}
           LOG(Log::DBG)<<__FUNCTION__<<" Configuring class type [id:"<<xmlType<<", nm:{{innerClass}}] ordering index ["<<xmlIndex<<"] parent class type []";
           {% if not designInspector.class_has_device_logic(innerClass) %}
             // class [{{innerClass}}] has no device logic: configure only address space object
@@ -310,7 +314,7 @@ bool configure (std::string fileName, AddressSpace::ASNodeManager *nm, ConfigXml
   {% endfor %}
 
   // process each 'instatiated by config' as XML nodes - order significant (calc'd vars)
-  {% set innerObjectsByConfig=designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='configuration' and not(@class='StandardMetaData')]") %}
+  {% set innerObjectsByConfig=designInspector.objectify_any("/d:design/d:root/d:hasobjects[@instantiateUsing='configuration']") %}
   {{ writeConfigureObjectByConfiguration("Root", "asRootNodeId", "dRoot", innerObjectsByConfig) }}
 
   return true;
