@@ -76,7 +76,7 @@ Configuration::StandardMetaData& getStandardMetaData(Configuration::Configuratio
     if(!parent.StandardMetaData().present())
     {
         LOG(Log::INF) << __FUNCTION__ << " parent does not contain a StandardMetaData element; adding one";
-        parent.StandardMetaData(Configuration::StandardMetaData());
+        parent.StandardMetaData(Configuration::StandardMetaData("StandardMetaData"));
         // preserve content order for optional elements (as well as arrays). Arg 0 below indicates 0th position
         const xml_schema::content_order orderingElement(Configuration::Configuration::StandardMetaData_id, 0);
         parent.content_order().push_back(orderingElement);
@@ -92,7 +92,7 @@ Configuration::Log& getLog(Configuration::StandardMetaData& parent)
         Configuration::DecorationUtils::push_back(
             parent, 
             parent.Log(), 
-            Configuration::Log(), 
+            Configuration::Log("Log"), 
             Configuration::StandardMetaData::Log_id);        
     }
     return parent.Log().front();
@@ -106,7 +106,7 @@ Configuration::SourceVariableThreadPool& getSourceVariableThreadPool(Configurati
         Configuration::DecorationUtils::push_back(
             parent, 
             parent.SourceVariableThreadPool(), 
-            Configuration::SourceVariableThreadPool("10", "1"),
+            Configuration::SourceVariableThreadPool("SourceVariableThreadPool", "10", "1"),
             Configuration::StandardMetaData::SourceVariableThreadPool_id);                
     }
     return parent.SourceVariableThreadPool().front();
@@ -135,7 +135,7 @@ Configuration::ComponentLogLevels& getComponentLogLevels(Configuration::Log& par
         Configuration::DecorationUtils::push_back(
             parent,
             parent.ComponentLogLevels(),
-            Configuration::ComponentLogLevels(),
+            Configuration::ComponentLogLevels("ComponentLogLevels"),
             Configuration::Log::ComponentLogLevels_id);
     }
     return parent.ComponentLogLevels().front();
