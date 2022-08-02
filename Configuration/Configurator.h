@@ -39,14 +39,36 @@ bool configure (std::string fileName,
         AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction
         configXmlDecoratorFunction = ConfigXmlDecoratorFunction()); // 'empty' function by default.
 
+/*
+* Implementation where children is an optional (0/1)
+*/
 template <typename TParent, typename TChildren, typename TChildTypeId>
 auto validateContentOrderImpl(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
   -> decltype(children.present(), void())
 {
-  // %%BF: TODO write this function
-  std::cout << __FUNCTION__ << std::endl;
+  if(!children.present()) return; // nothing to check
+
+  bool isChildRegistered = false;
+  for(const auto& orderedIter : parent.content_order())
+  {
+    if(orderedIter.id == childTypeId)
+    {
+      isChildRegistered = true;
+      break;
+    }
+  }
+
+  if(!isChildRegistered)
+  {
+    std::ostringstream msg;
+    msg<<__FUNCTION__<<" ERROR optional child type id ["<<childTypeId<<"] not registered in parent content order";
+    throw std::range_error(msg.str());
+  }
 }
 
+/*
+* Implementation where children is an array (0/N)
+*/
 template<typename TParent, typename TChildren, typename TChildTypeId>
 auto validateContentOrderImpl(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
   -> decltype(children.size(), void())
@@ -62,8 +84,8 @@ auto validateContentOrderImpl(const TParent& parent, const TChildren& children, 
       auto pos = std::find(std::begin(validChildIndices), std::end(validChildIndices), xmlIndex);
       if(pos == std::end(validChildIndices))
       {
-    	std::ostringstream msg;
-    	msg<<__FUNCTION__<<" ERROR content order index ["<<xmlIndex<<"] invalid. Valid={0.."<<children.size()<<"}";
+        std::ostringstream msg;
+        msg<<__FUNCTION__<<" ERROR content child type id ["<<childTypeId<<"] order index ["<<xmlIndex<<"] invalid. Valid={0.."<<children.size()<<"}";
         throw std::range_error(msg.str());
       }
       validChildIndices.erase(pos);
@@ -71,19 +93,23 @@ auto validateContentOrderImpl(const TParent& parent, const TChildren& children, 
   }
   if(!validChildIndices.empty())
   {
-	std::ostringstream msg;
-	msg<<__FUNCTION__<<" ERROR parent has ["<<validChildIndices.size()<<"] child objects unregistered in content order";
+    std::ostringstream msg;
+    msg<<__FUNCTION__<<" ERROR parent has ["<<validChildIndices.size()<<"] child objects unregistered in content order";
     throw std::range_error(msg.str());
   }
 }
 
+/*
+* Use SFINAE (it's a thing) to resolve to the appropriate template function above: either 
+* - children is an array: has function size()
+* - children is an optional: has function present()
+*/
 template<typename TParent, typename TChildren, typename TChildTypeId>
 auto validateContentOrder(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
   -> decltype(validateContentOrderImpl(parent, children, childTypeId), void())
 {
   validateContentOrderImpl(parent, children, childTypeId);
 }
-
 
 void unlinkAllDevices (AddressSpace::ASNodeManager *nm);
 
