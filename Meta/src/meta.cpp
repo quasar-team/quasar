@@ -77,6 +77,9 @@ Configuration::StandardMetaData& getStandardMetaData(Configuration::Configuratio
     {
         LOG(Log::INF) << __FUNCTION__ << " parent does not contain a StandardMetaData element; adding one";
         parent.StandardMetaData(Configuration::StandardMetaData());
+        // preserve content order for optional elements (as well as arrays). Arg 0 below indicates 0th position
+        const xml_schema::content_order orderingElement(Configuration::Configuration::StandardMetaData_id, 0);
+        parent.content_order().push_back(orderingElement);
     }
     return parent.StandardMetaData().get();
 }
