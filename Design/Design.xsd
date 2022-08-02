@@ -76,8 +76,7 @@ elementFormDefault="qualified">
   </element>
   <complexType name="Class">
     <sequence>
-      <element name="devicelogic" type="tns:DeviceLogic" minOccurs="0" maxOccurs="1">
-                </element>
+      <element name="devicelogic" type="tns:DeviceLogic" minOccurs="0" maxOccurs="1"/>
       <sequence minOccurs="0" maxOccurs="unbounded">
         <choice>
           <element name="cachevariable" type="tns:CacheVariable"/>
@@ -91,6 +90,11 @@ elementFormDefault="qualified">
     </sequence>
     <attribute name="name" type="tns:ClassName" use="required"/>
     <attribute name="singleVariableNode" type="boolean" use="optional"/>
+    <attribute name="defaultInstanceName" type="tns:ObjectName" use="optional">
+      <annotation>
+        <documentation>Applicable only to singleton classes. When used, attribute contents becomes the default name.</documentation>
+      </annotation>
+    </attribute>
   </complexType>
   <complexType name="CacheVariable">
     <all>
@@ -204,8 +208,13 @@ elementFormDefault="qualified">
       <enumeration value="design"/>
     </restriction>
   </simpleType>
+  <simpleType name="ObjectName">
+    <restriction base="string">
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
   <complexType name="Object">
-    <attribute name="name" type="string"/>
+    <attribute name="name" type="tns:ObjectName"/>
   </complexType>
   <simpleType name="ClassName">
     <restriction base="string">

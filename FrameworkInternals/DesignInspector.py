@@ -84,6 +84,12 @@ class DesignInspector():
         device_logic = self.xpath('/d:design/d:class[@name="{0}"]/d:devicelogic'.format(class_name))
         return len(device_logic) > 0 ## no devicelogic element means empty list returned
 
+    def get_class_default_instance_name(self, class_name):
+        """Returns default instance name or None if not applicable"""
+        default_instance_name = self.xpath(
+            f'/d:design/d:class[@name="{class_name}"]/@defaultInstanceName')
+        return None if len(default_instance_name) == 0 else default_instance_name[0]
+
     def get_has_objects_origin_names(self, class_name, include_root=False):
         """Finds all classes (and Root, if requested) that have has_objects
         pointing to class_name """
