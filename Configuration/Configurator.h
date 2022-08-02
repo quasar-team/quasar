@@ -44,7 +44,7 @@ bool configure (std::string fileName,
 */
 template <typename TParent, typename TChildren, typename TChildTypeId>
 auto validateContentOrderImpl(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
-  -> decltype(children.present(), void())
+  -> decltype(children.present(), void()) // children type needs method present()
 {
   if(!children.present()) return; // nothing to check
 
@@ -71,7 +71,7 @@ auto validateContentOrderImpl(const TParent& parent, const TChildren& children, 
 */
 template<typename TParent, typename TChildren, typename TChildTypeId>
 auto validateContentOrderImpl(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
-  -> decltype(children.size(), void())
+  -> decltype(children.size(), void()) // children type needs method size()
 {
   std::set<size_t> validChildIndices;
   for(size_t i=0; i<children.size(); validChildIndices.insert(i++));
@@ -100,9 +100,10 @@ auto validateContentOrderImpl(const TParent& parent, const TChildren& children, 
 }
 
 /*
-* Use SFINAE (it's a thing) to resolve to the appropriate template function above: either 
-* - children is an array: has function size()
-* - children is an optional: has function present()
+* Use SFINAE (it's a thing) to resolve to the appropriate validateContentOrderImpl above, depending on children type.
+* Chidlren can be one of
+* - multiple (array - 0..N): children type has function size()
+* - optional (optional - 0/1): children type has function present()
 */
 template<typename TParent, typename TChildren, typename TChildTypeId>
 auto validateContentOrder(const TParent& parent, const TChildren& children, const TChildTypeId childTypeId)
