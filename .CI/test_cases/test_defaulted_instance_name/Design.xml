@@ -6,5 +6,6 @@
   </d:class>
   <d:root>
     <d:hasobjects class="ThisIsTheSingletonClass" instantiateUsing="configuration" maxOccurs="1" minOccurs="1"/>
+    <d:hasobjects class="SomeOtherClass"/>
   </d:root>
 </d:design>

@@ -4,4 +4,7 @@
 	<SomeOtherClass name="tralala">
 		<ThisIsTheSingletonClass/> <!-- no name attr, should be defaulted to "XX" -->
 	</SomeOtherClass>
+	<SomeOtherClass name="tralala2">
+		<ThisIsTheSingletonClass/> <!-- no name attr, should be defaulted to "XX" -->
+	</SomeOtherClass>
 </configuration>
