@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration xmlns="http://cern.ch/quasar/Configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Configuration ../Configuration/Configuration.xsd ">
-	<TestClass/> <!-- no name attr, should be defaulted to "XX" -->
+	<ThisIsTheSingletonClass/> <!-- no name attr, should be defaulted to "XX" -->
+	<SomeOtherClass name="tralala">
+		<ThisIsTheSingletonClass/> <!-- no name attr, should be defaulted to "XX" -->
+	</SomeOtherClass>
+	<SomeOtherClass name="tralala2">
+		<ThisIsTheSingletonClass/> <!-- no name attr, should be defaulted to "XX" -->
+	</SomeOtherClass>
 </configuration>
