@@ -179,7 +179,7 @@
     </xs:sequence>
     
     {% if  designInspector.get_class_default_instance_name(className) %}
-      <xs:attribute name="name" type="tns:ObjectName" use='optional' default="{{get_class_default_instance_name(className)}}"/>
+      <xs:attribute name="name" type="tns:ObjectName" use='optional' default="{{designInspector.get_class_default_instance_name(className)}}"/>
     {% else %}
       <xs:attribute name="name" type="tns:ObjectName" use="required"/>
     {% endif %}
