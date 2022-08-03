@@ -76,7 +76,9 @@ Configuration::StandardMetaData& getStandardMetaData(Configuration::Configuratio
     if(!parent.StandardMetaData().present())
     {
         LOG(Log::INF) << __FUNCTION__ << " parent does not contain a StandardMetaData element; adding one";
-        parent.StandardMetaData(Configuration::StandardMetaData("StandardMetaData"));
+        Configuration::StandardMetaData standardMetaData;
+        standardMetaData.name("StandardMetaData");
+        parent.StandardMetaData(standardMetaData);
         // preserve content order for optional elements (as well as arrays). Arg 0 below indicates 0th position
         const xml_schema::content_order orderingElement(Configuration::Configuration::StandardMetaData_id, 0);
         parent.content_order().push_back(orderingElement);
@@ -89,11 +91,9 @@ Configuration::Log& getLog(Configuration::StandardMetaData& parent)
     if(parent.Log().empty())
     {
         LOG(Log::INF) << __FUNCTION__ << " parent does not contain a Log element; adding one";
-        Configuration::DecorationUtils::push_back(
-            parent, 
-            parent.Log(), 
-            Configuration::Log("Log"), 
-            Configuration::StandardMetaData::Log_id);        
+        Configuration::Log log;
+        log.name("Log");
+        Configuration::DecorationUtils::push_back(parent, parent.Log(), log, Configuration::StandardMetaData::Log_id);        
     }
     return parent.Log().front();
 }
@@ -103,11 +103,9 @@ Configuration::SourceVariableThreadPool& getSourceVariableThreadPool(Configurati
     if(parent.SourceVariableThreadPool().empty())
     {
         LOG(Log::INF) << __FUNCTION__ << " parent does not contain a SourceVariableThreadPool element; adding one";
-        Configuration::DecorationUtils::push_back(
-            parent, 
-            parent.SourceVariableThreadPool(), 
-            Configuration::SourceVariableThreadPool("SourceVariableThreadPool", "10", "1"),
-            Configuration::StandardMetaData::SourceVariableThreadPool_id);                
+        Configuration::SourceVariableThreadPool sourceVariableThreadPool("10", "1");
+        sourceVariableThreadPool.name("SourceVariableThreadPool");
+        Configuration::DecorationUtils::push_back(parent, parent.SourceVariableThreadPool(), sourceVariableThreadPool, Configuration::StandardMetaData::SourceVariableThreadPool_id);                
     }
     return parent.SourceVariableThreadPool().front();
 }
@@ -118,11 +116,8 @@ Configuration::LogLevel& getGeneralLogLevel(Configuration::Log& parent)
     {
         const Log::LOG_LEVEL level = Log::getNonComponentLogLevel();
         LOG(Log::INF) << __FUNCTION__ << " parent does not contain a GeneralLogLevel element; adding one";
-        Configuration::DecorationUtils::push_back(
-            parent, 
-            parent.LogLevel(), 
-            Configuration::LogLevel("GeneralLogLevel", Log::logLevelToString(level)),
-            Configuration::Log::LogLevel_id);        
+        Configuration::LogLevel generalLogLevel("GeneralLogLevel", Log::logLevelToString(level));
+        Configuration::DecorationUtils::push_back(parent, parent.LogLevel(), generalLogLevel, Configuration::Log::LogLevel_id);
     }
     return parent.LogLevel().front();
 }
@@ -132,11 +127,9 @@ Configuration::ComponentLogLevels& getComponentLogLevels(Configuration::Log& par
     if(parent.ComponentLogLevels().empty())
     {
         LOG(Log::INF) << __FUNCTION__ << " parent does not contain a ComponentLogLevels element; adding one";
-        Configuration::DecorationUtils::push_back(
-            parent,
-            parent.ComponentLogLevels(),
-            Configuration::ComponentLogLevels("ComponentLogLevels"),
-            Configuration::Log::ComponentLogLevels_id);
+        Configuration::ComponentLogLevels componentLogLevels;
+        componentLogLevels.name("ComponentLogLevels");
+        Configuration::DecorationUtils::push_back(parent, parent.ComponentLogLevels(), componentLogLevels, Configuration::Log::ComponentLogLevels_id);
     }
     return parent.ComponentLogLevels().front();
 }

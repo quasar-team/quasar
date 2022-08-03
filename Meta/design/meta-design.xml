@@ -43,11 +43,11 @@ class sources are provided (statically) in the Meta module.
     <d:cachevariable name="logLevel" addressSpaceWrite="delegated" dataType="UaString" initializeWith="configuration" nullPolicy="nullForbidden"/>
   </d:class>
   
-  <d:class name="ComponentLogLevels">
+  <d:class name="ComponentLogLevels" defaultInstanceName="ComponentLogLevels">
     <d:hasobjects instantiateUsing="configuration" class="LogLevel" minOccurs="0"/>
   </d:class>
   
-  <d:class name="Log">
+  <d:class name="Log" defaultInstanceName="Log">
     <d:hasobjects instantiateUsing="configuration" class="LogLevel" minOccurs="1" maxOccurs="1"/>
     <d:hasobjects class="ComponentLogLevels" instantiateUsing="configuration" minOccurs="1" maxOccurs="1"/>
   </d:class>
@@ -60,12 +60,12 @@ class sources are provided (statically) in the Meta module.
     <d:cachevariable name="remainingCertificateValidity" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="valueAndStatus" initialValue="UNKNOWN" initialStatus="OpcUa_BadWaitingForInitialData" nullPolicy="nullForbidden"/>
   </d:class>
   
-  <d:class name="SourceVariableThreadPool">
+  <d:class name="SourceVariableThreadPool" defaultInstanceName="SourceVariableThreadPool">
     <d:cachevariable name="maxThreads" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="configuration" nullPolicy="nullForbidden"/>
     <d:cachevariable name="minThreads" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="configuration" nullPolicy="nullForbidden"/>
   </d:class>
   
-  <d:class name="StandardMetaData">
+  <d:class name="StandardMetaData" defaultInstanceName="StandardMetaData">
     <d:hasobjects class="BuildInformation" instantiateUsing="design" minOccurs="1" maxOccurs="1">
       <d:object name="BuildInformation"/>
     </d:hasobjects>
