@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd ../Configuration/Configuration.xsd">
+  <UAObject BrowseName="StandardMetaData" NodeId="ns=2;s=StandardMetaData">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.SourceVariableThreadPool</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Server</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Quasar</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.BuildInformation</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="SourceVariableThreadPool" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.SourceVariableThreadPool.minThreads</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.SourceVariableThreadPool.maxThreads</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="Server" NodeId="ns=2;s=StandardMetaData.Server">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Server.remainingCertificateValidity</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="Quasar" NodeId="ns=2;s=StandardMetaData.Quasar">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Quasar.version</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="BuildInformation" NodeId="ns=2;s=StandardMetaData.BuildInformation">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.BuildInformation.CommitID</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.BuildInformation.BuildTimestamp</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.BuildInformation.ToolkitLibs</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.BuildInformation.BuildHost</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="Log" NodeId="ns=2;s=StandardMetaData.Log">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.GeneralLogLevel</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="ComponentLogLevels" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels.open62541</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="CalcVars" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars.logLevel</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="open62541" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.open62541">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels.open62541.logLevel</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="AddressSpace" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace.logLevel</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="GeneralLogLevel" NodeId="ns=2;s=StandardMetaData.Log.GeneralLogLevel">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=StandardMetaData.Log.GeneralLogLevel.logLevel</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="XX" NodeId="ns=2;s=XX">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="tralala" NodeId="ns=2;s=tralala">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tralala.XX</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="XX" NodeId="ns=2;s=tralala.XX">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="tralala2" NodeId="ns=2;s=tralala2">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+      <Reference ReferenceType="ns=0;i=47">ns=2;s=tralala2.XX</Reference>
+    </References>
+  </UAObject>
+  <UAObject BrowseName="XX" NodeId="ns=2;s=tralala2.XX">
+    <References>
+      <Reference ReferenceType="ns=0;i=40">ns=0;i=58</Reference>
+    </References>
+  </UAObject>
+  <UAVariable BrowseName="minThreads" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool.minThreads"/>
+  <UAVariable BrowseName="maxThreads" NodeId="ns=2;s=StandardMetaData.SourceVariableThreadPool.maxThreads"/>
+  <UAVariable BrowseName="remainingCertificateValidity" NodeId="ns=2;s=StandardMetaData.Server.remainingCertificateValidity"/>
+  <UAVariable BrowseName="version" NodeId="ns=2;s=StandardMetaData.Quasar.version"/>
+  <UAVariable BrowseName="CommitID" DataType="i=12" NodeId="ns=2;s=StandardMetaData.BuildInformation.CommitID"/>
+  <UAVariable BrowseName="BuildTimestamp" DataType="i=12" NodeId="ns=2;s=StandardMetaData.BuildInformation.BuildTimestamp"/>
+  <UAVariable BrowseName="ToolkitLibs" DataType="i=12" NodeId="ns=2;s=StandardMetaData.BuildInformation.ToolkitLibs"/>
+  <UAVariable BrowseName="BuildHost" DataType="i=12" NodeId="ns=2;s=StandardMetaData.BuildInformation.BuildHost"/>
+  <UAVariable AccessLevel="3" BrowseName="logLevel" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.CalcVars.logLevel"/>
+  <UAVariable AccessLevel="3" BrowseName="logLevel" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.open62541.logLevel"/>
+  <UAVariable AccessLevel="3" BrowseName="logLevel" NodeId="ns=2;s=StandardMetaData.Log.ComponentLogLevels.AddressSpace.logLevel"/>
+  <UAVariable AccessLevel="3" BrowseName="logLevel" NodeId="ns=2;s=StandardMetaData.Log.GeneralLogLevel.logLevel"/>
+</UANodeSet>
