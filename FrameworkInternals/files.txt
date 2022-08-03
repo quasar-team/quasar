@@ -419,7 +419,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurationXSD.jinja": {
-                "md5": "9951a90a9349c3c9ce71d7843b4f0b3e",
+                "md5": "4a1185e7d9055c70dc6626a6c093da41",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "ee03b15a27dcc4a9e3dfeb20948d17ef",
+                "md5": "53a562d788af877cf62863f0420cd4db",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "68c925d21b543d9845e69d26cc62f28a",
+                "md5": "75b505c7885438889f1e4c1a07707b15",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1288,7 +1288,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "8ace087636e9f64b40cbaeae9256dac6",
+                "md5": "fc203c6a3deea2a836dfd426166a13bd",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1343,7 +1343,7 @@
             },
             "QuasarUaTraceHook.cpp": {
                 "install": "overwrite",
-                "md5": "66f665df3b7e862819af6726ca6e8bab",
+                "md5": "260b59c9bd5141c1223ef706bd946704",
                 "must_be_versioned": true,
                 "must_exist": true
             },
