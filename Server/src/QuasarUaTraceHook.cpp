@@ -23,6 +23,7 @@
 
 #include <QuasarUaTraceHook.hpp>
 #include <chrono>
+#include <ctime>
 #include <iostream>
 #include <sstream>
 
