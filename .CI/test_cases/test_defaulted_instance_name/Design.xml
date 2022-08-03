@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<d:design projectShortName="OpcUaSampleServerNameChangeItInDesign" xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
+<d:class name="TestClass" defaultInstanceName="XX"></d:class>  
+<d:root>
+  <d:hasobjects class="TestClass" instantiateUsing="configuration" maxOccurs="1" minOccurs="1"></d:hasobjects>
+</d:root>
+</d:design>
