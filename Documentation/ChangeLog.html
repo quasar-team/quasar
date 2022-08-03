@@ -164,9 +164,13 @@
 
 
 
+
+
               introduced</strong><br>
           </td>
           <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
+
+
 
 
 
@@ -320,6 +324,84 @@
           </td>
         </tr>
         <tr>
+          <td valign="top">1.5.14<font size="-1"><br>
+              (03-Aug-2022)</font><br>
+          </td>
+          <td valign="top">Back-fixes for OPCUA-2767 and OPCUA-2779
+            which turned out to be broken.<br>
+          </td>
+          <td valign="top">Your configuration schema is now stronger
+            regarding isKey usage; for duplicate keys previously you'd
+            only learn at runtime, now you also learn by the schema!<br>
+          </td>
+          <td valign="top">Bug
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2787">OPCUA-2787</a>]
+                - defaultInstanceName misbehaving
+              </li>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2789">OPCUA-2789</a>]
+                - quasar creates non-compiling code in windows
+              </li>
+            </ul>
+            <br>
+            New Feature
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2768">OPCUA-2768</a>]
+                - Propagate isKey into unique constraint of
+                Configuration XSD
+              </li>
+            </ul>
+            <br>
+            Task
+            <br>
+            <ul>
+              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2788">OPCUA-2788</a>]
+                - A test for defaultInstanceName
+              </li>
+            </ul>
+          </td>
+          <td valign="top">quasar test suite notes:<br>
+            <ol>
+              <li>open62541_test_methods not passing for the method
+                arguments behaving differently from UASDK. This will be
+                <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  investigated</a>.</li>
+              <li> StandardMetaData is ignored from testing in all tests
+                due to some existing noncompliance.</li>
+            </ol>
+          </td>
+        </tr>
+        <tr>
           <td valign="top">1.5.13<br>
             <font size="-1">(26-Jul-2022)</font><br>
           </td>
@@ -332,24 +414,19 @@
             (e.g. Cacophony/fwQuasar) <i>if the new feature is used</i>.
             Update relevant satellite modules.<br>
           </td>
-          <td valign="top">
-            New Feature
-            <br>
+          <td valign="top"> New Feature <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2767">OPCUA-2767</a>]
                 - support default name for singletons by configuration
                 (i.e. no 'name' attr required in config - default to
-                class name)
-              </li>
+                class name) </li>
             </ul>
             <br>
-            Task
-            <br>
+            Task <br>
             <ul>
               <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-2779">OPCUA-2779</a>]
                 - Follow-up of defaulting "name" attribute to be
-                explicitly chosen
-              </li>
+                explicitly chosen </li>
             </ul>
           </td>
           <td valign="top">quasar test suite notes:<br>
@@ -357,6 +434,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -450,6 +529,8 @@
 
 
 
+
+
                   investigated</a>.</li>
               <li> StandardMetaData is ignored from testing in all tests
                 due to some existing noncompliance.</li>
@@ -483,6 +564,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -588,6 +671,8 @@
 
 
 
+
+
                   investigated</a>.</li>
               <li> StandardMetaData is ignored from testing in all tests
                 due to some existing noncompliance.</li>
@@ -637,6 +722,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -730,6 +817,8 @@
 
 
 
+
+
                   investigated</a>.</li>
               <li> StandardMetaData is ignored from testing in all tests
                 due to some existing noncompliance.</li>
@@ -778,6 +867,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
@@ -880,6 +971,8 @@
 
 
 
+
+
                   investigated</a>.</li>
               <li> StandardMetaData is ignored from testing in all tests
                 due to some existing noncompliance.</li>
@@ -956,6 +1049,8 @@
               <li>open62541_test_methods not passing for the method
                 arguments behaving differently from UASDK. This will be
                 <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+
+
 
 
 
