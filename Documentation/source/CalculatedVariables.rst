@@ -1,9 +1,9 @@
 Calculated Variables
 ====================
 
-| 
+|
 | by: Piotr Nikiel, Oct-Nov 2018
-| Updated August 2021
+| Updated September 2022
 
 Overview and end-user documentation
 -----------------------------------
@@ -136,8 +136,9 @@ Feature list
 +-----------------------------------+-----------------------------------+
 | Formula templates                 | Yes                               |
 +-----------------------------------+-----------------------------------+
+| Formula inputs from               | Scalar+numeric: cache-variables, config-entries, free-variables and other calculated variables |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
 
-| 
 
 Operators and built-in functions
 --------------------------------
@@ -215,8 +216,10 @@ Operators and built-in functions
 | ``avg``               | var.                  | mean value of all     |
 |                       |                       | arguments             |
 +-----------------------+-----------------------+-----------------------+
+| ``pow``               | 2                     | x^y                   |
++-----------------------+-----------------------+-----------------------+
 
-| 
+|
 | Built-in operators
 
 +-----------------------+-----------------------+-----------------------+
@@ -252,7 +255,7 @@ Operators and built-in functions
 |                       | of y                  |                       |
 +-----------------------+-----------------------+-----------------------+
 
-| 
+|
 | Common mathematical constants
 | \_pi, \_e
 
@@ -371,11 +374,11 @@ Meta-functions and meta-operators (dollar signs in the formulas)
 $thisObjectAddress
 ~~~~~~~~~~~~~~~~~~
 
-| $thisObjectAddress evaluates to the string address of the object under
+| ``$thisObjectAddress`` evaluates to the string address of the object under
   which the calculated variable was instantiated. It finds a very
   practical application to build generalized formulas, which can be
   applied "under" multiple places in the address-space, so
-  $thisObjectAddress serves as the relative pointer to the object
+  ``$thisObjectAddress`` serves as the relative pointer to the object
   address.
 | Using the design as above, the following config file shows a sample
   application:
@@ -384,13 +387,19 @@ $thisObjectAddress
 
        <TestClass name="tc">
         <CalculatedVariable name="test_var_multiplied" value="$thisObjectAddress.testVariable * 1000" />
-     </TestClass>
+       </TestClass>
+
+$_
+~~
+
+``$_`` is an abbreviation for ``$thisObjectAddress`` which comes practical for
+long, complex formulas.
 
 $parentObjectAddress(numLevelsUp=N)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| $parentObjectAddress is a generalization of $thisObjectAddress. For
-  N=0 it evaluates to $thisObjectAddress, for N=1 to its parent object
+| ``$parentObjectAddress`` is a generalization of ``$thisObjectAddress``. For
+  N=0 it evaluates to ``$thisObjectAddress``, for N=1 to its parent object
   and so on.
 | Using the design as above, the following config file shows a sample
   application:
@@ -401,12 +410,12 @@ $parentObjectAddress(numLevelsUp=N)
         <TestSubClass name="tsc">
             <CalculatedVariable name="test_var_multiplied" value="$parentObjectAddress(numLevelsUp=1).testVariable * 1000" />
         </TestSubClass>
-      </TestClass>
+       </TestClass>
 
 $applyGenericFormula(formula)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| $applyGenericFormula is used in the context of generalized function
+| ``$applyGenericFormula`` is used in the context of generalized function
   templates and `documented there <#Generalized_formula_templates>`__.
 
 Generalized formula templates
@@ -414,14 +423,14 @@ Generalized formula templates
 
 | Multiple sensors of same type are likely to use same formulas (with
   possibly different calibration constants). Thus it is economical to
-  share formulas between them if configuration file readibility/clarity
+  share formulas between them if configuration file readability/clarity
   would profit.
 | The basic application of generalized formula templates is composed of
   the following steps:
 
 -  defining the generalized formula at the top of the configuration file
    using the CalculatedVariableGenericFormula XML element
--  applying the formula at the point of use using $applyGenericFormula
+-  applying the formula at the point of use using ``$applyGenericFormula``
    meta-function.
 
 | Technically, the job done by quasar for applying the formula at the
@@ -439,7 +448,7 @@ Generalized formula templates
    <CalculatedVariableGenericFormula name="thermistorTemperature"
          formula="1/( 3.3540154*10^(-3)+(2.5627725*10^(-4)*log(1000*$thisObjectAddress.value/500))+(2.0829210*10^(-6)*(log(1000*$thisObjectAddress.value/500))^2)+(7.3003206*10^(-8)*(log(1000*$thisObjectAddress.value/500))^3)) -273.15"/>
 
-| 
+|
 | As can be seen, the formula profits from $thisObjectAddress
   meta-function which enables its reuse at any place of the
   configuration (so, consequently, the address-space) which has a
@@ -449,14 +458,14 @@ Generalized formula templates
 
 .. code:: mycode
 
-   <AnalogInput id="0" name="GBTX1_TEMP" enableCurrentSource="true" > <CalculatedVariable name="temperature" value="$applyGenericFormula(thermistorTemperature)" /> </AnalogInput> 
+   <AnalogInput id="0" name="GBTX1_TEMP" enableCurrentSource="true" > <CalculatedVariable name="temperature" value="$applyGenericFormula(thermistorTemperature)" /> </AnalogInput>
    <AnalogInput id="1" name="GBTX2_TEMP" enableCurrentSource="true" > <CalculatedVariable name="temperature" value="$applyGenericFormula(thermistorTemperature)" /> </AnalogInput>
 
 CalculatedVariables logging and tracing
 ---------------------------------------
 
 | CalculatedVariables module has its own LogIt component called
-  "CalcVars".
+  ``CalcVars``.
 | As it's the case with any LogIt logging component, its log levels can
   be configured via the address-space as well as in the configuration
   file. The latter is often needed because most of potential issues
@@ -481,7 +490,7 @@ Escaping variable names containing dashes ("-") and slashes ("/")
 -----------------------------------------------------------------
 
 | Users of quasar-based servers sometimes choose to name their quasar
-  objects (i.e. the *name* attribute of XML elements in the
+  objects (i.e. the ``name`` attribute of XML elements in the
   configuration files) with names containing dashes or slashes.
 | This is legit in the quasar world. However, it poses some problems if
   CalculatedVariables inputs connect to such named objects (i.e. its
@@ -495,7 +504,7 @@ Escaping variable names containing dashes ("-") and slashes ("/")
      <CalculatedVariable name="calibrationConstant" value="2.35"/>
    </MyDevice>
 
-| 
+|
 | Such a config file is fine; among different address-space entities
   instantiated it'd have the CalculatedVariable under address
   "Bus1/Device2-A.calibrationConstant".
@@ -507,7 +516,7 @@ Escaping variable names containing dashes ("-") and slashes ("/")
 
    <CalculatedVariable name="voltage" value="X -  Bus1/Device2-A.calibrationConstant"/>
 
-| 
+|
 | A problem is clearly seen: in the formula, it is impossible to
   distinguish if the dashes "-" and slashes "/" refer to input variable
   names or the subtraction and/or division operators (in simpler cases
@@ -524,7 +533,7 @@ Escaping variable names containing dashes ("-") and slashes ("/")
 
     <CalculatedVariable name="voltage" value="X -  Bus1\/Device2\-A.calibrationConstant"/>
 
-| 
+|
 | **Note** that those using $thisObjectAddress and/or
   $parentObjectAddress to derive the input variable address do not have
   to do anything because both of the meta-functions will escape dashes
@@ -563,7 +572,7 @@ NTC sensors: converting resistance into temperature in Celsius and Fahrenheit de
    <CalculatedVariable name="R0" value="10E3"/>
    <CalculatedVariable name="temperatureK" value="T0*B/(T0*ln(NTC1.resistance/R0)+B)" />
 
-| We also add two Calculated Variables that will recomputer Kelvins into
+| We also add two Calculated Variables that will recompute Kelvins into
   Celsius degrees and Fahrenheit degrees:
 
 .. code:: mycode
@@ -573,7 +582,7 @@ NTC sensors: converting resistance into temperature in Celsius and Fahrenheit de
 
 | In addition, we can add a boolean variable which subjectively
   indicates whether it's warm enough. It's an example of usage of
-  logical operators as well as isBoolean attribute:
+  logical operators as well as ``isBoolean`` attribute:
 
 .. code:: mycode
 
@@ -590,11 +599,11 @@ CalculatedVariable attached to multiple different quasar entities
 .. code:: mycode
 
        <TestClass name="tc" configentry="125"/>
-     <FreeVariable name="free_variable" type="Double"/>
+       <FreeVariable name="free_variable" type="Double"/>
        <CalculatedVariable name="a_calc_var" value="500" />
-     <CalculatedVariable
-         name="sum_of_free_cache_variables_and_configentry" 
-        value="free_variable + tc.testVariable + tc.configentry - a_calc_var" />
+       <CalculatedVariable
+         name="sum_of_free_cache_variables_and_configentry"
+         value="free_variable + tc.testVariable + tc.configentry - a_calc_var" />
 
 | As can be seen, the last calculated variable is a function computed of
   values of many different quasar entities which all corresponds to
@@ -614,14 +623,14 @@ Place no white-space between unary operation (e.g. a function) and the parenthes
 
    <CalculatedVariable name="V300" value="cos(x + 1.4)"/>
 
-| 
+|
 | and this is illegal:
 
 .. code:: mycode
 
    <CalculatedVariable name="V300" value="cos (x + 1.4)"/>
 
-| 
+|
 
 Advanced documentation for quasar developers
 --------------------------------------------
@@ -670,7 +679,7 @@ Classes rationale
    such arrangement it wouldn't know how to access a double from
    UaVariant, neither to know whether the value is correct, etc.).
 
--  
+-
 
    -  notifyingVariable - is the pointer to a ChangeNotifyingVariable
       which notifies this particular ParserVariable on change,
@@ -685,7 +694,7 @@ Classes rationale
 -  Engine - puts all things together. It supplies methods for usage in
    Configuration module:
 
--  
+-
 
    -  instantiateCalculatedVariable - called whenerver
       CalculatedVariable() entry is found in the config file,
@@ -736,7 +745,7 @@ Synchronization, re-entrance, multi-threading
    by server developers and configured by end-users. They typically push
    data to the address-space.
 
-| 
+|
 | In the context of Calculated Variables, there are two obvious critical
   section types:
 
@@ -744,7 +753,7 @@ Synchronization, re-entrance, multi-threading
    different threads.
    The worries here are the following:
 
--  
+-
 
    -  there might be a clash in storage of value and status, as both of
       them are necessary to perform the calculation and (to author's
@@ -759,7 +768,7 @@ Synchronization, re-entrance, multi-threading
    of different variables which are used in the same formula.
    The worries here are the following:
 
--  
+-
 
    -  the parser might attempt to use the value when it is being
       assigned to (and that is not atomic)
@@ -817,7 +826,7 @@ Supplementary notes on certain design decisions
 Why constants from config entries propagate into ParserVariables rather than being declared using muParser::DefineConst?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| 
+|
 
 Benchmarks
 ----------
@@ -866,7 +875,7 @@ Aspect
 |                 | bytes allocated | bytes allocated |                 |
 +-----------------+-----------------+-----------------+-----------------+
 
-| 
+|
 
 muParser distribution model
 ---------------------------
@@ -883,7 +892,7 @@ muParser distribution model
   without changing the version.
 
 .. |image1| image:: images/sample_design.png
-   :width: 10.0%
+   :width: 20.0%
 .. |UML| image:: images/CalculatedVariablesClassDiagram.png
    :width: 1098px
    :height: 765px
