@@ -1,0 +1,121 @@
+name: Deploy documentation
+
+on:
+  release:
+    types: [ published ]
+  push:
+    branches:
+      - master
+
+jobs:
+
+  build_deploy:
+    name: Build and deploy documentation
+
+    runs-on: self-hosted
+
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Define version name
+      run: |
+        if [ ${{ startsWith(github.ref_name, 'dev') }} = true ]; then
+          echo "VERSION_NAME=${{ github.ref_name }}" >> "$GITHUB_ENV"
+        elif [ ${{ github.event.release.tag_name != '' }} = true ]; then
+          echo "VERSION_NAME=version/${{ github.event.release.tag_name }}" >> "$GITHUB_ENV"
+        else
+          echo "VERSION_NAME=latest" >> "$GITHUB_ENV"
+        fi
+        echo 'Version to build: ${{ env.VERSION_NAME }}'
+
+    - name: Install dependencies
+      run: |
+        echo "${GITHUB_WORKSPACE}/"
+        cd "${GITHUB_WORKSPACE}/"
+        pip3 install --user -r requirements.txt
+
+    - name: Create new folder
+      run: |
+        echo "Creating new folder ${{ env.VERSION_NAME }}"
+        mkdir -p /home/pmoschov/quasar/${{ env.VERSION_NAME }}
+
+    - name: Build HTML documentation
+      run: |
+        cd "${GITHUB_WORKSPACE}/Documentation"
+        export SPHINXBUILD=`which sphinx-build`
+        sphinx-build -b html ./source ./_build/${{ env.VERSION_NAME }}
+    
+    - name: Build documentation PDF as ePUB
+      run: |
+        cd "${GITHUB_WORKSPACE}/Documentation"
+        export SPHINXBUILD=`which sphinx-build`
+
+        make epub
+        cp ./build/epub/Quasar.epub ./_build/${{ env.VERSION_NAME }}
+        mv ./_build/${{ env.VERSION_NAME }}/Quasar.epub ./_build/${{ env.VERSION_NAME }}/Quasar\ ${{ env.VERSION_NAME }}.epub
+
+        make latexpdf
+        cp ./build/latex/quasar.pdf ./_build/${{ env.VERSION_NAME }}
+        mv ./_build/${{ env.VERSION_NAME }}/quasar.pdf ./_build/${{ env.VERSION_NAME }}/Quasar\ ${{ env.VERSION_NAME }}.pdf
+
+    - name: Update server
+      run: |
+        echo 'Change directory location to build html'
+        cd "${GITHUB_WORKSPACE}/Documentation/_build/${{ env.VERSION_NAME }}"
+
+        echo 'Removing old build'
+        rm -rf /home/pmoschov/quasar/${{ env.VERSION_NAME }}
+        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S rm -rf /usr/share/nginx/quasar/${{ env.VERSION_NAME }}
+
+        echo 'Copying new build to local'
+        mkdir -p /home/pmoschov/quasar/${{ env.VERSION_NAME }}
+        cp -a . /home/pmoschov/quasar/${{ env.VERSION_NAME }}/
+
+        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S mkdir -p /usr/share/nginx/quasar/${{ env.VERSION_NAME }}
+        if [ ${{ contains(env.VERSION_NAME, 'version') }} = true ]; then
+          echo 'Copying to version folder'
+          sudo cp -r /home/pmoschov/quasar/${{ env.VERSION_NAME }} /usr/share/nginx/quasar/version
+        else
+          echo 'Copying to latest folder'
+          sudo cp -r /home/pmoschov/quasar/${{ env.VERSION_NAME }} /usr/share/nginx/quasar
+        fi
+
+        echo 'Reloading nginx'
+        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S nginx -s reload
+
+    - name: Update latest
+      if: ${{ github.event.release.tag_name != '' }}
+      run: |
+        echo 'Change directory location to build html'
+        cd "${GITHUB_WORKSPACE}/Documentation/_build/${{ env.VERSION_NAME }}"
+        
+        echo 'Removing old build'
+        rm -rf /home/pmoschov/quasar/latest
+        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S rm -rf /usr/share/nginx/quasar/latest
+        
+        echo 'Copying new build to local'
+        mkdir -p /home/pmoschov/quasar/latest
+        cp -a . /home/pmoschov/quasar/latest/
+        
+        echo 'Copying to nginx folder'
+        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S mkdir -p /usr/share/nginx/quasar/latest
+        sudo cp -r /home/pmoschov/quasar/latest /usr/share/nginx/quasar
+        
+        echo 'Reloading nginx'
+        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S nginx -s reload
+
+    - name: Update versions
+      run: |
+        cd "${GITHUB_WORKSPACE}"
+        PMOSCHOV_PASS="${{ secrets.PMOSCHOV_PASS }}" python3 ./Documentation/update_versions.py
+
+    - name: Update EOS web site
+      if: ${{ env.VERSION_NAME == 'latest' }}
+      run: |
+        cd "${GITHUB_WORKSPACE}/Documentation/_build/${{ env.VERSION_NAME }}"
+
+        echo 'Copying new build to EOS'
+        cp -a . /eos/project-q/quasar/www/
+        rm -rf /eos/project-q/quasar/www/version
+        cp -r /usr/share/nginx/quasar/version /eos/project-q/quasar/www
