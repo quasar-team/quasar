@@ -33,7 +33,7 @@ jobs:
       run: |
         echo "${GITHUB_WORKSPACE}/"
         cd "${GITHUB_WORKSPACE}/"
-        pip3 install --user -r requirements.txt
+        pip3 install --user -r ./Documentation/requirements.txt
 
     - name: Create new folder
       run: |
