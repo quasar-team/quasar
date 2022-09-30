@@ -17,21 +17,21 @@ Quasar
   :caption: Documentation
 
 
-		Alternative backends <./converted/AlternativeBackends>
-		Calculated variables <./converted/CalculatedVariables>
-		ChangeLog <./converted/ChangeLog>
-		Design manual <./converted/DesignManual>
-		For quasar developers <./converted/forQuasarDevelopers>
-		LogIt <./converted/LogIt>
-		Quasar <./converted/quasar>
+		Alternative backends <./AlternativeBackends>
+		Calculated variables <./CalculatedVariables>
+		ChangeLog <./ChangeLog>
+		Design manual <./DesignManual>
+		For quasar developers <./forQuasarDevelopers>
+		LogIt <./LogIt>
+		Quasar <./quasar>
 
-		Quasar build system <./converted/quasarBuildSystem>
-		Quasar commands <./converted/quasarCommands>
-		User defined command line parameters <./converted/UserDefinedCommandLineParameters>
-		User defined runtime configuration modification <./converted/UserDefinedRuntimeConfigurationModification>
-		Windows setup <./converted/WindowsSetup>
-		Yocto <./converted/yocto>
-		Youtube links <./converted/youtube_links>
+		Quasar build system <./quasarBuildSystem>
+		Quasar commands <./quasarCommands>
+		User defined command line parameters <./UserDefinedCommandLineParameters>
+		User defined runtime configuration modification <./UserDefinedRuntimeConfigurationModification>
+		Windows setup <./WindowsSetup>
+		Yocto <./yocto>
+		Youtube links <./youtube_links>
 
 .. toctree::
   :hidden:
@@ -46,5 +46,5 @@ Quasar
   :hidden:
   :caption: Quasar OpcUa Server
 
-  Summary of known quasar-based OPC-UA servers <./converted/quasar_OPC_UA_servers>
+  Summary of known quasar-based OPC-UA servers <./quasar_OPC_UA_servers>
 
