@@ -108,7 +108,7 @@ jobs:
     - name: Update versions
       run: |
         cd "${GITHUB_WORKSPACE}"
-        PMOSCHOV_PASS="${{ secrets.PMOSCHOV_PASS }}" python3 ./Documentation/update_versions.py
+        PMOSCHOV_PASS="${{ secrets.PMOSCHOV_PASS }}" python3 ./Documentation/tools/update_versions.py
 
     - name: Update EOS web site
       if: ${{ env.VERSION_NAME == 'latest' }}
