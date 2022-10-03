@@ -1,94 +1,63 @@
-Alternative OPC-UA back-ends for quasar
-=======================================
+OPC-UA back-ends for quasar
+===========================
 
-| 
-| Here, the term "OPC-UA back-end" refers to a piece of software, which
-  provides an API compatible with the Unified Automation C++ SDK (note
-  not all features of the UA API are actually used in quasar).
-| Quasar supports multiple OPC-UA back-ends.
-| As of June 2016, the following backends are supported in quasar:
+Author: Piotr P. Nikiel
+
+Date: ~2016, rewritten 03-Oct-2022
+
+Support: quasar-developers@cern.ch
+
+quasar for C++ can create OPC UA software components (servers and clients) on top of
+OPC UA libraries (SDK - software development kits) which follow the Unified Automation C++ SDK API.
+
+As of the writing, two such libraries exist:
 
 -  `The UA C++
    SDK <https://www.unified-automation.com/products/server-sdk/c-ua-server-sdk.html>`__,
-   version 1.3.x, 1.4.x, 1.5.x.
-   Note that you can use the evaluation version of the UA C++ SDK in
-   case you don't have the regular license.
-   Note this back-end works directly in quasar and we don't support any
-   further instructions.
--  The `open62541 <https://open62541.org/>`__ used through
-   `open62541-compat <https://github.com/quasar-team/open62541-compat/>`__
-   Read below.
+   in different versions, including the evaluation version, detailed below.
 
-| 
+-  `The open62541-compat <https://github.com/quasar-team/open62541-compat/>`__, internally using `open62541 <https://open62541.org/>`__,
+   both of them being free and open-source, detailed below.
 
-Using open62541 (open-source OPC-UA stack)
-------------------------------------------
+Please note that quasar can also be used for Python-based OPCUA software (in a bit limited fashion),
+through `the MilkyWay project <https://github.com/quasar-team/MilkyWay>`__.
 
-| The open62541 is a C-based OPC-UA stack and on its own it can't be
-  used as a back-end for Quasar.
+Using quasar with the Unified Automation C++ SDK
+------------------------------------------------
 
-| Therefore, the Quasar team has created a compatibility layer which
-  lets use open62541 in quasar projects. The compatibility layer is
-  quickly available to quasar developers as one of supported "optional
-  modules".
+quasar-made software can be easily build against the UA SDK.
+The supported UA SDK version generally depends on versions of quasar used;
+2022-made versions (e.g. 1.5.12) are fine with UA SDK 1.5.x, 1.6.x and 1.7.x,
+earlier versions also covered UA SDK 1.3.x and 1.4.x.
 
-| Note that the procedure requires to posses the build config file for
-  open62541 - at the moment, you can obtain it from Piotr.Nikiel@cern.ch
-| The quasar team is working on a more sustainable way to distribute it.
+To achieve the goal, it is only necessary to point quasar to where the UA SDK is,
+that is done by either:
 
-| In order to configure your quasar project to use the open62541, follow
-  the steps (it is assumed you already have a quasar project):
+* using the ``FrameworkInternals/default_configuration.cmake`` and passing the paths via environment
+* writing a new build configuration file
 
-#. Enable open62541-compat in your project
-   ./quasar.py enable_module open62541-compat
-#. Set build configuration for open62541
-   ./quasar.py set_build_config <your open62541-config file>
-#. Download all required quasar modules
-   ./quasar.py prepare_build
-#. Prepare open62541-compat (it will download and compile open62541
-   itself)
-   cd open62541-compat/
-   python prepare.py
-   cd ..
-#. Run the build:
-   ./quasar.py build
+Using quasar with open62541-compat and open62541 (the free and open-source approach)
+------------------------------------------------------------------------------------
 
-| 
+The quasar team has created a compatibility layer which permits using `open62541
+<http://www.open62541.org/>`__ in quasar projects. The compatibility layer is called open62541-compat,
+it is free & open-source and quickly available to
+quasar developers as one of supported "optional modules".
 
-Configuring open62541: endpoint urls, etc.
-------------------------------------------
-
-| Quasar makes full use of UA SDK ServerConfig.xml to configure things
-  like:
-
--  endpoint(s) to open (including port numbers, etc)
--  Application/Product URI(s) - relevant when discovery service is used
--  Discovery servers to register on
--  Behavioural settings, like the max polling frequencies, etc.
-
-| Unfortunately, support for ServerConfig.xml is not yet there when the
-  open62541 is used as a backend. The ticket to follow is:
-
-| https://its.cern.ch/jira/browse/OPCUA-686
-
-| Changing the defaults must generally be hardcoded, e.g.  look at the
-  constructor in Server/src/opcserver_open62541.cpp.
-| m_server_config is the object storing the configuration for the server
-  when open62541 is used.
-
-| 
+Activating open62541 is a simple procedure which is best described in the quasar tutorials on YouTube,
+see e.g. `<https://www.youtube.com/watch?v=6MsWUQ0OXbY>`__ .
 
 OPC-UA Back-end dependent features: a comparison table
 ------------------------------------------------------
 
 +-----------------+-----------------+-----------------+-----------------+
-| **Feature       |                 | **UA SDK 1.3+   | **o             |
-| **              |                 | **              | pen62541-compat |
-|                 |                 |                 | (TODO: version) |
+| **Feature       |                 | **UA SDK 1.5+   | **open62541-    |
+| **              |                 | **              | compat          |
+|                 |                 |                 | 1.4.2           |
 |                 |                 |                 | **              |
 +-----------------+-----------------+-----------------+-----------------+
-| **Ca            |                 |                 |                 |
-| che-variables** |                 |                 |                 |
+| **Cache         |                 | ✓               | ✓               |
+| variables**     |                 |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
 |                 | Data Types:     | ✓               | ✓               |
 |                 | Boolean, SByte  |                 |                 |
@@ -103,13 +72,15 @@ OPC-UA Back-end dependent features: a comparison table
 +-----------------+-----------------+-----------------+-----------------+
 |                 | Variant Data    | ✓               | ✓               |
 |                 | Type            |                 |                 |
-|                 | (supporting the |                 |                 |
-|                 | data types      |                 |                 |
-|                 | listed above)   |                 |                 |
+|                 |                 |                 |                 |
+|                 |                 |                 |                 |
+|                 |                 |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
 |                 | Null Data Type  | ✓               | ✓               |
 +-----------------+-----------------+-----------------+-----------------+
-|                 | Access rights   | ✓               | x               |
+|                 | Arrays          | ✓               | ✓               |
++-----------------+-----------------+-----------------+-----------------+
+|                 | Access rights   | ✓               | ✓               |
 |                 | (r/w/rw         |                 |                 |
 |                 | control)        |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
@@ -117,8 +88,8 @@ OPC-UA Back-end dependent features: a comparison table
 |                 | mode for        |                 |                 |
 |                 | cache-variables |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
-| **Sou           |                 |                 | x               |
-| rce-variables** |                 |                 |                 |
+| **Source        |                 |                 | x               |
+| variables**     |                 |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
 |                 | Support for     | ✓               | x               |
 |                 | same data types |                 |                 |
@@ -143,20 +114,20 @@ OPC-UA Back-end dependent features: a comparison table
 |                 | Synchronous     | ✓               | ✓               |
 |                 | invocation      |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
-|                 | Asynchronous    | x               | x               |
+|                 | Asynchronous    | ✓               | x               |
 |                 | invocation      |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
-| **Calculated    |                 | (broken)        | x               |
-| items**         |                 |                 |                 |
+| **Calculated    |                 | ✓               | ✓               |
+| variables**     |                 |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
-| **Standardized  |                 | ✓               | x               |
+| **Standardized  |                 | ✓               | ✓               |
 | back-end        |                 |                 |                 |
 | configuration   |                 |                 |                 |
-| (Se             |                 |                 |                 |
-| rverConfig.xml) |                 |                 |                 |
+| ServerConfig.xml|                 |                 |                 |
 | **              |                 |                 |                 |
+|                 |                 |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
 
-| 
+|
 
-| 
+|
