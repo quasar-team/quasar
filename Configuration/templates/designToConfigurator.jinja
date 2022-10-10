@@ -83,7 +83,13 @@ static std::string mapSingleItemNodeFullName(std::string input)
   configure{{className}}(
     Configuration::{{className}}("{{instanceName}}"), // empty config
       nm,
-      {{parentNodeId}}); // parent node id
+      {{parentNodeId}} // parent nodeId
+      {% if designInspector.class_has_device_logic(className) %}
+        , {{parentDevice}} // class [{{className}}] has device logic, passing parent device
+      {% else %}
+        // no device logic for class [{{className}}], parent device not required.
+      {% endif %}      
+      );
 {% endmacro %}
 
 {#
