@@ -79,44 +79,11 @@ static std::string mapSingleItemNodeFullName(std::string input)
 {% endmacro %}
 
 {% macro writeConfigureObjectByDesign(className, instanceName, parentNodeId, parentDevice) %}
-  { // configure root INSTANTIATE BY DESIGN object: class [{{className}}] instance [{{instanceName}}]
-    // create empty configuration object for design instantiated object.
-    Configuration::{{className}} emptyConfig("{{instanceName}}");
-
-    // build address space side object
-    AddressSpace::AS{{className}} *asItemChildByDesign =
-    new AddressSpace::AS{{className}}(
-      {{parentNodeId}},
-      nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_{{className|upper}}),
+  // configure INSTANTIATE BY DESIGN child object: class [{{className}}] instance [{{instanceName}}]
+  configure{{className}}(
+    Configuration::{{className}}("{{instanceName}}"), // empty config
       nm,
-      emptyConfig);
-
-    {% if designInspector.class_has_device_logic(className) %}
-      // build device side object
-      {% if designInspector.get_parent(className) == None %}
-        Device::D{{className}} *dItemChildByDesign = new Device::D{{className}}(emptyConfig, nullptr);
-      {% else %}
-        Device::D{{className}} *dItemChildByDesign = new Device::D{{className}}(emptyConfig, {{parentDevice}});
-      {% endif %}
-
-      // link address space and device side objects
-      asItemChildByDesign->linkDevice( dItemChildByDesign );
-      // establish the full name of an object.
-      {% if designInspector.is_class_single_variable_node(className) %}
-        {
-          dItemChildByDesign->linkAddressSpace(
-            asItemChildByDesign,
-            mapSingleItemNodeFullName(asItemChildByDesign->nodeId().toString().toUtf8()) );
-        }
-      {% else %}
-        dItemChildByDesign->linkAddressSpace( asItemChildByDesign, asItemChildByDesign->nodeId().toString().toUtf8() );
-      {% endif %}
-      {{parentDevice}}->add(dItemChildByDesign);
-    {% else %}
-      // avoid unused variable warning (constructor above was required)
-      (void)*asItemChildByDesign;
-    {% endif %}
-  }
+      {{parentNodeId}}); // parent node id
 {% endmacro %}
 
 {#
