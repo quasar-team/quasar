@@ -38,7 +38,7 @@ jobs:
     - name: Create new folder
       run: |
         echo "Creating new folder ${{ env.VERSION_NAME }}"
-        mkdir -p /home/pmoschov/quasar/${{ env.VERSION_NAME }}
+        mkdir -p /home/quasar/quasar/${{ env.VERSION_NAME }}
 
     - name: Build HTML documentation
       run: |
@@ -65,20 +65,20 @@ jobs:
         cd "${GITHUB_WORKSPACE}/Documentation/_build/${{ env.VERSION_NAME }}"
 
         echo 'Removing old build'
-        rm -rf /home/pmoschov/quasar/${{ env.VERSION_NAME }}
+        rm -rf /home/quasar/quasar/${{ env.VERSION_NAME }}
         echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S rm -rf /usr/share/nginx/quasar/${{ env.VERSION_NAME }}
 
         echo 'Copying new build to local'
-        mkdir -p /home/pmoschov/quasar/${{ env.VERSION_NAME }}
-        cp -a . /home/pmoschov/quasar/${{ env.VERSION_NAME }}/
+        mkdir -p /home/quasar/quasar/${{ env.VERSION_NAME }}
+        cp -a . /home/quasar/quasar/${{ env.VERSION_NAME }}/
 
         echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S mkdir -p /usr/share/nginx/quasar/${{ env.VERSION_NAME }}
         if [ ${{ contains(env.VERSION_NAME, 'version') }} = true ]; then
           echo 'Copying to version folder'
-          sudo cp -r /home/pmoschov/quasar/${{ env.VERSION_NAME }} /usr/share/nginx/quasar/version
+          sudo cp -r /home/quasar/quasar/${{ env.VERSION_NAME }} /usr/share/nginx/quasar/version
         else
           echo 'Copying to latest folder'
-          sudo cp -r /home/pmoschov/quasar/${{ env.VERSION_NAME }} /usr/share/nginx/quasar
+          sudo cp -r /home/quasar/quasar/${{ env.VERSION_NAME }} /usr/share/nginx/quasar
         fi
 
         echo 'Reloading nginx'
@@ -91,16 +91,16 @@ jobs:
         cd "${GITHUB_WORKSPACE}/Documentation/_build/${{ env.VERSION_NAME }}"
         
         echo 'Removing old build'
-        rm -rf /home/pmoschov/quasar/latest
+        rm -rf /home/quasar/quasar/latest
         echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S rm -rf /usr/share/nginx/quasar/latest
         
         echo 'Copying new build to local'
-        mkdir -p /home/pmoschov/quasar/latest
-        cp -a . /home/pmoschov/quasar/latest/
+        mkdir -p /home/quasar/quasar/latest
+        cp -a . /home/quasar/quasar/latest/
         
         echo 'Copying to nginx folder'
         echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S mkdir -p /usr/share/nginx/quasar/latest
-        sudo cp -r /home/pmoschov/quasar/latest /usr/share/nginx/quasar
+        sudo cp -r /home/quasar/quasar/latest /usr/share/nginx/quasar
         
         echo 'Reloading nginx'
         echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S nginx -s reload
