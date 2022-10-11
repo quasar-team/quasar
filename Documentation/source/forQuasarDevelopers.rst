@@ -12,26 +12,28 @@ Notes for quasar developers...
 Notes for developers of quasar design transformations (either within quasar or extension modules)
 -------------------------------------------------------------------------------------------------
 
-| quasar switched to Jinja-based transforms as of release 1.4.0.
-| Some notes might be useful for quasar transforms developers and for
-  quasar extension modules (like
-  `UaObjects <https://github.com/quasar-team/UaoForQuasar>`__,
-  `Cacophony <https://github.com/quasar-team/Cacophony>`__ or
-  `Poverty <https://github.com/quasar-team/Poverty>`__).
+quasar switched to Jinja-based transforms as of release 1.4.0 (i.e. May 2020).
+
+The following notes might be useful for quasar transforms developers and for
+quasar extension modules, e.g.:
+
+- `UaObjects <https://github.com/quasar-team/UaoForQuasar>`__,
+- `Cacophony <https://github.com/quasar-team/Cacophony>`__,
+- `Poverty <https://github.com/quasar-team/Poverty>`__.
+
+Some rules:
 
 #. Both in quasar-supplied transforms (i.e. whatever comes with quasar
    itself) as well as with extension modules, you are invited to use the
-   **DesignInspector** and **Oracle** interfaces. You should not invent
+   ``DesignInspector`` and ``Oracle`` interfaces. You should not invent
    any method to open quasar design on your own.
 
 #. If you develop an extension module and want to perform design
    transformation there (note: not every quasar extension module does
-   this!)
-
-#. 
+   this!), then:
 
    #. you need some Python program in your extension module which will
-      call quasar tooling,
+      call quasar internals,
 
    #. you need to attach some Jinja2 transforms that do your thing (keep
       them in templates/ directory under your module),
@@ -41,15 +43,11 @@ Notes for developers of quasar design transformations (either within quasar or e
          C++).
          Example from actual transform generating C++: (note that indent
          level increases both with new Jinja control blocks as well as
-         with C++ blocks)
-
-         .. container:: mycode
+         with C++ blocks)::
 
             {% for sv in this.sourcevariable %}
-              {% if sv.get('addressSpaceRead') == 'asynchronous' or
-            sv.get('addressSpaceRead') == 'synchronous' %}
-                UaStatus D{{className}}::read{{sv.get('name')|capFirst}}
-            ()
+              {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
+                UaStatus D{{className}}::read{{sv.get('name')|capFirst}} ()
                 {
                   return OpcUa_BadNotImplemented;
                 }
@@ -59,35 +57,26 @@ Notes for developers of quasar design transformations (either within quasar or e
    #. if you need some in-Python processing which is difficult to do in
       Jinja, then the guildelines are:
 
-   #. 
-
-      #. write a function/method/lamda in your Python program (parent
-         point 1 above), e.g.:
-
-         .. container:: mycode
+      #. write a function/method/lambda in your Python program (parent
+         point 1 above), e.g.::
 
             def quasar_data_type_to_dpt_type_constant(quasar_data_type):
               return "my_type" + quasar_data_type # it's just an example
 
-      #. then we pass your function(s)/method(s)/lambda(s) using the
-         additionalParam argument:
-
-         .. container:: mycode
+      #. then pass your function(s)/method(s)/lambda(s) using the
+         additionalParam argument::
 
             additional_params = { 'mapper' :
-            quasar_data_type_to_dpt_type_constant }
-               transformDesign(
-                    os.path.join(cacophony_root, 'templates',
-            'designToDptCreation.jinja'), # path to Jinja transform
-                    outputFile=os.path.join(thisModuleName, 'generated',
-            'createDpts.ctl'),
-                    requiresMerge=False,
-                    astyleRun=True,
-                    additionalParam=\ **additional_params**)
+              quasar_data_type_to_dpt_type_constant }
+            transformDesign(
+              os.path.join(cacophony_root, 'templates', 'designToDptCreation.jinja'), # path to Jinja transform
+              outputFile=os.path.join(thisModuleName, 'generated', 'createDpts.ctl'),
+              requiresMerge=False,
+              astyleRun=True,
+              additionalParam=\ **additional_params**)
 
-      #. in the Jinja transform, you can use it this way:
 
-         .. container:: mycode
+      #. in the Jinja transform, you can use it this way::
 
             dynAppend(xxdepei, makeDynInt(0, {{(cv.get('dataType'))}}));
 
@@ -95,9 +84,7 @@ Notes for developers of quasar design transformations (either within quasar or e
          https://github.com/quasar-team/Cacophony/blob/master/generateStuff.py
 
 #. On debugging: if you want to print some information from Jinja
-   transforms, do it this way:
-
-   .. container:: mycode
+   transforms, do it this way::
 
       {{debug("WARNING: type is unsupported:", quasar_data_type)}}
 
@@ -106,40 +93,34 @@ Notes for developers of quasar design transformations (either within quasar or e
 Conventions regarding Python code for quasar tooling
 ----------------------------------------------------
 
-| The note here applies to people developing quasar scripting, like
-  quasar.py and other py scripts in the FrameworkInternals directory.
+The note here applies to people developing quasar scripting, like
+quasar.py and other py scripts in the FrameworkInternals directory.
 
 Indentation
 ~~~~~~~~~~~
 
-| Developers should follow
-  `PEP8 <https://www.python.org/dev/peps/pep-0008/#indentation>`__.
+Developers should follow
+PEP8 `<https://www.python.org/dev/peps/pep-0008/#indentation>`__.
 
-| Note that there is some tooling which can help maintain proper
-  indentation, for instance we recommend autopep8.
-| The way to invoke it might be:
-
-.. container:: mycode
+Note that there is some tooling which can help maintain proper
+ndentation, for instance we recommend autopep8.
+The way to invoke it might be::
 
    find . -name \\*.py -exec autopep8 --select E101,W291,W293 -i {} \\;
-
-| 
 
 Line ending encoding
 ~~~~~~~~~~~~~~~~~~~~
 
-| You should use LF line endings. You can use dos2unix if in need.
+You should use LF line endings. You can use dos2unix if in need.
 
 Encoding
 ~~~~~~~~
 
-| You should use UTF-8.
+You should use UTF-8.
 
 Shebang
 ~~~~~~~
 
-| You should use the following shebang:
-
-.. container:: mycode
+You should use the following shebang::
 
    #!/usr/bin/env python
