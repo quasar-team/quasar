@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<d:design projectShortName="OpcUaSampleServerNameChangeItInDesign" xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
+
+  <d:class name="DeviceInformation" defaultInstanceName="deviceInformation">
+    <d:devicelogic/>
+    <d:cachevariable name="status" dataType="OpcUa_Int32" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" initialValue="0" initialStatus="OpcUa_BadWaitingForInitialData" nullPolicy="nullForbidden"/>
+  </d:class>
+
+  <d:class name="Controller" defaultInstanceName="controller">
+    <d:devicelogic/>
+    <d:hasobjects instantiateUsing="design" class="DeviceInformation" minOccurs="1" maxOccurs="1">
+      <d:object name="deviceInformation"/>
+    </d:hasobjects>
+  </d:class>
+
+  <d:class name="Rectifier">
+    <d:hasobjects instantiateUsing="design" class="DeviceInformation" minOccurs="1" maxOccurs="1">
+      <d:object name="deviceInformation"/>
+    </d:hasobjects>
+  </d:class>
+
+  <d:class name="System" defaultInstanceName="system">
+    <d:devicelogic/>
+    <d:hasobjects instantiateUsing="design" class="Controller" minOccurs="1" maxOccurs="1">
+      <d:object name="controller"/>
+    </d:hasobjects>
+    <d:hasobjects instantiateUsing="design" class="Rectifier" minOccurs="3" maxOccurs="3">
+      <d:object name="rectifier1"/>
+      <d:object name="rectifier2"/>
+      <d:object name="rectifier3"/>
+    </d:hasobjects>
+    <d:hasobjects instantiateUsing="design" class="DeviceInformation" minOccurs="1" maxOccurs="1">
+      <d:object name="deviceInformation"/>
+    </d:hasobjects>
+  </d:class>
+
+  <d:root>
+    <d:hasobjects instantiateUsing="design" class="System" minOccurs="1" maxOccurs="1">
+      <d:object name="system"/>
+    </d:hasobjects>
+  </d:root>
+</d:design>
