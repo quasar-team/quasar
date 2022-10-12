@@ -123,4 +123,4 @@ Shebang
 
 You should use the following shebang::
 
-   #!/usr/bin/env python
+   #!/usr/bin/env python3
