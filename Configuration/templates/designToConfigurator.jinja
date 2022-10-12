@@ -78,18 +78,36 @@ static std::string mapSingleItemNodeFullName(std::string input)
   )
 {% endmacro %}
 
-{% macro writeConfigureObjectByDesign(className, instanceName, parentNodeId, parentDevice) %}
-  // configure INSTANTIATE BY DESIGN child object: class [{{className}}] instance [{{instanceName}}]
-  configure{{className}}(
-    Configuration::{{className}}("{{instanceName}}"), // empty config
-      nm,
-      {{parentNodeId}} // parent nodeId
-      {% if designInspector.class_has_device_logic(className) %}
-        , {{parentDevice}} // class [{{className}}] has device logic, passing parent device
+{% macro writeConfigureObjectByDesign(className, instanceName, parentNodeId, parentClassName, parentDevice) %}
+  {
+    // configure instatiate by design child object: class [{{className}}], parent class [{{parentClassName}}], instance [{{instanceName}}]
+    {% if designInspector.get_class_default_instance_name(className) %}
+      Configuration::{{className}} xmlObj; // empty config
+      xmlObj.name("{{instanceName}}"); // set instance name
+    {% else %}
+      Configuration::{{className}} xmlObj("{{instanceName}}"); // empty config
+    {% endif %}
+    {% if not designInspector.class_has_device_logic(className) %}
+      // class [{{className}}] no device logic; address space only
+      configure{{className}} (xmlObj, nm, {{parentNodeId}});
+    {% else %}
+      {% if designInspector.class_has_legit_device_parent(className) %}
+        // devices of [{{className}}] have unique device parent type [{{parentClassName}}]
+        auto pDevice = configure{{className}}(xmlObj, nm, {{parentNodeId}}, {{parentDevice}});
       {% else %}
-        // no device logic for class [{{className}}], parent device not required.
-      {% endif %}      
-      );
+        // devices of [{{className}}] have ambiguous device parent type
+        auto pDevice = configure{{className}}(xmlObj, nm, {{parentNodeId}}, nullptr);
+      {% endif %}
+
+      {% if ((designInspector.class_has_device_logic(parentClassName)) or ('Root' == parentClassName)) %}
+        // register child - device (class [{{className}}]) has device parent (class [{{parentClassName}}])
+        {{parentDevice}}->add(pDevice);
+      {% else %}
+        // register orphan - device (class [{{className}}]) has zero device logic parent class [{{parentClassName}}]
+        Device::D{{className}}::registerOrphanedObject(pDevice);
+      {% endif %}
+    {% endif %}
+  }
 {% endmacro %}
 
 {#
@@ -212,7 +230,7 @@ static std::string mapSingleItemNodeFullName(std::string input)
   {% for hasObjectElement in designInspector.objectify_has_objects(className, "[@instantiateUsing='design']") %}
     {% set objClass = hasObjectElement.get('class') %}
     {% for obj in hasObjectElement.getchildren() %}
-      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asItem->nodeId()", "dItem")}}
+      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asItem->nodeId()", className, "dItem")}}
     {% endfor %}
   {% endfor %}
 
@@ -278,7 +296,7 @@ bool configure (std::string fileName, AddressSpace::ASNodeManager *nm, ConfigXml
   {% for innerObj in innerObjectsByDesign %}
     {% set objClass = innerObj.get('class') %}
     {% for obj in innerObj.getchildren() %}
-      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asRootNodeId", "dRoot")}}
+      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asRootNodeId", "Root", "dRoot")}}
     {% endfor %}
   {% endfor %}
 
