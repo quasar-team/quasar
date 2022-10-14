@@ -121,6 +121,10 @@ Recommended:
 Quick setup hints for CentOS 8 (the most standard way)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#. Install latest epel realease
+
+   `` sudo dnf install epel-release``
+
 #. Install packages from CentOS 8 default repos:
 
    `` sudo dnf install gcc-c++ gdb boost-devel boost-regex
