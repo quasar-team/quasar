@@ -52,3 +52,10 @@ table.sortable .tr_phase {
     text-align: center;
     font-style: italic;
 }
+
+.wy-table-responsive table td {
+  white-space: normal !important;
+}
+.wy-table-responsive {
+  overflow: visible !important;
+}

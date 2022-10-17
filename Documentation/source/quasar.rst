@@ -3,8 +3,7 @@ quasar
 
 The quick opcua server generation framework.
 
-For quick start-up, see our `YouTube
-  tutorial <https://www.youtube.com/watch?v=v212aPmbahM&list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b>`__.
+For quick start-up, see our `YouTube tutorial <https://www.youtube.com/watch?v=v212aPmbahM&list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b>`__
 
 | Primary contact: quasar-developers@cern.ch
 
@@ -123,18 +122,18 @@ Quick setup hints for CentOS 8 (the most standard way)
 
 #. Install latest epel realease
 
-   `` sudo dnf install epel-release``
+   ``sudo dnf install epel-release``
 
 #. Install packages from CentOS 8 default repos:
 
-   `` sudo dnf install gcc-c++ gdb boost-devel boost-regex
-      boost-program-options boost-signals cmake kdiff3 graphviz valgrind
-      doxygen rpm-build xsd openssl-devel libxml2-devel xerces-c-devel
-      python3-colorama python3-jinja2``
+   ``sudo dnf install gcc-c++ gdb boost-devel boost-regex
+   boost-program-options boost-signals cmake kdiff3 graphviz valgrind
+   doxygen rpm-build xsd openssl-devel libxml2-devel xerces-c-devel
+   python3-colorama python3-jinja2``
 
 #. Install packages from epel repo (by default enabled in CentOS 8):
 
-   `` sudo yum install astyle``
+   ``sudo yum install astyle``
 
 #. Download UaExpert for an universal test&dev tool for OPC-UA.
 
@@ -147,11 +146,11 @@ Quick setup hints for CC7/CentOs7 users
    Once installed, install Eclipse add-ons for XML editors
 #. Issue this to install software from the official CC7 RPM repos:
 
-   `` sudo yum install gcc-c++ gdb boost-devel boost-regex
-      boost-program-options boost-signals cmake3 kdiff3 graphviz
-      valgrind doxygen rpm-build xsd openssl-devel libxml2-devel
-      xerces-c-devel libgit2 libgit2-devel python36-jinja2 python36-lxml
-      python36-colorama``
+   ``sudo yum install gcc-c++ gdb boost-devel boost-regex
+   boost-program-options boost-signals cmake3 kdiff3 graphviz
+   valgrind doxygen rpm-build xsd openssl-devel libxml2-devel
+   xerces-c-devel libgit2 libgit2-devel python36-jinja2 python36-lxml
+   python36-colorama``
 
 #. Deploy Python's pygit2 (recommended)
    *WARNING: the version of pygit2 should match the version of
