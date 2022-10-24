@@ -66,13 +66,13 @@ jobs:
 
         echo 'Removing old build'
         rm -rf /home/quasar/quasar/${{ env.VERSION_NAME }}
-        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S rm -rf /usr/share/nginx/quasar/${{ env.VERSION_NAME }}
+        echo "${{ secrets.QUASAR_PASS }}" | sudo -S rm -rf /usr/share/nginx/quasar/${{ env.VERSION_NAME }}
 
         echo 'Copying new build to local'
         mkdir -p /home/quasar/quasar/${{ env.VERSION_NAME }}
         cp -a . /home/quasar/quasar/${{ env.VERSION_NAME }}/
 
-        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S mkdir -p /usr/share/nginx/quasar/${{ env.VERSION_NAME }}
+        echo "${{ secrets.QUASAR_PASS }}" | sudo -S mkdir -p /usr/share/nginx/quasar/${{ env.VERSION_NAME }}
         if [ ${{ contains(env.VERSION_NAME, 'version') }} = true ]; then
           echo 'Copying to version folder'
           sudo cp -r /home/quasar/quasar/${{ env.VERSION_NAME }} /usr/share/nginx/quasar/version
@@ -82,7 +82,7 @@ jobs:
         fi
 
         echo 'Reloading nginx'
-        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S nginx -s reload
+        echo "${{ secrets.QUASAR_PASS }}" | sudo -S nginx -s reload
 
     - name: Update latest
       if: ${{ github.event.release.tag_name != '' }}
@@ -92,23 +92,23 @@ jobs:
         
         echo 'Removing old build'
         rm -rf /home/quasar/quasar/latest
-        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S rm -rf /usr/share/nginx/quasar/latest
+        echo "${{ secrets.QUASAR_PASS }}" | sudo -S rm -rf /usr/share/nginx/quasar/latest
         
         echo 'Copying new build to local'
         mkdir -p /home/quasar/quasar/latest
         cp -a . /home/quasar/quasar/latest/
         
         echo 'Copying to nginx folder'
-        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S mkdir -p /usr/share/nginx/quasar/latest
+        echo "${{ secrets.QUASAR_PASS }}" | sudo -S mkdir -p /usr/share/nginx/quasar/latest
         sudo cp -r /home/quasar/quasar/latest /usr/share/nginx/quasar
         
         echo 'Reloading nginx'
-        echo "${{ secrets.PMOSCHOV_PASS }}" | sudo -S nginx -s reload
+        echo "${{ secrets.QUASAR_PASS }}" | sudo -S nginx -s reload
 
     - name: Update versions
       run: |
         cd "${GITHUB_WORKSPACE}"
-        PMOSCHOV_PASS="${{ secrets.PMOSCHOV_PASS }}" python3 ./Documentation/tools/update_versions.py
+        QUASAR_PASS="${{ secrets.QUASAR_PASS }}" python3 ./Documentation/tools/update_versions.py
 
     - name: Update EOS web site
       if: ${{ env.VERSION_NAME == 'latest' }}
