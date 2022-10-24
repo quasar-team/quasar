@@ -5,7 +5,7 @@ import json
 PMOSCHOV_PASS = os.environ.get('PMOSCHOV_PASS')
 
 JSON_FILE = './Documentation/source/_static/versions.json'
-JSON_FILE_LOCAL = '/home/pmoschov/quasar/versions.json'
+JSON_FILE_LOCAL = '/home/quasar/quasar/versions.json'
 
 VERSIONS_FOLDER = '/usr/share/nginx/quasar/version'
 EOS_VERSIONS_FOLDER = '/eos/project-q/quasar/www/version'
