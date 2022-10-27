@@ -125,6 +125,18 @@
         </div>
         <br/>
       {% endif %}
+      {% if designInspector.is_class_always_singleton(className) %}
+        <div style="background-color:#ffeedd">NOTE
+          This class is a singleton, do not declare it more than once.
+        </div>
+        <br/>
+        {% if designInspector.get_class_default_instance_name(className) != None %}
+          <div style="background-color:#ffeedd">NOTE
+            The <code>name</code> attribute in this class is defaulted to <code>{{designInspector.get_class_default_instance_name(className)}}</code>, don't waste time specifying it in the config file.
+          </div>
+          <br/>
+        {% endif %}
+      {% endif %}
 
       Configuration attributes:
       <ul>
