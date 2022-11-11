@@ -1,0 +1,11 @@
+Test case aims to exercise instantiation by design
+e.g. in Design.xml <d:hasobjects instantiateUsing="design" class="<YOUR_CLASS>"
+
+Aims to exercise all possible options regarding handling 
+* address space only classes (classes with no <devicelogic>).
+* orphan device classes (parent class has no <devicelogic>).
+* ambiguous parent device classes (class is child of multiple parent types)
+
+Pass criteria
+-------------
+Test server instance matches reference nodeset

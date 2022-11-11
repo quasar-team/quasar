@@ -78,43 +78,34 @@ static std::string mapSingleItemNodeFullName(std::string input)
   )
 {% endmacro %}
 
-{% macro writeConfigureObjectByDesign(className, instanceName, parentNodeId, parentDevice) %}
-  { // configure root INSTANTIATE BY DESIGN object: class [{{className}}] instance [{{instanceName}}]
-    // create empty configuration object for design instantiated object.
-    Configuration::{{className}} emptyConfig("{{instanceName}}");
-
-    // build address space side object
-    AddressSpace::AS{{className}} *asItemChildByDesign =
-    new AddressSpace::AS{{className}}(
-      {{parentNodeId}},
-      nm->getTypeNodeId(AddressSpace::ASInformationModel::AS_TYPE_{{className|upper}}),
-      nm,
-      emptyConfig);
-
-    {% if designInspector.class_has_device_logic(className) %}
-      // build device side object
-      {% if designInspector.get_parent(className) == None %}
-        Device::D{{className}} *dItemChildByDesign = new Device::D{{className}}(emptyConfig, nullptr);
-      {% else %}
-        Device::D{{className}} *dItemChildByDesign = new Device::D{{className}}(emptyConfig, {{parentDevice}});
-      {% endif %}
-
-      // link address space and device side objects
-      asItemChildByDesign->linkDevice( dItemChildByDesign );
-      // establish the full name of an object.
-      {% if designInspector.is_class_single_variable_node(className) %}
-        {
-          dItemChildByDesign->linkAddressSpace(
-            asItemChildByDesign,
-            mapSingleItemNodeFullName(asItemChildByDesign->nodeId().toString().toUtf8()) );
-        }
-      {% else %}
-        dItemChildByDesign->linkAddressSpace( asItemChildByDesign, asItemChildByDesign->nodeId().toString().toUtf8() );
-      {% endif %}
-      {{parentDevice}}->add(dItemChildByDesign);
+{% macro writeConfigureObjectByDesign(className, instanceName, parentNodeId, parentClassName, parentDevice) %}
+  {
+    // configure instatiate by design child object: class [{{className}}], parent class [{{parentClassName}}], instance [{{instanceName}}]
+    {% if designInspector.get_class_default_instance_name(className) %}
+      Configuration::{{className}} xmlObj; // empty config
+      xmlObj.name("{{instanceName}}"); // set instance name
     {% else %}
-      // avoid unused variable warning (constructor above was required)
-      (void)*asItemChildByDesign;
+      Configuration::{{className}} xmlObj("{{instanceName}}"); // empty config
+    {% endif %}
+    {% if not designInspector.class_has_device_logic(className) %}
+      // class [{{className}}] no device logic; address space only
+      configure{{className}} (xmlObj, nm, {{parentNodeId}});
+    {% else %}
+      {% if designInspector.class_has_legit_device_parent(className) %}
+        // devices of [{{className}}] have unique device parent type [{{parentClassName}}]
+        auto pDevice = configure{{className}}(xmlObj, nm, {{parentNodeId}}, {{parentDevice}});
+      {% else %}
+        // devices of [{{className}}] have ambiguous device parent type
+        auto pDevice = configure{{className}}(xmlObj, nm, {{parentNodeId}}, nullptr);
+      {% endif %}
+
+      {% if ((designInspector.class_has_device_logic(parentClassName)) or ('Root' == parentClassName)) %}
+        // register child - device (class [{{className}}]) has device parent (class [{{parentClassName}}])
+        {{parentDevice}}->add(pDevice);
+      {% else %}
+        // register orphan - device (class [{{className}}]) has zero device logic parent class [{{parentClassName}}]
+        Device::D{{className}}::registerOrphanedObject(pDevice);
+      {% endif %}
     {% endif %}
   }
 {% endmacro %}
@@ -239,7 +230,7 @@ static std::string mapSingleItemNodeFullName(std::string input)
   {% for hasObjectElement in designInspector.objectify_has_objects(className, "[@instantiateUsing='design']") %}
     {% set objClass = hasObjectElement.get('class') %}
     {% for obj in hasObjectElement.getchildren() %}
-      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asItem->nodeId()", "dItem")}}
+      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asItem->nodeId()", className, "dItem")}}
     {% endfor %}
   {% endfor %}
 
@@ -305,7 +296,7 @@ bool configure (std::string fileName, AddressSpace::ASNodeManager *nm, ConfigXml
   {% for innerObj in innerObjectsByDesign %}
     {% set objClass = innerObj.get('class') %}
     {% for obj in innerObj.getchildren() %}
-      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asRootNodeId", "dRoot")}}
+      {{writeConfigureObjectByDesign(objClass, obj.get('name'), "asRootNodeId", "Root", "dRoot")}}
     {% endfor %}
   {% endfor %}
 

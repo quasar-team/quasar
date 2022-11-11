@@ -1,26 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- from Michael's LXI server. Only taken the part of object instantiation. -->
-<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="TestProject" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
-  <d:class name="StatusPs">
+<d:design projectShortName="OpcUaSampleServerNameChangeItInDesign" xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
+
+  <d:class name="DeviceInformation" defaultInstanceName="deviceInformation">
     <d:devicelogic/>
-    <d:cachevariable dataType="OpcUa_Boolean" name="STATUS_PS_CH_ON" nullPolicy="nullAllowed" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" initialStatus="OpcUa_BadWaitingForInitialData">
-      </d:cachevariable>
-    <d:cachevariable dataType="OpcUa_Boolean" name="STATUS_PS_OVVS" nullPolicy="nullAllowed" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" initialStatus="OpcUa_BadWaitingForInitialData">
-      </d:cachevariable>
+    <d:cachevariable name="status" dataType="OpcUa_Int32" addressSpaceWrite="forbidden" initializeWith="valueAndStatus" initialValue="0" initialStatus="OpcUa_BadWaitingForInitialData" nullPolicy="nullForbidden"/>
   </d:class>
-  <!-- these are the parameters, they have a get/set, and each parameter has a couple
-	of methods with their mapped commands.  -->
-  <d:class name="PowerSupply">
+
+  <d:class name="Controller" defaultInstanceName="controller">
     <d:devicelogic/>
-    <d:configentry dataType="OpcUa_UInt32" name="port"/>
-    <d:hasobjects instantiateUsing="design" class="StatusPs" minOccurs="1" maxOccurs="1">
-      <d:object name="STATUS_PS"/>
+    <d:hasobjects instantiateUsing="design" class="DeviceInformation" minOccurs="1" maxOccurs="1">
+      <d:object name="deviceInformation"/>
     </d:hasobjects>
   </d:class>
-  <d:root>
-    <!-- the power supplies are just identified by their ipAddress -->
-    <d:hasobjects instantiateUsing="configuration" class="PowerSupply"  maxOccurs="100">
 
-   </d:hasobjects>
+  <d:class name="Rectifier">
+    <d:hasobjects instantiateUsing="design" class="DeviceInformation" minOccurs="1" maxOccurs="1">
+      <d:object name="deviceInformation"/>
+    </d:hasobjects>
+  </d:class>
+
+  <d:class name="System" defaultInstanceName="system">
+    <d:devicelogic/>
+    <d:hasobjects instantiateUsing="design" class="Controller" minOccurs="1" maxOccurs="1">
+      <d:object name="controller"/>
+    </d:hasobjects>
+    <d:hasobjects instantiateUsing="design" class="Rectifier" minOccurs="3" maxOccurs="3">
+      <d:object name="rectifier1"/>
+      <d:object name="rectifier2"/>
+      <d:object name="rectifier3"/>
+    </d:hasobjects>
+    <d:hasobjects instantiateUsing="design" class="DeviceInformation" minOccurs="1" maxOccurs="1">
+      <d:object name="deviceInformation"/>
+    </d:hasobjects>
+  </d:class>
+
+  <d:root>
+    <d:hasobjects instantiateUsing="design" class="System" minOccurs="1" maxOccurs="1">
+      <d:object name="system"/>
+    </d:hasobjects>
   </d:root>
 </d:design>
