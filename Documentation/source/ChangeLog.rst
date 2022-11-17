@@ -23,6 +23,84 @@ ChangeLog
 	          </td>
 	        </tr>
 			<tr>
+				<td valign="top">1.5.15<font size="-1"><br>
+					(17-Nov-2022)</font><br>
+				</td>
+				<td valign="top">Back-fixes for OPCUA-2767 and OPCUA-2779
+					which turned out to be broken.<br>
+				</td>
+				<td valign="top">Your configuration schema is now stronger
+					regarding isKey usage; for duplicate keys previously you'd
+					only learn at runtime, now you also learn by the schema!<br>
+				</td>
+				<td valign="top">Bug
+					<br>
+					<ul>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2135'>OPCUA-2135</a>]
+						- Configurator broken for embedded objects of design-instantiation
+					</li>
+					</ul>
+					<br>
+					New Feature
+					<br>
+					<ul>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2829'>OPCUA-2829</a>]
+						- RTD web server in quasar
+					</li>
+					</ul>
+					<br>
+					Task
+					<br>
+					<ul>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2827'>OPCUA-2827</a>]
+						- quasar docs review: &quot;main&quot;
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2828'>OPCUA-2828</a>]
+						- quasar docs review: alternative backends
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2830'>OPCUA-2830</a>]
+						- Update Changelog manually for the last time from html to rst
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2854'>OPCUA-2854</a>]
+						- config doc: notification that given element can&#39;t be present more than once, and the notification of defaulted instance name
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2863'>OPCUA-2863</a>]
+						- Fix quasar notes and external files paths
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2864'>OPCUA-2864</a>]
+						- Pointer to quasar.docs in quasar github main page
+					</li>
+					</ul>
+					<br>
+					Improvement
+					<br>
+					<ul>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2833'>OPCUA-2833</a>]
+						- Move RTD Github actions to quasar service account and paths
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2835'>OPCUA-2835</a>]
+						- Information missing about EPEL dependencies
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2856'>OPCUA-2856</a>]
+						- Pull in quasar LogIt with updated fixes
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2860'>OPCUA-2860</a>]
+						- Create quasar service account secret and fix references
+					</li>
+					</ul>
+				</td>
+				<td valign="top">quasar test suite notes:<br>
+					<ol>
+					<li>open62541_test_methods not passing for the method
+						arguments behaving differently from UASDK. This will be
+						<a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+						investigated</a>.</li>
+					<li> StandardMetaData is ignored from testing in all tests
+						due to some existing noncompliance.</li>
+					</ol>
+				</td>
+			</tr>
+			<tr>
 				<td valign="top">1.5.14<font size="-1"><br>
 					(03-Aug-2022)</font><br>
 				</td>
@@ -305,26 +383,6 @@ ChangeLog
 	              <li>open62541_test_methods not passing for the method
 	                arguments behaving differently from UASDK. This will be
 	                <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	                  investigated</a>.</li>
 	              <li> StandardMetaData is ignored from testing in all tests
 	                due to some existing noncompliance.</li>
@@ -366,26 +424,6 @@ ChangeLog
 	              <li>open62541_test_methods not passing for the method
 	                arguments behaving differently from UASDK. This will be
 	                <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	                  investigated</a>.</li>
 	              <li> StandardMetaData is ignored from testing in all tests
 	                due to some existing noncompliance.</li>
@@ -434,26 +472,6 @@ ChangeLog
 	              <li>open62541_test_methods not passing for the method
 	                arguments behaving differently from UASDK. This will be
 	                <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	                  investigated</a>.</li>
 	              <li> StandardMetaData is ignored from testing in all tests
 	                due to some existing noncompliance.</li>
@@ -504,26 +522,6 @@ ChangeLog
 	              <li>open62541_test_methods not passing for the method
 	                arguments behaving differently from UASDK. This will be
 	                <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	                  investigated</a>.</li>
 	              <li> StandardMetaData is ignored from testing in all tests
 	                due to some existing noncompliance.</li>
@@ -600,26 +598,6 @@ ChangeLog
 	              <li>open62541_test_methods not passing for the method
 	                arguments behaving differently from UASDK. This will be
 	                <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	                  investigated</a>.</li>
 	              <li> StandardMetaData is ignored from testing in all tests
 	                due to some existing noncompliance.<br>
