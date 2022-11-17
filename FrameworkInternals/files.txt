@@ -411,7 +411,7 @@
         },
         "files": {
             "designToConfigDocumentationHtml.jinja": {
-                "md5": "9172a8fc650a5446b0ec8dff9c6582e3",
+                "md5": "3d966ea5f986e99ec9ae777c86b39456",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigValidator.jinja": {
@@ -423,7 +423,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
-                "md5": "ea6c2bee0ac3d0aff5e5f68949a67d91",
+                "md5": "5a92d5545dc9f4e8b5fde31c6a3cd233",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "5defbb1ef5121092d4c45515e7327657",
+                "md5": "8946bbec9e9ab61bee1188b138b22d1d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -580,7 +580,7 @@
             },
             "ChangeLog.html": {
                 "install": "overwrite",
-                "md5": "75b505c7885438889f1e4c1a07707b15",
+                "md5": "a892e93258bcc48216300023db293307",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -966,7 +966,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "LogRecord.cpp": {
-                "md5": "6fb5fe9f9f9dfc38eddd9e1f35704ffe",
+                "md5": "0570669c57b411f169dfe26dd19fe197",
                 "use_defaults": "file_defaults_of_directory"
             },
             "LogSinks.cpp": {
@@ -1288,7 +1288,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "04517706ec1874a97176f6a18a4defe1",
+                "md5": "94011778a31047a699106213118bb221",
                 "must_be_versioned": true,
                 "must_exist": true
             },
