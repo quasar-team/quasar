@@ -305,7 +305,10 @@ UaStatus SourceVariables_spawnIoJobRead (
 )
 {
   if (! sourceVariableThreads)
-    throw std::runtime_error("Attempted Source Variable operation, but Source Variable threads are not up.");
+  {
+    LOG(Log::ERR) << "Refusing source variable operation, because source variable threads are not up. ";
+    return OpcUa_BadOutOfService;
+  }
   switch (jobId)
   {
     {% for className in designInspector.get_names_of_all_classes() %}
@@ -365,7 +368,10 @@ UaStatus SourceVariables_spawnIoJobWrite (
 )
 {
   if (! sourceVariableThreads)
-  throw std::runtime_error("Attempted Source Variable operation, but Source Variable threads are not up.");
+  {
+    LOG(Log::ERR) << "Refusing source variable operation, because source variable threads are not up. ";
+    return OpcUa_BadOutOfService;
+  }
   switch (jobId)
   {
     {% for className in designInspector.get_names_of_all_classes() %}
