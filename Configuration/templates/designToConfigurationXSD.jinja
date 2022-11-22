@@ -148,6 +148,15 @@
       </xs:simpleType>
     </xs:attribute>
     <xs:attribute name="initialValue" type="xs:string" use="optional"/>
+    <xs:attribute name="accessLevel" use="optional" default="RW">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="R"/>
+          <xs:enumeration value="RW"/>
+          <xs:enumeration value="W"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
   </xs:complexType>
  
 {% for className in designInspector.get_names_of_all_classes() %}
