@@ -76,7 +76,7 @@ def __print_post_install_notes():
     print(f'Welcome to quasar {Style.BRIGHT}{get_quasar_version()}{Style.RESET_ALL} !')
     print()
     print('For reference on using quasar see:')
-    print('1. Documentation/quasar.html (from your current directory),')
+    print('1. Webpage: http://quasar.docs.cern.ch,')
     print('2. YouTube tutorials: https://www.youtube.com/watch?v=v212aPmbahM&list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b')
     print('3. Wiki on our GitHub page: https://github.com/quasar-team/quasar/wiki')
     print('')
