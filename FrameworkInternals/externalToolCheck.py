@@ -40,7 +40,7 @@ from commandMap import getCommand
 from quasarExceptions import WrongReturnValue
 from colorama import Fore, Back, Style
 
-StandardMessage = 'Check Documentation/quasar.html for instructions'
+StandardMessage = 'Check the website https://quasar.docs.cern.ch for instructions'
 
 def checkExecutableExists(executableKeyName, doesNotExistErrorMessage, executableArgument='-h'):
     errorMessage = (
