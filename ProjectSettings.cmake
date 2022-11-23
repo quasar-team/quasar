@@ -1,7 +1,7 @@
-## ----------------------------------------------------
-## Please see Documentation/quasarBuildSystem.html for
-## information how to use this file.
-## ----------------------------------------------------
+## -------------------------------------------------------------
+## Please see http://quasar.docs.cern.ch/quasarBuildSystem.html
+## for information how to use this file.
+## -------------------------------------------------------------
 
 set(CUSTOM_SERVER_MODULES )
 set(EXECUTABLE OpcUaServer)

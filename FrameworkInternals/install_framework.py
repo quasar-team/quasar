@@ -101,7 +101,7 @@ def upgradeProject(destination):
     target_quasar_version = get_quasar_version()
     print((f'You are upgrading from version {Style.BRIGHT}{Fore.GREEN}{incumbent_quasar_version}{Style.RESET_ALL}'
            f' to {Style.BRIGHT}{Fore.GREEN}{target_quasar_version}{Style.RESET_ALL}. \n'
-           f"It is advised that you read quasar's Documentation/ChangeLog.html and check what "
+           f"It is advised that you read quasar's http://quasar.docs.cern.ch/ChangeLog.html and check what "
            f'needs to be done for upgrade between current and target version.'))
     yn = yes_or_no('Have you read the changelog and understood the remarks and want to upgrade?')
     if yn == 'n':
