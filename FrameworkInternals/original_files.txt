@@ -523,76 +523,13 @@
     },
     "Documentation": {
         "files": {
-            "AlternativeBackends.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "ChangeLog.html": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "DesignManual.html": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "Doxyfile": {
                 "install": "ask_to_merge",
                 "md5": "check",
                 "must_be_versioned": true,
                 "must_exist": true
             },
-            "UserDefinedCommandLineParameters.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "UserDefinedRuntimeConfigurationModification.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "WindowsSetup.html": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "diagram.png": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "enice_win_configuration.cmake": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "quasar.html": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "quasarCommands.html": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "transformations.pdf": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "youtube_links.html": {
                 "install": "overwrite",
                 "md5": "check",
                 "must_be_versioned": true,

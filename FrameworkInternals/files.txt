@@ -147,7 +147,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "FreeVariablesEngine.cpp": {
-                "md5": "655bf753ed02d46320f75574c61bf6f4",
+                "md5": "4eaed7887d1312926c49304a2a95cc80",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -186,7 +186,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesBody.jinja": {
-                "md5": "3a81901fa4c27b7f1214a5489774894b",
+                "md5": "1a5ba0461d724eb1218cf3180d34c500",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesHeader.jinja": {
@@ -419,7 +419,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurationXSD.jinja": {
-                "md5": "4a1185e7d9055c70dc6626a6c093da41",
+                "md5": "7c17372e89b25a51e6095817a056913c",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
@@ -573,78 +573,15 @@
     },
     "Documentation": {
         "files": {
-            "AlternativeBackends.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "ChangeLog.html": {
-                "install": "overwrite",
-                "md5": "a892e93258bcc48216300023db293307",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "DesignManual.html": {
-                "install": "overwrite",
-                "md5": "c6d41c25769ca569097dc8a494f77554",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "Doxyfile": {
                 "install": "ask_to_merge",
                 "md5": "e3b7e170213293a2d316c14af04ccc7f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
-            "UserDefinedCommandLineParameters.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "UserDefinedRuntimeConfigurationModification.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "WindowsSetup.html": {
-                "install": "overwrite",
-                "md5": "3e42c37ba86957ab080f49ef7d774075",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "diagram.png": {
-                "install": "overwrite",
-                "md5": "e6c4149e7e27922ff30a4515e0f5c01b",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "enice_win_configuration.cmake": {
-                "install": "overwrite",
-                "md5": "9e412dee018c33142380e96c50310a4c",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "quasar.html": {
-                "install": "overwrite",
-                "md5": "3f2a75d0ef8aa34f7eae7c6c812dc180",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "quasarCommands.html": {
                 "install": "overwrite",
                 "md5": "b0ef9a8041a0d8f98b7f47358f7ae5fe",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "transformations.pdf": {
-                "install": "overwrite",
-                "md5": "276020b9e012b694d1456538851809b9",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "youtube_links.html": {
-                "install": "overwrite",
-                "md5": "582a09eb71e2fa388e22096b65c2dd94",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -747,7 +684,7 @@
             },
             "default_configuration.cmake": {
                 "install": "overwrite",
-                "md5": "e63f3a5aa78af28b84e1f4a9cdb2f6c9",
+                "md5": "a5e9979a8dc3a4353ebde4d84ae61bad",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -771,7 +708,7 @@
             },
             "externalToolCheck.py": {
                 "install": "overwrite",
-                "md5": "630fe5596303e72d22f167b70c506180",
+                "md5": "d9ba9b6038f6bb2191bc48d1793a868e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -794,7 +731,7 @@
             },
             "install_framework.py": {
                 "install": "overwrite",
-                "md5": "a751091fd34cc134262d654e6a1b85bb",
+                "md5": "efb56a85d9b7c16dab3970a21a4df3c4",
                 "must_be_versioned": true,
                 "must_exist": true
             },
