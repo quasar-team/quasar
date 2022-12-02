@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "8946bbec9e9ab61bee1188b138b22d1d",
+                "md5": "327083852995fd1eaa29058b0defbbb3",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1225,7 +1225,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "94011778a31047a699106213118bb221",
+                "md5": "7b5a4e25fc9f3d2097431221cc38f32e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1266,7 +1266,7 @@
         "files": {
             "BaseQuasarServer.cpp": {
                 "install": "overwrite",
-                "md5": "5fb6a4f56dcef588dea26c0860c93d39",
+                "md5": "290c6021ad327860a52695dae028e3e4",
                 "must_be_versioned": true,
                 "must_exist": true
             },
