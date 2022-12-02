@@ -22,6 +22,57 @@ ChangeLog
 	          <td valign="top"><strong>Testing outcome</strong><br>
 	          </td>
 	        </tr>
+
+					<tr>
+
+					<td valign="top">1.5.16<font size="-1"><br>
+						(02-Dec-2022)</font><br>
+					</td>
+					<td valign="top">Point release with different incremental updates<br>
+					</td>
+					<td valign="top"><br>(none known)
+					</td>
+					<td valign="top">
+
+					     Task<br/>
+
+					<ul>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2844'>OPCUA-2844</a>] -         Clean up deprecated html documentation files
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2851'>OPCUA-2851</a>] -           what():  Attempted Source Variable operation, but Source Variable threads are not up.
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2870'>OPCUA-2870</a>] -         FreeVariable R/W controls in the config
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2898'>OPCUA-2898</a>] -         Central exception catch: print type
+					</li>
+					</ul>
+
+					        Improvement <br/>
+
+					<ul>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2885'>OPCUA-2885</a>] -         Remove reference to quasar.html when installing the framework
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2886'>OPCUA-2886</a>] -         External files restructured and paths update
+					</li>
+					<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2888'>OPCUA-2888</a>] -         Consolidate original files
+					</li>
+					</ul>
+
+
+					</td>
+					<td valign="top">quasar test suite notes:<br>
+						<ol>
+						<li>open62541_test_methods not passing for the method
+							arguments behaving differently from UASDK. This will be
+							<a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+							investigated</a>.</li>
+						<li> StandardMetaData is ignored from testing in all tests
+							due to some existing noncompliance.</li>
+						</ol>
+					</td>
+
+					</tr>
+
 			<tr>
 				<td valign="top">1.5.15<font size="-1"><br>
 					(17-Nov-2022)</font><br>
@@ -314,26 +365,26 @@ ChangeLog
 	              <li>open62541_test_methods not passing for the method
 	                arguments behaving differently from UASDK. This will be
 	                <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	                  investigated</a>.</li>
 	              <li> StandardMetaData is ignored from testing in all tests
 	                due to some existing noncompliance.</li>
