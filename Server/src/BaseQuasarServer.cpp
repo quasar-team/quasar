@@ -175,7 +175,9 @@ int BaseQuasarServer::serverRun(
     }
     catch (const std::exception &e)
     {
-        LOG(Log::ERR) << "Exception caught in BaseQuasarServer::serverRun:  [" << Quasar::TermColors::ForeRed() << e.what() << Quasar::TermColors::StyleReset() << "]";
+        LOG(Log::ERR) << "Exception " <<
+            Quasar::TermColors::ForeYellow() << typeid(e).name() << Quasar::TermColors::StyleReset() <<
+            " caught in BaseQuasarServer::serverRun:  [" << Quasar::TermColors::ForeRed() << e.what() << Quasar::TermColors::StyleReset() << "]";
         serverReturnCode = 1;
     }
     AddressSpace::SourceVariables_destroySourceVariablesThreadPool ();
