@@ -423,7 +423,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
-                "md5": "5a92d5545dc9f4e8b5fde31c6a3cd233",
+                "md5": "e3172df3cb72ffc524ef445fa139eaf9",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "327083852995fd1eaa29058b0defbbb3",
+                "md5": "3a878c3c8601ef08f5827ad4fe6f80e4",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1225,7 +1225,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "7b5a4e25fc9f3d2097431221cc38f32e",
+                "md5": "3116246f6de95c45eea07aca9467bd1f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
