@@ -74,7 +74,7 @@ jobs:
         cp -a . /home/quasar/quasar/${{ env.VERSION_NAME }}/
 
         echo "${{ secrets.QUASAR_PASS }}" | sudo -S mkdir -p /usr/share/nginx/quasar/${{ env.VERSION_NAME }}
-        if [ ${{ contains(env.VERSION_NAME, 'version') }} = true ]; then
+        if [ ${{ startsWith(github.ref_name, 'v1.') }} = true ]; then
           echo 'Copying to version folder'
           sudo cp -r /home/quasar/quasar/${{ env.VERSION_NAME }} /usr/share/nginx/quasar/version
         else
@@ -86,7 +86,7 @@ jobs:
         echo "${{ secrets.QUASAR_PASS }}" | sudo -S nginx -s reload
 
     - name: Update latest
-      if: ${{ github.event.release.tag_name != '' }}
+      if: ${{ startsWith(github.ref_name, 'v1.') != true }}
       run: |
         echo 'Change directory location to build html'
         cd "${GITHUB_WORKSPACE}/Documentation/_build/${{ env.VERSION_NAME }}"
