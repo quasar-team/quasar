@@ -112,7 +112,6 @@ jobs:
         QUASAR_PASS="${{ secrets.QUASAR_PASS }}" python3 ./Documentation/tools/update_versions.py
 
     - name: Update EOS web site
-      if: ${{ env.VERSION_NAME == 'latest' }}
       run: |
         cd "${GITHUB_WORKSPACE}/Documentation/_build/${{ env.VERSION_NAME }}"
 
