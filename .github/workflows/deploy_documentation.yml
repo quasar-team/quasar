@@ -1,11 +1,9 @@
 name: Deploy documentation
 
 on:
-  release:
-    types: [ published ]
   push:
-    tags:
-      - v*
+    tags:        
+      - v1.**
     branches:
       - master
 
@@ -29,6 +27,9 @@ jobs:
         else
           echo "VERSION_NAME=latest" >> $GITHUB_ENV
         fi
+        
+    - name: Verify version's name
+      run: |
         echo 'Version to build: ${{ env.VERSION_NAME }}'
 
     - name: Install dependencies
