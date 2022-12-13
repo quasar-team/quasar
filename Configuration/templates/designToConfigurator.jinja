@@ -51,7 +51,7 @@
   {% endif %}
 {% endfor %}
 
-static std::string mapSingleItemNodeFullName(std::string input)
+[[maybe_unused]] static std::string mapSingleItemNodeFullName(std::string input)
 {
   size_t singleItemNodePrefixBegins = input.find(AddressSpace::SingleItemNodeObjectPrefix);
   input.replace(
