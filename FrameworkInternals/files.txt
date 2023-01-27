@@ -592,17 +592,6 @@
         "files": {},
         "install": "create"
     },
-    "Documentation/images": {
-        "files": {
-            "quasar_engine_small_smooth_square_128x128.png": {
-                "install": "overwrite",
-                "md5": "eaee3dcca045eb7f3f45f87c0712ad71",
-                "must_be_versioned": true,
-                "must_exist": true
-            }
-        },
-        "install": "create"
-    },
     "Extra": {
         "files": {
             "designToHonkyTonk.xslt": {
