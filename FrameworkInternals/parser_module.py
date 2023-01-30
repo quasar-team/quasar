@@ -70,10 +70,10 @@ def quasar_parser():
         prog='quasar.py',
         description='The quick opcua server generation framework',
         epilog="For more information visit https://quasar.docs.cern.ch/quasarCommands.html",
-        exit_on_error=False,
+        #exit_on_error=False, # Doesn't work for Python 3.6 but works for Python 3.9
         formatter_class=formatter_class)
     subparsers = parser.add_subparsers(
-        title='quasar commands')
+        title='quasar commands', metavar="<command>")
 
     # create the parser for the "build_config" command
     prepare_build = subparsers.add_parser(
