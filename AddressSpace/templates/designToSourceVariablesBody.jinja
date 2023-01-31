@@ -131,7 +131,7 @@ namespace AddressSpace
             }
             catch (...)
             {
-              LOG(Log::ERR) << "At variable " << addressSpaceObject->nodeId().toString().toUtf8() << "A non-standard exception was thrown from read{{sv.get('name')|capFirst}}";
+              LOG(Log::ERR) << "At variable " << addressSpaceObject->nodeId().toString().toUtf8() << " A non-standard exception was thrown from read{{sv.get('name')|capFirst}}";
               s = OpcUa_BadInternalError;
             }
             {% if sv.get('addressSpaceReadUseMutex') == 'of_this_operation' %}
@@ -241,13 +241,13 @@ namespace AddressSpace
               catch (const std::exception& ex)
               {
                 /* TODO -- how to signalize error from here */
-                LOG(Log::ERR) << "At variable " << addressSpaceObject->nodeId().toString().toUtf8() << "An exception was thrown from write{{sv.get('name')|capFirst}}: " << ex.what();
+                LOG(Log::ERR) << "At variable " << addressSpaceObject->nodeId().toString().toUtf8() << " An exception was thrown from write{{sv.get('name')|capFirst}}: " << ex.what();
                 s = OpcUa_BadInternalError;
               }
               catch (...)
               {
                 /* TODO -- how to signalize error from here */
-                LOG(Log::ERR) << "At variable " << addressSpaceObject->nodeId().toString().toUtf8() << "A non-standard exception was thrown from write{{sv.get('name')|capFirst}}";
+                LOG(Log::ERR) << "At variable " << addressSpaceObject->nodeId().toString().toUtf8() << " A non-standard exception was thrown from write{{sv.get('name')|capFirst}}";
                 s = OpcUa_BadInternalError;
               }
               {% if sv.get('addressSpaceWriteUseMutex') == 'of_this_operation' %}
