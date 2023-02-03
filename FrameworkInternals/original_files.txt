@@ -588,6 +588,12 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
+            "parser_module.py": {
+                "install": "overwrite",
+                "md5": "check",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
             "UrlHandling.cmake": {
                 "install": "overwrite",
                 "md5": "check",
