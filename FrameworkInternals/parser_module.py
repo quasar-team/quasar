@@ -31,7 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import argparse
 
-class MyFormatter(argparse.HelpFormatter):
+
+class QuasarArgsHelpFormatter(argparse.HelpFormatter):
     """
     Corrected _max_action_length for the indenting of subactions
     """
@@ -59,18 +60,20 @@ class MyFormatter(argparse.HelpFormatter):
             # add the item to the list
             self._add_item(self._format_action, [action])
 
+
 def quasar_parser():
     """
     Returns the parser for the quasar command line interface
     """
 
-    def formatter_class(prog): return MyFormatter(prog, max_help_position=30, width=150)
+    def formatter_class(prog): return QuasarArgsHelpFormatter(
+        prog, max_help_position=30, width=150)
 
     parser = argparse.ArgumentParser(
         prog='quasar.py',
         description='The quick opcua server generation framework',
         epilog="For more information visit https://quasar.docs.cern.ch/quasarCommands.html",
-        #exit_on_error=False, # Doesn't work for Python 3.6 but works for Python 3.9
+        # exit_on_error=False, # Doesn't work for Python 3.6 but works for Python 3.9
         formatter_class=formatter_class)
     subparsers = parser.add_subparsers(
         title='quasar commands', metavar="<command>")
@@ -178,7 +181,7 @@ def quasar_parser():
     symlink_runtime_deps_parser = subparsers.add_parser(
         'symlink_runtime_deps', help='Symlinks the runtime dependencies of the project to the binary directory')
     symlink_runtime_deps_parser.add_argument('wildcard', type=str, nargs='?', default='',
-        help='Symlinks ServerConfig.xml and config*.xml or user specific wildcard-matches from bin/ to build/bin/ (NOTE: don’t forget to escape asterisk if you use it by backslash!)')
+                                             help='Symlinks ServerConfig.xml and config*.xml or user specific wildcard-matches from bin/ to build/bin/ (NOTE: don’t forget to escape asterisk if you use it by backslash!)')
     # create the parser for the "quasar_version" command
     quasar_version_parser = subparsers.add_parser(
         'quasar_version', help='Prints currently deployed quasar version')
