@@ -186,7 +186,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesBody.jinja": {
-                "md5": "1a5ba0461d724eb1218cf3180d34c500",
+                "md5": "54f2d676f3195d2b7807e94c905197ad",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesHeader.jinja": {
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "3a878c3c8601ef08f5827ad4fe6f80e4",
+                "md5": "993d879304b379368d9384acd0e12477",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -634,7 +634,7 @@
             },
             "Oracle.py": {
                 "install": "overwrite",
-                "md5": "77483dce48acafb165eae55c57e64f6e",
+                "md5": "b1bdaf6fca1da500cfa7121ecc0d3325",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1220,7 +1220,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "3116246f6de95c45eea07aca9467bd1f",
+                "md5": "d53aca1eefe1d3eac13d2346e2b9fc58",
                 "must_be_versioned": true,
                 "must_exist": true
             },
