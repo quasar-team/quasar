@@ -88,7 +88,7 @@ def quasar_parser():
     generate_parser = subparsers.add_parser(
         'generate', help='Run with -h to see more options')
     generate_subparsers = generate_parser.add_subparsers(
-        title='quasar generate commands')
+        title='quasar generate commands', metavar="<generate command>")
     # create the parser for the "generate device" command
     generate_device_subparser = generate_subparsers.add_parser(
         'device', help='Run with -h to see more options')
