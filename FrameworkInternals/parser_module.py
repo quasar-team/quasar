@@ -89,10 +89,10 @@ def quasar_parser():
     # create the parser for the "generate device" command
     generate_device_subparser = generate_subparsers.add_parser(
         'device', help='Run with -h to see more options')
+    generate_device_subparser.add_argument('--all', type=str, nargs='?',
+                                            help='Equal to “generate device” (above) run with all classes with device logic from the Design')
     generate_device_subparser.add_argument(
         'quasar class', type=str, nargs='*', help='Generates the Device Logic files D<classname>.h and D<classname>.cpp')
-    generate_device_subparser.add_argument('all quasar classes', type=str, nargs='?', choices=[
-                                           '--all'], help='Equal to “generate device” (above) run with all classes with device logic from the Design')
     # create the parser for the "generate config_doc" command
     generate_config_doc_subparser = generate_subparsers.add_parser(
         'config_doc', help='Generates documentation of the Configuration Schema. Such a documentation is a HTML document with description of all fields that might appear in the configuration')
