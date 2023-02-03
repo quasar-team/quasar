@@ -30,7 +30,7 @@
             },
             "quasar.py": {
                 "install": "overwrite",
-                "md5": "3e585a9650b4226577cdefaff18f7ff3",
+                "md5": "c8653d8b69ca23d087dc3f447ebde3c9",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -581,7 +581,7 @@
             },
             "quasarCommands.html": {
                 "install": "overwrite",
-                "md5": "b0ef9a8041a0d8f98b7f47358f7ae5fe",
+                "md5": "2a85972a113863c4df478b673d3f5ddc",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -739,6 +739,12 @@
             "optionalModules.py": {
                 "install": "overwrite",
                 "md5": "e1f5d0bba4bcf181554c6f9795b13bd0",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
+            "parser_module.py": {
+                "install": "overwrite",
+                "md5": "33a3f4bb91ee8dd9876a773ba4724e8a",
                 "must_be_versioned": true,
                 "must_exist": true
             },

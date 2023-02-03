@@ -81,7 +81,6 @@ def main():
     except IndexError:
         print('Sorry, no such command. These are available:')
         parser.print_help()
-        #quasar_basic_utils.print_logo()
         sys.exit(1)
 
     try:

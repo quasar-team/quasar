@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
 import argparse
-
+import sys
 
 class QuasarArgsHelpFormatter(argparse.HelpFormatter):
     """
@@ -49,7 +49,6 @@ class QuasarArgsHelpFormatter(argparse.HelpFormatter):
                 indent_chg = self._current_indent - current_indent
                 added_indent = 'x'*indent_chg
                 invocations.append(added_indent+get_invocation(subaction))
-            # print('inv', invocations)
 
             # update the maximum item length
             invocation_length = max([len(s) for s in invocations])
@@ -60,6 +59,10 @@ class QuasarArgsHelpFormatter(argparse.HelpFormatter):
             # add the item to the list
             self._add_item(self._format_action, [action])
 
+class ArgumentParser(argparse.ArgumentParser):
+
+    def error(self, message):
+        pass
 
 def quasar_parser():
     """
@@ -69,7 +72,7 @@ def quasar_parser():
     def formatter_class(prog): return QuasarArgsHelpFormatter(
         prog, max_help_position=30, width=150)
 
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(
         prog='quasar.py',
         description='The quick opcua server generation framework',
         epilog="For more information visit https://quasar.docs.cern.ch/quasarCommands.html",
