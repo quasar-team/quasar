@@ -24,8 +24,6 @@ ChangeLog
 	        </tr>
 			<tr>
 
-
-
 			<td valign="top">1.5.17<font size="-1"><br>
 				(07-Feb-2023)</font><br>
 			</td>
@@ -70,8 +68,6 @@ ChangeLog
 			</td>
 			</tr>
 			<tr>
-
-
 
 			<td valign="top">1.5.16<font size="-1"><br>
 				(02-Dec-2022)</font><br>
