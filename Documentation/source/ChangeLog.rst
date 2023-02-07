@@ -23,6 +23,56 @@ ChangeLog
 	          </td>
 	        </tr>
 			<tr>
+
+
+
+			<td valign="top">1.5.17<font size="-1"><br>
+				(07-Feb-2023)</font><br>
+			</td>
+			<td valign="top">Point release with different incremental updates<br>
+			</td>
+			<td valign="top"><br>(none known)
+			</td>
+			<td valign="top">
+					Bug<br/>
+			<ul>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2918'>OPCUA-2918</a>] -         quasar docs: versions description not updated
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2920'>OPCUA-2920</a>] -         Deploying docs fails to create new tag dir
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2959'>OPCUA-2959</a>] -         Error with missing file at fresh project creation 
+			</li>
+			</ul>
+					Task<br/>
+			<ul>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2919'>OPCUA-2919</a>] -         Consolidation of duplicates in Docs dir
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2952'>OPCUA-2952</a>] -         quasar&#39;s python_reqs.txt for Python3.9: lxml version is too strict
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2956'>OPCUA-2956</a>] -         Cosmetics: source variable exception missing spaces
+			</li>
+			</ul>
+					Improvement <br/>
+			<ul>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2962'>OPCUA-2962</a>] -          Rethink quasar CLI
+			</li>
+			</ul>
+			</td>
+			<td valign="top">quasar test suite notes:<br>
+				<ol>
+				<li>open62541_test_methods not passing for the method
+					arguments behaving differently from UASDK. This will be
+					<a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+					investigated</a>.</li>
+				<li> StandardMetaData is ignored from testing in all tests
+					due to some existing noncompliance.</li>
+				</ol>
+			</td>
+			</tr>
+			<tr>
+
+
+
 			<td valign="top">1.5.16<font size="-1"><br>
 				(02-Dec-2022)</font><br>
 			</td>
