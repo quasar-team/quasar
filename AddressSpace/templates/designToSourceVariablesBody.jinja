@@ -24,6 +24,7 @@
 
 #include <SourceVariables.h>
 #include <LogIt.h>
+#include <Utils.h>
 using namespace std;
 
 {% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
@@ -90,65 +91,54 @@ namespace AddressSpace
           m_callback(callback),
           m_hTransaction(hTransaction),
           m_callbackHandle (callbackHandle),
-          m_parentObjectNode (parentObjectNode)
-        {}
+          m_parentObjectNode (parentObjectNode),
+          m_addressSpaceObject (dynamic_cast<const AS{{className}}*> ( m_parentObjectNode )),
+          m_deviceLink(nullptr),
+          m_mutex(nullptr)
+        {
+          // Obtain Device Logic object
+          if (m_addressSpaceObject != m_parentObjectNode)
+            throw_runtime_error_with_origin("Invalid cast?");
+          m_deviceLink = m_ addressSpaceObject->getDeviceLink();
+          if (!m_deviceLink)
+            throw_runtime_error_with_origin("No device link?");
+          {% if sv.get('addressSpaceReadUseMutex') == 'of_this_operation' %}
+            m_mutex = &m_deviceLink->getLockVariableRead_{{sv.get('name')}};
+          {% elif sv.get('addressSpaceReadUseMutex') == 'of_this_variable' %}
+            m_mutex = &m_deviceLink->getLockVariable_{{sv.get('name')}} ();
+          {% elif sv.get('addressSpaceReadUseMutex') == 'of_containing_object' %}
+            m_mutex = &m_deviceLink->getLock();
+          {% elif sv.get('addressSpaceReadUseMutex') == 'of_parent_of_containing_object' %}  
+            m_mutex = &m_deviceLink->getParent()->lock();
+          {% endif %}
+          
+        }
         
       virtual void execute ()
       {
         LOG(Log::DBG) << 
-          "Executing IoJob read: className={{className}} varName={{sv.get('name')}}" <<
+          "Executing IoJob read: className={{className}} varName={{sv.get('name')}} " <<
           " hTransaction:" << m_hTransaction << 
           " cbkhandle " << m_callbackHandle;
         UaStatus s;
         {{sv.get('dataType')}} value;
         UaDateTime sourceTime;
-        // Obtain Device Logic object
-        const AS{{className}}* addressSpaceObject (nullptr);
-        addressSpaceObject = dynamic_cast<const AS{{className}}*> ( m_parentObjectNode );
-        if (addressSpaceObject == m_parentObjectNode)
-        { /* OK. Proper cast. */
-          Device::D{{className}}* device = addressSpaceObject->getDeviceLink();
-          if (device != 0)
-          {
-            /* OK - Device Logic linked. */
-            {% if sv.get('addressSpaceReadUseMutex') == 'of_this_operation' %}
-              device->lockVariableRead_{{sv.get('name')}} ();
-            {% elif sv.get('addressSpaceReadUseMutex') == 'of_this_variable' %}
-              device->lockVariable_{{sv.get('name')}} ();
-            {% elif sv.get('addressSpaceReadUseMutex') == 'of_containing_object' %}
-              device->lock();
-            {% elif sv.get('addressSpaceReadUseMutex') == 'of_parent_of_containing_object' %}  
-              device->getParent()->lock();
-            {% endif %}
-            try
-            {
-              s = device->read{{sv.get('name')|capFirst}} (value, sourceTime );
-            }
-            catch (const std::exception& ex)
-            {
-                LOG(Log::ERR) << "At variable " << addressSpaceObject->nodeId().toString().toUtf8() << " An exception was thrown from readValue: " << ex.what();
-                s = OpcUa_BadInternalError;
-            }
-            catch (...)
-            {
-              LOG(Log::ERR) << "At variable " << addressSpaceObject->nodeId().toString().toUtf8() << "A non-standard exception was thrown from read{{sv.get('name')|capFirst}}";
-              s = OpcUa_BadInternalError;
-            }
-            {% if sv.get('addressSpaceReadUseMutex') == 'of_this_operation' %}
-              device->unlockVariableRead_{{sv.get('name')}} ();
-            {% elif sv.get('addressSpaceReadUseMutex') == 'of_this_variable' %}
-              device->unlockVariable_{{sv.get('name')}} ();
-            {% elif sv.get('addressSpaceReadUseMutex') == 'of_containing_object' %}
-              device->unlock();
-            {% elif sv.get('addressSpaceReadUseMutex') == 'of_parent_of_containing_object' %}  
-              device->getParent()->unlock();
-            {% endif %}
-          }
-          else
-            s = OpcUa_BadInternalError;
+        
+        try
+        {
+          s = m_deviceLink->read{{sv.get('name')|capFirst}} (value, sourceTime );
         }
-        else
-          s = OpcUa_BadInternalError; // dynamic_cast failure, TODO move away from execute()
+        catch (const std::exception& ex)
+        {
+          LOG(Log::ERR) << "At variable " << m_addressSpaceObject->nodeId().toString().toUtf8() << " An exception was thrown from readValue: " << ex.what();
+          s = OpcUa_BadInternalError;
+        }
+        catch (...)
+        {
+          LOG(Log::ERR) << "At variable " << m_addressSpaceObject->nodeId().toString().toUtf8() << "A non-standard exception was thrown from read{{sv.get('name')|capFirst}}";
+          s = OpcUa_BadInternalError;
+        }
+
         UaDataValue result (UaVariant(value), s.statusCode(), sourceTime, UaDateTime::now());
         // get appropriate object
         s = m_callback->finishRead (
@@ -164,11 +154,19 @@ namespace AddressSpace
         return std::string("read sourcevariable {{sv.get('name')}} of object ") + m_parentObjectNode->nodeId().toString().toUtf8();
       }
 
+      virtual std::mutex* associatedMutex() const
+      {
+        return m_mutex;
+      }
+
       private:
         IOManagerCallback* m_callback;
         OpcUa_UInt32       m_hTransaction;
         OpcUa_UInt32       m_callbackHandle;
         const UaNode*      m_parentObjectNode;
+        const AS{{className}}*   m_addressSpaceObject;
+        Device::D{{className}}* m_deviceLink;
+        std::mutex*        m_mutex;
 
     };
   {% endfor %}
@@ -188,13 +186,32 @@ namespace AddressSpace
           m_hTransaction(hTransaction),
           m_callbackHandle (callbackHandle),
           m_parentObjectNode (parentObjectNode),
-          m_variant (writeValue->Value.Value)    
+          m_variant (writeValue->Value.Value),
+          m_deviceLink (nullptr),
+          m_mutex(nullptr)    
         {
+          // Obtain Device Logic object
+          const AS{{className}}* addressSpaceObject (nullptr);
+          addressSpaceObject = dynamic_cast<const AS{{className}}*> ( m_parentObjectNode );
+          if (addressSpaceObject != m_parentObjectNode)
+            throw_runtime_error_with_origin("Cant map to device logic object -- something fishy with source-variables synchro?");
+          Device::D{{className}}* device = addressSpaceObject->getDeviceLink();
+          if (device == nullptr)
+            throw_runtime_error_with_origin("Invalid cast into DL object");
+          {% if sv.get('addressSpaceWriteUseMutex') == 'of_this_operation' %}
+            device->lockVariableWrite_{{sv.get('name')}} ();
+          {% elif sv.get('addressSpaceWriteUseMutex') == 'of_this_variable' %}
+            device->lockVariable_{{sv.get('name')}} ();
+          {% elif sv.get('addressSpaceWriteUseMutex') == 'of_containing_object' %}
+            m_mutex = &device->getLock();
+          {% elif sv.get('addressSpaceWriteUseMutex') == 'of_parent_of_containing_object' %}
+            device->getParent()->lock();
+          {% endif %}
         }
         
         virtual void execute ()
         {
-          LOG(Log::DBG) << "Executing IoJob write: className={{className}} varName={{sv.get('name')}}" <<
+          LOG(Log::DBG) << "Executing IoJob write: className={{className}} varName={{sv.get('name')}} " <<
             "hTransaction:" << m_hTransaction <<
             " cbkhandle " << m_callbackHandle;
           UaStatus s;
@@ -223,15 +240,7 @@ namespace AddressSpace
             Device::D{{className}}* device = addressSpaceObject->getDeviceLink();
             if (device != 0)
             {
-              {% if sv.get('addressSpaceWriteUseMutex') == 'of_this_operation' %}
-                device->lockVariableWrite_{{sv.get('name')}} ();
-              {% elif sv.get('addressSpaceWriteUseMutex') == 'of_this_variable' %}
-                device->lockVariable_{{sv.get('name')}} ();
-              {% elif sv.get('addressSpaceWriteUseMutex') == 'of_containing_object' %}
-                device->lock();
-              {% elif sv.get('addressSpaceWriteUseMutex') == 'of_parent_of_containing_object' %}
-                device->getParent()->lock();
-              {% endif %}
+
               
               /* OK - Device Logic linked. */
               try
@@ -250,7 +259,7 @@ namespace AddressSpace
                 LOG(Log::ERR) << "At variable " << addressSpaceObject->nodeId().toString().toUtf8() << "A non-standard exception was thrown from write{{sv.get('name')|capFirst}}";
                 s = OpcUa_BadInternalError;
               }
-              {% if sv.get('addressSpaceWriteUseMutex') == 'of_this_operation' %}
+              {# {% if sv.get('addressSpaceWriteUseMutex') == 'of_this_operation' %}
                 device->unlockVariableWrite_{{sv.get('name')}} ();
               {% elif sv.get('addressSpaceWriteUseMutex') == 'of_this_variable' %}
                 device->unlockVariable_{{sv.get('name')}} ();
@@ -258,7 +267,7 @@ namespace AddressSpace
                 device->unlock();
               {% elif sv.get('addressSpaceWriteUseMutex') == 'of_parent_of_containing_object' %}
                 device->getParent()->unlock();
-              {% endif %}
+              {% endif %} #}
             }
             else
               s = OpcUa_BadInternalError; // device link was null.
@@ -283,6 +292,11 @@ namespace AddressSpace
         {
           return std::string("write sourcevariable {{sv.get('name')}} of object ") + m_parentObjectNode->nodeId().toString().toUtf8();
         }
+
+        virtual std::mutex* associatedMutex() const
+        {
+          return m_mutex;
+        }
         
         
       private:
@@ -291,6 +305,8 @@ namespace AddressSpace
         OpcUa_UInt32       m_callbackHandle;
         const UaNode*      m_parentObjectNode;
         UaVariant          m_variant;
+        Device::D{{className}}* m_deviceLink; 
+        std::mutex*        m_mutex;
     };
   {% endfor %}
   
@@ -372,53 +388,61 @@ UaStatus SourceVariables_spawnIoJobWrite (
     LOG(Log::ERR) << "Refusing source variable operation, because source variable threads are not up. ";
     return OpcUa_BadOutOfService;
   }
-  switch (jobId)
+  try
   {
-    {% for className in designInspector.get_names_of_all_classes() %}
-      {% set class = designInspector.objectify_class(className) %}
-      {% for sv in class.sourcevariable %}
-        {% if sv.get('addressSpaceWrite') != 'forbidden' %}
-          case ASSOURCEVARIABLE_{{className}}_WRITE_{{sv.get('name')}}:
-            {% if not designInspector.class_has_device_logic(className) %}
-              return OpcUa_BadNotImplemented; // because this class has no device logic
-            {% else %}
-              {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
-                {
-                  {% if sv.get('addressSpaceWrite') == 'asynchronous' %}
-                    IoJob_{{className}}_WRITE_{{sv.get('name')}} *job =
-                      new IoJob_{{className}}_WRITE_{{sv.get('name')}} (
+    switch (jobId)
+    {
+      {% for className in designInspector.get_names_of_all_classes() %}
+        {% set class = designInspector.objectify_class(className) %}
+        {% for sv in class.sourcevariable %}
+          {% if sv.get('addressSpaceWrite') != 'forbidden' %}
+            case ASSOURCEVARIABLE_{{className}}_WRITE_{{sv.get('name')}}:
+              {% if not designInspector.class_has_device_logic(className) %}
+                return OpcUa_BadNotImplemented; // because this class has no device logic
+              {% else %}
+                {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
+                  {
+                    {% if sv.get('addressSpaceWrite') == 'asynchronous' %}
+                      IoJob_{{className}}_WRITE_{{sv.get('name')}} *job =
+                        new IoJob_{{className}}_WRITE_{{sv.get('name')}} (
+                          callback,
+                          hTransaction,
+                          callbackHandle,
+                          parentNode,
+                          pWriteValue
+                        ); 
+                      UaStatus s = sourceVariableThreads->addJob (job);
+                      if (!s.isGood())
+                      {
+                        LOG(Log::ERR) << "While addJob(): " << s.toString().toUtf8();
+                      }
+                      return s;
+                    {% elif sv.get('addressSpaceWrite') == 'synchronous' %}
+                      IoJob_{{className}}_WRITE_{{sv.get('name')}} job (
                         callback,
                         hTransaction,
                         callbackHandle,
                         parentNode,
                         pWriteValue
                       ); 
-                    UaStatus s = sourceVariableThreads->addJob (job);
-                    if (!s.isGood())
-                    {
-                      LOG(Log::ERR) << "While addJob(): " << s.toString().toUtf8();
-                    }
-                    return s;
-                  {% elif sv.get('addressSpaceWrite') == 'synchronous' %}
-                    IoJob_{{className}}_WRITE_{{sv.get('name')}} job (
-                      callback,
-                      hTransaction,
-                      callbackHandle,
-                      parentNode,
-                      pWriteValue
-                    ); 
-                    job.execute();
-                  {% else %}
-                    {{debug("Source-variable mode is unsupported and the generated code will probably be faulty. Mode was: ", sv.get('addressSpaceWrite'))}}
-                  {% endif %}
-                }  
+                      job.execute();
+                    {% else %}
+                      {{debug("Source-variable mode is unsupported and the generated code will probably be faulty. Mode was: ", sv.get('addressSpaceWrite'))}}
+                    {% endif %}
+                  }  
+                {% endif %}
               {% endif %}
-            {% endif %}
-        {% endif %}
+          {% endif %}
+        {% endfor %}
       {% endfor %}
-    {% endfor %}
-    default:
-      return OpcUa_Bad;
+      default:
+        return OpcUa_Bad;
+    }
+  }
+  catch (...)
+  {
+    LOG(Log::ERR) << "Exception for creation of a thread pool job";
+    return OpcUa_Bad;
   }
 }
 
