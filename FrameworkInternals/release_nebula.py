@@ -116,6 +116,8 @@ def main():
 
     version = 'v'+given_tag
     store_version(version)
+    
+    add_version_to_versions_file(version)
 
     # os_system_with_check('./quasar.py create_release')
 
