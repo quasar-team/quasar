@@ -65,8 +65,8 @@ def main():
 
     try:
         args = parser.parse_args()
-    # Avoid printing the default help message when the user gives a wrong argument
-    except argparse.ArgumentError as error:
+    # Avoid printing the default help message when the user gives a wrong or not registered argument
+    except Exception as error:
         pass
 
     # args starts from the command name (e.g. 'build') and skips the common arguments,
