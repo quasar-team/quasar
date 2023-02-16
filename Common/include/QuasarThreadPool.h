@@ -24,9 +24,9 @@
 
 #include <mutex>
 #include <vector>
-#include <thread>
 #include <list>
-#include <queue>
+#include <thread>
+#include <map>
 #include <condition_variable>
 #include <functional>
 

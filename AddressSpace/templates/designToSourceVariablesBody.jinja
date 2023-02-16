@@ -99,7 +99,7 @@ namespace AddressSpace
           // Obtain Device Logic object
           if (m_addressSpaceObject != m_parentObjectNode)
             throw_runtime_error_with_origin("Invalid cast?");
-          m_deviceLink = m_ addressSpaceObject->getDeviceLink();
+          m_deviceLink = m_addressSpaceObject->getDeviceLink();
           if (!m_deviceLink)
             throw_runtime_error_with_origin("No device link?");
           {% if sv.get('addressSpaceReadUseMutex') == 'of_this_operation' %}
