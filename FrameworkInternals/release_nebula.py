@@ -5,6 +5,7 @@
 release_nebula.py
 
 @author:     Piotr Nikiel <piotr@nikiel.info>
+@author:     Paris Moschovakos <paris.moschovakos@cern.ch>
 
 @copyright:  2020 CERN
 
@@ -116,18 +117,18 @@ def main():
 
     version = 'v'+given_tag
     store_version(version)
-    
+
     add_version_to_versions_file(version)
 
-    # os_system_with_check('./quasar.py create_release')
+    os_system_with_check('./quasar.py create_release')
 
-    # os_system_with_check('git commit -a -m "by release_nebula.py for given tag: {0}"'.format(given_tag), [256])
+    os_system_with_check('git commit -a -m "by release_nebula.py for given tag: {0}"'.format(given_tag), [256])
 
-    # os_system_with_check('git push origin master')
+    os_system_with_check('git push origin master')
 
-    # os_system_with_check('git tag -a {0} -m {0}'.format(version))
+    os_system_with_check('git tag -a {0} -m {0}'.format(version))
 
-    # os_system_with_check('git push origin {0}'.format(version))
+    os_system_with_check('git push origin {0}'.format(version))
 
     print('quasar version ' + Fore.GREEN + version + Style.RESET_ALL +
         ' apparently released')
