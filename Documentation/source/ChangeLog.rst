@@ -25,7 +25,7 @@ ChangeLog
 			<tr>
 
 			<td valign="top">1.5.17<font size="-1"><br>
-				(07-Feb-2023)</font><br>
+				(16-Feb-2023)</font><br>
 			</td>
 			<td valign="top">Point release with different incremental updates<br>
 			</td>
@@ -40,6 +40,8 @@ ChangeLog
 			</li>
 			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2959'>OPCUA-2959</a>] -         Error with missing file at fresh project creation 
 			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2974'>OPCUA-2974</a>] -         quasar v.1.5.17-rc0 &quot;./quasar.py build&quot; fails in the arg parsing
+			</li>
 			</ul>
 					Task<br/>
 			<ul>
@@ -53,6 +55,8 @@ ChangeLog
 					Improvement <br/>
 			<ul>
 			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2962'>OPCUA-2962</a>] -          Rethink quasar CLI
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2980'>OPCUA-2980</a>] -         release_nebula.py to handle the documentation versions
 			</li>
 			</ul>
 			</td>
