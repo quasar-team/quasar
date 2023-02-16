@@ -103,7 +103,7 @@ namespace AddressSpace
           if (!m_deviceLink)
             throw_runtime_error_with_origin("No device link?");
           {% if sv.get('addressSpaceReadUseMutex') == 'of_this_operation' %}
-            m_mutex = &m_deviceLink->getLockVariableRead_{{sv.get('name')}};
+            m_mutex = &m_deviceLink->getLockVariableRead_{{sv.get('name')}} ();
           {% elif sv.get('addressSpaceReadUseMutex') == 'of_this_variable' %}
             m_mutex = &m_deviceLink->getLockVariable_{{sv.get('name')}} ();
           {% elif sv.get('addressSpaceReadUseMutex') == 'of_containing_object' %}

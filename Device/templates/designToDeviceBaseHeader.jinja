@@ -122,11 +122,13 @@ class Base_D{{className}}
   {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceWriteUseMutex='of_this_operation']") %}
     void lockVariableWrite_{{sv.get('name')}} () { m_lockVariable_write_{{sv.get('name')}}.lock(); }
     void unlockVariableWrite_{{sv.get('name')}} () { m_lockVariable_write_{{sv.get('name')}}.unlock(); }
+    std::mutex& getLockVariableWrite_{{sv.get('name')}} () { return m_lockVariable_write_{{sv.get('name')}}; }
   {% endfor %}
 
   {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceReadUseMutex='of_this_operation']") %}
     void lockVariableRead_{{sv.get('name')}} () { m_lockVariable_read_{{sv.get('name')}}.lock(); }
     void unlockVariableRead_{{sv.get('name')}} () { m_lockVariable_read_{{sv.get('name')}}.unlock(); }
+    std::mutex& getLockVariableRead_{{sv.get('name')}} () { return m_lockVariable_read_{{sv.get('name')}}; }
   {% endfor %}
 
   /* method-wise locks */
