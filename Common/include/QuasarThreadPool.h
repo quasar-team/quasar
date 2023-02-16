@@ -74,6 +74,7 @@ private:
         NEW_CYCLE = 2 // it was used by some past job, can be reused as long as the job list is traversed FIFO-way.
     };
 
+    //Note from Piotr: we add mutexes but not remove them because 1. their number is limited, 2. chances are each of them will be reused anyway.
     std::map<std::mutex*, MutexUsage> m_mutices; // this shall be really cheap.
 
     const unsigned int m_maxJobs;
