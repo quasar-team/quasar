@@ -232,7 +232,7 @@ class DesignValidator():
                 mutex_options = list(set(mutex_options))
                 # remove values which don't require inter-class sync, thus need no validation
                 mutex_options = [x for x in mutex_options if x not in [
-                    'no', 'of_this_operation', 'of_this_variable']]
+                    'no', 'of_this_operation', 'of_this_variable', 'handchosen']]
                 for option in mutex_options:
                     if option == 'of_containing_object':
                         self.assert_mutex_present(class_name, locator,
