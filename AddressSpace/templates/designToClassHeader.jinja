@@ -138,6 +138,12 @@ namespace AddressSpace
     );
   {% endif %}
 
+  /* Access to custom mutices for async ops of source variables and methods, if chosen by design */
+  {% for sv in designInspector.objectify_source_variables(className, restrict_by="[@addressSpaceWriteUseMutex='handchosen']") %}
+    std::mutex* fetchWriteMutexOf{{sv.get('name')|capFirst}} () const { return m_sourceVariableWriteMutex{{sv.get('name')|capFirst}}; }
+    void configureWriteMutexOf{{sv.get('name')|capFirst}} (std::mutex* mutex) { m_sourceVariableWriteMutex{{sv.get('name')|capFirst}} = mutex; }
+  {% endfor %}
+
   private:
   UaNodeId m_typeNodeId;
   const UaNodeId m_effectiveParentNodeIdForChildren;
@@ -181,6 +187,11 @@ namespace AddressSpace
   {% if designInspector.class_has_device_logic(className) %}
     Device::D{{className}}* m_deviceLink;
   {% endif %}
+
+  /* References to mutices of async ops */
+  {% for sv in designInspector.objectify_source_variables(className, restrict_by="[@addressSpaceWriteUseMutex='handchosen']") %}
+    std::mutex* m_sourceVariableWriteMutex{{sv.get('name')|capFirst}};
+  {% endfor %}
 
   };
 

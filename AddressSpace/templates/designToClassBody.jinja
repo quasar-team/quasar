@@ -86,6 +86,9 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
     {% if designInspector.class_has_device_logic(className) %},
       m_deviceLink(nullptr)
     {% endif %}
+    {%- for sv in designInspector.objectify_source_variables(className, restrict_by="[@addressSpaceWriteUseMutex='handchosen']") %},
+      m_sourceVariableWriteMutex{{sv.get('name')|capFirst}}(nullptr)
+    {% endfor %}
     {
 
       {# here constructor body begins #}

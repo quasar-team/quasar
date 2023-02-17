@@ -205,6 +205,16 @@ namespace AddressSpace
             m_mutex = &m_deviceLink->getLock();
           {% elif sv.get('addressSpaceWriteUseMutex') == 'of_parent_of_containing_object' %}
             m_mutex = &m_deviceLink->getParent()->getLock();
+          {% elif sv.get('addressSpaceWriteUseMutex') == 'handchosen' %}
+            m_mutex = m_addressSpaceObject->fetchWriteMutexOf{{sv.get('name')|capFirst}} ();
+            if (!m_mutex)
+            {
+              LOG(Log::WRN) << "Handchosen mutex was not chosen (!!) RISK OF RACE CONDITION, fix your code (class={{className}} SV={{sv.get('name')}})";
+            }
+          {% elif sv.get('addressSpaceWriteUseMutex') == 'no' %}
+            /* Nothing to do, m_mutex is default initialized to nullptr anyway */
+          {% else %}
+            {{ abort('Unknown addressSpaceWriteUseMutex: ' + sv.get('addressSpaceWriteUseMutex')) }}
           {% endif %}
         }
         
