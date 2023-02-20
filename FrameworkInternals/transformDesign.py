@@ -138,6 +138,9 @@ def run_indent_tool(unindented_content, fout):
                              "dependencies."))
     fout.write(completed_indenter_process.stdout)
 
+def handle_abort(msg):
+    raise Exception(f'Quasar transform exception:  {msg}') # TODO shall we have a better exc class for it ?
+
 def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalParam, indent_cpp=False):
     """ additionalParam - a dictionary that will be passed to the transform """
     outputDirectory = os.path.dirname(outputFile)
@@ -155,6 +158,7 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
     env = jinja2.Environment(loader=jinja2.ChoiceLoader([commonTemplatesLoader, moduleTemplatesLoader]))
     transform_filters.setup_all_filters(env)
     env.trim_blocks = True
+    env.globals['abort'] = handle_abort
     fout = open(outputFile, 'wb')
     render_args = {'designInspector':designInspector, 'oracle':Oracle()}
     if not isinstance(additionalParam, dict):
