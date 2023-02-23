@@ -1,9 +1,9 @@
 name: Deploy documentation
 
 on:
-  release:
-    types: [ published ]
   push:
+    tags:        
+      - v1.**
     branches:
       - master
 
@@ -20,13 +20,14 @@ jobs:
 
     - name: Define version name
       run: |
-        if [ ${{ startsWith(github.ref_name, 'dev') }} = true ]; then
-          echo "VERSION_NAME=${{ github.ref_name }}" >> "$GITHUB_ENV"
-        elif [ ${{ github.event.release.tag_name != '' }} = true ]; then
-          echo "VERSION_NAME=version/${{ github.event.release.tag_name }}" >> "$GITHUB_ENV"
+        if [ ${{ startsWith(github.ref_name, 'v1.') }} = true ]; then
+          echo "VERSION_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
         else
-          echo "VERSION_NAME=latest" >> "$GITHUB_ENV"
+          echo "VERSION_NAME=latest" >> $GITHUB_ENV
         fi
+        
+    - name: Verify version's name
+      run: |
         echo 'Version to build: ${{ env.VERSION_NAME }}'
 
     - name: Install dependencies
@@ -73,7 +74,7 @@ jobs:
         cp -a . /home/quasar/quasar/${{ env.VERSION_NAME }}/
 
         echo "${{ secrets.QUASAR_PASS }}" | sudo -S mkdir -p /usr/share/nginx/quasar/${{ env.VERSION_NAME }}
-        if [ ${{ contains(env.VERSION_NAME, 'version') }} = true ]; then
+        if [ ${{ startsWith(github.ref_name, 'v1.') }} = true ]; then
           echo 'Copying to version folder'
           sudo cp -r /home/quasar/quasar/${{ env.VERSION_NAME }} /usr/share/nginx/quasar/version
         else
@@ -85,7 +86,7 @@ jobs:
         echo "${{ secrets.QUASAR_PASS }}" | sudo -S nginx -s reload
 
     - name: Update latest
-      if: ${{ github.event.release.tag_name != '' }}
+      if: ${{ startsWith(github.ref_name, 'v1.') != true }}
       run: |
         echo 'Change directory location to build html'
         cd "${GITHUB_WORKSPACE}/Documentation/_build/${{ env.VERSION_NAME }}"
@@ -111,7 +112,6 @@ jobs:
         QUASAR_PASS="${{ secrets.QUASAR_PASS }}" python3 ./Documentation/tools/update_versions.py
 
     - name: Update EOS web site
-      if: ${{ env.VERSION_NAME == 'latest' }}
       run: |
         cd "${GITHUB_WORKSPACE}/Documentation/_build/${{ env.VERSION_NAME }}"
 

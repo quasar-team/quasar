@@ -542,17 +542,6 @@
         "files": {},
         "install": "create"
     },
-    "Documentation/images": {
-        "files": {
-            "quasar_engine_small_smooth_square_128x128.png": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            }
-        },
-        "install": "create"
-    },
     "Extra": {
         "files": {
             "designToHonkyTonk.xslt": {
@@ -594,6 +583,12 @@
                 "must_exist": true
             },
             "Oracle.py": {
+                "install": "overwrite",
+                "md5": "check",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
+            "parser_module.py": {
                 "install": "overwrite",
                 "md5": "check",
                 "must_be_versioned": true,

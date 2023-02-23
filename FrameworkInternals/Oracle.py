@@ -243,7 +243,7 @@ class Oracle():
         output = "UaStatus "
         if where == 'body':
             output += "AS" + class_name + "::"
-        initializer = ' = OpcUa_True' if where is 'header' else ''
+        initializer = ' = OpcUa_True' if where == 'header' else ''
         output += ('write{0}( Session* pSession, const UaDataValue& dataValue,'
                    ' OpcUa_Boolean checkAccessLevel{1} )').format(
                        cap_first(name), initializer)

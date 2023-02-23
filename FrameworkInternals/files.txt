@@ -30,7 +30,7 @@
             },
             "quasar.py": {
                 "install": "overwrite",
-                "md5": "3e585a9650b4226577cdefaff18f7ff3",
+                "md5": "d71de25aae119fd85e243b0e67bba748",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -186,7 +186,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesBody.jinja": {
-                "md5": "1a5ba0461d724eb1218cf3180d34c500",
+                "md5": "54f2d676f3195d2b7807e94c905197ad",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesHeader.jinja": {
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "3a878c3c8601ef08f5827ad4fe6f80e4",
+                "md5": "3d0968f60a58abd011aa17fb69781416",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -581,7 +581,7 @@
             },
             "quasarCommands.html": {
                 "install": "overwrite",
-                "md5": "b0ef9a8041a0d8f98b7f47358f7ae5fe",
+                "md5": "2a85972a113863c4df478b673d3f5ddc",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -590,17 +590,6 @@
     },
     "Documentation/DoxygenGenerated": {
         "files": {},
-        "install": "create"
-    },
-    "Documentation/images": {
-        "files": {
-            "quasar_engine_small_smooth_square_128x128.png": {
-                "install": "overwrite",
-                "md5": "eaee3dcca045eb7f3f45f87c0712ad71",
-                "must_be_versioned": true,
-                "must_exist": true
-            }
-        },
         "install": "create"
     },
     "Extra": {
@@ -645,7 +634,7 @@
             },
             "Oracle.py": {
                 "install": "overwrite",
-                "md5": "77483dce48acafb165eae55c57e64f6e",
+                "md5": "b1bdaf6fca1da500cfa7121ecc0d3325",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -750,6 +739,12 @@
             "optionalModules.py": {
                 "install": "overwrite",
                 "md5": "e1f5d0bba4bcf181554c6f9795b13bd0",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
+            "parser_module.py": {
+                "install": "overwrite",
+                "md5": "9d5a32492dd301c7dc95e65a25ed7910",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1225,7 +1220,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "3116246f6de95c45eea07aca9467bd1f",
+                "md5": "f80cf481e21b53829674c6fc7a1af842",
                 "must_be_versioned": true,
                 "must_exist": true
             },
