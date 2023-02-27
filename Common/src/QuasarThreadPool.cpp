@@ -157,7 +157,7 @@ UaStatus ThreadPool::addJob (ThreadPoolJob* job)
     return OpcUa_Good;
 }
 
-UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::string& description)
+UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::string& description, std::mutex* mutex)
 {
     class StdFunctionJob: public ThreadPoolJob
     {
@@ -167,7 +167,8 @@ UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::st
                 const std::string& description,
                 std::mutex* mutex = nullptr) :
                     m_functor(functor),
-                    m_description(description) {}
+                    m_description(description),
+                    m_mutex(mutex) {}
         virtual void execute() { m_functor(); }
         virtual std::string describe() const { return m_description; }
         virtual std::mutex* associatedMutex() const { return m_mutex; }
@@ -177,7 +178,7 @@ UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::st
         std::mutex* m_mutex;
 
     };
-    StdFunctionJob *job = new StdFunctionJob (functor, description);
+    StdFunctionJob *job = new StdFunctionJob (functor, description, mutex);
     return this->addJob (job);
 }
 

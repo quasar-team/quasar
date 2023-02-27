@@ -55,7 +55,7 @@ public:
     ~ThreadPool ();
 
     UaStatus addJob (ThreadPoolJob* job);
-    UaStatus addJob (const std::function<void()>& functor, const std::string& description);
+    UaStatus addJob (const std::function<void()>& functor, const std::string& description, std::mutex* mutex = nullptr);
 
     void notifyExternalEvent (); // TODO we should have it.
 

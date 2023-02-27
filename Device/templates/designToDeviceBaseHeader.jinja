@@ -134,7 +134,8 @@ class Base_D{{className}}
   /* method-wise locks */
   {% for m in designInspector.objectify_methods(className, "[@addressSpaceCallUseMutex='of_this_method']") %}
     void lockMethodCall_{{m.get('name')}} () { m_lockMethod_call_{{m.get('name')}}.lock(); }
-    void unlockMethodCall_{{m.get('name')}} () { m_lockMethod_call_{{m.get('name')}}.lock(); }
+    void unlockMethodCall_{{m.get('name')}} () { m_lockMethod_call_{{m.get('name')}}.unlock(); }
+    std::mutex& getLockMethodCall_{{m.get('name')}} () { return m_lockMethod_call_{{m.get('name')}}; } 
   {% endfor %}
 
   /* query address-space for full name (mostly for debug purposes) */
