@@ -866,7 +866,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
             {%- elif m.get('addressSpaceCallUseMutex') == 'no' -%}
               nullptr
             {% else %}
-              {{abort('Invalid setting for addressSpaceCallUseMutex')}}
+              {{abort('Invalid setting for addressSpaceCallUseMutex: ' + m.get('addressSpaceCallUseMutex') + ' (at class='+className+', method='+m.get('name')+')'  )}}
             {% endif %}
              );
           return OpcUa_Good;
