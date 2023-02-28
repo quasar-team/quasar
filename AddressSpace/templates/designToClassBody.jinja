@@ -863,7 +863,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
               &getDeviceLink()->getLockMethodCall_{{m.get('name')}}()
             {%- elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' -%}
               &getDeviceLink()->getLock()
-            {%- elif m.get('addressSpaceCallUseMutex') == 'no' -%}
+            {%- elif m.get('addressSpaceCallUseMutex') in ['no', None] -%} {# None is when not specified, defaults to no. #}
               nullptr
             {% else %}
               {{abort('Invalid setting for addressSpaceCallUseMutex: ' + m.get('addressSpaceCallUseMutex') + ' (at class='+className+', method='+m.get('name')+')'  )}}
