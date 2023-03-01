@@ -166,11 +166,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "b52632d556b6bcbcda065add80a974a5",
+                "md5": "26f72fc9e235980f6b7b81e05c5e89b1",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
-                "md5": "fb6991af4159e05f917ff5832743a838",
+                "md5": "1bb597e881dd5b37568fb98fcdcaaf90",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToGeneratedCmakeAddressSpace.jinja": {
@@ -186,7 +186,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesBody.jinja": {
-                "md5": "54f2d676f3195d2b7807e94c905197ad",
+                "md5": "a355e00d8a1fc52ba1408715b70ef1b0",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesHeader.jinja": {
@@ -322,7 +322,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.h": {
-                "md5": "0ad5a59b587f9b39aa8e3ed699fb0fc0",
+                "md5": "2822356794ed50f124cf05971cef5942",
                 "use_defaults": "file_defaults_of_directory"
             },
             "Utils.h": {
@@ -345,7 +345,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.cpp": {
-                "md5": "124a51ad46e6c7b14a06a887291ab3df",
+                "md5": "b1009c941a37e3bd1b36d2439595f2cd",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -441,7 +441,7 @@
             },
             "Design.xsd": {
                 "install": "overwrite",
-                "md5": "b112b6f30aa10920c30545cdeda4057a",
+                "md5": "d424a453d213944fb85c5669c587946f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "3d0968f60a58abd011aa17fb69781416",
+                "md5": "1272f59edcf3618f44fbf35071698116",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -545,7 +545,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBaseHeader.jinja": {
-                "md5": "ebc35a0ce2648d632fae75d8e7a8b910",
+                "md5": "38049802f2e075d4c972c743f1e4595b",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBody.jinja": {
@@ -616,7 +616,7 @@
             },
             "DesignValidator.py": {
                 "install": "overwrite",
-                "md5": "584d87c3f1580aaf94abe4fccf027e5a",
+                "md5": "c9939ea1f012e5368e91ebddcbb80c46",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -780,7 +780,7 @@
             },
             "transformDesign.py": {
                 "install": "overwrite",
-                "md5": "c51a23be18bc77519fdf6f2a7f7ff986",
+                "md5": "0f2862012b1f9833150f07ecdd67724d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1220,7 +1220,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "f80cf481e21b53829674c6fc7a1af842",
+                "md5": "a46d73751ddbbd353cd91aa4088cc149",
                 "must_be_versioned": true,
                 "must_exist": true
             },
