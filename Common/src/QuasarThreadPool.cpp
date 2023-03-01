@@ -48,9 +48,57 @@ ThreadPool::~ThreadPool ()
     while (!m_pendingJobs.empty())
     {
         ThreadPoolJob* job = m_pendingJobs.front();
-        m_pendingJobs.pop();
+        m_pendingJobs.pop_front();
         LOG(Log::WRN) << "Removing unfinished job: " << job->describe();
         delete job;
+    }
+}
+
+/** This method finds the next job suitable to be dealt by the next available worker.
+ * It can finish with two potential outcomes:
+ * -- there is no suitable job to execute 
+ *      returns nullptr for the job, does not change the job list
+ * -- there is a suitable job to execute (either w/o a mutex or with a mutex that is free)
+ *      locks that specifix mutex (if applicable)
+ *      returns the job ptr and the lock
+ *      removes that job from the list
+ */ 
+ThreadPool::Duty ThreadPool::findSomeDuty ()
+{
+    for (auto iter = std::begin(m_pendingJobs); iter != std::end(m_pendingJobs); iter++)
+    {
+        if (! (*iter)->associatedMutex() ) // no synchro domain
+        {
+            Duty duty;
+            duty.job = *iter;
+            m_pendingJobs.erase(iter);
+            LOG(Log::TRC) << "Removed job from the threadpool, current number of jobs is:" << m_pendingJobs.size();
+            return duty;
+        }
+        if ( m_mutices[(*iter)->associatedMutex()] == MutexUsage::OPEN ) // there is a synchro domain, but at least from the thread pool perspective it is not used.
+        {
+            Duty duty;
+            /* can we grab it ? */
+            std::unique_lock<std::mutex> lock (*(*iter)->associatedMutex(), std::try_to_lock);
+            if (!lock.owns_lock())
+                return duty; // no luck, someone else (outside of threadpool) owns it. next time.
+            /* so, we own the lock... */
+            m_mutices[(*iter)->associatedMutex()] = MutexUsage::CLOSED;
+            duty.lock = std::move(lock);
+            duty.job = *iter;
+            m_pendingJobs.erase(iter);
+            return duty;
+        }   
+    }
+    return Duty(); // by default no job, i.e. can't find anything to do now.
+}
+
+void ThreadPool::atNewCycle()
+{
+    for (auto& keyValPair : m_mutices)
+    {
+        if (keyValPair.second == MutexUsage::NEW_CYCLE)
+         keyValPair.second = MutexUsage::OPEN;
     }
 }
 
@@ -58,29 +106,36 @@ void ThreadPool::work()
 {
     while (!m_quit)
     {
-        std::unique_lock<std::mutex>lock (m_accessLock);
-        if (! m_pendingJobs.empty())
-        {
-            ThreadPoolJob *job = m_pendingJobs.front();
-            m_pendingJobs.pop();
-            unsigned int size = m_pendingJobs.size();
-            lock.unlock();
-            LOG(Log::TRC) << "Removed job from the threadpool, current number of jobs is:" << size;
-            try
-            {
-                job->execute();
-            }
-            catch (...)
-            {
-                LOG(Log::ERR) << "Job '" << job->describe() << "' has thrown an unhandled exception. The job description was '" + job->describe() + "'";
-            }
-
-            delete job;
+        Duty duty;
+        // ThreadPoolJob* job (nullptr);
+        { /* synchro block for the internals */
+            std::unique_lock<std::mutex>lock (m_accessLock);
+            atNewCycle();
+            duty = findSomeDuty();
         }
-        else
+        if (!duty.job)
         {
-            m_conditionVariable.wait(lock);
+            std::unique_lock<std::mutex>lock (m_accessLock);
+            m_conditionVariable.wait_for(lock, std::chrono::milliseconds(100));
+            continue;
         }
+        /* So, we found a job to execute */
+        // TODO are we sure we still have the semaphore ?
+        try
+        {
+            duty.job->execute();
+        }
+        catch (...)
+        {
+            LOG(Log::ERR) << "Job '" << duty.job->describe() <<
+                "' has thrown an undeterminate exception. The job description was '" + duty.job->describe() + "'";    
+        }
+        if (duty.job->associatedMutex())
+        {
+            std::unique_lock<std::mutex>lock (m_accessLock);
+            m_mutices[duty.job->associatedMutex()] = MutexUsage::NEW_CYCLE;
+        }
+        delete duty.job;
     }
 }
 
@@ -93,31 +148,37 @@ UaStatus ThreadPool::addJob (ThreadPoolJob* job)
             LOG(Log::ERR) << "The threadpool is already full (it has limit of " << m_maxJobs << " jobs. Cant add new jobs. Enlarge the threadpool";
             return OpcUa_BadResourceUnavailable;
         }
-        m_pendingJobs.push(job);
+        if (job->associatedMutex() != nullptr)
+            m_mutices[job->associatedMutex()]; /* add this mutex, default constuct, if not existing before */
+        m_pendingJobs.push_back(job);
     }
-    m_conditionVariable.notify_one();
     LOG(Log::TRC) << "Added new job to threadpool, current number of jobs is:" << m_pendingJobs.size();
+    m_conditionVariable.notify_one();
     return OpcUa_Good;
 }
 
-UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::string& description)
+UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::string& description, std::mutex* mutex)
 {
     class StdFunctionJob: public ThreadPoolJob
     {
     public:
         StdFunctionJob (
                 const std::function<void()>& functor,
-                const std::string& description) :
+                const std::string& description,
+                std::mutex* mutex = nullptr) :
                     m_functor(functor),
-                    m_description(description) {}
+                    m_description(description),
+                    m_mutex(mutex) {}
         virtual void execute() { m_functor(); }
         virtual std::string describe() const { return m_description; }
+        virtual std::mutex* associatedMutex() const { return m_mutex; }
     private:
         const std::function<void()> m_functor;
         const std::string m_description;
+        std::mutex* m_mutex;
 
     };
-    StdFunctionJob *job = new StdFunctionJob (functor, description);
+    StdFunctionJob *job = new StdFunctionJob (functor, description, mutex);
     return this->addJob (job);
 }
 

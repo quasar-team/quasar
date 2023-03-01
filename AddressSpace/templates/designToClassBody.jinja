@@ -86,6 +86,12 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
     {% if designInspector.class_has_device_logic(className) %},
       m_deviceLink(nullptr)
     {% endif %}
+    {%- for sv in designInspector.objectify_source_variables(className, restrict_by="[@addressSpaceReadUseMutex='handpicked']") %},
+      m_sourceVariableReadMutex{{sv.get('name')|capFirst}}(nullptr)
+    {% endfor %}
+    {%- for sv in designInspector.objectify_source_variables(className, restrict_by="[@addressSpaceWriteUseMutex='handpicked']") %},
+      m_sourceVariableWriteMutex{{sv.get('name')|capFirst}}(nullptr)
+    {% endfor %}
     {
 
       {# here constructor body begins #}
@@ -801,11 +807,6 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
 
           try
           {
-            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
-              getDeviceLink()->lockMethodCall_{{m.get('name')}}();
-            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
-              getDeviceLink()->lock();
-            {% endif %}
             UaStatus stat = getDeviceLink()->call{{m.get('name')|capFirst}} (
               {% for arg in m.argument %}
                 arg_{{arg.get('name')}}{% if loop.index < (m.argument|length+m.returnvalue|length) %},
@@ -817,11 +818,6 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
               {% endfor %}
 
             );
-            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
-              getDeviceLink()->unlockMethodCall_{{m.get('name')}}();
-            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
-              getDeviceLink()->unlock();
-            {% endif %}
             {% if m.returnvalue|length>0 %}
               UaVariant helper;
               outputArguments.create( {{m.returnvalue|length}} );
@@ -847,11 +843,6 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           }
           catch (const std::exception& e)
           {
-            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
-              getDeviceLink()->unlockMethodCall_{{m.get('name')}}();
-            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
-              getDeviceLink()->unlock();
-            {% endif %}
             LOG(Log::ERR) << "method call of method {{m.get('name')}} thrown an exception (should have been handled in the method body...): " << e.what();
             UaStatus badStatus = OpcUa_BadInternalError;
             pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );
@@ -859,11 +850,6 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           }
           catch (...)
           {
-            {% if m.get('addressSpaceCallUseMutex') == 'of_this_method' %}
-              getDeviceLink()->unlockMethodCall_{{m.get('name')}}();
-            {% elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' %}
-              getDeviceLink()->unlock();
-            {% endif %}
             LOG(Log::ERR) << "method call of method {{m.get('name')}} thrown an exception of non standard type ... please ... don't do it Mr/Ms programmer ;-) ";
             UaStatus badStatus = OpcUa_BadInternalError;
             pCallback->finishCall( callbackHandle, inputArgumentResults, inputArgumentDiag, outputArguments, badStatus );
@@ -871,7 +857,18 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           }
 
           {% if m.get('executionSynchronicity') == 'asynchronous' %}
-          }, std::string("method call of method {{m.get('name')}} on object ")+this->nodeId().toString().toUtf8());
+          }, std::string("method call of method {{m.get('name')}} on object ")+this->nodeId().toString().toUtf8(),
+          /*mutex*/
+            {%- if m.get('addressSpaceCallUseMutex') == 'of_this_method' -%}
+              &getDeviceLink()->getLockMethodCall_{{m.get('name')}}()
+            {%- elif m.get('addressSpaceCallUseMutex') == 'of_containing_object' -%}
+              &getDeviceLink()->getLock()
+            {%- elif m.get('addressSpaceCallUseMutex') in ['no', None] -%} {# None is when not specified, defaults to no. #}
+              nullptr
+            {% else %}
+              {{abort('Invalid setting for addressSpaceCallUseMutex: ' + m.get('addressSpaceCallUseMutex') + ' (at class='+className+', method='+m.get('name')+')'  )}}
+            {% endif %}
+             );
           return OpcUa_Good;
           {% endif %}
         }

@@ -286,6 +286,7 @@ elementFormDefault="qualified">
       <enumeration value="of_this_variable"/>
       <enumeration value="of_containing_object"/>
       <enumeration value="of_parent_of_containing_object"/>
+      <enumeration value="handpicked"/>
     </restriction>
   </simpleType>
   <simpleType name="ConfigEntryDataType">
