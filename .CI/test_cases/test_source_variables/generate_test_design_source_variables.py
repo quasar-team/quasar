@@ -19,6 +19,8 @@ def generate():
             for sync in ['synchronous', 'asynchronous']:
                 for rw in ['r', 'w', 'rw']:
                     for lock in ['no_mutex', 'mutex_this_operation', 'mutex_this_variable', 'mutex_containing_object']:
+                        if sync == 'synchronous' and lock != 'no_mutex':
+                            continue # that setting is excluded by quasar constraints
                         scenario_name = create_scenario_name(basicDataType, scalarArray, sync, rw, lock)
                         asWrite = 'forbidden' if 'w' not in rw else sync
                         asRead = 'forbidden' if 'r' not in rw else sync
