@@ -26,7 +26,7 @@ ChangeLog
 			<tr>
 
 			<td valign="top">1.5.18<font size="-1"><br>
-				(16-Feb-2023)</font><br>
+				(01-Mar-2023)</font><br>
 			</td>
 			<td valign="top">
 			<br>
@@ -38,7 +38,7 @@ ChangeLog
 			<td valign="top"><br>
 				<ul>
 					<li>quasar device logic locks are now std::mutex from boost::mutex (a move that was announced already in March 2020)</li>
-					<li>to profit from guaranteed order of execution, in case of <emph>not using</emph>the standard options like <code>of_containing_object</code>, etc., 
+					<li>to profit from guaranteed order of execution, in case of <emph>not using</emph> the standard options like <code>of_containing_object</code>, etc., 
 						the new option <code>handpicked</code> must be chosen and your mutex of choice needs to be registered using <code>configure...</code> methods
 						of particular address-space object. Failing to do so will remain to work, but no benefits from order preservatoin will be observed.
 				</ul>
