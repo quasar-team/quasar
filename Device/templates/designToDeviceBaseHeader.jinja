@@ -107,34 +107,24 @@ class Base_D{{className}}
 
   /* mutex operations */
   {% if designInspector.device_logic_has_mutex(className) %}
-    void lock () { m_lock.lock(); }
-    void unlock () { m_lock.unlock(); }
     std::mutex& getLock () { return m_lock; }
   {% endif %}
 
   /* variable-wise locks */
   {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceWriteUseMutex='of_this_variable' or @addressSpaceReadUseMutex='of_this_variable']") %}
-    void lockVariable_{{sv.get('name')}} () { m_lockVariable_{{sv.get('name')}}.lock(); }
-    void unlockVariable_{{sv.get('name')}} () { m_lockVariable_{{sv.get('name')}}.unlock(); }
     std::mutex& getLockVariable_{{sv.get('name')}} () { return m_lockVariable_{{sv.get('name')}}; }
   {% endfor %}
 
   {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceWriteUseMutex='of_this_operation']") %}
-    void lockVariableWrite_{{sv.get('name')}} () { m_lockVariable_write_{{sv.get('name')}}.lock(); }
-    void unlockVariableWrite_{{sv.get('name')}} () { m_lockVariable_write_{{sv.get('name')}}.unlock(); }
     std::mutex& getLockVariableWrite_{{sv.get('name')}} () { return m_lockVariable_write_{{sv.get('name')}}; }
   {% endfor %}
 
   {% for sv in designInspector.objectify_source_variables(className, "[@addressSpaceReadUseMutex='of_this_operation']") %}
-    void lockVariableRead_{{sv.get('name')}} () { m_lockVariable_read_{{sv.get('name')}}.lock(); }
-    void unlockVariableRead_{{sv.get('name')}} () { m_lockVariable_read_{{sv.get('name')}}.unlock(); }
     std::mutex& getLockVariableRead_{{sv.get('name')}} () { return m_lockVariable_read_{{sv.get('name')}}; }
   {% endfor %}
 
   /* method-wise locks */
   {% for m in designInspector.objectify_methods(className, "[@addressSpaceCallUseMutex='of_this_method']") %}
-    void lockMethodCall_{{m.get('name')}} () { m_lockMethod_call_{{m.get('name')}}.lock(); }
-    void unlockMethodCall_{{m.get('name')}} () { m_lockMethod_call_{{m.get('name')}}.unlock(); }
     std::mutex& getLockMethodCall_{{m.get('name')}} () { return m_lockMethod_call_{{m.get('name')}}; } 
   {% endfor %}
 
