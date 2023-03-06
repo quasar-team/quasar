@@ -225,6 +225,12 @@ class DesignValidator():
             cls = self.design_inspector.objectify_class(class_name)
             for source_variable in self.design_inspector.objectify_source_variables(class_name):
                 locator['sourcevariable'] = source_variable.get('name')
+                if source_variable.get('addressSpaceRead') == 'synchronous' and source_variable.get('addressSpaceReadUseMutex') != 'no':
+                    raise DesignFlaw(f'Cant use synchro domains (...ReadUseMutex attribute) for (network-)synchro'
+                        f' execution (at {stringify_locator(locator)})')
+                if source_variable.get('addressSpaceWrite') == 'synchronous' and source_variable.get('addressSpaceWriteUseMutex') != 'no':
+                    raise DesignFlaw(f'Cant use synchro domains (...WriteUseMutex attribute) for (network-)synchro'
+                        f' execution (at {stringify_locator(locator)})')
                 mutex_options = [
                     source_variable.get('addressSpaceReadUseMutex'),
                     source_variable.get('addressSpaceWriteUseMutex')]
