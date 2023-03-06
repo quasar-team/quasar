@@ -353,7 +353,7 @@ elementFormDefault="qualified">
     </sequence>
     <attribute name="name" type="tns:VariableName" use="required"/>
     <attribute name="executionSynchronicity" type="tns:MethodExecutionSynchronicity" use="required"/>
-    <attribute name="addressSpaceCallUseMutex" type="tns:MethodCallUseMutex" use="optional" default="no"/>
+    <attribute name="addressSpaceCallUseMutex" type="tns:MethodCallUseMutex" use="required"/>
   </complexType>
   <complexType name="MethodArgument">
     <sequence>
