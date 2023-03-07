@@ -29,6 +29,7 @@
 #include <map>
 #include <condition_variable>
 #include <functional>
+#include <atomic>
 
 #include <statuscode.h>
 
@@ -58,6 +59,13 @@ public:
     UaStatus addJob (const std::function<void()>& functor, const std::string& description, std::mutex* mutex = nullptr);
 
     void notifyExternalEvent (); // TODO we should have it.
+    
+    //! How many jobs are buffered for execution ?
+    size_t getNumPendingJobs ();
+
+    size_t getNumJobsAccepted () { return m_jobsAcceptedCounter.load(); }
+    size_t getNumJobsFinished () { return m_jobsFinishedCounter.load(); }
+
 
 private:
     void work();
@@ -66,7 +74,7 @@ private:
     bool m_quit;
     std::vector<std::thread> m_workers;
     std::list<ThreadPoolJob*> m_pendingJobs;
-
+    
     enum MutexUsage
     {
         OPEN = 0, // it's not used in any job being processed (default for a newly added job) -> default init
@@ -93,6 +101,9 @@ private:
     Duty findSomeDuty ();
 
     void atNewCycle();
+
+    std::atomic_size_t m_jobsAcceptedCounter;
+    std::atomic_size_t m_jobsFinishedCounter;
 
 };
 

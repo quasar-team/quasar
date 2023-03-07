@@ -29,7 +29,9 @@ namespace Quasar
 
 ThreadPool::ThreadPool (unsigned int maxThreads, unsigned int maxJobs):
         m_quit(false),
-        m_maxJobs(maxJobs)
+        m_maxJobs(maxJobs),
+        m_jobsAcceptedCounter(0),
+        m_jobsFinishedCounter(0)
 {
     m_workers.reserve(maxThreads);
     for (unsigned int i=0; i<maxThreads; ++i)
@@ -135,6 +137,7 @@ void ThreadPool::work()
             std::unique_lock<std::mutex>lock (m_accessLock);
             m_mutices[duty.job->associatedMutex()] = MutexUsage::NEW_CYCLE;
         }
+        m_jobsFinishedCounter++;
         delete duty.job;
     }
 }
@@ -154,6 +157,7 @@ UaStatus ThreadPool::addJob (ThreadPoolJob* job)
     }
     LOG(Log::TRC) << "Added new job to threadpool, current number of jobs is:" << m_pendingJobs.size();
     m_conditionVariable.notify_one();
+    m_jobsAcceptedCounter++;
     return OpcUa_Good;
 }
 
@@ -180,6 +184,12 @@ UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::st
     };
     StdFunctionJob *job = new StdFunctionJob (functor, description, mutex);
     return this->addJob (job);
+}
+
+size_t ThreadPool::getNumPendingJobs ()
+{
+    std::lock_guard<std::mutex>lock (m_accessLock);
+    return m_pendingJobs.size();
 }
 
 }
