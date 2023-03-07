@@ -29,7 +29,9 @@ namespace Quasar
 
 ThreadPool::ThreadPool (unsigned int maxThreads, unsigned int maxJobs):
         m_quit(false),
-        m_maxJobs(maxJobs)
+        m_maxJobs(maxJobs),
+        m_jobsAcceptedCounter(0),
+        m_jobsFinishedCounter(0)
 {
     m_workers.reserve(maxThreads);
     for (unsigned int i=0; i<maxThreads; ++i)
@@ -56,13 +58,13 @@ ThreadPool::~ThreadPool ()
 
 /** This method finds the next job suitable to be dealt by the next available worker.
  * It can finish with two potential outcomes:
- * -- there is no suitable job to execute 
+ * -- there is no suitable job to execute
  *      returns nullptr for the job, does not change the job list
  * -- there is a suitable job to execute (either w/o a mutex or with a mutex that is free)
  *      locks that specifix mutex (if applicable)
  *      returns the job ptr and the lock
  *      removes that job from the list
- */ 
+ */
 ThreadPool::Duty ThreadPool::findSomeDuty ()
 {
     for (auto iter = std::begin(m_pendingJobs); iter != std::end(m_pendingJobs); iter++)
@@ -88,7 +90,7 @@ ThreadPool::Duty ThreadPool::findSomeDuty ()
             duty.job = *iter;
             m_pendingJobs.erase(iter);
             return duty;
-        }   
+        }
     }
     return Duty(); // by default no job, i.e. can't find anything to do now.
 }
@@ -128,13 +130,14 @@ void ThreadPool::work()
         catch (...)
         {
             LOG(Log::ERR) << "Job '" << duty.job->describe() <<
-                "' has thrown an undeterminate exception. The job description was '" + duty.job->describe() + "'";    
+                "' has thrown an undeterminate exception. The job description was '" + duty.job->describe() + "'";
         }
         if (duty.job->associatedMutex())
         {
             std::unique_lock<std::mutex>lock (m_accessLock);
             m_mutices[duty.job->associatedMutex()] = MutexUsage::NEW_CYCLE;
         }
+        m_jobsFinishedCounter++;
         delete duty.job;
     }
 }
@@ -154,6 +157,7 @@ UaStatus ThreadPool::addJob (ThreadPoolJob* job)
     }
     LOG(Log::TRC) << "Added new job to threadpool, current number of jobs is:" << m_pendingJobs.size();
     m_conditionVariable.notify_one();
+    m_jobsAcceptedCounter++;
     return OpcUa_Good;
 }
 
@@ -180,6 +184,12 @@ UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::st
     };
     StdFunctionJob *job = new StdFunctionJob (functor, description, mutex);
     return this->addJob (job);
+}
+
+size_t ThreadPool::getNumPendingJobs ()
+{
+    std::lock_guard<std::mutex>lock (m_accessLock);
+    return m_pendingJobs.size();
 }
 
 }

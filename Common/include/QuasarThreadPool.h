@@ -29,6 +29,7 @@
 #include <map>
 #include <condition_variable>
 #include <functional>
+#include <atomic>
 
 #include <statuscode.h>
 
@@ -58,6 +59,13 @@ public:
     UaStatus addJob (const std::function<void()>& functor, const std::string& description, std::mutex* mutex = nullptr);
 
     void notifyExternalEvent (); // TODO we should have it.
+
+    //! How many jobs are buffered for execution ?
+    size_t getNumPendingJobs ();
+
+    size_t getNumJobsAccepted () { return m_jobsAcceptedCounter.load(); }
+    size_t getNumJobsFinished () { return m_jobsFinishedCounter.load(); }
+
 
 private:
     void work();
@@ -89,10 +97,13 @@ private:
         Duty() : job(nullptr) {};
     };
 
-    //! Search for a job that can be presently executed, if found remove it from the list. 
+    //! Search for a job that can be presently executed, if found remove it from the list.
     Duty findSomeDuty ();
 
     void atNewCycle();
+
+    std::atomic_size_t m_jobsAcceptedCounter;
+    std::atomic_size_t m_jobsFinishedCounter;
 
 };
 
