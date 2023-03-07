@@ -121,6 +121,7 @@ class DesignValidator():
         self.validate_source_variables()
         self.validate_config_entries()
         self.validate_hasobjects_wrapper()
+        self.validate_methods()
 
     def validate_initial_value(self, cachevariable, locator):
         """initialValue is there, but its format depends on dataType so can't be validated by XSD"""
@@ -311,6 +312,17 @@ class DesignValidator():
             locator = {'in':'root'}
             for ho in root.hasobjects:
                 self.validate_hasobjects(ho, locator)
+
+    def validate_methods(self):
+        for class_name in self.design_inspector.get_names_of_all_classes():
+            locator = {'class':class_name}
+            cls = self.design_inspector.objectify_class(class_name)
+            for m in self.design_inspector.objectify_methods(class_name):
+                locator['method'] = m.get('name')
+                if m.get('addressSpaceCallUseMutex') != 'no':
+                    # here we deserve a couple of extra checks ...
+                    if m.get('addressSpaceCallUseMutex') == 'of_containing_object':
+                        self.assert_mutex_present(class_name, locator, 'to support '+m.get('addressSpaceCallUseMutex'))
 
 def main():
     """It's just a helper main if you want to run this file stand-alone with pdb or so"""
