@@ -58,13 +58,13 @@ ThreadPool::~ThreadPool ()
 
 /** This method finds the next job suitable to be dealt by the next available worker.
  * It can finish with two potential outcomes:
- * -- there is no suitable job to execute 
+ * -- there is no suitable job to execute
  *      returns nullptr for the job, does not change the job list
  * -- there is a suitable job to execute (either w/o a mutex or with a mutex that is free)
  *      locks that specifix mutex (if applicable)
  *      returns the job ptr and the lock
  *      removes that job from the list
- */ 
+ */
 ThreadPool::Duty ThreadPool::findSomeDuty ()
 {
     for (auto iter = std::begin(m_pendingJobs); iter != std::end(m_pendingJobs); iter++)
@@ -90,7 +90,7 @@ ThreadPool::Duty ThreadPool::findSomeDuty ()
             duty.job = *iter;
             m_pendingJobs.erase(iter);
             return duty;
-        }   
+        }
     }
     return Duty(); // by default no job, i.e. can't find anything to do now.
 }
@@ -130,7 +130,7 @@ void ThreadPool::work()
         catch (...)
         {
             LOG(Log::ERR) << "Job '" << duty.job->describe() <<
-                "' has thrown an undeterminate exception. The job description was '" + duty.job->describe() + "'";    
+                "' has thrown an undeterminate exception. The job description was '" + duty.job->describe() + "'";
         }
         if (duty.job->associatedMutex())
         {

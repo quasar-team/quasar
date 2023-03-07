@@ -59,7 +59,7 @@ public:
     UaStatus addJob (const std::function<void()>& functor, const std::string& description, std::mutex* mutex = nullptr);
 
     void notifyExternalEvent (); // TODO we should have it.
-    
+
     //! How many jobs are buffered for execution ?
     size_t getNumPendingJobs ();
 
@@ -74,7 +74,7 @@ private:
     bool m_quit;
     std::vector<std::thread> m_workers;
     std::list<ThreadPoolJob*> m_pendingJobs;
-    
+
     enum MutexUsage
     {
         OPEN = 0, // it's not used in any job being processed (default for a newly added job) -> default init
@@ -97,7 +97,7 @@ private:
         Duty() : job(nullptr) {};
     };
 
-    //! Search for a job that can be presently executed, if found remove it from the list. 
+    //! Search for a job that can be presently executed, if found remove it from the list.
     Duty findSomeDuty ();
 
     void atNewCycle();
