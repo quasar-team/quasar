@@ -24,7 +24,7 @@ def make_dts():
 
 
 def get_dts(dts):
-    random.shuffle(dts)
+    #random.shuffle(dts)  #<-- not good for repetitivity of conditions
     return dts.pop()
 
 
@@ -38,13 +38,14 @@ def generate():
 
     Num_arguments = [0, 1, 2]
     Num_return_values = [0, 1, 2]
+    Random_Options = ['no', 'of_this_method', 'of_containing_object']
     it = 0
     try:
         while it<10:
             for num_arguments in Num_arguments:
                 for num_return_values in Num_return_values:
                     scenario_name = create_scenario_name(num_arguments, num_return_values, it)
-                    output('<d:method name="{0}" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >'.format(scenario_name))
+                    output(f'<d:method name="{scenario_name}" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="{random.choice(Random_Options)}" >')
                     for arg in range(0, num_arguments):
                         dt = get_dts(dts_args)
                         output('<d:argument name="arg{0}" dataType="{1}" >'.format(arg, dt['dataType']) )
