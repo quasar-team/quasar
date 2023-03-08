@@ -47,12 +47,11 @@ ThreadPool::~ThreadPool ()
         t.join();
     LOG(Log::INF) << "Stopped the threadpool";
     // all threads are stopped now, but are all jobs flushed?
-    while (!m_pendingJobs.empty())
+    for (auto it = std::begin(m_pendingJobs); it != std::end(m_pendingJobs); )
     {
-        ThreadPoolJob* job = m_pendingJobs.front();
-        m_pendingJobs.pop_front();
-        LOG(Log::WRN) << "Removing unfinished job: " << job->describe();
-        delete job;
+        /* Users should be aware what was left unexecuted, that's why we just don't to list.clear() */
+        LOG(Log::WRN) << "Removing unfinished job: " << (*it)->describe();
+        it = m_pendingJobs.erase (it);
     }
 }
 
@@ -72,7 +71,7 @@ ThreadPool::Duty ThreadPool::findSomeDuty ()
         if (! (*iter)->associatedMutex() ) // no synchro domain
         {
             Duty duty;
-            duty.job = *iter;
+            duty.job = std::move(*iter);
             m_pendingJobs.erase(iter);
             LOG(Log::TRC) << "Removed job from the threadpool, current number of jobs is:" << m_pendingJobs.size();
             return duty;
@@ -87,7 +86,7 @@ ThreadPool::Duty ThreadPool::findSomeDuty ()
             /* so, we own the lock... */
             m_mutices[(*iter)->associatedMutex()] = MutexUsage::CLOSED;
             duty.lock = std::move(lock);
-            duty.job = *iter;
+            duty.job = std::move(*iter);
             m_pendingJobs.erase(iter);
             return duty;
         }
@@ -138,11 +137,10 @@ void ThreadPool::work()
             m_mutices[duty.job->associatedMutex()] = MutexUsage::NEW_CYCLE;
         }
         m_jobsFinishedCounter++;
-        delete duty.job;
     }
 }
 
-UaStatus ThreadPool::addJob (ThreadPoolJob* job)
+UaStatus ThreadPool::addJob (std::unique_ptr<ThreadPoolJob> && job)
 {
     {
         std::lock_guard<std::mutex>lock (m_accessLock);
@@ -153,7 +151,7 @@ UaStatus ThreadPool::addJob (ThreadPoolJob* job)
         }
         if (job->associatedMutex() != nullptr)
             m_mutices[job->associatedMutex()]; /* add this mutex, default constuct, if not existing before */
-        m_pendingJobs.push_back(job);
+        m_pendingJobs.push_back(std::move(job));
     }
     LOG(Log::TRC) << "Added new job to threadpool, current number of jobs is:" << m_pendingJobs.size();
     m_conditionVariable.notify_one();
@@ -182,8 +180,8 @@ UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::st
         std::mutex* m_mutex;
 
     };
-    StdFunctionJob *job = new StdFunctionJob (functor, description, mutex);
-    return this->addJob (job);
+    // make_unique would be much better, but officially we're still not C++14... 
+    return this->addJob (std::unique_ptr<ThreadPoolJob> (new StdFunctionJob (functor, description, mutex)));
 }
 
 size_t ThreadPool::getNumPendingJobs ()

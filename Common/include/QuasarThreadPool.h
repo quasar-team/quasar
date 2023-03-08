@@ -55,7 +55,7 @@ public:
     ThreadPool (unsigned int maxThreads, unsigned int maxJobs);
     ~ThreadPool ();
 
-    UaStatus addJob (ThreadPoolJob* job);
+    UaStatus addJob (std::unique_ptr<ThreadPoolJob> && job);
     UaStatus addJob (const std::function<void()>& functor, const std::string& description, std::mutex* mutex = nullptr);
 
     void notifyExternalEvent (); // TODO we should have it.
@@ -73,7 +73,7 @@ private:
     std::mutex m_accessLock;
     bool m_quit;
     std::vector<std::thread> m_workers;
-    std::list<ThreadPoolJob*> m_pendingJobs;
+    std::list<std::unique_ptr<ThreadPoolJob>> m_pendingJobs;
 
     enum MutexUsage
     {
@@ -92,7 +92,7 @@ private:
 
     struct Duty
     {
-        ThreadPoolJob* job;
+        std::unique_ptr<ThreadPoolJob> job;
         std::unique_lock<std::mutex> lock;
         Duty() : job(nullptr) {};
     };
