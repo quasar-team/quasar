@@ -1,201 +1,201 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="TestProject" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">
 <d:class name="TestClass">
-<d:devicelogic/>
+<d:devicelogic><d:mutex/></d:devicelogic>
 <d:method name="args0_rvs0_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
 </d:method>
-<d:method name="args0_rvs1_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:returnvalue name="rv0" dataType="UaVariant" >
+<d:method name="args0_rvs1_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:returnvalue name="rv0" dataType="UaByteString" >
 <d:array/>
 </d:returnvalue>
 </d:method>
-<d:method name="args0_rvs2_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:returnvalue name="rv0" dataType="OpcUa_Double" >
+<d:method name="args0_rvs2_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:returnvalue name="rv0" dataType="UaByteString" >
 </d:returnvalue>
-<d:returnvalue name="rv1" dataType="OpcUa_Boolean" >
+<d:returnvalue name="rv1" dataType="UaVariant" >
 <d:array/>
 </d:returnvalue>
 </d:method>
-<d:method name="args1_rvs0_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_Int64" >
+<d:method name="args1_rvs0_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:argument name="arg0" dataType="UaByteString" >
 <d:array/>
 </d:argument>
 </d:method>
 <d:method name="args1_rvs1_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
+<d:argument name="arg0" dataType="UaByteString" >
+</d:argument>
+<d:returnvalue name="rv0" dataType="UaVariant" >
+</d:returnvalue>
+</d:method>
+<d:method name="args1_rvs2_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
 <d:argument name="arg0" dataType="UaVariant" >
 <d:array/>
 </d:argument>
-<d:returnvalue name="rv0" dataType="OpcUa_UInt16" >
+<d:returnvalue name="rv0" dataType="UaString" >
+<d:array/>
+</d:returnvalue>
+<d:returnvalue name="rv1" dataType="UaString" >
+</d:returnvalue>
+</d:method>
+<d:method name="args2_rvs0_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
+<d:argument name="arg0" dataType="UaVariant" >
+</d:argument>
+<d:argument name="arg1" dataType="UaString" >
+<d:array/>
+</d:argument>
+</d:method>
+<d:method name="args2_rvs1_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:argument name="arg0" dataType="UaString" >
+</d:argument>
+<d:argument name="arg1" dataType="OpcUa_Float" >
+<d:array/>
+</d:argument>
+<d:returnvalue name="rv0" dataType="OpcUa_Float" >
 <d:array/>
 </d:returnvalue>
 </d:method>
-<d:method name="args1_rvs2_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_Byte" >
+<d:method name="args2_rvs2_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:argument name="arg0" dataType="OpcUa_Float" >
 </d:argument>
-<d:returnvalue name="rv0" dataType="OpcUa_Double" >
+<d:argument name="arg1" dataType="OpcUa_Double" >
 <d:array/>
+</d:argument>
+<d:returnvalue name="rv0" dataType="OpcUa_Float" >
+</d:returnvalue>
+<d:returnvalue name="rv1" dataType="OpcUa_Double" >
+<d:array/>
+</d:returnvalue>
+</d:method>
+<d:method name="args0_rvs0_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+</d:method>
+<d:method name="args0_rvs1_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:returnvalue name="rv0" dataType="OpcUa_Double" >
+</d:returnvalue>
+</d:method>
+<d:method name="args0_rvs2_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:returnvalue name="rv0" dataType="OpcUa_Int64" >
+<d:array/>
+</d:returnvalue>
+<d:returnvalue name="rv1" dataType="OpcUa_Int64" >
+</d:returnvalue>
+</d:method>
+<d:method name="args1_rvs0_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
+<d:argument name="arg0" dataType="OpcUa_Double" >
+</d:argument>
+</d:method>
+<d:method name="args1_rvs1_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:argument name="arg0" dataType="OpcUa_Int64" >
+<d:array/>
+</d:argument>
+<d:returnvalue name="rv0" dataType="OpcUa_UInt64" >
+<d:array/>
+</d:returnvalue>
+</d:method>
+<d:method name="args1_rvs2_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
+<d:argument name="arg0" dataType="OpcUa_Int64" >
+</d:argument>
+<d:returnvalue name="rv0" dataType="OpcUa_UInt64" >
 </d:returnvalue>
 <d:returnvalue name="rv1" dataType="OpcUa_Int32" >
 <d:array/>
 </d:returnvalue>
 </d:method>
-<d:method name="args2_rvs0_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_SByte" >
+<d:method name="args2_rvs0_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:argument name="arg0" dataType="OpcUa_UInt64" >
+<d:array/>
+</d:argument>
+<d:argument name="arg1" dataType="OpcUa_UInt64" >
+</d:argument>
+</d:method>
+<d:method name="args2_rvs1_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_this_method" >
+<d:argument name="arg0" dataType="OpcUa_Int32" >
 <d:array/>
 </d:argument>
 <d:argument name="arg1" dataType="OpcUa_Int32" >
-<d:array/>
 </d:argument>
-</d:method>
-<d:method name="args2_rvs1_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_SByte" >
-</d:argument>
-<d:argument name="arg1" dataType="OpcUa_Double" >
-<d:array/>
-</d:argument>
-<d:returnvalue name="rv0" dataType="UaString" >
-<d:array/>
+<d:returnvalue name="rv0" dataType="OpcUa_Int32" >
 </d:returnvalue>
 </d:method>
-<d:method name="args2_rvs2_it0" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_Int16" >
-</d:argument>
-<d:argument name="arg1" dataType="UaString" >
+<d:method name="args2_rvs2_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
+<d:argument name="arg0" dataType="OpcUa_UInt32" >
 <d:array/>
 </d:argument>
-<d:returnvalue name="rv0" dataType="OpcUa_Float" >
+<d:argument name="arg1" dataType="OpcUa_UInt32" >
+</d:argument>
+<d:returnvalue name="rv0" dataType="OpcUa_UInt32" >
 <d:array/>
 </d:returnvalue>
 <d:returnvalue name="rv1" dataType="OpcUa_UInt32" >
 </d:returnvalue>
 </d:method>
-<d:method name="args0_rvs0_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-</d:method>
-<d:method name="args0_rvs1_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:returnvalue name="rv0" dataType="OpcUa_Byte" >
-</d:returnvalue>
-</d:method>
-<d:method name="args0_rvs2_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:returnvalue name="rv0" dataType="OpcUa_Float" >
-</d:returnvalue>
-<d:returnvalue name="rv1" dataType="OpcUa_Boolean" >
-</d:returnvalue>
-</d:method>
-<d:method name="args1_rvs0_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_Int64" >
-</d:argument>
-</d:method>
-<d:method name="args1_rvs1_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_UInt32" >
-<d:array/>
-</d:argument>
-<d:returnvalue name="rv0" dataType="OpcUa_SByte" >
-</d:returnvalue>
-</d:method>
-<d:method name="args1_rvs2_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_UInt64" >
-<d:array/>
-</d:argument>
-<d:returnvalue name="rv0" dataType="OpcUa_SByte" >
-<d:array/>
-</d:returnvalue>
-<d:returnvalue name="rv1" dataType="OpcUa_Int64" >
-</d:returnvalue>
-</d:method>
-<d:method name="args2_rvs0_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_Int16" >
-<d:array/>
-</d:argument>
-<d:argument name="arg1" dataType="OpcUa_UInt32" >
-</d:argument>
-</d:method>
-<d:method name="args2_rvs1_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_UInt64" >
-</d:argument>
-<d:argument name="arg1" dataType="UaVariant" >
-</d:argument>
-<d:returnvalue name="rv0" dataType="OpcUa_UInt16" >
-</d:returnvalue>
-</d:method>
-<d:method name="args2_rvs2_it1" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_Double" >
-</d:argument>
-<d:argument name="arg1" dataType="OpcUa_UInt16" >
-</d:argument>
-<d:returnvalue name="rv0" dataType="UaString" >
-</d:returnvalue>
-<d:returnvalue name="rv1" dataType="UaByteString" >
-<d:array/>
-</d:returnvalue>
-</d:method>
-<d:method name="args0_rvs0_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
+<d:method name="args0_rvs0_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
 </d:method>
 <d:method name="args0_rvs1_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:returnvalue name="rv0" dataType="OpcUa_Int32" >
-</d:returnvalue>
-</d:method>
-<d:method name="args0_rvs2_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:returnvalue name="rv0" dataType="UaVariant" >
-</d:returnvalue>
-<d:returnvalue name="rv1" dataType="UaByteString" >
-</d:returnvalue>
-</d:method>
-<d:method name="args1_rvs0_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_Boolean" >
-<d:array/>
-</d:argument>
-</d:method>
-<d:method name="args1_rvs1_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="UaByteString" >
-</d:argument>
 <d:returnvalue name="rv0" dataType="OpcUa_Int16" >
 <d:array/>
 </d:returnvalue>
 </d:method>
-<d:method name="args1_rvs2_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_Byte" >
-<d:array/>
-</d:argument>
-<d:returnvalue name="rv0" dataType="OpcUa_UInt32" >
+<d:method name="args0_rvs2_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:returnvalue name="rv0" dataType="OpcUa_Int16" >
+</d:returnvalue>
+<d:returnvalue name="rv1" dataType="OpcUa_UInt16" >
 <d:array/>
 </d:returnvalue>
-<d:returnvalue name="rv1" dataType="OpcUa_Int64" >
+</d:method>
+<d:method name="args1_rvs0_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
+<d:argument name="arg0" dataType="OpcUa_Int16" >
 <d:array/>
+</d:argument>
+</d:method>
+<d:method name="args1_rvs1_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:argument name="arg0" dataType="OpcUa_Int16" >
+</d:argument>
+<d:returnvalue name="rv0" dataType="OpcUa_UInt16" >
+</d:returnvalue>
+</d:method>
+<d:method name="args1_rvs2_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_this_method" >
+<d:argument name="arg0" dataType="OpcUa_UInt16" >
+<d:array/>
+</d:argument>
+<d:returnvalue name="rv0" dataType="OpcUa_SByte" >
+<d:array/>
+</d:returnvalue>
+<d:returnvalue name="rv1" dataType="OpcUa_SByte" >
 </d:returnvalue>
 </d:method>
 <d:method name="args2_rvs0_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_Float" >
+<d:argument name="arg0" dataType="OpcUa_UInt16" >
+</d:argument>
+<d:argument name="arg1" dataType="OpcUa_SByte" >
 <d:array/>
 </d:argument>
-<d:argument name="arg1" dataType="OpcUa_Boolean" >
-</d:argument>
 </d:method>
-<d:method name="args2_rvs1_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="UaString" >
+<d:method name="args2_rvs1_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+<d:argument name="arg0" dataType="OpcUa_SByte" >
 </d:argument>
-<d:argument name="arg1" dataType="OpcUa_UInt16" >
+<d:argument name="arg1" dataType="OpcUa_Byte" >
 <d:array/>
 </d:argument>
-<d:returnvalue name="rv0" dataType="OpcUa_UInt64" >
-</d:returnvalue>
-</d:method>
-<d:method name="args2_rvs2_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-<d:argument name="arg0" dataType="OpcUa_Int32" >
-</d:argument>
-<d:argument name="arg1" dataType="UaByteString" >
-<d:array/>
-</d:argument>
-<d:returnvalue name="rv0" dataType="OpcUa_UInt64" >
-<d:array/>
-</d:returnvalue>
-<d:returnvalue name="rv1" dataType="OpcUa_Int16" >
-</d:returnvalue>
-</d:method>
-<d:method name="args0_rvs0_it3" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
-</d:method>
-<d:method name="args0_rvs1_it3" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
 <d:returnvalue name="rv0" dataType="OpcUa_Byte" >
 <d:array/>
+</d:returnvalue>
+</d:method>
+<d:method name="args2_rvs2_it2" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_this_method" >
+<d:argument name="arg0" dataType="OpcUa_Byte" >
+</d:argument>
+<d:argument name="arg1" dataType="OpcUa_Boolean" >
+<d:array/>
+</d:argument>
+<d:returnvalue name="rv0" dataType="OpcUa_Byte" >
+</d:returnvalue>
+<d:returnvalue name="rv1" dataType="OpcUa_Boolean" >
+<d:array/>
+</d:returnvalue>
+</d:method>
+<d:method name="args0_rvs0_it3" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_containing_object" >
+</d:method>
+<d:method name="args0_rvs1_it3" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="of_this_method" >
+<d:returnvalue name="rv0" dataType="OpcUa_Boolean" >
 </d:returnvalue>
 </d:method>
 <d:method name="args0_rvs2_it3" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="no" >
