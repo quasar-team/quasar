@@ -335,14 +335,14 @@ UaStatus SourceVariables_spawnIoJobRead (
               {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
                 {
                   {% if sv.get('addressSpaceRead') == 'asynchronous' %}
-                    IoJob_{{className}}_READ_{{sv.get('name')}}* job =
+                    std::unique_ptr<IoJob_{{className}}_READ_{{sv.get('name')}}> job (
                       new IoJob_{{className}}_READ_{{sv.get('name')}} (
                         callback,
                         hTransaction,
                         callbackHandle,
                         parentNode
-                        ); 
-                    UaStatus s = sourceVariableThreads->addJob (job);
+                        )); 
+                    UaStatus s = sourceVariableThreads->addJob (std::move(job));
                     if (!s.isGood())
                     {
                       LOG(Log::ERR) << "While addJob(): " << s.toString().toUtf8();
@@ -417,15 +417,15 @@ UaStatus SourceVariables_spawnIoJobWrite (
                 {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
                   {
                     {% if sv.get('addressSpaceWrite') == 'asynchronous' %}
-                      IoJob_{{className}}_WRITE_{{sv.get('name')}} *job =
+                      std::unique_ptr<IoJob_{{className}}_WRITE_{{sv.get('name')}}> job (
                         new IoJob_{{className}}_WRITE_{{sv.get('name')}} (
                           callback,
                           hTransaction,
                           callbackHandle,
                           parentNode,
                           pWriteValue
-                        ); 
-                      UaStatus s = sourceVariableThreads->addJob (job);
+                        )); 
+                      UaStatus s = sourceVariableThreads->addJob (std::move(job));
                       if (!s.isGood())
                       {
                         LOG(Log::ERR) << "While addJob(): " << s.toString().toUtf8();
