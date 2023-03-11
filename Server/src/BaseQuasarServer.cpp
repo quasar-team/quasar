@@ -460,6 +460,7 @@ void BaseQuasarServer::initializeLogIt()
     Log::initializeLogging();
     Log::registerLoggingComponent("CalcVars", Log::INF);
     Log::registerLoggingComponent("AddressSpace", Log::INF);
+    Log::registerLoggingComponent("ThreadPool", Log::INF);
 }
 void BaseQuasarServer::mainLoop()
 {
