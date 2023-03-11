@@ -33,6 +33,9 @@ ThreadPool::ThreadPool (unsigned int maxThreads, unsigned int maxJobs):
         m_jobsAcceptedCounter(0),
         m_jobsFinishedCounter(0)
 {
+    m_threadPoolLogId = Log::getComponentHandle("ThreadPool");
+    if (m_threadPoolLogId == Log::INVALID_HANDLE)
+        throw std::logic_error("ThreadPool initialized before ThreadPool LogIt handle is initialized");
     m_workers.reserve(maxThreads);
     for (unsigned int i=0; i<maxThreads; ++i)
         m_workers.emplace_back( [this](){this->work();} );
@@ -66,6 +69,7 @@ ThreadPool::~ThreadPool ()
  */
 ThreadPool::Duty ThreadPool::findSomeDuty ()
 {
+    LOG(Log::TRC, m_threadPoolLogId) << "--> Find some duty";
     for (auto iter = std::begin(m_pendingJobs); iter != std::end(m_pendingJobs); iter++)
     {
         if (! (*iter)->associatedMutex() ) // no synchro domain
@@ -73,34 +77,29 @@ ThreadPool::Duty ThreadPool::findSomeDuty ()
             Duty duty;
             duty.job = std::move(*iter);
             m_pendingJobs.erase(iter);
-            LOG(Log::TRC) << "Removed job from the threadpool, current number of jobs is:" << m_pendingJobs.size();
+            LOG(Log::TRC, m_threadPoolLogId) << "<-- Removed job from the threadpool, current number of jobs is:" << m_pendingJobs.size();
             return duty;
         }
-        if ( m_mutices[(*iter)->associatedMutex()] == MutexUsage::OPEN ) // there is a synchro domain, but at least from the thread pool perspective it is not used.
+        else // there is a synchro domain, dunno if free?
         {
             Duty duty;
             /* can we grab it ? */
             std::unique_lock<std::mutex> lock (*(*iter)->associatedMutex(), std::try_to_lock);
             if (!lock.owns_lock())
-                return duty; // no luck, someone else (outside of threadpool) owns it. next time.
+            {
+                LOG(Log::TRC, m_threadPoolLogId) << "<-- Could not lock mutex [" << (*iter)->associatedMutex() << "] for job [" << (*iter)->describe() << "]";
+                continue;
+            }
             /* so, we own the lock... */
-            m_mutices[(*iter)->associatedMutex()] = MutexUsage::CLOSED;
             duty.lock = std::move(lock);
             duty.job = std::move(*iter);
             m_pendingJobs.erase(iter);
+            LOG(Log::TRC, m_threadPoolLogId) << "<-- Removed job [" << duty.job->describe() << "] from the threadpool, current #jobs is:" << m_pendingJobs.size();
             return duty;
         }
     }
+    LOG(Log::TRC, m_threadPoolLogId) << "<-- No executable duty";
     return Duty(); // by default no job, i.e. can't find anything to do now.
-}
-
-void ThreadPool::atNewCycle()
-{
-    for (auto& keyValPair : m_mutices)
-    {
-        if (keyValPair.second == MutexUsage::NEW_CYCLE)
-         keyValPair.second = MutexUsage::OPEN;
-    }
 }
 
 void ThreadPool::work()
@@ -108,10 +107,8 @@ void ThreadPool::work()
     while (!m_quit)
     {
         Duty duty;
-        // ThreadPoolJob* job (nullptr);
         { /* synchro block for the internals */
             std::unique_lock<std::mutex>lock (m_accessLock);
-            atNewCycle();
             duty = findSomeDuty();
         }
         if (!duty.job)
@@ -121,7 +118,6 @@ void ThreadPool::work()
             continue;
         }
         /* So, we found a job to execute */
-        // TODO are we sure we still have the semaphore ?
         try
         {
             duty.job->execute();
@@ -134,7 +130,9 @@ void ThreadPool::work()
         if (duty.job->associatedMutex())
         {
             std::unique_lock<std::mutex>lock (m_accessLock);
-            m_mutices[duty.job->associatedMutex()] = MutexUsage::NEW_CYCLE;
+            //! Piotr: This line is super important: unlocking of the associated mutex
+            //! MUST happen within m_accessLock context
+            duty.job->associatedMutex()->unlock();
         }
         m_jobsFinishedCounter++;
     }
@@ -149,11 +147,10 @@ UaStatus ThreadPool::addJob (std::unique_ptr<ThreadPoolJob> && job)
             LOG(Log::ERR) << "The threadpool is already full (it has limit of " << m_maxJobs << " jobs. Cant add new jobs. Enlarge the threadpool";
             return OpcUa_BadResourceUnavailable;
         }
-        if (job->associatedMutex() != nullptr)
-            m_mutices[job->associatedMutex()]; /* add this mutex, default constuct, if not existing before */
         m_pendingJobs.push_back(std::move(job));
+        LOG(Log::TRC) << "Added new job [" << m_pendingJobs.back()->describe() << "] to threadpool, current number of jobs is:" << m_pendingJobs.size();
     }
-    LOG(Log::TRC) << "Added new job to threadpool, current number of jobs is:" << m_pendingJobs.size();
+    
     m_conditionVariable.notify_one();
     m_jobsAcceptedCounter++;
     return OpcUa_Good;
