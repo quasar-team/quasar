@@ -135,7 +135,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariableIoManager.cpp": {
-                "md5": "7483add06e2e23e3ac74bbf8683894e3",
+                "md5": "2d66e7fb72f23e0f8527628346aebdcb",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ArrayTools.cpp": {
@@ -186,7 +186,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesBody.jinja": {
-                "md5": "7be86bcbc97b03c6442a2885084d0385",
+                "md5": "75f226377674905d78e7fe757a16dfda",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesHeader.jinja": {
@@ -322,7 +322,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.h": {
-                "md5": "e52a7d643093aafc39c0e254c794c9cd",
+                "md5": "536ae7811ab7407de132c8bd989b8a58",
                 "use_defaults": "file_defaults_of_directory"
             },
             "Utils.h": {
@@ -345,7 +345,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.cpp": {
-                "md5": "8d9a271a23be54ff263e6f13d396acd1",
+                "md5": "21b85885b51e1ac3ed720bf05eb33b31",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "f2d7e6971639660df8ad10b3d37424da",
+                "md5": "be665ac5a50cd7bb81fa679ed96e25e3",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1220,7 +1220,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "c74f363a3252b6bfabff1a4ba410343d",
+                "md5": "b71036ee168442f62bf873fe127fd6a9",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1261,7 +1261,7 @@
         "files": {
             "BaseQuasarServer.cpp": {
                 "install": "overwrite",
-                "md5": "290c6021ad327860a52695dae028e3e4",
+                "md5": "d8ab17155790526b1ca7f4abecf6acd5",
                 "must_be_versioned": true,
                 "must_exist": true
             },
