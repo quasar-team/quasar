@@ -31,6 +31,7 @@
 #include <functional>
 #include <atomic>
 
+#include <LogIt.h>
 #include <statuscode.h>
 
 namespace Quasar
@@ -58,7 +59,7 @@ public:
     UaStatus addJob (std::unique_ptr<ThreadPoolJob> && job);
     UaStatus addJob (const std::function<void()>& functor, const std::string& description, std::mutex* mutex = nullptr);
 
-    void notifyExternalEvent (); // TODO we should have it.
+    void notifyExternalEvent () { m_conditionVariable.notify_one(); };
 
     //! How many jobs are buffered for execution ?
     size_t getNumPendingJobs ();
@@ -75,16 +76,6 @@ private:
     std::vector<std::thread> m_workers;
     std::list<std::unique_ptr<ThreadPoolJob>> m_pendingJobs;
 
-    enum MutexUsage
-    {
-        OPEN = 0, // it's not used in any job being processed (default for a newly added job) -> default init
-        CLOSED = 1, // it's used by some job that is processed that used it to synchronize,
-        NEW_CYCLE = 2 // it was used by some past job, can be reused as long as the job list is traversed FIFO-way.
-    };
-
-    //Note from Piotr: we add mutexes but not remove them because 1. their number is limited, 2. chances are each of them will be reused anyway.
-    std::map<std::mutex*, MutexUsage> m_mutices; // this shall be really cheap.
-
     const unsigned int m_maxJobs;
 
     // this is the notification business for conditional variable notification
@@ -100,10 +91,10 @@ private:
     //! Search for a job that can be presently executed, if found remove it from the list.
     Duty findSomeDuty ();
 
-    void atNewCycle();
-
     std::atomic_size_t m_jobsAcceptedCounter;
     std::atomic_size_t m_jobsFinishedCounter;
+
+    Log::LogComponentHandle m_threadPoolLogId;
 
 };
 
