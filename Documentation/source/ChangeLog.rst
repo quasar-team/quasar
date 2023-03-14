@@ -31,23 +31,75 @@ ChangeLog
 			<td valign="top">
 			<br>
 				This release features a much improved Quasar ThreadPool (called internally a supervised threadpool)
-				which affects all async (async methods and async source variables) operations of quasar. 
+				which affects all async (async methods and async source variables) operations of quasar.
 				The order of execution of queued async operations within the same synchro domain is now guaranteed to be
 				preserved. Also, lower overall latency is expected.
 			</td>
 			<td valign="top"><br>
 				<ul>
 					<li>quasar device logic locks are now std::mutex from boost::mutex (a move that was announced already in March 2020)</li>
-					<li>to profit from guaranteed order of execution, in case of <emph>not using</emph> the standard options like <code>of_containing_object</code>, etc., 
+					<li>to profit from guaranteed order of execution, in case of <emph>not using</emph> the standard options like <code>of_containing_object</code>, etc.,
 						the new option <code>handpicked</code> must be chosen and your mutex of choice needs to be registered using <code>configure...</code> methods
-						of particular address-space object. Failing to do so will remain to work, but no benefits from order preservatoin will be observed.
+						of particular address-space object. Failing to do so will remain to work, but no benefits from order preservation will be observed.
+						</li>
+						<li>
+						when using methods, it is necessary to specify <code>addressSpaceCallUseMutex</code>, note the previous default was "no".
+						</li>
 				</ul>
 			</td>
 			<td valign="top">
-				(to be filled in)
+
+			        New Feature
+
+			<ul>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3000'>OPCUA-3000</a>] -         Metrics for the threadpool: current queued number of jobs, total taken num jobs, total finished num of jobs
+			</li>
+			</ul>
+
+			        Task
+
+			<ul>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2891'>OPCUA-2891</a>] -         Supervised Threadpool, context SourceVars
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2977'>OPCUA-2977</a>] -         QuasarThreadPool.[cpp,h] to be treated as framework files by the installa
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2978'>OPCUA-2978</a>] -         Changelog/notes regarding threadpool changes
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2990'>OPCUA-2990</a>] -         Supervised threadpool, the methods part
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2991'>OPCUA-2991</a>] -         add DesignValidator protection: method call use mutex implies class has mutex
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2992'>OPCUA-2992</a>] -         DesignValidator: deny any synchro domain for synchronous sourcevariable
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2993'>OPCUA-2993</a>] -         Clean-up lock/unlock base mthds
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2994'>OPCUA-2994</a>] -         Optimize out mutices map?
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2996'>OPCUA-2996</a>] -         Follow up of supervised threadpool
+			</li>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3007'>OPCUA-3007</a>] -         Add synchro domains variety for the async methods test
+			</li>
+			</ul>
+
+			        Improvement
+
+			<ul>
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3005'>OPCUA-3005</a>] -         Make addressSpaceCallUseMutex obligatory
+			</li>
+			</ul>
+
 			</td>
 			<td valign="top">quasar test suite notes:<br>
-				(to be filled in)
+
+			<ol>
+			<li>open62541_test_methods not passing for the method
+				arguments behaving differently from UASDK. This will be
+				<a href="https://its.cern.ch/jira/browse/OPCUA-2428">further
+				investigated</a>.</li>
+			<li> StandardMetaData is ignored from testing in all tests
+				due to some existing noncompliance.</li>
+			</ol>
+
 			</td>
 			</tr>
 
@@ -67,7 +119,7 @@ ChangeLog
 			</li>
 			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2920'>OPCUA-2920</a>] -         Deploying docs fails to create new tag dir
 			</li>
-			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2959'>OPCUA-2959</a>] -         Error with missing file at fresh project creation 
+			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2959'>OPCUA-2959</a>] -         Error with missing file at fresh project creation
 			</li>
 			<li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2974'>OPCUA-2974</a>] -         quasar v.1.5.17-rc0 &quot;./quasar.py build&quot; fails in the arg parsing
 			</li>
