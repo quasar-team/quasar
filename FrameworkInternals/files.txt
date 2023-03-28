@@ -704,12 +704,6 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
-            "generateHonkyTonk.py": {
-                "install": "overwrite",
-                "md5": "d41d8cd98f00b204e9800998ecf8427e",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "install_framework.py": {
                 "install": "overwrite",
                 "md5": "efb56a85d9b7c16dab3970a21a4df3c4",
