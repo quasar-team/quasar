@@ -592,14 +592,6 @@
         "files": {},
         "install": "create"
     },
-    "Extra": {
-        "files": {
-            "designToHonkyTonk.xslt": {
-                "deprecated": true
-            }
-        },
-        "install": "create"
-    },
     "FrameworkInternals": {
         "files": {
             "BoostSetup.cmake": {

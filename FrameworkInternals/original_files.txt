@@ -542,14 +542,6 @@
         "files": {},
         "install": "create"
     },
-    "Extra": {
-        "files": {
-            "designToHonkyTonk.xslt": {
-                "deprecated": true
-            }
-        },
-        "install": "create"
-    },
     "FrameworkInternals": {
         "files": {
             "BoostSetup.cmake": {
@@ -663,12 +655,6 @@
                 "must_exist": true
             },
             "generateCmake.py": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "generateHonkyTonk.py": {
                 "install": "overwrite",
                 "md5": "check",
                 "must_be_versioned": true,

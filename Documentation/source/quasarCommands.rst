@@ -237,12 +237,6 @@ generate diagram
 
 | 
 
-generate honkytonk
-------------------
-
-| Generates honkyTonky.cc, a special class intended for testing your
-  namespace with simulated (random) values.
-
 generate info_model
 -------------------
 

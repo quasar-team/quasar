@@ -102,9 +102,6 @@ def quasar_parser():
     # create the parser for the "generate as_doc" command
     generate_as_doc_subparser = generate_subparsers.add_parser(
         'as_doc', help='Generates address space documentation (the documentation of all OPCUA ObjectTypes, Variables, etc… ) and places it in Documentation/AddressSpaceDoc.html')
-    # create the parser for the "generate honkytonk" command
-    generate_honkytonk_subparser = generate_subparsers.add_parser(
-        'honkytonk', help='Generates honkyTonky.cc, a special class intended for testing your namespace with simulated (random) values')
     # create the parser for the "generate diagram" command
     generate_diagram_subparser = generate_subparsers.add_parser(
         'diagram', help='Creates a quasar design diagram for this project')
