@@ -266,6 +266,17 @@
         },
         "install": "create"
     },
+    "cmake": {
+        "files": {
+            "QuasarSanitizers.cmake": {
+                "install": "overwrite",
+                "md5": "check",
+                "must_be_versioned": true,
+                "must_exist": true
+            }
+        },
+        "install": "create"
+    },
     "Common": {
         "files": {
             "CMakeLists.txt": {
