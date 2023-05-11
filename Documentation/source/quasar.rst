@@ -117,7 +117,22 @@ Recommended:
 -  Doxygen for generating documentation.
 -  RPM Build tools for RPM generation
 
-Quick setup hints for CentOS 8 (the most standard way)
+Quick setup hints for AlmaLinux 9 (the most standard way)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#. Install latest epel realease
+
+   ``sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm``
+
+#. Install packages from AlmaLinux 9 default repos:
+
+   ``sudo dnf install git patch python3-colorama python3-jinja2
+   python3-lxml cmake3 gcc-c++ boost-devel graphviz ninja-build
+   xsd xerces-c-devel libxml2-devel openssl-devel doxygen astyle``
+
+#. Download UaExpert for an universal test&dev tool for OPC UA.
+
+Quick setup hints for CentOS 8
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #. Install latest epel realease
@@ -135,7 +150,7 @@ Quick setup hints for CentOS 8 (the most standard way)
 
    ``sudo yum install astyle``
 
-#. Download UaExpert for an universal test&dev tool for OPC-UA.
+#. Download UaExpert for an universal test&dev tool for OPC UA.
 
 Quick setup hints for CC7/CentOs7 users
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -158,7 +173,7 @@ Quick setup hints for CC7/CentOs7 users
 
    ``pip install pygit2==0.26.4 --user``
 
-#. Download UaExpert for an universal test&dev tool for OPC-UA.
+#. Download UaExpert for an universal test&dev tool for OPC UA.
 
 Quick setup hints for Ubuntu 20.04
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -266,7 +281,7 @@ Quick FAQ
    If you can't figure the issue on your own, try contacting
    quasar-developers@cern.ch
 
-#. quasar (itself) misbehaves (not to confuse with quasar-made OPC-UA
+#. quasar (itself) misbehaves (not to confuse with quasar-made OPC UA
    components). What can I do?
 
    #. You can increase verbosity of quasar tooling itself. This might
