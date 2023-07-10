@@ -23,6 +23,27 @@ ChangeLog
 	          </td>
 	        </tr>
 
+            <tr>
+                <td valign="top">1.6.0<font size="-1"><br>(10-Jul-2023)</font><br></td>
+                <td valign="top"><br>This release introduces the quasar Sanitizers, a new feature that assists developers in identifying and fixing code issues, such as bugs and memory leaks, during compilation or execution. This tool can be easily toggled on and off, depending on your needs. Please refer to the accompanying documentation for detailed instructions on its usage.</td>
+                <td valign="top">
+                    Story
+                    <ul><li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3008'>OPCUA-3008</a>] - Establish tooling for safer OPC UA servers for quasar users</li></ul>
+                    Task
+                    <ul><li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3041'>OPCUA-3041</a>] - quasar upgrade_project fails to create missing cmake dir</li></ul>
+                    Bug
+                    <ul><li>[<a href='https://its.cern.ch/jira/browse/OPCUA-2964'>OPCUA-2964</a>] - Exception when using honkytonk quasar command</li></ul>
+                    User Documentation
+                    <ul><li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3031'>OPCUA-3031</a>] - Documentation for quasar Sanitizers</li></ul>
+                </td>
+                <td valign="top">quasar test suite notes:<br>
+                    <ol>
+                        <li>open62541_test_methods not passing for the method arguments behaving differently from UASDK. This will be <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further investigated</a>.</li>
+                        <li>StandardMetaData is ignored from testing in all tests due to some existing noncompliance.</li>
+                    </ol>
+                </td>
+            </tr>
+
 			<tr>
 
 			<td valign="top">1.5.18<font size="-1"><br>
