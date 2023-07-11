@@ -59,8 +59,8 @@ jobs:
             "
     - name: uasdk_test_calculated_variables
       script:
-        - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
+        - docker run  --interactive --tty pnikiel/quasar:quasar-uasdk /bin/bash -c "
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-            .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} --design .CI/test_cases/test_calculated_variables/Design.xml --config .CI/test_cases/test_calculated_variables/config.xml --compare_with_nodeset .CI/test_cases/test_calculated_variables/reference_ns2.xml ;"
+            .CI/run_test_case.py --opcua_backend uasdk --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} --design .CI/test_cases/test_calculated_variables/Design.xml --config .CI/test_cases/test_calculated_variables/config.xml --compare_with_nodeset .CI/test_cases/test_calculated_variables/reference_ns2.xml ;"
