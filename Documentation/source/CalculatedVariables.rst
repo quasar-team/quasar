@@ -2,8 +2,10 @@ Calculated Variables
 ====================
 
 |
-| by: Piotr Nikiel, Oct-Nov 2018
+| by: Piotr Nikiel, Paris Moschovakos
+| Created Oct-Nov 2018
 | Updated September 2022
+| Updated July 2023
 
 Overview and end-user documentation
 -----------------------------------
@@ -11,18 +13,18 @@ Overview and end-user documentation
 Preface
 -------
 
-| A lot of concepts and work done in the context of quasar's
-  CalculatedVariables module has been inspired by V.Filimonov's
-  "CalculatedItems" concept in the CANopen OPC-UA server.
-| I'd like to acknowledge his contribution as my inspiration (even
-  though the CalculatedVariables module is designed entirely from
-  scratch and using original architecture as well as different concepts
-  and technologies).
+| The concepts and work embodied in the quasar's CalculatedVariables 
+  module draw significant inspiration from the "CalculatedItems" concept 
+  in the CANopen OPC UA server, originally developed by V.Filimonov. 
+  This influence is gratefully acknowledged. However, it's important to 
+  note that the CalculatedVariables module has been designed entirely 
+  from scratch, utilizing an original architecture and different 
+  concepts and technologies.
 
 Rationale
 ---------
 
-| A quasar-based OPC-UA server is based on a model of a system it is
+| A quasar-based OPC UA server is based on a model of a system it is
   made for. This model is called a design. The model explains (in terms
   of quasar classes, variables etc.) what sources and sinks of
   information the system can publish or digest.
@@ -33,14 +35,14 @@ Rationale
 
 -  the system already provides information which is expressed in
    quantities different than requested by users.
-   Example: an OPC-UA server is built for a device which measures period
+   Example: an OPC UA server is built for a device which measures period
    of a repetitive process, but the users prefer frequency instead.
    Solution: a Calculated Variable might be added to the server with a
    simple reciprocal (y=1/x) formula to compute frequency in terms of
    period.
 -  the system already provides information but in another unit.
 -  the system provides raw (e.g. uncalibrated) information.
-   Example: an OPC-UA server publishes data from Analog to Digital
+   Example: an OPC UA server publishes data from Analog to Digital
    Converter. This is raw information though.
    Solution: a Calculated Variable might be added to provide for gain
    and offset calibration.
@@ -139,6 +141,38 @@ Feature list
 | Formula inputs from               | Scalar+numeric: cache-variables, config-entries, free-variables and other calculated variables |
 +-----------------------------------+-----------------------------------------------------------------------------------------------+
 
+Manual Update and Auto Update Control
+-------------------------------------
+| An enhancement to the CalculatedVariables module has been introduced. 
+  This enhancement enables the automatic update of calculated variables 
+  to be controlled and allows for manual triggering of recalculation.
+
+| This functionality proves beneficial in scenarios where the calculated 
+  variable is computationally expensive and doesn't need to be updated 
+  as frequently, or where more control over when the recalculation 
+  occurs is desired.
+
++------------------------+--------------------------------------------------+
+| Method                 | Description                                      |
++========================+==================================================+
+| setAutoUpdate(bool)    | This function allows the automatic update of a   |
+|                        | calculated variable to be enabled or disabled.   |
+|                        | When called with true, the calculated variable   |
+|                        | will automatically update whenever any of its    |
+|                        | dependencies change. When called with false,     |
+|                        | the calculated variable will not update          |
+|                        | automatically, and manual triggering of          |
+|                        | recalculation is required. The default value is  |
+|                        | true.                                            |
++------------------------+--------------------------------------------------+
+| triggerRecalculation() | This function manually triggers the              |
+|                        | recalculation of a calculated variable. It is    |
+|                        | useful when automatic updates are disabled and   |
+|                        | a recalculation is needed. When this function    |
+|                        | is called, the calculated variable will          |
+|                        | recompute its value based on the current values  |
+|                        | of its dependencies.                             |
++------------------------+--------------------------------------------------+
 
 Operators and built-in functions
 --------------------------------
@@ -334,7 +368,7 @@ Configuration file schema regarding Calculated Variables
 |                 |                 |                 | analytical      |
 |                 |                 |                 | expression used |
 |                 |                 |                 | to evaluate     |
-|                 |                 |                 | OPC-UA          |
+|                 |                 |                 | OPC UA          |
 |                 |                 |                 | status-code of  |
 |                 |                 |                 | this variable.  |
 |                 |                 |                 | The status-code |
@@ -555,8 +589,8 @@ NTC sensors: converting resistance into temperature in Celsius and Fahrenheit de
   B is the so called B constant of a NTC probe (often 3977K) and R0 is
   the resistance at T0.
 | The variable in the example is R, and that is the cache-variable that
-  gets updated by your OPC-UA server device logic.
-| Let's assume that the OPC-UA address of the variable is
+  gets updated by your OPC UA server device logic.
+| Let's assume that the OPC UA address of the variable is
   NTC1.resistance
 
 | Therefore, anywhere below NTC1 declaration in your config file, you
@@ -675,7 +709,7 @@ Classes rationale
 
 -  ParserVariable - stores current numeric variable value as a plain
    double type, and therefore can be coupled as a mu::Parser variable.
-   (Sidenote: mu::Parser doesn't know anything about OPC-UA and without
+   (Sidenote: mu::Parser doesn't know anything about OPC UA and without
    such arrangement it wouldn't know how to access a double from
    UaVariant, neither to know whether the value is correct, etc.).
 
@@ -686,7 +720,7 @@ Classes rationale
    -  notifiedVariables - the list of all CalculatedVariables that use
       this particular ParserVariable in formulas.
 
--  CalculatedVariable - it's the OPC-UA variable defined by a formula.
+-  CalculatedVariable - it's the OPC UA variable defined by a formula.
    It's a subclass of ChangeNotifyingVariable because its output can in
    turn be used as an input to another Calculated Variable (so it must
    be able to emit notifications on change).
@@ -700,7 +734,7 @@ Classes rationale
       CalculatedVariable() entry is found in the config file,
    -  registerVariableForCalculatedVariables - called whenever any
       cache-variable of suitable design properties (numeric and scalar)
-      is inserted into the OPC-UA address-space
+      is inserted into the OPC UA address-space
 
 Overview of information flow
 ----------------------------
@@ -713,7 +747,7 @@ Overview of information flow
    corresponding ParserVariable. The ChangeListener will (once
    potentially invoked in future) call setValue() on given
    ParserVariable.
-#. When device logic or an OPC-UA client writes to a suitable
+#. When device logic or an OPC UA client writes to a suitable
    cache-variable, the setValue() of ParserVariable bound to the
    cache-variable will be called. It will store the new value and status
    in corresponding fields and then call update() on relevant (i.e.
@@ -733,14 +767,14 @@ Synchronization, re-entrance, multi-threading
   AddressSpace objects:
 
 -  sampling threads which sample current values of cache-variables to
-   which any client subscribes. Those threads are run by chosen OPC-UA
+   which any client subscribes. Those threads are run by chosen OPC UA
    backend and their number is highly dependent on backend's
    configuration (i.e. ServerConfig.xml) as well as possibly on number
    of connected clients and the set of data they subscribe to.
--  server's OPC-UA requests processing threads. Those threads are run by
-   chosen OPC-UA backend and similarly to sampling threads, their number
+-  server's OPC UA requests processing threads. Those threads are run by
+   chosen OPC UA backend and similarly to sampling threads, their number
    depends on many factors. Those threads process e.g. Write service
-   requests, so that an OPC-UA client can write to given variable.
+   requests, so that an OPC UA client can write to given variable.
 -  device logic (or other user threads). Those threads are instantiated
    by server developers and configured by end-users. They typically push
    data to the address-space.
@@ -833,7 +867,7 @@ Benchmarks
 
 | Some benchmarks have been performed. The base has been pre-1.3.1
   release of quasar. The benchmarks have been performed with UA-SDK
-  1.5.5 as the OPC-UA backend.
+  1.5.5 as the OPC UA backend.
 
 Aspect
 

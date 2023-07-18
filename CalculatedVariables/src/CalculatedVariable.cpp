@@ -2,7 +2,7 @@
  * CalculatedVariable.cpp
  *
  *  Created on: 19 Nov 2018
- *      Author: pnikiel
+ *      Author: pnikiel, Paris Moschovakos
  *
  *  This file is part of Quasar.
  *
@@ -41,7 +41,8 @@ CalculatedVariable::CalculatedVariable(
     bool               isBoolean,
     bool               hasStatusFormula,
     const std::string& statusFormula,
-    UaMutexRefCounted* pSharedMutex):
+    UaMutexRefCounted* pSharedMutex,
+    bool               autoUpdateEnabled):
             AddressSpace::ChangeNotifyingVariable(
                     nodeId,
                     name,
@@ -52,7 +53,8 @@ CalculatedVariable::CalculatedVariable(
                     pSharedMutex),
                     m_isBoolean(isBoolean),
                     m_hasStatusFormula(hasStatusFormula),
-                    m_notifiedVariable(nullptr)
+                    m_notifiedVariable(nullptr),
+                    m_autoUpdateEnabled(autoUpdateEnabled)
 {
     this->initializeParser(m_valueParser, formula, ParserVariableRequestUserData::Type::Value);
     if (m_hasStatusFormula)
@@ -63,6 +65,15 @@ CalculatedVariable::CalculatedVariable(
 
 }
 
+// Performs an update of the calculated variable, regardless of whether automatic
+// updates are enabled. This allows the user to manually trigger a recalculation when
+// automatic updates are disabled.
+void CalculatedVariable::triggerRecalculation()
+{
+    LOG(Log::TRC, logComponentId) << "triggerRecalculation() on " << this->nodeId().toString().toUtf8();
+    calculate();
+}
+
 // this is called whenever value OR status variable bound to this variable has changed
 // validation rule: if any of value inputs is not good then propagate it and do not do new computation (publish NULL)
 // otherwise do the computation and publish status according to status formula (if some of status formula are wrong
@@ -70,6 +81,14 @@ CalculatedVariable::CalculatedVariable(
 void CalculatedVariable::update()
 {
     LOG(Log::TRC, logComponentId) << "update() on " << this->nodeId().toString().toUtf8();
+
+    if (!m_autoUpdateEnabled) return;
+    calculate();
+}
+
+void CalculatedVariable::calculate()
+{
+    LOG(Log::TRC, logComponentId) << "calculate() on " << this->nodeId().toString().toUtf8();
 
     for (const ParserVariable* variable : m_valueVariables)
     {
@@ -100,7 +119,6 @@ void CalculatedVariable::update()
         finalStatus = (status != 0) ? OpcUa_Good : OpcUa_Bad; // conversion of double to OPC-UA status code
     }
 
-
     double updatedValue = m_valueParser.Eval();
     UaVariant variant;
     if (m_isBoolean)
@@ -110,7 +128,6 @@ void CalculatedVariable::update()
     UaDataValue dataValue (variant, finalStatus.statusCode(), UaDateTime::now(), UaDateTime::now());
     LOG(Log::TRC, logComponentId) << finalStatus.toString().toUtf8();
     this->setValue(/*session*/nullptr, dataValue, OpcUa_False);
-
 }
 
 //! Initializes parser, handles potential muParser-relevant exceptions throwing std except in exchange
