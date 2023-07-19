@@ -246,7 +246,7 @@
         },
         "files": {
             "CalculatedVariable.h": {
-                "md5": "dbe753f5e3459752863145b61729fa85",
+                "md5": "47e1c8ae12e48a399269da031ced5b6f",
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesChangeListener.h": {
@@ -281,7 +281,7 @@
         },
         "files": {
             "CalculatedVariable.cpp": {
-                "md5": "8fd084693154f8f28da4281bb9962468",
+                "md5": "9ca0c23a35c26ca19320259a5044c5b4",
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesChangeListener.cpp": {
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "8faf73414196ce085ba94549dec2cf52",
+                "md5": "48c627dcfdd6857d6f1a943eee3e7cbf",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1206,7 +1206,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "b2c5b84ba6b8bf0f42935f6594038532",
+                "md5": "ffcac93c47c97ad63e1f156e3f428c96",
                 "must_be_versioned": true,
                 "must_exist": true
             },
