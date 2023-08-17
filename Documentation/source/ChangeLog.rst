@@ -6,22 +6,41 @@ ChangeLog
 	<table style="text-align: left; width: 100%;" cellspacing="1"
 	      cellpadding="4" border="0" class="table-changelog">
 	      <tbody>
-	        <tr style="background-color: rgb(34, 84, 152); color: rgb(255,
-	          255, 255);">
-	          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Version</strong><br>
-	          </td>
-	          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Changes
-	              introduced</strong><br>
-	          </td>
-	          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible
-	              backward incompatibilites</strong><br>
-	          </td>
-	          <td style="vertical-align: top; color: rgb(255, 255, 255);">
-	            <strong>JIRA Release notes</strong><br>
-	          </td>
-	          <td valign="top"><strong>Testing outcome</strong><br>
-	          </td>
+	        <tr style="background-color: rgb(34, 84, 152); color: rgb(255, 255, 255);">
+	          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Version</strong><br></td>
+	          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Changes introduced</strong><br></td>
+	          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>Possible backward incompatibilities</strong><br></td>
+	          <td style="vertical-align: top; color: rgb(255, 255, 255);"><strong>JIRA Release notes</strong><br></td>
+	          <td valign="top"><strong>Testing outcome</strong><br></td>
 	        </tr>
+
+            <tr>
+                <!-- Version -->
+                <td valign="top">1.6.1<font size="-1"><br>(10-Aug-2023)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>This release focuses on enhancing the functionality of calculated variables. It also addresses issues related to the uasdk travis test and introduces necessary dependencies in quasar's uasdk dockerfile. Additionally, the documentation has been updated to provide clarity on the manual and auto-update control for calculated variables.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>(none known)</td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Task
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3040'>OPCUA-3040</a>] - Calculated variables per request for CanOpenNG</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3072'>OPCUA-3072</a>] - Calculated variables uasdk travis test uses wrong backend</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3075'>OPCUA-3075</a>] - quasar's uasdk dockerfile misses dependency</li>
+                    </ul>
+                    User Documentation
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3077'>OPCUA-3077</a>] - Calculated Variables Documentation for Manual Update and Auto Update Control</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar test suite notes:<br>
+                    <ol>
+                        <li>open62541_test_methods not passing for the method arguments behaving differently from UASDK. This will be <a href="https://its.cern.ch/jira/browse/OPCUA-2428">further investigated</a>.</li>
+                        <li>StandardMetaData is ignored from testing in all tests due to some existing noncompliance.</li>
+                    </ol>
+                </td>
+            </tr>
 
             <tr>
                 <td valign="top">1.6.0<font size="-1"><br>(10-Jul-2023)</font><br></td>
