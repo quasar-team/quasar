@@ -4,6 +4,7 @@ quasar.py
 
 @author:     Damian Abalo Miron <damian.abalo@cern.ch>
 @author:     Piotr Nikiel <piotr@nikiel.info>
+@author:     Paris Moschovakos <paris.moschovakos@cern.ch>
 
 @copyright:  2015 CERN
 
@@ -34,7 +35,7 @@ ANY WAY OUT OF  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
 import os
 import sys
 import inspect
-import webbrowser
+import argparse
 from colorama import Fore, Style
 
 this_script_path = os.path.abspath(sys.argv[0])
@@ -44,6 +45,7 @@ from quasarCommands import printCommandList
 from quasarCommands import getCommands, extract_common_arguments
 from quasarExceptions import WrongReturnValue, WrongArguments, Mistake
 import quasar_basic_utils
+from parser_module import quasar_parser
 
 def __make_context(project_binary_dir):
     """Generates a dictionary specifying the context.
@@ -58,50 +60,46 @@ def __make_context(project_binary_dir):
 
 def main():
     quasar_basic_utils.initialize_logging()
+
+    parser = quasar_parser()
+
+    try:
+        args = parser.parse_args()
+    # Avoid printing the default help message when the user gives a wrong or not registered argument
+    except Exception as error:
+        pass
+
     # args starts from the command name (e.g. 'build') and skips the common arguments,
     # (e.g. 'project_binary_dir'). 1: to skip the script name given by the operating system
     (args, project_binary_dir) = extract_common_arguments(sys.argv[1:])
     if project_binary_dir is None:
         project_binary_dir = os.path.join(os.getcwd(), 'build')
 
-    if len(args) < 1:
-        print('The script was run without specifying what to do. Here are available commands:')
-        printCommandList()
-        sys.exit(1)
-
     try:
         commands = getCommands()
         matched_command = [x for x in commands if x[0] == args[:len(x[0])]][0]
     except IndexError:
         print('Sorry, no such command. These are available:')
-        printCommandList()
+        parser.print_help()
         sys.exit(1)
 
-    if '-h' in args or '--help' in args:
-        anchor = '_'.join(matched_command[0])
-        print('Will open quasarCommands.html for anchor {0}'.format(anchor))
-        webbrowser.open("file:///{htmlPath}#{anchor}".format(
-            htmlPath=os.path.join(os.getcwd(), 'Documentation', 'quasarCommands.html'),
-            anchor=anchor))
-        sys.exit(0)
-    else:
-        try:
-            # we only print exceptions from external tools,
-            # but for internal ones we want to have with stack trace or PDB capability
-            args = args[len(matched_command[0]):]
-            callee = matched_command[1]
-            # TODO throw WrongArguments here if not enough args
-            if 'context' in inspect.getfullargspec(callee).args:
-                # pack arguments after the last chunk of the command
-                callee(__make_context(project_binary_dir), *args)
-            else:
-                callee(*args)
-        except (WrongReturnValue, WrongArguments, Mistake) as exception:
-            print(Fore.RED + str(exception) + Style.RESET_ALL)
-            sys.exit(1)
-        except:
-            quasar_basic_utils.quasaric_exception_handler()
-            sys.exit(1)
+    try:
+        # we only print exceptions from external tools,
+        # but for internal ones we want to have with stack trace or PDB capability
+        args = args[len(matched_command[0]):]
+        callee = matched_command[1]
+        # TODO throw WrongArguments here if not enough args
+        if 'context' in inspect.getfullargspec(callee).args:
+            # pack arguments after the last chunk of the command
+            callee(__make_context(project_binary_dir), *args)
+        else:
+            callee(*args)
+    except (WrongReturnValue, WrongArguments, Mistake) as exception:
+        print(Fore.RED + str(exception) + Style.RESET_ALL)
+        sys.exit(1)
+    except:
+        quasar_basic_utils.quasaric_exception_handler()
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()

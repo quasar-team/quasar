@@ -2,7 +2,7 @@
  * CalculatedVariable.h
  *
  *  Created on: 19 Nov 2018
- *      Author: pnikiel
+ *      Author: pnikiel, Paris Moschovakos
  *
  *  This file is part of Quasar.
  *
@@ -44,8 +44,14 @@ public:
         bool               isBoolean,
         bool               hasStatusFormula,
         const std::string& statusFormula,
-        UaMutexRefCounted* pSharedMutex = NULL);
+        UaMutexRefCounted* pSharedMutex = NULL,
+        bool               autoUpdateEnabled = true);
 
+    // Allows the user to enable or disable automatic updates of the calculated variable.
+    // When automatic updates are disabled, the update() method will do nothing, and
+    // the user must manually trigger updates by calling triggerRecalculation().
+    void setAutoUpdate(bool enabled) { m_autoUpdateEnabled = enabled; };
+    void triggerRecalculation();
     void update();
 
     void addDependentVariableForValue(ParserVariable* variable);
@@ -69,17 +75,23 @@ private:
     mu::Parser m_valueParser;
     std::list<ParserVariable*> m_valueVariables;
 
-    //! True if the output should be boolean instead of double (e.g. when logical operators are used in formula)
+    // True if the output should be boolean instead of double (e.g. when logical operators are used in formula)
     bool m_isBoolean;
 
     /* Status-Formula part */
     bool m_hasStatusFormula;
     mu::Parser m_statusParser;
-    //! Points to ParserVariables which are used by statusFormula
+    // Points to ParserVariables which are used by statusFormula
     std::list<ParserVariable*> m_statusVariables;
 
-    //! Keeping this reference is necessary to efficiently construct synchronization graph
+    // Keeping this reference is necessary to efficiently construct synchronization graph
     ParserVariable* m_notifiedVariable;
+
+    // Performs an update of the calculated variable. This method is called by update() and triggerRecalculation()
+    void calculate();
+
+    // Flag to indicate whether automatic updates are enabled.
+    bool m_autoUpdateEnabled;
 
 };
 

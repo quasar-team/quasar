@@ -266,6 +266,17 @@
         },
         "install": "create"
     },
+    "cmake": {
+        "files": {
+            "QuasarSanitizers.cmake": {
+                "install": "overwrite",
+                "md5": "check",
+                "must_be_versioned": true,
+                "must_exist": true
+            }
+        },
+        "install": "create"
+    },
     "Common": {
         "files": {
             "CMakeLists.txt": {
@@ -298,7 +309,7 @@
     },
     "Common/src": {
         "file_defaults": {
-            "install": "ask_to_merge",
+            "install": "overwrite",
             "md5": "check",
             "must_be_versioned": true,
             "must_exist": true
@@ -526,76 +537,13 @@
     },
     "Documentation": {
         "files": {
-            "AlternativeBackends.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "ChangeLog.html": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "DesignManual.html": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "Doxyfile": {
                 "install": "ask_to_merge",
                 "md5": "check",
                 "must_be_versioned": true,
                 "must_exist": true
             },
-            "UserDefinedCommandLineParameters.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "UserDefinedRuntimeConfigurationModification.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "WindowsSetup.html": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "diagram.png": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "enice_win_configuration.cmake": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "quasar.html": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "quasarCommands.html": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "transformations.pdf": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "youtube_links.html": {
                 "install": "overwrite",
                 "md5": "check",
                 "must_be_versioned": true,
@@ -606,25 +554,6 @@
     },
     "Documentation/DoxygenGenerated": {
         "files": {},
-        "install": "create"
-    },
-    "Documentation/images": {
-        "files": {
-            "quasar_engine_small_smooth_square_128x128.png": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            }
-        },
-        "install": "create"
-    },
-    "Extra": {
-        "files": {
-            "designToHonkyTonk.xslt": {
-                "deprecated": true
-            }
-        },
         "install": "create"
     },
     "FrameworkInternals": {
@@ -660,6 +589,12 @@
                 "must_exist": true
             },
             "Oracle.py": {
+                "install": "overwrite",
+                "md5": "check",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
+            "parser_module.py": {
                 "install": "overwrite",
                 "md5": "check",
                 "must_be_versioned": true,
@@ -734,12 +669,6 @@
                 "must_exist": true
             },
             "generateCmake.py": {
-                "install": "overwrite",
-                "md5": "check",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "generateHonkyTonk.py": {
                 "install": "overwrite",
                 "md5": "check",
                 "must_be_versioned": true,

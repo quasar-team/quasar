@@ -72,7 +72,7 @@ UaStatus ASSourceVariableIoManager::beginWrite (
     OpcUa_WriteValue*   pWriteValue)
 {
 	m_callbackHandle = callbackHandle;
-	LOG(Log::DBG) << "beginWrite op=" << m_writeOperationJobId << " cbkHandle=" <<callbackHandle << endl;
+	LOG(Log::DBG) << "beginWrite op=" << m_writeOperationJobId << " cbkHandle=" <<callbackHandle;
 	if (m_writeOperationJobId == ASSOURCEVARIABLE_NOTHING)
 		return OpcUa_BadUserAccessDenied;
 	else

@@ -23,6 +23,7 @@
 #include <string>
 #include <map>
 
+#include <Configuration.hxx>
 #include <ASNodeManager.h>
 #include <FreeVariablesEngine.h>
 #include <ChangeNotifyingVariable.h>
@@ -193,6 +194,15 @@ void FreeVariablesEngine::instantiateFreeVariable(
 
     // set the initial value (important do it after registration for calc vars, not to lose the initial update)
     freeVariable->setValue(/*session*/0, UaDataValue(initialValue, OpcUa_Good, UaDateTime::now(), UaDateTime::now()), /* check access*/ OpcUa_False);
+
+    // access level
+    switch(config.accessLevel())
+    {
+        case ::Configuration::accessLevel::value::R: freeVariable->setAccessLevel(OpcUa_AccessLevels_CurrentRead); break;
+        case ::Configuration::accessLevel::value::RW: freeVariable->setAccessLevel(OpcUa_AccessLevels_CurrentReadOrWrite); break;
+        case ::Configuration::accessLevel::value::W: freeVariable->setAccessLevel(OpcUa_AccessLevels_CurrentWrite); break;
+        default: throw std::logic_error("enum case not supported; check FreeVariable XSD");
+    }
 
     // add to address space
     UaStatus status = nm->addNodeAndReference( parentNodeId, freeVariable, OpcUaId_Organizes );

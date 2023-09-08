@@ -13,7 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "62f8a799bbfbc7a19616e31fa251a6e8",
+                "md5": "0224a2a7e18c5da308e8ace3423e3539",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -30,7 +30,7 @@
             },
             "quasar.py": {
                 "install": "overwrite",
-                "md5": "3e585a9650b4226577cdefaff18f7ff3",
+                "md5": "d71de25aae119fd85e243b0e67bba748",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -135,7 +135,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariableIoManager.cpp": {
-                "md5": "7483add06e2e23e3ac74bbf8683894e3",
+                "md5": "2d66e7fb72f23e0f8527628346aebdcb",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ArrayTools.cpp": {
@@ -147,7 +147,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "FreeVariablesEngine.cpp": {
-                "md5": "655bf753ed02d46320f75574c61bf6f4",
+                "md5": "4eaed7887d1312926c49304a2a95cc80",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -166,11 +166,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "b52632d556b6bcbcda065add80a974a5",
+                "md5": "26f72fc9e235980f6b7b81e05c5e89b1",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
-                "md5": "fb6991af4159e05f917ff5832743a838",
+                "md5": "1bb597e881dd5b37568fb98fcdcaaf90",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToGeneratedCmakeAddressSpace.jinja": {
@@ -186,7 +186,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesBody.jinja": {
-                "md5": "3a81901fa4c27b7f1214a5489774894b",
+                "md5": "75f226377674905d78e7fe757a16dfda",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesHeader.jinja": {
@@ -246,7 +246,7 @@
         },
         "files": {
             "CalculatedVariable.h": {
-                "md5": "dbe753f5e3459752863145b61729fa85",
+                "md5": "47e1c8ae12e48a399269da031ced5b6f",
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesChangeListener.h": {
@@ -281,7 +281,7 @@
         },
         "files": {
             "CalculatedVariable.cpp": {
-                "md5": "8fd084693154f8f28da4281bb9962468",
+                "md5": "9ca0c23a35c26ca19320259a5044c5b4",
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesChangeListener.cpp": {
@@ -322,7 +322,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.h": {
-                "md5": "0ad5a59b587f9b39aa8e3ed699fb0fc0",
+                "md5": "536ae7811ab7407de132c8bd989b8a58",
                 "use_defaults": "file_defaults_of_directory"
             },
             "Utils.h": {
@@ -334,7 +334,7 @@
     },
     "Common/src": {
         "file_defaults": {
-            "install": "ask_to_merge",
+            "install": "overwrite",
             "md5": "check",
             "must_be_versioned": true,
             "must_exist": true
@@ -345,7 +345,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.cpp": {
-                "md5": "124a51ad46e6c7b14a06a887291ab3df",
+                "md5": "21b85885b51e1ac3ed720bf05eb33b31",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -411,7 +411,7 @@
         },
         "files": {
             "designToConfigDocumentationHtml.jinja": {
-                "md5": "9172a8fc650a5446b0ec8dff9c6582e3",
+                "md5": "3d966ea5f986e99ec9ae777c86b39456",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigValidator.jinja": {
@@ -419,11 +419,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurationXSD.jinja": {
-                "md5": "9951a90a9349c3c9ce71d7843b4f0b3e",
+                "md5": "7c17372e89b25a51e6095817a056913c",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
-                "md5": "ea6c2bee0ac3d0aff5e5f68949a67d91",
+                "md5": "e3172df3cb72ffc524ef445fa139eaf9",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -441,7 +441,7 @@
             },
             "Design.xsd": {
                 "install": "overwrite",
-                "md5": "b112b6f30aa10920c30545cdeda4057a",
+                "md5": "5af53d48832024111f54a2b55d57a673",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "ee03b15a27dcc4a9e3dfeb20948d17ef",
+                "md5": "e180c24ce047eb83b72410dbea253730",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -545,7 +545,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBaseHeader.jinja": {
-                "md5": "ebc35a0ce2648d632fae75d8e7a8b910",
+                "md5": "1c904d2b2c3c005189d8fd8e9940e04f",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBody.jinja": {
@@ -576,78 +576,15 @@
     },
     "Documentation": {
         "files": {
-            "AlternativeBackends.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "ChangeLog.html": {
-                "install": "overwrite",
-                "md5": "68c925d21b543d9845e69d26cc62f28a",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "DesignManual.html": {
-                "install": "overwrite",
-                "md5": "c6d41c25769ca569097dc8a494f77554",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "Doxyfile": {
                 "install": "ask_to_merge",
                 "md5": "e3b7e170213293a2d316c14af04ccc7f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
-            "UserDefinedCommandLineParameters.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "UserDefinedRuntimeConfigurationModification.html": {
-                "install": "overwrite",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "WindowsSetup.html": {
-                "install": "overwrite",
-                "md5": "3e42c37ba86957ab080f49ef7d774075",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "diagram.png": {
-                "install": "overwrite",
-                "md5": "e6c4149e7e27922ff30a4515e0f5c01b",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "enice_win_configuration.cmake": {
-                "install": "overwrite",
-                "md5": "9e412dee018c33142380e96c50310a4c",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "quasar.html": {
-                "install": "overwrite",
-                "md5": "3f2a75d0ef8aa34f7eae7c6c812dc180",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "quasarCommands.html": {
                 "install": "overwrite",
-                "md5": "b0ef9a8041a0d8f98b7f47358f7ae5fe",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "transformations.pdf": {
-                "install": "overwrite",
-                "md5": "276020b9e012b694d1456538851809b9",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
-            "youtube_links.html": {
-                "install": "overwrite",
-                "md5": "582a09eb71e2fa388e22096b65c2dd94",
+                "md5": "57ce42951f6fe4abe76077edfe98b450",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -656,25 +593,6 @@
     },
     "Documentation/DoxygenGenerated": {
         "files": {},
-        "install": "create"
-    },
-    "Documentation/images": {
-        "files": {
-            "quasar_engine_small_smooth_square_128x128.png": {
-                "install": "overwrite",
-                "md5": "eaee3dcca045eb7f3f45f87c0712ad71",
-                "must_be_versioned": true,
-                "must_exist": true
-            }
-        },
-        "install": "create"
-    },
-    "Extra": {
-        "files": {
-            "designToHonkyTonk.xslt": {
-                "deprecated": true
-            }
-        },
         "install": "create"
     },
     "FrameworkInternals": {
@@ -693,7 +611,7 @@
             },
             "DesignValidator.py": {
                 "install": "overwrite",
-                "md5": "584d87c3f1580aaf94abe4fccf027e5a",
+                "md5": "902fcb519cfe3c7be2a7880fcf01cbf1",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -711,7 +629,7 @@
             },
             "Oracle.py": {
                 "install": "overwrite",
-                "md5": "77483dce48acafb165eae55c57e64f6e",
+                "md5": "b1bdaf6fca1da500cfa7121ecc0d3325",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -750,7 +668,7 @@
             },
             "default_configuration.cmake": {
                 "install": "overwrite",
-                "md5": "e63f3a5aa78af28b84e1f4a9cdb2f6c9",
+                "md5": "a5e9979a8dc3a4353ebde4d84ae61bad",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -774,7 +692,7 @@
             },
             "externalToolCheck.py": {
                 "install": "overwrite",
-                "md5": "630fe5596303e72d22f167b70c506180",
+                "md5": "d9ba9b6038f6bb2191bc48d1793a868e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -789,15 +707,9 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
-            "generateHonkyTonk.py": {
-                "install": "overwrite",
-                "md5": "d41d8cd98f00b204e9800998ecf8427e",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "install_framework.py": {
                 "install": "overwrite",
-                "md5": "a751091fd34cc134262d654e6a1b85bb",
+                "md5": "efb56a85d9b7c16dab3970a21a4df3c4",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -825,9 +737,15 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
+            "parser_module.py": {
+                "install": "overwrite",
+                "md5": "639f845bc5e2ec42c83360b6d5fd8fc1",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
             "quasarCommands.py": {
                 "install": "overwrite",
-                "md5": "eebcfd52f05613ea164f379a29ceefb2",
+                "md5": "679eec08452b31b32ccba4b42abe2cdd",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -857,7 +775,7 @@
             },
             "transformDesign.py": {
                 "install": "overwrite",
-                "md5": "c51a23be18bc77519fdf6f2a7f7ff986",
+                "md5": "0f2862012b1f9833150f07ecdd67724d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -975,7 +893,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "LogRecord.cpp": {
-                "md5": "6fb5fe9f9f9dfc38eddd9e1f35704ffe",
+                "md5": "0570669c57b411f169dfe26dd19fe197",
                 "use_defaults": "file_defaults_of_directory"
             },
             "LogSinks.cpp": {
@@ -1113,7 +1031,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "8ace087636e9f64b40cbaeae9256dac6",
+                "md5": "c0c5716c4f105cd7a4bb684d7e14250b",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1154,7 +1072,7 @@
         "files": {
             "BaseQuasarServer.cpp": {
                 "install": "overwrite",
-                "md5": "5fb6a4f56dcef588dea26c0860c93d39",
+                "md5": "d8ab17155790526b1ca7f4abecf6acd5",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1168,7 +1086,7 @@
             },
             "QuasarUaTraceHook.cpp": {
                 "install": "overwrite",
-                "md5": "66f665df3b7e862819af6726ca6e8bab",
+                "md5": "260b59c9bd5141c1223ef706bd946704",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1219,6 +1137,17 @@
             },
             "config.xml": {
                 "install": "copy_if_not_existing"
+            }
+        },
+        "install": "create"
+    },
+    "cmake": {
+        "files": {
+            "QuasarSanitizers.cmake": {
+                "install": "overwrite",
+                "md5": "591a9d32c90456e45e302779d5fb61fd",
+                "must_be_versioned": true,
+                "must_exist": true
             }
         },
         "install": "create"

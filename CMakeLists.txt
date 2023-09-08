@@ -17,6 +17,7 @@
 # Author: Piotr Nikiel <piotr@nikiel.info>
 # Author: Damian Abalo Miron <damian.abalo@cern.ch>
 # Author: Stefan Schlenker
+# Author: Paris Moschovakos <paris.moschovakos@cern.ch>
 
 project(opc_ua)
 cmake_minimum_required(VERSION 3.10)
@@ -105,9 +106,6 @@ foreach(module ${OPTIONAL_SERVER_MODULES})
     set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
 endforeach(module)
 
-
-
-
 add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/Design/validated.tmp
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -135,6 +133,13 @@ set(TARGET_LIBS
         ${QUASAR_SERVER_LIBS}
         ${SERVER_LINK_LIBRARIES}
         )
+
+option(ENABLE_QUASAR_SANITIZERS "Enable quasar sanitizers" OFF)
+if(ENABLE_QUASAR_SANITIZERS)
+    MESSAGE(STATUS "Enabling quasar sanitizers")
+    include (${PROJECT_SOURCE_DIR}/cmake/QuasarSanitizers.cmake)
+    enable_quasar_sanitizers(${EXECUTABLE})
+endif()
 
 target_link_libraries ( ${EXECUTABLE} ${TARGET_LIBS} )
 

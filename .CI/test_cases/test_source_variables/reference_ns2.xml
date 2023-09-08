@@ -74,17 +74,8 @@
     <References>
       <Reference ReferenceType="ns=0;i=40">ns=2;i=1009</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -98,17 +89,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaBoolean_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -122,17 +104,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaByte_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -146,17 +119,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaSByte_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -170,17 +134,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt16_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -194,17 +149,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt16_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -218,17 +164,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt32_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -242,17 +179,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt32_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -266,17 +194,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaUInt64_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -290,17 +209,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaInt64_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -314,17 +224,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaDouble_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -338,17 +239,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.OpcUaFloat_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -362,17 +254,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaString_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -386,17 +269,8 @@
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_asynchronous_rw_mutex_this_variable</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaVariant_scalar_asynchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_r_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_r_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_r_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_r_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_w_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_w_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_w_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_w_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_rw_no_mutex</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_rw_mutex_this_operation</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_rw_mutex_this_variable</Reference>
-      <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_synchronous_rw_mutex_containing_object</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_asynchronous_r_no_mutex</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_asynchronous_r_mutex_this_operation</Reference>
       <Reference ReferenceType="ns=0;i=47">ns=2;s=tc1.UaByteString_scalar_asynchronous_r_mutex_this_variable</Reference>
@@ -423,17 +297,8 @@
   <UAVariable BrowseName="CommitID" DataType="i=12" NodeId="ns=2;s=StandardMetaData.BuildInformation.CommitID"/>
   <UAVariable BrowseName="ToolkitLibs" DataType="i=12" NodeId="ns=2;s=StandardMetaData.BuildInformation.ToolkitLibs"/>
   <UAVariable BrowseName="OpcUaBoolean_scalar_synchronous_r_no_mutex" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaBoolean_scalar_synchronous_r_mutex_this_operation" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaBoolean_scalar_synchronous_r_mutex_this_variable" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaBoolean_scalar_synchronous_r_mutex_containing_object" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaBoolean_scalar_synchronous_w_no_mutex" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaBoolean_scalar_synchronous_w_mutex_this_operation" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaBoolean_scalar_synchronous_w_mutex_this_variable" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaBoolean_scalar_synchronous_w_mutex_containing_object" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaBoolean_scalar_synchronous_rw_no_mutex" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaBoolean_scalar_synchronous_rw_mutex_this_operation" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaBoolean_scalar_synchronous_rw_mutex_this_variable" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaBoolean_scalar_synchronous_rw_mutex_containing_object" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaBoolean_scalar_asynchronous_r_no_mutex" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaBoolean_scalar_asynchronous_r_mutex_this_operation" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaBoolean_scalar_asynchronous_r_mutex_this_variable" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_asynchronous_r_mutex_this_variable"/>
@@ -447,17 +312,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaBoolean_scalar_asynchronous_rw_mutex_this_variable" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaBoolean_scalar_asynchronous_rw_mutex_containing_object" DataType="i=1" NodeId="ns=2;s=tc1.OpcUaBoolean_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaByte_scalar_synchronous_r_no_mutex" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaByte_scalar_synchronous_r_mutex_this_operation" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaByte_scalar_synchronous_r_mutex_this_variable" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaByte_scalar_synchronous_r_mutex_containing_object" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaByte_scalar_synchronous_w_no_mutex" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaByte_scalar_synchronous_w_mutex_this_operation" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaByte_scalar_synchronous_w_mutex_this_variable" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaByte_scalar_synchronous_w_mutex_containing_object" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaByte_scalar_synchronous_rw_no_mutex" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaByte_scalar_synchronous_rw_mutex_this_operation" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaByte_scalar_synchronous_rw_mutex_this_variable" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaByte_scalar_synchronous_rw_mutex_containing_object" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaByte_scalar_asynchronous_r_no_mutex" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaByte_scalar_asynchronous_r_mutex_this_operation" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaByte_scalar_asynchronous_r_mutex_this_variable" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_asynchronous_r_mutex_this_variable"/>
@@ -471,17 +327,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaByte_scalar_asynchronous_rw_mutex_this_variable" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaByte_scalar_asynchronous_rw_mutex_containing_object" DataType="i=3" NodeId="ns=2;s=tc1.OpcUaByte_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaSByte_scalar_synchronous_r_no_mutex" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaSByte_scalar_synchronous_r_mutex_this_operation" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaSByte_scalar_synchronous_r_mutex_this_variable" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaSByte_scalar_synchronous_r_mutex_containing_object" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaSByte_scalar_synchronous_w_no_mutex" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaSByte_scalar_synchronous_w_mutex_this_operation" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaSByte_scalar_synchronous_w_mutex_this_variable" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaSByte_scalar_synchronous_w_mutex_containing_object" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaSByte_scalar_synchronous_rw_no_mutex" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaSByte_scalar_synchronous_rw_mutex_this_operation" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaSByte_scalar_synchronous_rw_mutex_this_variable" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaSByte_scalar_synchronous_rw_mutex_containing_object" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaSByte_scalar_asynchronous_r_no_mutex" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaSByte_scalar_asynchronous_r_mutex_this_operation" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaSByte_scalar_asynchronous_r_mutex_this_variable" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_asynchronous_r_mutex_this_variable"/>
@@ -495,17 +342,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaSByte_scalar_asynchronous_rw_mutex_this_variable" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaSByte_scalar_asynchronous_rw_mutex_containing_object" DataType="i=2" NodeId="ns=2;s=tc1.OpcUaSByte_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaUInt16_scalar_synchronous_r_no_mutex" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaUInt16_scalar_synchronous_r_mutex_this_operation" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaUInt16_scalar_synchronous_r_mutex_this_variable" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaUInt16_scalar_synchronous_r_mutex_containing_object" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaUInt16_scalar_synchronous_w_no_mutex" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaUInt16_scalar_synchronous_w_mutex_this_operation" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaUInt16_scalar_synchronous_w_mutex_this_variable" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaUInt16_scalar_synchronous_w_mutex_containing_object" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaUInt16_scalar_synchronous_rw_no_mutex" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaUInt16_scalar_synchronous_rw_mutex_this_operation" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaUInt16_scalar_synchronous_rw_mutex_this_variable" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaUInt16_scalar_synchronous_rw_mutex_containing_object" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaUInt16_scalar_asynchronous_r_no_mutex" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaUInt16_scalar_asynchronous_r_mutex_this_operation" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaUInt16_scalar_asynchronous_r_mutex_this_variable" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_asynchronous_r_mutex_this_variable"/>
@@ -519,17 +357,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaUInt16_scalar_asynchronous_rw_mutex_this_variable" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaUInt16_scalar_asynchronous_rw_mutex_containing_object" DataType="i=5" NodeId="ns=2;s=tc1.OpcUaUInt16_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaInt16_scalar_synchronous_r_no_mutex" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaInt16_scalar_synchronous_r_mutex_this_operation" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaInt16_scalar_synchronous_r_mutex_this_variable" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaInt16_scalar_synchronous_r_mutex_containing_object" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaInt16_scalar_synchronous_w_no_mutex" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaInt16_scalar_synchronous_w_mutex_this_operation" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaInt16_scalar_synchronous_w_mutex_this_variable" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaInt16_scalar_synchronous_w_mutex_containing_object" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaInt16_scalar_synchronous_rw_no_mutex" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaInt16_scalar_synchronous_rw_mutex_this_operation" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaInt16_scalar_synchronous_rw_mutex_this_variable" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaInt16_scalar_synchronous_rw_mutex_containing_object" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaInt16_scalar_asynchronous_r_no_mutex" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaInt16_scalar_asynchronous_r_mutex_this_operation" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaInt16_scalar_asynchronous_r_mutex_this_variable" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_asynchronous_r_mutex_this_variable"/>
@@ -543,17 +372,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaInt16_scalar_asynchronous_rw_mutex_this_variable" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaInt16_scalar_asynchronous_rw_mutex_containing_object" DataType="i=4" NodeId="ns=2;s=tc1.OpcUaInt16_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaUInt32_scalar_synchronous_r_no_mutex" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaUInt32_scalar_synchronous_r_mutex_this_operation" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaUInt32_scalar_synchronous_r_mutex_this_variable" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaUInt32_scalar_synchronous_r_mutex_containing_object" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaUInt32_scalar_synchronous_w_no_mutex" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaUInt32_scalar_synchronous_w_mutex_this_operation" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaUInt32_scalar_synchronous_w_mutex_this_variable" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaUInt32_scalar_synchronous_w_mutex_containing_object" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaUInt32_scalar_synchronous_rw_no_mutex" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaUInt32_scalar_synchronous_rw_mutex_this_operation" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaUInt32_scalar_synchronous_rw_mutex_this_variable" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaUInt32_scalar_synchronous_rw_mutex_containing_object" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaUInt32_scalar_asynchronous_r_no_mutex" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaUInt32_scalar_asynchronous_r_mutex_this_operation" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaUInt32_scalar_asynchronous_r_mutex_this_variable" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_asynchronous_r_mutex_this_variable"/>
@@ -567,17 +387,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaUInt32_scalar_asynchronous_rw_mutex_this_variable" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaUInt32_scalar_asynchronous_rw_mutex_containing_object" DataType="i=7" NodeId="ns=2;s=tc1.OpcUaUInt32_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaInt32_scalar_synchronous_r_no_mutex" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaInt32_scalar_synchronous_r_mutex_this_operation" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaInt32_scalar_synchronous_r_mutex_this_variable" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaInt32_scalar_synchronous_r_mutex_containing_object" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaInt32_scalar_synchronous_w_no_mutex" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaInt32_scalar_synchronous_w_mutex_this_operation" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaInt32_scalar_synchronous_w_mutex_this_variable" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaInt32_scalar_synchronous_w_mutex_containing_object" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaInt32_scalar_synchronous_rw_no_mutex" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaInt32_scalar_synchronous_rw_mutex_this_operation" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaInt32_scalar_synchronous_rw_mutex_this_variable" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaInt32_scalar_synchronous_rw_mutex_containing_object" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaInt32_scalar_asynchronous_r_no_mutex" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaInt32_scalar_asynchronous_r_mutex_this_operation" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaInt32_scalar_asynchronous_r_mutex_this_variable" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_asynchronous_r_mutex_this_variable"/>
@@ -591,17 +402,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaInt32_scalar_asynchronous_rw_mutex_this_variable" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaInt32_scalar_asynchronous_rw_mutex_containing_object" DataType="i=6" NodeId="ns=2;s=tc1.OpcUaInt32_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaUInt64_scalar_synchronous_r_no_mutex" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaUInt64_scalar_synchronous_r_mutex_this_operation" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaUInt64_scalar_synchronous_r_mutex_this_variable" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaUInt64_scalar_synchronous_r_mutex_containing_object" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaUInt64_scalar_synchronous_w_no_mutex" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaUInt64_scalar_synchronous_w_mutex_this_operation" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaUInt64_scalar_synchronous_w_mutex_this_variable" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaUInt64_scalar_synchronous_w_mutex_containing_object" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaUInt64_scalar_synchronous_rw_no_mutex" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaUInt64_scalar_synchronous_rw_mutex_this_operation" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaUInt64_scalar_synchronous_rw_mutex_this_variable" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaUInt64_scalar_synchronous_rw_mutex_containing_object" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaUInt64_scalar_asynchronous_r_no_mutex" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaUInt64_scalar_asynchronous_r_mutex_this_operation" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaUInt64_scalar_asynchronous_r_mutex_this_variable" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_asynchronous_r_mutex_this_variable"/>
@@ -615,17 +417,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaUInt64_scalar_asynchronous_rw_mutex_this_variable" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaUInt64_scalar_asynchronous_rw_mutex_containing_object" DataType="i=9" NodeId="ns=2;s=tc1.OpcUaUInt64_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaInt64_scalar_synchronous_r_no_mutex" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaInt64_scalar_synchronous_r_mutex_this_operation" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaInt64_scalar_synchronous_r_mutex_this_variable" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaInt64_scalar_synchronous_r_mutex_containing_object" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaInt64_scalar_synchronous_w_no_mutex" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaInt64_scalar_synchronous_w_mutex_this_operation" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaInt64_scalar_synchronous_w_mutex_this_variable" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaInt64_scalar_synchronous_w_mutex_containing_object" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaInt64_scalar_synchronous_rw_no_mutex" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaInt64_scalar_synchronous_rw_mutex_this_operation" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaInt64_scalar_synchronous_rw_mutex_this_variable" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaInt64_scalar_synchronous_rw_mutex_containing_object" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaInt64_scalar_asynchronous_r_no_mutex" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaInt64_scalar_asynchronous_r_mutex_this_operation" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaInt64_scalar_asynchronous_r_mutex_this_variable" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_asynchronous_r_mutex_this_variable"/>
@@ -639,17 +432,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaInt64_scalar_asynchronous_rw_mutex_this_variable" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaInt64_scalar_asynchronous_rw_mutex_containing_object" DataType="i=8" NodeId="ns=2;s=tc1.OpcUaInt64_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaDouble_scalar_synchronous_r_no_mutex" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaDouble_scalar_synchronous_r_mutex_this_operation" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaDouble_scalar_synchronous_r_mutex_this_variable" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaDouble_scalar_synchronous_r_mutex_containing_object" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaDouble_scalar_synchronous_w_no_mutex" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaDouble_scalar_synchronous_w_mutex_this_operation" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaDouble_scalar_synchronous_w_mutex_this_variable" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaDouble_scalar_synchronous_w_mutex_containing_object" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaDouble_scalar_synchronous_rw_no_mutex" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaDouble_scalar_synchronous_rw_mutex_this_operation" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaDouble_scalar_synchronous_rw_mutex_this_variable" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaDouble_scalar_synchronous_rw_mutex_containing_object" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaDouble_scalar_asynchronous_r_no_mutex" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaDouble_scalar_asynchronous_r_mutex_this_operation" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaDouble_scalar_asynchronous_r_mutex_this_variable" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_asynchronous_r_mutex_this_variable"/>
@@ -663,17 +447,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaDouble_scalar_asynchronous_rw_mutex_this_variable" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaDouble_scalar_asynchronous_rw_mutex_containing_object" DataType="i=11" NodeId="ns=2;s=tc1.OpcUaDouble_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaFloat_scalar_synchronous_r_no_mutex" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="OpcUaFloat_scalar_synchronous_r_mutex_this_operation" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="OpcUaFloat_scalar_synchronous_r_mutex_this_variable" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="OpcUaFloat_scalar_synchronous_r_mutex_containing_object" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="OpcUaFloat_scalar_synchronous_w_no_mutex" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaFloat_scalar_synchronous_w_mutex_this_operation" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaFloat_scalar_synchronous_w_mutex_this_variable" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="OpcUaFloat_scalar_synchronous_w_mutex_containing_object" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaFloat_scalar_synchronous_rw_no_mutex" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaFloat_scalar_synchronous_rw_mutex_this_operation" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaFloat_scalar_synchronous_rw_mutex_this_variable" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="OpcUaFloat_scalar_synchronous_rw_mutex_containing_object" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="OpcUaFloat_scalar_asynchronous_r_no_mutex" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="OpcUaFloat_scalar_asynchronous_r_mutex_this_operation" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="OpcUaFloat_scalar_asynchronous_r_mutex_this_variable" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_asynchronous_r_mutex_this_variable"/>
@@ -687,17 +462,8 @@
   <UAVariable AccessLevel="3" BrowseName="OpcUaFloat_scalar_asynchronous_rw_mutex_this_variable" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="OpcUaFloat_scalar_asynchronous_rw_mutex_containing_object" DataType="i=10" NodeId="ns=2;s=tc1.OpcUaFloat_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="UaString_scalar_synchronous_r_no_mutex" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="UaString_scalar_synchronous_r_mutex_this_operation" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="UaString_scalar_synchronous_r_mutex_this_variable" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="UaString_scalar_synchronous_r_mutex_containing_object" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="UaString_scalar_synchronous_w_no_mutex" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="UaString_scalar_synchronous_w_mutex_this_operation" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="UaString_scalar_synchronous_w_mutex_this_variable" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="UaString_scalar_synchronous_w_mutex_containing_object" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="UaString_scalar_synchronous_rw_no_mutex" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="UaString_scalar_synchronous_rw_mutex_this_operation" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="UaString_scalar_synchronous_rw_mutex_this_variable" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="UaString_scalar_synchronous_rw_mutex_containing_object" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="UaString_scalar_asynchronous_r_no_mutex" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="UaString_scalar_asynchronous_r_mutex_this_operation" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="UaString_scalar_asynchronous_r_mutex_this_variable" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_asynchronous_r_mutex_this_variable"/>
@@ -711,17 +477,8 @@
   <UAVariable AccessLevel="3" BrowseName="UaString_scalar_asynchronous_rw_mutex_this_variable" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="UaString_scalar_asynchronous_rw_mutex_containing_object" DataType="i=12" NodeId="ns=2;s=tc1.UaString_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="UaVariant_scalar_synchronous_r_no_mutex" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="UaVariant_scalar_synchronous_r_mutex_this_operation" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="UaVariant_scalar_synchronous_r_mutex_this_variable" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="UaVariant_scalar_synchronous_r_mutex_containing_object" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="UaVariant_scalar_synchronous_w_no_mutex" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="UaVariant_scalar_synchronous_w_mutex_this_operation" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="UaVariant_scalar_synchronous_w_mutex_this_variable" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="UaVariant_scalar_synchronous_w_mutex_containing_object" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="UaVariant_scalar_synchronous_rw_no_mutex" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="UaVariant_scalar_synchronous_rw_mutex_this_operation" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="UaVariant_scalar_synchronous_rw_mutex_this_variable" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="UaVariant_scalar_synchronous_rw_mutex_containing_object" NodeId="ns=2;s=tc1.UaVariant_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="UaVariant_scalar_asynchronous_r_no_mutex" NodeId="ns=2;s=tc1.UaVariant_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="UaVariant_scalar_asynchronous_r_mutex_this_operation" NodeId="ns=2;s=tc1.UaVariant_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="UaVariant_scalar_asynchronous_r_mutex_this_variable" NodeId="ns=2;s=tc1.UaVariant_scalar_asynchronous_r_mutex_this_variable"/>
@@ -735,17 +492,8 @@
   <UAVariable AccessLevel="3" BrowseName="UaVariant_scalar_asynchronous_rw_mutex_this_variable" NodeId="ns=2;s=tc1.UaVariant_scalar_asynchronous_rw_mutex_this_variable"/>
   <UAVariable AccessLevel="3" BrowseName="UaVariant_scalar_asynchronous_rw_mutex_containing_object" NodeId="ns=2;s=tc1.UaVariant_scalar_asynchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="UaByteString_scalar_synchronous_r_no_mutex" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_r_no_mutex"/>
-  <UAVariable BrowseName="UaByteString_scalar_synchronous_r_mutex_this_operation" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_r_mutex_this_operation"/>
-  <UAVariable BrowseName="UaByteString_scalar_synchronous_r_mutex_this_variable" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_r_mutex_this_variable"/>
-  <UAVariable BrowseName="UaByteString_scalar_synchronous_r_mutex_containing_object" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_r_mutex_containing_object"/>
   <UAVariable AccessLevel="2" BrowseName="UaByteString_scalar_synchronous_w_no_mutex" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_w_no_mutex"/>
-  <UAVariable AccessLevel="2" BrowseName="UaByteString_scalar_synchronous_w_mutex_this_operation" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_w_mutex_this_operation"/>
-  <UAVariable AccessLevel="2" BrowseName="UaByteString_scalar_synchronous_w_mutex_this_variable" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_w_mutex_this_variable"/>
-  <UAVariable AccessLevel="2" BrowseName="UaByteString_scalar_synchronous_w_mutex_containing_object" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_w_mutex_containing_object"/>
   <UAVariable AccessLevel="3" BrowseName="UaByteString_scalar_synchronous_rw_no_mutex" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_rw_no_mutex"/>
-  <UAVariable AccessLevel="3" BrowseName="UaByteString_scalar_synchronous_rw_mutex_this_operation" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_rw_mutex_this_operation"/>
-  <UAVariable AccessLevel="3" BrowseName="UaByteString_scalar_synchronous_rw_mutex_this_variable" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_rw_mutex_this_variable"/>
-  <UAVariable AccessLevel="3" BrowseName="UaByteString_scalar_synchronous_rw_mutex_containing_object" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_synchronous_rw_mutex_containing_object"/>
   <UAVariable BrowseName="UaByteString_scalar_asynchronous_r_no_mutex" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_asynchronous_r_no_mutex"/>
   <UAVariable BrowseName="UaByteString_scalar_asynchronous_r_mutex_this_operation" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_asynchronous_r_mutex_this_operation"/>
   <UAVariable BrowseName="UaByteString_scalar_asynchronous_r_mutex_this_variable" DataType="i=15" NodeId="ns=2;s=tc1.UaByteString_scalar_asynchronous_r_mutex_this_variable"/>

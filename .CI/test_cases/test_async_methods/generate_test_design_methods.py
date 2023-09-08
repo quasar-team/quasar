@@ -24,7 +24,7 @@ def make_dts():
 
 
 def get_dts(dts):
-    random.shuffle(dts)
+    #random.shuffle(dts)  #<-- not good for repetitivity of conditions
     return dts.pop()
 
 
@@ -38,13 +38,14 @@ def generate():
 
     Num_arguments = [0, 1, 2]
     Num_return_values = [0, 1, 2]
+    Random_Options = ['no', 'of_this_method', 'of_containing_object']
     it = 0
     try:
         while it<10:
             for num_arguments in Num_arguments:
                 for num_return_values in Num_return_values:
                     scenario_name = create_scenario_name(num_arguments, num_return_values, it)
-                    output('<d:method name="{0}" executionSynchronicity="asynchronous" >'.format(scenario_name))
+                    output(f'<d:method name="{scenario_name}" executionSynchronicity="asynchronous" addressSpaceCallUseMutex="{random.choice(Random_Options)}" >')
                     for arg in range(0, num_arguments):
                         dt = get_dts(dts_args)
                         output('<d:argument name="arg{0}" dataType="{1}" >'.format(arg, dt['dataType']) )
@@ -68,7 +69,7 @@ def generate():
 output('<?xml version="1.0" encoding="UTF-8"?>')
 output('<d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="TestProject" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">')
 output('<d:class name="TestClass">')
-output('<d:devicelogic/>')
+output('<d:devicelogic><d:mutex/></d:devicelogic>')
 generate()
 output('</d:class>')
 output('<d:root>')

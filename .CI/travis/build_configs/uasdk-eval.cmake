@@ -1,4 +1,4 @@
-# Please see Documentation/quasarBuildSystem.html for
+# Please see http://quasar.docs.cern.ch/quasarBuildSystem.html for
 # information how to use this file.
 # LICENSE:
 # Copyright (c) 2015, CERN

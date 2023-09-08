@@ -5,6 +5,7 @@
 release_nebula.py
 
 @author:     Piotr Nikiel <piotr@nikiel.info>
+@author:     Paris Moschovakos <paris.moschovakos@cern.ch>
 
 @copyright:  2020 CERN
 
@@ -38,6 +39,7 @@ import argparse
 import re
 import os
 import sys
+import json
 
 import pygit2
 
@@ -87,6 +89,19 @@ def store_version(version):
     f_cpp = open(os.path.sep.join(['Server', 'include', 'QuasarVersion.h']), 'w', encoding='utf-8')
     f_cpp.write('#define QUASAR_VERSION_STR "{0}"\n'.format(version))
 
+def add_version_to_versions_file(version):
+    """
+    Adds a version to the versions.json file.
+    """
+    with open('./Documentation/source/_static/versions.json', 'r') as f:
+        data = json.load(f)
+    data["versions"] = [v for v in data["versions"] if "rc" not in v and "dev" not in v]
+    if version in data["versions"]:
+        raise Exception("Version {} already exists in versions file".format(version))
+    data["versions"].insert(1, version)
+    with open('./Documentation/source/_static/versions.json', 'w') as f:
+        json.dump(data, f, indent=2)
+
 def main():
     print(Fore.BLUE + "Note: you are about to release quasar" + Style.RESET_ALL)
     parser = argparse.ArgumentParser()
@@ -102,6 +117,8 @@ def main():
 
     version = 'v'+given_tag
     store_version(version)
+
+    add_version_to_versions_file(version)
 
     os_system_with_check('./quasar.py create_release')
 
