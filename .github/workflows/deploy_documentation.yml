@@ -53,12 +53,12 @@ jobs:
         export SPHINXBUILD=`which sphinx-build`
 
         make epub
-        cp ./build/epub/Quasar.epub ./_build/${{ env.VERSION_NAME }}
-        mv ./_build/${{ env.VERSION_NAME }}/Quasar.epub ./_build/${{ env.VERSION_NAME }}/Quasar\ ${{ env.VERSION_NAME }}.epub
+        cp ./build/epub/quasar.epub ./_build/${{ env.VERSION_NAME }}
+        mv ./_build/${{ env.VERSION_NAME }}/quasar.epub ./_build/${{ env.VERSION_NAME }}/quasar\ ${{ env.VERSION_NAME }}.epub
 
         make latexpdf
         cp ./build/latex/quasar.pdf ./_build/${{ env.VERSION_NAME }}
-        mv ./_build/${{ env.VERSION_NAME }}/quasar.pdf ./_build/${{ env.VERSION_NAME }}/Quasar\ ${{ env.VERSION_NAME }}.pdf
+        mv ./_build/${{ env.VERSION_NAME }}/quasar.pdf ./_build/${{ env.VERSION_NAME }}/quasar\ ${{ env.VERSION_NAME }}.pdf
 
     - name: Update server
       run: |
