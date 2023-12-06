@@ -23,7 +23,7 @@ Initializing LogIt in the Quasar Server code
 
 -  sending commands to some target hardware (e.g. calling some 3rd party
    API)
--  accepting input (e.g. handling OPC-UA client item writes and method
+-  accepting input (e.g. handling OPC UA client item writes and method
    calls)
 -  handling hardware disconnection/reconnection events
 
@@ -115,7 +115,7 @@ allows for an integrated approach to logging that allows you to
 configure the verbosity of logging components both
 
 -  initially, via the quasar server XML configuration
--  dynamically, via an OPC-UA client
+-  dynamically, via an OPC UA client
 
 Initial Verbosity: Via Server Config XML
 ----------------------------------------
@@ -147,14 +147,14 @@ Runtime Verbosity: Via an OPC_UA client
 ---------------------------------------
 
 | Per-component verbosity can be read and set at runtime via standard
-  quasar OPC-UA items (via *StandardMetaData.Log.ComponentLogLevels*).
-  The screenshot below shows a graphical OPC-UA client (Unified
+  quasar OPC UA items (via *StandardMetaData.Log.ComponentLogLevels*).
+  The screenshot below shows a graphical OPC UA client (Unified
   Auomtation's uaexpert client) viewing these items. Writing a new
   verbosity value, for example, setting component
   *ADDRESS_SPACE_UPDATES* verbosity from *WRN* -> *TRC*, would result in
   all messages (TRC is the highest verbosity setting) for that component
   being delivered to the log.
-| |screenshot of OPC-UA client setting log component verbosity|
+| |screenshot of OPC UA client setting log component verbosity|
 
 Quasar Framework Maintainers: Dealing with LogIt as a Git Submodule
 -------------------------------------------------------------------
@@ -220,4 +220,4 @@ Then your fellow quasar maintainers update their environments with
         git submodule update --init --recursive
         
 
-.. |screenshot of OPC-UA client setting log component verbosity| image:: images/opc-ua-items-for-logging-verbosity.PNG
+.. |screenshot of OPC UA client setting log component verbosity| image:: images/opc-ua-items-for-logging-verbosity.PNG

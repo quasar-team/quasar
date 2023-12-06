@@ -11,7 +11,7 @@ Introduction
 
 | 
 | This rather short how-to explains how to integrate a Quasar-based
-  OPC-UA server with Yocto.
+  OPC UA server with Yocto.
 | Prerequisites:
 
 -  familiarity with Quasar: creating Quasar projects, working with
@@ -25,7 +25,7 @@ Introduction
 | The how-to presented here has been attempted in:
 
 -  Yocto, different versions (including Rocko and Sumo),
--  PetaLinux 2017.4, which uses Yocto behind the scenes, to build OPC-UA
+-  PetaLinux 2017.4, which uses Yocto behind the scenes, to build OPC UA
    server for a PetaLinux-based project.
    Note that only few points of those presented here will be of use for
    PetaLinux integration, especially the recipes will be of value.
@@ -44,7 +44,7 @@ The terminology
    (in this manual it was in the krogoth version). I cloned it from
    Yocto git repo. I will call it **poky repo**.
 -  ~/gitProjects/poky-quasar
-   is where I will have my Quasar-based OPC-UA server project. I will
+   is where I will have my Quasar-based OPC UA server project. I will
    call it **project repo**.
 
 The procedure
@@ -201,7 +201,7 @@ Build core-image-minimal (in case it's your first Yocto build)
 
    bitbake core-image-minimal
 
-Create a new Yocto layer for your quasar OPC-UA server(s)
+Create a new Yocto layer for your quasar OPC UA server(s)
 ---------------------------------------------------------
 
 | From poky repo:
@@ -214,7 +214,7 @@ Create a new Yocto layer for your quasar OPC-UA server(s)
 
 | 
 
-Deploy the Yocto recipe for your OPC-UA server
+Deploy the Yocto recipe for your OPC UA server
 ----------------------------------------------
 
 | 
@@ -261,7 +261,7 @@ Deploy pygit2 if you want to have your build stamp embedded in the build (and av
 ----------------------------------------------------------------------------------------------------------
 
 | 
-| If pygit2 is available at the OPC-UA server build time then later on,
+| If pygit2 is available at the OPC UA server build time then later on,
   from the address-space as well as command line you'll be able to check
   which project commit has been used to produce the executable.
 | In case you don't have pygit2 via your Yocto/PetaLinux you can use the
@@ -318,7 +318,7 @@ Deploy meta-openembedded layer to get some required Python modules
    bitbake-layers add-layer ../meta-openembedded/meta-oe
    bitbake-layers add-layer ../meta-openembedded/meta-python
 
-Add your OPC-UA server artifacts to be installed on the target image
+Add your OPC UA server artifacts to be installed on the target image
 --------------------------------------------------------------------
 
 | 
@@ -336,7 +336,7 @@ Build the minimal image
 
    bitbake core-image-minimal
 
-| You can also build only the OPC-UA server:
+| You can also build only the OPC UA server:
 
 .. container::
 
@@ -353,7 +353,7 @@ Run the minimal image in qemu
 
 | You should see your operating system bootin in qemu.
 
-Run the OPC-UA server
+Run the OPC UA server
 ---------------------
 
 | Once you see login prompt in qemu, login as root.
@@ -369,7 +369,7 @@ Run the OPC-UA server
   just edit (vi) the config file making sure that Configuration.xsd has
   no path prefix**.
 
-Connect to the OPC-UA server using UaExpert
+Connect to the OPC UA server using UaExpert
 -------------------------------------------
 
 | 

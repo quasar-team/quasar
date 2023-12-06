@@ -4,7 +4,7 @@ User Defined Command Line Parameters
 Background
 ----------
 
-An OPC-UA server may be a rather complex process, as such, developers
+An OPC UA server may be a rather complex process, as such, developers
 may well want to provide implementation specific command line options -
 to allows end-users to control aspects of the server's runtime
 behaviour, say specifying additional configuration options outside of
@@ -55,7 +55,7 @@ A Simple Example
 ----------------
 
 This example shows how to add the 2 command line options listed below
-such that a quasar OPC-UA server executable, once built, will parse for
+such that a quasar OPC UA server executable, once built, will parse for
 these options, complete with end-user facing, option specifc,
 documentation:
 

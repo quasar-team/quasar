@@ -8,7 +8,7 @@ quasar.py commands help
 build
 -----
 
-| This is the main command to build the project (a quasar-based OPC-UA
+| This is the main command to build the project (a quasar-based OPC UA
   server).
 | Syntax:
 

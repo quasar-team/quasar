@@ -1,4 +1,4 @@
-OPC-UA back-ends for quasar
+OPC UA back-ends for quasar
 ===========================
 
 Author: Piotr P. Nikiel
@@ -47,7 +47,7 @@ quasar developers as one of supported "optional modules".
 Activating open62541 is a simple procedure which is best described in the quasar tutorials on YouTube,
 see e.g. `<https://www.youtube.com/watch?v=6MsWUQ0OXbY>`__ .
 
-OPC-UA Back-end dependent features: a comparison table
+OPC UA Back-end dependent features: a comparison table
 ------------------------------------------------------
 
 +-----------------+-----------------+-----------------+-----------------+

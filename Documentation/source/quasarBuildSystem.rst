@@ -9,7 +9,7 @@ quasar, quasar-based servers and the build system
 =================================================
 
 quasar is a framework for rapid and efficient development of
-(quasar-based) OPC-UA servers in the C++ programming language. A build
+(quasar-based) OPC UA servers in the C++ programming language. A build
 system must accompany a framework like quasar to offload its users from
 tasks like:
 
@@ -183,7 +183,7 @@ A build configuration file is a CMake script defining (typically using
 the set() statement) the configuration of a build. The aspects typically
 covered by build configs are:
 
--  Path to OPC-UA stack (if used)
+-  Path to OPC UA stack (if used)
 -  Path to boost headers and libs and list of libraries to link against
    if they cannot be automatically resolved. Note that by default, the
    quasar cmake engine uses FindBoost to resolve boost header and lib
@@ -196,7 +196,7 @@ In addition, path(s) to cross-compilers and their sysroot(s) are often
 specified there.
 
 You can have (store) multiple build configuration files because one
-OPC-UA server project might be built to suit requirements of different
+OPC UA server project might be built to suit requirements of different
 clients. For instance, you can have one build config for Windows Server
 2012, one config for Windows 10, one config for Ubuntu and one for
 cross-compiling for Raspian.
@@ -319,4 +319,4 @@ Recommendations to server developers
 -  Never modify the master CMakeLists.txt
 -  Put relevant settings to ProjectSettings.cmake
 -  Use as many build configurations as you need. It is common to reuse
-   build configurations between multiple OPC-UA server projects.
+   build configurations between multiple OPC UA server projects.

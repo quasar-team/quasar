@@ -30,5 +30,5 @@ Quasar
   :hidden:
   :caption: Quasar OpcUa Server
 
-  Summary of known quasar-based OPC-UA servers <./quasar_OPC_UA_servers>
+  Summary of known quasar-based OPC UA servers <./quasar_OPC_UA_servers>
 

@@ -22,14 +22,14 @@ User Defined Runtime Configuration Modification
 Background
 ----------
 
-| A completely static configuration for an OPC-UA server may not always
+| A completely static configuration for an OPC UA server may not always
   be exactly the desired behaviour; for example - consider a
   multi-channel, highly modular, power supply system. For such a system
   it may be beneficial to users to provide functionality from the quasar
   server such that (with the correct command line options specified of
   course) the server actually detects the hardware that is connected and
   uses this as the basis for its runtime configuration. This might be an
-  efficient way to run an OPC-UA server in situations where, say, the
+  efficient way to run an OPC UA server in situations where, say, the
   hardware setup is in flux (maybe an ad-hoc lab configuration) and so
   manual modification of a static configuration file to describe the
   system is painful. Equally, in a large production set up, the server
