@@ -34,7 +34,7 @@ Adding the command line options
 
 As is often the case in quasar, user specific implementation code is
 included in the server by overriding methods. The virtual method to
-override is ````
+override is 
 
 ::
 
@@ -65,7 +65,7 @@ documentation:
 -  some_string: A named string value
 
 So, we want to be able to start the server process wit a command line
-like: ````
+like: 
 
 ::
 
@@ -75,7 +75,6 @@ like: ````
   In this case add them to class QuasarServer.
 | Also add the virtual method override (also to class QuasarServer) Now
   the class definition pseudo code looks like...
-| ````
 
 ::
 
@@ -83,39 +82,33 @@ like: ````
    {
        ...etc...
        virtual void appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions, 
-                                                       boost::program_options::positional_options_description& positionalOptionsDescription
-
-); ... etc ... bool m_someSwitch; std::string m_someString; }
+                                                       boost::program_options::positional_options_description& positionalOptionsDescription); 
+       ... etc ... bool m_someSwitch; std::string m_someString; }``
 
 Now add the implementation of the method
-'appendCustomCommandLineOptions', for example ````
+'appendCustomCommandLineOptions', for example
 
 ::
 
-   void QuasarServer::appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions,                                                                           boost::program_options::positional_options_description& positionalOptionsDescription
-
-) { commandLineOptions.add_options() ("some_switch",
-boost::program_options::bool_switch(&m_someSwitch)->default_value(false),
-"User documentation of some_switch") ("some_string",
-boost::program_options::value(&m_someString)->default_value("anyDefaultValue"),
-"User documentation of some_string"); }
+   void QuasarServer::appendCustomCommandLineOptions(boost::program_options::options_description& commandLineOptions, boost::program_options::positional_options_description& positionalOptionsDescription) { 
+   commandLineOptions.add_options() ("some_switch", boost::program_options::bool_switch(&m_someSwitch)->default_value(false), "User documentation of some_switch") ("some_string", boost::program_options::value(&m_someString)->default_value("anyDefaultValue"), "User documentation of some_string"); }
 
 Now, starting the server process with a command line above will result
-in values ````
+in values
 
 ::
 
    QuasarServer::m_someSwitch  = true
    QuasarServer::m_someString "hello, world!"
 
-Furthermore, starting the server process with a command line like ````
+Furthermore, starting the server process with a command line like
 
 ::
 
    ./myServerExecutable -help
 
 will print the help documentation described above, at the command line,
-for example: ````
+for example:
 
 ::
 
