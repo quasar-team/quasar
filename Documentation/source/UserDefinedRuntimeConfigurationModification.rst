@@ -231,9 +231,10 @@ Function decorateConfiguration()
   content order data. For some applications (e.g. clear()) we provide
   functions in the DecorationUtils, e.g.
 
-  ::
-    Configuration::DecorationUtils::clear(theConfig, theConfig.ConfiguredClass(), 
-    Configuration::Configuration::ConfiguredClass_id);
+::
+
+   Configuration::DecorationUtils::clear(theConfig, theConfig.ConfiguredClass(), 
+   Configuration::Configuration::ConfiguredClass_id);
 
 | 
 
