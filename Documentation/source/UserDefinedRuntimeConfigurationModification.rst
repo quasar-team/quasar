@@ -76,8 +76,7 @@ Key Functions
 
 The start of of the configuration decoration hook is to override method
 *overridableConfigure*. The virtual method is defined in class
-*BaseQuasarServer*, and should be overridden in class *QuasarServer.
-*
+*BaseQuasarServer*, and should be overridden in class *QuasarServer*.
 
 ::
 
@@ -123,8 +122,6 @@ The start of of the configuration decoration hook is to override method
    */
    template< typename TParent, typename TChildren, typename TChild >
    void push_back(TParent& parent, TChildren& children, const TChild& child, const size_t childTypeId)
-
-::
 
 ::
 
@@ -234,13 +231,10 @@ Function decorateConfiguration()
   content order data. For some applications (e.g. clear()) we provide
   functions in the DecorationUtils, e.g.
 
-.. container::
+::
 
-   .. container::
-
-      Configuration::DecorationUtils::clear(theConfig,
-      theConfig.ConfiguredClass(),
-      Configuration::Configuration::ConfiguredClass_id);
+   Configuration::DecorationUtils::clear(theConfig, theConfig.ConfiguredClass(), 
+   Configuration::Configuration::ConfiguredClass_id);
 
 | 
 
@@ -283,14 +277,14 @@ called with the correct arguments; namely with the developer's
 implementation of ConfigXmlDecoratorFunction as the 3rd argument. As is
 often the case in quasar, injecting user specifc code involves
 overriding a virtual function. In this case, the virtual function to
-override is: ````
+override is:
 
 ::
 
    bool BaseQuasarServer::overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
 
 A typical developer override of this function would be along the lines
-of the following pseudo code ````
+of the following pseudo code
 
 ::
 
