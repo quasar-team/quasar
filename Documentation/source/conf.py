@@ -29,7 +29,7 @@ def get_current_date():
 # -- Project information -----------------------------------------------------
 
 project = 'quasar'
-copyright = '2022, Paris Moschovakos'
+copyright = '2021-2024, Paris Moschovakos'
 author = 'Paris Moschovakos'
 
 
