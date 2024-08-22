@@ -13,7 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "0224a2a7e18c5da308e8ace3423e3539",
+                "md5": "3e677f47e9ca56ada49c68bc222a93b7",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -182,7 +182,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToInformationModelHeader.jinja": {
-                "md5": "1f550cdec2c4d2601bcb482009c9df0d",
+                "md5": "7b48659bb31007304e23babad44fc2fd",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesBody.jinja": {
@@ -366,13 +366,13 @@
         "files": {
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "626ab0174614fc11403e1445cef714e4",
+                "md5": "57b5eaeda888a89d77ca27a5daad95a9",
                 "must_be_versioned": true,
                 "must_exist": true
             },
             "Configurator.h": {
                 "install": "overwrite",
-                "md5": "5842d1e85c03d3dfee9d372d8e175d3a",
+                "md5": "0ae584e2d5fcdc9d177840b28332f03b",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -419,11 +419,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurationXSD.jinja": {
-                "md5": "7c17372e89b25a51e6095817a056913c",
+                "md5": "da24a0c93364b63b71186736a42c9f9b",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
-                "md5": "e3172df3cb72ffc524ef445fa139eaf9",
+                "md5": "c300ea6f50a2c25fed54047b49f7d770",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "e180c24ce047eb83b72410dbea253730",
+                "md5": "470e0411b84803fff02456406305372f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -557,12 +557,13 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToGeneratedCmakeDevice.jinja": {
-                "md5": "47eb906e35034b33a176893a88e834c3",
+                "md5": "e07d6364a634fe43de10eb9acc9941da",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToGeneratedCmakeDeviceBase.jinja": {
+                "md5": "adcce9b12a7ee6d47cc5fd090a649a82",
                 "use_defaults": "file_defaults_of_directory"
-            },            
+            },
             "designToRootBody.jinja": {
                 "md5": "e8a063423460d46ab272c2b66b3c8afa",
                 "use_defaults": "file_defaults_of_directory"
@@ -662,7 +663,7 @@
             },
             "configurationGenerators.py": {
                 "install": "overwrite",
-                "md5": "b1d932c02f7c6390b9cdb470116ce2bb",
+                "md5": "577c34e7a4a38c72ebff3d4e3226ecf1",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -703,7 +704,7 @@
             },
             "generateCmake.py": {
                 "install": "overwrite",
-                "md5": "a796009bec788f624275802e1dc7d9f3",
+                "md5": "65c52210b884bd61f8c68180e96afd48",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -721,10 +722,10 @@
             },
             "merge_design_and_meta.py": {
                 "install": "overwrite",
-                "md5": "check",
+                "md5": "ea7a8923136385c87639eecc802d712b",
                 "must_be_versioned": true,
                 "must_exist": true
-            },            
+            },
             "meta_build_info.py": {
                 "install": "overwrite",
                 "md5": "22a46ccc2be9cbbf46d3e61d7e40d073",
@@ -775,7 +776,7 @@
             },
             "transformDesign.py": {
                 "install": "overwrite",
-                "md5": "0f2862012b1f9833150f07ecdd67724d",
+                "md5": "b511e6a247a7f2ae37ceeca253a867d9",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -919,7 +920,7 @@
         "files": {
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "3df2c83140fa9d2781b452d20170f90d",
+                "md5": "d6970899507912d55fd86cf6a429a0b2",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -930,13 +931,13 @@
         "files": {
             "meta-design.xml": {
                 "install": "overwrite",
-                "md5": "check",
+                "md5": "6cf8fcf44b6d85c3052338e7c3b76f83",
                 "must_be_versioned": true,
                 "must_exist": true
             }
         },
         "install": "create"
-    },    
+    },
     "Meta/include": {
         "file_defaults": {
             "install": "overwrite",
@@ -946,19 +947,19 @@
         },
         "files": {
             "DLogLevel.h": {
-                "md5": "check",
+                "md5": "98f664f8b3a0617a30abbf9b58feb0fb",
                 "use_defaults": "file_defaults_of_directory"
-            },            
+            },
             "MetaBuildInfo.h": {
                 "md5": "6e13f222dc2ec1900abfd8bc8e0f581f",
                 "use_defaults": "file_defaults_of_directory"
             },
             "meta.h": {
-                "md5": "cedf4c8165a3c2cd79a8ec70269b33d7",
+                "md5": "5467a9212aa6a6378de285045c24a537",
                 "use_defaults": "file_defaults_of_directory"
             },
             "metaBackwardsCompatibilityUtils.h": {
-                "md5": "check",
+                "md5": "c69d12110ef136f8d9c397fbafdcba76",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -973,7 +974,7 @@
         },
         "files": {
             "DLogLevel.cpp": {
-                "md5": "check",
+                "md5": "171c96a2a39350be89d7aa4a895c0ab5",
                 "use_defaults": "file_defaults_of_directory"
             },
             "MetaBuildInfo.cpp": {
@@ -981,13 +982,13 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "meta.cpp": {
-                "md5": "59e0712c22a797c0a75140bfea4dc857",
+                "md5": "3befc924d6582f2af191008647e9fdcf",
                 "use_defaults": "file_defaults_of_directory"
             },
             "metaBackwardsCompatibilityUtils.cpp": {
-                "md5": "check",
+                "md5": "f7a26e24da0cc0133adcfde10379a2b6",
                 "use_defaults": "file_defaults_of_directory"
-            }                        
+            }
         },
         "install": "create"
     },
@@ -1031,7 +1032,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "c0c5716c4f105cd7a4bb684d7e14250b",
+                "md5": "240d7a97f3397b793707644370802426",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1072,7 +1073,7 @@
         "files": {
             "BaseQuasarServer.cpp": {
                 "install": "overwrite",
-                "md5": "d8ab17155790526b1ca7f4abecf6acd5",
+                "md5": "51918cb91832b88a303fda50b84d5caa",
                 "must_be_versioned": true,
                 "must_exist": true
             },
