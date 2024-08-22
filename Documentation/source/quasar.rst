@@ -1,11 +1,12 @@
 quasar
 ======
 
+quasar is a framework for rapidly developing OPC UA (Open Platform Communications Unified Architecture) servers. It provides tools and abstractions to simplify the process of creating industrial-grade OPC UA servers, which are widely used for secure, reliable data exchange in industrial automation and IoT applications.
 The quick opcua server generation framework.
 
 For quick start-up, see our `YouTube tutorial <https://www.youtube.com/watch?v=v212aPmbahM&list=PLz6bxFrT1-KBZxoSxr4ZvlTyxNeYE3L7b>`__
 
-| Primary contact: quasar-developers@cern.ch
+Primary contact: quasar-developers@cern.ch
 
 Versions
 --------
@@ -15,32 +16,15 @@ Versions
 Credits
 -------
 
-This framework was brought to you by (in the alphabetical order):
-
-- Damian Abalo Miron (damian.abalo@cern.ch)
-   -  Windows compatibility and MSVC10 support
-   -  Python-based scripts and tools
-
-- Ingo Berg (external contributor not affiliated with CERN)
-   -  muParser formula parser and evaluation engine, used by the
-      CalculatedVariables and shipped with quasar. (`muParser's
-      webpage <https://beltoforion.de/en/muparser/>`__)
-
-- Benjamin Farnham (benjamin.farnham@cern.ch):
-   -  LogIt logging engine
-   -  Meta module
-   -  Use cases & ideas
-
-- Viatcheslav "Slava" Filimonov (viatcheslav.filimonov@cern.ch):
-   -  XML Configuration (inspiration)
-   -  Calculation engine (inspiration)
-   -  Node manager
+This framework was developed through the collaborative efforts of the following:
 
 - Paris Moschovakos (paris.moschovakos@cern.ch):
-   -  quasar lead from Sep 2022
+   -  quasar lead
+   -  Embedded and ARM64
+   -  quasar.docs.cern.ch
+   -  UaObjects, Cacophony
+   -  quasar Sanitizers
    -  mule (SNMP optional module)
-   -  UaObjects
-   -  documentation revamp
 
 - Piotr Nikiel (piotr.nikiel@cern.ch, piotr@nikiel.info):
    -  Framework's concept and architecture and code-generation
@@ -57,20 +41,38 @@ This framework was brought to you by (in the alphabetical order):
 - Stefan Schlenker (stefan.schlenker@cern.ch)
    -  Use cases, ideas, optional modules mechanism
 
+- Benjamin Farnham (benjamin.farnham@cern.ch):
+   -  LogIt logging engine
+   -  Meta module
+   -  Use cases & ideas
+
+- Damian Abalo Miron (damian.abalo@cern.ch)
+   -  Windows compatibility and MSVC10 support
+   -  Python-based scripts and tools
+
+- Ingo Berg (external contributor not affiliated with CERN)
+   -  muParser formula parser and evaluation engine, used by the
+      CalculatedVariables and shipped with quasar. (`muParser's
+      webpage <https://beltoforion.de/en/muparser/>`__)
+
+- Viatcheslav "Slava" Filimonov (viatcheslav.filimonov@cern.ch):
+   -  XML Configuration (inspiration)
+   -  Calculation engine (inspiration)
+   -  Node manager
+
 - Cristian-Valeriu Soare
    -  Embedded python module (PyEmbed)
 
 - Giordon Holtsberg Stark
    -  quasar with Yocto on a "big" Zynq SoCs: ideas, consulting, development, testing
 
-Dependencies
-------------
+Installation and Dependencies
+-----------------------------
 
 Note: we have specific instructions for the following operating systems:
 
-- CentOS / RHEL (and dependent distributions):
-  - `version 8 <#cc8>`__ (e.g. CentOS 8, RHEL 8, ...),
-  - `version 7 <#cc7>`__ (e.g. CentOS 7, RHEL 7, ...).
+- AlmaLinux / RHEL (and dependent distributions):
+  - `version 9 <#el9>`__ (e.g. AlmaLinux 9, RHEL 9, ...),
 - `Ubuntu <#ubuntu>`__
 - `MS Windows <#windows>`__
 
@@ -80,7 +82,7 @@ For remaining systems (other distros of Linux, other Unix, embedded Linux: PetaL
 Mandatory:
 ^^^^^^^^^^
 
--  C++ compiler with C++11 support (gcc 4.8x is the minimum as of 2022)
+-  C++ compiler with C++11 support (gcc 11.x is the minimum)
 
 -  OPCUA protocol stacks / toolkits (either of them is needed):
    -  see `More info on alternative backends <AlternativeBackends.html>`__.
@@ -132,51 +134,8 @@ Quick setup hints for AlmaLinux 9 (the most standard way)
 
 #. Download UaExpert for an universal test&dev tool for OPC UA.
 
-Quick setup hints for CentOS 8
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#. Install latest epel realease
-
-   ``sudo dnf install epel-release``
-
-#. Install packages from CentOS 8 default repos:
-
-   ``sudo dnf install gcc-c++ gdb boost-devel boost-regex
-   boost-program-options boost-signals cmake kdiff3 graphviz valgrind
-   doxygen rpm-build xsd openssl-devel libxml2-devel xerces-c-devel
-   python3-colorama python3-jinja2``
-
-#. Install packages from epel repo (by default enabled in CentOS 8):
-
-   ``sudo yum install astyle``
-
-#. Download UaExpert for an universal test&dev tool for OPC UA.
-
-Quick setup hints for CC7/CentOs7 users
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#. Get Eclipse (www.eclipse.org), preferably the C/C++ Developers
-   version (e.g.
-   https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr)
-   Once installed, install Eclipse add-ons for XML editors
-#. Issue this to install software from the official CC7 RPM repos:
-
-   ``sudo yum install gcc-c++ gdb boost-devel boost-regex
-   boost-program-options boost-signals cmake3 kdiff3 graphviz
-   valgrind doxygen rpm-build xsd openssl-devel libxml2-devel
-   xerces-c-devel libgit2 libgit2-devel python36-jinja2 python36-lxml
-   python36-colorama``
-
-#. Deploy Python's pygit2 (recommended)
-   *WARNING: the version of pygit2 should match the version of
-   libgit2-devel! At the time of writing it was 0.26.4*
-
-   ``pip install pygit2==0.26.4 --user``
-
-#. Download UaExpert for an universal test&dev tool for OPC UA.
-
-Quick setup hints for Ubuntu 20.04
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Quick setup hints for Ubuntu 24.04 LTS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #. Deploy from standard Ubuntu repos
 
@@ -187,14 +146,6 @@ Quick setup hints for Ubuntu 20.04
 #. Deploy Jinja2
 
    ``pip3 install -U Jinja2 --user``
-
-
-Quick setup hints for Ubuntu 19.04
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   ``sudo apt install cmake g++ libboost-all-dev libxml2-utils astyle
-   xsdcxx libxerces-c-dev libssl-dev kdiff3 default-jre libxml2-utils
-   python-enum34 python-lxml``
 
 Setup for Windows users
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -266,8 +217,8 @@ Logging
 -  Generic LogIt documentation can be found
    `here <https://github.com/quasar-team/LogIt>`__
 
-Quick FAQ
----------
+Frequently Asked Questions (FAQ)
+--------------------------------
 
 #. How to build an executable with debug symbols?
 
@@ -346,9 +297,12 @@ Quick FAQ
    configurations etc... ? See `build system
    doc <quasarBuildSystem.html>`__.
 
+Contributing
+------------
+We welcome contributions to quasar! Whether you're fixing bugs, improving documentation, or proposing new features, your input is valuable. Please contact quasar-developers@cern.ch for more information on how to get started or to discuss your ideas.
+
 --------------
 
-Written by Piotr Nikiel <piotr@nikiel.info>
 Report inconsistencies and bugs to <quasar-developers@cern.ch>
 
-(C) CERN 2015-. All rights not expressly granted are reserved.
+© CERN 2015-2024. All rights not expressly granted are reserved.
