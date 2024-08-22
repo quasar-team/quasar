@@ -60,10 +60,10 @@ def assert_correct_branch():
 
 def assert_tag_valid(tag):
     '''Makes sure given tag adheres to the schema'''
-    given_tag_regex = re.compile(r"^1.([1-9]+\d*|0).([1-9]+\d*|0)(-rc\d+)?$")
+    given_tag_regex = re.compile(r"^1.([1-9]+\d*|0).([1-9]+\d*|0)(-rc\d+|-dev\d+)?$")
     match = given_tag_regex.match(tag)
     if match is None:
-        raise Exception("Given tag is in wrong format. Correct examples: 1.5.2, 1.5.3-rc23")
+        raise Exception("Given tag is in wrong format. Correct examples: 1.5.2, 1.5.3-rc23, 1.7.0-dev0")
     print("Tag in valid format:    " + Fore.GREEN + "PASS" + Style.RESET_ALL)
 
 def assert_correct_workdir():
