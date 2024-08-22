@@ -22,14 +22,14 @@ User Defined Runtime Configuration Modification
 Background
 ----------
 
-| A completely static configuration for an OPC-UA server may not always
+| A completely static configuration for an OPC UA server may not always
   be exactly the desired behaviour; for example - consider a
   multi-channel, highly modular, power supply system. For such a system
   it may be beneficial to users to provide functionality from the quasar
   server such that (with the correct command line options specified of
   course) the server actually detects the hardware that is connected and
   uses this as the basis for its runtime configuration. This might be an
-  efficient way to run an OPC-UA server in situations where, say, the
+  efficient way to run an OPC UA server in situations where, say, the
   hardware setup is in flux (maybe an ad-hoc lab configuration) and so
   manual modification of a static configuration file to describe the
   system is painful. Equally, in a large production set up, the server
@@ -76,8 +76,7 @@ Key Functions
 
 The start of of the configuration decoration hook is to override method
 *overridableConfigure*. The virtual method is defined in class
-*BaseQuasarServer*, and should be overridden in class *QuasarServer.
-*
+*BaseQuasarServer*, and should be overridden in class *QuasarServer*.
 
 ::
 
@@ -123,8 +122,6 @@ The start of of the configuration decoration hook is to override method
    */
    template< typename TParent, typename TChildren, typename TChild >
    void push_back(TParent& parent, TChildren& children, const TChild& child, const size_t childTypeId)
-
-::
 
 ::
 
@@ -234,13 +231,10 @@ Function decorateConfiguration()
   content order data. For some applications (e.g. clear()) we provide
   functions in the DecorationUtils, e.g.
 
-.. container::
+::
 
-   .. container::
-
-      Configuration::DecorationUtils::clear(theConfig,
-      theConfig.ConfiguredClass(),
-      Configuration::Configuration::ConfiguredClass_id);
+   Configuration::DecorationUtils::clear(theConfig, theConfig.ConfiguredClass(), 
+   Configuration::Configuration::ConfiguredClass_id);
 
 | 
 
@@ -283,14 +277,14 @@ called with the correct arguments; namely with the developer's
 implementation of ConfigXmlDecoratorFunction as the 3rd argument. As is
 often the case in quasar, injecting user specifc code involves
 overriding a virtual function. In this case, the virtual function to
-override is: ````
+override is:
 
 ::
 
    bool BaseQuasarServer::overridableConfigure(const std::string& fileName, AddressSpace::ASNodeManager *nm);
 
 A typical developer override of this function would be along the lines
-of the following pseudo code ````
+of the following pseudo code
 
 ::
 

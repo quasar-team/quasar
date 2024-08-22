@@ -19,8 +19,8 @@
 # Author: Stefan Schlenker
 # Author: Paris Moschovakos <paris.moschovakos@cern.ch>
 
-project(opc_ua)
 cmake_minimum_required(VERSION 3.10)
+project(opc_ua)
 # the line below is added to quasar to keep backwards compatibility for the transition period.
 cmake_policy(SET CMP0065 NEW)
 

@@ -1,4 +1,4 @@
-Quasar
+quasar
 ======
 
 | The quick opcua server generation framework.
@@ -23,10 +23,10 @@ Quasar
 		Design manual <./DesignManual>
 		For quasar developers <./forQuasarDevelopers>
 		LogIt <./LogIt>
-		Quasar <./quasar>
+		quasar <./quasar>
 
-		Quasar build system <./quasarBuildSystem>
-		Quasar commands <./quasarCommands>
+		quasar build system <./quasarBuildSystem>
+		quasar commands <./quasarCommands>
 		User defined command line parameters <./UserDefinedCommandLineParameters>
 		User defined runtime configuration modification <./UserDefinedRuntimeConfigurationModification>
 		Windows setup <./WindowsSetup>
@@ -44,7 +44,7 @@ Quasar
 
 .. toctree::
   :hidden:
-  :caption: Quasar OpcUa Server
+  :caption: quasar OPC UA Servers
 
-  Summary of known quasar-based OPC-UA servers <./quasar_OPC_UA_servers>
+  Summary of known quasar-based OPC UA servers <./quasar_OPC_UA_servers>
 

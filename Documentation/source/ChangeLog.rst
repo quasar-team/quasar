@@ -1321,7 +1321,7 @@ ChangeLog
 	            Task <br>
 	            <ul>
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1971">OPCUA-1971</a>]
-	                - Expose configentry as OPC-UA property - for scalars </li>
+	                - Expose configentry as OPC UA property - for scalars </li>
 	            </ul>
 	            Improvement <br>
 	            <ul>
@@ -2510,7 +2510,7 @@ ChangeLog
 	            Task<br>
 	            <ul>
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1128">OPCUA-1128</a>]
-	                - generate device --all doesn't work in SCA OPC-UA</li>
+	                - generate device --all doesn't work in SCA OPC UA</li>
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1144">OPCUA-1144</a>]
 	                - Remove stale boost/foreach includes in Meta</li>
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-1147">OPCUA-1147</a>]
@@ -2885,7 +2885,7 @@ ChangeLog
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-106">OPCUA-106</a>]
 	                - Quasar methods</li>
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-579">OPCUA-579</a>]
-	                - Easily selectable OPC-UA backend configuration file
+	                - Easily selectable OPC UA backend configuration file
 	                (ServerConfig.xml)</li>
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-668">OPCUA-668</a>]
 	                - Post-merge: missing copyright header in
@@ -2961,7 +2961,7 @@ ChangeLog
 	          </td>
 	          <td style="vertical-align: top;">Major features:<br>
 	            <ul>
-	              <li>Compatibility with the API of OPC-UA Toolkit 1.3.x,
+	              <li>Compatibility with the API of OPC UA Toolkit 1.3.x,
 	                1.4.x and 1.5.x.<br>
 	              </li>
 	            </ul>
@@ -2987,7 +2987,7 @@ ChangeLog
 	            Task
 	            <ul>
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-588">OPCUA-588</a>]
-	                - Port quasar to OPC-UA Toolkit 1.4.x</li>
+	                - Port quasar to OPC UA Toolkit 1.4.x</li>
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-606">OPCUA-606</a>]
 	                - Refresh FAQ of Quasar</li>
 	            </ul>
@@ -3116,7 +3116,7 @@ ChangeLog
 	            New Feature
 	            <ul>
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-489">OPCUA-489</a>]
-	                - Make QUASAR framework version info available to OPC-UA
+	                - Make QUASAR framework version info available to OPC UA
 	                clients from StandardMetaData</li>
 	            </ul>
 	            Task
@@ -3166,7 +3166,7 @@ ChangeLog
 	            New Feature
 	            <ul>
 	              <li>[<a href="https://its.cern.ch/jira/browse/OPCUA-489">OPCUA-489</a>]
-	                - Make QUASAR framework version info available to OPC-UA
+	                - Make QUASAR framework version info available to OPC UA
 	                clients from StandardMetaData</li>
 	            </ul>
 	            Task

@@ -14,11 +14,22 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import subprocess
+import datetime
+
+def get_git_commit_hash():
+    try:
+        return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
+    except Exception:
+        return 'N/A'
+
+def get_current_date():
+    return datetime.datetime.now().strftime("%Y-%m-%d")
 
 # -- Project information -----------------------------------------------------
 
-project = 'Quasar'
-copyright = '2022, Paris Moschovakos'
+project = 'quasar'
+copyright = '2021-2024, Paris Moschovakos'
 author = 'Paris Moschovakos'
 
 
@@ -64,7 +75,7 @@ html_favicon = '_static/favicon.ico'
 locale_dirs = ['../locales']
 
 html_context = {
-  "display_github": False,
-  "last_updated": True,
-  "commit": True
+    "display_github": False,
+    "commit": get_git_commit_hash(),
+    "last_updated": get_current_date(),
 }
