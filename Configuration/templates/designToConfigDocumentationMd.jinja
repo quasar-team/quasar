@@ -1,0 +1,164 @@
+{# Copyright CERN, 2015.                                                         #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014                                                           #}
+{#            Mar 2020 (translated to Jinja2)                                    #}
+{#            Deb 2024 (converted to Md)                                         #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel    <piotr@nikiel.info>                                         #}
+{#   Ben Farnham     <firstNm.secondNm@cern.ch>                                  #}
+{#   Etienne Fortin  <firstNm.secondNm@cern.ch>                                  #}
+{% import 'headers.jinja' as headers %}
+{% set this = designInspector.objectify_root() %}
+
+{% macro writeRestrictions(containingClassName, objectName, what) %}
+  {%- set restrictions=designInspector.get_restrictions(containingClassName, objectName, what) %}
+
+    {%- if restrictions|length>0 -%}
+    Value restrictions:<br>
+      {% set restrictionType = oracle.classify_xsd_restrictions(restrictions) %}
+    {%- if restrictionType == 'enumeration' -%}
+      Enumeration:
+
+      {% for restriction in restrictions -%}
+      - {{restriction[1]|trim}}
+      {% endfor %}
+    {%- elif restrictionType == 'pattern' -%}
+      Pattern:
+
+      {% for restriction in restrictions -%}
+      - {{restriction[1]|trim}}
+      {% endfor %}
+    {%- elif restrictionType == 'bounds' -%}
+      Bounds:
+
+      {% for restriction in restrictions|sort(attribute=0, reverse=True) -%}
+      {%- if restriction[0] == 'minExclusive' -%}
+      - {{boundsRestrictionPrefix}}{{objectName}}&gt;{{restriction[1]}}
+      {% endif %}
+      {%- if restriction[0] == 'maxExclusive' -%}
+      - {{boundsRestrictionPrefix}}{{objectName}}&lt;{{restriction[1]}}
+      {% endif %}
+      {%- if restriction[0] == 'minInclusive' -%}
+      - {{boundsRestrictionPrefix}}{{objectName}}&gt;={{restriction[1]}}
+      {% endif %}
+      {%- if restriction[0] == 'maxInclusive' -%}
+      - {{boundsRestrictionPrefix}}{{objectName}}&lt;={{restriction[1]}}
+      {% endif %}
+      {%- endfor %}
+      {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro writeCacheVarOrConfigEntry(containingClassName, elementObject, what) %}
+
+{% set objectName = elementObject.get('name') %}
+{% set objectType = elementObject.get('dataType') %}
+{% set optionalityMsg = 'optional, the default value shown below will be used if not present' if elementObject.get('defaultValue') else 'mandatory' %}
+??? info "{{objectName}} ({{objectType}}) {{optionalityMsg}}"
+{% set docElements = designInspector.objectifyDocumentation(containingClassName, objectName) %}
+{% if docElements|length > 0 %}
+    DOC:
+      {%- for docElement in docElements %}
+        {{- designInspector.strip_documentation_tag(docElement)|trim }}
+      {% endfor %}
+      {# Add to the docs the enumeration documentation, if any. #}
+      {% if what == 'configentry' %}
+        {% set configEntryObjectified = designInspector.objectify_config_entries(containingClassName, "[@name='" + objectName + "']")[0] %}
+        {% set enumerationValuesWithDocs = designInspector.xpath_relative_to_object(configEntryObjectified, 'd:configRestriction/d:restrictionByEnumeration/d:enumerationValue[d:documentation]') %}
+        {% if enumerationValuesWithDocs|length > 0 %}
+          <ul>
+          {% for enumerationValue in designInspector.xpath_relative_to_object(configEntryObjectified, 'd:configRestriction/d:restrictionByEnumeration/d:enumerationValue') %}
+            <li><code>{{enumerationValue.get('value')}}</code>:
+              {% if enumerationValue.getchildren()|length > 0 %}
+                {{ designInspector.strip_documentation_tag(enumerationValue.getchildren()[0]) }}
+              {% else %}
+                <b>To the developer: complete this documentation entry in your Design.</b>
+              {% endif %}
+            </li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endif %}
+  {% endif %}
+
+    {% if elementObject.get('defaultValue') -%}
+      Default value: {{elementObject.get('defaultValue')|trim}}<br>
+    {% endif %}
+  {{- writeRestrictions(containingClassName, objectName, what) }}
+{% endmacro %}
+
+#Configuration documentation for {{designInspector.getProjectName()}}
+
+{#
+  Jump to:
+  {% for className in designInspector.get_names_of_all_classes()|sort() %}
+    {% set parentObjects = designInspector.objectifyAllParents(className, restrict_to_by_configuration=True) %}
+    {% if parentObjects|length > 0 %}
+      <a href="#class_{{className}}">{{className}}</a>
+    {% endif %}
+  {% endfor %}
+#}
+
+{% for className in designInspector.get_names_of_all_classes()|sort() %}
+{% set parentObjects = designInspector.objectifyAllParents(className, restrict_to_by_configuration=True) %}
+{% if parentObjects|length > 0 %}
+---
+##{{className}}
+{% set documentation = designInspector.objectifyDocumentation(className) %}
+{% if documentation %}
+{% for docElement in documentation %}
+DOC:{{ designInspector.strip_documentation_tag(docElement)|trim }}<br>
+{% endfor %}
+{% endif %}
+{% if designInspector.is_class_always_singleton(className) %}
+!!! warning This class is a singleton, do not declare it more than once
+{% if designInspector.get_class_default_instance_name(className) != None %}
+!!! info The <code>name</code> attribute in this class is defaulted to <code>{{designInspector.get_class_default_instance_name(className)}}</code>, don't waste time specifying it in the config file.
+{% endif %}
+{% endif %}
+
+Configuration attributes:
+{% set configEntries= designInspector.objectify_config_entries(className) %}
+{% if configEntries|length > 0 %}
+  {% for configEntry in configEntries %}
+    {{- writeCacheVarOrConfigEntry(className, configEntry, "configentry") }}
+  {% endfor %}
+{% else %}
+  Class {{className}} has no configuration entries.
+{% endif %}
+
+{% set configuredCacheVars = designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration']") %}
+{% if configuredCacheVars |length > 0 %}
+  {% for cacheVar in configuredCacheVars %}
+    {{- writeCacheVarOrConfigEntry(className, cacheVar, "cachevariable") }}
+  {% endfor %}
+{%- else %}
+Class {{className}} has no cache variables initialized from the configuration.
+{% endif %}
+
+Possible children:
+
+  - CalculatedVariable
+  - FreeVariable
+  {% for hasObject in designInspector.get_class_has_objects(className) -%}
+    {%- if hasObject.get('instantiateUsing')=='configuration' -%}
+  - {{hasObject.get('class')|trim}}
+  {% endif %}
+  {%- endfor %}
+
+{% endif %}
+{% endfor %}
