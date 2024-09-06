@@ -1,0 +1,127 @@
+{# © Copyright CERN, 2015.                                                       #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Sep 2018 (the original XSLT version)                               #}
+{#            11 May 2020 (translated to Jinja2)                                 #}
+{#            05 February 2024 (converted to Markdown)                           #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel <piotr@nikiel.info>                                            #}
+
+{% macro estimateFunctionReadWrite(variable) -%}
+  {%- if 'cachevariable' in variable.tag -%}
+    {%- if variable.get('addressSpaceWrite') == 'forbidden' -%}
+      read-only
+    {%- else -%}
+      read+write
+    {%- endif -%}
+  {% else %}
+    {%- if variable.get('addressSpaceWrite') == 'forbidden' and variable.get('addressSpaceRead') == 'forbidden' -%}
+      none
+    {%- elif variable.get('addressSpaceWrite') == 'forbidden' and variable.get('addressSpaceRead') != 'forbidden' -%}
+      read-only
+    {%- elif variable.get('addressSpaceWrite') != 'forbidden' and variable.get('addressSpaceRead') == 'forbidden' -%}
+      write-only
+    {%- elif variable.get('addressSpaceWrite') != 'forbidden' and variable.get('addressSpaceRead') != 'forbidden' -%}
+      read+write
+    {%- endif -%}
+  {%- endif -%}
+{% endmacro %}
+
+# OPC-UA address space documentation for {{designInspector.getProjectName()}}
+{#
+Jump to:
+{% for class_name in designInspector.get_names_of_all_classes()|sort %}
+{% set cls = designInspector.objectify_class(class_name) %}
+  <a href="#class_{{cls.get('name')}}">{{cls.get('name')}}</a>
+{% endfor %}
+#}
+{% for class_name in designInspector.get_names_of_all_classes()|sort %}
+
+---
+{% set cls = designInspector.objectify_class(class_name) %}
+
+## {{cls.get('name')}}
+{% if (cls.documentation|length)>0 %}
+DOC:{{cls.documentation|node_text_contents_to_string|trim}}
+{% else %}
+DOC:
+{% endif %}
+
+{% if (cls.cachevariable|length + cls.sourcevariable|length + cls.method|length)>0 %}
+{%- if (cls.cachevariable|length + cls.sourcevariable|length)>0 -%}
+Variables:
+{#  we combine cache-vars and source-vars because the end-user should see both alphabetically
+    without paying attention whether these are CV or SV. #}
+{% set variables = designInspector.to_list_if_exists(cls.cachevariable) + designInspector.to_list_if_exists(cls.sourcevariable) %}
+{% for variable in variables|sorted_by_objectified_attr('name') %}
+??? info "{{-variable.get('name')}} (dataType={{variable.get('dataType')}})"
+    Type: 
+{%- if 'cachevariable' in variable.tag %}
+ cache-variable<br/>
+{% else %}
+  source-variable<br/>
+{%- endif %}
+    Access= 
+{{-estimateFunctionReadWrite(variable)-}}<br/>
+{% if variable.documentation|length>0 %}
+
+    DOC:{{- variable.documentation|node_text_contents_to_string|trim }}
+
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if cls.method|length>0 %}
+Methods:
+{%- for m in cls.method|sorted_by_objectified_attr('name') %}
+
+??? info "{{m.get('name')}}"
+{% if m.documentation|length>0 %}
+    DOC:{{m.documentation|node_text_contents_to_string|trim}}<br/>
+{% endif %}
+{% if m.argument|length>0 %}
+    Arguments:<br/>
+{%- for arg in m.argument %}
+
+    - {{arg.get('name')}} ({{arg.get('dataType')}} {% if arg.array|length>0 %}[]{% endif %})
+      {%- if arg.documentation|length>0 -%}
+      :{{arg.documentation|node_text_contents_to_string|trim}}<br/>
+      {%- endif -%}<br/>
+{% endfor %}
+{% endif -%}
+{%- if m.returnvalue|length>0 %}
+
+    Return values:<br/>
+{% for rv in m.returnvalue %}
+    - {{rv.get('name')}} ({{rv.get('dataType')}} {%- if rv.array|length>0 %}[]{% endif %})
+      {%- if rv.documentation|length>0 -%}
+      :{{rv.documentation|node_text_contents_to_string|trim}}<br/>
+      {% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+  {% else %}
+    This quasar class has no address-space components.
+  {% endif %}
+{% if cls.hasobjects|length>0 %}
+
+Classes possible to be children objects:<br>
+{% for ho in cls.hasobjects %}
+- {{ho.get('class')}}<br>
+{% endfor %}
+{% endif %}
+{% endfor %}
