@@ -99,9 +99,13 @@ def quasar_parser():
     # create the parser for the "generate config_doc" command
     generate_config_doc_subparser = generate_subparsers.add_parser(
         'config_doc', help='Generates documentation of the Configuration Schema. Such a documentation is a HTML document with description of all fields that might appear in the configuration')
+    generate_config_doc_subparser = generate_subparsers.add_parser(
+        'config_doc_md', help='Generates documentation of the Configuration Schema. Such a documentation is a Markdown document with description of all fields that might appear in the configuration')
     # create the parser for the "generate as_doc" command
     generate_as_doc_subparser = generate_subparsers.add_parser(
-        'as_doc', help='Generates address space documentation (the documentation of all OPCUA ObjectTypes, Variables, etc… ) and places it in Documentation/AddressSpaceDoc.html')
+        'as_doc', help='Generates address space documentation in a html document (the documentation of all OPCUA ObjectTypes, Variables, etc… ) and places it in Documentation/AddressSpaceDoc.html')
+    generate_as_doc_subparser = generate_subparsers.add_parser(
+        'as_doc_md', help='Generates address space documentation in a markdown document (the documentation of all OPCUA ObjectTypes, Variables, etc… ) and places it in Documentation/AddressSpaceDoc.md')
     # create the parser for the "generate diagram" command
     generate_diagram_subparser = generate_subparsers.add_parser(
         'diagram', help='Creates a quasar design diagram for this project')
