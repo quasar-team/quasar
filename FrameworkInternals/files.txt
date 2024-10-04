@@ -419,7 +419,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurationXSD.jinja": {
-                "md5": "da24a0c93364b63b71186736a42c9f9b",
+                "md5": "6e6372a9b7e90cbad890069d473c8067",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "470e0411b84803fff02456406305372f",
+                "md5": "92121ff9319d5250cc276f35c8fae2fb",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -740,13 +740,13 @@
             },
             "parser_module.py": {
                 "install": "overwrite",
-                "md5": "639f845bc5e2ec42c83360b6d5fd8fc1",
+                "md5": "5f30fcce2c401db130df899b04aef887",
                 "must_be_versioned": true,
                 "must_exist": true
             },
             "quasarCommands.py": {
                 "install": "overwrite",
-                "md5": "679eec08452b31b32ccba4b42abe2cdd",
+                "md5": "9110be6c3953c7de8ab25fd5d692295d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -776,7 +776,7 @@
             },
             "transformDesign.py": {
                 "install": "overwrite",
-                "md5": "b511e6a247a7f2ae37ceeca253a867d9",
+                "md5": "a19937423dc8b5af634d6a624d316bb7",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1032,7 +1032,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "240d7a97f3397b793707644370802426",
+                "md5": "5aed3bfb0b80dbe700b258ee96cf8e86",
                 "must_be_versioned": true,
                 "must_exist": true
             },
