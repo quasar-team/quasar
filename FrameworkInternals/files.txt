@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "92121ff9319d5250cc276f35c8fae2fb",
+                "md5": "6bc860fccb358f5f2e3ed4298896ad30",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -776,7 +776,7 @@
             },
             "transformDesign.py": {
                 "install": "overwrite",
-                "md5": "a19937423dc8b5af634d6a624d316bb7",
+                "md5": "84638146b1760e059cb0b97978664671",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1032,7 +1032,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "5aed3bfb0b80dbe700b258ee96cf8e86",
+                "md5": "299b9f12491cf0d1c42d907e7d8fcb80",
                 "must_be_versioned": true,
                 "must_exist": true
             },
