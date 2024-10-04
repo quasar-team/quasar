@@ -96,8 +96,8 @@ QuasarTransforms = [
     [TransformKeys.D_DEVICE_CPP,            ['Device','designToDeviceBody.jinja'],                        False,    'Device/src/D{className}.cpp',                     'S',            True,           True,         ['className']],
     [TransformKeys.D_BASE_CMAKE,            ['Device','designToGeneratedCmakeDeviceBase.jinja'],          True,     'Device/generated/cmake_device_base_header.cmake', 'B',            False,          False,        None],
     [TransformKeys.D_CMAKE,                 ['Device','designToGeneratedCmakeDevice.jinja'],              False,    'Device/generated/cmake_device_header.cmake',      'B',            False,          False,        None],
-    [TransformKeys.CONFIG_DOCUMENTATION,    ['Configuration','designToConfigDocumentationHtml.jinja'],    True,     'Documentation/ConfigDocumentation.html',          'S',            False,          False,        None],
-    [TransformKeys.AS_DOCUMENTATION,        ['AddressSpace','designToAddressSpaceDocHtml.jinja'],         True,     'Documentation/AddressSpaceDoc.html',              'S',            False,          False,        None],
+    [TransformKeys.CONFIG_DOCUMENTATION,    ['Configuration','designToConfigDocumentationHtml.jinja'],    False,     'Documentation/ConfigDocumentation.html',          'S',            False,          False,        None],
+    [TransformKeys.AS_DOCUMENTATION,        ['AddressSpace','designToAddressSpaceDocHtml.jinja'],         False,     'Documentation/AddressSpaceDoc.html',              'S',            False,          False,        None],
     [TransformKeys.CONFIG_DOCUMENTATION_MD, ['Configuration','designToConfigDocumentationMd.jinja'],      False,     'Documentation/ConfigDocumentation.md',            'S',            False,          False,        None],
     [TransformKeys.AS_DOCUMENTATION_MD,     ['AddressSpace','designToAddressSpaceDocMd.jinja'],           False,     'Documentation/AddressSpaceDoc.md',                'S',            False,          False,        None]
     ]
