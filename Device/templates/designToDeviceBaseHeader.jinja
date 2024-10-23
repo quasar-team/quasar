@@ -21,10 +21,10 @@
 
 {% macro get_parent_struct(class_name) %}
   {% set parent_class_name = designInspector.get_parent(class_name) %}
-  {%- if parent_class_name == None or not designInspector.class_has_legit_device_parent(parent_class_name) -%}
-    struct{/*No Device Logic for parent {{parent_class_name}} of {{class_name}}*/}
-  {%- else -%}
+  {%- if parent_class_name != None and designInspector.class_has_legit_device_parent(parent_class_name) -%}
     D{{parent}}
+  {%- else -%}
+    struct{/*No Device Logic for parent {{parent_class_name}} of {{class_name}}*/}
   {%- endif -%}
 {% endmacro %}
 
