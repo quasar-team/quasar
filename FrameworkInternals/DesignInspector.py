@@ -114,9 +114,7 @@ class DesignInspector():
             return False # referenced from multiple parents, so far sure no unique parent
         if has_objects_origins[0] == "Root":
             return True # Root by definition has device logic
-        if not self.class_has_device_logic(has_objects_origins[0]):
-            return False
-        return True
+        return self.class_has_device_logic(has_objects_origins[0])
 
     def get_parent(self, class_name):
         """Returns parent class name or None if device-logic parent is not applicable"""
