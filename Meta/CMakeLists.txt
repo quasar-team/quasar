@@ -35,7 +35,12 @@
 # The reason that MetaBuildInfo.cpp is not amalgamated is that it depends on a file which is regenerated at each build
 # and there is no reason to rebuild amalgamated files without the factual reason!
 
-add_library (Meta OBJECT src/meta.cpp src/MetaBuildInfo.cpp src/metaBackwardsCompatibilityUtils.cpp src/DLogLevel.cpp)
+add_library (Meta OBJECT 
+  src/meta.cpp 
+  src/MetaBuildInfo.cpp 
+  src/metaBackwardsCompatibilityUtils.cpp 
+  src/DLogLevel.cpp
+  src/DSourceVariableThreadPool.cpp)
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/generated)
 
