@@ -950,6 +950,10 @@
                 "md5": "98f664f8b3a0617a30abbf9b58feb0fb",
                 "use_defaults": "file_defaults_of_directory"
             },
+            "DSourceVariableThreadPool.h": {
+                "md5": "98f664f8b3a0617a30abbf9b58feb0fb",
+                "use_defaults": "file_defaults_of_directory"
+            },            
             "MetaBuildInfo.h": {
                 "md5": "6e13f222dc2ec1900abfd8bc8e0f581f",
                 "use_defaults": "file_defaults_of_directory"
@@ -977,6 +981,10 @@
                 "md5": "171c96a2a39350be89d7aa4a895c0ab5",
                 "use_defaults": "file_defaults_of_directory"
             },
+            "DSourceVariableThreadPool.cpp": {
+                "md5": "8e3b161992d3f50b71cc1cc28a7927d7",
+                "use_defaults": "file_defaults_of_directory"
+            },            
             "MetaBuildInfo.cpp": {
                 "md5": "076ba2da7ab7748cf4c3e816baf94d70",
                 "use_defaults": "file_defaults_of_directory"
