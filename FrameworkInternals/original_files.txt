@@ -887,6 +887,9 @@
             "DLogLevel.h": {
                 "use_defaults": "file_defaults_of_directory"
             },
+            "DSourceVariableThreadPool.h": {
+                "use_defaults": "file_defaults_of_directory"
+            },
             "MetaBuildInfo.h": {
                 "use_defaults": "file_defaults_of_directory"
             },
@@ -908,6 +911,9 @@
         },
         "files": {
             "DLogLevel.cpp": {
+                "use_defaults": "file_defaults_of_directory"
+            },
+            "DSourceVariableThreadPool.cpp": {
                 "use_defaults": "file_defaults_of_directory"
             },
             "MetaBuildInfo.cpp": {

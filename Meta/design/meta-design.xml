@@ -61,6 +61,7 @@ class sources are provided (statically) in the Meta module.
   </d:class>
   
   <d:class name="SourceVariableThreadPool" defaultInstanceName="SourceVariableThreadPool">
+    <d:devicelogic/>
     <d:cachevariable name="maxThreads" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="configuration" nullPolicy="nullForbidden"/>
     <d:cachevariable name="minThreads" addressSpaceWrite="forbidden" dataType="UaString" initializeWith="configuration" nullPolicy="nullForbidden"/>
   </d:class>
