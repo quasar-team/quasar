@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "2880effffcbe147324f25a5056610f69",
+                "md5": "d5b53b61d2d3cf50871175ccdd6fbf95",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -545,7 +545,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBaseHeader.jinja": {
-                "md5": "1c904d2b2c3c005189d8fd8e9940e04f",
+                "md5": "65d05b7fe7c0571e673c79ef79fa0bd7",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBody.jinja": {
@@ -920,7 +920,7 @@
         "files": {
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "d6970899507912d55fd86cf6a429a0b2",
+                "md5": "79bb0b499e9e6225630fb7c337a60366",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -931,7 +931,7 @@
         "files": {
             "meta-design.xml": {
                 "install": "overwrite",
-                "md5": "6cf8fcf44b6d85c3052338e7c3b76f83",
+                "md5": "5d3a27e676335ebde61b193be9eddbc0",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -948,6 +948,10 @@
         "files": {
             "DLogLevel.h": {
                 "md5": "98f664f8b3a0617a30abbf9b58feb0fb",
+                "use_defaults": "file_defaults_of_directory"
+            },
+            "DSourceVariableThreadPool.h": {
+                "md5": "e800dc3777ae21dd2c821791a17b0c14",
                 "use_defaults": "file_defaults_of_directory"
             },
             "MetaBuildInfo.h": {
@@ -975,6 +979,10 @@
         "files": {
             "DLogLevel.cpp": {
                 "md5": "171c96a2a39350be89d7aa4a895c0ab5",
+                "use_defaults": "file_defaults_of_directory"
+            },
+            "DSourceVariableThreadPool.cpp": {
+                "md5": "8e3b161992d3f50b71cc1cc28a7927d7",
                 "use_defaults": "file_defaults_of_directory"
             },
             "MetaBuildInfo.cpp": {
@@ -1032,7 +1040,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "6179c8ec4b38ea9c7ab7e4f950aefc2c",
+                "md5": "c3ffd69a9c61a6c7f3e9ca70e5d7effe",
                 "must_be_versioned": true,
                 "must_exist": true
             },
