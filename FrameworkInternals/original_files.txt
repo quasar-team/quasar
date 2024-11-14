@@ -960,27 +960,21 @@
             "DBuildInformation.h": {
                 "deprecated": true
             },
-            ,
             "DComponentLogLevel.h": {
                 "deprecated": true
             },
-            ,
             "DGeneralLogLevel.h": {
                 "deprecated": true
             },
-            ,
             "DQuasar.h": {
                 "deprecated": true
             },
-            ,
             "DServer.h": {
                 "deprecated": true
             },
-            ,
             "DStandardMetaData.h": {
                 "deprecated": true
             },
-            ,
             "MetaUtils.h": {
                 "deprecated": true
             }
@@ -1064,27 +1058,21 @@
             "DBuildInformation.cpp": {
                 "deprecated": true
             },
-            ,
             "DComponentLogLevel.cpp": {
                 "deprecated": true
             },
-            ,
             "DGeneralLogLevel.cpp": {
                 "deprecated": true
             },
-            ,
             "DQuasar.cpp": {
                 "deprecated": true
             },
-            ,
             "DServer.cpp": {
                 "deprecated": true
             },
-            ,
             "DStandardMetaData.cpp": {
                 "deprecated": true
             },
-            ,
             "MetaUtils.cpp": {
                 "deprecated": true
             }
