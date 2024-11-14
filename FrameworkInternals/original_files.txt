@@ -870,7 +870,7 @@
             "Meta.xsd": {
                 "deprecated": true
             }
-        },
+        }
     },
     "Meta/design": {
         "files": {
