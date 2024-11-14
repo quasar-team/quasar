@@ -865,6 +865,13 @@
         },
         "install": "create"
     },
+    "Meta/config": {
+        "files": {
+            "Meta.xsd": {
+                "deprecated": true
+            },
+        },
+    },
     "Meta/design": {
         "files": {
             "meta-design.xml": {
@@ -898,6 +905,84 @@
             },
             "metaBackwardsCompatibilityUtils.h": {
                 "use_defaults": "file_defaults_of_directory"
+            },
+            "ASBuildInformation.h": {
+                "deprecated": true
+            },
+            "ASComponentLogLevel.h": {
+                "deprecated": true
+            },
+            "ASComponentLogLevels.h": {
+                "deprecated": true
+            }, 
+            "ASGeneralLogLevel.h": {
+                "deprecated": true
+            },
+            "ASLog.h": {
+                "deprecated": true
+            },
+            "ASQuasar.h": {
+                "deprecated": true
+            },
+            "ASServer.h": {
+                "deprecated": true
+            },
+            "ASSourceVariableThreadPool.h": {
+                "deprecated": true
+            },
+            "ASStandardMetaData.h": {
+                "deprecated": true
+            },
+            "Base_DBuildInformation.h": {
+                "deprecated": true
+            },
+            "Base_DComponentLogLevel.h": {
+                "deprecated": true
+            },
+            "Base_DGeneralLogLevel.h": {
+                "deprecated": true
+            },
+            "Base_DQuasar.h": {
+                "deprecated": true
+            },
+            "Base_DServer.h": {
+                "deprecated": true
+            },
+            "Base_DSourceVariableThreadPool.h": {
+                "deprecated": true
+            },
+            "Base_DStandardMetaData.h": {
+                "deprecated": true
+            },
+            "Certificate.h": {
+                "deprecated": true
+            },
+            "DBuildInformation.h": {
+                "deprecated": true
+            },
+            ,
+            "DComponentLogLevel.h": {
+                "deprecated": true
+            },
+            ,
+            "DGeneralLogLevel.h": {
+                "deprecated": true
+            },
+            ,
+            "DQuasar.h": {
+                "deprecated": true
+            },
+            ,
+            "DServer.h": {
+                "deprecated": true
+            },
+            ,
+            "DStandardMetaData.h": {
+                "deprecated": true
+            },
+            ,
+            "MetaUtils.h": {
+                "deprecated": true
             }
         },
         "install": "create"
@@ -924,7 +1009,85 @@
             },
             "metaBackwardsCompatibilityUtils.cpp": {
                 "use_defaults": "file_defaults_of_directory"
-            }            
+            },
+            "ASBuildInformation.cpp": {
+                "deprecated": true
+            },
+            "ASComponentLogLevel.cpp": {
+                "deprecated": true
+            },
+            "ASComponentLogLevels.cpp": {
+                "deprecated": true
+            }, 
+            "ASGeneralLogLevel.cpp": {
+                "deprecated": true
+            },
+            "ASLog.cpp": {
+                "deprecated": true
+            },
+            "ASQuasar.cpp": {
+                "deprecated": true
+            },
+            "ASServer.cpp": {
+                "deprecated": true
+            },
+            "ASSourceVariableThreadPool.cpp": {
+                "deprecated": true
+            },
+            "ASStandardMetaData.cpp": {
+                "deprecated": true
+            },
+            "Base_DBuildInformation.cpp": {
+                "deprecated": true
+            },
+            "Base_DComponentLogLevel.cpp": {
+                "deprecated": true
+            },
+            "Base_DGeneralLogLevel.cpp": {
+                "deprecated": true
+            },
+            "Base_DQuasar.cpp": {
+                "deprecated": true
+            },
+            "Base_DServer.cpp": {
+                "deprecated": true
+            },
+            "Base_DSourceVariableThreadPool.cpp": {
+                "deprecated": true
+            },
+            "Base_DStandardMetaData.cpp": {
+                "deprecated": true
+            },
+            "Certificate.cpp": {
+                "deprecated": true
+            },
+            "DBuildInformation.cpp": {
+                "deprecated": true
+            },
+            ,
+            "DComponentLogLevel.cpp": {
+                "deprecated": true
+            },
+            ,
+            "DGeneralLogLevel.cpp": {
+                "deprecated": true
+            },
+            ,
+            "DQuasar.cpp": {
+                "deprecated": true
+            },
+            ,
+            "DServer.cpp": {
+                "deprecated": true
+            },
+            ,
+            "DStandardMetaData.cpp": {
+                "deprecated": true
+            },
+            ,
+            "MetaUtils.cpp": {
+                "deprecated": true
+            }
         },
         "install": "create"
     },
