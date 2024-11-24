@@ -16,8 +16,65 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
-                <td valign="top">1.6.1<font size="-1"><br>(10-Aug-2023)</font><br></td>
+                <td valign="top">1.7.0<font size="-1"><br>(25-Nov-2024)</font><br></td>
                 <!-- Changes introduced -->
+                <td valign="top"><br>This release delivers a comprehensive restructuring of the Meta subsystem, consolidating multiple components (ASBuildInformation, ASComponentLogLevel, DBuildInformation, DServer, DQuasar) into a streamlined architecture with DLogLevel as the central component. The build system has been changed with a new design file processing approach and adapted logging configuration system. Migration utilities are provided to assist with transitioning to these new systems while maintaining backwards compatibility.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>
+                    Standard quasar projects are expected to be backwards compatible.<br>
+                    However, please validate your project if any of the following apply:
+                    <ul>
+                        <li>If your project uses a custom design file merging system, you may need to adapt to the new <code>DesignWithMeta.xml</code> path.</li>
+                        <li>Custom device implementations should be reviewed due to the removal of the address space linkage feature.</li>
+                        <li>Projects with custom CMake configurations may need adjustment due to changes in device module generation.</li>
+                    </ul>
+                </td>
+                <td valign="top">
+                    Story
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3091'>OPCUA-3091</a>] - SMD quasar branch merge: Integration Review</li>
+                    </ul>
+                    Task
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3212'>OPCUA-3212</a>] - transformDesign() TypeError when compiling</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3226'>OPCUA-3226</a>] - Source variable thread pool not initializing, causing read operations to fail</li>
+                    </ul>
+                    Sub-task
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3238'>OPCUA-3238</a>] - Investigation on issue with threadpool on ltdb server</li>
+                    </ul>
+                    Bug
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3158'>OPCUA-3158</a>] - CMake out-of-order calls when quasar prepares build</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3192'>OPCUA-3192</a>] - Documentation generation does not work with SMD</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3211'>OPCUA-3211</a>] - Valid design - fails to build (configuration.xsd uniqueness rule generation generates the same name for &gt;1 rule)</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3228'>OPCUA-3228</a>] - quasar: valid design -&gt; build failure: Device logic children with non device logic parent generates non-compiling code</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3229'>OPCUA-3229</a>] - Generated code contains ‘class struct’, causing build failure</li>
+                    </ul>
+                    New Feature
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3194'>OPCUA-3194</a>] - Markdown documentation generation</li>
+                    </ul>
+                    Improvement
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3188'>OPCUA-3188</a>] - Update AlmaLinux 9 documentation and bring collateral content up to date</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3191'>OPCUA-3191</a>] - Expand assert for version formatting to development releases</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3201'>OPCUA-3201</a>] - Markdown documentation options should also be available in quasar help</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3242'>OPCUA-3242</a>] - Use quasar deprecation mechanism to cleanup Meta folder redundant files</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar test suite notes:<br>
+                    <ol>
+                        <li>Core functionality verified across consolidated Meta module</li>
+                        <li>Migration utilities validated with existing ATLAS and JCOP servers</li>
+                        <li>Build system changes tested on all supported platforms</li>
+                        <li>Backwards compatibility layer confirmed with ATLAS and JCOP servers</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <td valign="top">1.6.1<font size="-1"><br>(10-Aug-2023)</font><br></td>
                 <td valign="top"><br>This release focuses on enhancing the functionality of calculated variables. It also addresses issues related to the uasdk travis test and introduces necessary dependencies in quasar's uasdk dockerfile. Additionally, the documentation has been updated to provide clarity on the manual and auto-update control for calculated variables.</td>
                 <!-- Possible backward incompatibilities -->
                 <td valign="top"><br>(none known)</td>
