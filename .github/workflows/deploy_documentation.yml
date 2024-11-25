@@ -11,8 +11,9 @@ jobs:
 
   build_deploy:
     name: Build and deploy documentation
-
-    runs-on: self-hosted
+    runs-on: 
+      - self-hosted
+      - vmatldcsdoc-1
 
     steps:
 
