@@ -35,7 +35,7 @@ void Meta::BackwardsCompatibilityUtils::convertOldGeneralLogLevel(Configuration:
     const auto matchNewLogLevelByNameFn = [](Configuration::LogLevel& logLevel) { return "GeneralLogLevel" == logLevel.name(); };
     if(std::find_if(begin(newLogLevels), end(newLogLevels), matchNewLogLevelByNameFn) != end(newLogLevels))
     {
-        oldLogLevels.clear();
+        Configuration::DecorationUtils::clear(parent, oldLogLevels, Configuration::Log::GeneralLogLevel_id);
     }
 
     // convert old-skool GeneralLogLevel to new-skool LogLevel element
@@ -45,7 +45,7 @@ void Meta::BackwardsCompatibilityUtils::convertOldGeneralLogLevel(Configuration:
         Configuration::DecorationUtils::push_back(parent, newLogLevels, newGeneralLogLevel, Configuration::Log::LogLevel_id);        
     }
 
-    oldLogLevels.clear(); // discard all old
+    Configuration::DecorationUtils::clear(parent, oldLogLevels, Configuration::Log::GeneralLogLevel_id); // discard all old
 }
 
 void Meta::BackwardsCompatibilityUtils::convertOldComponentLogLevel(Configuration::ComponentLogLevels& parent)
@@ -70,5 +70,5 @@ void Meta::BackwardsCompatibilityUtils::convertOldComponentLogLevel(Configuratio
         Configuration::DecorationUtils::push_back(parent, newLogLevels, newLogLevel, Configuration::Log::LogLevel_id);        
     }
 
-    oldLogLevels.clear(); // discard all old
+    Configuration::DecorationUtils::clear(parent, oldLogLevels, Configuration::ComponentLogLevels::ComponentLogLevel_id); // discard all old
 }
