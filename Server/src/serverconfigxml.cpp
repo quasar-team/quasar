@@ -1308,7 +1308,7 @@ UaStatus UaEndpointXml::setXmlConfig(UaXmlElement &xmlElement, const UaString& s
 
     // Validate if the xml element has the right name
     strName = xmlElement.getNodeName();
-    if( (strName == NULL) && (strcmp("UaEndpoint", strName) != 0) )
+    if( (strName == NULL) || (strcmp("UaEndpoint", strName) != 0) )
     {
         TRACE0_ERROR(SERVER_UI, "Error: UaEndpointXml::setXmlConfig [ret=OpcUa_BadInvalidArgument] - Is not a UaEndpoint tag");
         return OpcUa_BadInvalidArgument;
