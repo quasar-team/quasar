@@ -48,7 +48,12 @@ add_custom_target(runBuildInfoGeneratorPy ALL
 	DEPENDS alwaysRunBuildInfoGeneratorPy
 )
 
-string(REPLACE "-l" "_l" OPCUA_TOOLKIT_LIBS_ESCAPED ${OPCUA_TOOLKIT_LIBS})
+# Handle the case when OPCUA_TOOLKIT_LIBS is empty (e.g., with open62541)
+if(DEFINED OPCUA_TOOLKIT_LIBS AND NOT "${OPCUA_TOOLKIT_LIBS}" STREQUAL "")
+    string(REPLACE "-l" "_l" OPCUA_TOOLKIT_LIBS_ESCAPED "${OPCUA_TOOLKIT_LIBS}")
+else()
+    set(OPCUA_TOOLKIT_LIBS_ESCAPED "")
+endif()
 
 add_custom_command(OUTPUT alwaysRunBuildInfoGeneratorPy # note output never actually created: ensures cmd always runs
 	COMMENT "generating meta build info definitions header using python script" 
