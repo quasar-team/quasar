@@ -48,7 +48,8 @@ add_custom_target(runBuildInfoGeneratorPy ALL
 	DEPENDS alwaysRunBuildInfoGeneratorPy
 )
 
-string(REPLACE "-l" "_l" OPCUA_TOOLKIT_LIBS_ESCAPED ${OPCUA_TOOLKIT_LIBS})
+# Handle toolkit libs (quotes ensure proper handling of empty values)
+string(REPLACE "-l" "_l" OPCUA_TOOLKIT_LIBS_ESCAPED "${OPCUA_TOOLKIT_LIBS}")
 
 add_custom_command(OUTPUT alwaysRunBuildInfoGeneratorPy # note output never actually created: ensures cmd always runs
 	COMMENT "generating meta build info definitions header using python script" 
