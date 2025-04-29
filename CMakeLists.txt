@@ -24,6 +24,8 @@ project(opc_ua)
 # the line below is added to quasar to keep backwards compatibility for the transition period.
 cmake_policy(SET CMP0065 NEW)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 if(NOT ${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 message("Building out-of-source")
 message("PROJECT_SOURCE_DIR= ${PROJECT_SOURCE_DIR}")
@@ -46,6 +48,16 @@ include( ProjectSettings.cmake )
 if(${BUILD_SERVER_SHARED_LIB})
 	add_definitions(-DBUILDING_SHARED_OBJECT)
 endif(${BUILD_SERVER_SHARED_LIB})
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/FrameworkInternals/EnabledModules/open62541-compat.url")
+  set(BACKEND_OPEN62541 ON)
+  message(STATUS "Using open62541 backend (enabled module)")
+else()
+  set(BACKEND_UATOOLKIT ON)
+  find_package(OpcUaToolkit REQUIRED)
+  add_definitions(-DBACKEND_UATOOLKIT)
+  message(STATUS "Using UA Toolkit backend")
+endif()
 
 if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP STREQUAL "OFF" ) )
     message( STATUS "Setting up boost location and libraries using FrameworkInternals/BoostSetup.cmake")
