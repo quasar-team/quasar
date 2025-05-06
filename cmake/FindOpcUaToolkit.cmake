@@ -82,14 +82,17 @@ if(OPCUATOOLKIT_PATH)
     ${OPCUATOOLKIT_PATH}/include/xmlparsercpp
   )
 
+  # Initialize to TRUE, then set to FALSE if any directory is missing
+  set(OPCUATOOLKIT_INCLUDE_DIR_FOUND TRUE)
   foreach(INCLUDE_DIR ${OPCUATOOLKIT_INCLUDE_DIRS})
-    if(EXISTS "${INCLUDE_DIR}")
-      set(OPCUATOOLKIT_INCLUDE_DIR_FOUND TRUE)
-      break()
+    if(NOT EXISTS "${INCLUDE_DIR}")
+      set(OPCUATOOLKIT_INCLUDE_DIR_FOUND FALSE)
+      message(STATUS "Missing required include directory: ${INCLUDE_DIR}")
     endif()
   endforeach()
   
   if(NOT OPCUATOOLKIT_INCLUDE_DIR_FOUND)
+    # Try alternate include layout
     set(OPCUATOOLKIT_INCLUDE_DIRS ${OPCUATOOLKIT_PATH}/include)
     if(EXISTS "${OPCUATOOLKIT_INCLUDE_DIRS}")
       set(OPCUATOOLKIT_INCLUDE_DIR_FOUND TRUE)
@@ -141,14 +144,33 @@ if(OPCUATOOLKIT_PATH)
     set(_OPCUATOOLKIT_LIB_PATH "${OPCUATOOLKIT_PATH}/lib")
   endif()
   
+  # Check that library files exist and build library lists
   set(OPCUATOOLKIT_LIBRARIES_DEBUG "")
+  set(OPCUATOOLKIT_LIBRARIES_FOUND TRUE)
+  
   foreach(LIB ${_OPCUATOOLKIT_LIB_NAMES_DEBUG})
+    set(LIB_FILE "${_OPCUATOOLKIT_LIB_PATH}/lib${LIB}.so")
+    if(NOT EXISTS "${LIB_FILE}")
+      set(LIB_FILE "${_OPCUATOOLKIT_LIB_PATH}/lib${LIB}.a")
+      if(NOT EXISTS "${LIB_FILE}")
+        message(STATUS "Warning: Could not find debug library file for ${LIB}")
+        set(OPCUATOOLKIT_LIBRARIES_FOUND FALSE)
+      endif()
+    endif()
     list(APPEND OPCUATOOLKIT_LIBRARIES_DEBUG "-l${LIB}")
   endforeach()
   list(APPEND OPCUATOOLKIT_LIBRARIES_DEBUG "-lxml2 -lssl -lcrypto -lpthread -lrt")
   
   set(OPCUATOOLKIT_LIBRARIES_RELEASE "")
   foreach(LIB ${_OPCUATOOLKIT_LIB_NAMES_RELEASE})
+    set(LIB_FILE "${_OPCUATOOLKIT_LIB_PATH}/lib${LIB}.so")
+    if(NOT EXISTS "${LIB_FILE}")
+      set(LIB_FILE "${_OPCUATOOLKIT_LIB_PATH}/lib${LIB}.a")
+      if(NOT EXISTS "${LIB_FILE}")
+        message(STATUS "Warning: Could not find release library file for ${LIB}")
+        set(OPCUATOOLKIT_LIBRARIES_FOUND FALSE)
+      endif()
+    endif()
     list(APPEND OPCUATOOLKIT_LIBRARIES_RELEASE "-l${LIB}")
   endforeach()
   list(APPEND OPCUATOOLKIT_LIBRARIES_RELEASE "-lxml2 -lssl -lcrypto -lpthread -lrt")
@@ -161,7 +183,7 @@ if(OPCUATOOLKIT_PATH)
   
   set(OPCUATOOLKIT_LIBRARY_DIRS ${_OPCUATOOLKIT_LIB_PATH})
   
-  if(OPCUATOOLKIT_INCLUDE_DIR_FOUND AND OPCUATOOLKIT_LIBRARIES)
+  if(OPCUATOOLKIT_INCLUDE_DIR_FOUND AND OPCUATOOLKIT_LIBRARIES_FOUND)
     set(OPCUATOOLKIT_FOUND TRUE)
   endif()
   
@@ -198,15 +220,6 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(OpcUaToolkit
   REQUIRED_VARS OPCUATOOLKIT_PATH
   VERSION_VAR OPCUATOOLKIT_VERSION
-)
-
-mark_as_advanced(
-  OPCUATOOLKIT_PATH
-  OPCUATOOLKIT_INCLUDE_DIRS
-  OPCUATOOLKIT_LIBRARIES
-  OPCUATOOLKIT_LIBRARIES_DEBUG
-  OPCUATOOLKIT_LIBRARIES_RELEASE
-  OPCUATOOLKIT_VERSION
 )
 
 if(NOT TARGET quasar_opcua_backend_is_ready)
