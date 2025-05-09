@@ -42,6 +42,8 @@ void CalculatedVariables::ChangeListener::operator ()(
     LOG(Log::TRC, logComponentId) << "ChangeListener fired, fromWhere=" << fromWhere.nodeId().toString().toUtf8();
     if (newValue.statusCode() == OpcUa_BadWaitingForInitialData)
         m_variable.setValue(0, ParserVariable::WaitingInitialData);
+    else if ((newValue.statusCode() & 0x80000000) != 0)
+        m_variable.setValue(0, ParserVariable::State::Bad);
     else if (newValue.value())
     {
         UaVariant variant (*newValue.value());
