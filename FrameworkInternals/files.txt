@@ -13,7 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "3e677f47e9ca56ada49c68bc222a93b7",
+                "md5": "8da73a67d6bcfc409cf347cf2e3d2543",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "d022733f2888fd2600d5fae12b273d97",
+                "md5": "50d292767fef3c925051eef708b0e506",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -657,7 +657,7 @@
             },
             "commandMap.py": {
                 "install": "overwrite",
-                "md5": "fd8abd5ae39820969359ec2f54df42a1",
+                "md5": "376bf528718e0aa2759afce81dd4172e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -693,7 +693,7 @@
             },
             "externalToolCheck.py": {
                 "install": "overwrite",
-                "md5": "d9ba9b6038f6bb2191bc48d1793a868e",
+                "md5": "d396fc8cc7ff478dcbb94f9749094bc8",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -920,7 +920,7 @@
         "files": {
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "79bb0b499e9e6225630fb7c337a60366",
+                "md5": "a8fb45d66b28f7e4013975dc747c55b3",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -1145,7 +1145,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "metaBackwardsCompatibilityUtils.cpp": {
-                "md5": "f7a26e24da0cc0133adcfde10379a2b6",
+                "md5": "acd2766456aca23ab5f1102806475c87",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -1191,7 +1191,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "ea984fd15db8fe9e45282d4e76169b1b",
+                "md5": "5327027165be5f4d1a082cb97a73061d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1269,7 +1269,7 @@
             },
             "serverconfigxml.cpp": {
                 "install": "overwrite",
-                "md5": "a9e221b7b6010a4409c910cbe4b0688a",
+                "md5": "a93164ab1085cb2a8bb41c58fbe77861",
                 "must_be_versioned": true,
                 "must_exist": true
             },
