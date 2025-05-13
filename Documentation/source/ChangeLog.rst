@@ -16,6 +16,38 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">1.7.1<font size="-1"><br>(13-May-2025)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>This release focuses on fixing critical bugs affecting hardware discovery servers and server startup, and introduces improvements for finding OpcUaToolkit package and external tool checking.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>(none known)</td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Bug
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3263'>OPCUA-3263</a>] - Use content-order aware clear() function when creating a new StandardMetaData XML object from an old SMD XML object. Required for hardware discovery servers</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3264'>OPCUA-3264</a>] - Crash during start up in quasar servers when loading endpoint configurations</li>
+                    </ul>
+                    Task
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3125'>OPCUA-3125</a>] - find_package for OpcUaToolkit</li>
+                    </ul>
+                    Improvement
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3215'>OPCUA-3215</a>] - Have xsdcxx in external tools check of quasar</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar test suite notes:<br>
+                    <ol>
+                        <li>All bug fixes confirmed in real deployment scenarios</li>
+                        <li>Endpoint configuration crash fix validated across multiple server instances</li>
+                        <li>OpcUaToolkit find_package tested on various platforms</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">1.7.0<font size="-1"><br>(25-Nov-2024)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>This release delivers a comprehensive restructuring of the Meta subsystem, consolidating multiple components (ASBuildInformation, ASComponentLogLevel, DBuildInformation, DServer, DQuasar) into a streamlined architecture with DLogLevel as the central component. The build system has been changed with a new design file processing approach and adapted logging configuration system. Migration utilities are provided to assist with transitioning to these new systems while maintaining backwards compatibility.</td>
