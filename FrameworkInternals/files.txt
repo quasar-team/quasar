@@ -1303,6 +1303,12 @@
     },
     "cmake": {
         "files": {
+            "FindOpcUaToolkit.cmake": {
+                "install": "overwrite",
+                "md5": "7984d578964b597aa1e2ff1fa718f8ee",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
             "QuasarSanitizers.cmake": {
                 "install": "overwrite",
                 "md5": "591a9d32c90456e45e302779d5fb61fd",
