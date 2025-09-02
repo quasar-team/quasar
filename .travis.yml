@@ -109,8 +109,8 @@ jobs:
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-	          cp .CI/test_cases/test_markdown_doc/Design.xml Design/.
-	          ./quasar.py generate as_doc_md
+            cp .CI/test_cases/test_markdown_doc/Design.xml Design/.
+            ./quasar.py generate as_doc_md
             diff Documentation/AddressSpaceDoc.md .CI/test_cases/test_markdown_doc/AddressSpaceDoc.md
             "
     - name: mardown_doc_config
@@ -119,7 +119,7 @@ jobs:
             echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
             git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
             cd quasar ;
-	          cp .CI/test_cases/test_markdown_doc/Design.xml Design/.
-	          ./quasar.py generate config_doc_md
+            cp .CI/test_cases/test_markdown_doc/Design.xml Design/.
+            ./quasar.py generate config_doc_md
             diff Documentation/ConfigDocumentation.md .CI/test_cases/test_markdown_doc/ConfigDocumentation.md
             "
