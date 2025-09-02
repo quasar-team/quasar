@@ -103,3 +103,22 @@ jobs:
             cd quasar ;
             .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch ${OPEN62541_COMPAT_VERSION} --design .CI/test_cases/test_defaulted_instance_name/Design.xml --config .CI/test_cases/test_defaulted_instance_name/config.xml --compare_with_nodeset .CI/test_cases/test_defaulted_instance_name/reference_ns2.xml ;
             "
+    - name: mardown_doc_as
+      script:
+        - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
+            echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
+            cd quasar ;
+	    cp .CI/test_cases/test_markdown_doc/Design.xml Design/.
+	    ./quasar.py generate as_doc_md
+            diff Documentation/AddressSpaceDoc.md .CI/test_cases/test_markdown_doc/AddressSpaceDoc.md
+            "
+    - name: mardown_doc_config
+      script:
+        - docker run  --interactive --tty pnikiel/quasar:quasar_with_uasak /bin/bash -c "
+            echo branch ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} ;
+            git clone --recursive -b ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} --depth=1 https://github.com/quasar-team/quasar.git ;
+            cd quasar ;
+	    cp .CI/test_cases/test_markdown_doc/Design.xml Design/.
+	    ./quasar.py generate config_doc_md
+            diff Documentation/ConfigDocumentation.md .CI/test_cases/test_markdown_doc/ConfigDocumentation.md

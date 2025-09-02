@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<d:design projectShortName="OpcUaSampleServerNameChangeItInDesign" xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
+  <d:class name="ThisIsTheSingletonClass" defaultInstanceName="XX">
+
+
+    <d:configentry dataType="UaString" name="dummy_configentry" storedInDeviceObject="true" >
+      <d:documentation>
+        Aliquam sit amet metus vel dui congue pulvinar id vel mauris. 
+      </d:documentation>
+    </d:configentry>
+
+
+    <d:cachevariable dataType="OpcUa_Boolean" name="dummy_cv" initializeWith="configuration" addressSpaceWrite="regular" nullPolicy="nullAllowed">
+      <d:documentation>
+        Proin aliquam massa et arcu maximus, non efficitur dui gravida.
+      </d:documentation>
+    </d:cachevariable>
+
+    <d:method name="dummy_method" executionSynchronicity="synchronous" addressSpaceCallUseMutex="no">
+      <d:argument    dataType="OpcUa_Byte" name="byte_pulse">
+        <d:documentation>
+          Nunc eget ex gravida turpis varius venenatis a et dui. 
+        </d:documentation>
+      </d:argument>
+      <d:documentation>
+        Morbi pellentesque aliquam turpis eget finibus. Sed at lacinia arcu, at egestas velit. Mauris quis ligula commodo, tincidunt libero at, rutrum neque. Nunc rhoncus ultrices augue sed suscipit. Nullam ultricies vel massa sed rutrum. Quisque vitae odio sit amet felis rhoncus mollis porta viverra lacus. Curabitur molestie nisl quis mauris accumsan, id sagittis ex maximus. Aenean vitae lectus sed nisl fermentum pulvinar.  
+      </d:documentation>
+    </d:method>
+
+    <d:documentation>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis tincidunt eros ligula, in finibus ipsum suscipit at. Curabitur vel condimentum odio, ut luctus quam. Ut porttitor justo at rutrum eleifend. Aliquam et ex eleifend, dignissim magna et, dapibus magna. Donec id sem magna. Praesent sed dapibus lorem. Morbi vel pretium nulla. In tortor urna, dignissim vitae est vitae, condimentum ullamcorper dolor.
+    </d:documentation>
+  </d:class>
+
+  <d:root>
+    <d:hasobjects class="ThisIsTheSingletonClass" instantiateUsing="configuration" maxOccurs="1" minOccurs="1"/>
+  </d:root>
+</d:design>
