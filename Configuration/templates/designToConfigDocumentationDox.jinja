@@ -1,0 +1,231 @@
+{# Copyright CERN, 2015.                                                         #}
+{# All rights not expressly granted are reserved.                                #}
+{# This file is part of Quasar.                                                  #}
+{#                                                                               #}
+{# Quasar is free software: you can redistribute it and/or modify                #}
+{# it under the terms of the GNU Lesser General Public Licence as published by   #}
+{# the Free Software Foundation, either version 3 of the Licence.                #}
+{# Quasar is distributed in the hope that it will be useful,                     #}
+{# but WITHOUT ANY WARRANTY; without even the implied warranty of                #}
+{#                                                                               #}
+{# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #}
+{# GNU Lesser General Public Licence for more details.                           #}
+{#                                                                               #}
+{# You should have received a copy of the GNU Lesser General Public License      #}
+{# along with Quasar.  If not, see <http://www.gnu.org/licenses/>                #}
+{#                                                                               #}
+{# Created:   Jul 2014                                                           #}
+{#            Mar 2020 (translated to Jinja2)                                    #}
+{#            Deb 2024 (converted to Md)                                         #}
+{#            Nov 2025 (converted to Dox via Copilot + manual fixes)             #}
+{# Authors:                                                                      #}
+{#   Piotr Nikiel       <piotr@nikiel.info>                                      #}
+{#   Ben Farnham        <firstNm.secondNm@cern.ch>                               #}
+{#   Etienne Fortin     <firstNm.secondNm@cern.ch>                               #}
+{#   Andras Schifferer  <firstNm.secondNm@cern.ch>                               #}
+{# configuration.dox.jinja #}
+{% import 'headers.jinja' as headers %}
+{% set this = designInspector.objectify_root() %}
+
+{# Derive a safe page id from the project name #}
+{% set page_id = ('config_' ~ designInspector.getProjectName())|lower|replace(' ', '_') %}
+
+\latexonly
+\newpage
+\endlatexonly
+/*!
+\file Configuration.dox
+\brief Configuration documentation for {{designInspector.getProjectName()}}
+*/
+/**
+
+
+\page configuration_options Configuration Options Reference
+
+{# ------------- Macros ------------- #}
+{% macro writeRestrictions(containingClassName, objectName, what) %}
+  {%- set restrictions = designInspector.get_restrictions(containingClassName, objectName, what) -%}
+  {%- if restrictions|length > 0 -%}
+Value restrictions:<br>
+    {% set restrictionType = oracle.classify_xsd_restrictions(restrictions) %}
+    {%- if restrictionType == 'enumeration' -%}
+Enumeration:
+
+{% for restriction in restrictions -%}
+- {{restriction[1]|trim}}
+{% endfor %}
+
+    {%- elif restrictionType == 'pattern' -%}
+Pattern:
+
+{% for restriction in restrictions -%}
+- {{restriction[1]|trim}}
+{% endfor %}
+
+    {%- elif restrictionType == 'bounds' -%}
+Bounds:
+
+{% for restriction in restrictions|sort(attribute=0, reverse=True) -%}
+  {%- if restriction[0] == 'minExclusive' -%}
+- {{boundsRestrictionPrefix}}{{objectName}}&gt;{{restriction[1]}}
+  {% endif %}
+  {%- if restriction[0] == 'maxExclusive' -%}
+- {{boundsRestrictionPrefix}}{{objectName}}&lt;{{restriction[1]}}
+  {% endif %}
+  {%- if restriction[0] == 'minInclusive' -%}
+- {{boundsRestrictionPrefix}}{{objectName}}&gt;={{restriction[1]}}
+  {% endif %}
+  {%- if restriction[0] == 'maxInclusive' -%}
+- {{boundsRestrictionPrefix}}{{objectName}}&lt;={{restriction[1]}}
+  {% endif %}
+{%- endfor %}
+
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro writeCacheVarOrConfigEntry(containingClassName, elementObject, what) %}
+{% set objectName = elementObject.get('name') %}
+{% set objectType = elementObject.get('dataType') %}
+{% set docElements = designInspector.objectifyDocumentation(containingClassName, objectName) %}
+{% set optionalityMsg = 'optional, the default value shown below will be used if not present' if elementObject.get('defaultValue') else 'mandatory' %}
+{% if docElements|length > 0 %}
+  {% set optionalityMsg = optionalityMsg + '\\remark' %}
+{% endif %}
+
+\param[in] {{objectName}} (`{{objectType}}`) {{optionalityMsg}}
+{% if docElements|length > 0 %}
+  {%- for docElement in docElements %}
+{{- designInspector.strip_documentation_tag(docElement)|trim }}
+  {% endfor %}
+
+  {# Add to the docs the enumeration documentation, if any (only for config entries). #}
+  {% if what == 'configentry' %}
+    {% set configEntryObjectified = designInspector.objectify_config_entries(containingClassName, "[@name='" + objectName + "']")[0] %}
+    {% set enumerationValuesWithDocs = designInspector.xpath_relative_to_object(configEntryObjectified, 'd:configRestriction/d:restrictionByEnumeration/d:enumerationValue[d:documentation]') %}
+    {% if enumerationValuesWithDocs|length > 0 %}
+<ul>
+      {% for enumerationValue in designInspector.xpath_relative_to_object(configEntryObjectified, 'd:configRestriction/d:restrictionByEnumeration/d:enumerationValue') %}
+  <li><code>{{enumerationValue.get('value')}}</code>:
+        {% if enumerationValue.getchildren()|length > 0 %}
+          {{ designInspector.strip_documentation_tag(enumerationValue.getchildren()[0]) }}
+        {% else %}
+          <b>To the developer: complete this documentation entry in your Design.</b>
+        {% endif %}
+  </li>
+      {% endfor %}
+</ul>
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+{% if elementObject.get('defaultValue') -%}
+Default value: {{elementObject.get('defaultValue')|trim}}<br>
+{% endif %}
+
+{{- writeRestrictions(containingClassName, objectName, what) }}
+{% endmacro %}
+
+{# ------------- Optional "Jump to" ------------- #}
+{# A navigable list to each class documented below #}
+
+{#
+**Jump to:**
+{% for className in designInspector.get_names_of_all_classes()|sort() %}
+  {% set parentObjects = designInspector.objectifyAllParents(className, restrict_to_by_configuration=True) %}
+  {% if parentObjects|length > 0 %}
+- \ref ref{{className}} "{{className}}"
+  {% endif %}
+{% endfor %}
+#}
+
+{# ------------- Per-class documentation ------------- #}
+{% for className in designInspector.get_names_of_all_classes()|sort() %}
+  {% set parentObjects = designInspector.objectifyAllParents(className, restrict_to_by_configuration=True) %}
+  {% if parentObjects|length > 0 %}
+
+# {{className}}
+\anchor ref{{className}}
+
+{% set documentation = designInspector.objectifyDocumentation(className) %}
+{% if documentation %}
+  {% for docElement in documentation %}
+\note {{ designInspector.strip_documentation_tag(docElement)|trim }}
+  {% endfor %}
+{% endif %}
+
+{% if designInspector.is_class_always_singleton(className) %}
+\warning This class is a singleton, do not declare it more than once
+  {% if designInspector.get_class_default_instance_name(className) != None %}
+\remark The <code>name</code> attribute in this class is defaulted to <code>{{designInspector.get_class_default_instance_name(className)}}</code>, don't waste time specifying it in the config file.
+  {% endif %}
+{% endif %}
+
+## Configuration attributes:
+{% set configEntries = designInspector.objectify_config_entries(className) %}
+{% if configEntries|length > 0 %}
+  {% for configEntry in configEntries %}
+{{- writeCacheVarOrConfigEntry(className, configEntry, "configentry") }}
+  {% endfor %}
+{% else %}
+Class {{className}} has no configuration entries.
+{% endif %}
+
+{% set configuredCacheVars = designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration']") %}
+{% if configuredCacheVars|length > 0 %}
+  {% for cacheVar in configuredCacheVars %}
+{{- writeCacheVarOrConfigEntry(className, cacheVar, "cachevariable") }}
+  {% endfor %}
+{% else %}
+Class {{className}} has no cache variables initialized from the configuration.
+{% endif %}
+
+## Possible children:
+\ref refCalculatedVariable "CalculatedVariable", \ref refFreeVariable "FreeVariable"{% for hasObject in designInspector.get_class_has_objects(className) %}
+    {% if hasObject.get('instantiateUsing') == 'configuration' %}, \ref ref{{hasObject.get('class')|trim}} "{{hasObject.get('class')|trim}}"
+    {% endif %}
+  {% endfor %}
+
+  {% endif %}
+{% endfor %}
+
+# CalculatedVariable 
+\anchor refCalculatedVariable
+\note
+A CalculatedVariable is a "synthetic" variable which is based on other "real" variables of the address-space.
+You can declare a CalculatedVariable under any object in the configuration file.
+The required attributes are:
+
+\param[in] name will be the last part of the address
+\param[in] value analytical formula used to calculate the value of the variable.n <br>E.g. to calculate the square of another variable with address x.y you should put `x.y^2`
+
+Detailed documentation of all features of CalculatedVariables is available in the quasar Documentation (see CalculatedVariables/doc/CalculatedVariables.html from the quasar root).
+
+## CalculatedVariableGenericFormula 
+\anchor refCalculatedVariableGenericFormula
+
+\note
+A CalculatedVariableGenericFormula is a generalized formula that can be used as a template to
+instantiate CalculatedVariable(s). It helps to avoid redundancy and thus also minimize probability
+of errors. The basic way of using the CalculatedVariableGenericFormula is using the `$applyGenericFormula` operator.
+
+The CalculatedVariableGenericFormula needs to be instantiated at the very top of a chosen configuration file.
+
+Detailed documentation of all features of CalculatedVariables is available in the quasar Documentation (see CalculatedVariables/doc/CalculatedVariables.html from the quasar root).
+
+# FreeVariable 
+\anchor refFreeVariable
+
+\note
+A FreeVariable is an OPC-UA variable which can be added anywhere in the address-space. It is not governed at all by the given server
+Design and, in fact, the server can't even communicate with that variable (or, at least, there is no direct support for it).
+A free variable can be always written to by any OPCUA clients.
+
+The required attributes are:
+
+\param name
+\param type one of: Boolean, Byte, SByte, UInt16, Int16, UInt32, Int32, UInt64, Int64, Float, Double, String.
+
+In addition, an `initialValue` attribute might be given.
+
+*/

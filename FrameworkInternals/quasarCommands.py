@@ -63,6 +63,7 @@ commands = [
         [['generate','as_doc'],           lambda context: transformByKey(TransformKeys.AS_DOCUMENTATION,  {'context':context}), True],
         [['generate','config_doc_md'],    lambda context: transformByKey(TransformKeys.CONFIG_DOCUMENTATION_MD, {'context':context}), True],
         [['generate','as_doc_md'],        lambda context: transformByKey(TransformKeys.AS_DOCUMENTATION_MD,     {'context':context}), True],
+        [['generate','config_doc_dox'],   lambda context: transformByKey(TransformKeys.CONFIG_DOCUMENTATION_DOX,{'context':context}), True],
         [['generate','diagram'],          createDiagram, True],
         [['check_consistency'], mfCheckConsistency, True],
         [['setup_svn_ignore'], mfSetupSvnIgnore, True],
