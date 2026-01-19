@@ -28,6 +28,7 @@
 #include <set>
 #include <numeric>
 #include <functional>
+#include <memory>
 
 #include <ASNodeManager.h>
 
@@ -35,6 +36,7 @@
 namespace Configuration{ class Configuration; }
 
 typedef std::function<bool (Configuration::Configuration&)> ConfigXmlDecoratorFunction;
+std::unique_ptr<Configuration::Configuration> loadConfigurationFromFile(const std::string& fileName);
 bool configure (std::string fileName,
         AddressSpace::ASNodeManager *nm, ConfigXmlDecoratorFunction
         configXmlDecoratorFunction = ConfigXmlDecoratorFunction()); // 'empty' function by default.
