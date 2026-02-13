@@ -1,0 +1,62 @@
+.exec_base:
+  stage: unstagged
+  image: gitlab-registry.cern.ch/quasar-team/images/alma-10-build:latest
+  variables:
+    OPEN62541_COMPAT_VERSION: "new-pipeline"
+  before_script:
+    - python --version
+    - dnf install -y xsd xerces-c-devel astyle openssl-devel
+    - git submodule update --init --recursive
+
+open62541_default_quasar_design:
+  extends: .exec_base
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml
+
+open62541_test_cache_variables:
+  extends: .exec_base
+  script:
+    - mkdir -p Device/include Device/src
+    - cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h
+    - cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_cache_variables/Design.xml --config .CI/test_cases/test_cache_variables/config.xml --compare_with_nodeset .CI/test_cases/test_cache_variables/reference_ns2.xml
+
+open62541_test_recurrent_hasobjects:
+  extends: .exec_base
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_recurrent_hasobjects/Design.xml --generate_all_devices --config .CI/test_cases/test_recurrent_hasobjects/config.xml
+
+open62541_test_single_variable_node:
+  extends: .exec_base
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_single_variable_node/Design.xml --generate_all_devices --config .CI/test_cases/test_single_variable_node/config.xml
+
+open62541_test_methods:
+  extends: .exec_base
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_methods/Design.xml --generate_all_devices --config .CI/test_cases/test_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
+
+open62541_test_instantiation_from_design:
+  extends: .exec_base
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_instantiation_from_design/Design.xml --generate_all_devices --config .CI/test_cases/test_instantiation_from_design/config.xml --compare_with_nodeset .CI/test_cases/test_instantiation_from_design/reference_ns2.xml
+
+open62541_test_config_entries:
+  extends: .exec_base
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_config_entries/Design.xml --generate_all_devices --config .CI/test_cases/test_config_entries/config.xml --compare_with_nodeset .CI/test_cases/test_config_entries/reference_ns2.xml
+
+open62541_test_config_restrictions:
+  extends: .exec_base
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_config_restrictions/Design.xml
+
+open62541_test_calculated_variables:
+  extends: .exec_base
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_calculated_variables/Design.xml --config .CI/test_cases/test_calculated_variables/config.xml --compare_with_nodeset .CI/test_cases/test_calculated_variables/reference_ns2.xml
+
+open62541_test_defaulted_instance_name:
+  extends: .exec_base
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_defaulted_instance_name/Design.xml --config .CI/test_cases/test_defaulted_instance_name/config.xml --compare_with_nodeset .CI/test_cases/test_defaulted_instance_name/reference_ns2.xml

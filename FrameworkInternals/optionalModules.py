@@ -22,7 +22,6 @@ import os
 import subprocess
 import platform
 from glob import glob
-from pkg_resources import parse_version
 from shutil import copy, rmtree
 import json
 import version_control_interface

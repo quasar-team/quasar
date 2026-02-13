@@ -22,12 +22,32 @@
 # automatically set up boost with libs needed by quasar
 # and optionally added ones for the project via ADDITIONAL_BOOST_LIBS
 #
-set(Boost_NO_BOOST_CMAKE ON) # workaround for boost-1.7.0 cmake config modules: disabling search for boost-cmake to use FindBoost instead
-find_package(Boost REQUIRED regex chrono program_options thread system ${ADDITIONAL_BOOST_LIBS} )
-if(NOT Boost_FOUND)
-    message(FATAL_ERROR "Failed to find boost installation")
-else()
-    message(STATUS "Found system boost, version [${Boost_VERSION}], include dir [${Boost_INCLUDE_DIRS}] library dir [${Boost_LIBRARY_DIRS}], libs [${Boost_LIBRARIES}]")
-    include_directories( ${Boost_INCLUDE_DIRS} )
-    set( BOOST_LIBS ${Boost_LIBRARIES} )
+if(NOT DEFINED BOOST_LIBS)
+    if(NOT DEFINED BOOST_ROOT AND DEFINED ENV{BOOST_HOME} AND NOT "$ENV{BOOST_HOME}" STREQUAL "")
+        set(BOOST_ROOT "$ENV{BOOST_HOME}")
+        message(STATUS "Using BOOST_HOME as BOOST_ROOT: [${BOOST_ROOT}]")
+    endif()
+
+    set(BOOST_HOME "$ENV{BOOST_HOME}")
+    list(APPEND CMAKE_PREFIX_PATH "${BOOST_HOME}")
+    set(Boost_USE_STATIC_RUNTIME ON)
+    set(Boost_USE_STATIC_LIBS ON)
+
+    set(_QUASAR_BOOST_COMPONENTS regex chrono program_options thread ${ADDITIONAL_BOOST_LIBS})
+    find_package(Boost CONFIG REQUIRED COMPONENTS ${_QUASAR_BOOST_COMPONENTS})
+    if(NOT Boost_FOUND)
+        message(FATAL_ERROR "Failed to find boost installation.")
+    else()
+        message(STATUS "Found system boost, version [${Boost_VERSION}], include dir [${Boost_INCLUDE_DIRS}]")
+        include_directories(${Boost_INCLUDE_DIRS})
+        set(BOOST_LIBS
+            Boost::regex
+            Boost::chrono
+            Boost::program_options
+            Boost::thread)
+        foreach(BOOST_COMPONENT IN LISTS ADDITIONAL_BOOST_LIBS)
+            list(APPEND BOOST_LIBS Boost::${BOOST_COMPONENT})
+        endforeach()
+    endif()
 endif()
+

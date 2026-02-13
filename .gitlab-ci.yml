@@ -1,0 +1,17 @@
+image: gitlab-registry.cern.ch/linuxsupport/alma10-base:latest
+
+stages:
+  - unstagged
+
+include:
+  - local: ci/gitlab/normal.yml
+    rules:
+      - if: $CI_PIPELINE_SOURCE == "api"  # Source Github-Gitlab bridge
+      - if: $PIPELINE == "normal"
+
+# Empty job, as gitlab-ci requires at least one job
+empty:
+  stage: unstagged
+  script: exit 1
+  rules:
+    - when: never
