@@ -39,7 +39,7 @@ jobs:
             cp -v .CI/test_cases/test_cache_variables/config.xml build/bin ;
             ./quasar.py build ;
             ./.CI/travis/server_fixture.py --command_to_run uasak_dump ;
-            /opt/NodeSetTools/nodeset_compare.py .CI/test_cases/test_cache_variables/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
+            python ./NodeSetTools/nodeset_compare.py .CI/test_cases/test_cache_variables/reference_ns2.xml build/bin/dump.xml --ignore_nodeids StandardMetaData ;
             "
 
     - name: uasdk_test_source_variables

@@ -33,7 +33,7 @@ def run_and_dump_address_space():
     invoke_and_check('python ./.CI/travis/server_fixture.py --command_to_run uasak_dump')
 
 def compare_with_nodeset(reference_ns):
-    invoke_and_check(f'python /opt/NodeSetTools/nodeset_compare.py {reference_ns} build/bin/dump.xml --ignore_nodeids StandardMetaData')
+    invoke_and_check(f'python ./NodeSetTools/nodeset_compare.py {reference_ns} build/bin/dump.xml --ignore_nodeids StandardMetaData')
 
 def main():
     parser = argparse.ArgumentParser()

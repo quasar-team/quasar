@@ -7,6 +7,12 @@
     - python --version
     - dnf install -y xsd xerces-c-devel astyle openssl-devel
     - git submodule update --init --recursive
+    - git clone --depth=1 https://github.com/quasar-team/NodeSetTools.git
+    - |
+      # Install UaSwissArmyKnife dependency used by CI jobs
+      curl -fL "https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/47362/download" -o /tmp/UaSwissArmyKnife.rpm
+      dnf install -y /tmp/UaSwissArmyKnife.rpm
+      export PATH="/opt/UaSwissArmyKnife/bin:${PATH}"
 
 open62541_default_quasar_design:
   extends: .exec_base
