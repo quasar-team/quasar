@@ -21,10 +21,10 @@ def prepare_opcua_backend(opcua_backend, open62541_compat_branch):
     if opcua_backend == 'o6':
         invoke_and_check(f'python ./quasar.py enable_module open62541-compat {open62541_compat_branch}')
         invoke_and_check(f'python ./quasar.py set_build_config open62541_config.cmake')
-    elif opcua_backend == 'uasdk':
-        invoke_and_check('python ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake')
-    else:
-        raise Exception(f"OPCUA backend {opcua_backend} was not recognized")
+    # elif opcua_backend == 'uasdk':
+    #     invoke_and_check('python ./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake')
+    # else:
+    #     raise Exception(f"OPCUA backend {opcua_backend} was not recognized")
 
 def build():
     invoke_and_check('python ./quasar.py build Release')
