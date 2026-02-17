@@ -50,7 +50,7 @@ add_definitions( -DBACKEND_UATOOLKIT )
 SET( OPCUA_TOOLKIT_PATH "/opt/unified-automation" )
 SET( OPCUA_TOOLKIT_LIBS_RELEASE -lrt -lpthread )
 SET( OPCUA_TOOLKIT_LIBS_DEBUG -lrt -lpthread )
-include_directories( /opt/unified-automation/include )
+include_directories( /opt/unified-automation/include/uabasecpp /opt/unified-automation/include/uastack /opt/unified-automation/include/uaservercpp )
 
 #-----
 #XML Libs
