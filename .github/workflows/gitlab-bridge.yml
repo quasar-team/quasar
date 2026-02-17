@@ -6,6 +6,7 @@ on:
 
 jobs:
   Gitlab_Trigger_Pipeline:
+    name: Setting up Pipeline
     runs-on: cern:gitlab-ci
     container: ghcr.io/miguensone/github-gitlab-sync:latest
     env:
@@ -24,14 +25,16 @@ jobs:
           python /opt/bridge/create-temp-branch.py
           export PIPELINE_ID=$(python /opt/bridge/trigger-pipeline.py)
           export LIST_JOBS=$(python /opt/bridge/retrieve-jobs.py)
-          job_matrix=$(echo $LIST_JOBS | tr ',' '\n' | jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "pipeline_id=${PIPELINE_ID}" >> $GITHUB_OUTPUT
-          echo "job_matrix=$job_matrix" >> $GITHUB_OUTPUT
+          echo "job_matrix<<EOF" >> $GITHUB_OUTPUT
+          echo "${LIST_JOBS}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
           echo Pipeline number: $PIPELINE_ID
-          echo Jobs detected: $job_matrix
+          echo Jobs detected: $LIST_JOBS
 
   Job:
     needs: Gitlab_Trigger_Pipeline
+    name: ${{ matrix.job.name }} [${{ matrix.job.key }}]
     runs-on: cern:gitlab-ci
     container: ghcr.io/miguensone/github-gitlab-sync:latest
     env:
@@ -40,16 +43,18 @@ jobs:
       GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
     strategy:
       matrix:
-        run_id: ${{ fromJson(needs.Gitlab_Trigger_Pipeline.outputs.job_matrix) }}
+        job: ${{ fromJson(needs.Gitlab_Trigger_Pipeline.outputs.job_matrix) }}
       fail-fast: false
     steps:
-      - name: ${{ matrix.run_id }}
+      - name: Retrieve Gitlab Job Log [${{ matrix.job.key }}]
+        env:
+          JOB_ID: ${{ matrix.job.JOB_ID }}
         run: |
-          export JOB_ID=$(echo "${{ matrix.run_id }}" | awk -F'#' '{print $2}')
           python /opt/bridge/retrieve-job.py
 
   Gitlab_Pipeline_Final_Status:
     needs: [Job, Gitlab_Trigger_Pipeline]
+    name: Final Pipeline Status
     if: always()
     runs-on: cern:gitlab-ci
     container: ghcr.io/miguensone/github-gitlab-sync:latest
