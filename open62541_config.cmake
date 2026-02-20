@@ -33,13 +33,8 @@ set (LOGIT_HAS_UATRACE FALSE)
 # open62541-compat with server config loader - load ServerConfig.xml by default
 set (SERVERCONFIG_LOADER ON CACHE BOOL "Since quasar 1.5.1 the open62541-compat will also load ServerConfig.xml same way UA-SDK does")
 
-# need C++11
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
-
-#-------
-#Boost
-#-------
-# should get resolved via FrameworkInternals/BoostSetup.cmake since quasar 1.3.13
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #------
 #OPCUA
@@ -55,11 +50,17 @@ include_directories( ${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/inc
 #-----
 #XML Libs
 #-----
-#As of 03-Sep-2015 I see no FindXerces or whatever in our Cmake 2.8 installation, so no find_package can be user...
-# TODO perhaps also take it from environment if requested
-SET( XML_LIBS "-lxerces-c" )
+if(DEFINED ENV{XERCES_C_HOME})
+   list(APPEND CMAKE_PREFIX_PATH $ENV{XERCES_C_HOME})
+endif()
+
+find_package(XercesC REQUIRED)
+message(STATUS "Found xerces-c: ${XercesC_INCLUDE_DIRS}")
+include_directories(${XercesC_INCLUDE_DIRS})
+SET( XML_LIBS "-L$ENV{XERCES_C_HOME}/lib -lxerces-c" )
 
 #-----
 #Quasar server libs
 #-----
-SET( QUASAR_SERVER_LIBS "-lssl -lcrypto -lpthread" )
+SET( QUASAR_SERVER_LIBS "-L$ENV{LIBSSL_HOME}/lib64 -lssl -lcrypto 
+                         -lpthread" )
