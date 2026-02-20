@@ -18,7 +18,7 @@
 # Author: Ben Farnham
 # @author pnikiel
 # @date May-2018
-# This file is a build config for quasar-based projects to use open62541 OPC-UA backend.
+# This file is a build config for quasar-based projects to use Unified Automation OPC-UA backend.
 # You can use it directly, or make a copy and adjust accordingly.
 
 #-----
@@ -27,14 +27,14 @@
 
 add_definitions(-Wall -Wno-deprecated)
 
-# open62541-compat has no uatrace
+# UA-SDK 2.x has no uatrace backend integration in LogIt
 set (LOGIT_HAS_UATRACE FALSE)
 
-# open62541-compat with server config loader - load ServerConfig.xml by default
-set (SERVERCONFIG_LOADER ON CACHE BOOL "Since quasar 1.5.1 the open62541-compat will also load ServerConfig.xml same way UA-SDK does")
+# Server config loader: load INI/XML server config by default
+set (SERVERCONFIG_LOADER ON CACHE BOOL "Load UA-SDK server configuration from bin/ServerConfig.ini or bin/ServerConfig.xml")
 
-# need C++11
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #-------
 #Boost
@@ -45,21 +45,38 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
 #OPCUA
 #------
 
-# No OPC-UA Toolkit: using Open62541-compat instead. It is referenced in BACKEND_MODULES below
+# UA Toolkit backend
 add_definitions( -DBACKEND_UATOOLKIT )
-SET( OPCUA_TOOLKIT_PATH "/opt/unified-automation" )
+if(DEFINED ENV{UNIFIED_AUTOMATION_HOME})
+   set(OPCUA_TOOLKIT_PATH "$ENV{UNIFIED_AUTOMATION_HOME}")
+else()
+   set(OPCUA_TOOLKIT_PATH "/opt/unified-automation")
+endif()
 SET( OPCUA_TOOLKIT_LIBS_RELEASE -lrt -lpthread )
 SET( OPCUA_TOOLKIT_LIBS_DEBUG -lrt -lpthread )
-include_directories( /opt/unified-automation/include/uabasecpp /opt/unified-automation/include/uastack /opt/unified-automation/include/uaservercpp )
+include_directories(
+   ${OPCUA_TOOLKIT_PATH}/include/uabasecpp
+   ${OPCUA_TOOLKIT_PATH}/include/uastack
+   ${OPCUA_TOOLKIT_PATH}/include/uaservercpp
+   ${OPCUA_TOOLKIT_PATH}/include/uabasedi
+   ${OPCUA_TOOLKIT_PATH}/include/uaserverdi
+)
 
 #-----
 #XML Libs
 #-----
-#As of 03-Sep-2015 I see no FindXerces or whatever in our Cmake 2.8 installation, so no find_package can be user...
-# TODO perhaps also take it from environment if requested
-SET( XML_LIBS "-lxerces-c" )
+if(DEFINED ENV{XERCES_C_HOME})
+   list(APPEND CMAKE_PREFIX_PATH $ENV{XERCES_C_HOME})
+endif()
+
+find_package(XercesC REQUIRED)
+message(STATUS "Found xerces-c: ${XercesC_INCLUDE_DIRS}")
+include_directories(${XercesC_INCLUDE_DIRS})
+set(XML_LIBS ${XercesC_LIBRARIES})
 
 #-----
 #Quasar server libs
 #-----
-SET( QUASAR_SERVER_LIBS "-lssl -lcrypto -lpthread" )
+set(QUASAR_SERVER_LIBS
+   -lpthread
+)
