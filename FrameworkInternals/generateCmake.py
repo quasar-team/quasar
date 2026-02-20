@@ -80,7 +80,7 @@ def generateCmake(context, *args):
     print("Calling CMake")
     if platform.system() == "Windows":
         subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-                                      "-G", "Visual Studio 15 2017 Win64", projectSourceDir],
+                                     projectSourceDir],
                                      getCommand("cmake"))
     elif platform.system() == "Linux":
         builderArgs = [] if builder == BuilderDefault else ["-G", builder]
