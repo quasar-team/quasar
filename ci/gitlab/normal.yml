@@ -1,6 +1,10 @@
-.exec_base:
+variables:
+  WIN2025_IMAGE: "gitlab-registry.cern.ch/quasar-team/images/win2025-build:latest"
+  ALMA10_IMAGE: "gitlab-registry.cern.ch/quasar-team/images/alma-10-build:latest"
+
+.exec_base_linux:
   stage: unstagged
-  image: gitlab-registry.cern.ch/quasar-team/images/alma-10-build:latest
+  image: $ALMA10_IMAGE
   variables:
     OPEN62541_COMPAT_VERSION: "new-pipeline"
   before_script:
@@ -13,93 +17,203 @@
       dnf install -y /tmp/UaSwissArmyKnife.rpm
       export PATH="/opt/UaSwissArmyKnife/bin:${PATH}"
 
-'Open62541: Default Quasar Design':
-  extends: .exec_base
+.exec_base_windows:
+  stage: unstagged
+  image: $WIN2025_IMAGE
+  tags:
+    - win2025-container
+  variables:
+    OPEN62541_COMPAT_VERSION: "new-pipeline"
+  before_script:
+    - python --version
+    - git submodule update --init --recursive
+    - git clone --depth=1 https://github.com/quasar-team/NodeSetTools.git
+    - |
+      curl.exe -fL "https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/47560/download" -o "$env:TEMP\UaSwissArmyKnife.zip"
+      if (Test-Path "C:\UaSwissArmyKnife") { Remove-Item -Recurse -Force "C:\UaSwissArmyKnife" }
+      Expand-Archive -Path "$env:TEMP\UaSwissArmyKnife.zip" -DestinationPath "C:\UaSwissArmyKnife" -Force
+      $env:PATH = "C:\UaSwissArmyKnife\bin;$env:PATH"
+
+'Linux Open62541: Default Quasar Design':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml
 
-'Open62541: Cache Variables':
-  extends: .exec_base
+'Linux Open62541: Cache Variables':
+  extends: .exec_base_linux
   script:
     - mkdir -p Device/include Device/src
     - cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h
     - cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_cache_variables/Design.xml --config .CI/test_cases/test_cache_variables/config.xml --compare_with_nodeset .CI/test_cases/test_cache_variables/reference_ns2.xml
 
-'Open62541: Recurrent HasObjects':
-  extends: .exec_base
+'Linux Open62541: Recurrent HasObjects':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_recurrent_hasobjects/Design.xml --generate_all_devices --config .CI/test_cases/test_recurrent_hasobjects/config.xml
 
-'Open62541: Single Variable Node':
-  extends: .exec_base
+'Linux Open62541: Single Variable Node':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_single_variable_node/Design.xml --generate_all_devices --config .CI/test_cases/test_single_variable_node/config.xml
 
-'Open62541: Methods':
-  extends: .exec_base
+'Linux Open62541: Methods':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_methods/Design.xml --generate_all_devices --config .CI/test_cases/test_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
 
-'Open62541: Instantiation From Design':
-  extends: .exec_base
+'Linux Open62541: Instantiation From Design':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_instantiation_from_design/Design.xml --generate_all_devices --config .CI/test_cases/test_instantiation_from_design/config.xml --compare_with_nodeset .CI/test_cases/test_instantiation_from_design/reference_ns2.xml
 
-'Open62541: Config Entries':
-  extends: .exec_base
+'Linux Open62541: Config Entries':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_config_entries/Design.xml --generate_all_devices --config .CI/test_cases/test_config_entries/config.xml --compare_with_nodeset .CI/test_cases/test_config_entries/reference_ns2.xml
 
-'Open62541: Config Restrictions':
-  extends: .exec_base
+'Linux Open62541: Config Restrictions':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_config_restrictions/Design.xml
 
-'Open62541: Calculated Variables':
-  extends: .exec_base
+'Linux Open62541: Calculated Variables':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_calculated_variables/Design.xml --config .CI/test_cases/test_calculated_variables/config.xml --compare_with_nodeset .CI/test_cases/test_calculated_variables/reference_ns2.xml
 
-'Open62541: Defaulted Instance Name':
-  extends: .exec_base
+'Linux Open62541: Defaulted Instance Name':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_defaulted_instance_name/Design.xml --config .CI/test_cases/test_defaulted_instance_name/config.xml --compare_with_nodeset .CI/test_cases/test_defaulted_instance_name/reference_ns2.xml
 
-'UASDK: Default Quasar Design':
-  extends: .exec_base
+'Linux UASDK: Default Quasar Design':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend uasdk --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml
 
-'UASDK: Methods':
-  extends: .exec_base
+'Linux UASDK: Methods':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_methods/Design.xml --generate_all_devices --config .CI/test_cases/test_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
 
-'UASDK: Async Methods':
-  extends: .exec_base
+'Linux UASDK: Async Methods':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_async_methods/Design.xml --generate_all_devices --config .CI/test_cases/test_async_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
 
-'UASDK: Cache Variables':
-  extends: .exec_base
+'Linux UASDK: Cache Variables':
+  extends: .exec_base_linux
   script:
     - mkdir -p Device/include Device/src
     - cp .CI/test_cases/test_cache_variables/DTestClass.test.h Device/include/DTestClass.h
     - cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp
     - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_cache_variables/Design.xml --config .CI/test_cases/test_cache_variables/config.xml --compare_with_nodeset .CI/test_cases/test_cache_variables/reference_ns2.xml
 
-'UASDK: Source Variables':
-  extends: .exec_base
+'Linux UASDK: Source Variables':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_source_variables/Design.xml --generate_all_devices --config .CI/test_cases/test_source_variables/config.xml --compare_with_nodeset .CI/test_cases/test_source_variables/reference_ns2.xml
 
-'UASDK: Config Entries':
-  extends: .exec_base
+'Linux UASDK: Config Entries':
+  extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_config_entries/Design.xml --generate_all_devices --config .CI/test_cases/test_config_entries/config.xml --compare_with_nodeset .CI/test_cases/test_config_entries/reference_ns2.xml
 
-'UASDK: Calculated Variables':
-  extends: .exec_base
+'Linux UASDK: Calculated Variables':
+  extends: .exec_base_linux
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_calculated_variables/Design.xml --config .CI/test_cases/test_calculated_variables/config.xml --compare_with_nodeset .CI/test_cases/test_calculated_variables/reference_ns2.xml
+
+'Windows Open62541: Default Quasar Design':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml
+
+'Windows Open62541: Cache Variables':
+  extends: .exec_base_windows
+  script:
+    - New-Item -ItemType Directory -Path Device\include -Force | Out-Null
+    - New-Item -ItemType Directory -Path Device\src -Force | Out-Null
+    - Copy-Item .CI\test_cases\test_cache_variables\DTestClass.test.h Device\include\DTestClass.h -Force
+    - Copy-Item .CI\test_cases\test_cache_variables\DTestClass.test.cpp Device\src\DTestClass.cpp -Force
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_cache_variables/Design.xml --config .CI/test_cases/test_cache_variables/config.xml --compare_with_nodeset .CI/test_cases/test_cache_variables/reference_ns2.xml
+
+'Windows Open62541: Recurrent HasObjects':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_recurrent_hasobjects/Design.xml --generate_all_devices --config .CI/test_cases/test_recurrent_hasobjects/config.xml
+
+'Windows Open62541: Single Variable Node':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_single_variable_node/Design.xml --generate_all_devices --config .CI/test_cases/test_single_variable_node/config.xml
+
+'Windows Open62541: Methods':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_methods/Design.xml --generate_all_devices --config .CI/test_cases/test_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
+
+'Windows Open62541: Instantiation From Design':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_instantiation_from_design/Design.xml --generate_all_devices --config .CI/test_cases/test_instantiation_from_design/config.xml --compare_with_nodeset .CI/test_cases/test_instantiation_from_design/reference_ns2.xml
+
+'Windows Open62541: Config Entries':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_config_entries/Design.xml --generate_all_devices --config .CI/test_cases/test_config_entries/config.xml --compare_with_nodeset .CI/test_cases/test_config_entries/reference_ns2.xml
+
+'Windows Open62541: Config Restrictions':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_config_restrictions/Design.xml
+
+'Windows Open62541: Calculated Variables':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_calculated_variables/Design.xml --config .CI/test_cases/test_calculated_variables/config.xml --compare_with_nodeset .CI/test_cases/test_calculated_variables/reference_ns2.xml
+
+'Windows Open62541: Defaulted Instance Name':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_defaulted_instance_name/Design.xml --config .CI/test_cases/test_defaulted_instance_name/config.xml --compare_with_nodeset .CI/test_cases/test_defaulted_instance_name/reference_ns2.xml
+
+'Windows UASDK: Default Quasar Design':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml
+
+'Windows UASDK: Methods':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_methods/Design.xml --generate_all_devices --config .CI/test_cases/test_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
+
+'Windows UASDK: Async Methods':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_async_methods/Design.xml --generate_all_devices --config .CI/test_cases/test_async_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
+
+'Windows UASDK: Cache Variables':
+  extends: .exec_base_windows
+  script:
+    - New-Item -ItemType Directory -Path Device\include -Force | Out-Null
+    - New-Item -ItemType Directory -Path Device\src -Force | Out-Null
+    - Copy-Item .CI\test_cases\test_cache_variables\DTestClass.test.h Device\include\DTestClass.h -Force
+    - Copy-Item .CI\test_cases\test_cache_variables\DTestClass.test.cpp Device\src\DTestClass.cpp -Force
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_cache_variables/Design.xml --config .CI/test_cases/test_cache_variables/config.xml --compare_with_nodeset .CI/test_cases/test_cache_variables/reference_ns2.xml
+
+'Windows UASDK: Source Variables':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_source_variables/Design.xml --generate_all_devices --config .CI/test_cases/test_source_variables/config.xml --compare_with_nodeset .CI/test_cases/test_source_variables/reference_ns2.xml
+
+'Windows UASDK: Config Entries':
+  extends: .exec_base_windows
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_config_entries/Design.xml --generate_all_devices --config .CI/test_cases/test_config_entries/config.xml --compare_with_nodeset .CI/test_cases/test_config_entries/reference_ns2.xml
+
+'Windows UASDK: Calculated Variables':
+  extends: .exec_base_windows
   script:
     - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_calculated_variables/Design.xml --config .CI/test_cases/test_calculated_variables/config.xml --compare_with_nodeset .CI/test_cases/test_calculated_variables/reference_ns2.xml
