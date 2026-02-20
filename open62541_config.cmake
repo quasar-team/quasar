@@ -57,10 +57,14 @@ endif()
 find_package(XercesC REQUIRED)
 message(STATUS "Found xerces-c: ${XercesC_INCLUDE_DIRS}")
 include_directories(${XercesC_INCLUDE_DIRS})
-SET( XML_LIBS "-L$ENV{XERCES_C_HOME}/lib -lxerces-c" )
+set(XML_LIBS ${XercesC_LIBRARIES})
 
 #-----
 #Quasar server libs
 #-----
-SET( QUASAR_SERVER_LIBS "-L$ENV{LIBSSL_HOME}/lib64 -lssl -lcrypto 
-                         -lpthread" )
+set(QUASAR_SERVER_LIBS
+    -L$ENV{LIBSSL_HOME}/lib64
+    -lssl
+    -lcrypto
+    -lpthread
+)
