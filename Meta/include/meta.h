@@ -38,16 +38,14 @@ namespace Meta
 	AddressSpaceType* findStandardMetaDataChildObject(AddressSpace::ASNodeManager *nm, const std::string& childName)
 	{
 		const std::string fullChildName = "StandardMetaData."+childName;
-		std::vector<AddressSpaceType*> children;
-		AddressSpace::findAllObjectsByPatternInNodeManager(nm, fullChildName, children);
 
-		if(children.size() != 1)
+		if (auto* r = AddressSpace::findByStringId<AddressSpaceType>(nm, fullChildName))
 		{
-			LOG(Log::ERR) << __FUNCTION__ << " searched AS for objects matching ["<<fullChildName<<"] found ["<<children.size()<<"] expected exactly [1], this is a configuration error - exiting!";
-			std::exit(1);
+			return r;
 		}
 
-		return children[0];
+		LOG(Log::ERR) << __FUNCTION__ << " searched AS for objects matching ["<<fullChildName<<"] and it was not found, this is a configuration error - exiting!";
+		std::exit(1);
+		
 	};
 } // namespace Meta
-
