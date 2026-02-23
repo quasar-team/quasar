@@ -9,7 +9,8 @@ variables:
   variables:
     OPEN62541_COMPAT_VERSION: "new-pipeline"
   before_script:
-    - python --version
+    - git submodule update --init --recursive
+    - pip install pygit2
     - git submodule update --init --recursive
     - git clone --depth=1 https://github.com/quasar-team/NodeSetTools.git
     - |
@@ -26,7 +27,8 @@ variables:
   variables:
     OPEN62541_COMPAT_VERSION: "new-pipeline"
   before_script:
-    - python --version
+    - git submodule update --init --recursive
+    - python -m pip install pygit2
     - git submodule update --init --recursive
     - git clone --depth=1 https://github.com/quasar-team/NodeSetTools.git
     - |
