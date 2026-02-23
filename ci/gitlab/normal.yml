@@ -1,7 +1,8 @@
 variables:
   WIN2025_IMAGE: "gitlab-registry.cern.ch/quasar-team/images/win2025-build:latest"
   ALMA10_IMAGE: "gitlab-registry.cern.ch/quasar-team/images/alma-10-build:latest"
-
+  UASWISSARMYKNIFE_WINDOWS: "https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/47865/download"
+  UASWISSARMYKNIFE_LINUX: "https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/47864/download"
 .exec_base_linux:
   stage: unstagged
   image: $ALMA10_IMAGE
@@ -13,7 +14,7 @@ variables:
     - git clone --depth=1 https://github.com/quasar-team/NodeSetTools.git
     - |
       # Install UaSwissArmyKnife dependency used by CI jobs
-      curl -fL "https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/47559/download" -o /tmp/UaSwissArmyKnife.rpm
+      curl -fL "$UASWISSARMYKNIFE_LINUX" -o /tmp/UaSwissArmyKnife.rpm
       dnf install -y /tmp/UaSwissArmyKnife.rpm
       export PATH="/opt/UaSwissArmyKnife/bin:${PATH}"
 
@@ -29,7 +30,7 @@ variables:
     - git submodule update --init --recursive
     - git clone --depth=1 https://github.com/quasar-team/NodeSetTools.git
     - |
-      curl.exe -fL "https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/47560/download" -o "$env:TEMP\UaSwissArmyKnife.zip"
+      curl.exe -fL $env:UASWISSARMYKNIFE_WINDOWS -o "$env:TEMP\UaSwissArmyKnife.zip"
       if (Test-Path "C:\UaSwissArmyKnife") { Remove-Item -Recurse -Force "C:\UaSwissArmyKnife" }
       Expand-Archive -Path "$env:TEMP\UaSwissArmyKnife.zip" -DestinationPath "C:\UaSwissArmyKnife" -Force
       $env:PATH = "C:\UaSwissArmyKnife\bin;$env:PATH"
