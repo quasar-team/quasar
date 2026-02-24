@@ -199,16 +199,14 @@ namespace AddressSpace
         {
             ABORT_MESSAGE(CONCAT3(" REGEX Expression is wrong:",pattern,e.what()));
         }
-        UaNode* objectsFolder = nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
-#ifndef BACKEND_OPEN62541
-        if (!objectsFolder)
-        {
-            if (auto* rootNm = NodeManagerRoot::CreateRootNodeManager())
-            {
-                objectsFolder = rootNm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
-            }
-        }
-#endif
+
+#ifdef BACKEND_OPEN62541        
+        auto objectsFolder = nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
+#else // BACKEND_OPEN62541
+        auto rootNm = NodeManagerRoot::CreateRootNodeManager();
+        auto objectsFolder = rootNm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
+#endif // BACKEND_OPEN62541
+
         int numReferenced = findAllByRegex<T> (nm, objectsFolder, OpcUa_NodeClass_Object, expression, storage);
         int numUnreferenced = 0;
         auto& unreferencedNodes = nm->getUnreferencedNodes();
