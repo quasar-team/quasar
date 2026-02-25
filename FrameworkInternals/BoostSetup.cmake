@@ -33,7 +33,7 @@ if(NOT DEFINED BOOST_LIBS)
     set(Boost_USE_STATIC_RUNTIME ON)
     set(Boost_USE_STATIC_LIBS ON)
 
-    set(_QUASAR_BOOST_COMPONENTS regex chrono program_options thread ${ADDITIONAL_BOOST_LIBS})
+    set(_QUASAR_BOOST_COMPONENTS regex chrono program_options thread log ${ADDITIONAL_BOOST_LIBS})
     find_package(Boost CONFIG REQUIRED COMPONENTS ${_QUASAR_BOOST_COMPONENTS})
     if(NOT Boost_FOUND)
         message(FATAL_ERROR "Failed to find boost installation.")
@@ -44,7 +44,8 @@ if(NOT DEFINED BOOST_LIBS)
             Boost::regex
             Boost::chrono
             Boost::program_options
-            Boost::thread)
+            Boost::thread
+            Boost::log)
         foreach(BOOST_COMPONENT IN LISTS ADDITIONAL_BOOST_LIBS)
             list(APPEND BOOST_LIBS Boost::${BOOST_COMPONENT})
         endforeach()
