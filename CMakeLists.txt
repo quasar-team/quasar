@@ -25,6 +25,8 @@ project(opc_ua)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_link_options($<$<CXX_COMPILER_ID:MSVC>:/VERBOSE:LIB>)
+
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
 	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
 else()
@@ -66,6 +68,18 @@ find_package(XercesC REQUIRED)
 message(STATUS "Found xerces-c: ${XercesC_INCLUDE_DIRS}")
 include_directories(${XercesC_INCLUDE_DIRS})
 
+if(DEFINED ENV{XSD_HOME})
+    include_directories($ENV{XSD_HOME}/include)
+endif()
+
+if(WIN32)
+    add_definitions(-DNOMINMAX)
+endif()
+
+if(MSVC)
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+endif()
+
 if(DEFINED ENV{LIBSSL_HOME})
   if(NOT DEFINED OPENSSL_ROOT_DIR OR OPENSSL_ROOT_DIR STREQUAL "")
     set(OPENSSL_ROOT_DIR "$ENV{LIBSSL_HOME}")
@@ -76,12 +90,13 @@ if(DEFINED ENV{LIBSSL_HOME})
   list(APPEND CMAKE_PREFIX_PATH "$ENV{LIBSSL_HOME}")
 endif()
 find_package(OpenSSL REQUIRED)
-message(STATUS "Found OpenSSL: ${OpenSSL_INCLUDE_DIRS}")
+message(STATUS "Found OpenSSL: ${OpenSSL}")
 
 IF(DEFINED ENV{LIBXML2_HOME})
+  message(STATUS "Using libxml2 from path $ENV{LIBXML2_HOME}")
   list(APPEND CMAKE_PREFIX_PATH $ENV{LIBXML2_HOME})
 endif()
-find_package(LibXml2 REQUIRED)
+find_package(LibXml2 CONFIG REQUIRED)
 message(STATUS "Found libxml2: ${LIBXML2_INCLUDE_DIRS}")
 include_directories(${LIBXML2_INCLUDE_DIRS})
 
@@ -227,7 +242,18 @@ if(ENABLE_QUASAR_SANITIZERS)
     enable_quasar_sanitizers(${EXECUTABLE})
 endif()
 
+message(STATUS "Target Link Libraries: ${TARGET_LIBS}")
+
 target_link_libraries ( ${EXECUTABLE} PRIVATE ${TARGET_LIBS} )
+
+
+## HACK TO REMOVE
+target_link_options(OpcUaServer PRIVATE
+  /NODEFAULTLIB:libboost_thread-vc143-mt-s-x64-1_90.lib
+  /NODEFAULTLIB:libboost_program_options-vc143-mt-s-x64-1_90.lib
+  /NODEFAULTLIB:libboost_chrono-vc143-mt-s-x64-1_90.lib
+)
+
 
 if(BUILD_SERVER_SHARED_LIB)
         set( SERVER_SHARED_LIB_TARGET "${EXECUTABLE}Object" )
