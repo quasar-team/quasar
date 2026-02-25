@@ -19,6 +19,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 '''
 
 import os
+import re
 import subprocess
 import platform
 from glob import glob
@@ -55,8 +56,8 @@ def _getEnabledModules():
             print("Error reading min version info for module "+module)
             return None
         if not tag:
-            print("Error reading tag/branch info for module "+module)
-            return None
+            tag = "master"
+            print("Warning: no tag specified for module "+module+", defaulting to master")
         enabledModules[module] = {"tag":tag, "minVersion":minVersion}
     os.chdir(baseDirectory)
     return enabledModules
@@ -174,6 +175,16 @@ def enableModule(moduleName, tag="master", serverString=""):
     # Check tag to be existing
     #
     if not _checkTagExists(moduleInfo[moduleName]["url"], tag): return
+
+    # Check against minVersion (only for version-like tags, skip branch names)
+    minVersionFile = os.path.join("FrameworkInternals", "EnabledModules", moduleName + ".minVersion")
+    tagVer = tag.lstrip("v")
+    if os.path.exists(minVersionFile) and re.match(r'^\d', tagVer):
+        minVer = open(minVersionFile).readline().rstrip()
+        if minVer and parse_version(tagVer) < parse_version(minVer):
+            print("Error: tag " + tag + " is below minimum required version " + minVer + " for module " + moduleName)
+            print("Use at least: ./quasar.py enable_module " + moduleName + " v" + minVer)
+            return False
 
     baseDirectory = os.getcwd()
     fwInternalsDir = baseDirectory + os.path.sep + "FrameworkInternals"
