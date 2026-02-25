@@ -248,11 +248,13 @@ target_link_libraries ( ${EXECUTABLE} PRIVATE ${TARGET_LIBS} )
 
 
 ## HACK TO REMOVE
-target_link_options(OpcUaServer PRIVATE
-  /NODEFAULTLIB:libboost_thread-vc143-mt-s-x64-1_90.lib
-  /NODEFAULTLIB:libboost_program_options-vc143-mt-s-x64-1_90.lib
-  /NODEFAULTLIB:libboost_chrono-vc143-mt-s-x64-1_90.lib
-)
+if(MSVC)
+  target_link_options(OpcUaServer PRIVATE
+    /NODEFAULTLIB:libboost_thread-vc143-mt-s-x64-1_90.lib
+    /NODEFAULTLIB:libboost_program_options-vc143-mt-s-x64-1_90.lib
+    /NODEFAULTLIB:libboost_chrono-vc143-mt-s-x64-1_90.lib
+  )
+endif(MSVC)
 
 
 if(BUILD_SERVER_SHARED_LIB)
