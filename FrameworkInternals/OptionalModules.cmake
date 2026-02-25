@@ -38,6 +38,19 @@ foreach(moduleFile ${OPTIONAL_SERVER_MODULE_URLS})
     if (EXISTS ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME})
        message("Module ${module} was added.")
        execute_process(COMMAND git remote set-url --push origin push-disabled WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${OPT_MODULE_NAME})
+       # Version enforcement: reject modules below minimum required version
+       file(STRINGS FrameworkInternals/EnabledModules/${module}.minVersion OPT_MODULE_MIN_VERSION)
+       if(OPT_MODULE_TAG AND OPT_MODULE_MIN_VERSION)
+           string(REGEX REPLACE "^v" "" TAG_VERSION "${OPT_MODULE_TAG}")
+           # Only compare if tag looks like a version number (starts with digit), skip branch names like "master"
+           if(TAG_VERSION MATCHES "^[0-9]")
+               if(TAG_VERSION VERSION_LESS OPT_MODULE_MIN_VERSION)
+                   message(FATAL_ERROR
+                       "Module ${module}: tag ${OPT_MODULE_TAG} is below minimum required ${OPT_MODULE_MIN_VERSION}. "
+                       "Run: ./quasar.py enable_module ${module} v${OPT_MODULE_MIN_VERSION} (or newer)")
+               endif()
+           endif()
+       endif()
     else()
        message("Error, module ${module} was not properly fetched. Please check FrameworkInternals/EnabledModules/${module}_download.log for errors.")
     endif()
