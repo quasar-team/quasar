@@ -24,12 +24,10 @@ def prepare_opcua_backend(opcua_backend, open62541_compat_branch):
         print(f'{Fore.BLUE}{Style.BRIGHT}Enabling open62541-compat module with branch{Style.RESET_ALL} {open62541_compat_branch}')
         invoke_and_check(f'python ./quasar.py enable_module open62541-compat {open62541_compat_branch}')
         print(f'{Fore.BLUE}{Style.BRIGHT}Setting build config to open62541_config.cmake{Style.RESET_ALL}')
-        invoke_and_check(f'python ./quasar.py set_build_config open62541_config.cmake')
     elif opcua_backend == 'uasdk':
         print(f'{Fore.BLUE}{Style.BRIGHT}Disabling open62541-compat module{Style.RESET_ALL}')
         invoke_and_check(f'python ./quasar.py disable_module open62541-compat')
         print(f'{Fore.BLUE}{Style.BRIGHT}Setting build config to unified_automation_config.cmake{Style.RESET_ALL}')
-        invoke_and_check('python ./quasar.py set_build_config unified_automation_config.cmake')
     else:
         raise Exception(f"OPCUA backend {opcua_backend} was not recognized")
 

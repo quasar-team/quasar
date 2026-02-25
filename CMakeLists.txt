@@ -22,7 +22,36 @@
 cmake_minimum_required(VERSION 3.30)
 project(opc_ua)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
+	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
+else()
+     message(STATUS "Extra build configuration has not been chosen.")
+endif()
+
+include( ProjectSettings.cmake )
+
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+if(NOT DEFINED LOGIT_BACKEND_STDOUTLOG)
+    set(LOGIT_BACKEND_STDOUTLOG TRUE)
+endif()
+
+if(NOT DEFINED LOGIT_BACKEND_BOOSTLOG)
+    set(LOGIT_BACKEND_BOOSTLOG TRUE)
+endif()
+
+if(WIN32 AND NOT DEFINED LOGIT_BACKEND_WINDOWS_DEBUGGER)
+    set(LOGIT_BACKEND_WINDOWS_DEBUGGER TRUE)
+endif()
+
+set(QUASAR_GLOBAL_COMPILE_DEFINITIONS
+    SUPPORT_XML_CONFIG)
+set(QUASAR_GLOBAL_COMPILE_OPTIONS)
+set(QUASAR_GLOBAL_INCLUDE_DIRECTORIES)
 
 if(NOT ${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 message("Building out-of-source")
@@ -30,35 +59,51 @@ message("PROJECT_SOURCE_DIR= ${PROJECT_SOURCE_DIR}")
 message("PROJECT_BINARY_DIR= ${PROJECT_BINARY_DIR}")
 endif()
 
-add_definitions(
-	-DSUPPORT_XML_CONFIG
-	-DNOMINMAX  # doesn't include windows' min() and max() which break std c++ code. Should be neutral to non-windows code.
-)
-
-if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
-	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
-else()
-     message(FATAL_ERROR "Build configuration has not been chosen yet. Please run 'quasar.py set_build_config'")
+if(DEFINED ENV{XERCES_C_HOME})
+   list(APPEND CMAKE_PREFIX_PATH $ENV{XERCES_C_HOME})
 endif()
+find_package(XercesC REQUIRED)
+message(STATUS "Found xerces-c: ${XercesC_INCLUDE_DIRS}")
+include_directories(${XercesC_INCLUDE_DIRS})
 
-include( ProjectSettings.cmake )
+if(DEFINED ENV{LIBSSL_HOME})
+  if(NOT DEFINED OPENSSL_ROOT_DIR OR OPENSSL_ROOT_DIR STREQUAL "")
+    set(OPENSSL_ROOT_DIR "$ENV{LIBSSL_HOME}")
+  endif()
+  if(NOT DEFINED OPENSSL_USE_STATIC_LIBS)
+    set(OPENSSL_USE_STATIC_LIBS TRUE)
+  endif()
+  list(APPEND CMAKE_PREFIX_PATH "$ENV{LIBSSL_HOME}")
+endif()
+find_package(OpenSSL REQUIRED)
+message(STATUS "Found OpenSSL: ${OpenSSL_INCLUDE_DIRS}")
+
+IF(DEFINED ENV{LIBXML2_HOME})
+  list(APPEND CMAKE_PREFIX_PATH $ENV{LIBXML2_HOME})
+endif()
+find_package(LibXml2 REQUIRED)
+message(STATUS "Found libxml2: ${LIBXML2_INCLUDE_DIRS}")
+include_directories(${LIBXML2_INCLUDE_DIRS})
 
 if(${BUILD_SERVER_SHARED_LIB})
-	add_definitions(-DBUILDING_SHARED_OBJECT)
+	list(APPEND QUASAR_GLOBAL_COMPILE_DEFINITIONS BUILDING_SHARED_OBJECT)
 endif(${BUILD_SERVER_SHARED_LIB})
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/FrameworkInternals/EnabledModules/open62541-compat.url")
   set(BACKEND_OPEN62541 ON)
   message(STATUS "Using open62541 backend (enabled module)")
+  include_directories( ${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/include )
 else()
   set(BACKEND_UATOOLKIT ON)
-  if(UNIX)
-    find_package(OpcUaToolkit REQUIRED)
-    message(STATUS "Using UA Toolkit backend with FindOpcUaToolkit")
-  else()
-    message(STATUS "Using UA Toolkit backend with platform-specific configuration")
+  if(NOT DEFINED LOGIT_BACKEND_UATRACE)
+    set(LOGIT_BACKEND_UATRACE TRUE)
   endif()
-  add_definitions(-DBACKEND_UATOOLKIT)
+  find_package(OpcUaToolkit REQUIRED)
+  message(STATUS "Using UA Toolkit backend with FindOpcUaToolkit")
+endif()
+
+if(DEFINED ENV{XERCES_C_HOME})
+   list(APPEND CMAKE_PREFIX_PATH $ENV{XERCES_C_HOME})
 endif()
 
 if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP STREQUAL "OFF" ) )
@@ -66,24 +111,20 @@ if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP S
     include( FrameworkInternals/BoostSetup.cmake )
 else()
     message( STATUS "Automatic boost setup was set to be ignored (IGNORE_DEFAULT_BOOST_SETUP). Boost libs and includes must be defined elsewhere (e.g. in the build config)." )
-    include_directories(${BOOST_PATH_HEADERS})  # this falls back to the old solution when we didn't yet use find_package(Boost)
+    list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${BOOST_PATH_HEADERS})  # fallback for old build configs
 endif()
 
 set(PYTHON_COMMAND python)
 set(DESIGN_FILE ${PROJECT_BINARY_DIR}/Design/DesignWithMeta.xml)
 
-include_directories (
+list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES
 	${PROJECT_BINARY_DIR}/Device/generated
 	${PROJECT_SOURCE_DIR}/Configuration  # this is to cover Configurator.h
 	${PROJECT_BINARY_DIR}/Configuration
+	${OPCUATOOLKIT_INCLUDE_DIRS}
 	${SERVER_INCLUDE_DIRECTORIES}
-	)
+)
 
-if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG} )
-else(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
-endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 
 set(QUASAR_TRANSFORM_SENSITIVE_FILES
 	${PROJECT_SOURCE_DIR}/FrameworkInternals/transformDesign.py
@@ -103,20 +144,36 @@ foreach(module ${SERVER_MODULES})
     FILE(GLOB SUBMODULE_INCLUDES ${PROJECT_SOURCE_DIR}/${module}/*/include)
     set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${PROJECT_BINARY_DIR}/${module}/include ${SUBMODULE_INCLUDES})
 endforeach(module)
-foreach(include ${MODULE_INCLUDES})
-    include_directories(${include})
-endforeach(include)
+
+list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${MODULE_INCLUDES})
+
+add_library(quasar_project_options INTERFACE)
+if(QUASAR_GLOBAL_COMPILE_DEFINITIONS)
+    target_compile_definitions(quasar_project_options INTERFACE ${QUASAR_GLOBAL_COMPILE_DEFINITIONS})
+endif()
+if(QUASAR_GLOBAL_COMPILE_OPTIONS)
+    target_compile_options(quasar_project_options INTERFACE ${QUASAR_GLOBAL_COMPILE_OPTIONS})
+endif()
+if(QUASAR_GLOBAL_INCLUDE_DIRECTORIES)
+    target_include_directories(quasar_project_options INTERFACE ${QUASAR_GLOBAL_INCLUDE_DIRECTORIES})
+endif()
 
 # add all module directories and add module objects
 set(MODULES_IN_SOURCE_DIR ${NATIVE_SERVER_MODULES} ${CUSTOM_SERVER_MODULES})
 foreach(module ${MODULES_IN_SOURCE_DIR})
     add_subdirectory( ${module} )
+    if(TARGET ${module})
+        target_link_libraries(${module} PRIVATE quasar_project_options)
+    endif()
     set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
     add_dependencies( ${module} quasar_opcua_backend_is_ready )
 endforeach(module)
 
 foreach(module ${OPTIONAL_SERVER_MODULES})
     add_subdirectory( ${PROJECT_BINARY_DIR}/${module} ${PROJECT_BINARY_DIR}/${module} )  # listed twice, 1st is SOURCE_DIR 2nd is BINARY_DIR
+    if(TARGET ${module})
+        target_link_libraries(${module} PRIVATE quasar_project_options)
+    endif()
     set(MODULES_OBJECTS ${MODULES_OBJECTS} $<TARGET_OBJECTS:${module}>)
 endforeach(module)
 
@@ -130,21 +187,32 @@ add_custom_command(
     )
 add_custom_target(validateDesign DEPENDS  ${PROJECT_BINARY_DIR}/Design/validated.tmp )
 
-link_directories(
-	${OPCUA_TOOLKIT_PATH}/lib
-	${BOOST_PATH_LIBS}
-	${SERVER_LINK_DIRECTORIES}
-)
+
+set(QUASAR_TARGET_LINK_DIRECTORIES ${BOOST_PATH_LIBS} ${SERVER_LINK_DIRECTORIES})
+if(DEFINED OPCUA_TOOLKIT_PATH AND NOT OPCUA_TOOLKIT_PATH STREQUAL "")
+    list(APPEND QUASAR_TARGET_LINK_DIRECTORIES ${OPCUA_TOOLKIT_PATH}/lib)
+endif()
+list(REMOVE_DUPLICATES QUASAR_TARGET_LINK_DIRECTORIES)
 add_executable ( ${EXECUTABLE}
 	${MODULES_OBJECTS}
 	)
 set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
+target_link_libraries(${EXECUTABLE} PRIVATE quasar_project_options)
+if(QUASAR_TARGET_LINK_DIRECTORIES)
+    target_link_directories(${EXECUTABLE} PRIVATE ${QUASAR_TARGET_LINK_DIRECTORIES})
+endif()
+
+find_package(Threads REQUIRED)
+
 
 set(TARGET_LIBS
         ${BOOST_LIBS}
-        ${XML_LIBS}
-        ${OPCUA_TOOLKIT_LIBS}
-        ${QUASAR_SERVER_LIBS}
+        ${OPCUATOOLKIT_LIBRARIES}
+        XercesC::XercesC
+        Threads::Threads
+        OpenSSL::SSL
+        OpenSSL::Crypto
+        LibXml2::LibXml2
         ${SERVER_LINK_LIBRARIES}
         )
 
@@ -155,13 +223,17 @@ if(ENABLE_QUASAR_SANITIZERS)
     enable_quasar_sanitizers(${EXECUTABLE})
 endif()
 
-target_link_libraries ( ${EXECUTABLE} ${TARGET_LIBS} )
+target_link_libraries ( ${EXECUTABLE} PRIVATE ${TARGET_LIBS} )
 
 if(BUILD_SERVER_SHARED_LIB)
         set( SERVER_SHARED_LIB_TARGET "${EXECUTABLE}Object" )
         add_library ( ${SERVER_SHARED_LIB_TARGET} SHARED ${MODULES_OBJECTS} )
         set_target_properties( ${SERVER_SHARED_LIB_TARGET} PROPERTIES LIBRARY_OUTPUT_DIRECTORY bin/ )
-	target_link_libraries( ${SERVER_SHARED_LIB_TARGET} ${TARGET_LIBS})
+        target_link_libraries(${SERVER_SHARED_LIB_TARGET} PRIVATE quasar_project_options)
+        if(QUASAR_TARGET_LINK_DIRECTORIES)
+            target_link_directories(${SERVER_SHARED_LIB_TARGET} PRIVATE ${QUASAR_TARGET_LINK_DIRECTORIES})
+        endif()
+	target_link_libraries( ${SERVER_SHARED_LIB_TARGET} PRIVATE ${TARGET_LIBS})
 endif(BUILD_SERVER_SHARED_LIB)
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/CMakeEpilogue.cmake)

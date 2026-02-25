@@ -667,12 +667,6 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
-            "default_configuration.cmake": {
-                "install": "overwrite",
-                "md5": "a5e9979a8dc3a4353ebde4d84ae61bad",
-                "must_be_versioned": true,
-                "must_exist": true
-            },
             "designTools.py": {
                 "install": "overwrite",
                 "md5": "d76ad22236408165d90a571078111f12",
