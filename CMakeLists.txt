@@ -27,7 +27,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_link_options($<$<CXX_COMPILER_ID:MSVC>:/VERBOSE:LIB>)
 
-set(SERVERCONFIG_LOADER OFF) ## TODO: this is not working with ON, investigate and fix
+set(SERVERCONFIG_LOADER ON) ## TODO: this is not working with ON, investigate and fix
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
 	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
@@ -41,37 +41,32 @@ include( ProjectSettings.cmake )
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 if(NOT DEFINED LOGIT_BACKEND_STDOUTLOG)
-    set(LOGIT_BACKEND_STDOUTLOG TRUE)
+    set(LOGIT_BACKEND_STDOUTLOG ON)
 endif()
 
 if(NOT DEFINED LOGIT_BACKEND_BOOSTLOG)
-    set(LOGIT_BACKEND_BOOSTLOG TRUE)
+    set(LOGIT_BACKEND_BOOSTLOG ON)
 endif()
 
 if(WIN32 AND NOT DEFINED LOGIT_BACKEND_WINDOWS_DEBUGGER)
-    set(LOGIT_BACKEND_WINDOWS_DEBUGGER TRUE)
+    set(LOGIT_BACKEND_WINDOWS_DEBUGGER ON)
 endif()
 
-set(QUASAR_GLOBAL_COMPILE_DEFINITIONS
-    SUPPORT_XML_CONFIG)
-set(QUASAR_GLOBAL_COMPILE_OPTIONS)
-set(QUASAR_GLOBAL_INCLUDE_DIRECTORIES)
-
 if(NOT ${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
-message("Building out-of-source")
+message("Building:")
 message("PROJECT_SOURCE_DIR= ${PROJECT_SOURCE_DIR}")
 message("PROJECT_BINARY_DIR= ${PROJECT_BINARY_DIR}")
 endif()
 
 if(DEFINED ENV{XERCES_C_HOME})
-   list(APPEND CMAKE_PREFIX_PATH $ENV{XERCES_C_HOME})
+   set (XercesC_ROOT $ENV{XERCES_C_HOME})
 endif()
 find_package(XercesC REQUIRED)
 message(STATUS "Found xerces-c: ${XercesC_INCLUDE_DIRS}")
-include_directories(${XercesC_INCLUDE_DIRS})
+list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${XercesC_INCLUDE_DIRS})
 
 if(DEFINED ENV{XSD_HOME})
-    include_directories($ENV{XSD_HOME}/include)
+    list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES $ENV{XSD_HOME}/include)
 endif()
 
 if(WIN32)
@@ -83,24 +78,23 @@ if(MSVC)
 endif()
 
 if(DEFINED ENV{LIBSSL_HOME})
-  if(NOT DEFINED OPENSSL_ROOT_DIR OR OPENSSL_ROOT_DIR STREQUAL "")
-    set(OPENSSL_ROOT_DIR "$ENV{LIBSSL_HOME}")
+  if(NOT DEFINED OPENSSL_ROOT OR OPENSSL_ROOT STREQUAL "")
+    set(OpenSSL_ROOT "$ENV{LIBSSL_HOME}")
   endif()
   if(NOT DEFINED OPENSSL_USE_STATIC_LIBS)
     set(OPENSSL_USE_STATIC_LIBS TRUE)
   endif()
-  list(APPEND CMAKE_PREFIX_PATH "$ENV{LIBSSL_HOME}")
 endif()
 find_package(OpenSSL REQUIRED)
-message(STATUS "Found OpenSSL: ${OpenSSL}")
+message(STATUS "Found OpenSSL: ${OpenSSL_VERSION}")
 
 IF(DEFINED ENV{LIBXML2_HOME})
   message(STATUS "Using libxml2 from path $ENV{LIBXML2_HOME}")
-  list(APPEND CMAKE_PREFIX_PATH $ENV{LIBXML2_HOME})
+  set(LibXml2_ROOT $ENV{LIBXML2_HOME})
 endif()
 find_package(LibXml2 CONFIG REQUIRED)
 message(STATUS "Found libxml2: ${LIBXML2_INCLUDE_DIRS}")
-include_directories(${LIBXML2_INCLUDE_DIRS})
+list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${LIBXML2_INCLUDE_DIRS})
 
 if(${BUILD_SERVER_SHARED_LIB})
 	list(APPEND QUASAR_GLOBAL_COMPILE_DEFINITIONS BUILDING_SHARED_OBJECT)
@@ -110,16 +104,14 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/FrameworkInternals/EnabledModules/open62541-com
   set(BACKEND_OPEN62541 ON)
   add_definitions( -DBACKEND_OPEN62541 )
   message(STATUS "Using open62541 backend (enabled module)")
-  list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES
-  include_directories( ${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/include )
-  )
+  list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/include )
 else()
   set(BACKEND_UATOOLKIT ON)
   add_definitions( -DBACKEND_UATOOLKIT )
   if(NOT DEFINED LOGIT_BACKEND_UATRACE)
-    set(LOGIT_BACKEND_UATRACE TRUE)
+    set(LOGIT_BACKEND_UATRACE ON)
   endif()
-  find_package(OpcUaToolkit REQUIRED)
+  find_package(OpcUaToolkit CONFIG REQUIRED)
   message(STATUS "Using UA Toolkit backend with FindOpcUaToolkit")
 endif()
 
