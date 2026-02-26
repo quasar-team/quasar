@@ -27,6 +27,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_link_options($<$<CXX_COMPILER_ID:MSVC>:/VERBOSE:LIB>)
 
+set(SERVERCONFIG_LOADER ON)
+
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
 	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
 else()
