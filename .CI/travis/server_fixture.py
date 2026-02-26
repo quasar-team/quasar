@@ -68,7 +68,7 @@ def main():
 
     os.chdir(os.path.sep.join(['build', 'bin']))
 
-    executable = 'OpcUaServer.exe' if sys.platform == 'win32' else './OpcUaServer'
+    executable = 'Release/OpcUaServer.exe' if sys.platform == 'win32' else './OpcUaServer'
     process = subprocess.Popen(executable)
 
     print_msg('Server process was run under PID: {0}'.format(process.pid))
