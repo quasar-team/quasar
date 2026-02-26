@@ -31,7 +31,7 @@ variables:
       curl.exe -fL https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/47865/download -o "$env:TEMP\UaSwissArmyKnife.zip"
       if (Test-Path "C:\UaSwissArmyKnife") { Remove-Item -Recurse -Force "C:\UaSwissArmyKnife" }
       Expand-Archive -Path "$env:TEMP\UaSwissArmyKnife.zip" -DestinationPath "C:\" -Force
-      $folder = (Resolve-Path "C:\UaSwissArmyKnife\UaSwissArmyKnife*").Path
+      $folder = (Resolve-Path "C:\UaSwissArmyKnife*").Path
       $env:PATH = "$folder\bin;$env:PATH"
 
 # 'Linux Open62541: Default Quasar Design':
