@@ -99,6 +99,8 @@ namespace AddressSpace
         UaStatus {{ oracle.get_cache_variable_setter(cv.get('name'), None, True, True) }};
       {% endif %}
     {% endif %}
+    /* status code getter (always generated, type-agnostic) */
+    OpcUa_StatusCode getStatusCodeOf{{cv.get('name')|capFirst}} () const;
 
   {% endfor %}
 
