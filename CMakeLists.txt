@@ -25,8 +25,6 @@ project(opc_ua)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_link_options($<$<CXX_COMPILER_ID:MSVC>:/VERBOSE:LIB>)
-
 # This should be on, so open6-compat behave the same as UA Toolkit backend
 set(SERVERCONFIG_LOADER ON)
 
@@ -71,13 +69,12 @@ if(DEFINED ENV{XSD_HOME})
     list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES $ENV{XSD_HOME}/include)
 endif()
 
-if(WIN32)
-    add_definitions(-DNOMINMAX -DWIN32_LEAN_AND_MEAN -DNOGDI)
+if(WIN32 AND MSVC)
+    add_definitions(-DNOMINMAX -DWIN32_LEAN_AND_MEAN -DNOGDI) # Prevent collisions due to windows.h
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded") # Windows shared library not supported
+    add_compile_definitions(BOOST_ALL_NO_LIB) # Remove with Boost 9.0.1 or higher
 endif()
 
-if(MSVC)
-  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
-endif()
 
 if(DEFINED ENV{LIBSSL_HOME})
   if(NOT DEFINED OPENSSL_ROOT OR OPENSSL_ROOT STREQUAL "")
@@ -252,17 +249,6 @@ endif()
 message(STATUS "Target Link Libraries: ${TARGET_LIBS}")
 
 target_link_libraries ( ${EXECUTABLE} PRIVATE ${TARGET_LIBS} )
-
-
-## HACK TO REMOVE
-if(MSVC)
-  target_link_options(OpcUaServer PRIVATE
-    /NODEFAULTLIB:libboost_thread-vc143-mt-s-x64-1_90.lib
-    /NODEFAULTLIB:libboost_program_options-vc143-mt-s-x64-1_90.lib
-    /NODEFAULTLIB:libboost_chrono-vc143-mt-s-x64-1_90.lib
-  )
-endif(MSVC)
-
 
 if(BUILD_SERVER_SHARED_LIB)
         set( SERVER_SHARED_LIB_TARGET "${EXECUTABLE}Object" )
