@@ -9,7 +9,32 @@ variables:
   variables:
     OPEN62541_COMPAT_VERSION: "new-pipeline"
   before_script:
-    - git submodule update --init --recursive
+    - git submodule update --remote --init --recursive
+    - git clone --depth=1 https://github.com/quasar-team/NodeSetTools.git
+    - |
+      # Install UaSwissArmyKnife dependency used by CI jobs
+      curl -fL "$UASWISSARMYKNIFE_LINUX" -o /tmp/UaSwissArmyKnife.rpm
+      dnf install -y /tmp/UaSwissArmyKnife.rpm
+      export PATH="/opt/UaSwissArmyKnife/bin:${PATH}"
+
+.exec_base_linux_alma10_base_o6:
+  stage: unstagged
+  image: gitlab-registry.cern.ch/linuxsupport/alma10-base:latest
+  variables:
+    OPEN62541_COMPAT_VERSION: "new-pipeline"
+  before_script:
+    - |
+      dnf install -q -y epel-release
+      dnf update -q -y
+      dnf install -q -y \
+        cmake ninja-build g++ automake autoconf libtool \
+        cppcheck nano git git-lfs patch graphviz xsd astyle \
+        python python-pip python-devel doxygen perl \
+        curl tar unzip which rpm-build \
+        boost-devel openssl-devel libxml2-devel net-snmp-devel xerces-c-devel
+      dnf clean all
+    - pip install --quiet pre-commit clang-format pytest pybind11 colorama jinja2 lxml pygit2
+    - git submodule update --remote --init --recursive
     - git clone --depth=1 https://github.com/quasar-team/NodeSetTools.git
     - |
       # Install UaSwissArmyKnife dependency used by CI jobs
@@ -25,7 +50,7 @@ variables:
   variables:
     OPEN62541_COMPAT_VERSION: "new-pipeline"
   before_script:
-    - git submodule update --init --recursive
+    - git submodule update --remote --init --recursive
     - git clone --depth=1 https://github.com/quasar-team/NodeSetTools.git
     - |
       curl.exe -fL https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/47865/download -o "$env:TEMP\UaSwissArmyKnife.zip"
@@ -36,6 +61,11 @@ variables:
 
 'Linux Open62541: Default Quasar Design':
   extends: .exec_base_linux
+  script:
+    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml
+
+'Linux Open62541: Default Quasar Design (Alma10 Base)':
+  extends: .exec_base_linux_alma10_base_o6
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml
 
