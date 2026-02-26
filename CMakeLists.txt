@@ -27,7 +27,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_link_options($<$<CXX_COMPILER_ID:MSVC>:/VERBOSE:LIB>)
 
-set(SERVERCONFIG_LOADER ON) ## TODO: this is not working with ON, investigate and fix
+# This should be on, so open6-compat behave the same as UA Toolkit backend
+set(SERVERCONFIG_LOADER ON)
+
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
 	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
@@ -70,7 +72,7 @@ if(DEFINED ENV{XSD_HOME})
 endif()
 
 if(WIN32)
-    add_definitions(-DNOMINMAX -DWIN32_LEAN_AND_MEAN)
+    add_definitions(-DNOMINMAX -DWIN32_LEAN_AND_MEAN -DNOGDI)
 endif()
 
 if(MSVC)
