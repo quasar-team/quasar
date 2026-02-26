@@ -626,6 +626,15 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
 
     {% endfor %}
 
+{### STATUS CODE GETTERS ###}
+    /* generate status code getters */
+    {% for cv in this.cachevariable %}
+      OpcUa_StatusCode AS{{className}}::getStatusCodeOf{{cv.get('name')|capFirst}} () const
+      {
+        return m_{{cv.get('name')}}->value(/*session*/ nullptr).statusCode();
+      }
+
+    {% endfor %}
 
 {### ARRAY UTILS, TODO @pnikiel this should be moved to CONFIG VALIDATOR ###}
     {% for cv in this.cachevariable %}
