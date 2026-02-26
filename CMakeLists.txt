@@ -110,7 +110,7 @@ else()
   if(NOT DEFINED LOGIT_BACKEND_UATRACE)
     set(LOGIT_BACKEND_UATRACE ON)
   endif()
-  find_package(OpcUaToolkit CONFIG REQUIRED)
+  find_package(OpcUaToolkit REQUIRED)
   message(STATUS "Using UA Toolkit backend with FindOpcUaToolkit")
 endif()
 
