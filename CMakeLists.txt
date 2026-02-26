@@ -27,7 +27,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_link_options($<$<CXX_COMPILER_ID:MSVC>:/VERBOSE:LIB>)
 
-set(SERVERCONFIG_LOADER ON)
+set(SERVERCONFIG_LOADER OFF) ## TODO: this is not working with ON, investigate and fix
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
 	  include( ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake )
@@ -75,7 +75,7 @@ if(DEFINED ENV{XSD_HOME})
 endif()
 
 if(WIN32)
-    add_definitions(-DNOMINMAX)
+    add_definitions(-DNOMINMAX -DWIN32_LEAN_AND_MEAN)
 endif()
 
 if(MSVC)
@@ -121,10 +121,6 @@ else()
   endif()
   find_package(OpcUaToolkit REQUIRED)
   message(STATUS "Using UA Toolkit backend with FindOpcUaToolkit")
-endif()
-
-if(DEFINED ENV{XERCES_C_HOME})
-   list(APPEND CMAKE_PREFIX_PATH $ENV{XERCES_C_HOME})
 endif()
 
 if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP STREQUAL "OFF" ) )

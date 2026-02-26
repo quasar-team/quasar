@@ -35,7 +35,7 @@ def build():
     invoke_and_check('python ./quasar.py build Release')
 
 def run_and_dump_address_space():
-    invoke_and_check('python ./.CI/travis/server_fixture.py --command_to_run uasak_dump')
+    invoke_and_check('python ./.CI/travis/server_fixture.py --command_to_run uasak_dump.exe')
 
 def compare_with_nodeset(reference_ns):
     invoke_and_check(f'python ./NodeSetTools/nodeset_compare.py {reference_ns} build/bin/dump.xml --ignore_nodeids StandardMetaData')

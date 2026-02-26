@@ -94,7 +94,7 @@ def main():
         make_sure_the_bastard_dies(process)
         if process.returncode == 0:
             print_msg('Server exited, return code zero.')
-        else:
+        elif sys.platform != 'win32': # Only for Linux, on Windows the return code is always 1 as far seen:
             print_msg('Server exited with invalid return code of {0}'.format(process.returncode))
             sys.exit(1)
 
