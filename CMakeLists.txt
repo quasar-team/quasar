@@ -210,10 +210,25 @@ if(DEFINED OPCUA_TOOLKIT_PATH AND NOT OPCUA_TOOLKIT_PATH STREQUAL "")
     list(APPEND QUASAR_TARGET_LINK_DIRECTORIES ${OPCUA_TOOLKIT_PATH}/lib)
 endif()
 list(REMOVE_DUPLICATES QUASAR_TARGET_LINK_DIRECTORIES)
+
 add_executable ( ${EXECUTABLE}
 	${MODULES_OBJECTS}
 	)
-set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
+
+# By default, Visual Studio will create subfolders for the binaries (Release, Debug),
+# the code below overrides this and forces all binaries to be created in the same folder, which is bin/
+if (MSVC)
+    set_target_properties(${EXECUTABLE} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY                "${PROJECT_BINARY_DIR}/bin"
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG          "${PROJECT_BINARY_DIR}/bin"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE        "${PROJECT_BINARY_DIR}/bin"
+    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${PROJECT_BINARY_DIR}/bin"
+    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL     "${PROJECT_BINARY_DIR}/bin"
+    )
+else()
+    set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
+endif()
+
 target_link_libraries(${EXECUTABLE} PRIVATE quasar_project_options)
 if(QUASAR_TARGET_LINK_DIRECTORIES)
     target_link_directories(${EXECUTABLE} PRIVATE ${QUASAR_TARGET_LINK_DIRECTORIES})
