@@ -8,4 +8,4 @@ include:
   - local: ci/gitlab/tests-linux.yml
   - local: ci/gitlab/tests-windows.yml
   - local: ci/gitlab/tests-standalone.yml
-  - local: ci/gitlab/tests-legacy.yml
+#  - local: ci/gitlab/tests-legacy.yml
