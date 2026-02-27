@@ -41,6 +41,14 @@
   script:
     - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --design .CI/test_cases/test_methods/Design.xml --generate_all_devices --config .CI/test_cases/test_methods/config.xml --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
 
+# Intentionally no 'Linux Open62541: Async Methods' job:
+# open62541 backend fails by design with compile-time
+# "#error asynchronous method execution is not available for open62541 backend".
+#
+# Intentionally no 'Linux Open62541: Source Variables' job:
+# open62541 backend currently fails to build source-variable designs
+# (generated code uses ASSourceVariable type unavailable in this backend setup).
+
 'Linux Open62541: Instantiation From Design':
   extends: .exec_base_linux
   script:
@@ -89,17 +97,42 @@
     - cp .CI/test_cases/test_cache_variables/DTestClass.test.cpp Device/src/DTestClass.cpp
     - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_cache_variables/Design.xml --config .CI/test_cases/test_cache_variables/config.xml --compare_with_nodeset .CI/test_cases/test_cache_variables/reference_ns2.xml
 
+'Linux UASDK: Recurrent HasObjects':
+  extends: .exec_base_linux
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_recurrent_hasobjects/Design.xml --generate_all_devices --config .CI/test_cases/test_recurrent_hasobjects/config.xml
+
+'Linux UASDK: Single Variable Node':
+  extends: .exec_base_linux
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_single_variable_node/Design.xml --generate_all_devices --config .CI/test_cases/test_single_variable_node/config.xml
+
 'Linux UASDK: Source Variables':
   extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_source_variables/Design.xml --generate_all_devices --config .CI/test_cases/test_source_variables/config.xml --compare_with_nodeset .CI/test_cases/test_source_variables/reference_ns2.xml
+
+'Linux UASDK: Instantiation From Design':
+  extends: .exec_base_linux
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_instantiation_from_design/Design.xml --generate_all_devices --config .CI/test_cases/test_instantiation_from_design/config.xml --compare_with_nodeset .CI/test_cases/test_instantiation_from_design/reference_ns2.xml
 
 'Linux UASDK: Config Entries':
   extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_config_entries/Design.xml --generate_all_devices --config .CI/test_cases/test_config_entries/config.xml --compare_with_nodeset .CI/test_cases/test_config_entries/reference_ns2.xml
 
+'Linux UASDK: Config Restrictions':
+  extends: .exec_base_linux
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_config_restrictions/Design.xml
+
 'Linux UASDK: Calculated Variables':
   extends: .exec_base_linux
   script:
     - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_calculated_variables/Design.xml --config .CI/test_cases/test_calculated_variables/config.xml --compare_with_nodeset .CI/test_cases/test_calculated_variables/reference_ns2.xml
+
+'Linux UASDK: Defaulted Instance Name':
+  extends: .exec_base_linux
+  script:
+    - python .CI/run_test_case.py --opcua_backend uasdk --design .CI/test_cases/test_defaulted_instance_name/Design.xml --config .CI/test_cases/test_defaulted_instance_name/config.xml --compare_with_nodeset .CI/test_cases/test_defaulted_instance_name/reference_ns2.xml
