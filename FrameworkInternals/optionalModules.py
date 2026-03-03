@@ -55,8 +55,8 @@ def _getEnabledModules():
             print("Error reading min version info for module "+module)
             return None
         if not tag:
-            print("Error reading tag/branch info for module "+module)
-            return None
+            tag = "master"
+            print("Warning: no tag specified for module "+module+", defaulting to master")
         enabledModules[module] = {"tag":tag, "minVersion":minVersion}
     os.chdir(baseDirectory)
     return enabledModules
@@ -64,6 +64,8 @@ def _getEnabledModules():
 def listEnabledModules():
     """List registered module URLs"""
     enabledModules = _getEnabledModules()
+    if not enabledModules:
+        return
     print("Enabled optional modules and their required quasar versions: ")
     for module in enabledModules.keys():
         print(module, enabledModules[module]["tag"], "(requires quasar", enabledModules[module]["minVersion"]+")")
@@ -151,29 +153,22 @@ def enableModule(moduleName, tag="master", serverString=""):
 
     if not _getModuleInfo(serverString): return False
 
-    # From Piotr (TODO) the following commented-out code needs rework because:
-    # --> nebula's tagging is different from 'original' quasar's one,
-    # --> either way that minVersion was kind of flaky ... we need N:M relationship of what works with what
-
-    # print("Checking module to be compatible...")
-    # quasarVersion = None
-    # try:
-    #     quasarVersion = open("Design/quasarVersion.txt").readline().rstrip()
-    # except Exception as ex:
-    #     print(ex)
-    # if not quasarVersion:
-    #     print("Error reading version info from Design/quasarVersion.txt")
-    #     return False
-    # moduleMinVersion = moduleInfo[moduleName]["minVersion"]
-    # if parse_version(quasarVersion) >= parse_version(moduleMinVersion):
-    #     print("Module {0} tag {1} required version {2} is compatible with installed quasar version {3}".format(moduleName, tag, moduleMinVersion, quasarVersion))
-    # else:
-    #     print("Cannot enable module "+moduleName+". Minimum required version "+moduleMinVersion+" is newer than installed quasar version "+quasarVersion)
-    #     return False
-
     # Check tag to be existing
     #
     if not _checkTagExists(moduleInfo[moduleName]["url"], tag): return
+
+    # Check quasar compatibility: module may require a minimum quasar version
+    quasarVersion = None
+    try:
+        quasarVersion = open("Design/quasarVersion.txt").readline().rstrip().lstrip("v")
+    except Exception as ex:
+        print(ex)
+    if quasarVersion:
+        moduleMinVersion = moduleInfo[moduleName]["minVersion"]
+        if parse_version(quasarVersion) < parse_version(moduleMinVersion):
+            print("Error: module " + moduleName + " requires quasar >= " + moduleMinVersion +
+                  ", but current quasar version is " + quasarVersion)
+            return False
 
     baseDirectory = os.getcwd()
     fwInternalsDir = baseDirectory + os.path.sep + "FrameworkInternals"
