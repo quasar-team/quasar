@@ -133,9 +133,12 @@ def quasar_parser():
         'destination', type=str, nargs=1, help='Destination path')
     # create the parser for the "upgrade_project" command
     upgrade_project_subparser = subparsers.add_parser(
-        'upgrade_project', help='Upgrades the framework in a given target directory (where a quasar project already is)')
+        'upgrade_project', usage='%(prog)s <destination> [--force]',
+        help='Upgrades the framework in a given target directory (where a quasar project already is)')
     upgrade_project_subparser.add_argument(
         'destination', type=str, nargs=1, help='Destination path')
+    upgrade_project_subparser.add_argument(
+        '--force', action='store_true', help='Skip confirmation prompt and perform the upgrade')
     # create the parser for the "upgrade_design" command
     upgrade_design_subparser = subparsers.add_parser(
         'upgrade_design', help='upgrade_design is used to cover backwards-incompatible Design changes between different versions of quasar')
