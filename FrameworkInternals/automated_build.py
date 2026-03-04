@@ -51,6 +51,15 @@ def read_build_config_selector():
 
 
 def write_build_config_selector(build_config_file):
+    selector_path = os.path.join('FrameworkInternals','build_config_selector.cmake')
+    if build_config_file is None:
+        if os.path.isfile(selector_path):
+            os.remove(selector_path)
+        if os.path.isfile('CMakeCache.txt'):
+            print("I'm clearing your CMakeCache now because the build config changed")
+            os.remove('CMakeCache.txt')
+        print('Build config has been disabled')
+        return
     if os.path.isabs(build_config_file):
         print("""WARNING: You seem to have specified an absolute path.
                 This will be a problem if you run your build automatically in another location,
@@ -76,12 +85,17 @@ def build_config():
         print('Currently chosen build config is: '+fn)
     else:
         print('Build config is not chosen yet. Please run "quasar.py set_build_config <path_to_the_build_config>"')
-
-def set_build_config(build_config):
-    if build_config is None:
-        raise WrongArguments ('Please provide the argument')
-    else:
-        write_build_config_selector(build_config)
+def set_build_config(*args):
+    args = list(args)
+    if '--none' in args:
+        args.remove('--none')
+        if len(args) > 0:
+            raise WrongArguments('Use either "quasar.py set_build_config <path_to_the_build_config>" or "quasar.py set_build_config --none"')
+        write_build_config_selector(None)
+        return
+    if len(args) != 1:
+        raise WrongArguments('Use either "quasar.py set_build_config <path_to_the_build_config>" or "quasar.py set_build_config --none"')
+    write_build_config_selector(args[0])
 
 def automatedBuild(context, *args):
     """Method that generates the cmake headers, and after that calls make/vis-studio to compile your server.

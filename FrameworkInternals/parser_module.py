@@ -178,9 +178,11 @@ def quasar_parser():
         'build_config', help='Print currently chosen build configuration file, see also set_build_config')
     # create the parser for the "set_build_config" command
     set_build_config_parser = subparsers.add_parser(
-        'set_build_config', help='Sets the build configuration file to be used for the build')
+        'set_build_config', help='Sets or disables the build configuration file to be used for the build')
     set_build_config_parser.add_argument(
-        'build_config', type=str, nargs=1, help='Build config file path')
+        'build_config', type=str, nargs='?', help='Build config file path')
+    set_build_config_parser.add_argument(
+        '--none', action='store_true', help='Disable extra build configuration')
     # create the parser for the "symlink_runtime_deps" command
     symlink_runtime_deps_parser = subparsers.add_parser(
         'symlink_runtime_deps', help='Symlinks the runtime dependencies of the project to the binary directory')
