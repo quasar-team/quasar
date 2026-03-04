@@ -95,6 +95,17 @@ find_package(LibXml2 CONFIG REQUIRED)
 message(STATUS "Found libxml2: ${LIBXML2_INCLUDE_DIRS}")
 list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${LIBXML2_INCLUDE_DIRS})
 
+# Backward compatibility for projects generated in the past.
+# DO NOT REMOVE unless all legacy CMake code has stopped using XML_LIBS.
+if(NOT DEFINED XML_LIBS OR XML_LIBS STREQUAL "")
+  set(XML_LIBS
+      XercesC::XercesC
+      OpenSSL::SSL
+      OpenSSL::Crypto
+      LibXml2::LibXml2
+  )
+endif()
+
 if(${BUILD_SERVER_SHARED_LIB})
 	list(APPEND QUASAR_GLOBAL_COMPILE_DEFINITIONS BUILDING_SHARED_OBJECT)
 endif(${BUILD_SERVER_SHARED_LIB})
@@ -112,6 +123,16 @@ else()
   endif()
   find_package(OpcUaToolkit REQUIRED)
   message(STATUS "Using UA Toolkit backend with FindOpcUaToolkit")
+endif()
+
+if(BACKEND_UATOOLKIT)
+  # Backward compatibility for projects generated in the past.
+  # DO NOT REMOVE unless all legacy CMake code has stopped using OPCUA_TOOLKIT_LIBS.
+  if(CMAKE_BUILD_TYPE MATCHES Debug)
+    set(OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG})
+  else()
+    set(OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE})
+  endif()
 endif()
 
 if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP STREQUAL "OFF" ) )

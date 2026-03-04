@@ -107,6 +107,12 @@ set(OPCUATOOLKIT_FOUND TRUE)
 set(OpcUaToolkit_FOUND TRUE)
 set(OPCUA_TOOLKIT_PATH "${OPCUATOOLKIT_PATH}")
 
+# Backward compatibility for projects generated in the past.
+# DO NOT REMOVE unless all legacy CMake code has stopped using OPCUA_TOOLKIT_LIBS*.
+set(OPCUA_TOOLKIT_LIBS_DEBUG ${OPCUATOOLKIT_LIBRARIES_DEBUG})
+set(OPCUA_TOOLKIT_LIBS_RELEASE ${OPCUATOOLKIT_LIBRARIES_RELEASE})
+set(OPCUA_TOOLKIT_LIBS ${OPCUATOOLKIT_LIBRARIES})
+
 include_directories(${OPCUATOOLKIT_INCLUDE_DIRS})
 
 message(STATUS "OPC UA Toolkit configuration:")
