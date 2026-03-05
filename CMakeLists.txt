@@ -176,6 +176,10 @@ endforeach(module)
 
 list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${MODULE_INCLUDES})
 
+# Backward compatibility: legacy module tests compile object files directly
+# and rely on directory-scoped include paths from master-era CMake behavior.
+include_directories(${QUASAR_GLOBAL_INCLUDE_DIRECTORIES})
+
 add_library(quasar_project_options INTERFACE)
 if(QUASAR_GLOBAL_COMPILE_DEFINITIONS)
     target_compile_definitions(quasar_project_options INTERFACE ${QUASAR_GLOBAL_COMPILE_DEFINITIONS})
