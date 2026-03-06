@@ -115,6 +115,8 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/FrameworkInternals/EnabledModules/open62541-com
   add_definitions( -DBACKEND_OPEN62541 )
   message(STATUS "Using open62541 backend (enabled module)")
   list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/include )
+  # Backward compatibility for legacy modules that still consume this variable.
+  set(OPCUA_TOOLKIT_COMPAT_LAYER_OBJECTS $<TARGET_OBJECTS:open62541-compat>)
 else()
   set(BACKEND_UATOOLKIT ON)
   add_definitions( -DBACKEND_UATOOLKIT )
