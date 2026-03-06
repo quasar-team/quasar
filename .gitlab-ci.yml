@@ -1,7 +1,11 @@
 image: gitlab-registry.cern.ch/linuxsupport/alma10-base:latest
 
 stages:
-  - unstagged
+  - misc
+  - linux-open6
+  - linux-uasdk
+  - windows-open6
+  - windows-uasdk
 
 include:
   - local: ci/gitlab/normal.yml
@@ -11,7 +15,7 @@ include:
 
 # Empty job, as gitlab-ci requires at least one job
 empty:
-  stage: unstagged
+  stage: misc
   script: exit 1
   rules:
     - when: never

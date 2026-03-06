@@ -1,5 +1,5 @@
 .exec_base_linux_alma10_base_o6:
-  stage: unstagged
+  stage: misc
   image: gitlab-registry.cern.ch/linuxsupport/alma10-base:latest
   variables:
     OPEN62541_COMPAT_VERSION: "new-pipeline"
