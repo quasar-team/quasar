@@ -118,7 +118,7 @@ def automatedBuild(context, *args):
     print("Calling build, type [{0}], builder [{1}]".format(buildType, builder))
     if platform.system() == "Windows":
         try:
-            subprocessWithImprovedErrors( "cmake --build . --target ALL_BUILD --config "+buildType, 'visual studio build')
+            subprocessWithImprovedErrors( "cmake --build . --config "+buildType, 'visual studio build')
         except Exception as e:
             print("Build process error. Exception: [" + str(e) + "]")
     elif platform.system() == "Linux":
