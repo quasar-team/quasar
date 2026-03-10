@@ -26,4 +26,4 @@
 'Linux Open62541: Default Quasar Design (Alma10 Base)':
   extends: .exec_base_linux_alma10_base_o6
   script:
-    - python .CI/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml
+    - python ci/testing/run_test_case.py --opcua_backend o6 --open62541_compat_branch "$OPEN62541_COMPAT_VERSION" --compare_with_nodeset ci/testing/test_cases/test_default_quasar_design/reference_ns2.xml
