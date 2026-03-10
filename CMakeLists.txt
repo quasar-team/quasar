@@ -43,7 +43,6 @@ endif()
 
 include( ProjectSettings.cmake )
 
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 if(NOT DEFINED LOGIT_BACKEND_STDOUTLOG)
@@ -74,8 +73,6 @@ list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${XercesC_INCLUDE_DIRS})
 if(DEFINED ENV{XSD_HOME})
     list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES $ENV{XSD_HOME}/include)
 endif()
-
-
 
 if(DEFINED ENV{LIBSSL_HOME})
   if(NOT DEFINED OPENSSL_ROOT OR OPENSSL_ROOT STREQUAL "")
@@ -156,7 +153,6 @@ list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES
 	${OPCUATOOLKIT_INCLUDE_DIRS}
 	${SERVER_INCLUDE_DIRECTORIES}
 )
-
 
 set(QUASAR_TRANSFORM_SENSITIVE_FILES
 	${PROJECT_SOURCE_DIR}/FrameworkInternals/transformDesign.py
@@ -259,12 +255,9 @@ find_package(Threads REQUIRED)
 set(TARGET_LIBS
         ${BOOST_LIBS}
         ${OPCUATOOLKIT_LIBRARIES}
-        XercesC::XercesC
-        Threads::Threads
-        OpenSSL::SSL
-        OpenSSL::Crypto
-        LibXml2::LibXml2
+        ${XML_LIBS}
         ${SERVER_LINK_LIBRARIES}
+        Threads::Threads
         )
 
 option(ENABLE_QUASAR_SANITIZERS "Enable quasar sanitizers" OFF)
