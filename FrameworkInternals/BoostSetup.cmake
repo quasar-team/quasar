@@ -22,36 +22,29 @@
 # automatically set up boost with libs needed by quasar
 # and optionally added ones for the project via ADDITIONAL_BOOST_LIBS
 #
-if(NOT DEFINED BOOST_LIBS)
-    if(NOT DEFINED BOOST_ROOT AND DEFINED ENV{BOOST_HOME} AND NOT "$ENV{BOOST_HOME}" STREQUAL "")
-        set(BOOST_ROOT "$ENV{BOOST_HOME}")
-        message(STATUS "Using BOOST_HOME as BOOST_ROOT: [${BOOST_ROOT}]")
-    endif()
+if (DEFINED ENV{BOOST_HOME} AND NOT "$ENV{BOOST_HOME}" STREQUAL "")
+    set(BOOST_HOME "$ENV{BOOST_HOME}")
+    list(PREPEND CMAKE_PREFIX_PATH "${BOOST_HOME}")
+    set(Boost_USE_STATIC_RUNTIME ON)
+    set(Boost_USE_STATIC_LIBS ON)
+    message(STATUS "Using BOOST_HOME environment variable: [${BOOST_HOME}]")
+    message(STATUS "This will set BOOST to that folder in static mode")
+endif()
 
-    if (DEFINED ENV{BOOST_HOME} AND NOT "$ENV{BOOST_HOME}" STREQUAL "")
-        set(BOOST_HOME "$ENV{BOOST_HOME}")
-        list(APPEND CMAKE_PREFIX_PATH "${BOOST_HOME}")
-        set(Boost_USE_STATIC_RUNTIME ON)
-        set(Boost_USE_STATIC_LIBS ON)
-        message(STATUS "Using BOOST_HOME environment variable: [${BOOST_HOME}]")
-        message(STATUS "This will set BOOST to that folder in static mode")
-    endif()
-
-    set(_QUASAR_BOOST_COMPONENTS regex chrono program_options thread log ${ADDITIONAL_BOOST_LIBS})
-    find_package(Boost CONFIG REQUIRED COMPONENTS ${_QUASAR_BOOST_COMPONENTS})
-    if(NOT Boost_FOUND)
-        message(FATAL_ERROR "Failed to find boost installation.")
-    else()
-        message(STATUS "Found system boost, version [${Boost_VERSION}], include dir [${Boost_INCLUDE_DIRS}]")
-        include_directories(${Boost_INCLUDE_DIRS})
-        set(BOOST_LIBS
-            Boost::regex
-            Boost::chrono
-            Boost::program_options
-            Boost::thread
-            Boost::log)
-        foreach(BOOST_COMPONENT IN LISTS ADDITIONAL_BOOST_LIBS)
-            list(APPEND BOOST_LIBS Boost::${BOOST_COMPONENT})
-        endforeach()
-    endif()
+set(_QUASAR_BOOST_COMPONENTS regex chrono program_options thread log ${ADDITIONAL_BOOST_LIBS})
+find_package(Boost CONFIG REQUIRED COMPONENTS ${_QUASAR_BOOST_COMPONENTS})
+if(NOT Boost_FOUND)
+    message(FATAL_ERROR "Failed to find boost installation.")
+else()
+    message(STATUS "Found system boost, version [${Boost_VERSION}], include dir [${Boost_INCLUDE_DIRS}]")
+    include_directories(${Boost_INCLUDE_DIRS})
+    set(BOOST_LIBS
+        Boost::regex
+        Boost::chrono
+        Boost::program_options
+        Boost::thread
+        Boost::log)
+    foreach(BOOST_COMPONENT IN LISTS ADDITIONAL_BOOST_LIBS)
+        list(APPEND BOOST_LIBS Boost::${BOOST_COMPONENT})
+    endforeach()
 endif()
