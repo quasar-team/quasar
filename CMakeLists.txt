@@ -141,7 +141,8 @@ else()
     list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${BOOST_PATH_HEADERS})  # fallback for old build configs
 endif()
 
-set(PYTHON_COMMAND python)
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+set(PYTHON_COMMAND "${Python3_EXECUTABLE}")
 set(DESIGN_FILE ${PROJECT_BINARY_DIR}/Design/DesignWithMeta.xml)
 
 list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES
