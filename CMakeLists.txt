@@ -31,7 +31,6 @@ set(SERVERCONFIG_LOADER ON)
 # It applies to everything, build config and project settings inclusive
 if(WIN32 AND MSVC)
     add_definitions(-DNOMINMAX -DWIN32_LEAN_AND_MEAN -DNOGDI) # Prevent collisions due to windows.h
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded") # Windows shared library not supported
     add_compile_definitions(BOOST_ALL_NO_LIB) # Remove with Boost 9.0.1 or higher
 endif()
 
