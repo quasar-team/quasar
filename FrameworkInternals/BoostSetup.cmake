@@ -25,7 +25,6 @@
 if (DEFINED ENV{BOOST_HOME} AND NOT "$ENV{BOOST_HOME}" STREQUAL "")
     set(BOOST_HOME "$ENV{BOOST_HOME}")
     list(PREPEND CMAKE_PREFIX_PATH "${BOOST_HOME}")
-    set(Boost_USE_STATIC_RUNTIME ON)
     set(Boost_USE_STATIC_LIBS ON)
     message(STATUS "Using BOOST_HOME environment variable: [${BOOST_HOME}]")
     message(STATUS "This will set BOOST to that folder in static mode")
