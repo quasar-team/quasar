@@ -96,6 +96,9 @@ if(NOT DEFINED XML_LIBS OR XML_LIBS STREQUAL "")
       OpenSSL::Crypto
       LibXml2::LibXml2
   )
+  if(WIN32)
+    list(APPEND XML_LIBS crypt32)
+  endif()
 endif()
 
 if(${BUILD_SERVER_SHARED_LIB})
