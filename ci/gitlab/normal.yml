@@ -1,8 +1,8 @@
 variables:
   WIN2025_IMAGE: "gitlab-registry.cern.ch/quasar-team/images/win2025-build:latest"
   ALMA10_IMAGE: "gitlab-registry.cern.ch/quasar-team/images/alma-10-build:latest"
-  UASWISSARMYKNIFE_WINDOWS: "https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/47865/download"
-  UASWISSARMYKNIFE_LINUX: "https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/47864/download"
+  UASWISSARMYKNIFE_WINDOWS: "https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/49611/download"
+  UASWISSARMYKNIFE_LINUX: "https://gitlab.cern.ch/quasar-team/UaSwissArmyKnife/-/package_files/49610/download"
 
 include:
   - local: ci/gitlab/tests-linux.yml

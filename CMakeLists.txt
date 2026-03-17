@@ -225,18 +225,12 @@ add_executable ( ${EXECUTABLE}
 	${MODULES_OBJECTS}
 	)
 
-# By default, Visual Studio will create subfolders for the binaries (Release, Debug),
-# the code below overrides this and forces all binaries to be created in the same folder, which is bin/
-if (MSVC)
+if(WIN32 AND MSVC) # Avoid Release, Debug folders
     set_target_properties(${EXECUTABLE} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY                "${PROJECT_BINARY_DIR}/bin"
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG          "${PROJECT_BINARY_DIR}/bin"
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE        "${PROJECT_BINARY_DIR}/bin"
-    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${PROJECT_BINARY_DIR}/bin"
-    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL     "${PROJECT_BINARY_DIR}/bin"
-    )
+    RUNTIME_OUTPUT_DIRECTORY "bin$<0:>/")
 else()
-    set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
+    set_target_properties(${EXECUTABLE} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "bin/")
 endif()
 
 target_link_libraries(${EXECUTABLE} PRIVATE quasar_project_options)
@@ -245,7 +239,6 @@ if(QUASAR_TARGET_LINK_DIRECTORIES)
 endif()
 
 find_package(Threads REQUIRED)
-
 
 set(TARGET_LIBS
         ${BOOST_LIBS}
