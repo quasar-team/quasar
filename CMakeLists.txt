@@ -92,13 +92,8 @@ list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${LIBXML2_INCLUDE_DIRS})
 if(NOT DEFINED XML_LIBS OR XML_LIBS STREQUAL "")
   set(XML_LIBS
       XercesC::XercesC
-      OpenSSL::SSL
-      OpenSSL::Crypto
       LibXml2::LibXml2
   )
-  if(WIN32)
-    list(APPEND XML_LIBS crypt32)
-  endif()
 endif()
 
 if(${BUILD_SERVER_SHARED_LIB})
@@ -122,14 +117,9 @@ else()
   message(STATUS "Using UA Toolkit backend with FindOpcUaToolkit")
 endif()
 
-if(BACKEND_UATOOLKIT)
-  # Backward compatibility for projects generated in the past.
-  # DO NOT REMOVE unless all legacy CMake code has stopped using OPCUA_TOOLKIT_LIBS.
-  if(CMAKE_BUILD_TYPE MATCHES Debug)
-    set(OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_DEBUG})
-  else()
-    set(OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE})
-  endif()
+list(APPEND OPCUA_TOOLKIT_LIBS OpenSSL::SSL OpenSSL::Crypto)
+if(WIN32)
+    list(APPEND OPCUA_TOOLKIT_LIBS crypt32)
 endif()
 
 if( ( NOT DEFINED IGNORE_DEFAULT_BOOST_SETUP ) OR ( IGNORE_DEFAULT_BOOST_SETUP STREQUAL "OFF" ) )
@@ -245,7 +235,7 @@ find_package(Threads REQUIRED)
 
 set(TARGET_LIBS
         ${BOOST_LIBS}
-        ${OPCUATOOLKIT_LIBRARIES}
+        ${OPCUA_TOOLKIT_LIBS}
         ${XML_LIBS}
         ${SERVER_LINK_LIBRARIES}
         Threads::Threads
