@@ -201,10 +201,10 @@ namespace AddressSpace
         }
 
 #ifdef BACKEND_OPEN62541        
-        auto objectsFolder = nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
+        const auto objectsFolder = nm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
 #else // BACKEND_OPEN62541
-        auto rootNm = NodeManagerRoot::CreateRootNodeManager();
-        auto objectsFolder = rootNm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
+        const auto rootNm = NodeManagerRoot::CreateRootNodeManager();
+        const auto objectsFolder = rootNm->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
 #endif // BACKEND_OPEN62541
 
         int numReferenced = findAllByRegex<T> (nm, objectsFolder, OpcUa_NodeClass_Object, expression, storage);
