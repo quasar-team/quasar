@@ -2,7 +2,7 @@
   stage: misc
   image: gitlab-registry.cern.ch/linuxsupport/alma10-base:latest
   variables:
-    OPEN62541_COMPAT_VERSION: "new-pipeline"
+    OPEN62541_COMPAT_VERSION: "el10+w25"
   before_script:
     - |
       dnf install -q -y epel-release
