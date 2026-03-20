@@ -28,6 +28,8 @@
 #include <ASInformationModel.h>
 #include <ASSourceVariable.h>
 #include <Utils.h>
+#include <servermanager.h>
+#include <nodemanagerroot.h>
 
 #include <LogIt.h>
 
@@ -180,6 +182,18 @@ UaStatus ASNodeManager::beforeShutDown()
 		LOG(Log::TRC, "AddressSpace") << "Adding unreferenced node with nodeId: " << node->nodeId().toString().toUtf8();
 		m_unreferencedNodes.push_back(node);
 		return OpcUa_Good;
+	}
+
+	UaNode* ASNodeManager::getObjectsFolderNode()
+	{
+		// Try local lookup first (finds cross-namespace alias in UA-SDK <=1.6.x)
+		UaNode* pNode = getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
+		if (pNode)
+			return pNode;
+		// Fall back to global lookup (needed for UA-SDK >=1.7.x which no longer creates aliases)
+		if (m_pServerManager)
+			return m_pServerManager->getNodeManagerRoot()->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
+		return nullptr;
 	}
 
 }
