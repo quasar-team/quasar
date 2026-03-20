@@ -21,7 +21,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 import os
 import sys
-import platform
 from transformDesign import TransformKeys, transformByKey
 from externalToolCheck import subprocessWithImprovedErrors
 from commandMap import getCommand
@@ -78,12 +77,7 @@ def generateCmake(context, *args):
     os.chdir(projectBinaryDir)
 
     print("Calling CMake")
-    if platform.system() == "Windows":
-        subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType,
-                                      "-G", "Visual Studio 15 2017 Win64", projectSourceDir],
-                                     getCommand("cmake"))
-    elif platform.system() == "Linux":
-        builderArgs = [] if builder == BuilderDefault else ["-G", builder]
-        subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType] + builderArgs +
-                                      [projectSourceDir],
-                                     getCommand("cmake"))
+    builderArgs = [] if builder == BuilderDefault else ["-G", builder]
+    subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType] + builderArgs +
+                                    [projectSourceDir],
+                                    getCommand("cmake"))

@@ -73,8 +73,8 @@ int OpcServer::createCertificate (
         const UaString& backendConfigFile,
         const UaString& appPath)
 {
-    SrvT::setTraceActive(true);
-    SrvT::setPreFileTrace(true, UaTrace::ProgramFlow);
+    UaTrace::setSdkTraceLevel(UaTrace::ProgramFlow);
+    UaTrace::setPreFileTrace(true);
 
     LOG(Log::INF) << "Will create certificate and exit.";
 
@@ -89,19 +89,23 @@ int OpcServer::createCertificate (
     OpcUa_UInt32  uSdkTraceLevel   = 0;
     OpcUa_UInt32  uMaxTraceEntries = 0;
     OpcUa_UInt32  uMaxBackupFiles  = 0;
+    ModuleIdFilter moduleIdFilter;
     UaString      sTraceFile;
     OpcUa_Boolean bDisableFlush    = OpcUa_False;
 
     serverConfig->getServerTraceSettings(
             bSdkTraceEnabled,
             uSdkTraceLevel,
+            moduleIdFilter,
             uMaxTraceEntries,
             uMaxBackupFiles,
             sTraceFile,
             bDisableFlush);
 
-    SrvT::initTrace( (UaTrace::TraceLevel)uSdkTraceLevel, uMaxTraceEntries, uMaxBackupFiles, sTraceFile, "");
-    SrvT::setTraceActive(true);
+    UaTrace::setSdkTraceLevel(bSdkTraceEnabled ? static_cast<UaTrace::TraceLevel>(uSdkTraceLevel) : UaTrace::NoTrace);
+    UaTrace::setModuleIdFilter(moduleIdFilter);
+    UaTrace::setFlushDisabled(bDisableFlush);
+    UaTrace::initTraceFile(uMaxTraceEntries, uMaxBackupFiles, sTraceFile, "");
 
     CoreModule coreModule;
     if( coreModule.initialize() != 0)

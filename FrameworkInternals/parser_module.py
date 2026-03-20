@@ -133,9 +133,12 @@ def quasar_parser():
         'destination', type=str, nargs=1, help='Destination path')
     # create the parser for the "upgrade_project" command
     upgrade_project_subparser = subparsers.add_parser(
-        'upgrade_project', help='Upgrades the framework in a given target directory (where a quasar project already is)')
+        'upgrade_project', usage='%(prog)s <destination> [--force]',
+        help='Upgrades the framework in a given target directory (where a quasar project already is)')
     upgrade_project_subparser.add_argument(
         'destination', type=str, nargs=1, help='Destination path')
+    upgrade_project_subparser.add_argument(
+        '--force', action='store_true', help='Skip confirmation prompt and perform the upgrade')
     # create the parser for the "upgrade_design" command
     upgrade_design_subparser = subparsers.add_parser(
         'upgrade_design', help='upgrade_design is used to cover backwards-incompatible Design changes between different versions of quasar')
@@ -178,9 +181,11 @@ def quasar_parser():
         'build_config', help='Print currently chosen build configuration file, see also set_build_config')
     # create the parser for the "set_build_config" command
     set_build_config_parser = subparsers.add_parser(
-        'set_build_config', help='Sets the build configuration file to be used for the build')
+        'set_build_config', help='Sets or disables the build configuration file to be used for the build')
     set_build_config_parser.add_argument(
-        'build_config', type=str, nargs=1, help='Build config file path')
+        'build_config', type=str, nargs='?', help='Build config file path')
+    set_build_config_parser.add_argument(
+        '--none', action='store_true', help='Disable extra build configuration')
     # create the parser for the "symlink_runtime_deps" command
     symlink_runtime_deps_parser = subparsers.add_parser(
         'symlink_runtime_deps', help='Symlinks the runtime dependencies of the project to the binary directory')

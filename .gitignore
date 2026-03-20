@@ -21,3 +21,5 @@ Makefile
 **/cmake_generated.cmake
 build/
 env/
+.env
+.gitlab-ci-local

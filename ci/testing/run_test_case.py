@@ -18,22 +18,27 @@ def clone_quasar(test_branch):
     os.chdir('quasar')
 
 def prepare_opcua_backend(opcua_backend, open62541_compat_branch):
+    print(f'{Fore.BLUE}{Style.BRIGHT}Preparing OPCUA backend{Style.RESET_ALL} {opcua_backend}')
+    
     if opcua_backend == 'o6':
-        invoke_and_check(f'./quasar.py enable_module open62541-compat {open62541_compat_branch}')
-        invoke_and_check(f'./quasar.py set_build_config open62541_config.cmake')
+        print(f'{Fore.BLUE}{Style.BRIGHT}Enabling open62541-compat module with branch{Style.RESET_ALL} {open62541_compat_branch}')
+        invoke_and_check(f'python ./quasar.py enable_module open62541-compat {open62541_compat_branch}')
+        print(f'{Fore.BLUE}{Style.BRIGHT}Setting build config to open62541_config.cmake{Style.RESET_ALL}')
     elif opcua_backend == 'uasdk':
-        invoke_and_check('./quasar.py set_build_config .CI/travis/build_configs/uasdk-eval.cmake')
+        print(f'{Fore.BLUE}{Style.BRIGHT}Disabling open62541-compat module{Style.RESET_ALL}')
+        invoke_and_check(f'python ./quasar.py disable_module open62541-compat')
+        print(f'{Fore.BLUE}{Style.BRIGHT}Setting build config to unified_automation_config.cmake{Style.RESET_ALL}')
     else:
         raise Exception(f"OPCUA backend {opcua_backend} was not recognized")
 
 def build():
-    invoke_and_check('./quasar.py build Release')
+    invoke_and_check('python ./quasar.py build Release')
 
 def run_and_dump_address_space():
-    invoke_and_check('./.CI/travis/server_fixture.py --command_to_run uasak_dump')
+    invoke_and_check('python ./ci/testing/server_fixture.py --command_to_run uasak_dump')
 
 def compare_with_nodeset(reference_ns):
-    invoke_and_check(f'/opt/NodeSetTools/nodeset_compare.py {reference_ns} build/bin/dump.xml --ignore_nodeids StandardMetaData')
+    invoke_and_check(f'python ./NodeSetTools/nodeset_compare.py {reference_ns} build/bin/dump.xml --ignore_nodeids StandardMetaData')
 
 def main():
     parser = argparse.ArgumentParser()
@@ -57,7 +62,7 @@ def main():
         shutil.copyfile(args.design, 'Design/Design.xml')
 
     if args.generate_all_devices:
-        invoke_and_check('./quasar.py generate device --all')
+        invoke_and_check('python ./quasar.py generate device --all')
 
     build()
 

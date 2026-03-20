@@ -85,12 +85,26 @@ def __print_post_install_notes():
     print(f'Good luck with creating your OPCUA software with quasar {Style.BRIGHT + Fore.GREEN};-){Style.RESET_ALL}')
     print()
 
-def upgradeProject(destination):
+def upgradeProject(*args):
     """Upgrades the framework in a given directory
 
     Keyword arguments:
     destination -- The target directory where the framework will be installed or upgraded
     """
+    force_upgrade = False
+    if len(args) == 1:
+        destination = args[0]
+    elif len(args) == 2 and args[1] == '--force':
+        force_upgrade = True
+        destination = args[0]
+    else:
+        print('Wrong arguments. Syntax: ./quasar.py upgrade_project <destination> [--force]')
+        return
+
+    if destination == '--force':
+        print('Wrong arguments. Syntax: ./quasar.py upgrade_project <destination> [--force]')
+        return
+
     if os.path.exists(destination) and os.path.exists(destination + os.path.sep + 'Device') and os.path.exists(destination + os.path.sep + 'Design') and os.path.exists(destination + os.path.sep + 'Configuration') and os.path.exists(destination + os.path.sep + 'AddressSpace'):
         destination = os.path.abspath(destination)
         print( "Selected installation folder: " + destination)
@@ -103,10 +117,11 @@ def upgradeProject(destination):
            f' to {Style.BRIGHT}{Fore.GREEN}{target_quasar_version}{Style.RESET_ALL}. \n'
            f"It is advised that you read quasar's http://quasar.docs.cern.ch/ChangeLog.html and check what "
            f'needs to be done for upgrade between current and target version.'))
-    yn = yes_or_no('Have you read the changelog and understood the remarks and want to upgrade?')
-    if yn == 'n':
-        print('User cancelled the upgrade, no changes were made, quitting.')
-        return
+    if not force_upgrade:
+        yn = yes_or_no('Have you read the changelog and understood the remarks and want to upgrade?')
+        if yn == 'n':
+            print('User cancelled the upgrade, no changes were made, quitting.')
+            return
     installFramework(destination)
     fix_empty_project_short_name(destination)
     print_logo(skip_top=2, skip_bottom=2)
