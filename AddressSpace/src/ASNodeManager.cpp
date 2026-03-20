@@ -28,8 +28,10 @@
 #include <ASInformationModel.h>
 #include <ASSourceVariable.h>
 #include <Utils.h>
+#ifndef BACKEND_OPEN62541
 #include <servermanager.h>
 #include <nodemanagerroot.h>
+#endif
 
 #include <LogIt.h>
 
@@ -190,9 +192,11 @@ UaStatus ASNodeManager::beforeShutDown()
 		UaNode* pNode = getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
 		if (pNode)
 			return pNode;
+#ifndef BACKEND_OPEN62541
 		// Fall back to global lookup (needed for UA-SDK >=1.7.x which no longer creates aliases)
 		if (m_pServerManager)
 			return m_pServerManager->getNodeManagerRoot()->getNode(UaNodeId(OpcUaId_ObjectsFolder, 0));
+#endif
 		return nullptr;
 	}
 
