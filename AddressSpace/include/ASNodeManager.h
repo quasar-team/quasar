@@ -77,6 +77,9 @@ namespace AddressSpace
 	UaStatus addUnreferencedNode( UaNode* node );
 	const std::list<UaNode*>& getUnreferencedNodes () const { return m_unreferencedNodes; }
 
+	/* OPCUA-3319: cross-namespace ObjectsFolder lookup for UA-SDK >=1.7.x compat */
+	UaNode* getObjectsFolderNode();
+
   private:
     UaStatus createTypeNodes();
     std::function<UaStatus ()> m_afterStartUpDelegate;
