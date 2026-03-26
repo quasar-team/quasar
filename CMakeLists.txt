@@ -253,9 +253,9 @@ find_package(Threads REQUIRED)
 
 set(TARGET_LIBS
         ${BOOST_LIBS}
+        ${SERVER_LINK_LIBRARIES}
         ${OPCUA_TOOLKIT_LIBS}
         ${XML_LIBS}
-        ${SERVER_LINK_LIBRARIES}
         Threads::Threads
         )
 
