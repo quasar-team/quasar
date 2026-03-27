@@ -96,6 +96,23 @@ class Base_D{{className}}
   void linkAddressSpace (AddressSpace::AS{{className}}* as, const std::string& stringAddress);
   AddressSpace::AS{{className}}* getAddressSpaceLink () const;
 
+  /* Device-logic virtual interface -- override in D{{className}} to implement.
+     Default implementations log a warning and return OpcUa_BadNotImplemented. */
+  {% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
+  virtual {{ commonDeviceTemplates.writeCacheVarSig(cv) }};
+  {% endfor %}
+  {% for sv in designInspector.objectify_source_variables(className) %}
+    {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
+  virtual {{ commonDeviceTemplates.readSourceVarSig(sv) }};
+    {% endif %}
+    {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
+  virtual {{ commonDeviceTemplates.writeSourceVarSig(sv) }};
+    {% endif %}
+  {% endfor %}
+  {% for m in this.method %}
+  virtual {{ commonDeviceTemplates.callMethodSig(m, oracle) }};
+  {% endfor %}
+
   /* find methods for children */
   {{ commonDeviceTemplates.deviceLogicFindByKeyHeaders(this, designInspector, oracle) }}
 

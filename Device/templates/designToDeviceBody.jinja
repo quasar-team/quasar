@@ -20,117 +20,69 @@
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
 {% import 'headers.jinja' as headers %}
+{% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
 {% set this = designInspector.objectify_class(className) %}
 {{ headers.cppStubHeader(designInspector.objectify_root().get('author')) }}
 
-#include <Configuration.hxx> // TODO; should go away, is already in Base class for ages
+#include <Configuration.hxx>
 
 #include <D{{className}}.h>
 #include <AS{{className}}.h>
 
 namespace Device
 {
-  // 1111111111111111111111111111111111111111111111111111111111111111111111111
-  // 1     GENERATED CODE STARTS HERE AND FINISHES AT SECTION 2              1
-  // 1     Users don't modify this code!!!!                                  1
-  // 1     If you modify this code you may start a fire or a flood somewhere,1
-  // 1     and some human being may possible cease to exist. You don't want  1
-  // 1     to be charged with that!                                          1
-  // 1111111111111111111111111111111111111111111111111111111111111111111111111
 
+D{{className}}::D{{className}} (
+  const Configuration::{{className}}& config,
+  Parent_D{{className}}* parent
+):
+  Base_D{{className}}( config, parent)
+{
+  /* TODO: initialize your device here */
+}
 
+D{{className}}::~D{{className}} ()
+{
+}
 
+/* Implement your overrides below. Base_D{{className}} provides safe defaults
+   (returning OpcUa_BadNotImplemented) for any method you don't override. */
 
+{% set q = 'D' + className + '::' %}
+{% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
+{{ commonDeviceTemplates.writeCacheVarSig(cv, q) }}
+{
+  /* TODO: implement */
+  return OpcUa_BadNotImplemented;
+}
+{% endfor %}
 
+{% for sv in designInspector.objectify_source_variables(className) %}
+  {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
+{{ commonDeviceTemplates.readSourceVarSig(sv, q) }}
+{
+  sourceTime = UaDateTime::now();
+  /* TODO: implement */
+  return OpcUa_BadNotImplemented;
+}
+  {% endif %}
+  {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
+{{ commonDeviceTemplates.writeSourceVarSig(sv, q) }}
+{
+  /* TODO: implement */
+  return OpcUa_BadNotImplemented;
+}
+  {% endif %}
+{% endfor %}
 
-  // 2222222222222222222222222222222222222222222222222222222222222222222222222
-  // 2     SEMI CUSTOM CODE STARTS HERE AND FINISHES AT SECTION 3            2
-  // 2     (code for which only stubs were generated automatically)          2
-  // 2     You should add the implementation but dont alter the headers      2
-  // 2     (apart from constructor, in which you should complete initializati2
-  // 2     on list)                                                          2
-  // 2222222222222222222222222222222222222222222222222222222222222222222222222
+{% for m in this.method %}
+{{ commonDeviceTemplates.callMethodSig(m, oracle, q) }}
+{
+  /* TODO: implement */
+  return OpcUa_BadNotImplemented;
+}
+{% endfor %}
 
-  /* sample ctr */
-  D{{className}}::D{{className}} (
-    const Configuration::{{className}}& config,
-    Parent_D{{className}}* parent
-  ):
-    Base_D{{className}}( config, parent)
-
-  /* fill up constructor initialization list here */
-  {
-    /* fill up constructor body here */
-  }
-
-  /* sample dtr */
-  D{{className}}::~D{{className}} ()
-  {
-  }
-
-  /* delegates for cachevariables */
-
-  {% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
-    /* Note: never directly call this function. */
-
-    {% if cv.array|length > 0 %}
-      UaStatus D{{className}}::write{{cv.get('name')|capFirst}} ( const std::vector<{{cv.get('dataType')}}>& v)
-    {% else %}
-      UaStatus D{{className}}::write{{cv.get('name')|capFirst}} ( const {{cv.get('dataType')}}& v)
-    {% endif %}
-    {
-      return OpcUa_BadNotImplemented;
-    }
-  {% endfor %}
-
-  {% for sv in this.sourcevariable %}
-    {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
-      /* {{sv.get('addressSpaceRead')|upper}} !! */
-      UaStatus D{{className}}::read{{sv.get('name')|capFirst}} (
-        {{sv.get('dataType')}}& value,
-        UaDateTime& sourceTime
-      )
-      {
-        sourceTime = UaDateTime::now();
-        return OpcUa_BadNotImplemented;
-      }
-    {% endif %}
-    {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
-      /* {{sv.get('addressSpaceWrite')|upper}} !! */
-      UaStatus D{{className}}::write{{sv.get('name')|capFirst}} (
-        {{sv.get('dataType')}}& value
-      )
-      {
-        return OpcUa_BadNotImplemented;
-      }
-    {% endif %}
-  {% endfor %}
-
-  /* delegators for methods */
-  {% for m in this.method %}
-    {% set allArgsLen = m.argument|length + m.returnvalue|length %}
-    UaStatus D{{className}}::call{{m.get('name')|capFirst}} (
-    {% for arg in m.argument %}
-      {{oracle.fix_data_type_passing_method(arg.get('dataType'), arg.array|length>0 )}} {{arg.get('name')}}
-      {%- if loop.index < allArgsLen %},
-      {% endif %}
-    {% endfor %}
-    {% for rv in m.returnvalue %}
-      {{oracle.quasar_data_type_to_cpp_type(rv.get('dataType'), rv.array|length>0 )}}& {{rv.get('name')}}
-      {%- if not loop.last %},
-      {% endif %}
-    {% endfor %}
-
-    )
-    {
-      return OpcUa_BadNotImplemented;
-    }
-  {% endfor %}
-
-  // 3333333333333333333333333333333333333333333333333333333333333333333333333
-  // 3     FULLY CUSTOM CODE STARTS HERE                                     3
-  // 3     Below you put bodies for custom methods defined for this class.   3
-  // 3     You can do whatever you want, but please be decent.               3
-  // 3333333333333333333333333333333333333333333333333333333333333333333333333
+/* Add your fully custom methods below */
 
 }

@@ -889,7 +889,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
 {### LINK/UNLINK DEVICE LOGIC ###}
     /* generate device logic link */
     {% if designInspector.class_has_device_logic(className) %}
-    void AS{{className}}::linkDevice( Device::D{{className}}* deviceLink)
+    void AS{{className}}::linkDevice( Device::Base_D{{className}}* deviceLink)
     {
       if (m_deviceLink) /* This is an error -- device can be linked at most once in the object's lifetime. */
         throw std::logic_error("linkDevice() should be called only once. Quasar logic error?");
@@ -900,6 +900,11 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
     void AS{{className}}::unlinkDevice ()
     {
       m_deviceLink = nullptr;
+    }
+
+    Device::D{{className}}* AS{{className}}::getDeviceLink () const
+    {
+      return static_cast<Device::D{{className}}*>(m_deviceLink);
     }
     {% endif %}
 

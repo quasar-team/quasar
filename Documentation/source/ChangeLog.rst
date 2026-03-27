@@ -16,6 +16,43 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">2.0.0<font size="-1"><br>(TBD)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>
+                    D&lt;Class&gt; files are now fully user-owned and never overwritten by the framework. Base_D&lt;Class&gt; provides virtual defaults for all device-logic methods, eliminating the kdiff3 merge dialog. A new <code>device_report</code> command shows override status.
+                </td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>
+                    <ul>
+                        <li>D&lt;Class&gt; files are no longer regenerated when Design.xml changes. New design elements get safe defaults via Base_D. Run <code>./quasar.py device_report</code> to see what you may want to override.</li>
+                        <li>kdiff3 is no longer invoked. After design changes, consult Base_D&lt;Class&gt;.h for new virtual methods.</li>
+                        <li>External modules calling <code>transformDesign(requiresMerge=...)</code> continue to work via backward-compatibility alias.</li>
+                    </ul>
+                </td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    New Feature
+                    <ul>
+                        <li>Virtual defaults in Base_D, eliminating kdiff3 merge dialogs</li>
+                        <li>device_report command for override status diagnostics</li>
+                    </ul>
+                    Improvement
+                    <ul>
+                        <li>override keyword on D&lt;Class&gt; declarations for compile-time safety</li>
+                        <li>upgrade_project automatically adds override to existing D&lt;Class&gt; headers</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar test suite notes:<br>
+                    <ol>
+                        <li>All CI jobs pass (open62541 + UASDK + AlmaLinux 10)</li>
+                        <li>Upgrade path validated on 7 real servers (CAEN, ISEG, Wiener, CanOpenOpcUa, OpcUaLpGbtServer, AtcaOpcUa)</li>
+                        <li>getDeviceLink() backward compatibility confirmed</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">1.7.1<font size="-1"><br>(13-May-2025)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>This release focuses on fixing critical bugs affecting hardware discovery servers and server startup, and introduces improvements for finding OpcUaToolkit package and external tool checking.</td>

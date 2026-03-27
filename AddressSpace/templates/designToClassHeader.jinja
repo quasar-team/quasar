@@ -41,7 +41,8 @@
 #include <Configuration.hxx>
 
 {% if designInspector.class_has_device_logic(className) %}
-  /* forward declaration */
+  /* forward declarations */
+  namespace Device { class Base_D{{className}}; }
   namespace Device { class D{{className}}; }
 {% endif %}
 
@@ -121,9 +122,9 @@ namespace AddressSpace
 
   /* device logic links (if device logic is present per this class) */
     {% if designInspector.class_has_device_logic(className) %}
-    void linkDevice( Device::D{{className}}* deviceLink);
+    void linkDevice( Device::Base_D{{className}}* deviceLink);
     void unlinkDevice ();
-    Device::D{{className}}* getDeviceLink () const { return m_deviceLink; }
+    Device::D{{className}}* getDeviceLink () const;
   {% endif %}
 
   /* OPC UA Type Information provider for this class. */
@@ -191,7 +192,7 @@ namespace AddressSpace
 
   /* Device Logic link (if requested) */
   {% if designInspector.class_has_device_logic(className) %}
-    Device::D{{className}}* m_deviceLink;
+    Device::Base_D{{className}}* m_deviceLink;
   {% endif %}
 
   /* References to mutices of async ops */

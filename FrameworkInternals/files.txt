@@ -679,6 +679,12 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
+            "deviceClassAnalyzer.py": {
+                "install": "overwrite",
+                "md5": "7c37a3c379b0b194899ff80062e74055",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
             "deviceGenerators.py": {
                 "install": "overwrite",
                 "md5": "aaa8e254309aada48c2949ea8b488939",

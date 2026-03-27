@@ -86,6 +86,48 @@
   {% endfor %}
 {% endmacro %}
 
+{# ============================================================================ #}
+{# Shared device-logic virtual interface macros.                               #}
+{# These ensure Base_D and D templates generate matching method signatures.    #}
+{# ============================================================================ #}
+
+{% macro writeCacheVarSig(cv, qualifier='') -%}
+  {%- if cv.array|length > 0 -%}
+UaStatus {{qualifier}}write{{cv.get('name')|capFirst}} ( const std::vector<{{cv.get('dataType')}}>& v)
+  {%- else -%}
+UaStatus {{qualifier}}write{{cv.get('name')|capFirst}} ( const {{cv.get('dataType')}}& v)
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro readSourceVarSig(sv, qualifier='') -%}
+UaStatus {{qualifier}}read{{sv.get('name')|capFirst}} (
+    {{sv.get('dataType')}}& value,
+    UaDateTime& sourceTime
+  )
+{%- endmacro %}
+
+{% macro writeSourceVarSig(sv, qualifier='') -%}
+UaStatus {{qualifier}}write{{sv.get('name')|capFirst}} (
+    {{sv.get('dataType')}}& value
+  )
+{%- endmacro %}
+
+{% macro callMethodSig(m, oracle, qualifier='') -%}
+  {%- set allArgsLen = m.argument|length + m.returnvalue|length -%}
+UaStatus {{qualifier}}call{{m.get('name')|capFirst}} (
+  {% for arg in m.argument %}
+    {{oracle.fix_data_type_passing_method(arg.get('dataType'), arg.array|length>0 )}} {{arg.get('name')}}
+    {%- if loop.index < allArgsLen %},
+  {% endif %}
+  {% endfor %}
+  {% for rv in m.returnvalue %}
+    {{oracle.quasar_data_type_to_cpp_type(rv.get('dataType'), rv.array|length>0 )}}& {{rv.get('name')}}
+    {%- if not loop.last %},
+  {% endif %}
+  {% endfor %}
+  )
+{%- endmacro %}
+
 {% macro deviceLogicFindByKeyBody(this, designInspector, oracle, fullClassName) %}
   {# documentation
     this         - is whatever that has hasobjects element (usually d:class or d:root),
