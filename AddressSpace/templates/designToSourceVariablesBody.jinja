@@ -177,7 +177,7 @@ namespace AddressSpace
         OpcUa_UInt32       m_callbackHandle;
         const UaNode*      m_parentObjectNode;
         const AS{{className}}*   m_addressSpaceObject;
-        Device::D{{className}}* m_deviceLink;
+        Device::Base_D{{className}}* m_deviceLink;
         std::mutex*        m_mutex;
 
     };
@@ -300,7 +300,7 @@ namespace AddressSpace
         const UaNode*      m_parentObjectNode;
         UaVariant          m_variant;
         const AS{{className}}*   m_addressSpaceObject;
-        Device::D{{className}}* m_deviceLink; 
+        Device::Base_D{{className}}* m_deviceLink; 
         std::mutex*        m_mutex;
     };
   {% endfor %}

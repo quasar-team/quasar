@@ -45,20 +45,14 @@ public:
     /* delegators for
     cachevariables and sourcevariables */
     /* Note: never directly call this function. */
-    UaStatus writeLogLevel ( const UaString& v);
+    UaStatus writeLogLevel ( const UaString& v) override;
 
 
     /* delegators for methods */
 
 private:
-    /* Delete copy constructor and assignment operator */
-    DLogLevel( const DLogLevel& other );
-    DLogLevel& operator=(const DLogLevel& other);
-
-    // ----------------------------------------------------------------------- *
-    // -     CUSTOM CODE STARTS BELOW THIS COMMENT.                            *
-    // -     Don't change this comment, otherwise merge tool may be troubled.  *
-    // ----------------------------------------------------------------------- *
+    DLogLevel( const DLogLevel& other ) = delete;
+    DLogLevel& operator=(const DLogLevel& other) = delete;
 
 public:
 

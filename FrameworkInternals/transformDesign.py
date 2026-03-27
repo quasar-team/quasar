@@ -23,9 +23,6 @@ import os
 import os.path
 import errno
 import sys
-import filecmp
-from externalToolCheck import subprocessWithImprovedErrors
-from commandMap import getCommand
 import subprocess
 import enum
 import jinja2
@@ -71,12 +68,12 @@ class FieldIds(enum.Enum):
     OUT_PATH = 3
     SOURCE_OR_BINARY = 4
     CPP_FORMAT = 5
-    REQUIRES_MERGE = 6
+    SKIP_IF_EXISTS = 6  # if True, file is user-owned: skip generation when it already exists
     ADDITIONAL_PARAM = 7
 
 
 QuasarTransforms = [
-    #(0)key                                 (1)where is the transform                                     (2)meta   (3)output                                          (4) source or b (5)c++format    (6)req merge  (7)additional params
+    #(0)key                                 (1)where is the transform                                     (2)meta   (3)output                                          (4) source or b (5)c++format    (6)skip if exists  (7)additional params
     [TransformKeys.AS_SOURCEVARIABLES_H,    ['AddressSpace','designToSourceVariablesHeader.jinja'],       True,     'AddressSpace/include/SourceVariables.h',          'B',            True,           False,        None],
     [TransformKeys.AS_SOURCEVARIABLES_CPP,  ['AddressSpace','designToSourceVariablesBody.jinja'],         True,     'AddressSpace/src/SourceVariables.cpp',            'B',            True,           False,        None],
     [TransformKeys.AS_CLASS_H,              ['AddressSpace','designToClassHeader.jinja'],                 True,     'AddressSpace/include/AS{className}.h',            'B',            True,           False,        ['className']],
@@ -102,12 +99,14 @@ QuasarTransforms = [
     [TransformKeys.AS_DOCUMENTATION_MD,     ['AddressSpace','designToAddressSpaceDocMd.jinja'],           False,     'Documentation/AddressSpaceDoc.md',                'S',            False,          False,        None]
     ]
 
-def transformDesignVerbose(transformPath, designXmlPath, outputFile, requiresMerge, astyleRun=False, additionalParam=None):
+def transformDesignVerbose(transformPath, designXmlPath, outputFile, skipIfExists=False, astyleRun=False, additionalParam=None, requiresMerge=None):
     """Just a verbose wrapper around transformDesign, for arguments description see transformDesign below.
        Note this is agnostic to transformation type (XSLT or Jinja2) """
+    if requiresMerge is not None:
+        skipIfExists = requiresMerge
     print("Using the transform [" + transformPath + "] on design file [" + designXmlPath + "] to generate the file [" + outputFile + "] {0}"
                 .format('additionalParam=[{0}]'.format(additionalParam) if additionalParam is not None else ''))
-    return transformDesign(transformPath, designXmlPath, outputFile, requiresMerge, astyleRun, additionalParam)
+    return transformDesign(transformPath, designXmlPath, outputFile, skipIfExists, astyleRun, additionalParam)
 
 def run_indent_tool(unindented_content, fout):
     """Runs indentation tool, preferably astyle.
@@ -187,37 +186,38 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
             'quasar Jinja2 generator: Generated {0}, wrote {1} bytes'.format(outputFile, fout.tell()) +
             Style.RESET_ALL)
 
-def transformDesign(transform_path, designXmlPath, outputFile, requiresMerge, astyleRun, additionalParam=None):
-    """Generates a file, applying a transform (XJinja2) to Design.xml
+def transformDesign(transform_path, designXmlPath, outputFile, skipIfExists=False, astyleRun=False, additionalParam=None, requiresMerge=None):
+    """Generates a file, applying a transform (Jinja2) to Design.xml
 
     Keyword arguments:
-    transformPath        -- transform file where the transformation is defined, either XSLT or Jinja2
+    transformPath        -- transform file where the transformation is defined (Jinja2)
     designXmlPath        -- path to XML file upon which transform will be based
     outputFile           -- name of the file to be generated
-    requiresMerge        -- if True, will prevent from overwriting output filename, running merge-tool
+    skipIfExists         -- if True, file is user-owned: skip generation when it already exists
     astyleRun            -- if True, will run astyle on generated file
-    additionalParam      -- Optional extra param to be passed e.g. to XSLT transform.
+    additionalParam      -- Optional extra param to be passed e.g. to Jinja2 transform.
+    requiresMerge        -- deprecated alias for skipIfExists (backward compatibility)
     """
+    # Backward compatibility: old callers may pass requiresMerge=True/False
+    if requiresMerge is not None:
+        skipIfExists = requiresMerge
     transformPath = transform_path
 
     processedAdditionalParam = additionalParam if additionalParam is not None else {}
 
-    if requiresMerge:
-        originalOutputFile = outputFile
-        outputFile = outputFile + '.generated'
+    if skipIfExists:
+        if os.path.isfile(outputFile):
+            print(Fore.CYAN +
+                f"User-owned file [{outputFile}] already exists, skipping generation. "
+                f"(Base class provides defaults for new design elements.)" +
+                Style.RESET_ALL)
+            return
+        # File does not exist yet: generate fresh stub.
     try:
         if transformPath.endswith('.jinja'):
             transformDesignByJinja(designXmlPath, transformPath, outputFile, processedAdditionalParam, astyleRun)
         else:
             raise Exception("Couldnt determine transformation type")
-        if requiresMerge:
-            # If the file existed previously and it is different from the old one we run kdiff3
-            if (os.path.isfile(originalOutputFile)) and (filecmp.cmp(originalOutputFile, outputFile) == False):
-                subprocessWithImprovedErrors([getCommand('diff'), "-o", originalOutputFile, originalOutputFile, outputFile], getCommand("diff"), [0, 1])  # 1 is a valid return, since it means that the user quitted without saving the merge, and this is still ok.
-            else:  # If the file didn't exist before, or it is equal to the old one, we rename the generated file to have the proper name
-                if os.path.isfile(originalOutputFile):
-                    os.remove(originalOutputFile)
-                os.rename(outputFile, originalOutputFile)
     except Exception:
         if os.path.isfile(outputFile):
             print("Removing partially generated file: {0}".format(outputFile))
@@ -285,6 +285,6 @@ def transformByKey (keys, supplementaryData={}):
             transformPath = transformPath,
             designXmlPath = designXmlPath,
             outputFile = outputFile,
-            requiresMerge = transformSpec[FieldIds.REQUIRES_MERGE.value],
+            skipIfExists = transformSpec[FieldIds.SKIP_IF_EXISTS.value],
             astyleRun = transformSpec[FieldIds.CPP_FORMAT.value],
             additionalParam = additionalParam)

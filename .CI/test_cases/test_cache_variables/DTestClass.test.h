@@ -53,154 +53,154 @@ public:
     /* delegators for
     cachevariables and sourcevariables */
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaBoolean_scalar_delegated_nullForbidden ( const OpcUa_Boolean& v);
+    UaStatus writeConfiguration_OpcUaBoolean_scalar_delegated_nullForbidden ( const OpcUa_Boolean& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaByte_scalar_delegated_nullForbidden ( const OpcUa_Byte& v);
+    UaStatus writeConfiguration_OpcUaByte_scalar_delegated_nullForbidden ( const OpcUa_Byte& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaSByte_scalar_delegated_nullForbidden ( const OpcUa_SByte& v);
+    UaStatus writeConfiguration_OpcUaSByte_scalar_delegated_nullForbidden ( const OpcUa_SByte& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt16_scalar_delegated_nullForbidden ( const OpcUa_UInt16& v);
+    UaStatus writeConfiguration_OpcUaUInt16_scalar_delegated_nullForbidden ( const OpcUa_UInt16& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt16_scalar_delegated_nullForbidden ( const OpcUa_Int16& v);
+    UaStatus writeConfiguration_OpcUaInt16_scalar_delegated_nullForbidden ( const OpcUa_Int16& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt32_scalar_delegated_nullForbidden ( const OpcUa_UInt32& v);
+    UaStatus writeConfiguration_OpcUaUInt32_scalar_delegated_nullForbidden ( const OpcUa_UInt32& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt32_scalar_delegated_nullForbidden ( const OpcUa_Int32& v);
+    UaStatus writeConfiguration_OpcUaInt32_scalar_delegated_nullForbidden ( const OpcUa_Int32& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt64_scalar_delegated_nullForbidden ( const OpcUa_UInt64& v);
+    UaStatus writeConfiguration_OpcUaUInt64_scalar_delegated_nullForbidden ( const OpcUa_UInt64& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt64_scalar_delegated_nullForbidden ( const OpcUa_Int64& v);
+    UaStatus writeConfiguration_OpcUaInt64_scalar_delegated_nullForbidden ( const OpcUa_Int64& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaDouble_scalar_delegated_nullForbidden ( const OpcUa_Double& v);
+    UaStatus writeConfiguration_OpcUaDouble_scalar_delegated_nullForbidden ( const OpcUa_Double& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaFloat_scalar_delegated_nullForbidden ( const OpcUa_Float& v);
+    UaStatus writeConfiguration_OpcUaFloat_scalar_delegated_nullForbidden ( const OpcUa_Float& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_UaString_scalar_delegated_nullForbidden ( const UaString& v);
+    UaStatus writeConfiguration_UaString_scalar_delegated_nullForbidden ( const UaString& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaBoolean_scalar_delegated_nullAllowed ( const OpcUa_Boolean& v);
+    UaStatus writeConfiguration_OpcUaBoolean_scalar_delegated_nullAllowed ( const OpcUa_Boolean& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaByte_scalar_delegated_nullAllowed ( const OpcUa_Byte& v);
+    UaStatus writeConfiguration_OpcUaByte_scalar_delegated_nullAllowed ( const OpcUa_Byte& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaSByte_scalar_delegated_nullAllowed ( const OpcUa_SByte& v);
+    UaStatus writeConfiguration_OpcUaSByte_scalar_delegated_nullAllowed ( const OpcUa_SByte& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt16_scalar_delegated_nullAllowed ( const OpcUa_UInt16& v);
+    UaStatus writeConfiguration_OpcUaUInt16_scalar_delegated_nullAllowed ( const OpcUa_UInt16& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt16_scalar_delegated_nullAllowed ( const OpcUa_Int16& v);
+    UaStatus writeConfiguration_OpcUaInt16_scalar_delegated_nullAllowed ( const OpcUa_Int16& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt32_scalar_delegated_nullAllowed ( const OpcUa_UInt32& v);
+    UaStatus writeConfiguration_OpcUaUInt32_scalar_delegated_nullAllowed ( const OpcUa_UInt32& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt32_scalar_delegated_nullAllowed ( const OpcUa_Int32& v);
+    UaStatus writeConfiguration_OpcUaInt32_scalar_delegated_nullAllowed ( const OpcUa_Int32& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt64_scalar_delegated_nullAllowed ( const OpcUa_UInt64& v);
+    UaStatus writeConfiguration_OpcUaUInt64_scalar_delegated_nullAllowed ( const OpcUa_UInt64& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt64_scalar_delegated_nullAllowed ( const OpcUa_Int64& v);
+    UaStatus writeConfiguration_OpcUaInt64_scalar_delegated_nullAllowed ( const OpcUa_Int64& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaDouble_scalar_delegated_nullAllowed ( const OpcUa_Double& v);
+    UaStatus writeConfiguration_OpcUaDouble_scalar_delegated_nullAllowed ( const OpcUa_Double& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaFloat_scalar_delegated_nullAllowed ( const OpcUa_Float& v);
+    UaStatus writeConfiguration_OpcUaFloat_scalar_delegated_nullAllowed ( const OpcUa_Float& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_UaString_scalar_delegated_nullAllowed ( const UaString& v);
+    UaStatus writeConfiguration_UaString_scalar_delegated_nullAllowed ( const UaString& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaBoolean_array_delegated_nullForbidden ( const std::vector<OpcUa_Boolean>& v);
+    UaStatus writeConfiguration_OpcUaBoolean_array_delegated_nullForbidden ( const std::vector<OpcUa_Boolean>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaByte_array_delegated_nullForbidden ( const std::vector<OpcUa_Byte>& v);
+    UaStatus writeConfiguration_OpcUaByte_array_delegated_nullForbidden ( const std::vector<OpcUa_Byte>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaSByte_array_delegated_nullForbidden ( const std::vector<OpcUa_SByte>& v);
+    UaStatus writeConfiguration_OpcUaSByte_array_delegated_nullForbidden ( const std::vector<OpcUa_SByte>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt16_array_delegated_nullForbidden ( const std::vector<OpcUa_UInt16>& v);
+    UaStatus writeConfiguration_OpcUaUInt16_array_delegated_nullForbidden ( const std::vector<OpcUa_UInt16>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt16_array_delegated_nullForbidden ( const std::vector<OpcUa_Int16>& v);
+    UaStatus writeConfiguration_OpcUaInt16_array_delegated_nullForbidden ( const std::vector<OpcUa_Int16>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt32_array_delegated_nullForbidden ( const std::vector<OpcUa_UInt32>& v);
+    UaStatus writeConfiguration_OpcUaUInt32_array_delegated_nullForbidden ( const std::vector<OpcUa_UInt32>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt32_array_delegated_nullForbidden ( const std::vector<OpcUa_Int32>& v);
+    UaStatus writeConfiguration_OpcUaInt32_array_delegated_nullForbidden ( const std::vector<OpcUa_Int32>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt64_array_delegated_nullForbidden ( const std::vector<OpcUa_UInt64>& v);
+    UaStatus writeConfiguration_OpcUaUInt64_array_delegated_nullForbidden ( const std::vector<OpcUa_UInt64>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt64_array_delegated_nullForbidden ( const std::vector<OpcUa_Int64>& v);
+    UaStatus writeConfiguration_OpcUaInt64_array_delegated_nullForbidden ( const std::vector<OpcUa_Int64>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaDouble_array_delegated_nullForbidden ( const std::vector<OpcUa_Double>& v);
+    UaStatus writeConfiguration_OpcUaDouble_array_delegated_nullForbidden ( const std::vector<OpcUa_Double>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaFloat_array_delegated_nullForbidden ( const std::vector<OpcUa_Float>& v);
+    UaStatus writeConfiguration_OpcUaFloat_array_delegated_nullForbidden ( const std::vector<OpcUa_Float>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_UaString_array_delegated_nullForbidden ( const std::vector<UaString>& v);
+    UaStatus writeConfiguration_UaString_array_delegated_nullForbidden ( const std::vector<UaString>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaBoolean_array_delegated_nullAllowed ( const std::vector<OpcUa_Boolean>& v);
+    UaStatus writeConfiguration_OpcUaBoolean_array_delegated_nullAllowed ( const std::vector<OpcUa_Boolean>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaByte_array_delegated_nullAllowed ( const std::vector<OpcUa_Byte>& v);
+    UaStatus writeConfiguration_OpcUaByte_array_delegated_nullAllowed ( const std::vector<OpcUa_Byte>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaSByte_array_delegated_nullAllowed ( const std::vector<OpcUa_SByte>& v);
+    UaStatus writeConfiguration_OpcUaSByte_array_delegated_nullAllowed ( const std::vector<OpcUa_SByte>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt16_array_delegated_nullAllowed ( const std::vector<OpcUa_UInt16>& v);
+    UaStatus writeConfiguration_OpcUaUInt16_array_delegated_nullAllowed ( const std::vector<OpcUa_UInt16>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt16_array_delegated_nullAllowed ( const std::vector<OpcUa_Int16>& v);
+    UaStatus writeConfiguration_OpcUaInt16_array_delegated_nullAllowed ( const std::vector<OpcUa_Int16>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt32_array_delegated_nullAllowed ( const std::vector<OpcUa_UInt32>& v);
+    UaStatus writeConfiguration_OpcUaUInt32_array_delegated_nullAllowed ( const std::vector<OpcUa_UInt32>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt32_array_delegated_nullAllowed ( const std::vector<OpcUa_Int32>& v);
+    UaStatus writeConfiguration_OpcUaInt32_array_delegated_nullAllowed ( const std::vector<OpcUa_Int32>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaUInt64_array_delegated_nullAllowed ( const std::vector<OpcUa_UInt64>& v);
+    UaStatus writeConfiguration_OpcUaUInt64_array_delegated_nullAllowed ( const std::vector<OpcUa_UInt64>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaInt64_array_delegated_nullAllowed ( const std::vector<OpcUa_Int64>& v);
+    UaStatus writeConfiguration_OpcUaInt64_array_delegated_nullAllowed ( const std::vector<OpcUa_Int64>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaDouble_array_delegated_nullAllowed ( const std::vector<OpcUa_Double>& v);
+    UaStatus writeConfiguration_OpcUaDouble_array_delegated_nullAllowed ( const std::vector<OpcUa_Double>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_OpcUaFloat_array_delegated_nullAllowed ( const std::vector<OpcUa_Float>& v);
+    UaStatus writeConfiguration_OpcUaFloat_array_delegated_nullAllowed ( const std::vector<OpcUa_Float>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeConfiguration_UaString_array_delegated_nullAllowed ( const std::vector<UaString>& v);
+    UaStatus writeConfiguration_UaString_array_delegated_nullAllowed ( const std::vector<UaString>& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaBoolean_scalar_delegated_nullForbidden ( const OpcUa_Boolean& v);
+    UaStatus writeValueAndStatus_OpcUaBoolean_scalar_delegated_nullForbidden ( const OpcUa_Boolean& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaByte_scalar_delegated_nullForbidden ( const OpcUa_Byte& v);
+    UaStatus writeValueAndStatus_OpcUaByte_scalar_delegated_nullForbidden ( const OpcUa_Byte& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaSByte_scalar_delegated_nullForbidden ( const OpcUa_SByte& v);
+    UaStatus writeValueAndStatus_OpcUaSByte_scalar_delegated_nullForbidden ( const OpcUa_SByte& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaUInt16_scalar_delegated_nullForbidden ( const OpcUa_UInt16& v);
+    UaStatus writeValueAndStatus_OpcUaUInt16_scalar_delegated_nullForbidden ( const OpcUa_UInt16& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaInt16_scalar_delegated_nullForbidden ( const OpcUa_Int16& v);
+    UaStatus writeValueAndStatus_OpcUaInt16_scalar_delegated_nullForbidden ( const OpcUa_Int16& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaUInt32_scalar_delegated_nullForbidden ( const OpcUa_UInt32& v);
+    UaStatus writeValueAndStatus_OpcUaUInt32_scalar_delegated_nullForbidden ( const OpcUa_UInt32& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaInt32_scalar_delegated_nullForbidden ( const OpcUa_Int32& v);
+    UaStatus writeValueAndStatus_OpcUaInt32_scalar_delegated_nullForbidden ( const OpcUa_Int32& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaUInt64_scalar_delegated_nullForbidden ( const OpcUa_UInt64& v);
+    UaStatus writeValueAndStatus_OpcUaUInt64_scalar_delegated_nullForbidden ( const OpcUa_UInt64& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaInt64_scalar_delegated_nullForbidden ( const OpcUa_Int64& v);
+    UaStatus writeValueAndStatus_OpcUaInt64_scalar_delegated_nullForbidden ( const OpcUa_Int64& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaDouble_scalar_delegated_nullForbidden ( const OpcUa_Double& v);
+    UaStatus writeValueAndStatus_OpcUaDouble_scalar_delegated_nullForbidden ( const OpcUa_Double& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaFloat_scalar_delegated_nullForbidden ( const OpcUa_Float& v);
+    UaStatus writeValueAndStatus_OpcUaFloat_scalar_delegated_nullForbidden ( const OpcUa_Float& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_UaString_scalar_delegated_nullForbidden ( const UaString& v);
+    UaStatus writeValueAndStatus_UaString_scalar_delegated_nullForbidden ( const UaString& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaBoolean_scalar_delegated_nullAllowed ( const OpcUa_Boolean& v);
+    UaStatus writeValueAndStatus_OpcUaBoolean_scalar_delegated_nullAllowed ( const OpcUa_Boolean& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaByte_scalar_delegated_nullAllowed ( const OpcUa_Byte& v);
+    UaStatus writeValueAndStatus_OpcUaByte_scalar_delegated_nullAllowed ( const OpcUa_Byte& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaSByte_scalar_delegated_nullAllowed ( const OpcUa_SByte& v);
+    UaStatus writeValueAndStatus_OpcUaSByte_scalar_delegated_nullAllowed ( const OpcUa_SByte& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaUInt16_scalar_delegated_nullAllowed ( const OpcUa_UInt16& v);
+    UaStatus writeValueAndStatus_OpcUaUInt16_scalar_delegated_nullAllowed ( const OpcUa_UInt16& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaInt16_scalar_delegated_nullAllowed ( const OpcUa_Int16& v);
+    UaStatus writeValueAndStatus_OpcUaInt16_scalar_delegated_nullAllowed ( const OpcUa_Int16& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaUInt32_scalar_delegated_nullAllowed ( const OpcUa_UInt32& v);
+    UaStatus writeValueAndStatus_OpcUaUInt32_scalar_delegated_nullAllowed ( const OpcUa_UInt32& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaInt32_scalar_delegated_nullAllowed ( const OpcUa_Int32& v);
+    UaStatus writeValueAndStatus_OpcUaInt32_scalar_delegated_nullAllowed ( const OpcUa_Int32& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaUInt64_scalar_delegated_nullAllowed ( const OpcUa_UInt64& v);
+    UaStatus writeValueAndStatus_OpcUaUInt64_scalar_delegated_nullAllowed ( const OpcUa_UInt64& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaInt64_scalar_delegated_nullAllowed ( const OpcUa_Int64& v);
+    UaStatus writeValueAndStatus_OpcUaInt64_scalar_delegated_nullAllowed ( const OpcUa_Int64& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaDouble_scalar_delegated_nullAllowed ( const OpcUa_Double& v);
+    UaStatus writeValueAndStatus_OpcUaDouble_scalar_delegated_nullAllowed ( const OpcUa_Double& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_OpcUaFloat_scalar_delegated_nullAllowed ( const OpcUa_Float& v);
+    UaStatus writeValueAndStatus_OpcUaFloat_scalar_delegated_nullAllowed ( const OpcUa_Float& v) override;
     /* Note: never directly call this function. */
-    UaStatus writeValueAndStatus_UaString_scalar_delegated_nullAllowed ( const UaString& v);
+    UaStatus writeValueAndStatus_UaString_scalar_delegated_nullAllowed ( const UaString& v) override;
 
     /* Note: never directly call this function. */
 
 
-    UaStatus writeValueAndStatus_UaVariant_scalar_delegated_nullAllowed ( const UaVariant & v);
+    UaStatus writeValueAndStatus_UaVariant_scalar_delegated_nullAllowed ( const UaVariant & v) override;
 
 
     /* delegators for methods */

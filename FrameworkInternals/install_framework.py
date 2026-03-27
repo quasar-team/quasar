@@ -39,6 +39,7 @@ from colorama import Fore, Style
 from manage_files import mfInstall
 from DesignInspector import DesignInspector
 from quasar_basic_utils import yes_or_no, get_quasar_version, print_logo
+from deviceClassAnalyzer import addOverrideToDeviceClasses
 
 def fix_empty_project_short_name(destination):
     '''Fixes empty attribute of projectShortName in Design, now required since quasar nebula.B1'''
@@ -107,10 +108,23 @@ def upgradeProject(destination):
     if yn == 'n':
         print('User cancelled the upgrade, no changes were made, quitting.')
         return
-    installFramework(destination)
+    install_ok = True
+    try:
+        installFramework(destination)
+    except (OSError, IOError, RuntimeError) as e:
+        install_ok = False
+        print(f'{Fore.YELLOW}Framework file installation encountered an issue: {e}{Style.RESET_ALL}')
+        print(f'{Fore.YELLOW}Continuing with device class upgrade...{Style.RESET_ALL}')
     fix_empty_project_short_name(destination)
+    # Add 'override' keyword to D<Class> methods that override Base_D virtuals.
+    # Base_D now provides virtual defaults (since p9999), so 'override' ensures
+    # compile-time safety when design elements are removed or changed.
+    print(f'\n{Style.BRIGHT}Upgrading device classes (adding override keywords)...{Style.RESET_ALL}')
+    addOverrideToDeviceClasses({'projectSourceDir': destination})
     print_logo(skip_top=2, skip_bottom=2)
     print(f'Your quasar project in {Style.BRIGHT}{destination}{Style.RESET_ALL} was upgraded')
+    if not install_ok:
+        print(f'{Fore.YELLOW}Note: some framework files may need manual merging (see above).{Style.RESET_ALL}')
     print()
     __print_post_install_notes()
 
