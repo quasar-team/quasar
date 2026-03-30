@@ -1,8 +1,13 @@
 
+# check quasar/Common/CommonCustom.cmake for adding custom sources!
+if(EXISTS ${PROJECT_SOURCE_DIR}/Common/CommonCustom.cmake)
+  include (CommonCustom.cmake)
+endif(EXISTS ${PROJECT_SOURCE_DIR}/Common/CommonCustom.cmake)
 
 add_library (Common OBJECT
 	src/ASUtils.cpp
         src/QuasarThreadPool.cpp
+	${COMMON_CUSTOM_SOURCES}
 	)
 
 if (BUILD_QUASAR_TESTS)        

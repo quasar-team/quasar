@@ -8,9 +8,6 @@ NOTE: Clone quasar with the _--recursive_ flag. Required since quasar uses sourc
 git clone --recursive https://github.com/quasar-team/quasar
 ```
 
-## Continuous Integration builds status
+## Continuous Integration
 
-CI build info | UA backend | CI build status
------------- | ------------- | -------------
-linux (travis-ci) | open62541 | [![travis-ci](https://travis-ci.org/quasar-team/quasar.svg?branch=master)](https://travis-ci.org/quasar-team/quasar?branch=master)
-windows (appveyor) | open62541 | [![Appveyor](https://ci.appveyor.com/api/projects/status/q8ruqgd2nj54b76p/branch/master?svg=true)](https://ci.appveyor.com/project/ben-farnham/quasar/branch/master)
+CI runs on GitHub Actions. See [.github/workflows/ci.yml](.github/workflows/ci.yml) for the full test matrix (open62541 + UASDK + AlmaLinux 10).

@@ -28,10 +28,10 @@ def generateOneDeviceClass(context, className):
     transformByKey([TransformKeys.D_DEVICE_H, TransformKeys.D_DEVICE_CPP], {'context':context, 'className':className})
 
 def generateDeviceClass(context, *classList):
-    """Generates the files D<classname>.h and D<classname>.cpp. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.
+    """Generates D<classname>.h and D<classname>.cpp stubs. If the files already exist they are skipped (user-owned). Base_D provides virtual defaults for new design elements.
 
     Keyword arguments:
-    classname -- the name of the device, which this class will be associated to. You can specify several classes (up to 10), separated by spaces or just --all to regenerate all device classes.
+    classname -- the name of the device class. You can specify several classes separated by spaces, or use --all.
     """
     if len(classList) < 1:
         raise WrongArguments("need at least one arg for this")
@@ -40,7 +40,7 @@ def generateDeviceClass(context, *classList):
         generateOneDeviceClass(context, aClass)
 
 def generateAllDevices(context):
-    """Generates the files D<classname>.h and D<classname>.cpp for ALL the different devices. This method needs to be called by the user, as this is the class where the device logic is, so a manual merge will be needed.	"""
+    """Generates D<classname>.h/.cpp stubs for all device classes. Existing files are skipped (user-owned)."""
     designInspector = DesignInspector(os.path.sep.join([context['projectSourceDir'], 'Design', 'Design.xml']))
     classes = designInspector.get_names_of_all_classes(only_with_device_logic=True)
     for aClass in classes:

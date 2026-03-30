@@ -79,7 +79,7 @@ directory. There are three types of modules:
 -  native
    These are compulsory modules of any quasar-based server. The build
    system knows about them intrinsically. At the time of writing, they
-   comprise of: AddressSpace, CalculatedVariables, Configuration,
+   comprise of: AddressSpace, CalculatedVariables, Common, Configuration,
    Device, LogIt, Meta and Server.
 -  optional
    These are modules which are deployed by quasar's "optional modules"
@@ -116,6 +116,30 @@ Custom module deployment is comprised of:
 
 After both steps the quasar build system will take the custom module
 into account.
+
+Device class file ownership
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+D<Class>.h and D<Class>.cpp files are **user-owned**: they are generated
+once as stubs and never overwritten by the framework. When Design.xml
+changes, Base_D<Class> (fully regenerated) provides virtual default
+implementations for all device-logic methods. Users override only the
+methods they need in their D<Class> files, using the ``override`` keyword.
+
+Run ``./quasar.py device_report`` to see which Base_D virtual methods
+your D<Class> files override.
+
+Custom source files in framework-owned modules
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``Common/CMakeLists.txt`` and ``Server/CMakeLists.txt`` are framework-owned
+and overwritten on upgrade. To add project-specific source files to these
+modules, use:
+
+- ``Common/CommonCustom.cmake`` — set variable ``COMMON_CUSTOM_SOURCES``
+- ``Server/ServerCustom.cmake`` — set variable ``SERVER_CUSTOM_SOURCES``
+
+This follows the same pattern as ``Device/DeviceCustom.cmake``.
 
 Summary of build modes available in quasar
 

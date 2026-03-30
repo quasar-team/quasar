@@ -82,20 +82,6 @@ Artistic Style
       in a Windows Command Prompt. If the command is recognized you are
       good to go.
 
-KDiff3
-
--  `Download and install from
-   sourceforge <http://sourceforge.net/projects/kdiff3/files/>`__
-
--  Add the main installation folder to the Windows PATH environment
-   variable
-
--  
-
-   -  To make sure everything went well run the command *kdiff3* in a
-      Windows Command Prompt. If the command is recognized you are good
-      to go.
-
 Visual Studio
 
 -  Install visual studio, version of your choice.

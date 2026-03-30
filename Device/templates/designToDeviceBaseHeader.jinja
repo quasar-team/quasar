@@ -17,6 +17,7 @@
 {# Created:   Jul 2014 (the original XSLT version)                               #}
 {#            12 Mar 2020 (translated to Jinja2)                                 #}
 {# Authors:                                                                      #}
+{#   Paris Moschovakos <paris.moschovakos@cern.ch>                               #}
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
 {% macro get_parent_struct(class_name) %}
@@ -95,6 +96,23 @@ class Base_D{{className}}
 
   void linkAddressSpace (AddressSpace::AS{{className}}* as, const std::string& stringAddress);
   AddressSpace::AS{{className}}* getAddressSpaceLink () const;
+
+  /* Device-logic virtual interface -- override in D{{className}} to implement.
+     Default implementations log a warning and return OpcUa_BadNotImplemented. */
+  {% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
+  virtual {{ commonDeviceTemplates.writeCacheVarSig(cv) }};
+  {% endfor %}
+  {% for sv in designInspector.objectify_source_variables(className) %}
+    {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
+  virtual {{ commonDeviceTemplates.readSourceVarSig(sv) }};
+    {% endif %}
+    {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
+  virtual {{ commonDeviceTemplates.writeSourceVarSig(sv) }};
+    {% endif %}
+  {% endfor %}
+  {% for m in this.method %}
+  virtual {{ commonDeviceTemplates.callMethodSig(m, oracle) }};
+  {% endfor %}
 
   /* find methods for children */
   {{ commonDeviceTemplates.deviceLogicFindByKeyHeaders(this, designInspector, oracle) }}

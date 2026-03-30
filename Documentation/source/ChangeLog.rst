@@ -16,6 +16,48 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">2.0.0<font size="-1"><br>(TBD)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>
+                    kdiff3 is fully eliminated as a dependency. D&lt;Class&gt; files are now user-owned and never overwritten; Base_D&lt;Class&gt; provides virtual defaults for new design elements. Common/CMakeLists.txt, Server/CMakeLists.txt, main.cpp and Doxyfile are now framework-owned. New <code>CommonCustom.cmake</code> and <code>ServerCustom.cmake</code> provide hooks for project-specific sources (same pattern as <code>DeviceCustom.cmake</code>). A new <code>device_report</code> command shows override status.
+                </td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>
+                    <ul>
+                        <li>D&lt;Class&gt; files are no longer regenerated on Design.xml changes. New elements get defaults via Base_D. Run <code>./quasar.py device_report</code> to check.</li>
+                        <li>kdiff3 is no longer invoked. Consult Base_D&lt;Class&gt;.h for new virtual methods after design changes.</li>
+                        <li>Common/CMakeLists.txt and Server/CMakeLists.txt are now overwritten on upgrade. Move custom sources to <code>CommonCustom.cmake</code> (<code>COMMON_CUSTOM_SOURCES</code>) and <code>ServerCustom.cmake</code> (<code>SERVER_CUSTOM_SOURCES</code>) respectively.</li>
+                        <li>Server/src/main.cpp is now overwritten. Use <code>appendCustomCommandLineOptions()</code>, <code>initialize()</code> or <code>shutdown()</code> hooks in QuasarServer instead.</li>
+                        <li>Documentation/Doxyfile is now overwritten on upgrade.</li>
+                        <li><code>transformDesign(requiresMerge=...)</code> continues to work via backward-compatibility alias.</li>
+                    </ul>
+                </td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    New Feature
+                    <ul>
+                        <li>Virtual defaults in Base_D, eliminating kdiff3</li>
+                        <li><code>device_report</code> command for override diagnostics</li>
+                        <li><code>CommonCustom.cmake</code> and <code>ServerCustom.cmake</code> for project-specific sources</li>
+                    </ul>
+                    Improvement
+                    <ul>
+                        <li><code>override</code> keyword on D&lt;Class&gt; declarations for compile-time safety</li>
+                        <li><code>upgrade_project</code> adds <code>override</code> to existing D&lt;Class&gt; headers automatically</li>
+                        <li>Common/CMakeLists.txt, Server/CMakeLists.txt, main.cpp, Doxyfile now framework-owned</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar test suite notes:<br>
+                    <ol>
+                        <li>All CI jobs pass (open62541 + UASDK + AlmaLinux 10)</li>
+                        <li>Upgrade path validated on 8 real servers</li>
+                        <li>CMakeLists.txt customization surveyed across 34 production servers</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">1.7.2<font size="-1"><br>(30-Mar-2026)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>This release introduces GitHub Actions CI for both open62541 and UASDK backends, adds AlmaLinux 10 smoke tests, generates status code getters for cache variables, and fixes code generation for calculated variables and parent/child device logic combinations. The open62541-compat module is no longer enabled by default.</td>
