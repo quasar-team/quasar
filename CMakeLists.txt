@@ -69,9 +69,9 @@ find_package(XercesC REQUIRED)
 message(STATUS "Found xerces-c: ${XercesC_INCLUDE_DIRS}")
 list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES ${XercesC_INCLUDE_DIRS})
 
-if(DEFINED ENV{LIBXSD_HOME})
-    list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES $ENV{LIBXSD_HOME}/include)
-    include_directories($ENV{LIBXSD_HOME}/include)
+if(DEFINED ENV{XSD_HOME})
+    list(APPEND QUASAR_GLOBAL_INCLUDE_DIRECTORIES $ENV{XSD_HOME}/include)
+    include_directories($ENV{XSD_HOME}/include)
 endif()
 
 if(DEFINED ENV{LIBSSL_HOME})
