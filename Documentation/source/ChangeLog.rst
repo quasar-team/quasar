@@ -16,6 +16,39 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">1.7.2<font size="-1"><br>(30-Mar-2026)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>This release introduces GitHub Actions CI for both open62541 and UASDK backends, adds AlmaLinux 10 smoke tests, generates status code getters for cache variables, and fixes code generation for calculated variables and parent/child device logic combinations. The open62541-compat module is no longer enabled by default.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>
+                    <ul>
+                        <li>open62541-compat is no longer a default-enabled module. Projects using open62541 must explicitly enable it via <code>./quasar.py enable_module open62541-compat</code>.</li>
+                        <li>OPCUA-3304 minimum version enforcement was reverted as it broke CommonUtilities-based servers.</li>
+                    </ul>
+                </td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Improvement
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3305'>OPCUA-3305</a>] - Generate status code getter for cache variables</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3229'>OPCUA-3229</a>] - Fix code generation for parent/child combinations with/without device logic</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3237'>OPCUA-3237</a>] - Handle invalid status code by setting variable state to Bad</li>
+                    </ul>
+                    Task
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3306'>OPCUA-3306</a>] - Revert OPCUA-3304 minVersion enforcement (breaks CommonUtilities servers)</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar test suite notes:<br>
+                    <ol>
+                        <li>GitHub Actions CI: 10 open62541 + 7 UASDK + 2 AlmaLinux 10 smoke tests</li>
+                        <li>Status code getter validated across all data types</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">1.7.1<font size="-1"><br>(13-May-2025)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>This release focuses on fixing critical bugs affecting hardware discovery servers and server startup, and introduces improvements for finding OpcUaToolkit package and external tool checking.</td>
