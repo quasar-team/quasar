@@ -3,8 +3,9 @@
 '''
 externalToolCheck.py
 
+@author:     Paris Moschovakos <paris.moschovakos@cern.ch>
 @author:     Damian Abalo Miron <damian.abalo@cern.ch>
-@author:	 Piotr Nikiel
+@author:     Piotr Nikiel <piotr@nikiel.info>
 
 @copyright:  2016 CERN
 
@@ -65,22 +66,6 @@ def checkAstyle():
 def checkXsdcxx():
     checkExecutableExists('xsdcxx', StandardMessage, "--version" )
 
-def checkKdiff3():
-    if platform.system() == "Linux":
-        return checkExecutableExists('diff', StandardMessage, '--version')
-    #if the system is a windows machine then:
-    errorMessageWindows = "kdiff3 cannot be found. Maybe it is not installed, or maybe it is not set in the PATH. \nkdiff3 can be downloaded in http://kdiff3.sourceforge.net/ "
-    try:
-        returnCode = subprocess.call(['where', getCommand('diff')],
-            stdout=open(os.devnull, 'wb'),
-            stderr=subprocess.STDOUT)
-        if returnCode == 0:
-            print("kdiff3 does exist")
-        else:
-            raise Exception(errorMessageWindows)
-    except:
-        raise Exception(errorMessageWindows)
-
 def checkCMake():
     checkExecutableExists('cmake', StandardMessage)
 
@@ -111,7 +96,6 @@ def tryDependency(functionCheck, critical=True):
 
 def checkExternalDependencies():
     """Checks all of QUASAR dependencies to see if everything is setup as expected, and prints apropiate messages to point out what is missing."""
-    tryDependency(checkKdiff3)
     tryDependency(checkCMake)
     tryDependency(checkCompiler)
     tryDependency(checkXMLLint)

@@ -2,6 +2,8 @@
 """Tests the upgrade migration path: old-style D<Class> files (no override keyword)
 get the 'override' keyword added by addOverrideToDeviceClasses.
 
+@author:     Paris Moschovakos <paris.moschovakos@cern.ch>
+
 This test uses the test_cache_variables Design.xml which has many delegated cache variables,
 ensuring the regex-based override addition handles real-world patterns.
 

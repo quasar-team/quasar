@@ -9,10 +9,10 @@ Provides device_report (override status check) and addOverrideToDeviceClasses
 
 @author:     Paris Moschovakos <paris.moschovakos@cern.ch>
 
-@copyright:  2025 CERN
+@copyright:  2026 CERN
 
 @license:
-Copyright (c) 2025, CERN.
+Copyright (c) 2026, CERN.
 All rights reserved.
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.

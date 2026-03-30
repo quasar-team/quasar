@@ -3,6 +3,7 @@
 '''
 transformDesign.py
 
+@author:     Paris Moschovakos <paris.moschovakos@cern.ch>
 @author:     Piotr Nikiel <piotr@nikiel.info>
 @author:     Damian Abalo Miron <damian.abalo@cern.ch>
 

@@ -286,7 +286,12 @@
     "Common": {
         "files": {
             "CMakeLists.txt": {
-                "install": "ask_to_merge",
+                "install": "overwrite",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
+            "CommonCustom.cmake": {
+                "install": "copy_if_not_existing",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -544,7 +549,7 @@
     "Documentation": {
         "files": {
             "Doxyfile": {
-                "install": "ask_to_merge",
+                "install": "overwrite",
                 "md5": "check",
                 "must_be_versioned": true,
                 "must_exist": true
@@ -1094,7 +1099,12 @@
     "Server": {
         "files": {
             "CMakeLists.txt": {
-                "install": "ask_to_merge",
+                "install": "overwrite",
+                "must_be_versioned": true,
+                "must_exist": true
+            },
+            "ServerCustom.cmake": {
+                "install": "copy_if_not_existing",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -1191,7 +1201,7 @@
                 "must_exist": true
             },
             "main.cpp": {
-                "install": "ask_to_merge",
+                "install": "overwrite",
                 "must_be_versioned": true,
                 "must_exist": true
             },
