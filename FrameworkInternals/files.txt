@@ -92,11 +92,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASNodeManager.h": {
-                "md5": "aff3b8ca1f0d060716431020c3d2a2f4",
+                "md5": "8ab4aa271e50e686fe6618762e6c58eb",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASNodeQueries.h": {
-                "md5": "e309cab9a9365be6a0ec2cf52155c62a",
+                "md5": "3685c660939886fcbf928133feb32d89",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariable.h": {
@@ -131,7 +131,7 @@
         },
         "files": {
             "ASNodeManager.cpp": {
-                "md5": "6137e161b95ecc660ed8ea0e5a8d8479",
+                "md5": "5202d1d7783e04c74fffebb3169a8ff4",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariableIoManager.cpp": {
@@ -166,11 +166,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "26f72fc9e235980f6b7b81e05c5e89b1",
+                "md5": "1b9e04b404b8713fb783593d289aab54",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
-                "md5": "1bb597e881dd5b37568fb98fcdcaaf90",
+                "md5": "ec50939c79cfbfc4d55d3f63a29542ce",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToGeneratedCmakeAddressSpace.jinja": {
@@ -285,7 +285,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesChangeListener.cpp": {
-                "md5": "1d94a8cd051f2ebbf1ac693f853f438f",
+                "md5": "6e2534e425dd688fe1404698d6f5b8a2",
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesEngine.cpp": {
@@ -456,7 +456,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "50d292767fef3c925051eef708b0e506",
+                "md5": "8a4c2c2c425b046cc39ed3eed864d352",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1191,7 +1191,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "5327027165be5f4d1a082cb97a73061d",
+                "md5": "88141d9f105c0d24a03d040cf69147a3",
                 "must_be_versioned": true,
                 "must_exist": true
             },
