@@ -29,7 +29,7 @@ def get_current_date():
 # -- Project information -----------------------------------------------------
 
 project = 'quasar'
-copyright = '2021-2024, Paris Moschovakos'
+copyright = '2021-2026, Paris Moschovakos'
 author = 'Paris Moschovakos'
 
 
@@ -75,7 +75,11 @@ html_favicon = '_static/favicon.ico'
 locale_dirs = ['../locales']
 
 html_context = {
-    "display_github": False,
+    "display_github": True,
+    "github_user": "quasar-team",
+    "github_repo": "quasar",
+    "github_version": "master",
+    "conf_py_path": "/Documentation/source/",
     "commit": get_git_commit_hash(),
     "last_updated": get_current_date(),
 }
