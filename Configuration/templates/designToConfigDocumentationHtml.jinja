@@ -26,34 +26,37 @@
   {% set restrictions=designInspector.get_restrictions(containingClassName, objectName, what) %}
 
   {% if restrictions|length>0 %}
-    <div style="background-color: #ffefef"><font color="red">Value restrictions</font>
+    <div class="restrictions"><span class="label label-restrictions">Restrictions</span>
       {% set restrictionType = oracle.classify_xsd_restrictions(restrictions) %}
       {% if restrictionType == 'enumeration' %}
-        <br/>Enumeration:
+        Enumeration:
         {% for restriction in restrictions -%}
           <code>{{restriction[1]}}{{'|' if not loop.last}}</code>
         {%- endfor %}
       {% elif restrictionType == 'pattern' %}
-        <br/>Pattern:
+        Pattern:
         {% for restriction in restrictions -%}
           <code>{{restriction[1]}}</code>
         {% endfor %}
       {% elif restrictionType == 'bounds' %}
-        <br/>Bounds:
+        Bounds:
+        <code>
         {% for restriction in restrictions|sort(attribute=0, reverse=True) -%}
           {% if restriction[0] == 'minExclusive' %}
-            <code>{{boundsRestrictionPrefix}}{{objectName}}&gt;{{restriction[1]}}{{' AND ' if not loop.last}}</code>
+            {{boundsRestrictionPrefix}}{{objectName}} &gt; {{restriction[1]}}
           {% endif %}
           {% if restriction[0] == 'maxExclusive' %}
-            <code>{{boundsRestrictionPrefix}}{{objectName}}&lt;{{restriction[1]}}{{' AND ' if not loop.last}}</code>
+            {{boundsRestrictionPrefix}}{{objectName}} &lt; {{restriction[1]}}
           {% endif %}
           {% if restriction[0] == 'minInclusive' %}
-            <code>{{boundsRestrictionPrefix}}{{objectName}}&gt;={{restriction[1]}}{{' AND ' if not loop.last}}</code>
+            {{boundsRestrictionPrefix}}{{objectName}} &gt;= {{restriction[1]}}
           {% endif %}
           {% if restriction[0] == 'maxInclusive' %}
-            <code>{{boundsRestrictionPrefix}}{{objectName}}&lt;={{restriction[1]}}{{' AND ' if not loop.last}}</code>
+            {{boundsRestrictionPrefix}}{{objectName}} &lt;= {{restriction[1]}}
           {% endif %}
+          {{' AND ' if not loop.last}}
         {% endfor %}
+        </code>
       {% endif %}
     </div>
   {% endif %}
@@ -62,16 +65,21 @@
 {% macro writeCacheVarOrConfigEntry(containingClassName, elementObject, what) %}
   {% set objectName = elementObject.get('name') %}
   {% set objectType = elementObject.get('dataType') %}
-  {% set optionalityMsg = 'optional, the default value shown below will be used if not present' if elementObject.get('defaultValue') else 'mandatory' %}
-  <b>{{objectName}}</b> ({{objectType}}) {{optionalityMsg}}
+  <b>{{objectName}}</b>
+  <span class="type-badge">{{objectType}}</span>
+  {% if elementObject.get('defaultValue') %}
+    <span class="optional-badge">optional, default: <code>{{elementObject.get('defaultValue')}}</code></span>
+  {% else %}
+    <span class="mandatory-badge">mandatory</span>
+  {% endif %}
   {% set docElements = designInspector.objectifyDocumentation(containingClassName, objectName) %}
   {% if docElements|length > 0 %}
-    <div style="background-color:#eeeeff"><font color="blue">DOC</font>
+    <div class="doc"><span class="label label-doc">Doc</span>
       {% for docElement in docElements %}
         {{ designInspector.strip_documentation_tag(docElement) }}
       {% endfor %}
       {# Add to the docs the enumeration documentation, if any. #}
-      {% if what == 'configentry' %}
+      {% if what == 'configentry' %}
         {% set configEntryObjectified = designInspector.objectify_config_entries(containingClassName, "[@name='" + objectName + "']")[0] %}
         {% set enumerationValuesWithDocs = designInspector.xpath_relative_to_object(configEntryObjectified, 'd:configRestriction/d:restrictionByEnumeration/d:enumerationValue[d:documentation]') %}
         {% if enumerationValuesWithDocs|length > 0 %}
@@ -90,124 +98,134 @@
       {% endif %}
     </div>
   {% endif %}
-  {% if elementObject.get('defaultValue') %}
-    <div style="background-color: #efffef"><b>Default value:</b> {{elementObject.get('defaultValue')}}</div>
-  {% endif %}
   {{ writeRestrictions(containingClassName, objectName, what) }}
 {% endmacro %}
 
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Configuration documentation — {{designInspector.getProjectName()}}</title>
   <style>
-    li {margin-bottom: 10pt;}
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; max-width: 960px; margin: 0 auto; padding: 1em; color: #333; }
+    h1 { border-bottom: 2px solid #4a90d9; padding-bottom: 0.3em; }
+    h2 { border-top: 2px solid #ddd; padding-top: 0.8em; margin-top: 1.5em; }
+    a { color: #4a90d9; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code { background: #f4f4f4; padding: 1px 4px; border-radius: 3px; font-size: 0.9em; }
+    li { margin-bottom: 10pt; }
+    .top-link { font-size: 0.8em; float: right; }
+    .jump-index { margin: 1em 0; }
+    .jump-index a { display: inline-block; margin: 2px 6px 2px 0; padding: 2px 8px; background: #f0f4f8; border-radius: 3px; font-size: 0.9em; }
+    .type-badge { font-size: 0.85em; color: #666; }
+    .optional-badge { font-size: 0.85em; color: #888; }
+    .mandatory-badge { font-size: 0.85em; color: #c44; font-weight: bold; }
+    .label { font-weight: bold; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 0.5em; }
+    .label-doc { color: #3366aa; }
+    .label-restrictions { color: #aa3333; }
+    .doc { background-color: #f0f4fa; border-left: 3px solid #4a90d9; padding: 6px 10px; margin: 4px 0; }
+    .restrictions { background-color: #fef0f0; border-left: 3px solid #cc4444; padding: 6px 10px; margin: 4px 0; }
+    .note { background-color: #fff3e0; border-left: 3px solid #e6a020; padding: 6px 10px; margin: 4px 0; }
+    .children { margin-top: 0.5em; }
+    .children a { display: inline-block; margin: 2px 6px 2px 0; padding: 2px 8px; background: #f0f4f8; border-radius: 3px; font-size: 0.9em; }
   </style>
 </head>
+<body>
   <h1>Configuration documentation for {{designInspector.getProjectName()}}</h1>
 
-  Jump to:
+  <div class="jump-index">
   {% for className in designInspector.get_names_of_all_classes()|sort() %}
     {% set parentObjects = designInspector.objectifyAllParents(className, restrict_to_by_configuration=True) %}
     {% if parentObjects|length > 0 %}
       <a href="#class_{{className}}">{{className}}</a>
     {% endif %}
   {% endfor %}
+  </div>
 
   {% for className in designInspector.get_names_of_all_classes()|sort() %}
     {% set parentObjects = designInspector.objectifyAllParents(className, restrict_to_by_configuration=True) %}
     {% if parentObjects|length > 0 %}
-      <a id="class_{{className}}"><h2>{{className}}</h2></a>
+      <h2 id="class_{{className}}">{{className}} <a href="#" class="top-link">[top]</a></h2>
       {% set documentation = designInspector.objectifyDocumentation(className) %}
       {% if documentation %}
-        <div style="background-color:#eeeeff"><font color="blue">DOC</font>
+        <div class="doc"><span class="label label-doc">Doc</span>
           {% for docElement in documentation %}
             {{ designInspector.strip_documentation_tag(docElement) }}
           {% endfor %}
         </div>
-        <br/>
       {% endif %}
       {% if designInspector.is_class_always_singleton(className) %}
-        <div style="background-color:#ffeedd">NOTE
+        <div class="note"><span class="label">Note</span>
           This class is a singleton, do not declare it more than once.
         </div>
-        <br/>
         {% if designInspector.get_class_default_instance_name(className) != None %}
-          <div style="background-color:#ffeedd">NOTE
-            The <code>name</code> attribute in this class is defaulted to <code>{{designInspector.get_class_default_instance_name(className)}}</code>, don't waste time specifying it in the config file.
+          <div class="note"><span class="label">Note</span>
+            The <code>name</code> attribute defaults to <code>{{designInspector.get_class_default_instance_name(className)}}</code>.
           </div>
-          <br/>
         {% endif %}
       {% endif %}
 
-      Configuration attributes:
       <ul>
       {% set configEntries= designInspector.objectify_config_entries(className) %}
-      {% if configEntries|length > 0 %}
-        {% for configEntry in configEntries %}
-          <li>
-          {{ writeCacheVarOrConfigEntry(className, configEntry, "configentry") }}
-          </li>
-        {% endfor %}
-      {% else %}
-	      Class {{className}} has no configuration entries.
-      {% endif %}
+      {% for configEntry in configEntries %}
+        <li>
+        {{ writeCacheVarOrConfigEntry(className, configEntry, "configentry") }}
+        </li>
+      {% endfor %}
 
       {% set configuredCacheVars = designInspector.objectify_cache_variables(className, restrict_by="[@initializeWith='configuration']") %}
-      {% if configuredCacheVars |length > 0 %}
-        {% for cacheVar in configuredCacheVars %}
-          <li>
-          {{ writeCacheVarOrConfigEntry(className, cacheVar, "cachevariable") }}
-          </li>
-        {% endfor %}
-      {% else %}
-	      Class {{className}} has no cache variables initialized from the configuration.
-      {% endif %}
+      {% for cacheVar in configuredCacheVars %}
+        <li>
+        {{ writeCacheVarOrConfigEntry(className, cacheVar, "cachevariable") }}
+        </li>
+      {% endfor %}
       </ul>
 
-      Possible children:
-      <a href="#class_CalculatedVariable">CalculatedVariable</a>
-      <a href="#class_FreeVariable">FreeVariable</a>
-      {% for hasObject in designInspector.get_class_has_objects(className) %}
-        {% if hasObject.get('instantiateUsing')=='configuration' %}
-          <a href="#class_{{hasObject.get('class')}}">{{hasObject.get('class')}}</a>
-        {% endif %}
-      {% endfor %}
+      <div class="children">
+        Children:
+        <a href="#class_CalculatedVariable">CalculatedVariable</a>
+        <a href="#class_FreeVariable">FreeVariable</a>
+        {% for hasObject in designInspector.get_class_has_objects(className) %}
+          {% if hasObject.get('instantiateUsing')=='configuration' %}
+            <a href="#class_{{hasObject.get('class')}}">{{hasObject.get('class')}}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
 
     {% endif %}
   {% endfor %}
 
-  <a id="class_CalculatedVariable"><h2>CalculatedVariable</h2></a>
-  A CalculatedVariable is a "synthetic" variable which is based on other "real" variables of the address-space.
-  You can declare a CalculatedVariable under any object in the configuration file.
-  The required attributes are:
+  <h2 id="class_CalculatedVariable">CalculatedVariable <a href="#" class="top-link">[top]</a></h2>
+  <div class="doc"><span class="label label-doc">Doc</span>
+  A CalculatedVariable is a synthetic variable computed from other address-space variables.
+  Declare under any object in the configuration file.
+  </div>
   <ul>
-    <li>name - will be the last part of the address</li>
-    <li>value - analytical formula used to calculate the value of the variable.
-        E.g. to calculate the square of another variable with address x.y you should put <code>x.y^2</code></li>
+    <li><b>name</b> — the last part of the OPC UA address</li>
+    <li><b>value</b> — analytical formula, e.g. <code>x.y^2</code> to compute the square of variable <code>x.y</code></li>
   </ul>
-  Detailed documentation of all features of CalculatedVariables is available in the quasar Documentation (see CalculatedVariables/doc/CalculatedVariables.html from the quasar root).
+  See <code>CalculatedVariables/doc/CalculatedVariables.html</code> in the quasar documentation for details.
 
-  <a id="class_CalculatedVariableGenericFormula"><h2>CalculatedVariableGenericFormula</h2></a>
-  A CalculatedVariableGenericFormula is a generalized formula that can be used as a template to
-  instantiate CalculatedVariable(s). It helps to avoid redundancy and thus also minimize probability
-  of errors. The basic way of using the CalculatedVariableGenericFormula is using the <code>$applyGenericFormula</code> operator.
-  <p/>
+  <h2 id="class_CalculatedVariableGenericFormula">CalculatedVariableGenericFormula <a href="#" class="top-link">[top]</a></h2>
+  <div class="doc"><span class="label label-doc">Doc</span>
+  A generalized formula template used with the <code>$applyGenericFormula</code> operator
+  to instantiate CalculatedVariables, reducing redundancy. Must be declared at the top of the configuration file.
+  </div>
 
-  The CalculatedVariableGenericFormula needs to be instantiated at the very top of a chosen configuration file.
-
-  <p/>
-
-  Detailed documentation of all features of CalculatedVariables is available in the quasar Documentation (see CalculatedVariables/doc/CalculatedVariables.html from the quasar root).
-
-  <a id="class_FreeVariable"><h2>FreeVariable</h2></a>
-  A FreeVariable is an OPC-UA variable which can be added anywhere in the address-space. It is not governed at all by the given server
-  Design and, in fact, the server can't even communicate with that variable (or, at least, there is no direct support for it).
-  A free variable can be always written to by any OPCUA clients.
-  <br>
-  The required attributes are:
+  <h2 id="class_FreeVariable">FreeVariable <a href="#" class="top-link">[top]</a></h2>
+  <div class="doc"><span class="label label-doc">Doc</span>
+  An OPC UA variable that can be added anywhere in the address space. Not governed by the server Design —
+  always writable by any OPC UA client.
+  </div>
   <ul>
-    <li>name</li>
-    <li>type, one of: Boolean, Byte, SByte, UInt16, Int16, UInt32, Int32, UInt64, Int64, Float, Double, String.</li>
+    <li><b>name</b> — required</li>
+    <li><b>type</b> — one of: Boolean, Byte, SByte, UInt16, Int16, UInt32, Int32, UInt64, Int64, Float, Double, String</li>
+    <li><b>initialValue</b> — optional</li>
   </ul>
-  In addition, an initialValue attribute might be given.
 
+<footer style="margin-top: 3em; padding-top: 1em; border-top: 1px solid #ddd; text-align: center; color: #aaa; font-size: 0.8em;">
+  Generated by <a href="https://github.com/quasar-team/quasar" style="color: #aaa;">quasar</a> &mdash; designed by <img src="data:image/png;base64,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" alt="PM" style="height: 18px; vertical-align: middle; opacity: 0.6; margin: 0 3px;"> Paris Moschovakos
+</footer>
+</body>
 </html>
