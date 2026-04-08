@@ -17,7 +17,7 @@
                 "must_be_versioned": true,
                 "must_exist": true
             },
-            "LICENSE.TXT": {
+            "LICENSE": {
                 "install": "overwrite",
                 "md5": "e94f6920e0f51ea34f43be88dc810edc",
                 "must_be_versioned": true,
@@ -166,11 +166,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "1b9e04b404b8713fb783593d289aab54",
+                "md5": "5e6e80f548dca92934e65a32a4022257",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
-                "md5": "ec50939c79cfbfc4d55d3f63a29542ce",
+                "md5": "050e4377b4161160d44d6ef8c2bf0b44",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToGeneratedCmakeAddressSpace.jinja": {
@@ -186,7 +186,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesBody.jinja": {
-                "md5": "75f226377674905d78e7fe757a16dfda",
+                "md5": "a64f5efca0ed2d03cae94129a52a4ba8",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesHeader.jinja": {
@@ -542,23 +542,23 @@
         },
         "files": {
             "commonDeviceTemplates.jinja": {
-                "md5": "8464347ffc4ee581005d18f1013a5a66",
+                "md5": "af1bbd2e62ea6a5036090a5d8cd20202",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBaseBody.jinja": {
-                "md5": "47cf90848dc6216f1a62e5237891bde0",
+                "md5": "38d00e315b02e5a442f384600af89cad",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBaseHeader.jinja": {
-                "md5": "65d05b7fe7c0571e673c79ef79fa0bd7",
+                "md5": "c802f7f5ce34e3736fdc6404c1758d8a",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBody.jinja": {
-                "md5": "462f7023e9705c4e6b0138e47fcc6a04",
+                "md5": "5f8d715850479995c14f1abc77523360",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceHeader.jinja": {
-                "md5": "1e4dcf41f6ce28b26b9a88878fafa49a",
+                "md5": "47081c00fb58b0622c303c9cc31bcc1c",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToGeneratedCmakeDevice.jinja": {
@@ -662,7 +662,7 @@
             },
             "commandMap.py": {
                 "install": "overwrite",
-                "md5": "376bf528718e0aa2759afce81dd4172e",
+                "md5": "380c5ac8148ee8f047c43df158f15b23",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -686,13 +686,13 @@
             },
             "deviceClassAnalyzer.py": {
                 "install": "overwrite",
-                "md5": "7c37a3c379b0b194899ff80062e74055",
+                "md5": "d0aea35e20f8733bdedf812b8c63d08e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
             "deviceGenerators.py": {
                 "install": "overwrite",
-                "md5": "aaa8e254309aada48c2949ea8b488939",
+                "md5": "e127b7384589b0d90fef2289a991d419",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -704,7 +704,7 @@
             },
             "externalToolCheck.py": {
                 "install": "overwrite",
-                "md5": "d396fc8cc7ff478dcbb94f9749094bc8",
+                "md5": "71d74835aeea3c2eccc688310a5b08cd",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -721,13 +721,13 @@
             },
             "install_framework.py": {
                 "install": "overwrite",
-                "md5": "efb56a85d9b7c16dab3970a21a4df3c4",
+                "md5": "f3810757444f61da73df2d7397fede5d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
             "manage_files.py": {
                 "install": "overwrite",
-                "md5": "7f14b1477833dda343410aa75042e512",
+                "md5": "4896abf00e74752792cb18a3e5398001",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -757,7 +757,7 @@
             },
             "quasarCommands.py": {
                 "install": "overwrite",
-                "md5": "9110be6c3953c7de8ab25fd5d692295d",
+                "md5": "f4e584b4ee95bfde6c43efa07286e1a0",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -787,7 +787,7 @@
             },
             "transformDesign.py": {
                 "install": "overwrite",
-                "md5": "84638146b1760e059cb0b97978664671",
+                "md5": "0e03965c8b03a1d3b2eb8cf433c23659",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1025,7 +1025,7 @@
                 "deprecated": true
             },
             "DLogLevel.h": {
-                "md5": "98f664f8b3a0617a30abbf9b58feb0fb",
+                "md5": "f64424453e3d9322497528e7bcfaf70a",
                 "use_defaults": "file_defaults_of_directory"
             },
             "DQuasar.h": {
