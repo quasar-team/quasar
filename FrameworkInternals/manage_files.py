@@ -3,6 +3,7 @@
 '''
 manage_files.py
 
+@author:     Paris Moschovakos <paris.moschovakos@cern.ch>
 @author:     Piotr Nikiel <piotr@nikiel.info>
 @author:     Damian Abalo Miron <damian.abalo@cern.ch>
 
@@ -339,23 +340,6 @@ class Installer():
             else:
                 print('Overwriting: '+target_file_path)
                 shutil.copy2(source_file_path,  target_file_path)
-        elif file.install_action() == 'ask_to_merge':
-            # if the target file doesnt exist, just copy it
-            if not os.path.isfile(target_file_path):
-                print('Copying '+source_file_path+' -> '+target_file_path)
-                shutil.copy2(source_file_path,  target_file_path)
-            else:
-                # maybe the files are the same and it is not needed to merge ??
-                if os.system('diff '+source_file_path+' '+target_file_path)==0:
-                    print('Files the same; merging not needed')
-                else:
-                    print('Filed differ; merging needed')
-                    merge_val=os.system('kdiff3 -o '+target_file_path+' '+source_file_path+' '+target_file_path)
-                    print('Merge tool returned: '+str(merge_val))
-                    if merge_val!=0:
-                        yn=yes_or_no('Merge tool returned non-zero, wanna continue?')
-                        if yn=='n':
-                            sys.exit(1)
         elif file.install_action() == 'copy_if_not_existing':
             if not os.path.isfile(target_file_path):
                 print('Copying '+source_file_path+' -> '+target_file_path)

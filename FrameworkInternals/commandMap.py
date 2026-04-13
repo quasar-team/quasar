@@ -3,6 +3,7 @@
 '''
 commandMap.py
 
+@author:     Paris Moschovakos <paris.moschovakos@cern.ch>
 @author:     Damian Abalo Miron <damian.abalo@cern.ch>
 @author:     Piotr Nikiel <piotr@nikiel.info>
 
@@ -24,7 +25,6 @@ commandMap = {
 "saxon":"saxon9he.jar",
 "java":"java",
 "astyle":"astyle",
-"diff":"kdiff3",
 "cmake":"cmake",
 "make":"make",
 "gcc":"gcc",

@@ -95,8 +95,6 @@ Mandatory:
 -  cmake3, version 3.10 + (for older versions you could try older quasar
    versions)
 
--  kdiff3 for occasional merges.
-
 Recommended:
 ^^^^^^^^^^^^
 
@@ -104,8 +102,6 @@ Recommended:
    -  Eclipse
    -  VS Code
 -  Good C++ development environment (or IDE, ...). The core quasar team uses VS Code.
--  Good merge tool. We use kdiff3 (available as kdiff3 RPM in SLC6
-   Linux).
 -  ArtisticStyle ( http://astyle.sourceforge.net/ ) for automatic
    formatting of generated code. If you don't use it, the generated code
    will look like a shipwreck (but will still work). Astyle is easy to
@@ -140,7 +136,7 @@ Quick setup hints for Ubuntu 24.04 LTS
 #. Deploy from standard Ubuntu repos
 
    ``sudo apt install cmake g++ libboost-all-dev libxml2-utils astyle
-   xsdcxx libxerces-c-dev libssl-dev kdiff3 default-jre libxml2-utils
+   xsdcxx libxerces-c-dev libssl-dev default-jre libxml2-utils
    python-enum34 python-lxml python3-pip``
 
 #. Deploy Jinja2

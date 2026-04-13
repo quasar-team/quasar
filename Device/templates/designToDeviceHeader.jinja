@@ -17,9 +17,11 @@
 {# Created:   Jul 2014 (the original XSLT version)                               #}
 {#            12 Mar 2020 (translated to Jinja2)                                 #}
 {# Authors:                                                                      #}
+{#   Paris Moschovakos <paris.moschovakos@cern.ch>                               #}
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
 {% import 'headers.jinja' as headers %}
+{% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
 {% set this = designInspector.objectify_class(className) %}
 {{ headers.cppStubHeader(designInspector.objectify_root().get('author')) }}
 
@@ -31,82 +33,40 @@
 namespace Device
 {
 
-  class
-  D{{className}}
-  : public Base_D{{className}}
-  {
-
-  public:
-  /* sample constructor */
+class D{{className}} : public Base_D{{className}}
+{
+public:
   explicit D{{className}} (
     const Configuration::{{className}}& config,
     Parent_D{{className}}* parent
-  ) ;
-  /* sample dtr */
-  ~D{{className}} ();
+  );
+  ~D{{className}} () override;
 
-  /* delegators for
-  cachevariables and sourcevariables */
+  /* Override virtual methods from Base_D{{className}} as needed.
+     All have safe defaults returning OpcUa_BadNotImplemented.
+     See Base_D{{className}}.h for the full interface.
+     Run './quasar.py device_report' to check override status. */
   {% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
-    /* Note: never directly call this function. */
-    {% if cv.array|length>0 %}
-      UaStatus write{{cv.get('name')|capFirst}} ( const std::vector<{{cv.get('dataType')}}>& v);
-    {% else %}
-      UaStatus write{{cv.get('name')|capFirst}} ( const {{cv.get('dataType')}}& v);
-    {% endif %}
+  {{ commonDeviceTemplates.writeCacheVarSig(cv) }} override;
   {% endfor %}
-
-  {% for sv in this.sourcevariable %}
+  {% for sv in designInspector.objectify_source_variables(className) %}
     {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
-      /* {{sv.get('addressSpaceRead')|upper}} !! */
-      UaStatus read{{sv.get('name')|capFirst}} (
-        {{sv.get('dataType')}}& value,
-        UaDateTime& sourceTime
-      );
+  {{ commonDeviceTemplates.readSourceVarSig(sv) }} override;
     {% endif %}
     {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
-      /* {{sv.get('addressSpaceWrite')|upper}} !! */
-      UaStatus write{{sv.get('name')|capFirst}} (
-        {{sv.get('dataType')}}& value
-      );
+  {{ commonDeviceTemplates.writeSourceVarSig(sv) }} override;
     {% endif %}
   {% endfor %}
-
-  /* delegators for methods */
   {% for m in this.method %}
-    {% set allArgsLen = m.argument|length + m.returnvalue|length %}
-    UaStatus call{{m.get('name')|capFirst}} (
-    {% for arg in m.argument %}
-      {{oracle.fix_data_type_passing_method(arg.get('dataType'), arg.array|length>0 )}} {{arg.get('name')}}
-      {%- if loop.index < allArgsLen %},
-      {% endif %}
-    {% endfor %}
-    {% for rv in m.returnvalue %}
-      {{oracle.quasar_data_type_to_cpp_type(rv.get('dataType'), rv.array|length>0 )}}& {{rv.get('name')}}
-      {%- if not loop.last %},
-      {% endif %}
-    {% endfor %}
-
-    ) ;
+  {{ commonDeviceTemplates.callMethodSig(m, oracle) }} override;
   {% endfor %}
 
-  private:
-  /* Delete copy constructor and assignment operator */
-  D{{className}}( const D{{className}}& other );
-  D{{className}}& operator=(const D{{className}}& other);
+  /* Add your custom members and methods below */
 
-  // ----------------------------------------------------------------------- *
-  // -     CUSTOM CODE STARTS BELOW THIS COMMENT.                            *
-  // -     Don't change this comment, otherwise merge tool may be troubled.  *
-  // ----------------------------------------------------------------------- *
-
-  public:
-
-  private:
-
-
-
-	};
+private:
+  D{{className}}( const D{{className}}& other ) = delete;
+  D{{className}}& operator=(const D{{className}}& other) = delete;
+};
 
 }
 

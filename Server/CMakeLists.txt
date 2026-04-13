@@ -14,20 +14,27 @@
 # GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# Author: Paris Moschovakos <paris.moschovakos@cern.ch>
 # Author: Piotr Nikiel <piotr@nikiel.info>
 
 configure_file( include/OpcuaToolkitInfo.hpp.in ${CMAKE_BINARY_DIR}/generated/OpcuaToolkitInfo.hpp )
 include_directories( ${CMAKE_BINARY_DIR}/generated/ )
 
+# check quasar/Server/ServerCustom.cmake for adding custom sources!
+if(EXISTS ${PROJECT_SOURCE_DIR}/Server/ServerCustom.cmake)
+  include (ServerCustom.cmake)
+endif(EXISTS ${PROJECT_SOURCE_DIR}/Server/ServerCustom.cmake)
+
 add_library (Server OBJECT
-	src/main.cpp 
+	src/main.cpp
 	src/opcserver.cpp
 	src/opcserver_open62541.cpp
-	src/shutdown.cpp 
+	src/shutdown.cpp
 	src/serverconfigxml.cpp
 	src/BaseQuasarServer.cpp
 	src/QuasarServer.cpp
 	src/QuasarUaTraceHook.cpp
+	${SERVER_CUSTOM_SOURCES}
 )
 # Ensure that this module is built as the very last one.
 add_dependencies( Server ${SERVER_MODULES} ) 

@@ -194,7 +194,10 @@ is not expected to be directly used by users.*
 generate device
 ---------------
 
-Generates the Device Logic files D<classname>.h and D<classname>.cpp.
+Generates the Device Logic stub files D<classname>.h and D<classname>.cpp.
+If the files already exist, generation is skipped (they are user-owned).
+New design elements are handled via virtual defaults in Base_D<classname>.
+Use ``device_report`` to see which methods your D<Class> files override.
 
 | Syntax:
 
@@ -206,7 +209,20 @@ generate device --all
 ---------------------
 
 | Equal to "generate device" (above) run with all classes with device
-  logic from the Design.
+  logic from the Design. Safe to run in headless/CI environments
+  (no interactive merge tools required).
+
+device_report
+-------------
+
+Reports which Base_D virtual methods are overridden in each D<Class>
+file, and whether the ``override`` keyword is present.
+
+| Syntax:
+
+.. container:: syntax
+
+   ./quasar.py device_report
 
 generate diagram
 ----------------
@@ -334,7 +350,8 @@ upgrade_project
 ---------------
 
 | Upgrades the framework in a given target directory (where a quasar
-  project already is).
+  project already is). Also adds the ``override`` keyword to existing
+  D<Class> method declarations for compile-time safety.
 
 | Syntax:
 

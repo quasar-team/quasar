@@ -17,6 +17,7 @@
 {# Created:   Jul 2014 (the original XSLT version)                               #}
 {#            12 Mar 2020 (translated to Jinja2)                                 #}
 {# Authors:                                                                      #}
+{#   Paris Moschovakos <paris.moschovakos@cern.ch>                               #}
 {#   Piotr Nikiel <piotr@nikiel.info>                                            #}
 
 {% import 'headers.jinja' as headers %}
@@ -25,6 +26,7 @@
 {% import 'commonDeviceTemplates.jinja' as commonDeviceTemplates %}
 
 #include <Configuration.hxx>
+#include <LogIt.h>
 
 /* Note: need to have full declarations of classes on which we will call
   "delete" operator plus more, and not just base classes */
@@ -98,6 +100,41 @@ unsigned int Base_D{{className}}::unlinkAllChildren ()
   /* find methods for children */
   {{ commonDeviceTemplates.deviceLogicFindByKeyBody(this, designInspector, oracle, "Base_D"+className) }}
 
+/* Default device-logic implementations -- override in D{{className}} */
+{% set q = 'Base_D' + className + '::' %}
+{% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
+{{ commonDeviceTemplates.writeCacheVarSig(cv, q) }}
+{
+    LOG(Log::WRN) << "write{{cv.get('name')|capFirst}} not overridden in device class of " << getFullName();
+    return OpcUa_BadNotImplemented;
+}
+{% endfor %}
+
+{% for sv in designInspector.objectify_source_variables(className) %}
+  {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
+{{ commonDeviceTemplates.readSourceVarSig(sv, q) }}
+{
+    sourceTime = UaDateTime::now();
+    LOG(Log::WRN) << "read{{sv.get('name')|capFirst}} not overridden in device class of " << getFullName();
+    return OpcUa_BadNotImplemented;
+}
+  {% endif %}
+  {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
+{{ commonDeviceTemplates.writeSourceVarSig(sv, q) }}
+{
+    LOG(Log::WRN) << "write{{sv.get('name')|capFirst}} not overridden in device class of " << getFullName();
+    return OpcUa_BadNotImplemented;
+}
+  {% endif %}
+{% endfor %}
+
+{% for m in this.method %}
+{{ commonDeviceTemplates.callMethodSig(m, oracle, q) }}
+{
+    LOG(Log::WRN) << "call{{m.get('name')|capFirst}} not overridden in device class of " << getFullName();
+    return OpcUa_BadNotImplemented;
+}
+{% endfor %}
 
 {% endfor %}
 
