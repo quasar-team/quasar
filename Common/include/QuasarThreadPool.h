@@ -72,7 +72,7 @@ private:
     void work();
 
     std::mutex m_accessLock;
-    bool m_quit;
+    std::atomic<bool> m_quit;
     std::vector<std::thread> m_workers;
     std::list<std::unique_ptr<ThreadPoolJob>> m_pendingJobs;
 

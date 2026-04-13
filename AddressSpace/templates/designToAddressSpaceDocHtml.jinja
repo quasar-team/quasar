@@ -39,55 +39,74 @@
   {% endif %}
 {% endmacro %}
 
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>OPC-UA address space documentation for {{designInspector.getProjectName()}}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OPC UA address space documentation — {{designInspector.getProjectName()}}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; max-width: 960px; margin: 0 auto; padding: 1em; color: #333; }
+    h1 { border-bottom: 2px solid #4a90d9; padding-bottom: 0.3em; }
+    h2 { border-top: 2px solid #ddd; padding-top: 0.8em; margin-top: 1.5em; }
+    h3 { margin-top: 1em; margin-bottom: 0.3em; color: #555; font-size: 1em; }
+    a { color: #4a90d9; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code { background: #f4f4f4; padding: 1px 4px; border-radius: 3px; font-size: 0.9em; }
+    li { margin-bottom: 8pt; }
+    .top-link { font-size: 0.8em; float: right; }
+    .jump-index { margin: 1em 0; }
+    .jump-index a { display: inline-block; margin: 2px 6px 2px 0; padding: 2px 8px; background: #f0f4f8; border-radius: 3px; font-size: 0.9em; }
+    .label { font-weight: bold; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 0.5em; }
+    .label-doc { color: #3366aa; }
+    .doc { background-color: #f0f4fa; border-left: 3px solid #4a90d9; padding: 6px 10px; margin: 4px 0; }
+    .var-meta { font-size: 0.85em; color: #666; }
+    .badge-cache { background: #e8f0e8; color: #2a6e2a; padding: 1px 6px; border-radius: 3px; font-size: 0.8em; }
+    .badge-source { background: #fff0e0; color: #a06020; padding: 1px 6px; border-radius: 3px; font-size: 0.8em; }
+    .badge-access { background: #f0f0f0; color: #555; padding: 1px 6px; border-radius: 3px; font-size: 0.8em; }
+    .children { margin-top: 0.5em; }
+    .children a { display: inline-block; margin: 2px 6px 2px 0; padding: 2px 8px; background: #f0f4f8; border-radius: 3px; font-size: 0.9em; }
+    .no-components { color: #888; font-style: italic; margin: 0.5em 0; }
+  </style>
 </head>
 <body>
-<h1>
-  OPC-UA address space documentation for {{designInspector.getProjectName()}}
-</h1>
+<h1>OPC UA address space documentation for {{designInspector.getProjectName()}}</h1>
 
-
-Jump to:
+<div class="jump-index">
 {% for class_name in designInspector.get_names_of_all_classes()|sort %}
 {% set cls = designInspector.objectify_class(class_name) %}
   <a href="#class_{{cls.get('name')}}">{{cls.get('name')}}</a>
 {% endfor %}
+</div>
 
 {% for class_name in designInspector.get_names_of_all_classes()|sort %}
 {% set cls = designInspector.objectify_class(class_name) %}
-  <a id="class_{{cls.get('name')}}">
-    <h2>{{cls.get('name')}}</h2>
-  </a>
+  <h2 id="class_{{cls.get('name')}}">{{cls.get('name')}} <a href="#" class="top-link">[top]</a></h2>
 
   {# per-class documentation #}
   {% if cls.documentation|length>0 %}
-    <div style="background-color:#eeeeff">
-      <font color="blue">DOC</font>
+    <div class="doc"><span class="label label-doc">Doc</span>
         {{cls.documentation|node_text_contents_to_string}}
     </div>
   {% endif %}
 
   {% if (cls.cachevariable|length + cls.sourcevariable|length + cls.method|length)>0 %}
     {% if (cls.cachevariable|length + cls.sourcevariable|length)>0 %}
-      Variables:
-      {#  we combine cache-vars and source-vars because the end-user should see both alphabetically
-          without paying attention whether these are CV or SV. #}
+      <h3>Variables</h3>
       <ul>
         {% set variables = designInspector.to_list_if_exists(cls.cachevariable) + designInspector.to_list_if_exists(cls.sourcevariable) %}
         {% for variable in variables|sorted_by_objectified_attr('name') %}
           <li>
-            <b>{{variable.get('name')}}</b> (dataType={{variable.get('dataType')}};
+            <b>{{variable.get('name')}}</b>
+            <span class="var-meta">{{variable.get('dataType')}}</span>
             {% if 'cachevariable' in variable.tag %}
-              cache-variable;
+              <span class="badge-cache">cache</span>
             {% else %}
-              source-variable;
+              <span class="badge-source">source</span>
             {% endif %}
-            access={{estimateFunctionReadWrite(variable)}})
-            <br/>
+            <span class="badge-access">{{estimateFunctionReadWrite(variable)}}</span>
             {% if variable.documentation|length>0 %}
-              <div style="background-color:#eeeeff"><font color="blue">DOC</font>
+              <div class="doc"><span class="label label-doc">Doc</span>
                 {{variable.documentation|node_text_contents_to_string}}
               </div>
             {% endif %}
@@ -96,13 +115,13 @@ Jump to:
       </ul>
     {% endif %}
     {% if cls.method|length>0 %}
-    Methods:
+    <h3>Methods</h3>
       <ul>
         {% for m in cls.method|sorted_by_objectified_attr('name') %}
           <li>
               <b>{{m.get('name')}}</b>
               {% if m.documentation|length>0 %}
-                <div style="background-color:#eeeeff"><font color="blue">DOC</font>
+                <div class="doc"><span class="label label-doc">Doc</span>
                   {{m.documentation|node_text_contents_to_string}}
                 </div>
               {% endif %}
@@ -112,9 +131,9 @@ Jump to:
                 <ul>
                   {% for arg in m.argument %}
                     <li>
-                      {{arg.get('name')}} ({{arg.get('dataType')}} {% if arg.array|length>0 %}[]{% endif %})
+                      <b>{{arg.get('name')}}</b> <span class="var-meta">{{arg.get('dataType')}}{% if arg.array|length>0 %}[]{% endif %}</span>
                       {% if arg.documentation|length>0 %}
-                        <div style="background-color:#eeeeff"><font color="blue">DOC</font>
+                        <div class="doc"><span class="label label-doc">Doc</span>
                           {{arg.documentation|node_text_contents_to_string}}
                         </div>
                       {% endif %}
@@ -125,13 +144,13 @@ Jump to:
 
               {% if m.returnvalue|length>0 %}
                 <br/>
-                Return values:
+                Returns:
                 <ul>
                   {% for rv in m.returnvalue %}
                     <li>
-                      {{rv.get('name')}} ({{rv.get('dataType')}} {% if rv.array|length>0 %}[]{% endif %})
+                      <b>{{rv.get('name')}}</b> <span class="var-meta">{{rv.get('dataType')}}{% if rv.array|length>0 %}[]{% endif %}</span>
                       {% if rv.documentation|length>0 %}
-                        <div style="background-color:#eeeeff"><font color="blue">DOC</font>
+                        <div class="doc"><span class="label label-doc">Doc</span>
                           {{rv.documentation|node_text_contents_to_string}}
                         </div>
                       {% endif %}
@@ -144,14 +163,20 @@ Jump to:
       </ul>
     {% endif %}
   {% else %}
-    This quasar class has no address-space components.
+    <p class="no-components">Configuration-only class — no OPC UA variables or methods at runtime.</p>
   {% endif %}
   {% if cls.hasobjects|length>0 %}
-    Classes possible to be children objects:
+    <div class="children">
+    Children:
     {% for ho in cls.hasobjects %}
       <a href="#class_{{ho.get('class')}}">{{ho.get('class')}}</a>
     {% endfor %}
+    </div>
   {% endif %}
 {% endfor %}
+
+<footer style="margin-top: 3em; padding-top: 1em; border-top: 1px solid #ddd; text-align: center; color: #aaa; font-size: 0.8em;">
+  Generated by <a href="https://github.com/quasar-team/quasar" style="color: #aaa;">quasar</a> &mdash; designed by <img src="data:image/png;base64,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" alt="PM" style="height: 18px; vertical-align: middle; opacity: 0.6; margin: 0 3px;"> Paris Moschovakos
+</footer>
 </body>
 </html>
