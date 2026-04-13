@@ -104,18 +104,23 @@ ThreadPool::Duty ThreadPool::findSomeDuty ()
 
 void ThreadPool::work()
 {
-    while (!m_quit)
+    while (true)
     {
         Duty duty;
-        { /* synchro block for the internals */
+        { /* synchro block for the internals.
+           * The m_quit check MUST be inside m_accessLock: the destructor
+           * sets m_quit and calls notify_all() then join(). Without the
+           * lock, a worker could pass the quit check, then the destructor
+           * destroys the mutex before the worker re-acquires it. */
             std::unique_lock<std::mutex>lock (m_accessLock);
+            if (m_quit)
+                return;
             duty = findSomeDuty();
-        }
-        if (!duty.job)
-        {
-            std::unique_lock<std::mutex>lock (m_accessLock);
-            m_conditionVariable.wait_for(lock, std::chrono::milliseconds(100));
-            continue;
+            if (!duty.job)
+            {
+                m_conditionVariable.wait_for(lock, std::chrono::milliseconds(100));
+                continue;
+            }
         }
         /* So, we found a job to execute */
         try
