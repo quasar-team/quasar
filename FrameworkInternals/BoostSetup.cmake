@@ -30,7 +30,7 @@ if (DEFINED ENV{BOOST_HOME} AND NOT "$ENV{BOOST_HOME}" STREQUAL "")
     message(STATUS "This will set BOOST to that folder in static mode")
 endif()
 
-set(_QUASAR_BOOST_COMPONENTS regex chrono program_options thread log ${ADDITIONAL_BOOST_LIBS})
+set(_QUASAR_BOOST_COMPONENTS regex chrono program_options thread ${ADDITIONAL_BOOST_LIBS})
 find_package(Boost CONFIG REQUIRED COMPONENTS ${_QUASAR_BOOST_COMPONENTS})
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Failed to find boost installation.")
@@ -41,8 +41,7 @@ else()
         Boost::regex
         Boost::chrono
         Boost::program_options
-        Boost::thread
-        Boost::log)
+        Boost::thread)
     foreach(BOOST_COMPONENT IN LISTS ADDITIONAL_BOOST_LIBS)
         list(APPEND BOOST_LIBS Boost::${BOOST_COMPONENT})
     endforeach()
