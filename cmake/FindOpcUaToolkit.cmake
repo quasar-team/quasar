@@ -15,7 +15,27 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # FindOpcUaToolkit.cmake
+# Created on: 29 April 2025
+# Author: Paris Moschovakos <paris.moschovakos@cern.ch>
+# Author: Luis Miguens Fernandez <luis.miguens@cern.ch>
 #
+# CMake module to find and configure the OPC UA Toolkit.
+# This module will find the OPC UA Toolkit in the system and set up all the
+# needed variables for compilation, linking, and include directories.
+#
+# Search order:
+# 1. Explicit path set in the build config: set(OPCUA_TOOLKIT_PATH "/path/to/toolkit")
+# 2. Environment variable: export OPCUA_TOOLKIT_PATH=/path/to/toolkit or UNIFIED_AUTOMATION_HOME=/path/to/toolkit
+# 3. Standard system path ("/opt/uasdk")
+# 4. Paths from CMAKE_PREFIX_PATH
+#
+# Example usage in build config file:
+#   # Option 1: Let the module find the toolkit automatically
+#   find_package(OpcUaToolkit REQUIRED)
+#
+#   # Option 2: Explicitly set the path (preferred method)
+#   set(OPCUA_TOOLKIT_PATH "/path/to/OpcUaToolkit")
+#   find_package(OpcUaToolkit REQUIRED)
 
 set(_OPCUATOOLKIT_INCLUDE_SUBDIRS
   uastack
