@@ -237,6 +237,7 @@ set(TARGET_LIBS
         ${SERVER_LINK_LIBRARIES}
         ${OPCUA_TOOLKIT_LIBS}
         ${XML_LIBS}
+        ${QUASAR_SERVER_LIBS}
         Threads::Threads
         )
 
@@ -246,8 +247,6 @@ if(ENABLE_QUASAR_SANITIZERS)
     include (${PROJECT_SOURCE_DIR}/cmake/QuasarSanitizers.cmake)
     enable_quasar_sanitizers(${EXECUTABLE})
 endif()
-
-message(STATUS "Target Link Libraries: ${TARGET_LIBS}")
 
 target_link_libraries ( ${EXECUTABLE} PRIVATE ${TARGET_LIBS} )
 
