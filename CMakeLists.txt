@@ -43,18 +43,6 @@ include( ProjectSettings.cmake )
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-if(NOT DEFINED LOGIT_BACKEND_STDOUTLOG)
-    set(LOGIT_BACKEND_STDOUTLOG ON)
-endif()
-
-if(NOT DEFINED LOGIT_BACKEND_BOOSTLOG)
-    set(LOGIT_BACKEND_BOOSTLOG ON)
-endif()
-
-if(WIN32 AND NOT DEFINED LOGIT_BACKEND_WINDOWS_DEBUGGER)
-    set(LOGIT_BACKEND_WINDOWS_DEBUGGER ON)
-endif()
-
 if(NOT ${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 message("Building:")
 message("PROJECT_SOURCE_DIR= ${PROJECT_SOURCE_DIR}")
@@ -128,9 +116,6 @@ endif()
 
 if(BACKEND_UATOOLKIT)
     add_compile_definitions(BACKEND_UATOOLKIT)
-    if(NOT DEFINED LOGIT_BACKEND_UATRACE)
-        set(LOGIT_BACKEND_UATRACE ON)
-    endif()
     find_package(OpcUaToolkit REQUIRED)
     message(STATUS "Using UA Toolkit backend with FindOpcUaToolkit")
 endif()
