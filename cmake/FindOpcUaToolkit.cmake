@@ -15,9 +15,9 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # FindOpcUaToolkit.cmake
-#
 # Created on: 29 April 2025
 # Author: Paris Moschovakos <paris.moschovakos@cern.ch>
+# Author: Luis Miguens Fernandez <luis.miguens@cern.ch>
 #
 # CMake module to find and configure the OPC UA Toolkit.
 # This module will find the OPC UA Toolkit in the system and set up all the
@@ -25,8 +25,8 @@
 #
 # Search order:
 # 1. Explicit path set in the build config: set(OPCUA_TOOLKIT_PATH "/path/to/toolkit")
-# 2. Environment variable: export OPCUA_TOOLKIT_PATH=/path/to/toolkit
-# 3. Standard system paths (/opt/OpcUaToolkit, /usr/local/OpcUaToolkit, etc.)
+# 2. Environment variable: export OPCUA_TOOLKIT_PATH=/path/to/toolkit or UNIFIED_AUTOMATION_HOME=/path/to/toolkit
+# 3. Standard system path ("/opt/uasdk")
 # 4. Paths from CMAKE_PREFIX_PATH
 #
 # Example usage in build config file:
@@ -37,190 +37,148 @@
 #   set(OPCUA_TOOLKIT_PATH "/path/to/OpcUaToolkit")
 #   find_package(OpcUaToolkit REQUIRED)
 
-if(DEFINED OPCUA_TOOLKIT_PATH)
-  set(OPCUATOOLKIT_PATH ${OPCUA_TOOLKIT_PATH} CACHE PATH "Path to OPC UA Toolkit installation")
-  message(STATUS "Using predefined OPCUA_TOOLKIT_PATH: ${OPCUATOOLKIT_PATH}")
-elseif(DEFINED ENV{OPCUA_TOOLKIT_PATH})
-  set(OPCUATOOLKIT_PATH $ENV{OPCUA_TOOLKIT_PATH} CACHE PATH "Path to OPC UA Toolkit installation")
-  message(STATUS "Taking OPC UA Toolkit path from the environment: ${OPCUATOOLKIT_PATH}")
+set(_OPCUATOOLKIT_INCLUDE_SUBDIRS
+  uastack
+  uabasecpp
+  uaservercpp
+  uapkicpp
+  xmlparsercpp
+)
+
+set(_OPCUATOOLKIT_RELEASE_LIB_NAMES
+  uamodule
+  coremodule
+  uabasecpp
+  uastack
+  uapkicpp
+  xmlparsercpp
+)
+
+set(_OPCUATOOLKIT_DEBUG_LIB_NAMES
+  uamoduled
+  coremoduled
+  uabasecppd
+  uastackd
+  uapkicppd
+  xmlparsercppd
+)
+
+set(_OPCUATOOLKIT_HINTS)
+foreach(_hint
+    "${OPCUA_TOOLKIT_PATH}"
+    "$ENV{OPCUA_TOOLKIT_PATH}"
+    "$ENV{UNIFIED_AUTOMATION_HOME}"
+    "/opt/uasdk"
+    ${CMAKE_PREFIX_PATH})
+  if(_hint AND NOT _hint STREQUAL "")
+    list(APPEND _OPCUATOOLKIT_HINTS "${_hint}")
+  endif()
+endforeach()
+list(REMOVE_DUPLICATES _OPCUATOOLKIT_HINTS)
+
+find_path(OPCUATOOLKIT_INCLUDE_ROOT
+  NAMES
+    uabasecpp/uabase.h
+    uaservercpp/uamodule.h
+    uastack/opcua_types.h
+  PATHS ${_OPCUATOOLKIT_HINTS}
+  PATH_SUFFIXES include
+  NO_DEFAULT_PATH
+)
+
+find_path(OPCUATOOLKIT_LIBRARY_DIR
+  NAMES
+    libuamodule.a
+    libcoremodule.a
+    libuabasecpp.a
+    libuastack.a
+  PATHS ${_OPCUATOOLKIT_HINTS}
+  PATH_SUFFIXES lib
+  NO_DEFAULT_PATH
+)
+
+if(OPCUATOOLKIT_INCLUDE_ROOT)
+  get_filename_component(OPCUATOOLKIT_PATH "${OPCUATOOLKIT_INCLUDE_ROOT}/.." ABSOLUTE)
+elseif(OPCUATOOLKIT_LIBRARY_DIR)
+  get_filename_component(OPCUATOOLKIT_PATH "${OPCUATOOLKIT_LIBRARY_DIR}/.." ABSOLUTE)
+endif()
+
+set(OPCUA_TOOLKIT_PATH "${OPCUATOOLKIT_PATH}")
+set(OPCUATOOLKIT_LIBRARY_DIRS "${OPCUATOOLKIT_LIBRARY_DIR}")
+set(OPCUATOOLKIT_VERSION "unknown")
+
+set(OPCUATOOLKIT_INCLUDE_DIRS)
+foreach(_subdir IN LISTS _OPCUATOOLKIT_INCLUDE_SUBDIRS)
+  set(_include_dir "${OPCUATOOLKIT_INCLUDE_ROOT}/${_subdir}")
+  if(EXISTS "${_include_dir}")
+    list(APPEND OPCUATOOLKIT_INCLUDE_DIRS "${_include_dir}")
+  endif()
+endforeach()
+
+set(OPCUATOOLKIT_LIBRARIES_RELEASE)
+set(OPCUATOOLKIT_LIBRARIES_DEBUG)
+list(LENGTH _OPCUATOOLKIT_RELEASE_LIB_NAMES _OPCUATOOLKIT_NUM_LIBS)
+math(EXPR _OPCUATOOLKIT_LAST_INDEX "${_OPCUATOOLKIT_NUM_LIBS} - 1")
+
+foreach(_index RANGE ${_OPCUATOOLKIT_LAST_INDEX})
+  list(GET _OPCUATOOLKIT_RELEASE_LIB_NAMES ${_index} _release_name)
+  list(GET _OPCUATOOLKIT_DEBUG_LIB_NAMES ${_index} _debug_name)
+
+  unset(_OPCUATOOLKIT_RELEASE_LIBRARY CACHE)
+  unset(_OPCUATOOLKIT_RELEASE_LIBRARY)
+  find_library(_OPCUATOOLKIT_RELEASE_LIBRARY
+    NAMES ${_release_name}
+    PATHS "${OPCUATOOLKIT_LIBRARY_DIR}"
+    NO_DEFAULT_PATH
+  )
+  if(_OPCUATOOLKIT_RELEASE_LIBRARY)
+    list(APPEND OPCUATOOLKIT_LIBRARIES_RELEASE "${_OPCUATOOLKIT_RELEASE_LIBRARY}")
+  endif()
+
+  unset(_OPCUATOOLKIT_DEBUG_LIBRARY CACHE)
+  unset(_OPCUATOOLKIT_DEBUG_LIBRARY)
+  find_library(_OPCUATOOLKIT_DEBUG_LIBRARY
+    NAMES ${_debug_name}
+    PATHS "${OPCUATOOLKIT_LIBRARY_DIR}"
+    NO_DEFAULT_PATH
+  )
+  if(_OPCUATOOLKIT_DEBUG_LIBRARY)
+    list(APPEND OPCUATOOLKIT_LIBRARIES_DEBUG "${_OPCUATOOLKIT_DEBUG_LIBRARY}")
+  elseif(_OPCUATOOLKIT_RELEASE_LIBRARY)
+    list(APPEND OPCUATOOLKIT_LIBRARIES_DEBUG "${_OPCUATOOLKIT_RELEASE_LIBRARY}")
+  endif()
+endforeach()
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+  set(OPCUATOOLKIT_LIBRARIES "${OPCUATOOLKIT_LIBRARIES_DEBUG}")
 else()
-  set(_OPCUATOOLKIT_SEARCH_PATHS
-    "/opt/OpcUaToolkit"
-    "/opt/Unified-Automation"
-    "/opt/opcua"
-    "/usr/local/OpcUaToolkit"
-    "/usr/local/Unified-Automation"
-    "/usr/local/opcua"
-    "/usr/opcua"
-  )
-  
-  if(CMAKE_PREFIX_PATH)
-    list(APPEND _OPCUATOOLKIT_SEARCH_PATHS ${CMAKE_PREFIX_PATH})
-  endif()
-  
-  find_path(OPCUATOOLKIT_PATH
-    NAMES 
-      include/uabasecpp
-      include/uastack
-      include/uabasecpp/uadatavalue.h
-      include/uastack/opcua_types.h
-      include/uamodule/uamodule.h
-      lib/libuamodule.so
-      lib/libuastack.so
-    PATHS 
-      ${_OPCUATOOLKIT_SEARCH_PATHS}
-    DOC "Path to OPC UA Toolkit installation"
-  )
+  set(OPCUATOOLKIT_LIBRARIES "${OPCUATOOLKIT_LIBRARIES_RELEASE}")
 endif()
 
-if(OPCUATOOLKIT_PATH)
-  set(OPCUATOOLKIT_INCLUDE_DIRS
-    ${OPCUATOOLKIT_PATH}/include/uastack
-    ${OPCUATOOLKIT_PATH}/include/uabasecpp
-    ${OPCUATOOLKIT_PATH}/include/uaservercpp
-    ${OPCUATOOLKIT_PATH}/include/uapkicpp
-    ${OPCUATOOLKIT_PATH}/include/xmlparsercpp
-  )
-
-  # Initialize to TRUE, then set to FALSE if any directory is missing
-  set(OPCUATOOLKIT_INCLUDE_DIR_FOUND TRUE)
-  foreach(INCLUDE_DIR ${OPCUATOOLKIT_INCLUDE_DIRS})
-    if(NOT EXISTS "${INCLUDE_DIR}")
-      set(OPCUATOOLKIT_INCLUDE_DIR_FOUND FALSE)
-      message(STATUS "Missing required include directory: ${INCLUDE_DIR}")
-    endif()
-  endforeach()
-  
-  if(NOT OPCUATOOLKIT_INCLUDE_DIR_FOUND)
-    # Try alternate include layout
-    set(OPCUATOOLKIT_INCLUDE_DIRS ${OPCUATOOLKIT_PATH}/include)
-    if(EXISTS "${OPCUATOOLKIT_INCLUDE_DIRS}")
-      set(OPCUATOOLKIT_INCLUDE_DIR_FOUND TRUE)
-      message(STATUS "Found OPC UA Toolkit with alternate include layout: ${OPCUATOOLKIT_INCLUDE_DIRS}")
-    endif()
-  endif()
-
-  if(EXISTS "${OPCUATOOLKIT_PATH}/VERSION")
-    file(READ "${OPCUATOOLKIT_PATH}/VERSION" OPCUATOOLKIT_VERSION)
-    string(STRIP "${OPCUATOOLKIT_VERSION}" OPCUATOOLKIT_VERSION)
-  elseif(OPCUATOOLKIT_PATH MATCHES ".*OpcUaToolkit-static-([0-9]+\\.[0-9]+\\.[0-9]+).*")
-    set(OPCUATOOLKIT_VERSION "${CMAKE_MATCH_1}")
-  else()
-    set(OPCUATOOLKIT_VERSION "unknown")
-  endif()
-
-  set(_OPCUATOOLKIT_LIB_NAMES_RELEASE
-    uamodule
-    coremodule
-    uabasecpp
-    uastack
-    uapkicpp
-    xmlparsercpp
-  )
-  
-  set(_OPCUATOOLKIT_LIB_NAMES_DEBUG
-    uamoduled
-    coremoduled
-    uabasecppd
-    uastackd
-    uapkicppd
-    xmlparsercppd
-  )
-
-  set(_OPCUATOOLKIT_POSSIBLE_LIB_PATHS
-    "${OPCUATOOLKIT_PATH}/lib"
-    "${OPCUATOOLKIT_PATH}/lib64"
-    "${OPCUATOOLKIT_PATH}/lib/uastack"
-  )
-  
-  foreach(LIB_PATH ${_OPCUATOOLKIT_POSSIBLE_LIB_PATHS})
-    if(EXISTS "${LIB_PATH}")
-      set(_OPCUATOOLKIT_LIB_PATH "${LIB_PATH}")
-      break()
-    endif()
-  endforeach()
-  
-  if(NOT _OPCUATOOLKIT_LIB_PATH)
-    set(_OPCUATOOLKIT_LIB_PATH "${OPCUATOOLKIT_PATH}/lib")
-  endif()
-  
-  # Check that library files exist and build library lists
-  set(OPCUATOOLKIT_LIBRARIES_DEBUG "")
-  set(OPCUATOOLKIT_LIBRARIES_FOUND TRUE)
-  
-  foreach(LIB ${_OPCUATOOLKIT_LIB_NAMES_DEBUG})
-    set(LIB_FILE "${_OPCUATOOLKIT_LIB_PATH}/lib${LIB}.so")
-    if(NOT EXISTS "${LIB_FILE}")
-      set(LIB_FILE "${_OPCUATOOLKIT_LIB_PATH}/lib${LIB}.a")
-      if(NOT EXISTS "${LIB_FILE}")
-        message(STATUS "Warning: Could not find debug library file for ${LIB}")
-        set(OPCUATOOLKIT_LIBRARIES_FOUND FALSE)
-      endif()
-    endif()
-    list(APPEND OPCUATOOLKIT_LIBRARIES_DEBUG "-l${LIB}")
-  endforeach()
-  list(APPEND OPCUATOOLKIT_LIBRARIES_DEBUG "-lxml2 -lssl -lcrypto -lpthread -lrt")
-  
-  set(OPCUATOOLKIT_LIBRARIES_RELEASE "")
-  foreach(LIB ${_OPCUATOOLKIT_LIB_NAMES_RELEASE})
-    set(LIB_FILE "${_OPCUATOOLKIT_LIB_PATH}/lib${LIB}.so")
-    if(NOT EXISTS "${LIB_FILE}")
-      set(LIB_FILE "${_OPCUATOOLKIT_LIB_PATH}/lib${LIB}.a")
-      if(NOT EXISTS "${LIB_FILE}")
-        message(STATUS "Warning: Could not find release library file for ${LIB}")
-        set(OPCUATOOLKIT_LIBRARIES_FOUND FALSE)
-      endif()
-    endif()
-    list(APPEND OPCUATOOLKIT_LIBRARIES_RELEASE "-l${LIB}")
-  endforeach()
-  list(APPEND OPCUATOOLKIT_LIBRARIES_RELEASE "-lxml2 -lssl -lcrypto -lpthread -lrt")
-  
-  if(CMAKE_BUILD_TYPE MATCHES Debug)
-    set(OPCUATOOLKIT_LIBRARIES ${OPCUATOOLKIT_LIBRARIES_DEBUG})
-  else()
-    set(OPCUATOOLKIT_LIBRARIES ${OPCUATOOLKIT_LIBRARIES_RELEASE})
-  endif()
-  
-  set(OPCUATOOLKIT_LIBRARY_DIRS ${_OPCUATOOLKIT_LIB_PATH})
-  
-  if(OPCUATOOLKIT_INCLUDE_DIR_FOUND AND OPCUATOOLKIT_LIBRARIES_FOUND)
-    set(OPCUATOOLKIT_FOUND TRUE)
-  endif()
-  
-  set(OPCUA_TOOLKIT_PATH ${OPCUATOOLKIT_PATH})
-  set(OPCUA_TOOLKIT_LIBS_DEBUG ${OPCUATOOLKIT_LIBRARIES_DEBUG})
-  set(OPCUA_TOOLKIT_LIBS_RELEASE ${OPCUATOOLKIT_LIBRARIES_RELEASE})
-  
-  include_directories(${OPCUATOOLKIT_INCLUDE_DIRS})
-  
-  message(STATUS "OPC UA Toolkit configuration:")
-  message(STATUS "  Version: ${OPCUATOOLKIT_VERSION}")
-  message(STATUS "  Include dirs: ${OPCUATOOLKIT_INCLUDE_DIRS}")
-  message(STATUS "  Library path: ${OPCUATOOLKIT_LIBRARY_DIRS}")
-endif()
-
-if(OPCUATOOLKIT_PATH AND NOT OPCUATOOLKIT_LIBRARIES)
-  set(OPCUATOOLKIT_LIBRARIES "-luamodule -lcoremodule -luabasecpp -luastack -luapkicpp -lxmlparsercpp -lxml2 -lssl -lcrypto -lpthread -lrt")
-  set(OPCUATOOLKIT_LIBRARIES_DEBUG "-luamoduled -lcoremoduled -luabasecppd -luastackd -luapkicppd -lxmlparsercppd -lxml2 -lssl -lcrypto -lpthread -lrt")
-  set(OPCUATOOLKIT_LIBRARIES_RELEASE ${OPCUATOOLKIT_LIBRARIES})
-  message(STATUS "Using default library list for OPC UA Toolkit")
-endif()
-
-if(OPCUATOOLKIT_PATH AND NOT OPCUATOOLKIT_INCLUDE_DIRS)
-  set(OPCUATOOLKIT_INCLUDE_DIRS 
-    ${OPCUATOOLKIT_PATH}/include
-    ${OPCUATOOLKIT_PATH}/include/uastack
-    ${OPCUATOOLKIT_PATH}/include/uabasecpp
-  )
-  message(STATUS "Using default include paths for OPC UA Toolkit")
-endif()
+set(OPCUA_TOOLKIT_LIBS_RELEASE "${OPCUATOOLKIT_LIBRARIES_RELEASE}")
+set(OPCUA_TOOLKIT_LIBS_DEBUG "${OPCUATOOLKIT_LIBRARIES_DEBUG}")
+set(OPCUA_TOOLKIT_LIBS "${OPCUATOOLKIT_LIBRARIES}")
 
 include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(OpcUaToolkit
-  REQUIRED_VARS OPCUATOOLKIT_PATH
-  VERSION_VAR OPCUATOOLKIT_VERSION
+  REQUIRED_VARS
+    OPCUATOOLKIT_PATH
+    OPCUATOOLKIT_INCLUDE_DIRS
+    OPCUATOOLKIT_LIBRARIES_RELEASE
 )
+
+if(OpcUaToolkit_FOUND)
+  set(OPCUATOOLKIT_FOUND TRUE)
+  include_directories(${OPCUATOOLKIT_INCLUDE_DIRS})
+
+  message(STATUS "OPC UA Toolkit configuration:")
+  message(STATUS "  Version: ${OPCUATOOLKIT_VERSION}")
+  message(STATUS "  Include dirs: ${OPCUATOOLKIT_INCLUDE_DIRS}")
+  message(STATUS "  Library path: ${OPCUATOOLKIT_LIBRARY_DIRS}")
+else()
+  set(OPCUATOOLKIT_FOUND FALSE)
+endif()
 
 if(NOT TARGET quasar_opcua_backend_is_ready)
   add_custom_target(quasar_opcua_backend_is_ready)
