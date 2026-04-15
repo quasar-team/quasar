@@ -28,6 +28,7 @@ commandMap = {
 "cmake":"cmake",
 "make":"make",
 "gcc":"gcc",
+"clang":"clang",
 "xmllint":"xmllint",
 "graphviz":"dot",
 "doxygen":"doxygen",

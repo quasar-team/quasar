@@ -52,7 +52,7 @@
 #ifdef __linux__
 #include <unistd.h>
 #include <pwd.h>
-#elif _WIN32
+#elif defined(_WIN32)
 #include <windows.h>
 #include <Lmcons.h>
 #include <direct.h>
@@ -204,7 +204,7 @@ std::string BaseQuasarServer::getApplicationPath() const
     if (readlink("/proc/self/exe", serverSettingsPath, sizeof serverSettingsPath) < 0)
       throw std::runtime_error("Can't obtain self path -- /proc/self/exe not there?");
     char *pszFind = strrchr(serverSettingsPath, '/');
-#elif _WIN32
+#elif defined(_WIN32)
     char serverSettingsPath[MAX_PATH];
     memset( serverSettingsPath, 0, sizeof serverSettingsPath );
     int bytes = GetModuleFileNameA(NULL, serverSettingsPath, MAX_PATH);
@@ -232,7 +232,7 @@ std::string BaseQuasarServer::getProcessEnvironmentVariables() const
         result << s << std::endl;
         s = *(environ + i);
     }
-#elif _WIN32
+#elif defined(_WIN32)
     auto envBlockDeleterFn = [](LPTCH p) { FreeEnvironmentStrings(p); };
     auto envBlock = std::unique_ptr<TCHAR, decltype(envBlockDeleterFn)>{ GetEnvironmentStrings(), envBlockDeleterFn };
     // envBlock format: "keyA=valA\0keyB=valB\0...keyXXX=valXXX\0\0". Double \0\0 denotes end of block
@@ -270,7 +270,7 @@ std::string BaseQuasarServer::getProcessOwner() const
 
     const auto userID = getlogin();
     result << "login:" << (userID != nullptr ? userID : "unknown") <<" uid:"<<getUser(getuid()) <<" euid:"<<getUser(geteuid());
-#elif _WIN32
+#elif defined(_WIN32)
     char userID[UNLEN];
     memset(userID, 0, UNLEN);
     DWORD len = UNLEN;
@@ -439,7 +439,7 @@ std::string BaseQuasarServer::getWorkingDirectory() const
     char pathBuff[PATH_MAX];
     memset(pathBuff, 0, PATH_MAX);
     result = getcwd(pathBuff, PATH_MAX);
-#elif _WIN32
+#elif defined(_WIN32)
     char pathBuff[MAX_PATH];
     memset(pathBuff, 0, MAX_PATH);
     result = _getcwd(pathBuff, MAX_PATH);

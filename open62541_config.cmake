@@ -48,8 +48,15 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
 # No OPC-UA Toolkit: using Open62541-compat instead. It is referenced in BACKEND_MODULES below
 add_definitions( -DBACKEND_OPEN62541 )
 SET( OPCUA_TOOLKIT_PATH "" )
-SET( OPCUA_TOOLKIT_LIBS_RELEASE -lrt -lpthread )
-SET( OPCUA_TOOLKIT_LIBS_DEBUG -lrt -lpthread )
+SET( OPCUA_TOOLKIT_LIBS_RELEASE -lpthread )
+SET( OPCUA_TOOLKIT_LIBS_DEBUG   -lpthread )
+# -lrt (POSIX realtime extensions) is glibc-specific: required on Linux/glibc
+# targets, absent on musl/Alpine and other libcs. Guard with a positive Linux
+# check so the link step stays portable across libc implementations.
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND OPCUA_TOOLKIT_LIBS_RELEASE -lrt)
+    list(APPEND OPCUA_TOOLKIT_LIBS_DEBUG   -lrt)
+endif()
 include_directories( ${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/include )
 
 #-----

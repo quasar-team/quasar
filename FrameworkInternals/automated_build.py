@@ -19,9 +19,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 @contact:    quasar-developers@cern.ch
 '''
 
+import multiprocessing
 import os
 import platform
-import subprocess
 import re
 from generateCmake import generateCmake, BuilderDefault
 from externalToolCheck import subprocessWithImprovedErrors
@@ -108,10 +108,8 @@ def automatedBuild(context, *args):
         except Exception as e:
             print("Build process error. Exception: [" + str(e) + "]")
     elif platform.system() == "Linux":
-        # From Piotr: here we attempt to run the build concurrently; it might look a bit clumsy,
-        # but the reason is that passing "-j" without an argument behaves differently on different
-        # builder (e.g. 'make -j' will spawn possibly infinite # of jobs that already killed some systems ...)
-        process = subprocess.Popen(["nproc"], stdout=subprocess.PIPE)
-        nproc_out, err = process.communicate()
-        num_cpus = int(nproc_out)
+        # Passing "-j" without an argument behaves differently per builder (e.g. 'make -j' can spawn
+        # unbounded jobs), so we always supply an explicit count. multiprocessing.cpu_count() is
+        # portable and avoids a platform-specific subprocess to nproc.
+        num_cpus = multiprocessing.cpu_count()
         subprocessWithImprovedErrors([getCommand("cmake"), "--build", ".", "--config", builder, "--", "-j", str(num_cpus)], "cmake --build")
