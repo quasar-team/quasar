@@ -27,6 +27,10 @@
 
 add_definitions(-Wall -Wno-deprecated)
 
+# Emit build/compile_commands.json so clang-tidy, clangd and other
+# libtooling-based utilities can parse every TU in the project.
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "" FORCE)
+
 # open62541-compat has no uatrace
 set (LOGIT_HAS_UATRACE FALSE)
 
