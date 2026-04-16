@@ -11,6 +11,8 @@
 #   sudo bash setup-auto-recovery.sh --uninstall # remove everything
 #
 # Idempotent: safe to run multiple times.
+# NOTE: This script targets GNU/Linux (RHEL/AlmaLinux). It uses GNU coreutils
+# extensions (stat -c, find -printf) that are not available on macOS/BSD.
 
 set -euo pipefail
 
@@ -30,10 +32,11 @@ if [[ "${1:-}" == "--uninstall" ]]; then
     rm -f "/etc/systemd/system/${WATCHDOG_TIMER}"
     rm -f "/etc/systemd/system/${WATCHDOG_SERVICE}"
     rm -f "${OVERRIDE_DIR}/override.conf"
+    rm -f "${V1_FLOW_DROPIN}"
     rmdir "${OVERRIDE_DIR}" 2>/dev/null || true
     rm -f "${WATCHDOG_SCRIPT}"
     systemctl daemon-reload
-    echo "Done. Runner service override and watchdog removed."
+    echo "Done. Runner service override, v1 flow drop-in, and watchdog removed."
     exit 0
 fi
 
@@ -43,7 +46,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-if ! systemctl list-unit-files "${RUNNER_SERVICE}" &>/dev/null; then
+if ! systemctl cat "${RUNNER_SERVICE}" &>/dev/null; then
     echo "Error: ${RUNNER_SERVICE} not found. Is the runner installed?" >&2
     exit 1
 fi
@@ -52,11 +55,13 @@ fi
 echo "[1/3] Installing systemd override for ${RUNNER_SERVICE}..."
 mkdir -p "${OVERRIDE_DIR}"
 cat > "${OVERRIDE_DIR}/override.conf" <<'UNIT'
+[Unit]
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
 [Service]
 Restart=always
 RestartSec=15
-StartLimitIntervalSec=300
-StartLimitBurst=5
 UNIT
 
 # Preserve existing v1 flow drop-in if present, otherwise create it.
@@ -79,6 +84,7 @@ cat > "${WATCHDOG_SCRIPT}" <<'WATCHDOG'
 #!/usr/bin/env bash
 # quasar-runner-watchdog.sh — detect and recover dead/zombie runner states
 # Runs via systemd timer every 5 minutes. Logs to journald (tag: quasar-runner-watchdog).
+# NOTE: Uses GNU coreutils (stat -c, find -printf). Linux only.
 
 set -euo pipefail
 
@@ -102,30 +108,37 @@ if ! systemctl is-active --quiet "${RUNNER_SERVICE}"; then
 fi
 
 # --- Check 2: Can we reach GitHub? ---
-if ! curl -sf --max-time 10 -o /dev/null https://github.com; then
-    log "WARN: Cannot reach github.com. Network may be down. Skipping further checks."
+if ! curl -sf --max-time 10 --retry 1 -o /dev/null https://api.github.com; then
+    log "WARN: Cannot reach api.github.com. Network may be down. Skipping further checks."
     exit 0
 fi
 
 # --- Check 3: Zombie detection via runner listener log ---
-# The runner writes a Worker log file when it's actively listening.
-# If the most recent log entry is older than 10 minutes, the runner
-# may be in a zombie state (process alive but not polling for jobs).
+# The runner writes to Runner_*.log during session refreshes and job polls.
+# If the log file hasn't been modified in 15+ minutes AND the runner process
+# has no active network connections to GitHub, it is likely in a zombie state
+# (process alive but not polling for jobs).
+# Threshold is 900s (15 min) to avoid false-positives on legitimately idle runners.
 DIAG_DIR="${RUNNER_HOME}/_diag"
 if [[ -d "${DIAG_DIR}" ]]; then
-    LATEST_WORKER_LOG=$(find "${DIAG_DIR}" -name 'Worker_*.log' -printf '%T@ %p\n' 2>/dev/null \
-        | sort -rn | head -1 | cut -d' ' -f2-)
     LATEST_RUNNER_LOG=$(find "${DIAG_DIR}" -name 'Runner_*.log' -printf '%T@ %p\n' 2>/dev/null \
         | sort -rn | head -1 | cut -d' ' -f2-)
 
-    # Check the Runner log for signs of life (session refreshes, job polls).
-    # If the log file hasn't been modified in 10+ minutes, the runner is likely zombie'd.
     if [[ -n "${LATEST_RUNNER_LOG:-}" ]]; then
         LOG_MTIME=$(stat -c %Y "${LATEST_RUNNER_LOG}" 2>/dev/null || echo 0)
         NOW=$(date +%s)
         AGE=$(( NOW - LOG_MTIME ))
-        if [[ ${AGE} -gt 600 ]]; then
-            log "WARN: Runner log stale (${AGE}s old). Possible zombie state. Restarting..."
+        if [[ ${AGE} -gt 900 ]]; then
+            # Double-check: if the runner process has active network connections,
+            # it may just be idle (no jobs). Only restart if truly disconnected.
+            RUNNER_PID=$(systemctl show -p MainPID --value "${RUNNER_SERVICE}" 2>/dev/null || echo 0)
+            if [[ -n "${RUNNER_PID}" && "${RUNNER_PID}" != "0" ]] && \
+               ss -tnp 2>/dev/null | grep -q "pid=${RUNNER_PID}"; then
+                log "OK: Runner log stale (${AGE}s) but process ${RUNNER_PID} has active connections. Skipping restart."
+                exit 0
+            fi
+
+            log "WARN: Runner log stale (${AGE}s old) and no active connections. Possible zombie state. Restarting..."
             systemctl restart "${RUNNER_SERVICE}"
             sleep 5
             if systemctl is-active --quiet "${RUNNER_SERVICE}"; then
@@ -136,6 +149,8 @@ if [[ -d "${DIAG_DIR}" ]]; then
             exit 0
         fi
     fi
+else
+    log "WARN: Diag directory ${DIAG_DIR} not found. Cannot check for zombie state."
 fi
 
 log "OK: Runner healthy."
@@ -154,6 +169,7 @@ After=network-online.target
 [Service]
 Type=oneshot
 ExecStart=${WATCHDOG_SCRIPT}
+# Runs as root because it needs systemctl restart privileges
 UNIT
 
 cat > "/etc/systemd/system/${WATCHDOG_TIMER}" <<'UNIT'

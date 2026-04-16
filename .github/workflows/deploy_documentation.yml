@@ -12,6 +12,10 @@ on:
         description: 'Version to build (e.g. v1.7.1, or "latest" for master)'
         required: false
         default: 'latest'
+      retry_count:
+        description: 'Internal: tracks retry depth (do not set manually)'
+        required: false
+        default: '0'
 
 concurrency:
   group: deploy-documentation
@@ -195,17 +199,24 @@ jobs:
   retry_deploy:
     name: Retry deploy after transient failure
     needs: [build_deploy]
-    if: failure()
+    if: always() && needs.build_deploy.result == 'failure'
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
-    - name: Wait and re-trigger
+    - name: Wait and re-trigger (max 1 retry)
       uses: actions/github-script@v7
       with:
         script: |
+          const retryCount = parseInt('${{ github.event.inputs.retry_count || 0 }}', 10);
+          if (retryCount >= 1) {
+            core.info('Already retried once. Not retrying again to avoid infinite loops.');
+            return;
+          }
+
           core.info('Deploy failed. Waiting 5 minutes before retry...');
           await new Promise(r => setTimeout(r, 5 * 60 * 1000));
 
-          core.info('Re-triggering deploy workflow...');
+          core.info('Re-triggering deploy workflow (retry 1 of 1)...');
           const ref = context.ref.replace('refs/heads/', '').replace('refs/tags/', '');
           const isTag = context.ref.startsWith('refs/tags/');
 
@@ -215,22 +226,25 @@ jobs:
             workflow_id: 'deploy_documentation.yml',
             ref: 'master',
             inputs: {
-              version_name: isTag ? ref : 'latest'
+              version_name: isTag ? ref : 'latest',
+              retry_count: String(retryCount + 1)
             }
           });
           core.info(`Retry triggered for version: ${isTag ? ref : 'latest'}`);
 
   notify_on_failure:
     name: Notify on failure
-    needs: [build_deploy]
-    if: always() && needs.build_deploy.result != 'success'
+    needs: [build_deploy, retry_deploy]
+    if: always() && needs.build_deploy.result != 'success' && needs.retry_deploy.result != 'success'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
     - name: Create or update GitHub issue
       uses: actions/github-script@v7
       with:
         script: |
           const result = '${{ needs.build_deploy.result }}';
+          const retryCount = parseInt('${{ github.event.inputs.retry_count || 0 }}', 10);
           const ref = context.ref.replace('refs/tags/', '').replace('refs/heads/', '');
           const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
           const now = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
@@ -246,16 +260,21 @@ jobs:
             diagnosis = `The job ended with status **${result}**.`;
           }
 
+          const retryNote = retryCount > 0
+            ? 'This was an automatic retry that also failed. Manual intervention is needed.'
+            : 'An automatic retry has been triggered. If it also fails, you will be notified again.';
+
           const title = `Documentation deploy failed for ${ref}`;
           const body = [
             `@parasxos — the documentation deployment for **${ref}** did not succeed.`,
             '',
-            'A retry has been automatically triggered. If it also fails, manual intervention is needed.',
+            retryNote,
             '',
             `| Detail | Value |`,
             `|--------|-------|`,
             `| **Version** | \`${ref}\` |`,
             `| **Result** | \`${result}\` |`,
+            `| **Attempt** | ${retryCount > 0 ? 'Retry' : 'First attempt'} |`,
             `| **Time** | ${now} |`,
             `| **Run** | [View logs](${runUrl}) |`,
             '',
@@ -337,10 +356,9 @@ jobs:
           Hi Paris,
 
           The documentation deployment for ${{ github.ref_name }} did not succeed.
-          A retry has been automatically triggered.
 
           Result:  ${{ needs.build_deploy.result }}
-          Time:    ${{ github.event.head_commit.timestamp || github.event.created_at }}
+          Attempt: ${{ github.event.inputs.retry_count || '0' }}
           Run:     https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
           If the runner is offline, the auto-recovery system should handle it.
