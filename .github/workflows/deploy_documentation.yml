@@ -19,8 +19,63 @@ concurrency:
 
 jobs:
 
+  wait_for_runner:
+    name: Wait for runner to be online
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - name: Check runner and trigger recovery if needed
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const maxWait = 12 * 60 * 1000; // 12 minutes
+          const pollInterval = 60 * 1000;  // 60 seconds
+          const start = Date.now();
+
+          async function isRunnerOnline() {
+            const { data: runners } = await github.rest.actions.listSelfHostedRunnersForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const runner = runners.runners.find(r => r.name === 'vmatldcsdoc-1');
+            return runner && runner.status === 'online';
+          }
+
+          // First check
+          if (await isRunnerOnline()) {
+            core.info('Runner is online. Proceeding with deploy.');
+            return;
+          }
+
+          // Runner is offline — trigger health check workflow to attempt recovery
+          core.warning('Runner is offline. Triggering health check workflow for auto-recovery...');
+          try {
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'runner_health_check.yml',
+              ref: 'master',
+            });
+            core.info('Health check workflow triggered.');
+          } catch (e) {
+            core.warning(`Could not trigger health check: ${e.message}`);
+          }
+
+          // Poll until runner comes back or timeout
+          while (Date.now() - start < maxWait) {
+            core.info(`Waiting for runner... (${Math.round((Date.now() - start) / 1000)}s elapsed)`);
+            await new Promise(r => setTimeout(r, pollInterval));
+            if (await isRunnerOnline()) {
+              core.info('Runner is back online!');
+              return;
+            }
+          }
+
+          core.setFailed('Runner did not come online within 12 minutes.');
+
   build_deploy:
     name: Build and deploy documentation
+    needs: [wait_for_runner]
     runs-on:
       - self-hosted
       - vmatldcsdoc-1
@@ -137,6 +192,34 @@ jobs:
         rm -rf /eos/project-q/quasar/www/version
         cp -r /usr/share/nginx/quasar/version /eos/project-q/quasar/www
 
+  retry_deploy:
+    name: Retry deploy after transient failure
+    needs: [build_deploy]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+    - name: Wait and re-trigger
+      uses: actions/github-script@v7
+      with:
+        script: |
+          core.info('Deploy failed. Waiting 5 minutes before retry...');
+          await new Promise(r => setTimeout(r, 5 * 60 * 1000));
+
+          core.info('Re-triggering deploy workflow...');
+          const ref = context.ref.replace('refs/heads/', '').replace('refs/tags/', '');
+          const isTag = context.ref.startsWith('refs/tags/');
+
+          await github.rest.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'deploy_documentation.yml',
+            ref: 'master',
+            inputs: {
+              version_name: isTag ? ref : 'latest'
+            }
+          });
+          core.info(`Retry triggered for version: ${isTag ? ref : 'latest'}`);
+
   notify_on_failure:
     name: Notify on failure
     needs: [build_deploy]
@@ -157,6 +240,8 @@ jobs:
             diagnosis = 'The job was **cancelled**, most likely because the self-hosted runner `vmatldcsdoc-1` is offline or its GitHub registration expired. The job queued until it timed out.';
           } else if (result === 'failure') {
             diagnosis = 'The job **failed** during execution. Check the [workflow run logs](' + runUrl + ') for the specific step that failed.';
+          } else if (result === 'skipped') {
+            diagnosis = 'The job was **skipped** because the runner pre-flight check failed — the runner did not come online within 12 minutes despite auto-recovery attempts.';
           } else {
             diagnosis = `The job ended with status **${result}**.`;
           }
@@ -164,6 +249,8 @@ jobs:
           const title = `Documentation deploy failed for ${ref}`;
           const body = [
             `@parasxos — the documentation deployment for **${ref}** did not succeed.`,
+            '',
+            'A retry has been automatically triggered. If it also fails, manual intervention is needed.',
             '',
             `| Detail | Value |`,
             `|--------|-------|`,
@@ -182,6 +269,7 @@ jobs:
             '```bash',
             'ssh vmatldcsdoc-1',
             'sudo systemctl status actions.runner.quasar-team-quasar.vmatldcsdoc-1.service',
+            'journalctl -t quasar-runner-watchdog --since "1 hour ago"',
             '```',
             '',
             `**2. Restart the runner if it's down:**`,
@@ -203,6 +291,8 @@ jobs:
             'exit',
             'sudo systemctl restart actions.runner.quasar-team-quasar.vmatldcsdoc-1.service',
             '```',
+            '',
+            '_This issue will be auto-closed by the health check when the runner comes back online._',
           ].join('\n');
 
           const { data: issues } = await github.rest.issues.listForRepo({
@@ -247,18 +337,16 @@ jobs:
           Hi Paris,
 
           The documentation deployment for ${{ github.ref_name }} did not succeed.
+          A retry has been automatically triggered.
 
           Result:  ${{ needs.build_deploy.result }}
           Time:    ${{ github.event.head_commit.timestamp || github.event.created_at }}
           Run:     https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-          If the runner is offline, SSH into vmatldcsdoc-1 and run:
+          If the runner is offline, the auto-recovery system should handle it.
+          If you're seeing this repeatedly, SSH into vmatldcsdoc-1 and check:
 
             sudo systemctl status actions.runner.quasar-team-quasar.vmatldcsdoc-1.service
-            sudo systemctl restart actions.runner.quasar-team-quasar.vmatldcsdoc-1.service
+            journalctl -t quasar-runner-watchdog --since "1 hour ago"
 
-          Then re-trigger the build:
-
-            gh run rerun ${{ github.run_id }}
-
-          — quasar CI
+          -- quasar CI
