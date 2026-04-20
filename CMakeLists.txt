@@ -19,12 +19,17 @@
 # Author: Stefan Schlenker
 # Author: Paris Moschovakos <paris.moschovakos@cern.ch>
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.26)
 project(opc_ua)
 # the line below is added to quasar to keep backwards compatibility for the transition period.
 cmake_policy(SET CMP0065 NEW)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+if(WIN32 AND MSVC)
+    set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
+    add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN NOGDI)
+endif()
 
 if(NOT ${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 message("Building out-of-source")
@@ -34,7 +39,6 @@ endif()
 
 add_definitions(
 	-DSUPPORT_XML_CONFIG
-	-DNOMINMAX  # doesn't include windows' min() and max() which break std c++ code. Should be neutral to non-windows code.
 )
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/FrameworkInternals/build_config_selector.cmake)
@@ -45,6 +49,33 @@ endif()
 
 include( ProjectSettings.cmake )
 
+if(DEFINED ENV{XERCES_C_HOME} AND NOT "$ENV{XERCES_C_HOME}" STREQUAL "")
+   list(PREPEND CMAKE_PREFIX_PATH "$ENV{XERCES_C_HOME}")
+endif()
+find_package(XercesC REQUIRED)
+message(STATUS "Found xerces-c: ${XercesC_INCLUDE_DIRS}")
+include_directories(${XercesC_INCLUDE_DIRS})
+
+if(DEFINED ENV{XSD_HOME})
+    include_directories($ENV{XSD_HOME}/include)
+endif()
+
+if(DEFINED ENV{LIBSSL_HOME} AND NOT "$ENV{LIBSSL_HOME}" STREQUAL "")
+  list(PREPEND CMAKE_PREFIX_PATH "$ENV{LIBSSL_HOME}")
+endif()
+find_package(OpenSSL REQUIRED)
+message(STATUS "Found OpenSSL: ${OpenSSL_VERSION}")
+include_directories(${OPENSSL_INCLUDE_DIR})
+
+if(DEFINED ENV{LIBXML2_HOME} AND NOT "$ENV{LIBXML2_HOME}" STREQUAL "")
+  message(STATUS "Using libxml2 from path $ENV{LIBXML2_HOME}")
+  list(PREPEND CMAKE_PREFIX_PATH "$ENV{LIBXML2_HOME}")
+endif()
+find_package(LibXml2 REQUIRED)
+message(STATUS "Found libxml2: ${LIBXML2_INCLUDE_DIRS}")
+include_directories(${LIBXML2_INCLUDE_DIRS})
+list(APPEND XML_LIBS XercesC::XercesC LibXml2::LibXml2)
+
 if(${BUILD_SERVER_SHARED_LIB})
 	add_definitions(-DBUILDING_SHARED_OBJECT)
 endif(${BUILD_SERVER_SHARED_LIB})
@@ -52,14 +83,12 @@ endif(${BUILD_SERVER_SHARED_LIB})
 if(EXISTS "${PROJECT_SOURCE_DIR}/FrameworkInternals/EnabledModules/open62541-compat.url")
   set(BACKEND_OPEN62541 ON)
   message(STATUS "Using open62541 backend (enabled module)")
+  add_definitions(-DBACKEND_OPEN62541)
+  include_directories(${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/include)
 else()
   set(BACKEND_UATOOLKIT ON)
-  if(UNIX)
-    find_package(OpcUaToolkit REQUIRED)
-    message(STATUS "Using UA Toolkit backend with FindOpcUaToolkit")
-  else()
-    message(STATUS "Using UA Toolkit backend with platform-specific configuration")
-  endif()
+  find_package(OpcUaToolkit REQUIRED)
+  message(STATUS "Using UA Toolkit backend with FindOpcUaToolkit")
   add_definitions(-DBACKEND_UATOOLKIT)
 endif()
 
@@ -71,7 +100,9 @@ else()
     include_directories(${BOOST_PATH_HEADERS})  # this falls back to the old solution when we didn't yet use find_package(Boost)
 endif()
 
-set(PYTHON_COMMAND python3)
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+set(PYTHON_COMMAND Python3::Interpreter)
+
 set(DESIGN_FILE ${PROJECT_BINARY_DIR}/Design/DesignWithMeta.xml)
 
 include_directories (
@@ -86,6 +117,10 @@ if(${CMAKE_BUILD_TYPE} MATCHES Debug)
 else(${CMAKE_BUILD_TYPE} MATCHES Debug)
     set ( OPCUA_TOOLKIT_LIBS ${OPCUA_TOOLKIT_LIBS_RELEASE} )
 endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
+list(APPEND OPCUA_TOOLKIT_LIBS OpenSSL::SSL OpenSSL::Crypto)
+if(WIN32)
+    list(APPEND OPCUA_TOOLKIT_LIBS crypt32)
+endif()
 
 set(QUASAR_TRANSFORM_SENSITIVE_FILES
 	${PROJECT_SOURCE_DIR}/FrameworkInternals/transformDesign.py
@@ -140,7 +175,13 @@ link_directories(
 add_executable ( ${EXECUTABLE}
 	${MODULES_OBJECTS}
 	)
-set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
+if(WIN32 AND MSVC)
+    set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "bin$<0:>/" )
+else()
+    set_target_properties( ${EXECUTABLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY bin/ )
+endif()
+
+find_package(Threads REQUIRED)
 
 set(TARGET_LIBS
         ${BOOST_LIBS}
@@ -148,6 +189,7 @@ set(TARGET_LIBS
         ${OPCUA_TOOLKIT_LIBS}
         ${QUASAR_SERVER_LIBS}
         ${SERVER_LINK_LIBRARIES}
+        Threads::Threads
         )
 
 option(ENABLE_QUASAR_SANITIZERS "Enable quasar sanitizers" OFF)
