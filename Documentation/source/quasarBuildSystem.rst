@@ -141,6 +141,11 @@ modules, use:
 
 This follows the same pattern as ``Device/DeviceCustom.cmake``.
 
+``Server/src/main.cpp`` is also framework-owned and overwritten on upgrade.
+Project-specific startup logic should go into the ``QuasarServer`` class,
+which provides ``appendCustomCommandLineOptions()``, ``initialize()`` and
+``shutdown()`` hooks.
+
 Summary of build modes available in quasar
 
 +-----------+-----------+-----------+-----------+-----------+-----------+
