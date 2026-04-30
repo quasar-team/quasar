@@ -101,7 +101,7 @@ else()
 endif()
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
-set(PYTHON_COMMAND Python3::Interpreter)
+set(PYTHON_COMMAND "${Python3_EXECUTABLE}")
 
 set(DESIGN_FILE ${PROJECT_BINARY_DIR}/Design/DesignWithMeta.xml)
 
