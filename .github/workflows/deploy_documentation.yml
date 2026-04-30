@@ -3,7 +3,7 @@ name: Deploy documentation
 on:
   push:
     tags:
-      - v1.**
+      - v[0-9]+.**
     branches:
       - master
   workflow_dispatch:
