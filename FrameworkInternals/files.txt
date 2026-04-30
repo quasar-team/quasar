@@ -13,7 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "8da73a67d6bcfc409cf347cf2e3d2543",
+                "md5": "98a244c3ef47af9708bba5a5a7fcff4c",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -162,7 +162,7 @@
         },
         "files": {
             "designToAddressSpaceDocHtml.jinja": {
-                "md5": "bc8d376e1547795e3e44c38fc094f74c",
+                "md5": "b1c513fc1cd7cf6364320fdc34fc49af",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
@@ -174,7 +174,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToGeneratedCmakeAddressSpace.jinja": {
-                "md5": "7193b8aa7b88a74cf03b2590ee63f236",
+                "md5": "dd8a17e54482218959ca4ab3382c88b0",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToInformationModelBody.jinja": {
@@ -327,7 +327,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.h": {
-                "md5": "536ae7811ab7407de132c8bd989b8a58",
+                "md5": "3dcb4c1b80209bd2de0271988f691986",
                 "use_defaults": "file_defaults_of_directory"
             },
             "Utils.h": {
@@ -350,7 +350,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.cpp": {
-                "md5": "21b85885b51e1ac3ed720bf05eb33b31",
+                "md5": "a4011faaba307b2dc8cc2dabcf354e4b",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -416,7 +416,7 @@
         },
         "files": {
             "designToConfigDocumentationHtml.jinja": {
-                "md5": "3d966ea5f986e99ec9ae777c86b39456",
+                "md5": "db6416544fd061e0d6c9886371a680a4",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigValidator.jinja": {
@@ -461,7 +461,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "8a4c2c2c425b046cc39ed3eed864d352",
+                "md5": "081a733a64b58c69f742f6c543d081b5",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -605,7 +605,7 @@
         "files": {
             "BoostSetup.cmake": {
                 "install": "overwrite",
-                "md5": "3088343d05754c66b7940a1fceb1121f",
+                "md5": "93a99beeb73e9fad74e5fc61cc067d60",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -623,7 +623,7 @@
             },
             "OptionalModule.cmake": {
                 "install": "overwrite",
-                "md5": "996314c29c74bc7903c0665b45d643be",
+                "md5": "ed7c63598ca2637756dc921d4105a84f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1207,7 +1207,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "88141d9f105c0d24a03d040cf69147a3",
+                "md5": "cf1413133c6a84595a69e573e3efbf7b",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1321,7 +1321,7 @@
         "files": {
             "FindOpcUaToolkit.cmake": {
                 "install": "overwrite",
-                "md5": "7984d578964b597aa1e2ff1fa718f8ee",
+                "md5": "2743fcb5f9899b629c52a3798856be4b",
                 "must_be_versioned": true,
                 "must_exist": true
             },
