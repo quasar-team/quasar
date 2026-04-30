@@ -11,11 +11,11 @@ concurrency:
 
 permissions:
   issues: write          # create/close/comment runner-offline issues
-  # Note: `administration` is NOT a valid GITHUB_TOKEN permission key, so
-  # listSelfHostedRunnersForRepo always returns 403 with the default token.
-  # The script blocks below catch this and assume online, since the
-  # on-machine systemd watchdog handles actual recovery. A long-term fix
-  # is a fine-grained PAT secret with Administration:read.
+  # listSelfHostedRunnersForRepo requires Administration:read which is not
+  # available to GITHUB_TOKEN; the relevant steps below override github-token
+  # with secrets.RUNNER_API_TOKEN (a fine-grained PAT scoped to this repo).
+  # The try/catch in those scripts is kept as a graceful fallback if the PAT
+  # ever expires or is revoked.
 
 jobs:
 
@@ -30,6 +30,7 @@ jobs:
       uses: actions/github-script@v7
       id: check
       with:
+        github-token: ${{ secrets.RUNNER_API_TOKEN }}
         script: |
           try {
             const { data: runners } = await github.rest.actions.listSelfHostedRunnersForRepo({
@@ -75,6 +76,7 @@ jobs:
       uses: actions/github-script@v7
       id: recheck
       with:
+        github-token: ${{ secrets.RUNNER_API_TOKEN }}
         script: |
           try {
             const { data: runners } = await github.rest.actions.listSelfHostedRunnersForRepo({

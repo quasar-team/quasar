@@ -25,10 +25,10 @@ permissions:
   contents: read         # actions/checkout
   actions: write         # createWorkflowDispatch (retry + health-check trigger)
   issues: write          # notify_on_failure issue create
-  # Note: `administration` is NOT a valid GITHUB_TOKEN permission key, so
-  # listSelfHostedRunnersForRepo always returns 403 here. The wait_for_runner
-  # script catches that and assumes online — if the runner is actually
-  # offline, build_deploy will queue and time out, which is detectable.
+  # listSelfHostedRunnersForRepo requires Administration:read which is not
+  # available to GITHUB_TOKEN; wait_for_runner overrides github-token with
+  # secrets.RUNNER_API_TOKEN (a fine-grained PAT scoped to this repo).
+  # The try/catch fallback is kept as a graceful degrade if the PAT expires.
 
 jobs:
 
@@ -40,6 +40,7 @@ jobs:
     - name: Check runner and trigger recovery if needed
       uses: actions/github-script@v7
       with:
+        github-token: ${{ secrets.RUNNER_API_TOKEN }}
         script: |
           const maxWait = 12 * 60 * 1000; // 12 minutes
           const pollInterval = 60 * 1000;  // 60 seconds
