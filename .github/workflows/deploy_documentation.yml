@@ -21,6 +21,12 @@ concurrency:
   group: deploy-documentation
   cancel-in-progress: false
 
+permissions:
+  contents: read         # actions/checkout
+  administration: read   # listSelfHostedRunnersForRepo
+  actions: write         # createWorkflowDispatch (retry + health-check trigger)
+  issues: write          # notify_on_failure issue create
+
 jobs:
 
   wait_for_runner:
@@ -199,7 +205,7 @@ jobs:
   retry_deploy:
     name: Retry deploy after transient failure
     needs: [build_deploy]
-    if: always() && needs.build_deploy.result == 'failure'
+    if: always() && needs.build_deploy.result != 'success' && needs.build_deploy.result != 'cancelled'
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:

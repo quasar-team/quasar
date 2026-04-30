@@ -9,6 +9,10 @@ concurrency:
   group: runner-health-check
   cancel-in-progress: false
 
+permissions:
+  administration: read   # listSelfHostedRunnersForRepo
+  issues: write          # create/close/comment runner-offline issues
+
 jobs:
 
   check_runner:
