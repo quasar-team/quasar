@@ -213,8 +213,18 @@ jobs:
       run: |
         cd "${GITHUB_WORKSPACE}/Documentation/_build/${{ env.VERSION_NAME }}"
 
-        echo 'Copying new build to EOS'
+        echo 'Copying new build to EOS root'
         cp -a . /eos/project-q/quasar/www/
+
+        # Per-version path on EOS, browsable as /vX.Y.Z/ on the public site.
+        # Skip "latest" because that path is proxied to the runner's nginx.
+        if [ "${{ env.VERSION_NAME }}" != "latest" ]; then
+          echo "Publishing per-version EOS path /${{ env.VERSION_NAME }}/"
+          rm -rf /eos/project-q/quasar/www/${{ env.VERSION_NAME }}
+          mkdir -p /eos/project-q/quasar/www/${{ env.VERSION_NAME }}
+          cp -a . /eos/project-q/quasar/www/${{ env.VERSION_NAME }}/
+        fi
+
         rm -rf /eos/project-q/quasar/www/version
         cp -r /usr/share/nginx/quasar/version /eos/project-q/quasar/www
 
