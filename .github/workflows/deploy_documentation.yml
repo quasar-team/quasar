@@ -23,9 +23,12 @@ concurrency:
 
 permissions:
   contents: read         # actions/checkout
-  administration: read   # listSelfHostedRunnersForRepo
   actions: write         # createWorkflowDispatch (retry + health-check trigger)
   issues: write          # notify_on_failure issue create
+  # Note: `administration` is NOT a valid GITHUB_TOKEN permission key, so
+  # listSelfHostedRunnersForRepo always returns 403 here. The wait_for_runner
+  # script catches that and assumes online — if the runner is actually
+  # offline, build_deploy will queue and time out, which is detectable.
 
 jobs:
 
@@ -42,22 +45,33 @@ jobs:
           const pollInterval = 60 * 1000;  // 60 seconds
           const start = Date.now();
 
-          async function isRunnerOnline() {
-            const { data: runners } = await github.rest.actions.listSelfHostedRunnersForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            });
-            const runner = runners.runners.find(r => r.name === 'vmatldcsdoc-1');
-            return runner && runner.status === 'online';
+          // Returns: 'online' | 'offline' | 'unknown' (API not accessible)
+          async function getRunnerState() {
+            try {
+              const { data: runners } = await github.rest.actions.listSelfHostedRunnersForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              });
+              const runner = runners.runners.find(r => r.name === 'vmatldcsdoc-1');
+              return runner && runner.status === 'online' ? 'online' : 'offline';
+            } catch (e) {
+              core.warning(`listSelfHostedRunnersForRepo failed (${e.status || e.message}).`);
+              return 'unknown';
+            }
           }
 
-          // First check
-          if (await isRunnerOnline()) {
+          const initial = await getRunnerState();
+          if (initial === 'online') {
             core.info('Runner is online. Proceeding with deploy.');
             return;
           }
+          if (initial === 'unknown') {
+            core.info('Runner status not accessible via API; proceeding optimistically. ' +
+                      'If runner is actually offline, build_deploy will queue and time out.');
+            return;
+          }
 
-          // Runner is offline — trigger health check workflow to attempt recovery
+          // initial === 'offline' — trigger health check workflow to attempt recovery
           core.warning('Runner is offline. Triggering health check workflow for auto-recovery...');
           try {
             await github.rest.actions.createWorkflowDispatch({
@@ -75,8 +89,9 @@ jobs:
           while (Date.now() - start < maxWait) {
             core.info(`Waiting for runner... (${Math.round((Date.now() - start) / 1000)}s elapsed)`);
             await new Promise(r => setTimeout(r, pollInterval));
-            if (await isRunnerOnline()) {
-              core.info('Runner is back online!');
+            const s = await getRunnerState();
+            if (s === 'online' || s === 'unknown') {
+              core.info(s === 'online' ? 'Runner is back online!' : 'API became unreachable; proceeding optimistically.');
               return;
             }
           }
