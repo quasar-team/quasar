@@ -37,7 +37,7 @@ import os
 import re
 import shutil
 from colorama import Fore, Style
-from manage_files import mfInstall
+from manage_files import mfInstall, find_missing_source_files
 from DesignInspector import DesignInspector
 from quasar_basic_utils import yes_or_no, get_quasar_version, print_logo
 from deviceClassAnalyzer import addOverrideToDeviceClasses
@@ -109,13 +109,28 @@ def upgradeProject(destination):
     if yn == 'n':
         print('User cancelled the upgrade, no changes were made, quitting.')
         return
-    install_ok = True
-    try:
-        installFramework(destination)
-    except (OSError, IOError, RuntimeError) as e:
-        install_ok = False
-        print(f'{Fore.YELLOW}Framework file installation encountered an issue: {e}{Style.RESET_ALL}')
-        print(f'{Fore.YELLOW}Continuing with device class upgrade...{Style.RESET_ALL}')
+
+    # Pre-flight: verify the source quasar tree (cwd) has every framework file
+    # declared install:overwrite / install:copy_if_not_existing in files.txt.
+    # The common failure mode this guards against is an uninitialized LogIt/
+    # submodule, which would otherwise cause Installer.install() to abort
+    # part-way through and leave the destination project in a half-upgraded state.
+    source_directory = os.getcwd()
+    missing = find_missing_source_files(source_directory)
+    if missing:
+        print(f'{Fore.RED}Source quasar tree at {source_directory} is incomplete.{Style.RESET_ALL}')
+        print(f'{Fore.RED}{len(missing)} file(s) declared in FrameworkInternals/files.txt are missing on disk:{Style.RESET_ALL}')
+        for m in missing[:10]:
+            print(f'  - {m}')
+        if len(missing) > 10:
+            print(f'  ... and {len(missing) - 10} more')
+        if any(m.startswith('LogIt' + os.sep) or m.startswith('LogIt/') for m in missing):
+            print(f'{Fore.YELLOW}Hint: LogIt is a git submodule. From the quasar source tree, run:{Style.RESET_ALL}')
+            print(f'  git -C {source_directory} submodule update --init --recursive')
+        print(f'{Fore.RED}Aborting. No changes were made to {destination}.{Style.RESET_ALL}')
+        return
+
+    installFramework(destination)
     fix_empty_project_short_name(destination)
     # Add 'override' keyword to D<Class> methods that override Base_D virtuals.
     # Base_D now provides virtual defaults (since p9999), so 'override' ensures
@@ -124,8 +139,6 @@ def upgradeProject(destination):
     addOverrideToDeviceClasses({'projectSourceDir': destination})
     print_logo(skip_top=2, skip_bottom=2)
     print(f'Your quasar project in {Style.BRIGHT}{destination}{Style.RESET_ALL} was upgraded')
-    if not install_ok:
-        print(f'{Fore.YELLOW}Note: some framework files may need manual merging (see above).{Style.RESET_ALL}')
     print()
     __print_post_install_notes()
 

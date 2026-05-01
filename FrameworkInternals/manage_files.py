@@ -410,6 +410,29 @@ def mfCreateRelease(context):
     directories = load_file(os.path.join('FrameworkInternals','original_files.txt'), os.getcwd())
     create_release(directories)
 
+def find_missing_source_files(sourceDirectory):
+    """Pre-flight check for upgrade_project / install_framework.
+
+    Walks files.txt and returns a list of source-side files that are declared
+    install:overwrite or install:copy_if_not_existing but do not exist on disk
+    in sourceDirectory. The most common cause is an uninitialized git submodule
+    (e.g. LogIt/) in the source quasar tree.
+
+    Returns paths relative to sourceDirectory. Empty list means tree is complete.
+    """
+    files_txt_list_of_dirs = load_file(os.path.join('FrameworkInternals', 'files.txt'), os.getcwd())
+    missing = []
+    for d in files_txt_list_of_dirs:
+        for f in d['files']:
+            action = f.install_action()
+            if action not in ('overwrite', 'copy_if_not_existing'):
+                continue
+            source_file_path = os.path.join(sourceDirectory, d['name'], f.name)
+            if not os.path.isfile(source_file_path):
+                missing.append(os.path.join(d['name'], f.name))
+    return missing
+
+
 def mfInstall(sourceDirectory, targetDirectory):
     """Installs or upgrades the framework in a given directory
 
