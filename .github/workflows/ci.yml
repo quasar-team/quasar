@@ -376,3 +376,20 @@ jobs:
           .CI/run_test_case.py
           --opcua_backend uasdk
           --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml
+
+  # ── framework invariants (no backend, hermetic) ──────────────────────
+  # Behavioural/idempotency checks on the Python codegen layer. No OPC-UA
+  # backend and no compiler -- they exercise the generators directly.
+  framework_invariants:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/quasar-team/quasar-uasdk:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: python3 .CI/test_upgrade_override.py
+      - run: python3 .CI/test_no_spurious_rebuild.py
