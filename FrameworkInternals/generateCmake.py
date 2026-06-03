@@ -68,7 +68,7 @@ def generateCmake(context, *args):
     merge_user_and_meta_design(
         user_file   = open(mode='r', encoding='utf-8', file=os.path.join(projectSourceDir, 'Design', 'Design.xml')),
         meta_file   = open(mode='r', encoding='utf-8', file=os.path.join(projectSourceDir, 'Meta',   'design', 'meta-design.xml')),
-        merged_file = open(mode='w', encoding='utf-8', file=os.path.join(projectBinaryDir, 'Design', 'DesignWithMeta.xml'))
+        merged_file = os.path.join(projectBinaryDir, 'Design', 'DesignWithMeta.xml')
     )
 
     transformByKey(TransformKeys.AS_CMAKE,     {'context':context})

@@ -109,10 +109,28 @@ def transformDesignVerbose(transformPath, designXmlPath, outputFile, skipIfExist
                 .format('additionalParam=[{0}]'.format(additionalParam) if additionalParam is not None else ''))
     return transformDesign(transformPath, designXmlPath, outputFile, skipIfExists, astyleRun, additionalParam)
 
-def run_indent_tool(unindented_content, fout):
-    """Runs indentation tool, preferably astyle.
-       unindented_content - stream of bytes (e.g. encoded string) to pass to the tool,
-       fout - a file object to which the output will be written"""
+def write_if_different(outputFile, content):
+    """Write `content` (bytes) to `outputFile` only if it differs from what is
+    already there, and return the number of bytes `outputFile` holds afterwards.
+
+    quasar codegen is a deterministic function of Design.xml, so rewriting
+    byte-identical content just refreshes the mtime and makes CMake/make rebuild
+    everything on an unchanged design (OPCUA-3366). The compare and the write are
+    both binary so there is no newline/encoding translation (Windows-safe), and a
+    missing destination (first generation) simply writes."""
+    try:
+        with open(outputFile, 'rb') as fin:
+            existing = fin.read()
+    except FileNotFoundError:
+        existing = None
+    if existing != content:
+        with open(outputFile, 'wb') as fout:
+            fout.write(content)
+    return len(content)
+
+def run_indent_tool(unindented_content):
+    """Runs indentation tool, preferably astyle, and returns the indented bytes.
+       unindented_content - stream of bytes (e.g. encoded string) to pass to the tool"""
     try:
         astyle_version_check_process = subprocess.run(['astyle', '--version'],
                                                           stderr=subprocess.PIPE,
@@ -143,7 +161,7 @@ def run_indent_tool(unindented_content, fout):
             raise Exception(("None of supported indent tools - astyle or indent - was found. Can't "
                              "continue. Please see quasar documentation on organizing "
                              "dependencies."))
-    fout.write(completed_indenter_process.stdout)
+    return completed_indenter_process.stdout
 
 def handle_abort(msg):
     raise Exception(f'Quasar transform exception:  {msg}') # TODO shall we have a better exc class for it ?
@@ -166,25 +184,26 @@ def transformDesignByJinja(designXmlPath, transformPath, outputFile, additionalP
     transform_filters.setup_all_filters(env)
     env.trim_blocks = True
     env.globals['abort'] = handle_abort
-    fout = open(outputFile, 'wb')
     render_args = {'designInspector':designInspector, 'oracle':Oracle()}
     if not isinstance(additionalParam, dict):
         render_args.update({'additionalParam':additionalParam})
     else:
         render_args.update(additionalParam)
     unindented_content = env.get_template(os.path.basename(transformPath)).render(render_args).encode('utf-8')
+    # write-if-different on the FINAL bytes (post-astyle when indent_cpp), so an
+    # unchanged design does not refresh the output's mtime (OPCUA-3366).
     if indent_cpp:
-        run_indent_tool(unindented_content, fout)
+        written = write_if_different(outputFile, run_indent_tool(unindented_content))
         print(Fore.BLUE +
             'quasar Jinja2 generator: Generated+indented {0}, wrote {1} bytes (unindented size: {2})'.format(
                 outputFile,
-                fout.tell(),
+                written,
                 len(unindented_content)) +
             Style.RESET_ALL)
     else:
-        fout.write(unindented_content)
+        written = write_if_different(outputFile, unindented_content)
         print(Fore.BLUE +
-            'quasar Jinja2 generator: Generated {0}, wrote {1} bytes'.format(outputFile, fout.tell()) +
+            'quasar Jinja2 generator: Generated {0}, wrote {1} bytes'.format(outputFile, written) +
             Style.RESET_ALL)
 
 def transformDesign(transform_path, designXmlPath, outputFile, skipIfExists=False, astyleRun=False, additionalParam=None, requiresMerge=None):

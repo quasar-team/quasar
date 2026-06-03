@@ -520,7 +520,7 @@ def _style_it(file_path, vcs):
     with open(file_path, 'rb') as file:
         unindented_content = file.read()
     with open(file_path, 'wb') as file:
-        run_indent_tool(unindented_content, file)
+        file.write(run_indent_tool(unindented_content))
     if vcs.file_has_uncommitted_changes(file_path):
         print (f'{file_path}: {Fore.GREEN}Style fixed, commit if happy.{Style.RESET_ALL}')
     else:
