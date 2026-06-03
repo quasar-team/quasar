@@ -392,4 +392,7 @@ jobs:
         with:
           submodules: recursive
       - run: python3 .CI/test_upgrade_override.py
-      - run: python3 .CI/test_no_spurious_rebuild.py
+      - if: always()
+        run: python3 .CI/test_no_spurious_rebuild.py
+      - if: always()
+        run: python3 .CI/test_no_unbound_delegate.py
