@@ -29,6 +29,19 @@ from DesignInspector import DesignInspector
 from transform_filters import cap_first
 
 
+def _get_expected_delegate_param_types(designInspector, className):
+    """Returns {write<Cv>: expected C++ delegate parameter type} for delegated cache
+    variables, matching Device/templates/commonDeviceTemplates.jinja writeCacheVarSig
+    (scalar: '<dataType>', array: 'std::vector<<dataType>>'). Used to catch a delegate
+    whose param type drifted from the design (silently unbound, OPCUA-3367)."""
+    types = {}
+    for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']"):
+        dataType = cv.get('dataType')
+        cpp_type = f"std::vector<{dataType}>" if len(getattr(cv, 'array', [])) > 0 else dataType
+        types[f"write{cap_first(cv.get('name'))}"] = cpp_type
+    return types
+
+
 def _get_expected_virtual_methods(designInspector, className):
     """Returns list of method name stems that Base_D<className> declares as virtual."""
     methods = []
@@ -56,6 +69,7 @@ def deviceReport(context):
         header_path = os.path.join(srcDir, 'Device', 'include', f'D{className}.h')
         cpp_path = os.path.join(srcDir, 'Device', 'src', f'D{className}.cpp')
         expected = _get_expected_virtual_methods(designInspector, className)
+        expected_delegate_types = _get_expected_delegate_param_types(designInspector, className)
 
         if not expected:
             print(f"  D{className}: (no virtual device methods)")
@@ -78,8 +92,9 @@ def deviceReport(context):
 
         for method_name in expected:
             # Check if method is declared in header (anchored to UaStatus to avoid substring matches)
-            decl_pattern = rf'UaStatus\s+{re.escape(method_name)}\s*\('
-            declared = bool(re.search(decl_pattern, header_content))
+            decl_pattern = rf'UaStatus\s+{re.escape(method_name)}\s*\(([^)]*)\)'
+            decl_match = re.search(decl_pattern, header_content, re.DOTALL)
+            declared = bool(decl_match)
             # Check for override keyword in the declaration
             override_pattern = rf'UaStatus\s+{re.escape(method_name)}\s*\([^)]*\)\s*override\s*;'
             has_override = bool(re.search(override_pattern, header_content, re.DOTALL)) if declared else False
@@ -92,10 +107,28 @@ def deviceReport(context):
                 stub_pattern = rf'D{re.escape(className)}::{re.escape(method_name)}\s*\([^)]*\)\s*\{{[^}}]*OpcUa_BadNotImplemented[^}}]*\}}'
                 is_stub = bool(re.search(stub_pattern, cpp_content, re.DOTALL))
 
+            # For a delegated cache var, the declared param type must still match the
+            # design; a drifted delegate compiles but is never bound at runtime (OPCUA-3367).
+            type_mismatch = False
+            if declared and method_name in expected_delegate_types:
+                expected_type = expected_delegate_types[method_name]
+                # Build a whitespace-tolerant pattern from the expected type (astyle /
+                # hand-formatting may add spaces, esp. inside std::vector< >) by joining
+                # its tokens with \s*. The (?<![\w<]) / (?![\w<]) boundaries keep
+                # OpcUa_Int16 from matching inside UInt16 and stop a scalar type from
+                # matching inside std::vector<...> (shape drift).
+                tokens = re.findall(r'\w+|[^\w\s]', expected_type)
+                ws = r'\s*'   # separate var: a backslash cannot live in an f-string field (py<3.12)
+                type_pattern = rf'(?<![\w<]){ws.join(re.escape(t) for t in tokens)}(?![\w<])'
+                type_mismatch = not re.search(type_pattern, decl_match.group(1))
+
             if not declared and not implemented:
                 print(f"  D{className}::{method_name}: {Fore.GREEN}using Base_D default{Style.RESET_ALL}")
             elif declared and not has_override:
                 print(f"  D{className}::{method_name}: {Fore.RED}MISSING override keyword{Style.RESET_ALL}")
+                has_issues = True
+            elif type_mismatch:
+                print(f"  D{className}::{method_name}: {Fore.RED}delegate type mismatch (expected '{expected_type}', design drifted -- delegate silently unbound){Style.RESET_ALL}")
                 has_issues = True
             elif is_stub:
                 print(f"  D{className}::{method_name}: {Fore.YELLOW}declared but still returns BadNotImplemented{Style.RESET_ALL}")
