@@ -72,7 +72,7 @@ Installation and Dependencies
 Note: we have specific instructions for the following operating systems:
 
 - AlmaLinux / RHEL (and dependent distributions):
-  - `version 9 <#el9>`__ (e.g. AlmaLinux 9, RHEL 9, ...),
+  - `version 9 <#el9>`__ (e.g. AlmaLinux 9, RHEL 9, ...) and version 10 (e.g. AlmaLinux 10, RHEL 10, ...),
 - `Ubuntu <#ubuntu>`__
 - `MS Windows <#windows>`__
 
@@ -92,7 +92,7 @@ Mandatory:
 
 -  Python3 (3.6 is what we use at minimum) and some libraries (Jinja2, colorama, lxml, pygit2)
 
--  cmake3, version 3.10 + (for older versions you could try older quasar
+-  cmake3, version 3.16 + (for older versions you could try older quasar
    versions)
 
 Recommended:
