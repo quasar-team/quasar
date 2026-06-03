@@ -19,7 +19,7 @@ ChangeLog
                 <td valign="top">2.0.0<font size="-1"><br>(TBD)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>
-                    kdiff3 is fully eliminated as a dependency. D&lt;Class&gt; files are now user-owned and never overwritten; Base_D&lt;Class&gt; provides virtual defaults for new design elements. Common/CMakeLists.txt, Server/CMakeLists.txt, main.cpp and Doxyfile are now framework-owned. New <code>CommonCustom.cmake</code> and <code>ServerCustom.cmake</code> provide hooks for project-specific sources (same pattern as <code>DeviceCustom.cmake</code>). A new <code>device_report</code> command shows override status. CMake minimum is bumped to 3.26 for Windows/Linux build parity. ThreadPool data races found by TSan are fixed. The documentation deployment runner gains auto-recovery and a fine-grained API token for runner-status checks.
+                    kdiff3 is fully eliminated as a dependency. D&lt;Class&gt; files are now user-owned and never overwritten; Base_D&lt;Class&gt; provides virtual defaults for new design elements. Common/CMakeLists.txt, Server/CMakeLists.txt, main.cpp and Doxyfile are now framework-owned. New <code>CommonCustom.cmake</code> and <code>ServerCustom.cmake</code> provide hooks for project-specific sources (same pattern as <code>DeviceCustom.cmake</code>). A new <code>device_report</code> command shows override status. CMake minimum is raised to 3.16 (the lowest version the build actually requires). ThreadPool data races found by TSan are fixed. The documentation deployment runner gains auto-recovery and a fine-grained API token for runner-status checks.
                 </td>
                 <!-- Possible backward incompatibilities -->
                 <td valign="top"><br>
@@ -30,7 +30,7 @@ ChangeLog
                         <li>Server/src/main.cpp is now overwritten. Use <code>appendCustomCommandLineOptions()</code>, <code>initialize()</code> or <code>shutdown()</code> hooks in QuasarServer instead.</li>
                         <li>Documentation/Doxyfile is now overwritten on upgrade.</li>
                         <li><code>transformDesign(requiresMerge=...)</code> continues to work via backward-compatibility alias.</li>
-                        <li>CMake minimum is now 3.26 (raised from 3.10).</li>
+                        <li>CMake minimum is now 3.16 (raised from 3.10).</li>
                     </ul>
                 </td>
                 <!-- JIRA Release notes -->
@@ -46,7 +46,8 @@ ChangeLog
                         <li><code>override</code> keyword on D&lt;Class&gt; declarations for compile-time safety</li>
                         <li><code>upgrade_project</code> adds <code>override</code> to existing D&lt;Class&gt; headers automatically</li>
                         <li>Common/CMakeLists.txt, Server/CMakeLists.txt, main.cpp, Doxyfile now framework-owned</li>
-                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3326'>OPCUA-3326</a>] - Modernize CMake to 3.26 minimum for Windows/Linux build parity</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3326'>OPCUA-3326</a>] - Modernize CMake build (Boost CONFIG mode, Windows/Linux build parity)</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3365'>OPCUA-3365</a>] - Set CMake minimum to 3.16, the build's actual requirement</li>
                     </ul>
                     Bug
                     <ul>

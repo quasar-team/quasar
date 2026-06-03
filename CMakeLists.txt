@@ -19,7 +19,8 @@
 # Author: Stefan Schlenker
 # Author: Paris Moschovakos <paris.moschovakos@cern.ch>
 
-cmake_minimum_required(VERSION 3.26)
+# Floor = the lowest CMake the source actually needs; newer platform CMakes are covered by CI, not pinned here.
+cmake_minimum_required(VERSION 3.16)
 project(opc_ua)
 # the line below is added to quasar to keep backwards compatibility for the transition period.
 cmake_policy(SET CMP0065 NEW)

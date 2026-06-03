@@ -71,8 +71,8 @@ Generated C++ source (AddressSpace, Device bases, Configuration, CMake)
 <summary>Prerequisites</summary>
 
 - Python 3 with lxml, Jinja2, colorama
-- CMake 3.10+
-- C++17 compiler
+- CMake 3.16+
+- C++11 compiler
 - Boost
 - xsdcxx (CodeSynthesis XSD)
 

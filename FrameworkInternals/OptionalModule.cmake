@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.16)
 
 #message ("Configuring optional module ${OPT_MODULE_NAME}")
 project(${OPT_MODULE_NAME}_download NONE)
