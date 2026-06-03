@@ -36,6 +36,7 @@ import sys
 import logging
 import argparse
 from lxml import etree
+from transformDesign import write_if_different
 
 QUASAR_NAMESPACES = {'d':'http://cern.ch/quasar/Design'}
 
@@ -78,12 +79,25 @@ class MergedDesign():
         logging.debug(f"merged design [\n{etree.tostring(self.merged_design, pretty_print=True)}\n]")
 
     def write_to_file(self, output_file):
-        """writes merged design file (user + meta) to disk"""
+        """writes merged design file (user + meta) to disk.
+
+        output_file may be a destination PATH (str) or an already-open text
+        handle. With a path the write is skipped when the destination already
+        holds the identical bytes: the merge is a deterministic function of its
+        inputs, so rewriting byte-identical DesignWithMeta.xml only refreshes its
+        mtime and makes CMake/make rebuild on an unchanged design (OPCUA-3366). A
+        path is required for that, because the compare must happen BEFORE the
+        destination is truncated; a handle pre-opened in 'w' (the standalone
+        process_args path) has already lost the old content, so that legacy form
+        keeps the original unconditional write."""
         logging.info(f"writing file to [{output_file}]")
         content = etree.ElementTree(element=self.merged_design)
-        xml_string = etree.tostring(content, encoding='utf-8', method='xml', pretty_print=True, xml_declaration=True)
-        logging.debug(f"content of XML file [\n{xml_string.decode('utf-8')}\n]")
-        output_file.write(xml_string.decode('utf-8'))
+        xml_bytes = etree.tostring(content, encoding='utf-8', method='xml', pretty_print=True, xml_declaration=True)
+        logging.debug(f"content of XML file [\n{xml_bytes.decode('utf-8')}\n]")
+        if hasattr(output_file, 'write'):  # legacy: caller-pre-opened text handle
+            output_file.write(xml_bytes.decode('utf-8'))
+        else:
+            write_if_different(output_file, xml_bytes)
 
 
 def merge_user_and_meta_design(user_file, meta_file, merged_file):
