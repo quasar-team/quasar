@@ -29,25 +29,42 @@ from DesignInspector import DesignInspector
 from transform_filters import cap_first
 
 
+def _param_type_matches(expected_type, declared_params):
+    """True if the C++ type `expected_type` appears as a whole token in declared_params.
+    Whitespace-tolerant (astyle may pad std::vector< >); the lookbehind/lookahead
+    boundaries keep OpcUa_Int16 from matching inside UInt16 and stop a scalar from
+    matching inside std::vector<...> (shape drift)."""
+    tokens = re.findall(r'\w+|[^\w\s]', expected_type)
+    ws = r'\s*'   # separate var: a backslash cannot live in an f-string field (py<3.12)
+    pattern = rf'(?<![\w<]){ws.join(re.escape(t) for t in tokens)}(?![\w<])'
+    return bool(re.search(pattern, declared_params))
+
+
 def _get_expected_delegate_param_types(designInspector, className):
-    """Returns {method: expected C++ delegate parameter type} for every device-logic
-    delegate whose param type carries the design dataType, so a dataType drift (the
-    delegate compiles but no longer overrides Base_D -- silently unbound, OPCUA-3367)
-    can be caught. Matches Device/templates/commonDeviceTemplates.jinja:
+    """Returns {method: [expected C++ param type, ...]} for every device-logic delegate
+    whose param type carries the design dataType, so a dataType drift (the delegate
+    compiles but no longer overrides Base_D -- silently unbound, OPCUA-3367) can be
+    caught. Matches Device/templates/commonDeviceTemplates.jinja:
       delegated cache-var write<Cv> -- scalar '<dataType>', array 'std::vector<<dataType>>';
-      source-var read<Sv> / write<Sv>  -- always bare '<dataType>' (no array branch in the
-                                          source-var sigs). call<Name> is excluded: its param
-                                          types are Oracle-mapped, not the raw dataType."""
+      source-var read<Sv> / write<Sv> -- always bare '<dataType>' (no array branch);
+      method call<Name> -- one type per argument + return value (Oracle-mapped, but the
+                           type token reduces to the same scalar/array dataType form)."""
+    def _scalar_or_array(node):
+        dataType = node.get('dataType')
+        return f"std::vector<{dataType}>" if len(getattr(node, 'array', [])) > 0 else dataType
     types = {}
     for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']"):
-        dataType = cv.get('dataType')
-        cpp_type = f"std::vector<{dataType}>" if len(getattr(cv, 'array', [])) > 0 else dataType
-        types[f"write{cap_first(cv.get('name'))}"] = cpp_type
+        types[f"write{cap_first(cv.get('name'))}"] = [_scalar_or_array(cv)]
     for sv in designInspector.objectify_source_variables(className):
         if sv.get('addressSpaceRead') in ('asynchronous', 'synchronous'):
-            types[f"read{cap_first(sv.get('name'))}"] = sv.get('dataType')
+            types[f"read{cap_first(sv.get('name'))}"] = [sv.get('dataType')]
         if sv.get('addressSpaceWrite') in ('asynchronous', 'synchronous'):
-            types[f"write{cap_first(sv.get('name'))}"] = sv.get('dataType')
+            types[f"write{cap_first(sv.get('name'))}"] = [sv.get('dataType')]
+    for m in designInspector.objectify_methods(className):
+        params = [_scalar_or_array(a) for a in getattr(m, 'argument', [])] + \
+                 [_scalar_or_array(r) for r in getattr(m, 'returnvalue', [])]
+        if params:
+            types[f"call{cap_first(m.get('name'))}"] = params
     return types
 
 
@@ -116,20 +133,14 @@ def deviceReport(context):
                 stub_pattern = rf'D{re.escape(className)}::{re.escape(method_name)}\s*\([^)]*\)\s*\{{[^}}]*OpcUa_BadNotImplemented[^}}]*\}}'
                 is_stub = bool(re.search(stub_pattern, cpp_content, re.DOTALL))
 
-            # For a delegated cache var, the declared param type must still match the
-            # design; a drifted delegate compiles but is never bound at runtime (OPCUA-3367).
+            # Each delegate's declared param type(s) must still match the design; a drifted
+            # delegate compiles but no longer overrides Base_D, so it is never bound (OPCUA-3367).
             type_mismatch = False
+            missing_types = []
             if declared and method_name in expected_delegate_types:
-                expected_type = expected_delegate_types[method_name]
-                # Build a whitespace-tolerant pattern from the expected type (astyle /
-                # hand-formatting may add spaces, esp. inside std::vector< >) by joining
-                # its tokens with \s*. The (?<![\w<]) / (?![\w<]) boundaries keep
-                # OpcUa_Int16 from matching inside UInt16 and stop a scalar type from
-                # matching inside std::vector<...> (shape drift).
-                tokens = re.findall(r'\w+|[^\w\s]', expected_type)
-                ws = r'\s*'   # separate var: a backslash cannot live in an f-string field (py<3.12)
-                type_pattern = rf'(?<![\w<]){ws.join(re.escape(t) for t in tokens)}(?![\w<])'
-                type_mismatch = not re.search(type_pattern, decl_match.group(1))
+                missing_types = [t for t in expected_delegate_types[method_name]
+                                 if not _param_type_matches(t, decl_match.group(1))]
+                type_mismatch = bool(missing_types)
 
             if not declared and not implemented:
                 print(f"  D{className}::{method_name}: {Fore.GREEN}using Base_D default{Style.RESET_ALL}")
@@ -137,7 +148,7 @@ def deviceReport(context):
                 print(f"  D{className}::{method_name}: {Fore.RED}MISSING override keyword{Style.RESET_ALL}")
                 has_issues = True
             elif type_mismatch:
-                print(f"  D{className}::{method_name}: {Fore.RED}delegate type mismatch (expected '{expected_type}', design drifted -- delegate silently unbound){Style.RESET_ALL}")
+                print(f"  D{className}::{method_name}: {Fore.RED}delegate type mismatch (expected '{', '.join(missing_types)}', design drifted -- delegate silently unbound){Style.RESET_ALL}")
                 has_issues = True
             elif is_stub:
                 print(f"  D{className}::{method_name}: {Fore.YELLOW}declared but still returns BadNotImplemented{Style.RESET_ALL}")
