@@ -153,6 +153,12 @@ def quasar_parser():
     # create the parser for the "external_tool_check" command
     external_tool_check_parser = subparsers.add_parser(
         'external_tool_check', help='Checks dependencies of quasar')
+    # create the parser for the "device_report" command
+    device_report_parser = subparsers.add_parser(
+        'device_report', help='Reports which Base_D virtual methods are overridden in D<Class> and whether the override keyword is present')
+    # create the parser for the "check_consistency" command
+    check_consistency_parser = subparsers.add_parser(
+        'check_consistency', help='Checks the consistency of the project (required files exist and md5 keys are correct)')
     # create the parser for the "enable_module" command
     enable_module_parser = subparsers.add_parser(
         'enable_module', help='Enables optional module from quasar’s optional modules catalogue')
