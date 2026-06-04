@@ -30,15 +30,24 @@ from transform_filters import cap_first
 
 
 def _get_expected_delegate_param_types(designInspector, className):
-    """Returns {write<Cv>: expected C++ delegate parameter type} for delegated cache
-    variables, matching Device/templates/commonDeviceTemplates.jinja writeCacheVarSig
-    (scalar: '<dataType>', array: 'std::vector<<dataType>>'). Used to catch a delegate
-    whose param type drifted from the design (silently unbound, OPCUA-3367)."""
+    """Returns {method: expected C++ delegate parameter type} for every device-logic
+    delegate whose param type carries the design dataType, so a dataType drift (the
+    delegate compiles but no longer overrides Base_D -- silently unbound, OPCUA-3367)
+    can be caught. Matches Device/templates/commonDeviceTemplates.jinja:
+      delegated cache-var write<Cv> -- scalar '<dataType>', array 'std::vector<<dataType>>';
+      source-var read<Sv> / write<Sv>  -- always bare '<dataType>' (no array branch in the
+                                          source-var sigs). call<Name> is excluded: its param
+                                          types are Oracle-mapped, not the raw dataType."""
     types = {}
     for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']"):
         dataType = cv.get('dataType')
         cpp_type = f"std::vector<{dataType}>" if len(getattr(cv, 'array', [])) > 0 else dataType
         types[f"write{cap_first(cv.get('name'))}"] = cpp_type
+    for sv in designInspector.objectify_source_variables(className):
+        if sv.get('addressSpaceRead') in ('asynchronous', 'synchronous'):
+            types[f"read{cap_first(sv.get('name'))}"] = sv.get('dataType')
+        if sv.get('addressSpaceWrite') in ('asynchronous', 'synchronous'):
+            types[f"write{cap_first(sv.get('name'))}"] = sv.get('dataType')
     return types
 
 

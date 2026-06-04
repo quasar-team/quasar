@@ -51,6 +51,9 @@ _DESIGN = '''<?xml version="1.0" encoding="UTF-8"?>
     <d:cachevariable name="reading" dataType="{dtype}" addressSpaceWrite="delegated"
        initializeWith="valueAndStatus" initialStatus="OpcUa_BadWaitingForInitialData"
        initialValue="0" nullPolicy="nullForbidden"/>
+    <d:sourcevariable name="sample" dataType="{dtype}"
+       addressSpaceRead="synchronous" addressSpaceWrite="synchronous"
+       addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no"/>
   </d:class>
   <d:root><d:hasobjects instantiateUsing="configuration" class="Sensor"/></d:root>
 </d:design>'''
@@ -62,17 +65,23 @@ namespace Device {
 class DSensor : public Base_DSensor {
 public:
   UaStatus writeReading ( const OpcUa_Double& v) override;
+  UaStatus readSample ( OpcUa_Double& value, UaDateTime& sourceTime ) override;
+  UaStatus writeSample ( OpcUa_Double& value ) override;
 };
 }
 #endif'''
 
 _DSENSOR_CPP = '''#include <DSensor.h>
-namespace Device { UaStatus DSensor::writeReading ( const OpcUa_Double& v) { return OpcUa_Good; } }'''
+namespace Device {
+UaStatus DSensor::writeReading ( const OpcUa_Double& v) { return OpcUa_Good; }
+UaStatus DSensor::readSample ( OpcUa_Double& value, UaDateTime& sourceTime ) { return OpcUa_Good; }
+UaStatus DSensor::writeSample ( OpcUa_Double& value ) { return OpcUa_Good; }
+}'''
 
 
-def _device_report_verdict(design_dtype):
-    """Return device_report's verdict line (ANSI-stripped) for writeReading in a
-    project whose design 'reading' is `design_dtype` but whose delegate is Double."""
+def _device_report_verdict(design_dtype, method):
+    """Return device_report's verdict line (ANSI-stripped) for `method` in a project
+    whose design dataType is `design_dtype` but whose delegate is fixed at Double."""
     tmp = tempfile.mkdtemp(prefix='quasar_unbound_')
     try:
         for d in ('Design', 'Device/include', 'Device/src'):
@@ -83,27 +92,35 @@ def _device_report_verdict(design_dtype):
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             deviceReport({'projectSourceDir': tmp})
-        lines = [_ANSI.sub('', l).strip() for l in buf.getvalue().splitlines() if 'writeReading' in l]
-        return lines[0] if lines else '(writeReading not reported)'
+        lines = [_ANSI.sub('', l).strip() for l in buf.getvalue().splitlines()
+                 if f'::{method}:' in l]
+        return lines[0] if lines else f'({method} not reported)'
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
 
 def test_device_report_catches_delegate_type_drift():
-    correct = _device_report_verdict('OpcUa_Double')   # delegate Double == design Double
-    drifted = _device_report_verdict('OpcUa_Float')     # delegate Double != design Float  (DRIFT)
-    print(f"  correct delegate (design Double, delegate Double): {correct!r}")
-    print(f"  drifted delegate (design Float,  delegate Double): {drifted!r}")
-    if correct != drifted:
-        print("PASSED: device_report flags the type-drifted delegate differently from the correct one.")
-        return True
-    print(f"\n{'='*74}")
-    print("FAILED: device_report gives a TYPE-DRIFTED delegate the SAME verdict as a correct one.")
-    print("        It matches delegates by method NAME, never parameter type -- so a delegate")
-    print("        whose type no longer matches the design (silently unbound at runtime,")
-    print("        OPCUA-3367) is invisible to the one tool meant to catch it.")
-    print('=' * 74)
-    return False
+    # Every device-logic delegate whose generated param type carries the design dataType:
+    # delegated cache-var write, and source-var read + write. A dataType drift (delegate
+    # frozen at Double vs design Float) must yield a DIFFERENT verdict for each (OPCUA-3367).
+    ok = True
+    for method, kind in (('writeReading', 'delegated cache-var write'),
+                         ('readSample', 'source-var read'),
+                         ('writeSample', 'source-var write')):
+        correct = _device_report_verdict('OpcUa_Double', method)  # design==delegate
+        drifted = _device_report_verdict('OpcUa_Float', method)   # design!=delegate (DRIFT)
+        print(f"  {kind} ({method}):")
+        print(f"    correct (design Double): {correct!r}")
+        print(f"    drifted (design Float):  {drifted!r}")
+        if correct == drifted:
+            ok = False
+            print(f"    {'-'*70}")
+            print(f"    FAILED: device_report gives the TYPE-DRIFTED {kind} delegate the SAME")
+            print(f"            verdict as a correct one -- name-only matching, blind to the")
+            print(f"            silent unbind (OPCUA-3367).")
+    if ok:
+        print("PASSED: device_report flags every type-drifted device-logic delegate.")
+    return ok
 
 
 if __name__ == '__main__':
