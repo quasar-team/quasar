@@ -16,6 +16,34 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">2.0.1<font size="-1"><br>(04-Jun-2026)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>This hotfix release addresses issues raised in the v2.0.0 review: the CMake minimum is lowered to 3.16 (3.26 blocked older systems), code generation writes files only when their content changes (no spurious rebuilds), and <code>device_report</code> now detects delegates silently unbound by a design data-type drift, across cache-variable, source-variable and method delegates.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>(none known)</td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Improvement
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3365'>OPCUA-3365</a>] - Lower CMake minimum to 3.16; 3.26 was unnecessary and blocked older systems</li>
+                    </ul>
+                    Bug
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3366'>OPCUA-3366</a>] - Build recompiled everything even when the design had not changed</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3367'>OPCUA-3367</a>] - Changing a delegated variable's type silently broke the device delegate</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3369'>OPCUA-3369</a>] - device_report did not cover method delegates</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar test suite notes:<br>
+                    <ol>
+                        <li>Framework invariant tests pass (write-if-different; delegate type-drift across cache, source and method)</li>
+                        <li>CI green on open62541 + UASDK + AlmaLinux 10 (bar the pre-existing flaky methods job)</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">2.0.0<font size="-1"><br>(TBD)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>
