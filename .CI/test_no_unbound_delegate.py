@@ -54,6 +54,9 @@ _DESIGN = '''<?xml version="1.0" encoding="UTF-8"?>
     <d:sourcevariable name="sample" dataType="{dtype}"
        addressSpaceRead="synchronous" addressSpaceWrite="synchronous"
        addressSpaceReadUseMutex="no" addressSpaceWriteUseMutex="no"/>
+    <d:method name="doThing" executionSynchronicity="synchronous" addressSpaceCallUseMutex="no">
+      <d:argument name="x" dataType="{dtype}"/>
+    </d:method>
   </d:class>
   <d:root><d:hasobjects instantiateUsing="configuration" class="Sensor"/></d:root>
 </d:design>'''
@@ -67,6 +70,7 @@ public:
   UaStatus writeReading ( const OpcUa_Double& v) override;
   UaStatus readSample ( OpcUa_Double& value, UaDateTime& sourceTime ) override;
   UaStatus writeSample ( OpcUa_Double& value ) override;
+  UaStatus callDoThing ( OpcUa_Double x ) override;
 };
 }
 #endif'''
@@ -76,6 +80,7 @@ namespace Device {
 UaStatus DSensor::writeReading ( const OpcUa_Double& v) { return OpcUa_Good; }
 UaStatus DSensor::readSample ( OpcUa_Double& value, UaDateTime& sourceTime ) { return OpcUa_Good; }
 UaStatus DSensor::writeSample ( OpcUa_Double& value ) { return OpcUa_Good; }
+UaStatus DSensor::callDoThing ( OpcUa_Double x ) { return OpcUa_Good; }
 }'''
 
 
@@ -101,12 +106,14 @@ def _device_report_verdict(design_dtype, method):
 
 def test_device_report_catches_delegate_type_drift():
     # Every device-logic delegate whose generated param type carries the design dataType:
-    # delegated cache-var write, and source-var read + write. A dataType drift (delegate
-    # frozen at Double vs design Float) must yield a DIFFERENT verdict for each (OPCUA-3367).
+    # delegated cache-var write, source-var read + write, and method call. A dataType drift
+    # (delegate frozen at Double vs design Float) must yield a DIFFERENT verdict for each.
+    # The method-call row is RED until device_report also type-checks methods (OPCUA-3369).
     ok = True
     for method, kind in (('writeReading', 'delegated cache-var write'),
                          ('readSample', 'source-var read'),
-                         ('writeSample', 'source-var write')):
+                         ('writeSample', 'source-var write'),
+                         ('callDoThing', 'method call')):
         correct = _device_report_verdict('OpcUa_Double', method)  # design==delegate
         drifted = _device_report_verdict('OpcUa_Float', method)   # design!=delegate (DRIFT)
         print(f"  {kind} ({method}):")
