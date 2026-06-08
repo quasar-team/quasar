@@ -31,13 +31,13 @@ namespace AddressSpace
 
 UaStatus ASSourceVariableIoManager::beginTransaction (
     IOManagerCallback*       pCallback,
-    const ServiceContext&    serviceContext,
+    const ServiceContext&,
     OpcUa_UInt32             hTransaction,
-    OpcUa_UInt32             totalItemCountHint,
-    OpcUa_Double             maxAge,
-    OpcUa_TimestampsToReturn timestampsToReturn,
-    TransactionType          transactionType,
-    OpcUa_Handle&            hIOManagerContext)
+    OpcUa_UInt32,
+    OpcUa_Double,
+    OpcUa_TimestampsToReturn,
+    TransactionType,
+    OpcUa_Handle&)
 {
 	m_callback = pCallback;
 	m_transaction = hTransaction;
@@ -45,10 +45,10 @@ UaStatus ASSourceVariableIoManager::beginTransaction (
 }
 
 UaStatus ASSourceVariableIoManager::beginRead (
-    OpcUa_Handle        hIOManagerContext,
+    OpcUa_Handle,
     OpcUa_UInt32        callbackHandle,
-    VariableHandle*     pVariableHandle,
-    OpcUa_ReadValueId*  pReadValueId)
+    VariableHandle*,
+    OpcUa_ReadValueId*)
 {
 	m_callbackHandle = callbackHandle;
 	LOG(Log::DBG) << "beginRead op=" << m_readOperationJobId << " cbkHandle=" <<callbackHandle << endl;
@@ -66,9 +66,9 @@ UaStatus ASSourceVariableIoManager::beginRead (
 }
 
 UaStatus ASSourceVariableIoManager::beginWrite (
-    OpcUa_Handle        hIOManagerContext,
+    OpcUa_Handle,
     OpcUa_UInt32        callbackHandle,
-    VariableHandle*     pVariableHandle,
+    VariableHandle*,
     OpcUa_WriteValue*   pWriteValue)
 {
 	m_callbackHandle = callbackHandle;
@@ -87,7 +87,7 @@ UaStatus ASSourceVariableIoManager::beginWrite (
 }
 
 UaStatus ASSourceVariableIoManager::finishTransaction (
-    OpcUa_Handle        hIOManagerContext)
+    OpcUa_Handle)
 {
 	return OpcUa_Good;
 }

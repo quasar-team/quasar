@@ -49,7 +49,7 @@ public:
     virtual UaStatus setValue(
         Session* pSession,
         const UaDataValue& dataValue,
-        OpcUa_Boolean checkAccessLevel);
+        OpcUa_Boolean checkAccessLevel) override;
 
     virtual void addChangeListener (OnChangeListener onChangeListener);
     virtual size_t changeListenerSize () const { return m_changeListeners.size(); }

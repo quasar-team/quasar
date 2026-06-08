@@ -58,7 +58,7 @@ public:
 	virtual ~ASSourceVariable ()
 	{
 		delete m_ioManager;
-	};
+	}
 
 	IOManager* getIOManager () const { return m_ioManager; }
 

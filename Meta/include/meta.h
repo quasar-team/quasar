@@ -48,6 +48,6 @@ namespace Meta
 		}
 
 		return children[0];
-	};
+	}
 } // namespace Meta
 

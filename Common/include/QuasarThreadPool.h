@@ -40,7 +40,7 @@ namespace Quasar
 class ThreadPoolJob
 {
 public:
-    virtual ~ThreadPoolJob() {};
+    virtual ~ThreadPoolJob() {}
 
     virtual void execute() = 0;
 
@@ -59,7 +59,7 @@ public:
     UaStatus addJob (std::unique_ptr<ThreadPoolJob> && job);
     UaStatus addJob (const std::function<void()>& functor, const std::string& description, std::mutex* mutex = nullptr);
 
-    void notifyExternalEvent () { m_conditionVariable.notify_one(); };
+    void notifyExternalEvent () { m_conditionVariable.notify_one(); }
 
     //! How many jobs are buffered for execution ?
     size_t getNumPendingJobs ();
@@ -85,7 +85,7 @@ private:
     {
         std::unique_ptr<ThreadPoolJob> job;
         std::unique_lock<std::mutex> lock;
-        Duty() : job(nullptr) {};
+        Duty() : job(nullptr) {}
     };
 
     //! Search for a job that can be presently executed, if found remove it from the list.

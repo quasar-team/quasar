@@ -53,31 +53,31 @@ public:
         OpcUa_Double             maxAge,
         OpcUa_TimestampsToReturn timestampsToReturn,
         TransactionType          transactionType,
-        OpcUa_Handle&            hIOManagerContext);
+        OpcUa_Handle&            hIOManagerContext) override;
 
     virtual UaStatus beginStartMonitoring(
-        OpcUa_Handle        hIOManagerContext,
-        OpcUa_UInt32        callbackHandle,
-        IOVariableCallback* pIOVariableCallback,
-        VariableHandle*     pVariableHandle,
-        MonitoringContext&  monitoringContext)
+        OpcUa_Handle,
+        OpcUa_UInt32,
+        IOVariableCallback*,
+        VariableHandle*,
+        MonitoringContext&) override
     {
     	return OpcUa_Bad;
     }
 
     virtual UaStatus beginModifyMonitoring(
-        OpcUa_Handle        hIOManagerContext,
-        OpcUa_UInt32        callbackHandle,
-        OpcUa_UInt32        hIOVariable,
-        MonitoringContext&  monitoringContext)
+        OpcUa_Handle,
+        OpcUa_UInt32,
+        OpcUa_UInt32,
+        MonitoringContext&) override
     {
     	return OpcUa_Bad;
     }
 
     virtual UaStatus beginStopMonitoring(
-        OpcUa_Handle        hIOManagerContext,
-        OpcUa_UInt32        callbackHandle,
-        OpcUa_UInt32        hIOVariable)
+        OpcUa_Handle,
+        OpcUa_UInt32,
+        OpcUa_UInt32) override
     {
     	return OpcUa_Bad;
     }
@@ -86,16 +86,16 @@ public:
         OpcUa_Handle        hIOManagerContext,
         OpcUa_UInt32        callbackHandle,
         VariableHandle*     pVariableHandle,
-        OpcUa_ReadValueId*  pReadValueId) ;
+        OpcUa_ReadValueId*  pReadValueId) override;
 
     virtual UaStatus beginWrite (
         OpcUa_Handle        hIOManagerContext,
         OpcUa_UInt32        callbackHandle,
         VariableHandle*     pVariableHandle,
-        OpcUa_WriteValue*   pWriteValue) ;
+        OpcUa_WriteValue*   pWriteValue) override;
 
     virtual UaStatus finishTransaction (
-        OpcUa_Handle        hIOManagerContext);
+        OpcUa_Handle        hIOManagerContext) override;
 
 private:
     ASSourceVariableJobId m_readOperationJobId;

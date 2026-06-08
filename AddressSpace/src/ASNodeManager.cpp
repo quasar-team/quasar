@@ -149,6 +149,7 @@ UaStatus ASNodeManager::beforeShutDown()
 	const UaNodeId ASNodeManager::getTypeNodeId (unsigned int numericalType)
 	{
 #ifdef BACKEND_OPEN62541
+		(void) numericalType;
 		return UaNodeId(UA_NS0ID_BASEOBJECTTYPE, 0 );
 #else
 		return UaNodeId (numericalType, getNameSpaceIndex());

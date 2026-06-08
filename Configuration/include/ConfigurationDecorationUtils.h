@@ -52,7 +52,7 @@ namespace Configuration
       children.push_back(child);
       const xml_schema::content_order orderingElement(childTypeId, children.size()-1);
       parent.content_order().push_back(orderingElement);
-    };
+    }
 
     template< typename TParent, typename TChildren>
     void clear(TParent& parent, TChildren& children, const size_t childTypeId)

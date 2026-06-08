@@ -60,13 +60,17 @@ namespace AddressSpace
 
 
 
-	virtual UaStatus afterStartUp();
+	virtual UaStatus afterStartUp() override;
+#ifdef BACKEND_UATOOLKIT
+	virtual UaStatus beforeShutDown() override;
+#else
 	virtual UaStatus beforeShutDown();
+#endif
 
 #ifndef BACKEND_OPEN62541
     UaObject * getInstanceDeclarationObjectType (OpcUa_UInt32 typeId);
 
-    virtual IOManager* getIOManager(UaNode* pUaNode, OpcUa_Int32 attributeId) const;
+    virtual IOManager* getIOManager(UaNode* pUaNode, OpcUa_Int32 attributeId) const override;
 #endif
 
     UaNodeId makeChildNodeId (const UaNodeId &parent, const UaString& childName);

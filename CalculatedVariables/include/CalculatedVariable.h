@@ -50,7 +50,7 @@ public:
     // Allows the user to enable or disable automatic updates of the calculated variable.
     // When automatic updates are disabled, the update() method will do nothing, and
     // the user must manually trigger updates by calling triggerRecalculation().
-    void setAutoUpdate(bool enabled) { m_autoUpdateEnabled = enabled; };
+    void setAutoUpdate(bool enabled) { m_autoUpdateEnabled = enabled; }
     void triggerRecalculation();
     void update();
 

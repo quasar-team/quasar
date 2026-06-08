@@ -44,9 +44,9 @@ public:
 	        	ChangeNotifyingVariable (nodeId, name, browseNameNameSpaceIndex, initialValue, accessLevel, pNodeConfig, pSharedMutex),
 	        	m_write(0),
 	        	m_object(0) {}
-	virtual ~ASDelegatingVariable () {};
+	virtual ~ASDelegatingVariable () {}
 
-	UaStatus setValue(Session* pSession, const UaDataValue& dataValue, OpcUa_Boolean checkAccessLevel = OpcUa_True)
+	UaStatus setValue(Session* pSession, const UaDataValue& dataValue, OpcUa_Boolean checkAccessLevel = OpcUa_True) override
 	{
 		if (m_object && m_write && pSession!=0)
 		{
