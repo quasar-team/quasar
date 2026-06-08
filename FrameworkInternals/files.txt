@@ -13,7 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "aab27dbccd45015828a0e6549ab2040c",
+                "md5": "5c5a39116485b9c950d091f47eba09ad",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -88,11 +88,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASDelegatingVariable.h": {
-                "md5": "74a1eb20d237092be6b548c3ab9201f6",
+                "md5": "223f687fb471066fc9e129c31ea3b354",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASNodeManager.h": {
-                "md5": "8ab4aa271e50e686fe6618762e6c58eb",
+                "md5": "9988360b8de2f5e3b8d8d454aa4153f8",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASNodeQueries.h": {
@@ -100,11 +100,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariable.h": {
-                "md5": "507e97d4c897cfea05c3aeed1c17490e",
+                "md5": "5b388b71665485baa52a7537c16584b4",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariableIoManager.h": {
-                "md5": "d9a88794a42551683bf7a8cb447b85c3",
+                "md5": "13a6558e9715dc1d44199fc297de8fca",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ArrayTools.h": {
@@ -112,7 +112,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ChangeNotifyingVariable.h": {
-                "md5": "d185c3a42fe210ae4fef440e8ca5436c",
+                "md5": "48fc2a5e96798b234220f9287760f3e5",
                 "use_defaults": "file_defaults_of_directory"
             },
             "FreeVariablesEngine.h": {
@@ -131,11 +131,11 @@
         },
         "files": {
             "ASNodeManager.cpp": {
-                "md5": "5202d1d7783e04c74fffebb3169a8ff4",
+                "md5": "4f364c638902c2f5cae8aa4686572a27",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariableIoManager.cpp": {
-                "md5": "2d66e7fb72f23e0f8527628346aebdcb",
+                "md5": "c91457250ef8b16f729a803736ca2a19",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ArrayTools.cpp": {
@@ -166,11 +166,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "5e6e80f548dca92934e65a32a4022257",
+                "md5": "762a44d3adca20426103bdcedf6f3acf",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
-                "md5": "050e4377b4161160d44d6ef8c2bf0b44",
+                "md5": "c9bec2bc0a01e7c9c15348d6e73d4a0b",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToGeneratedCmakeAddressSpace.jinja": {
@@ -178,7 +178,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToInformationModelBody.jinja": {
-                "md5": "aec1b92e42d63cfbe98c22c8feac37cb",
+                "md5": "f884c9d523727ee6008ba4c3eb446baf",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToInformationModelHeader.jinja": {
@@ -186,7 +186,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesBody.jinja": {
-                "md5": "a64f5efca0ed2d03cae94129a52a4ba8",
+                "md5": "a72f7ac7cbdfd4203904eba913359ccd",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToSourceVariablesHeader.jinja": {
@@ -200,7 +200,7 @@
         "files": {
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "81bd3c1a1496e0581626b359dafc783b",
+                "md5": "0d35198d5e44ed95202da5f0694469b2",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -246,7 +246,7 @@
         },
         "files": {
             "CalculatedVariable.h": {
-                "md5": "47e1c8ae12e48a399269da031ced5b6f",
+                "md5": "95b48f72c76dd4d193861184197d4fd7",
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesChangeListener.h": {
@@ -327,7 +327,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.h": {
-                "md5": "3dcb4c1b80209bd2de0271988f691986",
+                "md5": "be3321d8739de09bf12acc85426abf4c",
                 "use_defaults": "file_defaults_of_directory"
             },
             "Utils.h": {
@@ -350,7 +350,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.cpp": {
-                "md5": "a4011faaba307b2dc8cc2dabcf354e4b",
+                "md5": "4dd0f157ecab03736acbfc40adc48e86",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -371,7 +371,7 @@
         "files": {
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "57b5eaeda888a89d77ca27a5daad95a9",
+                "md5": "acd50ad4320e87ee6e8c0770e3936b11",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -400,7 +400,7 @@
         "files": {
             "ConfigurationDecorationUtils.h": {
                 "install": "overwrite",
-                "md5": "145bf409e355ef403f211cb282bb21c7",
+                "md5": "f7f69cde6148961012d0a389c8809fcf",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -420,7 +420,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigValidator.jinja": {
-                "md5": "3b6e265de3b2bc49588b4b43b5a301aa",
+                "md5": "2088c901d4022ffae193fd5ead67207e",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurationXSD.jinja": {
@@ -461,7 +461,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "363b3995e804a4d792a30cca6fe3b6fc",
+                "md5": "2c6a89f70e1df5bf4a5cc690bd6c3307",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -542,15 +542,15 @@
         },
         "files": {
             "commonDeviceTemplates.jinja": {
-                "md5": "a880094e8b3b460407fd75dacdc342af",
+                "md5": "d3ba0178a3a5e951f5b4ff41e2785407",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBaseBody.jinja": {
-                "md5": "5410f43295f52043bcc29e8e95fb03b2",
+                "md5": "b68406064c7072c4b5c044a178ec0402",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBaseHeader.jinja": {
-                "md5": "c802f7f5ce34e3736fdc6404c1758d8a",
+                "md5": "24d989137a88945bd61696d3458a6cc2",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBody.jinja": {
@@ -635,7 +635,7 @@
             },
             "Oracle.py": {
                 "install": "overwrite",
-                "md5": "b1bdaf6fca1da500cfa7121ecc0d3325",
+                "md5": "173f41e90f5cffbbb6f32bfc1053632e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1049,7 +1049,7 @@
                 "deprecated": true
             },
             "meta.h": {
-                "md5": "5467a9212aa6a6378de285045c24a537",
+                "md5": "0f59e964a9ddcfa9935ef8886e778140",
                 "use_defaults": "file_defaults_of_directory"
             },
             "metaBackwardsCompatibilityUtils.h": {
@@ -1207,7 +1207,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "16e52d84befcdd64847caa3bd84c6df2",
+                "md5": "488aefa3297dbe58eda8bb69a156a1d6",
                 "must_be_versioned": true,
                 "must_exist": true
             },
