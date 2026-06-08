@@ -109,8 +109,11 @@ set(DESIGN_FILE ${PROJECT_BINARY_DIR}/Design/DesignWithMeta.xml)
 include_directories (
 	${PROJECT_BINARY_DIR}/Device/generated
 	${PROJECT_SOURCE_DIR}/Configuration  # this is to cover Configurator.h
-	${PROJECT_BINARY_DIR}/Configuration
 	${SERVER_INCLUDE_DIRECTORIES}
+	)
+
+include_directories ( SYSTEM
+	${PROJECT_BINARY_DIR}/Configuration
 	)
 
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
@@ -142,7 +145,11 @@ foreach(module ${SERVER_MODULES})
     set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${PROJECT_BINARY_DIR}/${module}/include ${SUBMODULE_INCLUDES})
 endforeach(module)
 foreach(include ${MODULE_INCLUDES})
-    include_directories(${include})
+    if(include STREQUAL "${PROJECT_SOURCE_DIR}/LogIt/include")
+        include_directories(SYSTEM ${include})
+    else()
+        include_directories(${include})
+    endif()
 endforeach(include)
 
 # add all module directories and add module objects

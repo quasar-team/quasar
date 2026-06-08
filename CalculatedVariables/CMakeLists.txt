@@ -16,9 +16,11 @@
 
 # Author: Piotr Nikiel <piotr@nikiel.info>
 
-include_directories(ext_components/muparser-amalgamated/include)
+include_directories(SYSTEM ext_components/muparser-amalgamated/include)
 
 file(GLOB muparser_srcs "ext_components/muparser-amalgamated/src/*.cpp" )
+
+set_source_files_properties(${muparser_srcs} PROPERTIES COMPILE_FLAGS -w)
 
 add_definitions(-DMUPARSER_STATIC)
 

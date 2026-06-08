@@ -44,6 +44,8 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/ConfigValidator.cp
 	DEPENDS ${DESIGN_FILE} templates/designToConfigValidator.jinja ${PROJECT_SOURCE_DIR}/quasar.py AddressSpace Device
 )
 
+set_source_files_properties(${PROJECT_BINARY_DIR}/Configuration/Configuration.cxx PROPERTIES COMPILE_FLAGS -w)
+
 add_library (Configuration OBJECT
 	Configuration.cxx
 	Configuration.hxx
