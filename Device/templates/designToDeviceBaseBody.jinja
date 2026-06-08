@@ -130,7 +130,7 @@ unsigned int Base_D{{className}}::unlinkAllChildren ()
 {% endfor %}
 
 {% for m in this.method %}
-{{ commonDeviceTemplates.callMethodSig(m, oracle, q) }}
+{{ commonDeviceTemplates.callMethodSig(m, oracle, q, defaultImpl=true) }}
 {
     LOG(Log::WRN) << "call{{m.get('name')|capFirst}} not overridden in device class of " << getFullName();
     return OpcUa_BadNotImplemented;

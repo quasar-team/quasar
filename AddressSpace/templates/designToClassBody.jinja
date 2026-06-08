@@ -113,8 +113,8 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
     }
 
     void AS{{className}}::createCacheVariables(
-      ASNodeManager* nm,
-      const Configuration::{{className}}& config)
+      ASNodeManager*{{ ' nm' if this.cachevariable|length > 0 else '' }},
+      const Configuration::{{className}}&{{ ' config' if this.cachevariable|length > 0 else '' }})
     {
       UaStatus status;
       UaVariant helperVariant;
@@ -220,8 +220,8 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
     }
 
     void AS{{className}}::initializeArrayCacheVariablesFromConfiguration(
-      ASNodeManager* nm,
-      const Configuration::{{className}}& config)
+      ASNodeManager*,
+      const Configuration::{{className}}&{{ ' config' if designInspector.objectify_cache_variables(className, "[d:array and @initializeWith='configuration']")|length > 0 else '' }})
     {
       {% for cv in designInspector.objectify_cache_variables(className, "[d:array and @initializeWith='configuration']") %}
         {
@@ -290,8 +290,8 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
     }
 
     void AS{{className}}::createSourceVariables(
-      ASNodeManager* nm,
-      const Configuration::{{className}}& config)
+      ASNodeManager*{{ ' nm' if this.sourcevariable|length > 0 else '' }},
+      const Configuration::{{className}}&{{ ' config' if this.sourcevariable|length > 0 else '' }})
     {
       UaStatus status;
       UaString variableName;
@@ -322,8 +322,8 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
     }
 
     void AS{{className}}::createMethods(
-      ASNodeManager* nm,
-      const Configuration::{{className}}& config)
+      ASNodeManager*{{ ' nm' if this.method|length > 0 else '' }},
+      const Configuration::{{className}}&{{ ' config' if this.method|length > 0 else '' }})
     {
       UaStatus status;
       UaString methodName;
@@ -422,6 +422,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
       ASNodeManager* nm,
       const Configuration::{{className}}& config)
       {
+        (void) nm; (void) config;
         {% if designInspector.is_class_single_variable_node(className) %}
           return; /* we don't support properties on single-variable nodes currently */
         {% endif %}
@@ -467,8 +468,8 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
     }
 
     UaString AS{{className}}::fixChildNameWhenSingleNodeClass(
-      const std::string& nameByDesign,
-      const std::string& nameByConfig
+      const std::string&{{ ' nameByDesign' if not designInspector.is_class_single_variable_node(className) else '' }},
+      const std::string&{{ ' nameByConfig' if designInspector.is_class_single_variable_node(className) else '' }}
       ) const
     {
       {% if designInspector.is_class_single_variable_node(className) %}
@@ -737,7 +738,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
     /* Call handler defined because at least one method is declared */
     UaStatus AS{{className}}::beginCall (
         MethodManagerCallback*    pCallback,
-        const ServiceContext&     serviceContext,
+        const ServiceContext&,
         OpcUa_UInt32              callbackHandle,
         MethodHandle*  	          pMethodHandle,
         const UaVariantArray&     inputArguments

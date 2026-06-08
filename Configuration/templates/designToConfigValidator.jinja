@@ -24,7 +24,8 @@
 {{ headers.cppFullGeneratedHeader() }}
 
 {% macro writeClassValidatorFunction(className) %}
-  bool validate{{className}}(Device::D{{className}}* object)
+  {% set classUsesObject = designInspector.objectify_has_objects(className, "[@instantiateUsing='configuration']")|length > 0 %}
+  bool validate{{className}}(Device::D{{className}}*{{ ' object' if classUsesObject else '' }})
   {
     {% for hasObjectDef in designInspector.objectify_has_objects(className, "[@instantiateUsing='configuration']") %}
       validate{{className}}Has{{hasObjectDef.get('class')}}(object);
@@ -35,11 +36,11 @@
 
 {% macro writeInnerClassValidatorFunction(className, hasObjectDef) %}
   {% set innerClassName=hasObjectDef.get('class')%}
-  bool validate{{className}}Has{{innerClassName}}(Device::D{{className}}* object)
+  bool validate{{className}}Has{{innerClassName}}(Device::D{{className}}*{{ ' object' if designInspector.class_has_device_logic(innerClassName) else '' }})
   {
     {% if designInspector.class_has_device_logic(innerClassName) %}
       const size_t size = object->{{innerClassName|lower}}s().size();
-      {% if hasObjectDef.get('minOccurs') %}
+      {% if hasObjectDef.get('minOccurs') and hasObjectDef.get('minOccurs')|int > 0 %}
         if( size < {{hasObjectDef.get('minOccurs')}} )
         {
           std::ostringstream msg;

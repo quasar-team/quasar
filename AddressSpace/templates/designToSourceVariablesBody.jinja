@@ -127,9 +127,9 @@ namespace AddressSpace
           
         }
         
-      virtual void execute ()
+      virtual void execute () override
       {
-        LOG(Log::DBG) << 
+        LOG(Log::DBG) <<
           "Executing IoJob read: className={{className}} varName={{sv.get('name')}} " <<
           " hTransaction:" << m_hTransaction << 
           " cbkhandle " << m_callbackHandle;
@@ -162,12 +162,12 @@ namespace AddressSpace
         LOG(Log::DBG) << "After finishRead status:" << s.toString().toUtf8();
       }
 
-      virtual std::string describe() const
+      virtual std::string describe() const override
       {
         return std::string("read sourcevariable {{sv.get('name')}} of object ") + m_parentObjectNode->nodeId().toString().toUtf8();
       }
 
-      virtual std::mutex* associatedMutex() const
+      virtual std::mutex* associatedMutex() const override
       {
         return m_mutex;
       }
@@ -231,7 +231,7 @@ namespace AddressSpace
           {% endif %}
         }
         
-        virtual void execute ()
+        virtual void execute () override
         {
           LOG(Log::DBG) << "Executing IoJob write: className={{className}} varName={{sv.get('name')}} " <<
             "hTransaction:" << m_hTransaction <<
@@ -283,12 +283,12 @@ namespace AddressSpace
           LOG(Log::TRC) << "After finishWrite status:" << s.toString().toUtf8();
         }
         
-        virtual std::string describe() const
+        virtual std::string describe() const override
         {
           return std::string("write sourcevariable {{sv.get('name')}} of object ") + m_parentObjectNode->nodeId().toString().toUtf8();
         }
 
-        virtual std::mutex* associatedMutex() const
+        virtual std::mutex* associatedMutex() const override
         {
           return m_mutex;
         }
@@ -308,12 +308,18 @@ namespace AddressSpace
   
 {% endfor %}
 
-UaStatus SourceVariables_spawnIoJobRead (		
+{% set nsReadJob = namespace(used=false) %}
+{% for cls in designInspector.get_names_of_all_classes() %}
+  {% for sv in designInspector.objectify_class(cls).sourcevariable %}
+    {% if sv.get('addressSpaceRead') in ('asynchronous', 'synchronous') and designInspector.class_has_device_logic(cls) %}{% set nsReadJob.used = true %}{% endif %}
+  {% endfor %}
+{% endfor %}
+UaStatus SourceVariables_spawnIoJobRead (
   ASSourceVariableJobId jobId,
-  IOManagerCallback *callback,
-  OpcUa_UInt32 hTransaction,
-  OpcUa_UInt32        callbackHandle,
-  const UaNode *parentNode
+  IOManagerCallback *{{ 'callback' if nsReadJob.used else '' }},
+  OpcUa_UInt32 {{ 'hTransaction' if nsReadJob.used else '' }},
+  OpcUa_UInt32        {{ 'callbackHandle' if nsReadJob.used else '' }},
+  const UaNode *{{ 'parentNode' if nsReadJob.used else '' }}
 )
 {
   if (! sourceVariableThreads)
@@ -389,13 +395,19 @@ UaStatus SourceVariables_spawnIoJobRead (
 
 }
 
-UaStatus SourceVariables_spawnIoJobWrite (		
+{% set nsWriteJob = namespace(used=false) %}
+{% for cls in designInspector.get_names_of_all_classes() %}
+  {% for sv in designInspector.objectify_class(cls).sourcevariable %}
+    {% if sv.get('addressSpaceWrite') in ('asynchronous', 'synchronous') and designInspector.class_has_device_logic(cls) %}{% set nsWriteJob.used = true %}{% endif %}
+  {% endfor %}
+{% endfor %}
+UaStatus SourceVariables_spawnIoJobWrite (
   ASSourceVariableJobId jobId,
-  IOManagerCallback *callback,
-  OpcUa_UInt32 hTransaction,
-  OpcUa_UInt32        callbackHandle,
-  const UaNode *parentNode,
-  OpcUa_WriteValue*   pWriteValue
+  IOManagerCallback *{{ 'callback' if nsWriteJob.used else '' }},
+  OpcUa_UInt32 {{ 'hTransaction' if nsWriteJob.used else '' }},
+  OpcUa_UInt32        {{ 'callbackHandle' if nsWriteJob.used else '' }},
+  const UaNode *{{ 'parentNode' if nsWriteJob.used else '' }},
+  OpcUa_WriteValue*   {{ 'pWriteValue' if nsWriteJob.used else '' }}
 )
 {
   if (! sourceVariableThreads)

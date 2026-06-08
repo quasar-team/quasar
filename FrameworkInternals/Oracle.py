@@ -199,7 +199,8 @@ class Oracle():
             return f'{quasar_data_type} value, OpcUa_StatusCode statusCode, {source_time_stamp}'
         elif quasar_data_type is None:  # formerly null
             if new_style_null:
-                return f'QuasarNullDataType null, OpcUa_StatusCode statusCode, {source_time_stamp}'
+                null_arg = 'QuasarNullDataType null' if for_header else 'QuasarNullDataType'
+                return f'{null_arg}, OpcUa_StatusCode statusCode, {source_time_stamp}'
             else: # this branch to be removed in one of next releases, TODO.
                 return f'OpcUa_StatusCode statusCode, {source_time_stamp}'
         else:
@@ -223,9 +224,10 @@ class Oracle():
             source_time_stamp += '= UaDateTime::now()'
         if quasar_data_type is None:
             if new_style_null:
-                return ('set{0}( QuasarNullDataType null, '
-                        'OpcUa_StatusCode statusCode, {1})').format(
-                            cap_first(name), source_time_stamp)
+                null_arg = 'QuasarNullDataType null' if for_header else 'QuasarNullDataType'
+                return ('set{0}( {1}, '
+                        'OpcUa_StatusCode statusCode, {2})').format(
+                            cap_first(name), null_arg, source_time_stamp)
             else:
                 return 'setNull{0}( OpcUa_StatusCode statusCode, {1})'.format(
                     cap_first(name),
@@ -244,8 +246,8 @@ class Oracle():
         if where == 'body':
             output += "AS" + class_name + "::"
         initializer = ' = OpcUa_True' if where == 'header' else ''
-        output += ('write{0}( Session* pSession, const UaDataValue& dataValue,'
-                   ' OpcUa_Boolean checkAccessLevel{1} )').format(
+        output += ('write{0}( Session*, const UaDataValue& dataValue,'
+                   ' OpcUa_Boolean{1} )').format(
                        cap_first(name), initializer)
         return output
 

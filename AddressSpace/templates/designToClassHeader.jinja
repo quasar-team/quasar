@@ -129,7 +129,7 @@ namespace AddressSpace
   {% endif %}
 
   /* OPC UA Type Information provider for this class. */
-  virtual UaNodeId typeDefinitionId () const { return m_typeNodeId; }
+  virtual UaNodeId typeDefinitionId () const override { return m_typeNodeId; }
 
   {% if this.method|length >= 1 %}
     /* Call handler defined because at least one method is declared */
@@ -139,7 +139,7 @@ namespace AddressSpace
         OpcUa_UInt32              callbackHandle,
         MethodHandle*             pMethodHandle,
         const UaVariantArray&     inputArguments
-    );
+    ) override;
   {% endif %}
 
   /* Access to custom mutices for async ops of source variables and methods, if chosen by design */

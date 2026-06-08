@@ -32,6 +32,9 @@ namespace AddressSpace
 
 void ASInformationModel::createNodesOfTypes (ASNodeManager *nm)
 {
+#ifdef BACKEND_OPEN62541
+  (void) nm;
+#endif
 #ifndef BACKEND_OPEN62541  // TODO: @pnikiel: we actually could make it work for open62541 as well!
   {% if designInspector.get_names_of_all_classes() %}
     UaObjectTypeSimple * type;
