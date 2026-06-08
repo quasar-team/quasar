@@ -523,7 +523,7 @@ UaStatus BaseQuasarServer::configurationInitializerHandler(const std::string& co
     return OpcUa_Good;
 }
 
-void BaseQuasarServer::appendCustomCommandLineOptions(options_description& commandLineOptions,
-        positional_options_description& positionalOptionsDescription)
+void BaseQuasarServer::appendCustomCommandLineOptions(options_description&,
+        positional_options_description&)
 {
 }

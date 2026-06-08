@@ -52,7 +52,7 @@ public:
     UaStatus startUp(ServerManager*) override {return OpcUa_Good;}
     UaStatus shutDown() override {return OpcUa_Good;}
     Session* createSession(OpcUa_Int32 sessionID, const UaNodeId &authenticationToken) override { return new Session(sessionID, authenticationToken); }
-    UaStatus logonSessionUser(Session* pSession, UaUserIdentityToken* pUserIdentityToken) override { return OpcUa_Bad; }
+    UaStatus logonSessionUser(Session*, UaUserIdentityToken*) override { return OpcUa_Bad; }
 
 };
 
