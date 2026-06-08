@@ -16,6 +16,30 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">2.0.2<font size="-1"><br>(08-Jun-2026)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>Compiler-warning cleanup for gcc16 / C++26 <code>-Wextra</code> builds, with no behavioural change. Adds <code>override</code> to the overriding virtuals in the Server module; removes two stray semicolons; and, in the generated <code>Base_D&lt;Class&gt;</code> "not overridden" default implementations, omits the names of the unused parameters (the constructor <code>config</code> for classes without key entries, and <code>value</code>/<code>v</code> in the source- and cache-variable defaults) &mdash; portable to every C++ standard, unlike the C++17 <code>[[maybe_unused]]</code>.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>(none)</td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Improvement
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3373'>OPCUA-3373</a>] - Silence -Wextra-semi and -Wsuggest-override in the Server module</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3374'>OPCUA-3374</a>] - Silence -Wunused-parameter in generated Base_D default implementations</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3375'>OPCUA-3375</a>] - Silence remaining -Wunused-parameter in Server-module stubs</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar warning-cleanup notes:<br>
+                    <ol>
+                        <li>Validated by a before/after compiler-warning diff in the gcc16/Alma9 CI image (AtcaOpcUa build): all targeted warnings eliminated, none introduced.</li>
+                        <li>Regenerated Base_D code byte-identical to baseline except the dropped parameter names; keyed-class path verified separately.</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">2.0.1<font size="-1"><br>(04-Jun-2026)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>This hotfix release addresses issues raised in the v2.0.0 review: the CMake minimum is lowered to 3.16 (3.26 blocked older systems), code generation writes files only when their content changes (no spurious rebuilds), and <code>device_report</code> now detects delegates silently unbound by a design data-type drift, across cache-variable, source-variable and method delegates.</td>
