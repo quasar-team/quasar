@@ -50,7 +50,7 @@ void QuasarUaTraceHook::traceOutput(UaTrace::TraceLevel traceLevel, const char *
         break;
     }
 
-};
+}
 
 inline void QuasarUaTraceHook::logMessage(const std::string & traceLevel, int nModule, const char * sContent)
 {

@@ -34,16 +34,16 @@ public:
     QuasarServer();
     virtual ~QuasarServer();
     //Main loop of the application logic.
-    virtual void mainLoop();
+    virtual void mainLoop() override;
     //Method for initialising LogIt. Can be overided for a specific implementation, but a default initialization is already provided.
-    virtual void initializeLogIt();
+    virtual void initializeLogIt() override;
     /*
      * Method for initialising Custom Modules, to be overwritten by the final user
      * return: When the return is 0, the execution will continue normally. When the return is different than 0 it will exit the server execution.
      */
-    virtual void initialize();
+    virtual void initialize() override;
     //Method for deinitialising Custom Modules, to be overwritten by the final user
-    virtual void shutdown();
+    virtual void shutdown() override;
 private:
     //Disable copy-constructor and assignment-operator
     QuasarServer( const QuasarServer& server );

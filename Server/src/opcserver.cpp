@@ -46,13 +46,13 @@ public:
                 sXmlFileName,
                 sApplicationPath,
                 sApplicationPath,
-                sApplicationPath) {};
+                sApplicationPath) {}
     virtual ~TrivialServerConfigXml() {}
-    UaStatus afterLoadConfiguration(){return OpcUa_Good;}
-    UaStatus startUp(ServerManager*){return OpcUa_Good;}
-    UaStatus shutDown(){return OpcUa_Good;}
-    Session* createSession(OpcUa_Int32 sessionID, const UaNodeId &authenticationToken) { return new Session(sessionID, authenticationToken); }
-    UaStatus logonSessionUser(Session* pSession, UaUserIdentityToken* pUserIdentityToken) { return OpcUa_Bad; }
+    UaStatus afterLoadConfiguration() override {return OpcUa_Good;}
+    UaStatus startUp(ServerManager*) override {return OpcUa_Good;}
+    UaStatus shutDown() override {return OpcUa_Good;}
+    Session* createSession(OpcUa_Int32 sessionID, const UaNodeId &authenticationToken) override { return new Session(sessionID, authenticationToken); }
+    UaStatus logonSessionUser(Session* pSession, UaUserIdentityToken* pUserIdentityToken) override { return OpcUa_Bad; }
 
 };
 
