@@ -461,7 +461,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "7394709c254352f537d1aeeb845430e3",
+                "md5": "363b3995e804a4d792a30cca6fe3b6fc",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -542,11 +542,11 @@
         },
         "files": {
             "commonDeviceTemplates.jinja": {
-                "md5": "af1bbd2e62ea6a5036090a5d8cd20202",
+                "md5": "a880094e8b3b460407fd75dacdc342af",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBaseBody.jinja": {
-                "md5": "38d00e315b02e5a442f384600af89cad",
+                "md5": "5410f43295f52043bcc29e8e95fb03b2",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBaseHeader.jinja": {
@@ -751,7 +751,7 @@
             },
             "parser_module.py": {
                 "install": "overwrite",
-                "md5": "5f30fcce2c401db130df899b04aef887",
+                "md5": "a82d97f85ca720549fb49d75e949c35e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1207,7 +1207,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "ea21899d751899bc1cc4bb41673f7a35",
+                "md5": "16e52d84befcdd64847caa3bd84c6df2",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1248,7 +1248,7 @@
         "files": {
             "BaseQuasarServer.cpp": {
                 "install": "overwrite",
-                "md5": "51918cb91832b88a303fda50b84d5caa",
+                "md5": "51d1550a5869201b844d8b6dacbdbe22",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1262,7 +1262,7 @@
             },
             "QuasarUaTraceHook.cpp": {
                 "install": "overwrite",
-                "md5": "260b59c9bd5141c1223ef706bd946704",
+                "md5": "9b1950325d24c76a97e5e20ff4057804",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1273,7 +1273,7 @@
             },
             "opcserver.cpp": {
                 "install": "overwrite",
-                "md5": "db9f0cf71c3d68dba47988e974826821",
+                "md5": "50e6243df2c673227b4ac3171b1c4f66",
                 "must_be_versioned": true,
                 "must_exist": true
             },
