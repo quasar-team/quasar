@@ -16,6 +16,30 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">2.0.3<font size="-1"><br>(08-Jun-2026)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>A framework-wide compiler-warning cleanup for gcc16 / C++26 <code>-Wextra</code> builds, extending the 2.0.2 Server-module pass to the rest of the framework, with no behavioural change. Third-party and tool-generated includes are scoped as <code>SYSTEM</code>; the remaining warnings are silenced in both hand-written and generated code. Portable across C++ standards and both OPC UA backends.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>(none)</td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Improvement
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3376'>OPCUA-3376</a>] - Scope third-party and tool-generated includes/sources to silence their warnings</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3377'>OPCUA-3377</a>] - Silence -Wsuggest-override, -Wextra-semi and -Wunused-parameter in hand-written framework C++</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3378'>OPCUA-3378</a>] - Silence -Wunused-parameter, -Wsuggest-override and -Wignored-qualifiers in generated code</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar dual-backend warning-cleanup notes:<br>
+                    <ol>
+                        <li>Validated by before/after compiler-warning diffs in the gcc16/Alma9 CI image across four servers and the test_methods case: 0 warnings, none introduced.</li>
+                        <li>Verified under both backends, UASDK (C++26) and open62541 (C++11).</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">2.0.2<font size="-1"><br>(08-Jun-2026)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>Compiler-warning cleanup for gcc16 / C++26 <code>-Wextra</code> builds, with no behavioural change. Adds <code>override</code> to the overriding virtuals in the Server module; removes two stray semicolons; and, in the generated <code>Base_D&lt;Class&gt;</code> "not overridden" default implementations, omits the names of the unused parameters (the constructor <code>config</code> for classes without key entries, and <code>value</code>/<code>v</code> in the source- and cache-variable defaults) &mdash; portable to every C++ standard, unlike the C++17 <code>[[maybe_unused]]</code>.</td>
