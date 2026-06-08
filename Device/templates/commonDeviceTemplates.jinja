@@ -92,24 +92,24 @@
 {# These ensure Base_D and D templates generate matching method signatures.    #}
 {# ============================================================================ #}
 
-{% macro writeCacheVarSig(cv, qualifier='') -%}
+{% macro writeCacheVarSig(cv, qualifier='', defaultImpl=false) -%}
   {%- if cv.array|length > 0 -%}
-UaStatus {{qualifier}}write{{cv.get('name')|capFirst}} ( const std::vector<{{cv.get('dataType')}}>& v)
+UaStatus {{qualifier}}write{{cv.get('name')|capFirst}} ( const std::vector<{{cv.get('dataType')}}>&{{ '' if defaultImpl else ' v' }})
   {%- else -%}
-UaStatus {{qualifier}}write{{cv.get('name')|capFirst}} ( const {{cv.get('dataType')}}& v)
+UaStatus {{qualifier}}write{{cv.get('name')|capFirst}} ( const {{cv.get('dataType')}}&{{ '' if defaultImpl else ' v' }})
   {%- endif -%}
 {%- endmacro %}
 
-{% macro readSourceVarSig(sv, qualifier='') -%}
+{% macro readSourceVarSig(sv, qualifier='', defaultImpl=false) -%}
 UaStatus {{qualifier}}read{{sv.get('name')|capFirst}} (
-    {{sv.get('dataType')}}& value,
+    {{sv.get('dataType')}}&{{ '' if defaultImpl else ' value' }},
     UaDateTime& sourceTime
   )
 {%- endmacro %}
 
-{% macro writeSourceVarSig(sv, qualifier='') -%}
+{% macro writeSourceVarSig(sv, qualifier='', defaultImpl=false) -%}
 UaStatus {{qualifier}}write{{sv.get('name')|capFirst}} (
-    {{sv.get('dataType')}}& value
+    {{sv.get('dataType')}}&{{ '' if defaultImpl else ' value' }}
   )
 {%- endmacro %}
 

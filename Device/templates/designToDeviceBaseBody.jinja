@@ -39,10 +39,11 @@ namespace Device
 
 {% for className in designInspector.get_names_of_all_classes(only_with_device_logic=True) %}
 {% set this = designInspector.objectify_class(className) %}
+{% set ctorUsesConfig = designInspector.objectify_config_entries(className, "[@isKey='true' or @storedInDeviceObject='true']")|length > 0 %}
 
 // ctr
 Base_D{{className}}::Base_D{{className}} (
-  const Configuration::{{className}}& config,
+  const Configuration::{{className}}&{{ ' config' if ctorUsesConfig else '' }},
   Parent_D{{className}}* parent
 ):
   m_parent(parent),
@@ -103,7 +104,7 @@ unsigned int Base_D{{className}}::unlinkAllChildren ()
 /* Default device-logic implementations -- override in D{{className}} */
 {% set q = 'Base_D' + className + '::' %}
 {% for cv in designInspector.objectify_cache_variables(className, "[@addressSpaceWrite='delegated']") %}
-{{ commonDeviceTemplates.writeCacheVarSig(cv, q) }}
+{{ commonDeviceTemplates.writeCacheVarSig(cv, q, defaultImpl=true) }}
 {
     LOG(Log::WRN) << "write{{cv.get('name')|capFirst}} not overridden in device class of " << getFullName();
     return OpcUa_BadNotImplemented;
@@ -112,7 +113,7 @@ unsigned int Base_D{{className}}::unlinkAllChildren ()
 
 {% for sv in designInspector.objectify_source_variables(className) %}
   {% if sv.get('addressSpaceRead') == 'asynchronous' or sv.get('addressSpaceRead') == 'synchronous' %}
-{{ commonDeviceTemplates.readSourceVarSig(sv, q) }}
+{{ commonDeviceTemplates.readSourceVarSig(sv, q, defaultImpl=true) }}
 {
     sourceTime = UaDateTime::now();
     LOG(Log::WRN) << "read{{sv.get('name')|capFirst}} not overridden in device class of " << getFullName();
@@ -120,7 +121,7 @@ unsigned int Base_D{{className}}::unlinkAllChildren ()
 }
   {% endif %}
   {% if sv.get('addressSpaceWrite') == 'asynchronous' or sv.get('addressSpaceWrite') == 'synchronous' %}
-{{ commonDeviceTemplates.writeSourceVarSig(sv, q) }}
+{{ commonDeviceTemplates.writeSourceVarSig(sv, q, defaultImpl=true) }}
 {
     LOG(Log::WRN) << "write{{sv.get('name')|capFirst}} not overridden in device class of " << getFullName();
     return OpcUa_BadNotImplemented;
