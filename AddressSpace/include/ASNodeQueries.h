@@ -196,7 +196,7 @@ namespace AddressSpace
         {
             ABORT_MESSAGE(CONCAT3(" REGEX Expression is wrong:",pattern,e.what()));
         }
-        int numReferenced = findAllByRegex<T> (nm, nm->getObjectsFolderNode(), OpcUa_NodeClass_Object, expression, storage);
+        int numReferenced = static_cast<int>(findAllByRegex<T> (nm, nm->getObjectsFolderNode(), OpcUa_NodeClass_Object, expression, storage));
         int numUnreferenced = 0;
         auto& unreferencedNodes = nm->getUnreferencedNodes();
         for (auto it = unreferencedNodes.begin(); it!=unreferencedNodes.end(); it++)
@@ -222,7 +222,7 @@ namespace AddressSpace
                 }
             }
         }
-        return numReferenced + numUnreferenced;
+        return static_cast<unsigned int>(numReferenced + numUnreferenced);
 
     }
 

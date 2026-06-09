@@ -225,7 +225,7 @@ std::string CalculatedVariables::Engine::elaborateFormula (
                 match_results<std::string::iterator> myMatchResults;
                 if (!regex_match(argument, myMatchResults, argumentFormat))
                     LOG_AND_THROW_ERROR(thisFormulaAddress, "Argument did not fit the expected syntax, for example: $parentObjectAddress(numLevelsUp=2)");
-                unsigned int numLevelsUp = std::stoi(myMatchResults[1]);
+                unsigned int numLevelsUp = static_cast<unsigned int>(std::stoi(myMatchResults[1]));
                 LOG(Log::TRC, logComponentId) << "Before expanding parentObjectAddress, formulaInWork=" << formulaInWork << ", levels=" << numLevelsUp;
                 formulaInWork.replace(
                       /*from*/ matched[0].first,

@@ -133,7 +133,7 @@ UaStatus ASNodeManager::beforeShutDown()
 			if ((parent.namespaceIndex()==0) && (parent.identifierNumeric()==OpcUaId_ObjectsFolder))
 			{
 				int ns = this->getNameSpaceIndex();
-			    return UaNodeId (childName, ns);
+			    return UaNodeId (childName, static_cast<OpcUa_UInt16>(ns));
 			}
 			else
 				throw std::runtime_error ("CASUtils::makeChildNodeId: numeric identifier which can't have children.");

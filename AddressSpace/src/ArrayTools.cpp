@@ -34,7 +34,7 @@ template<typename Type, typename ArrayType>
 static void vectorToUaVariant( const std::vector<Type>& input, UaVariant& output, void (UaVariant::*setterFunction)(ArrayType& array, OpcUa_Boolean detach) )
 {
     ArrayType array;
-    array.create( input.size() );
+    array.create( static_cast<OpcUa_UInt32>(input.size()) );
     for (unsigned int i=0; i<input.size(); ++i)
         array[i] = input[i];
     (output.*setterFunction)(array, /*detach*/ OpcUa_False); // TODO @pnikiel: one day we should switch to detach=true, after testing...
@@ -45,7 +45,7 @@ template<typename Type, typename ArrayType>
 static void vectorToUaVariantByCopyTo( const std::vector<Type>& input, UaVariant& output, void (UaVariant::*setterFunction)(ArrayType& array, OpcUa_Boolean detach) )
 {
     ArrayType array;
-    array.create( input.size() );
+    array.create( static_cast<OpcUa_UInt32>(input.size()) );
     for (unsigned int i=0; i<input.size(); ++i)
         input[i].copyTo(&array[i]);
     (output.*setterFunction)(array, /*detach*/ OpcUa_False); // TODO @pnikiel: one day we should switch to detach=true, after testing...
@@ -61,7 +61,7 @@ void convertByteVectorToUaVariant( const std::vector <OpcUa_Byte>& input, UaVari
     UaByteArray array;
     if (input.size() > 0)
     {
-        array = UaByteArray( reinterpret_cast<const char*>(&input[0]), input.size() );
+        array = UaByteArray( reinterpret_cast<const char*>(&input[0]), static_cast<int>(input.size()) );
     }
     output.setByteArray(array, /*detach*/ OpcUa_False);
 }
@@ -150,7 +150,7 @@ UaStatus convertUaVariantToByteVector( const UaVariant& input, std::vector <OpcU
     UaStatus status = input.toByteArray(array);
     if (!status.isGood())
         return status;
-    output.assign( array.size(), 0);
+    output.assign( static_cast<std::vector<OpcUa_Byte>::size_type>(array.size()), 0);
     std::copy( array.data(), array.data()+array.size(), output.begin());
     return OpcUa_Good;
 }

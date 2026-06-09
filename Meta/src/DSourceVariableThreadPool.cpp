@@ -64,7 +64,7 @@ DSourceVariableThreadPool::DSourceVariableThreadPool (
         const std::string minThreads = config.minThreads();
         const std::string maxThreads = config.maxThreads();
         LOG(Log::INF) << __FUNCTION__ << " starting source variable thread pool with min threads ["<<minThreads<<"] max threads ["<<maxThreads<<"]";
-        AddressSpace::SourceVariables_initSourceVariablesThreadPool (std::stoi(minThreads), std::stoi(maxThreads));
+        AddressSpace::SourceVariables_initSourceVariablesThreadPool (static_cast<unsigned int>(std::stoi(minThreads)), static_cast<unsigned int>(std::stoi(maxThreads)));
     }
     catch(const std::exception& e)
     {

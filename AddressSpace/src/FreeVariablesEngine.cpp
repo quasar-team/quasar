@@ -92,7 +92,7 @@ static T veryIntelligentWrapperOfConversionFunctionWithRangeCheck (
         throw_runtime_error_with_origin("didn't manage to convert full literal '" + str + "' into a number of chosen type, garbage somewhere?");
     if (convertedNumber < rangeMin || convertedNumber > rangeMax)
         throw_runtime_error_with_origin("value '" + str + "' out of allowed range '" + std::to_string(rangeMin) + "," + std::to_string(rangeMax) + "'");
-    return convertedNumber;
+    return static_cast<T>(convertedNumber);
 
 }
 
