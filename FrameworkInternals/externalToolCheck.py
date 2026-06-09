@@ -72,6 +72,9 @@ def checkCMake():
 def checkCompiler():
     if platform.system() == "Linux":
         checkExecutableExists('make', 'Please, install the package make using the package manager of your distribution.')
+        compilerSetting = os.environ.get('CXX') or os.environ.get('CC') or ''
+        if 'clang' in os.path.basename(compilerSetting):
+            return checkExecutableExists('clang', 'Please, install the package clang using the package manager of your distribution.', '--help')
         return checkExecutableExists('gcc', 'Please, install the package gcc using the package manager of your distribution.', '--help')
 
 def checkXMLLint():
