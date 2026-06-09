@@ -167,12 +167,12 @@ UaStatus ThreadPool::addJob (const std::function<void()>& functor, const std::st
     {
     public:
         StdFunctionJob (
-                const std::function<void()>& functor,
-                const std::string& description,
-                std::mutex* mutex = nullptr) :
-                    m_functor(functor),
-                    m_description(description),
-                    m_mutex(mutex) {}
+                const std::function<void()>& jobFunctor,
+                const std::string& jobDescription,
+                std::mutex* jobMutex = nullptr) :
+                    m_functor(jobFunctor),
+                    m_description(jobDescription),
+                    m_mutex(jobMutex) {}
         virtual void execute() override { m_functor(); }
         virtual std::string describe() const override { return m_description; }
         virtual std::mutex* associatedMutex() const override { return m_mutex; }
