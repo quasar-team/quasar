@@ -60,6 +60,9 @@ public:
 		delete m_ioManager;
 	}
 
+	ASSourceVariable (const ASSourceVariable&) = delete;
+	ASSourceVariable& operator= (const ASSourceVariable&) = delete;
+
 	IOManager* getIOManager () const { return m_ioManager; }
 
 
