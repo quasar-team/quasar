@@ -1,0 +1,35 @@
+---
+# Narrow starter config for quasar. Expand once the baseline is clean.
+# Run locally via: .CI/run_clang_tidy.py
+#
+# Checks picked to be high-signal and low-false-positive on a pre-C++11-flavoured
+# codebase that predates the `override` keyword. Disable anything that fights
+# legitimate framework patterns (swappable parameters, narrow integer casts in
+# OPC-UA integer-width glue, etc.).
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-narrowing-conversions,
+  -bugprone-implicit-widening-of-multiplication-result,
+  modernize-use-override,
+  modernize-use-nullptr,
+  modernize-use-equals-default,
+  modernize-use-equals-delete,
+  modernize-use-bool-literals,
+  performance-unnecessary-copy-initialization,
+  performance-for-range-copy,
+  performance-move-const-arg,
+  performance-noexcept-move-constructor,
+  readability-redundant-member-init,
+  readability-redundant-control-flow,
+  readability-redundant-string-init,
+  readability-redundant-declaration
+
+WarningsAsErrors: ''
+
+# Only analyse headers inside the hand-written modules. Generated code lives
+# under build/ so it's implicitly skipped by the runner's TU filter.
+HeaderFilterRegex: '/(Server|AddressSpace|Common|Meta|Device|CalculatedVariables)/(include|src)/'
+
+FormatStyle: none

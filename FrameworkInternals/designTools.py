@@ -42,7 +42,7 @@ def validateDesign(context):
 def formatXml(inFileName, outFileName):
     if platform.system() == "Windows":
         subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), inFileName], outFileName, getCommand("xmllint"))
-    elif platform.system() == "Linux":
+    else:
         subprocessWithImprovedErrorsPipeOutputToFile([getCommand("xmllint"), "--format", inFileName], outFileName, getCommand("xmllint"))
 
 def formatDesign():

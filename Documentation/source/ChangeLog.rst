@@ -16,6 +16,28 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">2.1.0<font size="-1"><br>(TBD)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>Build-portability hardening for clang/clang++ and glibc-free (musl/Alpine) toolchains: clang is registered as a recognized compiler and honoured via <code>CC</code>/<code>CXX</code>, <code>-lrt</code> is only linked on Linux for both backends, and the clang <code>-Wundef</code> and <code>-Wstrict-prototypes</code> diagnostics from the framework's own sources are resolved. Several Python and C++ paths that assumed only Windows or Linux now also cover macOS/Darwin and other POSIX platforms. Adds an optional, manually-triggered clang-tidy CI workflow. No behavioural change.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>(none)</td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Task
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3341'>OPCUA-3341</a>] - Harden quasar build for clang and glibc-free toolchains</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar build-portability notes:<br>
+                    <ol>
+                        <li>Verified on a real clang-only (gcc-less) host: <code>CC=clang CXX=clang++</code> passes external_tool_check; under clang 21 the framework's own code shows zero -Wundef and zero -Wstrict-prototypes.</li>
+                        <li>On a musl/Alpine toolchain the nproc, -lrt and pedantic-warning fixes hold; the CPU-count path works with the coreutils <code>nproc</code> binary absent.</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">2.0.3<font size="-1"><br>(08-Jun-2026)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>A framework-wide compiler-warning cleanup for gcc16 / C++26 <code>-Wextra</code> builds, extending the 2.0.2 Server-module pass to the rest of the framework, with no behavioural change. Third-party and tool-generated includes are scoped as <code>SYSTEM</code>; the remaining warnings are silenced in both hand-written and generated code. Portable across C++ standards and both OPC UA backends.</td>
