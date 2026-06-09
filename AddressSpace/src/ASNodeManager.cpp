@@ -163,7 +163,7 @@ UaStatus ASNodeManager::beforeShutDown()
 		  if ( attributeId==OpcUa_Attributes_Value)
 		  {
 			  ASSourceVariable *sv = dynamic_cast<ASSourceVariable*>(pUaNode);
-			  if (sv == pUaNode)
+			  if (sv)
 			  {
 				  return sv->getIOManager();
 			  }
