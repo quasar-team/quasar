@@ -313,7 +313,7 @@ bool configure (std::string fileName, AddressSpace::ASNodeManager *nm, ConfigXml
 
 void unlinkAllDevices (AddressSpace::ASNodeManager *nm)
 {
-  unsigned int totalObjectsNumber = 0;
+  size_t totalObjectsNumber = 0;
   {% for className in designInspector.get_names_of_all_classes() %}
     {% if designInspector.class_has_device_logic(className) %}
       {
