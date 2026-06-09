@@ -145,11 +145,7 @@ foreach(module ${SERVER_MODULES})
     set(MODULE_INCLUDES ${MODULE_INCLUDES} ${PROJECT_SOURCE_DIR}/${module}/include ${PROJECT_BINARY_DIR}/${module}/include ${SUBMODULE_INCLUDES})
 endforeach(module)
 foreach(include ${MODULE_INCLUDES})
-    if(include STREQUAL "${PROJECT_SOURCE_DIR}/LogIt/include")
-        include_directories(SYSTEM ${include})
-    else()
-        include_directories(${include})
-    endif()
+    include_directories(${include})
 endforeach(include)
 
 # add all module directories and add module objects
