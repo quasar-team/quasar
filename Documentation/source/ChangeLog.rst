@@ -16,20 +16,30 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
-                <td valign="top">2.1.0<font size="-1"><br>(TBD)</font><br></td>
+                <td valign="top">2.1.0<font size="-1"><br>(09-Jun-2026)</font><br></td>
                 <!-- Changes introduced -->
-                <td valign="top"><br>Build-portability hardening for clang/clang++ and glibc-free (musl/Alpine) toolchains: clang is registered as a recognized compiler and honoured via <code>CC</code>/<code>CXX</code>, <code>-lrt</code> is only linked on Linux for both backends, and the clang <code>-Wundef</code> and <code>-Wstrict-prototypes</code> diagnostics from the framework's own sources are resolved. Several Python and C++ paths that assumed only Windows or Linux now also cover macOS/Darwin and other POSIX platforms. Adds an optional, manually-triggered clang-tidy CI workflow. No behavioural change.</td>
+                <td valign="top"><br>The open62541 backend reaches feature parity with the Unified Automation one: source variables and asynchronous methods are now generated for open62541 too, both executing synchronously inline (no thread pool; the <code>addressSpace*UseMutex</code> lock modes are not applied). Together with open62541-compat v1.4.7 (pin bumped here), method <code>InputArguments</code>/<code>OutputArguments</code> properties carry the canonical quasar node ids, which makes the o6 methods NodeSet comparison pass. Additionally, build-portability hardening for clang/clang++ and glibc-free (musl/Alpine) toolchains: clang is registered as a recognized compiler and honoured via <code>CC</code>/<code>CXX</code>, <code>-lrt</code> is only linked on Linux for both backends, and the clang <code>-Wundef</code> and <code>-Wstrict-prototypes</code> diagnostics from the framework's own sources are resolved. Several Python and C++ paths that assumed only Windows or Linux now also cover macOS/Darwin and other POSIX platforms. Adds an optional, manually-triggered clang-tidy CI workflow plus o6_source_variables, o6_async_methods and clang CI jobs. UASDK generated code is unchanged.</td>
                 <!-- Possible backward incompatibilities -->
                 <td valign="top"><br>(none)</td>
                 <!-- JIRA Release notes -->
                 <td valign="top">
+                    New Feature
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3385'>OPCUA-3385</a>] - Implement source variables for the open62541 backend</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3387'>OPCUA-3387</a>] - Implement asynchronous methods for the open62541 backend</li>
+                    </ul>
                     Task
                     <ul>
                         <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3341'>OPCUA-3341</a>] - Harden quasar build for clang and glibc-free toolchains</li>
                     </ul>
+                    Bug
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3384'>OPCUA-3384</a>] - open62541-compat: amalgamation -Werror breaks clang 21 builds</li>
+                    </ul>
                 </td>
-                <td valign="top">quasar build-portability notes:<br>
+                <td valign="top">quasar 2.1.0 notes:<br>
                     <ol>
+                        <li>open62541 feature gates: the official test_methods, test_async_methods and test_source_variables NodeSet comparisons pass under o6; live UA-client round-trips verified (source-variable write/read, asynchronous method call); UASDK generated code byte-identical.</li>
                         <li>Verified on a real clang-only (gcc-less) host: <code>CC=clang CXX=clang++</code> passes external_tool_check; under clang 21 the framework's own code shows zero -Wundef and zero -Wstrict-prototypes.</li>
                         <li>On a musl/Alpine toolchain the nproc, -lrt and pedantic-warning fixes hold; the CPU-count path works with the coreutils <code>nproc</code> binary absent.</li>
                     </ol>
