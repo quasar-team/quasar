@@ -1,0 +1,68 @@
+name: clang-tidy (manual)
+
+# Advisory static analysis. Not wired into push / pull_request — run manually
+# from the Actions tab (or via `gh workflow run clang-tidy.yml`) when you want
+# a fresh report. The job prints findings and uploads them as an artifact; it
+# does not fail the build on findings (use --no-fail so the Actions tab stays
+# green while the baseline is not yet clean).
+on:
+  workflow_dispatch:
+    inputs:
+      open62541_compat_branch:
+        description: 'open62541-compat branch/tag'
+        required: false
+        default: 'v1.4.3-rc0'
+      filter:
+        description: 'substring filter on TU paths (optional)'
+        required: false
+        default: ''
+
+jobs:
+  clang-tidy:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/quasar-team/quasar-uasdk:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install clang-tidy
+        run: |
+          if command -v dnf >/dev/null 2>&1; then
+            dnf install -y clang-tools-extra
+          elif command -v apt-get >/dev/null 2>&1; then
+            apt-get update && apt-get install -y clang-tidy
+          else
+            echo "No known package manager; cannot install clang-tidy" >&2
+            exit 1
+          fi
+          clang-tidy --version
+
+      - name: Enable open62541-compat
+        run: ./quasar.py enable_module open62541-compat ${{ inputs.open62541_compat_branch }}
+
+      - name: Select build config
+        run: ./quasar.py set_build_config open62541_config.cmake
+
+      - name: Prepare build (emits compile_commands.json)
+        run: ./quasar.py prepare_build
+
+      - name: Run clang-tidy
+        run: |
+          if [ -n "${{ inputs.filter }}" ]; then
+            .CI/run_clang_tidy.py --no-fail --filter "${{ inputs.filter }}" | tee clang-tidy-report.txt
+          else
+            .CI/run_clang_tidy.py --no-fail | tee clang-tidy-report.txt
+          fi
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clang-tidy-report
+          path: clang-tidy-report.txt
+          retention-days: 30

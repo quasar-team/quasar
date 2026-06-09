@@ -27,6 +27,12 @@
 
 add_definitions(-Wall -Wno-deprecated)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "" FORCE)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Wno-strict-prototypes>)
+endif()
+
 # open62541-compat has no uatrace
 set (LOGIT_HAS_UATRACE FALSE)
 
@@ -48,8 +54,12 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
 # No OPC-UA Toolkit: using Open62541-compat instead. It is referenced in BACKEND_MODULES below
 add_definitions( -DBACKEND_OPEN62541 )
 SET( OPCUA_TOOLKIT_PATH "" )
-SET( OPCUA_TOOLKIT_LIBS_RELEASE -lrt -lpthread )
-SET( OPCUA_TOOLKIT_LIBS_DEBUG -lrt -lpthread )
+SET( OPCUA_TOOLKIT_LIBS_RELEASE -lpthread )
+SET( OPCUA_TOOLKIT_LIBS_DEBUG   -lpthread )
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND OPCUA_TOOLKIT_LIBS_RELEASE -lrt)
+    list(APPEND OPCUA_TOOLKIT_LIBS_DEBUG   -lrt)
+endif()
 include_directories( ${PROJECT_BINARY_DIR}/open62541-compat/extern/open62541/include )
 
 #-----

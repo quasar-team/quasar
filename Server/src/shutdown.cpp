@@ -56,7 +56,7 @@ void ShutDown()
 /****************************************
  * Linux SIGINT Handler implementation. *
  ****************************************/
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #include <signal.h>
 
 /** Signal handler for SIG_INT. */
@@ -130,7 +130,7 @@ void RegisterSignalHandler()
 {
 }
 # endif /* USE_CTRLC_ON_WINDOWS */ 
-#else /* __linux__ */
+#else /* !(__linux__ || __APPLE__) */
 /********************************************************************
  * Dummy implementation for embedded systems. They never shut down. *
  ********************************************************************/
