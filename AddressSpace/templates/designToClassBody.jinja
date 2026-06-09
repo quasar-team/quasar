@@ -862,9 +862,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           {% endfor %}
 
           {% if m.get('executionSynchronicity') == 'asynchronous' %}
-            #ifdef BACKEND_OPEN62541
-            #error asynchronous method execution is not available for open62541 backend
-            #endif
+            #ifndef BACKEND_OPEN62541
             AddressSpace::SourceVariables_getThreadPool()->addJob(
               [this,
               callbackHandle,
@@ -873,6 +871,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
                 ,arg_{{arg.get('name')}}
               {% endfor %}
               ](){
+            #endif
           {% endif %}
 
           {% for rv in m.returnvalue %}
@@ -935,6 +934,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           }
 
           {% if m.get('executionSynchronicity') == 'asynchronous' %}
+          #ifndef BACKEND_OPEN62541
           }, std::string("method call of method {{m.get('name')}} on object ")+this->nodeId().toString().toUtf8(),
           /*mutex*/
             {%- if m.get('addressSpaceCallUseMutex') == 'of_this_method' -%}
@@ -948,6 +948,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
             {% endif %}
              );
           return OpcUa_Good;
+          #endif
           {% endif %}
         }
       {% endfor %}

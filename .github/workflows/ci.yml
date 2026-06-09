@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 env:
-  OPEN62541_COMPAT_VERSION: v1.4.6
+  OPEN62541_COMPAT_VERSION: v1.4.7
 
 jobs:
 
@@ -150,6 +150,26 @@ jobs:
           --design .CI/test_cases/test_methods/Design.xml
           --generate_all_devices
           --config .CI/test_cases/test_methods/config.xml
+          --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
+
+  o6_async_methods:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/quasar-team/quasar-uasdk:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: >
+          .CI/run_test_case.py
+          --opcua_backend o6
+          --open62541_compat_branch ${{ env.OPEN62541_COMPAT_VERSION }}
+          --design .CI/test_cases/test_async_methods/Design.xml
+          --generate_all_devices
+          --config .CI/test_cases/test_async_methods/config.xml
           --compare_with_nodeset .CI/test_cases/test_methods/reference_ns2.xml
 
   o6_instantiation_from_design:
