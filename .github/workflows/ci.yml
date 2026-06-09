@@ -33,18 +33,18 @@ jobs:
   o6_clang_default_design:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/quasar-team/quasar-uasdk:latest
+      image: ghcr.io/quasar-team/quasar-uasdk:alma10
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
-      CC: clang-15
-      CXX: clang++-15
+      CC: clang
+      CXX: clang++
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - run: dnf install -y clang15
+      - run: dnf install -y clang
       - run: >
           .CI/run_test_case.py
           --opcua_backend o6
