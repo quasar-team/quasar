@@ -74,6 +74,65 @@ private:
 
 }
 
+#else
+
+#include <functional>
+#include <opcua_basedatavariabletype.h>
+
+namespace AddressSpace
+{
+
+class ASSourceVariable: public OpcUa::BaseDataVariableType
+{
+public:
+	typedef std::function<UaStatus(UaVariant&, UaDateTime&)> ReadFn;
+	typedef std::function<UaStatus(const UaVariant&)> WriteFn;
+
+	ASSourceVariable (
+			const UaNodeId&    nodeId,
+			const UaString&    name,
+			OpcUa_UInt16       browseNameNameSpaceIndex,
+			const UaVariant&   initialValue,
+			OpcUa_Byte         accessLevel,
+			NodeManagerConfig* pNodeConfig,
+			ReadFn             readFn,
+			WriteFn            writeFn,
+			UaMutexRefCounted* pSharedMutex = NULL):
+				OpcUa::BaseDataVariableType (nodeId, name, browseNameNameSpaceIndex, initialValue, accessLevel, pNodeConfig, pSharedMutex),
+				m_readFn(readFn),
+				m_writeFn(writeFn)
+			{}
+
+	virtual UaDataValue value (Session* session) override
+	{
+		if (m_readFn)
+		{
+			UaVariant variant;
+			UaDateTime sourceTime;
+			UaStatus status = m_readFn(variant, sourceTime);
+			if (status.isNotGood() || variant.isEmpty())
+				return OpcUa::BaseDataVariableType::value(session);
+			return UaDataValue(variant, status.statusCode(), sourceTime, UaDateTime::now());
+		}
+		else
+			return OpcUa::BaseDataVariableType::value(session);
+	}
+
+	virtual UaStatus setValue (Session* session, const UaDataValue& dataValue, OpcUa_Boolean checkAccessLevel) override
+	{
+		if (m_writeFn)
+			return m_writeFn(UaVariant(*dataValue.value()));
+		else
+			return OpcUa::BaseDataVariableType::setValue(session, dataValue, checkAccessLevel);
+	}
+
+private:
+	ReadFn m_readFn;
+	WriteFn m_writeFn;
+};
+
+}
+
 #endif // BACKEND_OPEN62541
 
 

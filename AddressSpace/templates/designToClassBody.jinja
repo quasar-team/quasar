@@ -299,6 +299,7 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
         variableName = fixChildNameWhenSingleNodeClass(
           "{{sv.get('name')}}",
           config.name().c_str());
+        #ifndef BACKEND_OPEN62541
         m_{{sv.get('name')}} = new ASSourceVariable(
           nm->makeChildNodeId(
             m_effectiveParentNodeIdForChildren,
@@ -312,6 +313,72 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           {{oracle.source_var_read_job_id(className, sv.get('name'), sv.get('addressSpaceRead'))}},
           {{oracle.source_var_write_job_id(className, sv.get('name'), sv.get('addressSpaceWrite'))}}
           );
+        #else
+        UaVariant {{sv.get('name')}}InitialValue;
+        {% if sv.get('dataType') == 'UaVariant' %}
+        {% elif sv.get('dataType') == 'UaByteString' %}
+        {{sv.get('name')}}InitialValue.setByteString( UaByteString(), false );
+        {% elif sv.get('dataType') == 'UaString' %}
+        {{sv.get('name')}}InitialValue.setString( UaString() );
+        {% else %}
+        {{sv.get('name')}}InitialValue.{{oracle.data_type_to_variant_setter(sv.get('dataType'))}}( ({{sv.get('dataType')}})0 );
+        {% endif %}
+        m_{{sv.get('name')}} = new ASSourceVariable(
+          nm->makeChildNodeId(
+            m_effectiveParentNodeIdForChildren,
+            variableName),
+          variableName,
+          nm->getNameSpaceIndex(),
+          {{sv.get('name')}}InitialValue,
+          {{oracle.source_var_read_access_mask(sv.get('addressSpaceRead'))}} | {{oracle.source_var_write_access_mask(sv.get('addressSpaceWrite'))}},
+          nm,
+          {% if sv.get('addressSpaceRead') == 'forbidden' %}
+          ASSourceVariable::ReadFn(),
+          {% else %}
+          [this]( UaVariant& variant, UaDateTime& sourceTime ) -> UaStatus
+          {
+            Device::D{{className}}* deviceLink = getDeviceLink();
+            if (!deviceLink)
+              return OpcUa_BadWaitingForInitialData;
+            {{sv.get('dataType')}} value;
+            UaStatus s = deviceLink->read{{sv.get('name')|capFirst}}( value, sourceTime );
+            {% if sv.get('dataType') == 'UaVariant' %}
+              variant = value;
+            {% elif sv.get('dataType') == 'UaByteString' %}
+              variant.setByteString( value, false );
+            {% else %}
+              variant.{{oracle.data_type_to_variant_setter(sv.get('dataType'))}}( value );
+            {% endif %}
+            return s;
+          },
+          {% endif %}
+          {% if sv.get('addressSpaceWrite') == 'forbidden' %}
+          ASSourceVariable::WriteFn()
+          {% else %}
+          [this]( const UaVariant& variant ) -> UaStatus
+          {
+            Device::D{{className}}* deviceLink = getDeviceLink();
+            if (!deviceLink)
+              return OpcUa_BadWaitingForInitialData;
+            {{sv.get('dataType')}} value;
+            {% if sv.get('dataType') == 'UaVariant' %}
+              value = variant;
+            {% elif sv.get('dataType') == 'UaString' %}
+              if (variant.type() != {{oracle.data_type_to_builtin_type(sv.get('dataType'))}})
+                return OpcUa_BadInvalidArgument;
+              value = variant.toString();
+            {% else %}
+              if (variant.type() != {{oracle.data_type_to_builtin_type(sv.get('dataType'))}})
+                return OpcUa_BadInvalidArgument;
+              UaStatus conversionStatus = variant.{{oracle.data_type_to_variant_converter(sv.get('dataType'))}}( value );
+              if (conversionStatus.isNotGood())
+                return conversionStatus;
+            {% endif %}
+            return deviceLink->write{{sv.get('name')|capFirst}}( value );
+          }
+          {% endif %}
+          );
+        #endif
         m_{{sv.get('name')}}->setDataType( UaNodeId( {{oracle.data_type_to_builtin_type(sv.get('dataType'))}}, 0 ));
         nm->addNodeAndReferenceThrows(
           m_effectiveParentNodeIdForChildren,
