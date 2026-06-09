@@ -13,7 +13,7 @@
             },
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "5c5a39116485b9c950d091f47eba09ad",
+                "md5": "b5cb2de5c010197dbc2195838c22ebbe",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -96,11 +96,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASNodeQueries.h": {
-                "md5": "3685c660939886fcbf928133feb32d89",
+                "md5": "c5cfcad7082c17a040cc3c560937498f",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariable.h": {
-                "md5": "5b388b71665485baa52a7537c16584b4",
+                "md5": "e40fd852b66d3911435f6f109fc21ace",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariableIoManager.h": {
@@ -131,7 +131,7 @@
         },
         "files": {
             "ASNodeManager.cpp": {
-                "md5": "4f364c638902c2f5cae8aa4686572a27",
+                "md5": "f3592a93721513e0aca05fd3ab8349ae",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariableIoManager.cpp": {
@@ -139,7 +139,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ArrayTools.cpp": {
-                "md5": "80e317b21f07dcc92e8dff0f93b19143",
+                "md5": "81f8c3d8af3a03f57db4cb8479f9e9e5",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ChangeNotifyingVariable.cpp": {
@@ -147,7 +147,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "FreeVariablesEngine.cpp": {
-                "md5": "4eaed7887d1312926c49304a2a95cc80",
+                "md5": "8be3fe5a429f557bb211b34d605ccb9e",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -166,7 +166,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "762a44d3adca20426103bdcedf6f3acf",
+                "md5": "a72769ca3dd6c4b7d24e03d94b91aa6f",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
@@ -289,7 +289,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "CalculatedVariablesEngine.cpp": {
-                "md5": "23496f5f1aebe5884a1aa99f7b336d6c",
+                "md5": "8c8e665d3cf75e3dd28d850745fd9d9f",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ParserVariable.cpp": {
@@ -350,7 +350,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.cpp": {
-                "md5": "4dd0f157ecab03736acbfc40adc48e86",
+                "md5": "792a18f69b14a361fc41584fa746e3a7",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -428,7 +428,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToConfigurator.jinja": {
-                "md5": "c300ea6f50a2c25fed54047b49f7d770",
+                "md5": "dd26747457e8dbc5a218c9df4e16cc6b",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -461,7 +461,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "2c6a89f70e1df5bf4a5cc690bd6c3307",
+                "md5": "09a233e24401bc87a41534ddc8b80a30",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -656,13 +656,13 @@
             },
             "automated_build.py": {
                 "install": "overwrite",
-                "md5": "e0471d8bba489ba81be59813f6fb81c4",
+                "md5": "68b177b69eaabcc0e3c0c799f1d81c62",
                 "must_be_versioned": true,
                 "must_exist": true
             },
             "commandMap.py": {
                 "install": "overwrite",
-                "md5": "380c5ac8148ee8f047c43df158f15b23",
+                "md5": "a6bc29df371ea7a9d5ff2c60383c45f9",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -680,7 +680,7 @@
             },
             "designTools.py": {
                 "install": "overwrite",
-                "md5": "d76ad22236408165d90a571078111f12",
+                "md5": "f582ef65d830d2004da12979876890ba",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -704,7 +704,7 @@
             },
             "externalToolCheck.py": {
                 "install": "overwrite",
-                "md5": "71d74835aeea3c2eccc688310a5b08cd",
+                "md5": "9cac27bffeb1613687d4a47f7b5d46d1",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -715,7 +715,7 @@
             },
             "generateCmake.py": {
                 "install": "overwrite",
-                "md5": "b6f21591d42e77521e4a340e31013a29",
+                "md5": "fe19ae401b091decc5685a564cad2246",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1138,7 +1138,7 @@
                 "deprecated": true
             },
             "DSourceVariableThreadPool.cpp": {
-                "md5": "8e3b161992d3f50b71cc1cc28a7927d7",
+                "md5": "eb4ce0481608507df6ccf89e4f5437ef",
                 "use_defaults": "file_defaults_of_directory"
             },
             "DStandardMetaData.cpp": {
@@ -1207,7 +1207,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "488aefa3297dbe58eda8bb69a156a1d6",
+                "md5": "6eb955a0950a6d57cf8109e8940599f6",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1248,7 +1248,7 @@
         "files": {
             "BaseQuasarServer.cpp": {
                 "install": "overwrite",
-                "md5": "51d1550a5869201b844d8b6dacbdbe22",
+                "md5": "6a70fc516d8326e68dba298e7e91d0ea",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1291,7 +1291,7 @@
             },
             "shutdown.cpp": {
                 "install": "overwrite",
-                "md5": "dc9444235de78cf99042136c5463e710",
+                "md5": "3a29447c82e95c14bdbcfb7e1c258014",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -1321,7 +1321,7 @@
         "files": {
             "FindOpcUaToolkit.cmake": {
                 "install": "overwrite",
-                "md5": "2743fcb5f9899b629c52a3798856be4b",
+                "md5": "e0f1977d379f157b8b075e79c426e3c5",
                 "must_be_versioned": true,
                 "must_exist": true
             },
