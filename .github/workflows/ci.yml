@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 env:
-  OPEN62541_COMPAT_VERSION: v1.4.7
+  OPEN62541_COMPAT_VERSION: v1.5.0
 
 jobs:
 
