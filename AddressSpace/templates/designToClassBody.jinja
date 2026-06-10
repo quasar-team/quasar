@@ -352,6 +352,22 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
             return s;
           },
           {% endif %}
+          {{ 'true' if sv.get('addressSpaceRead') == 'asynchronous' else 'false' }},
+          {% if sv.get('addressSpaceRead') == 'forbidden' or sv.get('addressSpaceReadUseMutex') in ['no', None] %}
+          ASSourceVariable::MutexFn(),
+          {% elif sv.get('addressSpaceReadUseMutex') == 'of_this_operation' %}
+          [this]() -> std::mutex* { Device::D{{className}}* deviceLink = getDeviceLink(); return deviceLink ? &deviceLink->getLockVariableRead_{{sv.get('name')}}() : nullptr; },
+          {% elif sv.get('addressSpaceReadUseMutex') == 'of_this_variable' %}
+          [this]() -> std::mutex* { Device::D{{className}}* deviceLink = getDeviceLink(); return deviceLink ? &deviceLink->getLockVariable_{{sv.get('name')}}() : nullptr; },
+          {% elif sv.get('addressSpaceReadUseMutex') == 'of_containing_object' %}
+          [this]() -> std::mutex* { Device::D{{className}}* deviceLink = getDeviceLink(); return deviceLink ? &deviceLink->getLock() : nullptr; },
+          {% elif sv.get('addressSpaceReadUseMutex') == 'of_parent_of_containing_object' %}
+          [this]() -> std::mutex* { Device::D{{className}}* deviceLink = getDeviceLink(); return (deviceLink && deviceLink->getParent()) ? &deviceLink->getParent()->getLock() : nullptr; },
+          {% elif sv.get('addressSpaceReadUseMutex') == 'handpicked' %}
+          [this]() -> std::mutex* { return this->fetchReadMutexOf{{sv.get('name')|capFirst}}(); },
+          {% else %}
+          {{ abort('invalid mode addressSpaceReadUseMutex: ' + sv.get('addressSpaceReadUseMutex')) }}
+          {% endif %}
           {% if sv.get('addressSpaceWrite') == 'forbidden' %}
           ASSourceVariable::WriteFn()
           {% else %}
@@ -376,6 +392,23 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
             {% endif %}
             return deviceLink->write{{sv.get('name')|capFirst}}( value );
           }
+          {% endif %}
+          ,
+          {{ 'true' if sv.get('addressSpaceWrite') == 'asynchronous' else 'false' }},
+          {% if sv.get('addressSpaceWrite') == 'forbidden' or sv.get('addressSpaceWriteUseMutex') in ['no', None] %}
+          ASSourceVariable::MutexFn()
+          {% elif sv.get('addressSpaceWriteUseMutex') == 'of_this_operation' %}
+          [this]() -> std::mutex* { Device::D{{className}}* deviceLink = getDeviceLink(); return deviceLink ? &deviceLink->getLockVariableWrite_{{sv.get('name')}}() : nullptr; }
+          {% elif sv.get('addressSpaceWriteUseMutex') == 'of_this_variable' %}
+          [this]() -> std::mutex* { Device::D{{className}}* deviceLink = getDeviceLink(); return deviceLink ? &deviceLink->getLockVariable_{{sv.get('name')}}() : nullptr; }
+          {% elif sv.get('addressSpaceWriteUseMutex') == 'of_containing_object' %}
+          [this]() -> std::mutex* { Device::D{{className}}* deviceLink = getDeviceLink(); return deviceLink ? &deviceLink->getLock() : nullptr; }
+          {% elif sv.get('addressSpaceWriteUseMutex') == 'of_parent_of_containing_object' %}
+          [this]() -> std::mutex* { Device::D{{className}}* deviceLink = getDeviceLink(); return (deviceLink && deviceLink->getParent()) ? &deviceLink->getParent()->getLock() : nullptr; }
+          {% elif sv.get('addressSpaceWriteUseMutex') == 'handpicked' %}
+          [this]() -> std::mutex* { return this->fetchWriteMutexOf{{sv.get('name')|capFirst}}(); }
+          {% else %}
+          {{ abort('invalid mode addressSpaceWriteUseMutex: ' + sv.get('addressSpaceWriteUseMutex')) }}
           {% endif %}
           );
         #endif
@@ -862,8 +895,8 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           {% endfor %}
 
           {% if m.get('executionSynchronicity') == 'asynchronous' %}
-            #ifndef BACKEND_OPEN62541
-            AddressSpace::SourceVariables_getThreadPool()->addJob(
+            Quasar::ThreadPool* pool = AddressSpace::SourceVariables_getThreadPool();
+            UaStatus dispatchStatus = !pool ? UaStatus(OpcUa_BadOutOfService) : pool->addJob(
               [this,
               callbackHandle,
               pCallback
@@ -871,7 +904,6 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
                 ,arg_{{arg.get('name')}}
               {% endfor %}
               ](){
-            #endif
           {% endif %}
 
           {% for rv in m.returnvalue %}
@@ -934,7 +966,6 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
           }
 
           {% if m.get('executionSynchronicity') == 'asynchronous' %}
-          #ifndef BACKEND_OPEN62541
           }, std::string("method call of method {{m.get('name')}} on object ")+this->nodeId().toString().toUtf8(),
           /*mutex*/
             {%- if m.get('addressSpaceCallUseMutex') == 'of_this_method' -%}
@@ -947,8 +978,14 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
               {{abort('Invalid setting for addressSpaceCallUseMutex: ' + m.get('addressSpaceCallUseMutex') + ' (at class='+className+', method='+m.get('name')+')'  )}}
             {% endif %}
              );
+          if (!dispatchStatus.isGood())
+          {
+            UaStatusCodeArray dispatchArgResults;
+            UaDiagnosticInfos dispatchArgDiag;
+            UaVariantArray dispatchOutputs;
+            pCallback->finishCall( callbackHandle, dispatchArgResults, dispatchArgDiag, dispatchOutputs, dispatchStatus );
+          }
           return OpcUa_Good;
-          #endif
           {% endif %}
         }
       {% endfor %}

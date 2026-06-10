@@ -58,7 +58,6 @@ DSourceVariableThreadPool::DSourceVariableThreadPool (
     /* fill up constructor initialization list here */
 {
     /* fill up constructor body here */
-  #ifndef BACKEND_OPEN62541
     try
     {
         const std::string minThreads = config.minThreads();
@@ -71,7 +70,6 @@ DSourceVariableThreadPool::DSourceVariableThreadPool (
         LOG(Log::ERR) << __FUNCTION__ << " failed to start source variable thread pool, error: " << e.what();
         throw e;
     }
-  #endif    
 }
 
 /* sample dtr */
