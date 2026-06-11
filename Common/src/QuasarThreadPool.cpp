@@ -35,7 +35,7 @@ ThreadPool::ThreadPool (unsigned int maxThreads, unsigned int maxJobs):
 {
     m_threadPoolLogId = Log::getComponentHandle("ThreadPool");
     if (m_threadPoolLogId == Log::INVALID_HANDLE)
-        throw std::logic_error("ThreadPool initialized before ThreadPool LogIt handle is initialized");
+        throw std::logic_error("ThreadPool initialized before ThreadPool LogIt handle is initialized -- most common cause: QuasarServer::initializeLogIt() override does not delegate to BaseQuasarServer::initializeLogIt(), which registers the ThreadPool logging component");
     m_workers.reserve(maxThreads);
     for (unsigned int i=0; i<maxThreads; ++i)
         m_workers.emplace_back( [this](){this->work();} );
