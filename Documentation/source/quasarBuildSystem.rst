@@ -117,6 +117,27 @@ Custom module deployment is comprised of:
 After both steps the quasar build system will take the custom module
 into account.
 
+Naming of custom-module public headers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The include/ directories of all enabled modules share one include search
+path, with the native modules listed first (in the order AddressSpace,
+Configuration, Common, Server, Device, Meta, LogIt, CalculatedVariables),
+then optional modules, then custom modules. A public header of a custom
+module must therefore not carry the same file name as any framework
+header, and the names must differ **case-insensitively**: on
+case-insensitive file systems (macOS, Windows — and Linux containers
+building from a directory mounted off such a host) the preprocessor
+matches header names without regard to case. For example, a custom
+module shipping ``include/Meta.h`` builds fine on Linux CI but breaks on
+macOS checkouts: ``#include <Meta.h>`` resolves to the framework Meta
+module's ``meta.h``, which sits earlier on the include path, and the
+intended header is never seen. Note that reordering the include path
+would not fix such a collision — it would instead silently serve the
+custom module's header to framework code including ``<meta.h>``. Choose
+distinctive names for custom-module public headers, e.g. prefixed with
+the module name (see OPCUA-3416).
+
 Device class file ownership
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
