@@ -82,7 +82,13 @@ For remaining systems (other distros of Linux, other Unix, embedded Linux: PetaL
 Mandatory:
 ^^^^^^^^^^
 
--  C++ compiler with C++11 support (gcc 11.x is the minimum)
+-  C++ compiler with C++11 support (gcc 11.x is the minimum). clang is
+   also supported and covered by CI on AlmaLinux 10 (the distribution's
+   clang against the OS Boost 1.83). On AlmaLinux 9, where the OS Boost
+   is 1.75, use the AppStream ``clang15`` package: clang 19 and newer
+   cannot compile the Boost 1.75 headers (a ``boost::numeric_cast`` /
+   Boost.MPL constant-expression error; a limitation of that Boost
+   release, not of quasar — see OPCUA-3391).
 
 -  OPCUA protocol stacks / toolkits (either of them is needed):
    -  see `More info on alternative backends <AlternativeBackends.html>`__.
