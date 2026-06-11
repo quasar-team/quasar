@@ -11,7 +11,7 @@ on:
       open62541_compat_branch:
         description: 'open62541-compat branch/tag'
         required: false
-        default: 'v1.4.3-rc0'
+        default: 'v1.5.6'
       filter:
         description: 'substring filter on TU paths (optional)'
         required: false
@@ -21,7 +21,7 @@ jobs:
   clang-tidy:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/quasar-team/quasar-uasdk:latest
+      image: ghcr.io/quasar-team/quasar-uasdk:alma10
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
