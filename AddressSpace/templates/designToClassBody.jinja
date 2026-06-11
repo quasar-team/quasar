@@ -147,6 +147,8 @@ std::string decorateSingleVariableNodeName (const std::string& basicName, bool i
             arrayDimensions.create(1);
             m_{{cv.get('name')}}->setArrayDimensions(arrayDimensions);
           }
+        {% elif cv.get('dataType') == 'UaVariant' %}
+          m_{{cv.get('name')}}->setValueRank( -3 ); // scalar or 1D-array
         {% else %}
           m_{{cv.get('name')}}->setValueRank( -1 ); // scalar
         {% endif %}
