@@ -445,7 +445,7 @@ jobs:
     steps:
       - run: |
           apt-get update -qq
-          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq cmake g++ git python3 python3-pip libboost-all-dev libssl-dev libxml2-utils > /dev/null
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq cmake g++ git python3 python3-pip libboost-all-dev libssl-dev libxml2-utils libxerces-c-dev xsdcxx > /dev/null
           pip3 -q install jinja2 lxml colorama pygit2
           cmake --version | head -1
       - uses: actions/checkout@v4
