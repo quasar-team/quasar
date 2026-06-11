@@ -73,3 +73,4 @@ SET( XML_LIBS "-lxerces-c" )
 #Quasar server libs
 #-----
 SET( QUASAR_SERVER_LIBS "-lssl -lcrypto -lpthread" )
+SET( OPCUA_TOOLKIT_COMPAT_LAYER_OBJECTS $<TARGET_OBJECTS:open62541-compat> )
