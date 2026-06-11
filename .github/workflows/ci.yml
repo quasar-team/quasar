@@ -438,6 +438,24 @@ jobs:
           --opcua_backend uasdk
           --compare_with_nodeset .CI/test_cases/test_default_quasar_design/reference_ns2.xml
 
+  cmake_316_floor:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:20.04
+    steps:
+      - run: |
+          apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq cmake g++ git python3 python3-pip libboost-all-dev libssl-dev libxml2-utils libxml2-dev libxerces-c-dev xsdcxx > /dev/null
+          pip3 -q install jinja2 lxml colorama pygit2
+          cmake --version | head -1
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - run: ./quasar.py enable_module open62541-compat ${{ env.OPEN62541_COMPAT_VERSION }}
+      - run: ./quasar.py set_build_config open62541_config.cmake
+      - run: ./quasar.py prepare_build Release
+
   # ── framework invariants (no backend, hermetic) ──────────────────────
   # Behavioural/idempotency checks on the Python codegen layer. No OPC-UA
   # backend and no compiler -- they exercise the generators directly.
