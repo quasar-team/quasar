@@ -62,6 +62,7 @@ Contact
 
 		Alternative backends <./AlternativeBackends>
 		Calculated variables <./CalculatedVariables>
+		Feature parity <./FeatureParity>
 		ChangeLog <./ChangeLog>
 		Design manual <./DesignManual>
 		For quasar developers <./forQuasarDevelopers>

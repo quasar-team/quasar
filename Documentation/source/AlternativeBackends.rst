@@ -47,13 +47,18 @@ quasar developers as one of supported "optional modules".
 Activating open62541 is a simple procedure which is best described in the quasar tutorials on YouTube,
 see e.g. `<https://www.youtube.com/watch?v=6MsWUQ0OXbY>`__ .
 
+The open62541-compat back-end has since matured to behavioural feature parity with the UA SDK:
+a quasar server built against either back-end serves an identical address space and identical
+read/write/method results, including asynchronous source-variable and method I/O.
+See :doc:`Feature parity <./FeatureParity>` for the details.
+
 OPC UA Back-end dependent features: a comparison table
 ------------------------------------------------------
 
 +-----------------+-----------------+-----------------+-----------------+
 | **Feature       |                 | **UA SDK 1.5+   | **open62541-    |
 | **              |                 | **              | compat          |
-|                 |                 |                 | 1.4.2           |
+|                 |                 |                 | 1.5.7           |
 |                 |                 |                 | **              |
 +-----------------+-----------------+-----------------+-----------------+
 | **Cache         |                 | ✓               | ✓               |
@@ -88,19 +93,19 @@ OPC UA Back-end dependent features: a comparison table
 |                 | mode for        |                 |                 |
 |                 | cache-variables |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
-| **Source        |                 |                 | x               |
+| **Source        |                 |                 | ✓               |
 | variables**     |                 |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
-|                 | Support for     | ✓               | x               |
+|                 | Support for     | ✓               | ✓               |
 |                 | same data types |                 |                 |
 |                 | as with         |                 |                 |
 |                 | cache-variables |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
-|                 | Synchronous     | ✓               | x               |
+|                 | Synchronous     | ✓               | ✓               |
 |                 | read/write      |                 |                 |
 |                 | handling        |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
-|                 | Asynchronous    | ✓               | x               |
+|                 | Asynchronous    | ✓               | ✓               |
 |                 | read/write      |                 |                 |
 |                 | handling        |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
@@ -114,7 +119,7 @@ OPC UA Back-end dependent features: a comparison table
 |                 | Synchronous     | ✓               | ✓               |
 |                 | invocation      |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
-|                 | Asynchronous    | ✓               | x               |
+|                 | Asynchronous    | ✓               | ✓               |
 |                 | invocation      |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
 | **Calculated    |                 | ✓               | ✓               |

@@ -1,0 +1,541 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>open62541 / UA SDK feature parity</title>
+    <style>
+
+body
+{
+counter-reset: h1counter;
+}
+
+h1:before {
+content: counter(h1counter) ". " ;
+counter-increment: h1counter;
+}
+
+h1 {
+counter-reset: h2counter;
+
+}
+
+h2:before {
+content: counter(h1counter) "." counter(h2counter) ". " ;
+counter-increment: h2counter;
+}
+
+h2 {
+  counter-reset: h3counter;
+}
+
+h3:before {
+content: counter(h1counter) "." counter(h2counter) "." counter(h3counter) ". " ;
+counter-increment: h3counter;
+}
+
+
+
+
+    table {
+        border-width: 10px;
+        border-collapse: collapse;
+    }
+
+    td, th {
+        border: 1px solid black;
+        padding: 4px;
+    }
+
+    th
+    {
+        background-color: #4CAF50;
+        color: white;
+        text-align: left;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .mycode {
+      font-family: monospace;
+      border-style: dotted;
+      border-width: 1px;
+      background-color:
+        #eeeeff;
+      padding: .5em;
+      margin: 1em;
+      display: inline-block;
+
+    }
+
+
+</style>
+  </head>
+  <body>
+    <font size="+3">open62541 / UA SDK feature parity</font><br>
+    <br>
+    by: Paris Moschovakos, June 2026<br>
+    Support: quasar-developers@cern.ch<br>
+    <br>
+
+    <h1>Overview</h1>
+    <p>A quasar server can be built against either OPC UA back-end: the
+      commercial Unified Automation C++ SDK (UA SDK), or the free and
+      open-source open62541, reached through the open62541-compat
+      compatibility layer. <b>Feature parity</b> means that the same
+      quasar server, compiled against open62541-compat, behaves
+      identically to the one compiled against the UA SDK: the same OPC UA
+      address space, the same node ids, browse names, references, data
+      types, access levels and timestamps, and the same results from
+      read, write and method-call operations.</p>
+    <p>Parity is an engineering property of the compatibility layer, not a
+      claim. It was verified across the full set of production servers by
+      building each server twice -- once per back-end -- and comparing,
+      between the two builds, the served address space node-for-node and
+      the outcomes of read, write and method calls. The served address
+      spaces and the operation results match. This document records what
+      open62541-compat had to implement to reach that point, organised by
+      the two areas where the back-ends used to diverge: observable
+      address-space and type fidelity, and asynchronous I/O.</p>
+    <p>The work spans open62541-compat 1.5.0 through 1.5.7. The 1.5 port
+      moves the bundled stack to open62541 1.5.4 and is anchored by
+      asynchronous read/write/call completion -- the feature that
+      motivated the port and that closes the last behavioural gap against
+      the UA SDK.</p>
+
+    <h1>Behavioural and address-space fidelity</h1>
+    <p>The UA SDK fixes a set of observable behaviours -- status-code
+      names, node-id string formats, property namespaces and access
+      levels, type semantics, timestamps -- that quasar servers and their
+      clients depend on. open62541-compat now matches each of them. Most
+      of these were latent divergences that surfaced as production
+      incidents: regex parsers segfaulting on the wrong node-id shape,
+      address-space walks counting nodes multiple times, properties
+      served with the wrong namespace or write access. The table below
+      lists the parity items; each is verified against UA SDK 1.6.5
+      headers and carries a regression test.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Parity item</th>
+          <th>UA SDK behaviour, now matched</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td valign="top">Status-code aliases</td>
+          <td valign="top">Effectively the full <code>OpcUa_*</code>
+            status-code family plus
+            <code>UaStatus</code> with <code>code()</code> /
+            <code>statusCode()</code> / <code>toString()</code> /
+            <code>isGood()</code>. open62541-compat carries 242
+            <code>OpcUa_*</code> aliases in total, 214 of them generated
+            from the stack's <code>UA_StatusCode_name</code> table plus a
+            hand-curated core set. Partial aliasing
+            previously broke production servers.</td>
+        </tr>
+        <tr>
+          <td valign="top">Node-id string format</td>
+          <td valign="top"><code>toFullString()</code> renders
+            <code>NS&lt;ns&gt;|&lt;Type&gt;|&lt;id&gt;</code> (e.g.
+            <code>NS2|String|elmb1.address</code>,
+            <code>NS0|Numeric|85</code>); <code>toString()</code> returns
+            the bare identifier. The old parenthesised
+            <code>(ns=2,...)</code> shape was regex-hostile and segfaulted
+            an eltek phase-lookup that indexed an empty match.
+            Numeric/String/Opaque/Guid are all handled.</td>
+        </tr>
+        <tr>
+          <td valign="top">Property browse-name namespace</td>
+          <td valign="top">A property under ns2 browses as
+            <code>2:name</code>: the property browse-name namespace
+            follows the node id rather than being hardcoded to ns0.
+            Hardcoding 0 produced <code>0:name</code> where the UA SDK
+            serves <code>2:name</code> (hundreds to over a thousand
+            mismatched node pairs on real servers). Method
+            Input/OutputArguments stay ns0 on both back-ends.</td>
+        </tr>
+        <tr>
+          <td valign="top">Property access level</td>
+          <td valign="top">The access level passed to the
+            <code>UaPropertyCache</code> constructor is applied to the
+            served property node at AddNode. It was previously discarded,
+            so every property exposed StatusWrite/TimestampWrite where the
+            UA SDK serves CurrentRead only.</td>
+        </tr>
+        <tr>
+          <td valign="top">ByteString semantics</td>
+          <td valign="top"><code>UaVariant::toByteString</code> returns a
+            status code (<code>BadTypeMismatch</code> on mismatch, never
+            throws) and round-trips both a ByteString scalar and a Byte
+            array into a <code>UaByteString</code>, honouring the
+            empty-array sentinel.</td>
+        </tr>
+        <tr>
+          <td valign="top">Empty/null typed values</td>
+          <td valign="top">An empty 1-D array stays an array, not a
+            scalar or null (<code>UA_Array_new(0, ...)</code> sentinel;
+            <code>isScalarValue()</code> excludes it). Typed null-value
+            variables are accepted at AddNode
+            (<code>allowEmptyVariables = UA_RULEHANDLING_ACCEPT</code>);
+            open62541 1.5 otherwise rejects them, crashing servers that
+            declare nullForbidden cache variables without an initial
+            value.</td>
+        </tr>
+        <tr>
+          <td valign="top">Server status</td>
+          <td valign="top"><code>UaClient::ServerStatus</code> enumerates
+            Disconnected / Connected /
+            ConnectionWarningWatchdogTimeout /
+            ConnectionErrorApiReconnect / ServerShutdown /
+            NewSessionCreated, and <code>UaSession::serverStatus()</code>
+            reports the live connection state (mapped from
+            <code>UA_Client_getState</code>) for client supervision
+            loops.</td>
+        </tr>
+        <tr>
+          <td valign="top">hvsys-class API surface</td>
+          <td valign="top">A verified subset of the broad UA SDK surface
+            that hvsys-class servers compile against:
+            <code>UaString::toUtf8()</code>,
+            <code>UaQualifiedName(name, ns)</code>,
+            <code>UaNode::getTargetNodeByBrowseName</code> /
+            <code>getUaReferenceLists</code>, the
+            <code>UaVariable</code> abstract base,
+            <code>UaVariant::changeType</code>, <code>UaDataValue</code>
+            setters/getters, <code>UaDateTime::toTime_t/fromTime_t</code>,
+            plus the forwarding headers and access-level constants.</td>
+        </tr>
+        <tr>
+          <td valign="top">Timestamp order</td>
+          <td valign="top"><code>UaDataValue(variant, statusCode,
+            sourceTime, serverTime)</code> takes <i>source</i> before
+            <i>server</i>. The constructor parameter order was swapped to
+            match, fixing silently transposed source/server timestamps at
+            every construction site.</td>
+        </tr>
+        <tr>
+          <td valign="top">Single reference registration</td>
+          <td valign="top">Each node's reference list is populated once.
+            The compat layer stopped duplicating
+            <code>addReferencedTarget</code> calls (quasar's
+            ASNodeManager already populates them); doubling the edges
+            broke recursive address-space walks that then counted nodes
+            multiple times.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h1>Asynchronous I/O</h1>
+    <p>This is the central piece of the parity work. Under the UA SDK a
+      device read, write or method body can complete off the stack
+      thread and be delivered later; the bundled open62541 could not.
+      open62541-compat now provides the same contract: slow device I/O no
+      longer stalls every session, subscription and publish on the
+      endpoint, because the operation is deferred off the single
+      EventLoop thread and completed when the device returns.</p>
+
+    <h2>The open62541 1.5 enabler</h2>
+    <p>The mechanism only exists in open62541 1.5. The bundled stack is
+      now <b>open62541 v1.5.4</b>, amalgamated with
+      <code>-DUA_MULTITHREADING=100</code> (baked in at amalgamation
+      time). 1.5 introduces per-invocation deferral: a DataSource or
+      method callback returns
+      <code>UA_STATUSCODE_GOODCOMPLETESASYNCHRONOUSLY</code> and the
+      result is posted later through three thread-safe completion
+      functions -- <code>UA_Server_setAsyncReadResult</code>,
+      <code>UA_Server_setAsyncWriteResult</code>,
+      <code>UA_Server_setAsyncCallMethodResult</code> -- with
+      cancellation delivered through the config's
+      <code>asyncOperationCancelCallback</code>. The pre-1.5 bundle could
+      not defer read or write at all: only CALL existed in the async
+      enum, READ and WRITE were commented-out placeholders, and the
+      completion functions did not exist in usable form, so a callback
+      had to fill the result before returning. <code>UA_MULTITHREADING
+      &gt;= 100</code> is the precondition for calling the completion
+      functions safely.</p>
+
+    <h2>The deferral seam</h2>
+    <p>Deferral is opt-in on <code>OpcUa::BaseDataVariableType</code> and
+      default-off, so cache variables keep their synchronous fast path
+      (no async block, no handshake). The
+      seam is three virtuals:</p>
+    <pre class="mycode">virtual OpcUa_Boolean handlesIo() const { return OpcUa_False; }
+virtual void beginRead(AsyncReadHandle handle) { handle.complete(value(nullptr)); }
+virtual void beginWrite(const UaDataValue&amp; dataValue, AsyncWriteHandle handle)
+    { handle.complete(setValue(nullptr, dataValue, OpcUa_True)); }</pre>
+    <p>The default <code>beginRead</code>/<code>beginWrite</code>
+      complete inline immediately. A subclass that returns
+      <code>handlesIo() == true</code> and dispatches the handle to a
+      worker thread gets deferral. Methods do not use this seam:
+      <code>unifiedCall</code> always allocates a block and hands it to
+      the receiver's <code>beginCall</code> as the
+      <code>MethodManagerCallback</code>.</p>
+
+    <h2>The operation block and the two-phase handshake</h2>
+    <p>One primitive serves all three operations. An
+      <code>AsyncOperationBlock</code> (heap, <code>shared_ptr</code>-owned)
+      carries the back-pointer to <code>AsyncOperations</code>, the
+      stack's identifying pointer as the <i>key</i> (the
+      <code>UA_DataValue*</code> target for a read, the
+      <code>const UA_DataValue*</code> for a write, the
+      <code>UA_Variant*</code> output array for a call), the payload
+      slot, and a single-word <code>std::atomic&lt;int&gt;</code> phase
+      with <code>Phase { Initial=0, Finished=1, Deferred=2 }</code>.</p>
+    <p>Completion is a release/acquire handshake on that atomic that
+      guarantees exactly one completer on every interleaving -- including
+      the race where the worker finishes before the glue regains control.
+      The completing side stores the payload then
+      <code>exchange(Finished)</code>; if the prior value was
+      <code>Deferred</code> it pushes the block to the completion queue.
+      The glue side, after <code>begin*</code>, does
+      <code>exchange(Deferred)</code>: if the prior value was
+      <code>Finished</code> it consumes the result inline and returns
+      the operation's result (GOOD for a successful read); otherwise it
+      registers the block and returns
+      GOODCOMPLETESASYNCHRONOUSLY.</p>
+    <pre class="mycode">if (variable->handlesIo() &amp;&amp; operations &amp;&amp; operations->deferralActive())
+{
+    std::shared_ptr&lt;AsyncReadBlock&gt; block = std::make_shared&lt;AsyncReadBlock&gt;(operations, dataValue);
+    variable->beginRead(AsyncReadHandle(block));
+    if (block->phase().exchange(AsyncOperationBlock::Deferred) == AsyncOperationBlock::Finished)
+    {
+        block->finishInline();
+        return UA_STATUSCODE_GOOD;
+    }
+    operations->establishDeferral(block);
+    return UA_STATUSCODE_GOODCOMPLETESASYNCHRONOUSLY;
+}</pre>
+    <p>The read/write handle destructors complete with
+      <code>OpcUa_BadInternalError</code> if dropped without
+      <code>complete()</code>, so a misbehaving subclass cannot leave the
+      stack waiting forever. Method output copy is bounded by
+      <code>min(stored, arity)</code> to stay in range for throwing
+      methods.</p>
+
+    <h2>The completion transport and EventLoop drain</h2>
+    <p>Workers never touch the stack. The only worker-side action is
+      <code>push()</code> onto a compat-owned completion queue (a mutex
+      plus a vector); <code>push()</code> appends the block, decrements
+      the inflight counter, and notifies a condition variable. The actual
+      completion -- the result-memory write plus the
+      <code>UA_Server_setAsync*Result</code> call -- happens in
+      <code>drain()</code>, which runs <b>on the EventLoop thread</b>,
+      where it is serialised with cancellation by construction.</p>
+    <p>Drain runs at two points: between
+      <code>UA_Server_run_iterate</code> calls in the run thread, and
+      from a 20&nbsp;ms repeated server callback. Calling the completion
+      functions from inside the repeated callback is legal because the
+      server locks are reentrant. Deferred-completion latency is
+      therefore bounded by one drain period (&le;&nbsp;20&nbsp;ms) on an
+      otherwise idle server. Per-server reach is via
+      <code>config->context</code>, which holds the
+      <code>AsyncOperations</code> instance.</p>
+
+    <h2>Cancellation and the ABA guard</h2>
+    <p>Cancellation arrives through the config's
+      <code>asyncOperationCancelCallback</code>;
+      <code>cancel()</code> erases the registry entry by key and touches
+      nothing else. There is an ABA hazard: after cancellation the stack
+      may reuse the same key pointer for a new operation, so a key match
+      alone is insufficient. <code>drain()</code> therefore completes an
+      entry only when the key is present <b>and</b> the registered block
+      is the same object:</p>
+    <pre class="mycode">for (auto&amp; block : batch)
+{
+    auto it = m_pending.find(block->key());
+    if (it == m_pending.end() || it->second != block)
+    {
+        LOG(Log::INF) &lt;&lt; "Dropping completion of a cancelled asynchronous operation";
+        continue;
+    }
+    block->finishDeferred(server);
+    m_pending.erase(it);
+}</pre>
+    <p>Pointer-identity of the compat-owned <code>shared_ptr</code> --
+      which the allocator cannot recycle while still referenced -- closes
+      the hole. A cancelled operation resolves cleanly: the registry
+      entry is erased by <code>cancel()</code>, the worker still pushes
+      into the queue, drain finds no matching identity and drops, and the
+      block frees by refcount. The pending registry is mutated only on
+      the EventLoop thread (creation, cancellation, consumption), so only
+      the queue and inflight accounting need the mutex.</p>
+
+    <h2>The serving gate</h2>
+    <p>Deferral is gated on the server's serving state. The glue defers
+      only when <code>handlesIo() &amp;&amp; operations &amp;&amp;
+      operations->deferralActive()</code>, where
+      <code>deferralActive()</code> is <code>m_serving &amp;&amp;
+      !m_closed</code>. <code>m_serving</code> is set after
+      <code>linkServer</code>/<code>afterStartUp</code> and before
+      <code>UA_Server_run_startup</code>. This is the parity-preserving
+      detail: stack-internal AddNode-time reads must complete
+      synchronously, so before the gate opens reads and writes take the
+      synchronous fallback path. Once <code>m_closed</code> is set in
+      shutdown the gate refuses new deferrals (reads/writes fall back to
+      sync, calls return <code>BadOutOfService</code>), which matters
+      because the shutdown iterations can still deliver client
+      requests.</p>
+
+    <h2>Lifecycle and shutdown</h2>
+    <p>Wiring at <code>start()</code>: construct
+      <code>AsyncOperations</code> &rarr; set
+      <code>config->context</code> &rarr; set the cancel callback &rarr;
+      register the 20&nbsp;ms drain callback &rarr;
+      <code>linkServer</code>/<code>afterStartUp</code> &rarr;
+      <code>setServing()</code> &rarr; <code>UA_Server_run_startup</code>
+      &rarr; spawn the run thread.</p>
+    <p>Inflight is incremented under the queue mutex when a deferral is
+      established and always decremented at worker resolution (on
+      completion push, or on drop-when-closed). Shutdown sets
+      <code>m_closed</code> and waits on the condition variable for
+      inflight to reach zero, with a 60&nbsp;s timeout and a loud error
+      on expiry, then does a final drain while the server is still alive.
+      All async state is per-<code>UaServer</code> (reached via
+      <code>config->context</code>, no static state), so multiple
+      in-process servers stay isolated.</p>
+
+    <h2>Walkthrough: a deferred source-variable read</h2>
+    <img src="FeatureParity_sequence.png" alt="Deferred source-variable read sequence"><br>
+    <ol>
+      <li>An OPC UA client issues a Read. The stack calls into the glue
+        on the EventLoop thread; <code>unifiedRead</code> allocates a
+        block and calls <code>beginRead(handle)</code>.</li>
+      <li>The source variable dispatches the device read to the
+        SourceVariables worker pool and returns immediately.</li>
+      <li>The glue does <code>phase().exchange(Deferred)</code>. The
+        worker has not finished, so it registers the block and returns
+        <code>GoodCompletesAsynchronously</code> to the client. The
+        endpoint stays responsive -- concurrent reads, calls and
+        publishes are served on the EventLoop thread.</li>
+      <li>The slow device read runs on a worker thread. When it finishes,
+        the worker calls <code>complete()</code>, which stores the value
+        and pushes the block onto the completion queue. The worker never
+        calls the stack.</li>
+      <li>On the next drain (between <code>run_iterate</code> calls or on
+        the 20&nbsp;ms callback) the EventLoop thread pops the block,
+        confirms the registry entry matches by identity, and calls
+        <code>UA_Server_setAsyncReadResult</code>. The response is
+        delivered to the client on the EventLoop thread.</li>
+    </ol>
+
+    <h1>quasar integration and the flavor matrix</h1>
+    <p>quasar dispatches device work through a single process-wide worker
+      pool -- <code>Quasar::ThreadPool</code>, the SourceVariables thread
+      pool -- created once at startup by Meta's
+      <code>DSourceVariableThreadPool</code> and fetched everywhere via
+      <code>SourceVariables_getThreadPool()</code>. Both back-ends share
+      this one pool. Dispatch policy is driven by Design.xml attributes
+      and is identical under both back-ends: async-declared
+      reads/writes/methods queue to the pool and run on a worker;
+      sync-declared ones run inline in the calling thread. For source
+      variables a configured mutex is held while the device delegate runs
+      (inline for sync, inside the worker for async) so serialization
+      matches regardless of synchronicity or back-end. Synchronous
+      methods do not lock the configured method mutex
+      (<code>addressSpaceCallUseMutex</code> applies to asynchronous
+      handlers); this too is identical on both back-ends.</p>
+    <p>This mirrors the UA SDK IoManager job model directly. Under the UA
+      SDK, I/O reaches <code>ASSourceVariableIoManager</code>, which calls
+      <code>SourceVariables_spawnIoJobRead/Write</code>; that constructs a
+      generated <code>IoJob</code> (a
+      <code>Quasar::ThreadPoolJob</code>) and either runs
+      <code>job.execute()</code> inline (synchronous job ids) or hands it
+      to <code>sourceVariableThreads->addJob(...)</code> (asynchronous job
+      ids). The open62541 back-end reimplements the same contract in
+      <code>ASSourceVariable::beginRead/beginWrite</code>: it builds an
+      equivalent work lambda and either runs it inline under the optional
+      mutex (sync) or dispatches it via
+      <code>SourceVariables_getThreadPool()->addJob(work, description,
+      mutex)</code> (async). The async-method handler in the generator is
+      not guarded by back-end -- it compiles identically for both and
+      dispatches to the same pool. Cache variables are pure in-memory
+      address-space state with no device dispatch and no pool under either
+      back-end.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Node flavor</th>
+          <th>UA SDK</th>
+          <th>open62541</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td valign="top">Cache variable</td>
+          <td valign="top">In-memory address-space access; no dispatch,
+            no mutex, no pool.</td>
+          <td valign="top">Same: in-memory, no dispatch.</td>
+        </tr>
+        <tr>
+          <td valign="top">Source variable, async</td>
+          <td valign="top"><code>spawnIoJobRead/Write</code> news an
+            asynchronous <code>IoJob</code> and calls
+            <code>sourceVariableThreads->addJob(job)</code>; runs on a
+            pool worker, mutex via
+            <code>associatedMutex()</code>.</td>
+          <td valign="top"><code>beginRead/beginWrite</code> &rarr;
+            <code>getThreadPool()->addJob(work, desc, mutex)</code>; runs
+            on a pool worker, mutex held in the worker. Same pool.</td>
+        </tr>
+        <tr>
+          <td valign="top">Source variable, sync</td>
+          <td valign="top"><code>spawnIoJobRead/Write</code> constructs a
+            synchronous <code>IoJob</code> and calls
+            <code>job.execute()</code> inline in the calling thread,
+            under the job's mutex.</td>
+          <td valign="top">Work lambda run inline in the calling thread,
+            under <code>unique_lock(*mutex)</code> when configured.</td>
+        </tr>
+        <tr>
+          <td valign="top">Method, async</td>
+          <td valign="top">Generator handler (unguarded) dispatches via
+            <code>getThreadPool()->addJob(lambda, desc, mutex)</code>;
+            pool worker, mutex per
+            <code>addressSpaceCallUseMutex</code>.</td>
+          <td valign="top">Identical code path, same pool, same mutex
+            selection.</td>
+        </tr>
+        <tr>
+          <td valign="top">Method, sync</td>
+          <td valign="top">Device call runs inline in the call
+            thread.</td>
+          <td valign="top">Identical: inline in the call thread.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Every cell is behaviorally identical across the two back-ends.
+      Async source-variable and async method work share the one
+      SourceVariables pool.</p>
+
+    <h1>Behavioural notes</h1>
+    <h2>Timestamps</h2>
+    <p>The deferred read path preserves the requested
+      <code>TimestampsToReturn</code> policy: the merge into the target
+      data value polices timestamps on the deferred path while the inline
+      path leaves them as produced. The
+      <code>UaDataValue</code> constructor orders source before server,
+      so source and server timestamps land in the correct fields on both
+      back-ends.</p>
+    <h2>Monitored items and publishing</h2>
+    <p>Because deferred completions are issued on the EventLoop thread
+      and the worker never touches the stack, sampling, subscription and
+      publish are unaffected by a slow device read: while one operation
+      is in flight on a worker, the EventLoop thread continues to service
+      other sessions, monitored items and publish requests. This is the
+      observable difference the async work delivers -- a slow device no
+      longer freezes the endpoint.</p>
+    <h2>Synchronous-methods asymmetry</h2>
+    <p>The deferral seam (<code>handlesIo</code> /
+      <code>beginRead</code> / <code>beginWrite</code>) is for source
+      variables only. Methods always allocate a block and go through
+      <code>beginCall</code>, but a synchronous method still runs its
+      device body inline in the call thread under both back-ends -- only
+      async-declared methods are dispatched to the pool. The block
+      machinery is uniform; the synchronicity is decided by the Design,
+      not by the seam.</p>
+
+  </body>
+</html>
