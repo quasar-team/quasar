@@ -120,7 +120,7 @@ class Base_D{{className}}
   /* getters for values which are keys */
   {# TODO @pnikiel review the data-types below, both headers should be equal regarding types #}
   {% for ce in designInspector.objectify_config_entries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
-    {{oracle.data_type_to_device_type(ce.get('dataType'))}} {{ce.get('name')}}() { return m_{{ ce.get('name') }}; }
+    [[nodiscard]] {{oracle.data_type_to_device_type(ce.get('dataType'))}} {{ce.get('name')}}() const { return m_{{ ce.get('name') }}; }
   {% endfor %}
 
   /* mutex operations */
