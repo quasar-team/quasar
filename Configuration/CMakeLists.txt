@@ -24,14 +24,10 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configuration.xsd
 	DEPENDS ${DESIGN_FILE} templates/designToConfigurationXSD.jinja validateDesign ${PROJECT_SOURCE_DIR}/quasar.py ${QUASAR_TRANSFORM_SENSITIVE_FILES}
 	)
 
-# CodeSynthesis XSD binary: 'xsd' on Windows, 'xsdcxx' on Debian/CERN (renamed
-# there to avoid the Mono 'xsd' clash). Overridable via -DXSD_CXX_COMMAND.
+# CodeSynthesis XSD binary: 'xsdcxx' (renamed to avoid the Mono 'xsd' clash).
+# Overridable via -DXSD_CXX_COMMAND.
 if(NOT DEFINED XSD_CXX_COMMAND)
-	if(WIN32)
-		set(XSD_CXX_COMMAND xsd)
-	else()
-		set(XSD_CXX_COMMAND xsdcxx)
-	endif()
+	set(XSD_CXX_COMMAND xsdcxx)
 endif()
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/Configuration/Configuration.cxx ${PROJECT_BINARY_DIR}/Configuration/Configuration.hxx
