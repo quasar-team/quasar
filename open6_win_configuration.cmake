@@ -62,39 +62,34 @@ include_directories(${BOOST_PATH_HEADERS})
 
 
 
-if(NOT TARGET libboostprogramoptions)
-	add_library(libboostprogramoptions STATIC IMPORTED)
-	#libboost_program_options-vc141-mt-gd-x64-1_67.lib
-	set_property(TARGET libboostprogramoptions PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_program_options-vc141/lib/native/libboost_program_options-vc141-mt-x64-1_67.lib)
-endif()
-if(NOT TARGET libboostsystem)
-	add_library(libboostsystem STATIC IMPORTED)
-	set_property(TARGET libboostsystem PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_system-vc141/lib/native/libboost_system-vc141-mt-x64-1_67.lib)
-endif()
-if(NOT TARGET libboostfilesystem)
-	add_library(libboostfilesystem STATIC IMPORTED)
-	set_property(TARGET libboostfilesystem PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_filesystem-vc141/lib/native/libboost_filesystem-vc141-mt-x64-1_67.lib)
-endif()
-if(NOT TARGET libboostchrono)
-	add_library(libboostchrono STATIC IMPORTED)
-	set_property(TARGET libboostchrono PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_chrono-vc141/lib/native/libboost_chrono-vc141-mt-x64-1_67.lib)
-endif()
-if(NOT TARGET libboostdatetime)
-	add_library(libboostdatetime STATIC IMPORTED)
-	set_property(TARGET libboostdatetime PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_date_time-vc141/lib/native/libboost_date_time-vc141-mt-x64-1_67.lib)
-endif()
-if(NOT TARGET libboostthread)
-	add_library(libboostthread STATIC IMPORTED)
-	set_property(TARGET libboostthread PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_thread-vc141/lib/native/libboost_thread-vc141-mt-x64-1_67.lib)
-endif()
-if(NOT TARGET libboostlog)
-	add_library(libboostlog STATIC IMPORTED)
-	set_property(TARGET libboostlog PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_log-vc141/lib/native/libboost_log-vc141-mt-x64-1_67.lib)
-endif()
-if(NOT TARGET libboostlogsetup)
-	add_library(libboostlogsetup STATIC IMPORTED)
-	set_property(TARGET libboostlogsetup PROPERTY IMPORTED_LOCATION ${BOOST_PATH_LIBS}/boost_log_setup-vc141/lib/native/libboost_log_setup-vc141-mt-x64-1_67.lib)
-endif()
+# Boost libs discovered by glob from the flat BOOST_PATH_LIBS dir so this file
+# survives Boost/toolset bumps (names like libboost_system-vc145-mt-x64-1_91.lib;
+# the -mt-x64- pattern never matches the -mt-gd- debug variants).
+function( quasar_find_msvc_boost_library TARGET_NAME COMPONENT )
+	if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+		file(GLOB _candidates "${BOOST_PATH_LIBS}/*boost_${COMPONENT}-*-mt-gd-x64-*.lib")
+	else()
+		file(GLOB _candidates "${BOOST_PATH_LIBS}/*boost_${COMPONENT}-*-mt-x64-*.lib")
+	endif()
+	if( NOT _candidates )
+		message( FATAL_ERROR "no static boost ${COMPONENT} library found under BOOST_PATH_LIBS [${BOOST_PATH_LIBS}]" )
+	endif()
+	list(GET _candidates 0 _lib)
+	message( STATUS "boost ${COMPONENT} -> ${_lib}" )
+	if(NOT TARGET ${TARGET_NAME})
+		add_library(${TARGET_NAME} STATIC IMPORTED)
+		set_property(TARGET ${TARGET_NAME} PROPERTY IMPORTED_LOCATION ${_lib})
+	endif()
+endfunction()
+
+quasar_find_msvc_boost_library( libboostprogramoptions program_options )
+quasar_find_msvc_boost_library( libboostsystem system )
+quasar_find_msvc_boost_library( libboostfilesystem filesystem )
+quasar_find_msvc_boost_library( libboostchrono chrono )
+quasar_find_msvc_boost_library( libboostdatetime date_time )
+quasar_find_msvc_boost_library( libboostthread thread )
+quasar_find_msvc_boost_library( libboostlog log )
+quasar_find_msvc_boost_library( libboostlogsetup log_setup )
 
 set( BOOST_LIBS  libboostlogsetup libboostlog libboostsystem libboostfilesystem libboostthread libboostprogramoptions libboostchrono libboostdatetime )
 
@@ -139,10 +134,6 @@ include_directories($ENV{XERCESC_PATH_HEADERS})
 #----
 #OPENSSL
 #----
-if(NOT TARGET libopenssl)
-	add_library(libopenssl STATIC IMPORTED)
-	set_property(TARGET libopenssl PROPERTY IMPORTED_LOCATION $ENV{OPENSSL_PATH_LIBS}/openssl.lib)
-endif()
 if(NOT TARGET libssl)
 	add_library(libssl STATIC IMPORTED)
 	set_property(TARGET libssl PROPERTY IMPORTED_LOCATION $ENV{OPENSSL_PATH_LIBS}/libssl.lib)
@@ -152,7 +143,7 @@ if(NOT TARGET libcrypto)
 	set_property(TARGET libcrypto PROPERTY IMPORTED_LOCATION $ENV{OPENSSL_PATH_LIBS}/libcrypto.lib)
 endif()
 
-SET( OPENSSL_LIBS_ALL libopenssl libssl libcrypto )
+SET( OPENSSL_LIBS_ALL libssl libcrypto )
 
 #-----
 #XML Libs
@@ -163,7 +154,7 @@ if(NOT TARGET libxercesc)
 endif()
 if(NOT TARGET libxml2)
 	add_library(libxml2 STATIC IMPORTED)
-	set_property(TARGET libxml2 PROPERTY IMPORTED_LOCATION $ENV{LIBXML2_PATH_LIBS}/libxml2.lib)
+	set_property(TARGET libxml2 PROPERTY IMPORTED_LOCATION $ENV{LIBXML2_PATH_LIBS}/libxml2s.lib)
 endif()
 
 SET( XML_LIBS Rpcrt4 crypt32 ws2_32 libxercesc ${OPENSSL_LIBS_ALL} )
@@ -185,7 +176,9 @@ SET( OPCUA_TOOLKIT_LIBS_DEBUG   "" )
 #------
 #General
 #------
-add_definitions(-DSUPPORT_XML_CONFIG -DWIN32_LEAN_AND_MEAN)
+# XERCES_STATIC_LIBRARY: the w2025 xerces-c is BUILD_SHARED_LIBS=OFF; without
+# the define the xercesc headers declare dllimport symbols and the link fails.
+add_definitions(-DSUPPORT_XML_CONFIG -DWIN32_LEAN_AND_MEAN -DXERCES_STATIC_LIBRARY)
 
 set(CMAKE_CXX_FLAGS_RELEASE "/MD")
 set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Zi")
