@@ -424,6 +424,28 @@ jobs:
   # (hard D8021 on GNU flags) while the VS generator's flag mapping lets cl merely
   # warn (D9002) — proven on the OPCUA-3444 tree (repro run 28575458477: same
   # tree, Ninja fails, VS generator builds). Ninja = the strict probe.
+  # Advisory drift probe: red at nightly means BE-ICS's provisioning moved past
+  # our pin -- review their changes and bump the ref in setup-quasar-windows.
+  w2025-drift-probe:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    name: w2025 provisioning drift probe
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare the pinned images ref against quasar-team/images tips
+        run: |
+          pin=$(grep -oE "'[0-9a-f]{40}'" .github/actions/setup-quasar-windows/action.yml | tr -d "'" | head -1)
+          [ -n "$pin" ] || { echo "::error::could not extract the images pin from setup-quasar-windows"; exit 1; }
+          tips=$(git ls-remote https://github.com/quasar-team/images.git refs/heads/main refs/heads/w2025-jcop-sync | cut -f1)
+          echo "pin:  $pin"
+          echo "tips:"; echo "$tips"
+          if echo "$tips" | grep -q "^$pin$"; then
+            echo "provisioning pin is at a current images tip"
+          else
+            echo "::error::w2025 provisioning drift: quasar-team/images moved past the pinned $pin -- review BE-ICS's changes and bump the pin"
+            exit 1
+          fi
+
   compat-standalone-frontier-windows:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: windows-2025
