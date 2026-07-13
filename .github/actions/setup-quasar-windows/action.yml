@@ -36,16 +36,30 @@ runs:
         Write-Host "Boost include root: $boostInc"
         "BOOST_PATH_HEADERS=$boostInc" >> $env:GITHUB_ENV
         "BOOST_PATH_LIBS=C:\deps\boost" >> $env:GITHUB_ENV
-    - name: Provision CodeSynthesis XSD (xsd.exe + libxsd)
+    # Mirrors BE-ICS w2025 Install-Xsd.ps1 / Install-LibXsd.ps1 (jcop-opc-ua/common/images):
+    # the binary is installed as xsdcxx.exe because VS developer prompts already carry
+    # Microsoft's .NET xsd.exe on PATH -- same clash the Debian rename avoids.
+    - name: Provision CodeSynthesis XSD (xsdcxx.exe + libxsd)
       shell: pwsh
       run: |
-        Invoke-WebRequest "https://www.codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.0-i686-windows.zip" -OutFile xsd.zip
+        $xsdHome='C:\deps\xsd'
+        Invoke-WebRequest "https://www.codesynthesis.com/download/xsd/4.2/windows/windows10/x86_64/xsd-4.2.0-x86_64-windows10.zip" -OutFile xsd.zip
         Expand-Archive xsd.zip C:\deps\xsd-dl -Force
-        $xsdexe=(Get-ChildItem C:\deps\xsd-dl -Recurse -Filter xsd.exe | Select-Object -First 1).FullName
-        $libxsd=(Get-ChildItem C:\deps\xsd-dl -Recurse -Directory -Filter libxsd | Select-Object -First 1).FullName
-        "CODE_SYNTHESYS_XSD_PATH_HEADERS=$libxsd" >> $env:GITHUB_ENV
-        (Split-Path $xsdexe) >> $env:GITHUB_PATH
-        Write-Host "xsd.exe=$xsdexe"; Write-Host "libxsd=$libxsd"
+        $xsdexe=Get-ChildItem C:\deps\xsd-dl -Recurse -Filter xsd.exe -File | Select-Object -First 1
+        if (-not $xsdexe) { throw "xsd.exe not found in the XSD package" }
+        New-Item -ItemType Directory -Force $xsdHome | Out-Null
+        Copy-Item $xsdexe.FullName (Join-Path $xsdHome 'xsdcxx.exe') -Force
+        Invoke-WebRequest "https://www.codesynthesis.com/download/xsd/4.2/libxsd-4.2.0.tar.gz" -OutFile libxsd.tar.gz
+        New-Item -ItemType Directory -Force C:\deps\libxsd-src | Out-Null
+        tar -xzf libxsd.tar.gz -C C:\deps\libxsd-src
+        $src=Get-ChildItem C:\deps\libxsd-src -Directory | Select-Object -First 1
+        if (-not (Test-Path "$($src.FullName)\xsd\cxx")) { throw "libxsd headers not found under $($src.FullName)" }
+        $hdrs=Join-Path $xsdHome 'include\xsd\cxx'
+        New-Item -ItemType Directory -Force $hdrs | Out-Null
+        Copy-Item "$($src.FullName)\xsd\cxx\*" $hdrs -Recurse -Force
+        "CODE_SYNTHESYS_XSD_PATH_HEADERS=$xsdHome\include" >> $env:GITHUB_ENV
+        $xsdHome >> $env:GITHUB_PATH
+        Write-Host "xsdcxx.exe=$xsdHome\xsdcxx.exe"; Write-Host "libxsd=$xsdHome\include"
     # Cache the built vcpkg deps. Split restore/save so the cache is written
     # right after vcpkg (before the build step that may still fail) -- the
     # combined cache action skips saving on a failed job, which is why earlier

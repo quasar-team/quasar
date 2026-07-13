@@ -112,7 +112,7 @@ runs:
         #    that uasak's include_directories doesn't cover -> add them to cl's INCLUDE.
         $env:LIB = "$env:LIB;C:\vcpkg\installed\x64-windows\lib"
         $env:INCLUDE = "$env:INCLUDE;$env:CODE_SYNTHESYS_XSD_PATH_HEADERS;C:\vcpkg\installed\x64-windows\include"
-        cmake -S . -B build -G Ninja $policy -DCMAKE_BUILD_TYPE=Release @boost -DXSD_CXX_COMMAND=xsd -DCMAKE_EXE_LINKER_FLAGS="/LIBPATH:C:\vcpkg\installed\x64-windows\lib /LIBPATH:C:\deps\boost\libs"; chk "uasak configure"
+        cmake -S . -B build -G Ninja $policy -DCMAKE_BUILD_TYPE=Release @boost -DXSD_CXX_COMMAND=xsdcxx -DCMAKE_EXE_LINKER_FLAGS="/LIBPATH:C:\vcpkg\installed\x64-windows\lib /LIBPATH:C:\deps\boost\libs"; chk "uasak configure"
         cmake --build build; chk "uasak build"
         Get-ChildItem -Recurse -Filter 'uasak_dump*' build | Select-Object FullName
 
