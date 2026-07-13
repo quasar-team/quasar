@@ -138,6 +138,7 @@
       "design": "test_config_entries/Design.xml",
       "config": "test_config_entries/config.xml",
       "generate_devices": true,
+      "device_sources": "test_config_entries",
       "oracle": "test_config_entries/reference_ns2.xml",
       "backends": [
         "o6",
