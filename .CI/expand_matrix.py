@@ -106,10 +106,6 @@ def expand(manifest):
     # pass/fail signal is case-INDEPENDENT, so only a few broad-surface cases need re-run there.
     # Empty/absent => keep the full case set (current behaviour).
     representative = set(manifest.get('representative_cases', []))
-    # PR-tier (default) uasdk versions: these keep the FULL case set on default_os. Non-default
-    # (nightly) versions are a framework/SDK-level delta and only re-run the representative cases.
-    pr_uasdk_versions = {tk['version'] for tk in toolkits.get('uasdk', [])
-                         if tk.get('tier', 'pr') == 'pr'}
 
     def in_rep(case):
         return (not representative) or case['name'] in representative
@@ -139,12 +135,15 @@ def expand(manifest):
             for arch in default_arches:
                 # default_os x86_64: every toolkit version fans out per its own 'cases'
                 # list (absent = full case set) at its own tier. On an alt default arch
-                # (e.g. arm64) only the PR-default version has an arch image, so cases run
-                # there against just that version (o6 + uasdk-<default>), PR tier.
+                # (e.g. arm64) a version reaches the sweep only if it declares an image
+                # for that arch (toolkit 'arches', default x86_64-only), each at its own
+                # tier -- so the PR gate can move to a version whose alt-arch image
+                # doesn't exist yet without breaking the alt-arch cells.
                 if arch == 'x86_64':
                     only_v = None
                 else:
-                    only_v = pr_uasdk_versions
+                    only_v = {tk['version'] for tk in toolkits.get('uasdk', [])
+                              if arch in tk.get('arches', ['x86_64'])}
                 cells += emit(case, backend, default_os, 'gcc', case_tier,
                               only_versions=only_v, arch=arch)
         for extra in case.get('extra_cells', []):
