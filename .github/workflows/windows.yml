@@ -436,7 +436,7 @@ jobs:
         run: |
           pin=$(grep -oE "'[0-9a-f]{40}'" .github/actions/setup-quasar-windows/action.yml | tr -d "'" | head -1)
           [ -n "$pin" ] || { echo "::error::could not extract the images pin from setup-quasar-windows"; exit 1; }
-          tips=$(git ls-remote https://github.com/quasar-team/images.git refs/heads/main refs/heads/w2025-jcop-sync | cut -f1)
+          tips=$(git ls-remote https://github.com/quasar-team/images.git refs/heads/main | cut -f1)
           echo "pin:  $pin"
           echo "tips:"; echo "$tips"
           if echo "$tips" | grep -q "^$pin$"; then

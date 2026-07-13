@@ -26,14 +26,14 @@ runs:
       run: |
         python -m pip install jinja2 lxml colorama pygit2
         choco install astyle -y --no-progress
-    # The pin is the w2025-jcop-sync branch of quasar-team/images -- a verbatim
+    # The pin is a main commit of quasar-team/images -- a verbatim
     # snapshot of jcop-opc-ua/common/images (the scripts BE-ICS builds their WS25
     # CI images and dev envs from). Bump the ref to pick up their changes.
     - name: Pin the BE-ICS w2025 image scripts
       id: images
       shell: pwsh
       run: |
-        $ref='44e4fd7730025a9be1b8d4209776f5399f7ac995'
+        $ref='3c33ca115b35a30fa4be26be2db37046eb2286eb'
         git clone -q https://github.com/quasar-team/images.git C:\deps\images
         git -C C:\deps\images checkout -q $ref
         "ref=$ref" >> $env:GITHUB_OUTPUT
