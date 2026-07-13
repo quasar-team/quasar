@@ -31,7 +31,11 @@
     "uasdk": [
       {
         "version": "1.8.9",
-        "tier": "pr"
+        "tier": "nightly",
+        "arches": [
+          "x86_64",
+          "arm64"
+        ]
       },
       {
         "version": "1.6.5",
@@ -42,7 +46,10 @@
       },
       {
         "version": "2.0.3",
-        "tier": "nightly"
+        "tier": "pr",
+        "arches": [
+          "x86_64"
+        ]
       }
     ]
   },
