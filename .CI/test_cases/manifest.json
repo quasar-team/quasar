@@ -31,7 +31,7 @@
     "uasdk": [
       {
         "version": "1.8.9",
-        "tier": "pr"
+        "tier": "nightly"
       },
       {
         "version": "1.6.5",
@@ -42,7 +42,7 @@
       },
       {
         "version": "2.0.3",
-        "tier": "nightly"
+        "tier": "pr"
       }
     ]
   },
