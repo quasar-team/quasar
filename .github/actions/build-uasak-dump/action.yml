@@ -57,23 +57,21 @@ runs:
         # runner's CMake 4.x removed support for -- the documented escape hatch is
         # CMAKE_POLICY_VERSION_MINIMUM=3.5 (harmless for compat, which requires 3.16).
         $policy = '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
-        # LogIt/compat/uasak resolve Boost via find_package(Boost COMPONENTS ...),
-        # which is independent of quasar's path-based BoostSetup. Steer FindBoost
-        # at the w2025 Boost (flat static libs in BOOST_PATH_LIBS). The toolset tag
-        # is read off an actual lib name (e.g. vc145) rather than trusting FindBoost
-        # to derive it from the runner's cl version.
+        # LogIt/compat/uasak resolve Boost via find_package(Boost ...), independent
+        # of quasar's path-based BoostSetup. The w2025 Boost (1.91) installs CMake
+        # config files, and CMake 4 removed the FindBoost module -- so drive CONFIG
+        # mode via Boost_DIR (the old Boost_COMPILER/FindBoost hints are dead).
+        # Sanity-probe on boost_thread: Boost >= 1.89 ships NO compiled system lib
+        # (header-only, stub removed), so system is the wrong canary.
         Remove-Item Env:CMAKE_TOOLCHAIN_FILE -ErrorAction SilentlyContinue
-        $sample = Get-ChildItem "$env:BOOST_PATH_LIBS" -Filter 'libboost_system-*-mt-x64-*.lib' | Select-Object -First 1
-        if (-not $sample) { throw "no boost system lib under $env:BOOST_PATH_LIBS" }
-        $tag = ($sample.Name -split '-')[1]
-        Write-Host "boost toolset tag: $tag"
+        $sample = Get-ChildItem "$env:BOOST_PATH_LIBS" -Filter 'libboost_thread-*-mt-x64-*.lib' | Select-Object -First 1
+        if (-not $sample) { throw "no boost thread lib under $env:BOOST_PATH_LIBS" }
+        $bcfg = Get-ChildItem "$env:BOOST_PATH_LIBS\cmake" -Directory -Filter 'Boost-*' -ErrorAction SilentlyContinue | Select-Object -First 1
+        if (-not $bcfg) { throw "no BoostConfig dir under $env:BOOST_PATH_LIBS\cmake" }
+        Write-Host "boost lib sample: $($sample.Name); Boost_DIR: $($bcfg.FullName)"
         $boost = @(
-          "-DBOOST_INCLUDEDIR=$env:BOOST_PATH_HEADERS",
-          "-DBOOST_LIBRARYDIR=$env:BOOST_PATH_LIBS",
-          "-DBoost_USE_STATIC_LIBS=ON",
-          "-DBoost_COMPILER=-$tag",
-          "-DBoost_ARCHITECTURE=-x64",
-          "-DBoost_NO_BOOST_CMAKE=ON"
+          "-DBoost_DIR=$($bcfg.FullName)",
+          "-DBoost_USE_STATIC_LIBS=ON"
         )
         git clone --depth=1 -b windows-msvc https://github.com/parasxos/UaSwissArmyKnife.git uasak
         cd uasak
