@@ -4,7 +4,7 @@ description: >
   on windows-2025 into ./uasak/build/uasak_dump.exe. uasak_dump is an OPC UA
   *client* and is backend-agnostic, so the same tool drives the oracle for both
   the o6 and uasdk servers. Requires the setup-quasar-windows action to have run
-  first (MSVC + Boost + XSD + vcpkg on the environment). The built exe is cached
+  first (MSVC + the w2025 dep tree on the environment). The built exe is cached
   keyed on every source ref plus the toolchain, so case cells normally restore
   it in seconds instead of rebuilding.
 
@@ -17,11 +17,11 @@ runs:
       run: |
         $ErrorActionPreference='Stop'
         # uasak_dump.exe is a pure function of the three pinned source refs (they
-        # must match the clone commands in the build step below), the static Boost
-        # it links (nuget 1.67 vc141 from setup-quasar-windows), the vcpkg dep set
-        # whose DLLs it loads at run time, and the MSVC toolchain. Branch refs are
-        # resolved to remote SHAs so a moved branch can never serve a stale binary.
-        # Bump the trailing -v1 to invalidate manually.
+        # must match the clone commands in the build step below), the w2025 dep
+        # tree it links against (IMAGES_W2025_REF from setup-quasar-windows), and
+        # the MSVC toolchain. Branch refs are resolved to remote SHAs so a moved
+        # branch can never serve a stale binary. Bump the trailing -v2 to
+        # invalidate manually.
         function Resolve-RemoteSha($repo, $ref) {
           $out = @(git ls-remote $repo $ref)
           if ($LASTEXITCODE -ne 0 -or -not $out) { throw "git ls-remote $repo $ref failed" }
@@ -32,9 +32,8 @@ runs:
         $logit  = Resolve-RemoteSha 'https://github.com/quasar-team/LogIt.git' 'refs/tags/v0.1.3'
         $vc = $env:VCToolsVersion; if (-not $vc) { $vc = 'unknown' }
         $vc = (($vc -split '\.')[0..1] -join '.')
-        # boost1.67vc141 tracks the setup-quasar-windows Boost pin; vcpkgv2 tracks
-        # its vcpkg cache key version (...-xerces-v2). Change those, change these.
-        $key = "uasak-dump-win-$uasak-$compat-$logit-vc$vc-boost1.67vc141-vcpkgv2-v1"
+        $deps = $env:IMAGES_W2025_REF; if (-not $deps) { throw "IMAGES_W2025_REF not set - setup-quasar-windows must run first" }
+        $key = "uasak-dump-win-$uasak-$compat-$logit-vc$vc-deps$deps-v2"
         Write-Host "uasak_dump cache key: $key"
         "key=$key" >> $env:GITHUB_OUTPUT
 
@@ -58,32 +57,21 @@ runs:
         # runner's CMake 4.x removed support for -- the documented escape hatch is
         # CMAKE_POLICY_VERSION_MINIMUM=3.5 (harmless for compat, which requires 3.16).
         $policy = '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
-        # LogIt/compat/uasak resolve Boost via find_package(Boost COMPONENTS ...),
-        # which is independent of quasar's path-based BoostSetup. Two adjustments
-        # are needed for the nuget Boost on this runner:
-        #  * Drop the job-inherited vcpkg CMAKE_TOOLCHAIN_FILE -- LogIt's stand-alone
-        #    CMake include()s it and then FATALs because it never sets BOOST_LIBS.
-        #    Without it, LogIt falls back to its own find_package(Boost) path.
-        #  * Steer FindBoost at the nuget vc141 *static* layout: the runner's cl is
-        #    vc143, so FindBoost would otherwise hunt for -vc143 libs nuget never ships.
+        # LogIt/compat/uasak resolve Boost via find_package(Boost ...), independent
+        # of quasar's path-based BoostSetup. The w2025 Boost (1.91) installs CMake
+        # config files, and CMake 4 removed the FindBoost module -- so drive CONFIG
+        # mode via Boost_DIR (the old Boost_COMPILER/FindBoost hints are dead).
+        # Sanity-probe on boost_thread: Boost >= 1.89 ships NO compiled system lib
+        # (header-only, stub removed), so system is the wrong canary.
         Remove-Item Env:CMAKE_TOOLCHAIN_FILE -ErrorAction SilentlyContinue
-        # Collect the nuget boost component libs into one dir for FindBoost's
-        # BOOST_LIBRARYDIR. Materialise the source list with @(...) and exclude the
-        # destination, or the lazy -Recurse enumeration walks into libs/ mid-copy and
-        # fails ("cannot overwrite the item ... with itself"). nuget ships x32+x64 and
-        # release+debug; FindBoost picks -x64 release via the hints below.
-        $libDst = 'C:\deps\boost\libs'
-        New-Item -ItemType Directory -Force $libDst | Out-Null
-        $srcLibs = @(Get-ChildItem C:\deps\boost -Recurse -Filter 'libboost_*.lib' -File | Where-Object { $_.DirectoryName -ne $libDst })
-        Write-Host "collecting $($srcLibs.Count) boost libs into $libDst"
-        $srcLibs | Copy-Item -Destination $libDst -Force
+        $sample = Get-ChildItem "$env:BOOST_PATH_LIBS" -Filter 'libboost_thread-*-mt-x64-*.lib' | Select-Object -First 1
+        if (-not $sample) { throw "no boost thread lib under $env:BOOST_PATH_LIBS" }
+        $bcfg = Get-ChildItem "$env:BOOST_PATH_LIBS\cmake" -Directory -Filter 'Boost-*' -ErrorAction SilentlyContinue | Select-Object -First 1
+        if (-not $bcfg) { throw "no BoostConfig dir under $env:BOOST_PATH_LIBS\cmake" }
+        Write-Host "boost lib sample: $($sample.Name); Boost_DIR: $($bcfg.FullName)"
         $boost = @(
-          "-DBOOST_INCLUDEDIR=$env:BOOST_PATH_HEADERS",
-          "-DBOOST_LIBRARYDIR=C:\deps\boost\libs",
-          "-DBoost_USE_STATIC_LIBS=ON",
-          "-DBoost_COMPILER=-vc141",
-          "-DBoost_ARCHITECTURE=-x64",
-          "-DBoost_NO_BOOST_CMAKE=ON"
+          "-DBoost_DIR=$($bcfg.FullName)",
+          "-DBoost_USE_STATIC_LIBS=ON"
         )
         git clone --depth=1 -b windows-msvc https://github.com/parasxos/UaSwissArmyKnife.git uasak
         cd uasak
@@ -94,25 +82,28 @@ runs:
         cmake --build build\work\LogIt\b; chk "LogIt build"
         cmake --install build\work\LogIt\b; chk "LogIt install"
         # 2) open62541-compat (fork) -> static lib + headers into build/deploy/open62541-compat
-        # compat >= v1.5.8 resolves Boost via find_package(Boost CONFIG), which the
-        # nuget 1.67 layout (pre-BoostConfig) cannot serve. Use compat's own
-        # boost_custom_win.cmake (new in v1.5.8): it globs tagged libs from the
-        # flat $env:BOOST_PATH_LIBS dir — exactly the C:\deps\boost\libs assembled
-        # above — bypassing discovery. It requires an explicit CMAKE_BUILD_TYPE
-        # (Release picks the -mt- libs and the /MD runtime; empty drifts to debug
-        # autolink names). Absolute config path: compat's include() resolves
-        # relative names against the cmake cwd (the uasak dir), not its source dir.
+        # compat >= v1.5.8 resolves Boost via find_package(Boost CONFIG); use compat's
+        # own boost_custom_win.cmake (new in v1.5.8): it globs tagged libs from the
+        # flat $env:BOOST_PATH_LIBS dir (the w2025 Boost lib dir) bypassing discovery.
+        # It requires an explicit CMAKE_BUILD_TYPE (Release picks the -mt- libs and
+        # the /MD runtime; empty drifts to debug autolink names). Absolute config
+        # path: compat's include() resolves relative names against the cmake cwd
+        # (the uasak dir), not its source dir.
         git clone -b v1.5.8 https://github.com/quasar-team/open62541-compat.git build\work\compat
-        $env:BOOST_PATH_LIBS = 'C:\deps\boost\libs'
         cmake -S build\work\compat -B build\work\compat\b -G Ninja $policy -DCMAKE_BUILD_TYPE=Release -DSTANDALONE_BUILD=ON -DLOGIT_BUILD_OPTION=LOGIT_AS_EXT_STATIC -DLOGIT_INCLUDE_DIR="$PWD\build\deploy\LogIt\include" -DLOGIT_EXT_LIB_DIR="$PWD\build\deploy\LogIt\lib" -DOPEN62541-COMPAT_BUILD_CONFIG_FILE="$($PWD.Path -replace '\\','/')/build/work/compat/boost_custom_win.cmake" -DCMAKE_INSTALL_PREFIX="$PWD\build\deploy\open62541-compat" -DSKIP_TESTS=ON; chk "compat configure"
         cmake --build build\work\compat\b; chk "compat build"
         cmake --install build\work\compat\b; chk "compat install"
-        # 3) uasak_dump itself. xerces-c is linked by bare name -> put vcpkg lib on LIB;
-        #    the xsd-generated UANodeSet.cxx pulls <xsd/cxx/...> + <xercesc/...> headers
-        #    that uasak's include_directories doesn't cover -> add them to cl's INCLUDE.
-        $env:LIB = "$env:LIB;C:\vcpkg\installed\x64-windows\lib"
-        $env:INCLUDE = "$env:INCLUDE;$env:CODE_SYNTHESYS_XSD_PATH_HEADERS;C:\vcpkg\installed\x64-windows\include"
-        cmake -S . -B build -G Ninja $policy -DCMAKE_BUILD_TYPE=Release @boost -DXSD_CXX_COMMAND=xsdcxx -DCMAKE_EXE_LINKER_FLAGS="/LIBPATH:C:\vcpkg\installed\x64-windows\lib /LIBPATH:C:\deps\boost\libs"; chk "uasak configure"
+        # 3) uasak_dump itself. xerces-c is linked by bare name -> alias the static
+        #    xerces-c_3.lib and put the w2025 lib dirs on LIB; the xsd-generated
+        #    UANodeSet.cxx pulls <xsd/cxx/...> + <xercesc/...> headers that uasak's
+        #    include_directories doesn't cover -> add them to cl's INCLUDE. The
+        #    w2025 xerces is static -> XERCES_STATIC_LIBRARY, or its headers declare
+        #    dllimport symbols and the link fails.
+        if (-not (Test-Path "$env:XERCESC_PATH_LIBS\xerces-c.lib")) { Copy-Item "$env:XERCESC_PATH_LIBS\xerces-c_3.lib" "$env:XERCESC_PATH_LIBS\xerces-c.lib" }
+        $env:LIB = "$env:LIB;$env:XERCESC_PATH_LIBS"
+        $env:INCLUDE = "$env:INCLUDE;$env:CODE_SYNTHESYS_XSD_PATH_HEADERS;$env:XERCESC_PATH_HEADERS"
+        $env:CL = "$env:CL /DXERCES_STATIC_LIBRARY"
+        cmake -S . -B build -G Ninja $policy -DCMAKE_BUILD_TYPE=Release @boost -DXSD_CXX_COMMAND=xsdcxx -DCMAKE_EXE_LINKER_FLAGS="/LIBPATH:$env:XERCESC_PATH_LIBS /LIBPATH:$env:BOOST_PATH_LIBS"; chk "uasak configure"
         cmake --build build; chk "uasak build"
         Get-ChildItem -Recurse -Filter 'uasak_dump*' build | Select-Object FullName
 

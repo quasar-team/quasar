@@ -1,15 +1,18 @@
 name: Setup quasar Windows build environment
 description: >
-  Token-free, GitHub-hosted windows-2025 build environment for quasar (the
-  Windows analog of the Linux quasar-ci images). Activates the host MSVC
-  toolchain and provisions Boost (nuget vc141 1.67), CodeSynthesis XSD, and
-  OpenSSL/LibXml2/Xerces-C (vcpkg, cached). Exposes the dep paths via
-  $GITHUB_ENV/$GITHUB_PATH for the steps that follow. No CERN/UASDK token.
+  Token-free, GitHub-hosted windows-2025 build environment for quasar,
+  provisioned by running the BE-ICS w2025 image scripts (quasar-team/images)
+  at a pinned ref -- so CI builds against the same dependency set BE-ICS
+  ships to production: source-built static /MD Boost, OpenSSL, LibXml2,
+  Xerces-C, and CodeSynthesis XSD installed as xsdcxx.exe. The built dep tree
+  is cached keyed on the images ref; cold builds take ~45-60 min, cached
+  restores seconds.
 
   A real Windows container image isn't used here: a container can't reuse the
   runner's pre-installed Visual Studio, so it would have to bake MSVC (~20 GB,
-  slow per-job pulls). This composite action is the "one move clean" equivalent
-  -- one `uses:` step provisions everything, with the heavy vcpkg deps cached.
+  slow per-job pulls). Running the image scripts directly, with the result
+  cached, is the "one move clean" equivalent -- and keeps our environment
+  drift-free against BE-ICS's by construction.
 
 runs:
   using: composite
@@ -23,77 +26,70 @@ runs:
       run: |
         python -m pip install jinja2 lxml colorama pygit2
         choco install astyle -y --no-progress
-    - name: Provision Boost (nuget vc141 1.67 libs + full headers)
+    # The pin is the w2025-jcop-sync branch of quasar-team/images -- a verbatim
+    # snapshot of jcop-opc-ua/common/images (the scripts BE-ICS builds their WS25
+    # CI images and dev envs from). Bump the ref to pick up their changes.
+    - name: Pin the BE-ICS w2025 image scripts
+      id: images
       shell: pwsh
       run: |
-        New-Item -ItemType Directory -Force C:\deps\boost | Out-Null
-        $pkgs='boost','boost-vc141','boost_system-vc141','boost_filesystem-vc141','boost_chrono-vc141','boost_date_time-vc141','boost_thread-vc141','boost_program_options-vc141','boost_log-vc141','boost_log_setup-vc141','boost_regex-vc141'
-        foreach($p in $pkgs){ nuget install $p -Version 1.67.0 -OutputDirectory C:\deps\boost -ExcludeVersion -NonInteractive }
-        # discover the real Boost include root (the dir containing boost\xpressive\xpressive.hpp)
-        $xp = Get-ChildItem C:\deps\boost -Recurse -Filter 'xpressive.hpp' -ErrorAction SilentlyContinue | Where-Object { $_.FullName -like '*\boost\xpressive\xpressive.hpp' } | Select-Object -First 1
-        if (-not $xp) { throw "boost/xpressive/xpressive.hpp not found under C:\deps\boost (incomplete Boost headers)" }
-        $boostInc = Split-Path (Split-Path (Split-Path $xp.FullName))
-        Write-Host "Boost include root: $boostInc"
-        "BOOST_PATH_HEADERS=$boostInc" >> $env:GITHUB_ENV
-        "BOOST_PATH_LIBS=C:\deps\boost" >> $env:GITHUB_ENV
-    # Mirrors BE-ICS w2025 Install-Xsd.ps1 / Install-LibXsd.ps1 (jcop-opc-ua/common/images):
-    # the binary is installed as xsdcxx.exe because VS developer prompts already carry
-    # Microsoft's .NET xsd.exe on PATH -- same clash the Debian rename avoids.
-    - name: Provision CodeSynthesis XSD (xsdcxx.exe + libxsd)
-      shell: pwsh
-      run: |
-        $xsdHome='C:\deps\xsd'
-        Invoke-WebRequest "https://www.codesynthesis.com/download/xsd/4.2/windows/windows10/x86_64/xsd-4.2.0-x86_64-windows10.zip" -OutFile xsd.zip
-        Expand-Archive xsd.zip C:\deps\xsd-dl -Force
-        $xsdexe=Get-ChildItem C:\deps\xsd-dl -Recurse -Filter xsd.exe -File | Select-Object -First 1
-        if (-not $xsdexe) { throw "xsd.exe not found in the XSD package" }
-        New-Item -ItemType Directory -Force $xsdHome | Out-Null
-        Copy-Item $xsdexe.FullName (Join-Path $xsdHome 'xsdcxx.exe') -Force
-        Invoke-WebRequest "https://www.codesynthesis.com/download/xsd/4.2/libxsd-4.2.0.tar.gz" -OutFile libxsd.tar.gz
-        New-Item -ItemType Directory -Force C:\deps\libxsd-src | Out-Null
-        tar -xzf libxsd.tar.gz -C C:\deps\libxsd-src
-        $src=Get-ChildItem C:\deps\libxsd-src -Directory | Select-Object -First 1
-        if (-not (Test-Path "$($src.FullName)\xsd\cxx")) { throw "libxsd headers not found under $($src.FullName)" }
-        $hdrs=Join-Path $xsdHome 'include\xsd\cxx'
-        New-Item -ItemType Directory -Force $hdrs | Out-Null
-        Copy-Item "$($src.FullName)\xsd\cxx\*" $hdrs -Recurse -Force
-        "CODE_SYNTHESYS_XSD_PATH_HEADERS=$xsdHome\include" >> $env:GITHUB_ENV
-        $xsdHome >> $env:GITHUB_PATH
-        Write-Host "xsdcxx.exe=$xsdHome\xsdcxx.exe"; Write-Host "libxsd=$xsdHome\include"
-    # Cache the built vcpkg deps. Split restore/save so the cache is written
-    # right after vcpkg (before the build step that may still fail) -- the
-    # combined cache action skips saving on a failed job, which is why earlier
-    # runs kept rebuilding for ~30 min.
-    - name: Restore vcpkg deps cache
-      id: vcpkgcache
+        $ref='44e4fd7730025a9be1b8d4209776f5399f7ac995'
+        git clone -q https://github.com/quasar-team/images.git C:\deps\images
+        git -C C:\deps\images checkout -q $ref
+        "ref=$ref" >> $env:GITHUB_OUTPUT
+        "IMAGES_W2025_REF=$($ref.Substring(0,12))" >> $env:GITHUB_ENV
+        "BOOST_HOME=C:\qdeps\boost" >> $env:GITHUB_ENV
+        "LIBSSL_HOME=C:\qdeps\openssl" >> $env:GITHUB_ENV
+        "LIBXML2_HOME=C:\qdeps\libxml2" >> $env:GITHUB_ENV
+        "XERCES_C_HOME=C:\qdeps\xerces-c" >> $env:GITHUB_ENV
+        "XSD_HOME=C:\qdeps\xsd" >> $env:GITHUB_ENV
+    # Split restore/save so the dep tree is cached right after a successful dep
+    # build (before the quasar build step that may still fail) -- the combined
+    # cache action skips saving on a failed job.
+    - name: Restore w2025 deps cache
+      id: depscache
       uses: actions/cache/restore@v4
       with:
-        path: C:\vcpkg\installed
-        key: vcpkg-x64-windows-openssl-libxml2-xerces-v2
-    - name: Provision OpenSSL / LibXml2 / Xerces-C (vcpkg)
+        path: C:\qdeps
+        key: w2025-deps-${{ steps.images.outputs.ref }}-v1
+    - name: Build deps via the w2025 scripts (cache miss only)
+      if: steps.depscache.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
-        vcpkg install openssl libxml2 xerces-c --triplet x64-windows
-        Write-Host "vcpkg exit code: $LASTEXITCODE"
-        $vi = "$env:VCPKG_INSTALLATION_ROOT\installed\x64-windows"
-        if (-not (Test-Path $vi)) { $vi = "C:\vcpkg\installed\x64-windows" }
-        Write-Host "vcpkg installed dir: $vi"
-        Get-ChildItem "$vi\lib" -Filter '*.lib' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name
-        $xl = Get-ChildItem "$vi\lib" -Filter 'xerces-c*.lib' -ErrorAction SilentlyContinue | Where-Object Name -notlike '*_3*' | Select-Object -First 1
-        if ($xl) { Copy-Item $xl.FullName "$vi\lib\xerces-c_3.lib" -Force }
-        # vcpkg ships xerces as xerces-c_3.lib; the server config wants that name, but
-        # uasak links the generic 'xerces-c' -> alias xerces-c.lib so both resolve.
-        if (Test-Path "$vi\lib\xerces-c_3.lib") { Copy-Item "$vi\lib\xerces-c_3.lib" "$vi\lib\xerces-c.lib" -Force }
-        if (Test-Path "$vi\lib\libcrypto.lib") { Copy-Item "$vi\lib\libcrypto.lib" "$vi\lib\openssl.lib" -Force }
-        "OPENSSL_PATH_HEADERS=$vi\include" >> $env:GITHUB_ENV
-        "OPENSSL_PATH_LIBS=$vi\lib" >> $env:GITHUB_ENV
-        "XERCESC_PATH_HEADERS=$vi\include" >> $env:GITHUB_ENV
-        "XERCESC_PATH_LIBS=$vi\lib" >> $env:GITHUB_ENV
-        "LIBXML2_PATH_LIBS=$vi\lib" >> $env:GITHUB_ENV
-        exit 0
-    - name: Save vcpkg deps cache
-      if: steps.vcpkgcache.outputs.cache-hit != 'true'
+        $ErrorActionPreference='Stop'
+        $s='C:\deps\images\w2025\scripts'
+        . "$s\Common.ps1"
+        Initialize-IssueFile
+        . "$s\Install-SpecialDeps.ps1"
+        . "$s\Build-OpenSSL.ps1"
+        . "$s\Build-LibXml2.ps1"
+        . "$s\Build-Boost.ps1"
+        . "$s\Build-Xerces-C.ps1"
+        . "$s\Install-Xsd.ps1"
+        . "$s\Install-LibXsd.ps1"
+    - name: Save w2025 deps cache
+      if: steps.depscache.outputs.cache-hit != 'true'
       uses: actions/cache/save@v4
       with:
-        path: C:\vcpkg\installed
-        key: vcpkg-x64-windows-openssl-libxml2-xerces-v2
+        path: C:\qdeps
+        key: w2025-deps-${{ steps.images.outputs.ref }}-v1
+    # Map the *_HOME layout onto the env names the quasar win configurations and
+    # build-uasak-dump consume. Everything is static: no runtime DLL PATH needed.
+    - name: Expose dep paths
+      shell: pwsh
+      run: |
+        $ErrorActionPreference='Stop'
+        $bi = Get-ChildItem "$env:BOOST_HOME\include" -Directory -Filter 'boost-*' -ErrorAction SilentlyContinue | Select-Object -First 1
+        $boostInc = if ($bi) { $bi.FullName } else { "$env:BOOST_HOME\include" }
+        if (-not (Test-Path "$boostInc\boost")) { throw "boost headers not found under $env:BOOST_HOME\include" }
+        $sslLibs = if (Test-Path "$env:LIBSSL_HOME\lib64") { "$env:LIBSSL_HOME\lib64" } else { "$env:LIBSSL_HOME\lib" }
+        "BOOST_PATH_HEADERS=$boostInc" >> $env:GITHUB_ENV
+        "BOOST_PATH_LIBS=$env:BOOST_HOME\lib" >> $env:GITHUB_ENV
+        "OPENSSL_PATH_HEADERS=$env:LIBSSL_HOME\include" >> $env:GITHUB_ENV
+        "OPENSSL_PATH_LIBS=$sslLibs" >> $env:GITHUB_ENV
+        "XERCESC_PATH_HEADERS=$env:XERCES_C_HOME\include" >> $env:GITHUB_ENV
+        "XERCESC_PATH_LIBS=$env:XERCES_C_HOME\lib" >> $env:GITHUB_ENV
+        "LIBXML2_PATH_LIBS=$env:LIBXML2_HOME\lib" >> $env:GITHUB_ENV
+        "CODE_SYNTHESYS_XSD_PATH_HEADERS=$env:XSD_HOME\include" >> $env:GITHUB_ENV
+        "$env:XSD_HOME" >> $env:GITHUB_PATH
+        Write-Host "boost=$boostInc ssl=$sslLibs xsd=$env:XSD_HOME"
