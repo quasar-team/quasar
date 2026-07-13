@@ -318,7 +318,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: C:\uasdk
-          key: ${{ matrix.cache_key }}
+          key: ${{ matrix.cache_key }}-w2025deps1
 
   # Fan the case set out over the pre-built SDKs: restore the right version from cache,
   # build the uasdk server (uasdk_win_configuration.cmake detects the 1.x-vs-2.x install
