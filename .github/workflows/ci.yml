@@ -248,3 +248,5 @@ jobs:
         run: python3 .CI/test_no_spurious_rebuild.py
       - if: always()
         run: python3 .CI/test_no_unbound_delegate.py
+      - if: always()
+        run: python3 .CI/test_generator_selection.py

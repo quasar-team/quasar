@@ -97,11 +97,16 @@ jobs:
           python -m pip install jinja2 lxml colorama pygit2
           choco install astyle -y --no-progress
         shell: pwsh
-      - name: Codegen idempotency / upgrade / unbound-delegate invariants
+      - name: Codegen idempotency / upgrade / unbound-delegate / generator invariants
         run: |
-          python .CI/test_upgrade_override.py
-          python .CI/test_no_spurious_rebuild.py
-          python .CI/test_no_unbound_delegate.py
+          # pwsh steps fail only on the LAST command's exit code -- check each
+          # test explicitly so an early failure can't be masked by a later pass.
+          $ErrorActionPreference='Stop'
+          function chk($w){ if ($LASTEXITCODE -ne 0) { throw "$w failed (exit $LASTEXITCODE)" } }
+          python .CI/test_upgrade_override.py;      chk "test_upgrade_override"
+          python .CI/test_no_spurious_rebuild.py;   chk "test_no_spurious_rebuild"
+          python .CI/test_no_unbound_delegate.py;   chk "test_no_unbound_delegate"
+          python .CI/test_generator_selection.py;   chk "test_generator_selection"
         shell: pwsh
 
   # Build the w2025 dep tree once and populate the cache before the case matrices
