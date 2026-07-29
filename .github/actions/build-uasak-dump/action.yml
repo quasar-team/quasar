@@ -27,7 +27,7 @@ runs:
           if ($LASTEXITCODE -ne 0 -or -not $out) { throw "git ls-remote $repo $ref failed" }
           ($out[0] -split '\s+')[0].Substring(0, 12)
         }
-        $uasak  = Resolve-RemoteSha 'https://github.com/parasxos/UaSwissArmyKnife.git' 'refs/heads/windows-msvc'
+        $uasak  = Resolve-RemoteSha 'https://github.com/quasar-team/UaSwissArmyKnife.git' 'refs/heads/windows-msvc'
         $compat = Resolve-RemoteSha 'https://github.com/quasar-team/open62541-compat.git' 'refs/tags/v1.5.8'
         $logit  = Resolve-RemoteSha 'https://github.com/quasar-team/LogIt.git' 'refs/tags/v0.1.3'
         $vc = $env:VCToolsVersion; if (-not $vc) { $vc = 'unknown' }
@@ -73,7 +73,7 @@ runs:
           "-DBoost_DIR=$($bcfg.FullName)",
           "-DBoost_USE_STATIC_LIBS=ON"
         )
-        git clone --depth=1 -b windows-msvc https://github.com/parasxos/UaSwissArmyKnife.git uasak
+        git clone --depth=1 -b windows-msvc https://github.com/quasar-team/UaSwissArmyKnife.git uasak
         cd uasak
         New-Item -ItemType Directory -Force build\deploy | Out-Null
         # 1) LogIt v0.1.3 -> static lib + headers into build/deploy/LogIt
