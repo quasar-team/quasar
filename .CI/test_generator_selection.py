@@ -24,6 +24,7 @@ Usage: python3 .CI/test_generator_selection.py
 import importlib.util
 import os
 import platform
+import shutil
 import sys
 import tempfile
 import types
@@ -89,11 +90,16 @@ def run_case(forced_os, extra_args, env):
         os.environ.pop(var, None)
     os.environ.update(env)
     platform.system = lambda: forced_os
-    context = {"projectSourceDir": QUASAR_ROOT,
-               "projectBinaryDir": tempfile.mkdtemp(prefix="quasar_gsel_")}
-    generate_cmake.generateCmake(context, *extra_args)
-    assert len(captured) == 1, "expected exactly one cmake invocation"
-    return captured[0]
+    tmp = tempfile.mkdtemp(prefix="quasar_gsel_")
+    try:
+        context = {"projectSourceDir": QUASAR_ROOT, "projectBinaryDir": tmp}
+        generate_cmake.generateCmake(context, *extra_args)
+        assert len(captured) == 1, "expected exactly one cmake invocation"
+        return captured[0]
+    finally:
+        # generateCmake chdirs into tmp, and Windows cannot delete the cwd
+        os.chdir(QUASAR_ROOT)
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def check(description, argv, expect_g=None, expect_a=None):
