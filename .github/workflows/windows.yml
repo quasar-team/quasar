@@ -203,14 +203,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      # -w2025deps1 tracks the dep provisioning generation (bump when the SDK must
+      # -w2025depsN tracks the dep provisioning generation (bump when the SDK must
       # rebuild against a new images pin; the manifest cache_key knows nothing of deps).
       - name: Restore built SDK from cache
         id: sdkcache
         uses: actions/cache/restore@v4
         with:
           path: C:\uasdk
-          key: ${{ matrix.cache_key }}-w2025deps1
+          key: ${{ matrix.cache_key }}-w2025deps2
       - name: Provision the token-free Windows build environment (w2025 deps + MSVC)
         if: steps.sdkcache.outputs.cache-hit != 'true'
         uses: ./.github/actions/setup-quasar-windows
@@ -279,6 +279,15 @@ jobs:
           } else {
             Write-Host "libxml2 const xmlError* patch not needed for this bundle"
           }
+          $snp = 0
+          Get-ChildItem $root -Recurse -Filter uaplatformdefs.h -ErrorAction SilentlyContinue | ForEach-Object {
+            $c = Get-Content $_.FullName -Raw
+            if ($c -match '#ifndef\s+snprintf') {
+              $c -replace '#ifndef\s+snprintf\s*\r?\n\s*#define\s+snprintf\s+_snprintf\s*\r?\n#endif', "#if defined(_MSC_VER) && _MSC_VER < 1900`r`n    #define snprintf    _snprintf`r`n#endif /* _MSC_VER < 1900 */" | Set-Content $_.FullName -NoNewline
+              $snp++
+            }
+          }
+          Write-Host "patched legacy snprintf shim guard in $snp uaplatformdefs.h copy/copies"
           # Build x64 against the w2025 static OpenSSL/libxml2 -- the same deps and the
           # same flags BE-ICS's Build-UASDK.ps1 uses (PKI_WIN32, OPENSSL_USE_STATIC_LIBS,
           # explicit SSL/CRYPTO libs, explicit libxml2). Everything static: no DLLs.
@@ -323,7 +332,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: C:\uasdk
-          key: ${{ matrix.cache_key }}-w2025deps1
+          key: ${{ matrix.cache_key }}-w2025deps2
 
   # Fan the case set out over the pre-built SDKs: restore the right version from cache,
   # build the uasdk server (uasdk_win_configuration.cmake detects the 1.x-vs-2.x install
@@ -358,7 +367,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: C:\uasdk
-          key: ${{ matrix.cache_key }}-w2025deps1
+          key: ${{ matrix.cache_key }}-w2025deps2
           fail-on-cache-miss: true
       - name: Verify the SDK is present
         run: if (-not (Test-Path C:\uasdk\lib)) { throw "UASDK cache missing C:\uasdk\lib" }
