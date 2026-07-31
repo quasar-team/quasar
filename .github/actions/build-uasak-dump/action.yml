@@ -1,39 +1,112 @@
 name: Build uasak_dump (Windows)
 description: >
-  Builds the o6 uasak_dump tool (LogIt v0.1.3 + open62541-compat fork + uasak)
-  on windows-2025 into ./uasak/build/uasak_dump.exe. uasak_dump is an OPC UA
-  *client* and is backend-agnostic, so the same tool drives the oracle for both
-  the o6 and uasdk servers. Requires the setup-quasar-windows action to have run
-  first (MSVC + the w2025 dep tree on the environment). The built exe is cached
-  keyed on every source ref plus the toolchain, so case cells normally restore
-  it in seconds instead of rebuilding.
+  Builds the o6 uasak_dump tool (LogIt + open62541-compat fork + uasak, every
+  source pinned to an exact commit) on windows-2025 into
+  ./uasak/build/uasak_dump.exe. uasak_dump is an OPC UA *client* and is
+  backend-agnostic, so the same tool drives the oracle for both the o6 and uasdk
+  servers -- which is why its provenance is pinned rather than tracked. Requires
+  the setup-quasar-windows action to have run first (MSVC + the w2025 dep tree on
+  the environment). The built exe is cached keyed on the pinned source commits,
+  this file's build recipe and the toolchain, so case cells normally restore it
+  in seconds instead of rebuilding.
 
 runs:
   using: composite
   steps:
-    - name: Derive the uasak_dump cache key (source refs + toolchain)
+    - name: Derive the uasak_dump cache key (source pins + build recipe + toolchain)
       id: key
       shell: pwsh
       run: |
         $ErrorActionPreference='Stop'
-        # uasak_dump.exe is a pure function of the three pinned source refs (they
-        # must match the clone commands in the build step below), the w2025 dep
-        # tree it links against (IMAGES_W2025_REF from setup-quasar-windows), and
-        # the MSVC toolchain. Branch refs are resolved to remote SHAs so a moved
-        # branch can never serve a stale binary. Bump the trailing -v2 to
-        # invalidate manually.
-        function Resolve-RemoteSha($repo, $ref) {
-          $out = @(git ls-remote $repo $ref)
-          if ($LASTEXITCODE -ne 0 -or -not $out) { throw "git ls-remote $repo $ref failed" }
-          ($out[0] -split '\s+')[0].Substring(0, 12)
+        # $PSNativeCommandUseErrorActionPreference=$true makes a nonzero NATIVE exit a
+        # TERMINATING error under EAP=Stop. It currently defaults to $false (verified on the
+        # 7.6 pwsh the runner ships), but it is a supported knob whose default already moved
+        # once between 7.3-experimental and 7.4-mainstream, and a runner profile can set it.
+        # This step must SURVIVE a failing `git ls-remote` -- the advisory block below is
+        # deliberately non-fatal -- so pin the behaviour instead of inheriting it. The only
+        # native call here checks $LASTEXITCODE itself. No-op on PowerShell versions that do
+        # not know the variable.
+        $PSNativeCommandUseErrorActionPreference = $false
+        # uasak_dump.exe is a pure function of the three pinned sources, THIS FILE's build
+        # recipe, the w2025 dep tree it links against (IMAGES_W2025_REF from
+        # setup-quasar-windows) and the MSVC toolchain -- all four are components of the key
+        # below, which is why it carries no hand-bumped salt any more. Sources are pinned to
+        # exact commits here and re-asserted against `git rev-parse HEAD` after checkout, so
+        # the key and the build source are one literal at both ends: do NOT retype a ref or a
+        # URL in the build step, take them from this table's outputs.
+        # Not covered, deliberately: the *contents* of the w2025 dep tree beyond its images
+        # ref. The uasdk lane rewrites libxsd headers in place before calling this action
+        # (windows.yml "Patch CodeSynthesis libxsd ..."), and that dir is on INCLUDE below, so
+        # both lanes share whichever entry was built first. Neutral today; the clean fix is to
+        # order that patch after this action, not to widen the key.
+        #
+        # uasak carries the MSVC port on no tag, so it is pinned by COMMIT: the tip of
+        # refs/heads/windows-msvc in quasar-team/UaSwissArmyKnife as of 2026-07-30. That branch
+        # is not protected and no other ref reaches this commit, so an upstream delete or
+        # discard-force-push breaks every cold build (loudly, at fetch) until it is protected
+        # -- tracked as a follow-up. Bump with:
+        #   git ls-remote https://github.com/quasar-team/UaSwissArmyKnife.git refs/heads/windows-msvc
+        # compat and LogIt are cloned BY TAG, so their pin must be the PEELED commit
+        #   git ls-remote <repo> "refs/tags/<tag>^{}"
+        # which is what `git rev-parse HEAD` yields after `clone -b <annotated tag>`; the
+        # tag-object SHA would fail Assert-Pinned on every cold build. tag='' means "fetched by
+        # commit", and only uasak is wired that way in the build step.
+        $pins = @(
+          @{ id='uasak';  repo='https://github.com/quasar-team/UaSwissArmyKnife.git'; tag='';       sha='83cfc083a97337dcc4ae2ba4c2925fdaa12901ef' },
+          @{ id='compat'; repo='https://github.com/quasar-team/open62541-compat.git'; tag='v1.5.8'; sha='a7c15940c91bb679d5b730c479178a3b13d5a6d4' },
+          @{ id='logit';  repo='https://github.com/quasar-team/LogIt.git';            tag='v0.1.3'; sha='6bf35197ef80f175c08d7888fcfa6563916d01ba' }
+        )
+        foreach ($p in $pins) {
+          if ($p.sha -cnotmatch '^[0-9a-f]{40}$') { throw "$($p.id): pin must be a full lowercase 40-hex commit, got '$($p.sha)'" }
+          "$($p.id)_sha=$($p.sha)"   >> $env:GITHUB_OUTPUT
+          "$($p.id)_repo=$($p.repo)" >> $env:GITHUB_OUTPUT
+          if (-not $p.tag) { continue }
+          "$($p.id)_tag=$($p.tag)" >> $env:GITHUB_OUTPUT
+          # Advisory only, never fatal. This step has no `if:` and runs BEFORE the cache
+          # restore, so a throw here reds the whole Windows matrix on an upstream event --
+          # exactly the outage this pinning exists to remove. Nothing is lost by not throwing:
+          # the key is built from the literal above, never from the resolved ref, so a warm
+          # cell serves precisely the binary its key describes, and a cold cell is still
+          # stopped by the clone (deleted tag) or by Assert-Pinned (moved tag) with an
+          # attributable message. Definitive upstream drift is raised as an ::error::
+          # annotation so it lands on the run summary instead of being buried in the log.
+          # An annotated tag resolves to a tag object whose '^{}' line is the commit; a
+          # lightweight one emits only the plain line, which already is one.
+          $out = @(git ls-remote $p.repo "refs/tags/$($p.tag)" "refs/tags/$($p.tag)^{}")
+          if ($LASTEXITCODE -ne 0) {
+            Write-Warning "cannot reach $($p.repo) to check $($p.tag) - the pin is still enforced after checkout"
+            continue
+          }
+          if (-not $out) {
+            Write-Host "::error::$($p.id): tag $($p.tag) no longer exists in $($p.repo) - warm cells keep serving the pinned binary, but every COLD cell will fail at clone. Re-point or re-pin in .github/actions/build-uasak-dump/action.yml."
+            continue
+          }
+          $peeled = @($out | Where-Object { $_ -match '\^\{\}$' })
+          $line = if ($peeled.Count) { $peeled[0] } else { $out[0] }
+          $actual = ($line -split '\s+')[0]
+          if ($actual -ne $p.sha) {
+            Write-Host "::error::$($p.id): tag $($p.tag) now resolves to $actual but this action pins $($p.sha) - either the upstream tag moved (the oracle would have changed with no commit in this repo) or the pin holds the tag object instead of the peeled commit from ``git ls-remote <repo> 'refs/tags/$($p.tag)^{}'``. Warm cells are unaffected; every cold cell fails at Assert-Pinned. Re-point or re-pin in .github/actions/build-uasak-dump/action.yml."
+          }
         }
-        $uasak  = Resolve-RemoteSha 'https://github.com/quasar-team/UaSwissArmyKnife.git' 'refs/heads/windows-msvc'
-        $compat = Resolve-RemoteSha 'https://github.com/quasar-team/open62541-compat.git' 'refs/tags/v1.5.8'
-        $logit  = Resolve-RemoteSha 'https://github.com/quasar-team/LogIt.git' 'refs/tags/v0.1.3'
+        $short = $pins | ForEach-Object { $_.sha.Substring(0, 12) }
+        # The build recipe lives in this file too: every cmake flag, the Boost/Boost_DIR
+        # handling, the xerces alias and the INCLUDE/LIB/CL manipulation. Hash the file into
+        # the key so an edited recipe cannot restore a binary built by the previous one. The
+        # acute case is a PR that changes a flag, computes the same key, restores master's exe
+        # from the base-branch cache scope and goes green without ever building its own change
+        # -- then flips the oracle for everyone at a later, unrelated cache eviction. Cost: any
+        # edit here (comments included) forces one matrix-wide cold build, ~90 s per cell, and
+        # it replaces the hand-bumped salt this key used to carry.
+        $ap = $env:GITHUB_ACTION_PATH
+        if (-not $ap) { throw "GITHUB_ACTION_PATH not set - cannot hash the build recipe into the cache key" }
+        $recipe = (Get-FileHash "$ap/action.yml" -Algorithm SHA256).Hash.Substring(0, 12).ToLower()
+        # Full VCToolsVersion, not major.minor: a patch-level MSVC bump is a different linker.
+        # Unset is not fatal here -- IMAGES_W2025_REF below already catches "setup-quasar-windows
+        # did not run", and a toolchain-less cold build cannot poison this key because the save
+        # step only runs on success.
         $vc = $env:VCToolsVersion; if (-not $vc) { $vc = 'unknown' }
-        $vc = (($vc -split '\.')[0..1] -join '.')
         $deps = $env:IMAGES_W2025_REF; if (-not $deps) { throw "IMAGES_W2025_REF not set - setup-quasar-windows must run first" }
-        $key = "uasak-dump-win-$uasak-$compat-$logit-vc$vc-deps$deps-v2"
+        $key = "uasak-dump-win-$($short -join '-')-vc$vc-deps$deps-r$recipe"
         Write-Host "uasak_dump cache key: $key"
         "key=$key" >> $env:GITHUB_OUTPUT
 
@@ -47,12 +120,41 @@ runs:
     - name: Build uasak_dump (+ LogIt + compat)
       if: steps.cache.outputs.cache-hit != 'true'
       shell: pwsh
+      # Repos, tags and commits all come from the key step as outputs -- never re-typed here.
+      # That is what makes "the thing we cloned" and "the thing the cache key names" the same
+      # literal by construction rather than by comment.
+      env:
+        UASAK_REPO:  ${{ steps.key.outputs.uasak_repo }}
+        UASAK_SHA:   ${{ steps.key.outputs.uasak_sha }}
+        COMPAT_REPO: ${{ steps.key.outputs.compat_repo }}
+        COMPAT_TAG:  ${{ steps.key.outputs.compat_tag }}
+        COMPAT_SHA:  ${{ steps.key.outputs.compat_sha }}
+        LOGIT_REPO:  ${{ steps.key.outputs.logit_repo }}
+        LOGIT_TAG:   ${{ steps.key.outputs.logit_tag }}
+        LOGIT_SHA:   ${{ steps.key.outputs.logit_sha }}
       run: |
         $ErrorActionPreference='Stop'
-        # PowerShell's ErrorActionPreference does NOT stop on a native-exe nonzero
-        # exit, so a failed cmake silently cascades. Guard every cmake call so the
-        # first real failure stops here and is attributable.
+        # ErrorActionPreference alone does NOT stop on a native-exe nonzero exit (that needs
+        # $PSNativeCommandUseErrorActionPreference, which defaults to $false), so a failed
+        # cmake would silently cascade. Pin that default rather than inherit it, and guard
+        # every native call with chk() so the first real failure stops here with a message
+        # naming what failed. Every native call below is chk'd -- keep it that way.
+        $PSNativeCommandUseErrorActionPreference = $false
         function chk($what) { if ($LASTEXITCODE -ne 0) { throw "$what failed (exit $LASTEXITCODE)" } }
+        # Fail closed and explain, rather than letting an empty ref reach `git clone -b`, whose
+        # diagnostic ("Remote branch  not found in upstream origin") points nowhere near the
+        # cause. compat and LogIt are cloned BY TAG below, so blanking a tag in the pins table
+        # is not a way to SHA-pin them: that needs the fetch-by-commit form used for uasak.
+        foreach ($v in 'UASAK_REPO','UASAK_SHA','COMPAT_REPO','COMPAT_TAG','COMPAT_SHA','LOGIT_REPO','LOGIT_TAG','LOGIT_SHA') {
+          if (-not [Environment]::GetEnvironmentVariable($v)) { throw "$v is empty - the pins table in the key step did not emit it (compat/LogIt are cloned by tag; SHA-pinning them means switching to the fetch-by-commit form used for uasak)" }
+        }
+        # The cache key names an exact commit per source; prove each working tree IS that
+        # commit before anything is built and saved under that key. A tag moved between key
+        # derivation and clone therefore fails here instead of poisoning the cache entry.
+        function Assert-Pinned($dir, $sha) {
+          $head = (git -C $dir rev-parse HEAD); chk "rev-parse in $dir"
+          if ($head -ne $sha) { throw "$dir is at $head but the cache key was derived from $sha - refusing to cache a binary under a key that does not describe it" }
+        }
         # LogIt (2.8) and uasak (3.0) declare cmake_minimum_required < 3.5, which the
         # runner's CMake 4.x removed support for -- the documented escape hatch is
         # CMAKE_POLICY_VERSION_MINIMUM=3.5 (harmless for compat, which requires 3.16).
@@ -73,11 +175,21 @@ runs:
           "-DBoost_DIR=$($bcfg.FullName)",
           "-DBoost_USE_STATIC_LIBS=ON"
         )
-        git clone --depth=1 -b windows-msvc https://github.com/quasar-team/UaSwissArmyKnife.git uasak
+        # `git clone -b` takes a branch or a tag, never a bare commit, so the pin is fetched
+        # directly. --no-tags keeps `git describe --tags` empty, which is what makes uasak's
+        # CMakeLists take its 0.0.0 fallback rather than splitting a describe string on '.'
+        # and indexing [2] -- a describe that yields fewer parts aborts configure.
+        New-Item -ItemType Directory -Force uasak | Out-Null
         cd uasak
+        git init -q .; chk "uasak git init"
+        git remote add origin $env:UASAK_REPO; chk "uasak remote add"
+        git fetch --no-tags --depth=1 origin $env:UASAK_SHA; chk "uasak fetch of $env:UASAK_SHA (if the commit is gone, the branch it lives on was rewritten or deleted upstream - see the pins table in the key step and re-pin)"
+        git checkout -q --detach FETCH_HEAD; chk "uasak checkout"
+        Assert-Pinned '.' $env:UASAK_SHA
         New-Item -ItemType Directory -Force build\deploy | Out-Null
-        # 1) LogIt v0.1.3 -> static lib + headers into build/deploy/LogIt
-        git clone --depth=1 -b v0.1.3 https://github.com/quasar-team/LogIt.git build\work\LogIt
+        # 1) LogIt -> static lib + headers into build/deploy/LogIt
+        git clone --depth=1 -b $env:LOGIT_TAG $env:LOGIT_REPO build\work\LogIt; chk "LogIt clone of $env:LOGIT_TAG (if the tag is gone, re-point or re-pin in this file)"
+        Assert-Pinned 'build\work\LogIt' $env:LOGIT_SHA
         cmake -S build\work\LogIt -B build\work\LogIt\b -G Ninja $policy -DCMAKE_BUILD_TYPE=Release -DLOGIT_BUILD_STAND_ALONE=ON -DLOGIT_BUILD_STATIC_LIB=ON @boost -DCMAKE_INSTALL_PREFIX="$PWD\build\deploy\LogIt"; chk "LogIt configure"
         cmake --build build\work\LogIt\b; chk "LogIt build"
         cmake --install build\work\LogIt\b; chk "LogIt install"
@@ -89,7 +201,8 @@ runs:
         # the /MD runtime; empty drifts to debug autolink names). Absolute config
         # path: compat's include() resolves relative names against the cmake cwd
         # (the uasak dir), not its source dir.
-        git clone -b v1.5.8 https://github.com/quasar-team/open62541-compat.git build\work\compat
+        git clone -b $env:COMPAT_TAG $env:COMPAT_REPO build\work\compat; chk "compat clone of $env:COMPAT_TAG (if the tag is gone, re-point or re-pin in this file)"
+        Assert-Pinned 'build\work\compat' $env:COMPAT_SHA
         cmake -S build\work\compat -B build\work\compat\b -G Ninja $policy -DCMAKE_BUILD_TYPE=Release -DSTANDALONE_BUILD=ON -DLOGIT_BUILD_OPTION=LOGIT_AS_EXT_STATIC -DLOGIT_INCLUDE_DIR="$PWD\build\deploy\LogIt\include" -DLOGIT_EXT_LIB_DIR="$PWD\build\deploy\LogIt\lib" -DOPEN62541-COMPAT_BUILD_CONFIG_FILE="$($PWD.Path -replace '\\','/')/build/work/compat/boost_custom_win.cmake" -DCMAKE_INSTALL_PREFIX="$PWD\build\deploy\open62541-compat" -DSKIP_TESTS=ON; chk "compat configure"
         cmake --build build\work\compat\b; chk "compat build"
         cmake --install build\work\compat\b; chk "compat install"
