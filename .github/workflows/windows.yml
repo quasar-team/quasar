@@ -27,6 +27,9 @@ permissions:
   contents: read
   packages: read
 
+env:
+  NODESETTOOLS_COMMIT: e477572df35e90e703e32c9bbeddca110e5c6543
+
 jobs:
 
   # Derive the Windows matrix from the SAME manifest as the Linux cube, so WS2025 and
@@ -107,6 +110,7 @@ jobs:
           python .CI/test_no_spurious_rebuild.py;   chk "test_no_spurious_rebuild"
           python .CI/test_no_unbound_delegate.py;   chk "test_no_unbound_delegate"
           python .CI/test_generator_selection.py;   chk "test_generator_selection"
+          python .CI/test_ci_supply_chain.py;       chk "test_ci_supply_chain"
         shell: pwsh
 
   # Build the w2025 dep tree once and populate the cache before the case matrices
@@ -154,6 +158,7 @@ jobs:
       - name: Run case ${{ matrix.case }} (o6) — build + run + oracle
         run: |
           $ErrorActionPreference='Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
           # uasak_dump.exe (built above, in .\uasak\build) on PATH; the w2025 deps are
           # all static so no runtime DLLs are needed. NodeSetTools provides
           # nodeset_compare for the oracle. run_test_case.py applies the case's
@@ -161,8 +166,15 @@ jobs:
           # + the MSVC compat fork via the QUASAR_* env above), runs it, dumps the
           # address space, and judges by the case kind (oracle diff vs smoke).
           $env:Path += ";$PWD\uasak\build"
-          git clone --depth=1 -b v0.0.5 https://github.com/quasar-team/NodeSetTools.git C:\deps\NodeSetTools
-          $env:QUASAR_NODESETTOOLS='C:\deps\NodeSetTools'
+          $nodeSetToolsDir = 'C:\deps\NodeSetTools'
+          $nodeSetToolsRepo = 'https://github.com/quasar-team/NodeSetTools.git'
+          if (-not $env:NODESETTOOLS_COMMIT) { throw "NODESETTOOLS_COMMIT is empty - the nodeset_compare oracle pin is declared once in this workflow's top-level env block" }
+          function chkOracleFetch($step) { if ($LASTEXITCODE -ne 0) { throw "$step failed (exit $LASTEXITCODE) acquiring the nodeset_compare oracle at commit $env:NODESETTOOLS_COMMIT from $nodeSetToolsRepo - if the fetch is the step that failed, the pinned commit is no longer reachable upstream and NODESETTOOLS_COMMIT must be re-pinned in this workflow" } }
+          git init -q $nodeSetToolsDir; chkOracleFetch 'git init'
+          git -C $nodeSetToolsDir remote add origin $nodeSetToolsRepo; chkOracleFetch 'git remote add origin'
+          git -C $nodeSetToolsDir fetch --depth=1 origin $env:NODESETTOOLS_COMMIT; chkOracleFetch 'git fetch of the pinned commit (git clone -b accepts branch and tag names only, never a commit, hence this init+fetch form)'
+          git -C $nodeSetToolsDir checkout -q --detach FETCH_HEAD; chkOracleFetch 'git checkout --detach FETCH_HEAD'
+          $env:QUASAR_NODESETTOOLS = $nodeSetToolsDir
           python .CI\run_test_case.py --case ${{ matrix.case }} --backend o6
           if ($LASTEXITCODE -ne 0) { throw "case ${{ matrix.case }} (o6) failed" }
         shell: pwsh
@@ -372,6 +384,8 @@ jobs:
       - name: Verify the SDK is present
         run: if (-not (Test-Path C:\uasdk\lib)) { throw "UASDK cache missing C:\uasdk\lib" }
         shell: pwsh
+      - name: Build uasak_dump (backend-agnostic dump tool)
+        uses: ./.github/actions/build-uasak-dump
       - name: Patch CodeSynthesis libxsd for the msxml/Xerces DOMDocument clash
         run: |
           $ErrorActionPreference='Stop'
@@ -402,19 +416,25 @@ jobs:
           }
           Write-Host "qualified bare DOMDocument -> xercesc::DOMDocument in $n libxsd files"
         shell: pwsh
-      - name: Build uasak_dump (backend-agnostic dump tool)
-        uses: ./.github/actions/build-uasak-dump
       - name: Run case ${{ matrix.case }} (uasdk) — build + run + oracle
         run: |
           $ErrorActionPreference='Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
           # uasak_dump (./uasak/build) + the SDK's bin on PATH (w2025 deps are static, no
           # runtime DLLs); NodeSetTools for the compare. run_test_case.py applies the case
           # design/config, builds the uasdk server (uasdk_win_configuration via
           # QUASAR_BUILD_CONFIG + OPCUA_TOOLKIT_PATH), runs it, dumps, normalizes the
           # open62541>=1.5 quoted NodeIds to bare, and judges by case kind.
           $env:Path += ";$PWD\uasak\build;C:\uasdk\bin"
-          git clone --depth=1 -b v0.0.5 https://github.com/quasar-team/NodeSetTools.git C:\deps\NodeSetTools
-          $env:QUASAR_NODESETTOOLS='C:\deps\NodeSetTools'
+          $nodeSetToolsDir = 'C:\deps\NodeSetTools'
+          $nodeSetToolsRepo = 'https://github.com/quasar-team/NodeSetTools.git'
+          if (-not $env:NODESETTOOLS_COMMIT) { throw "NODESETTOOLS_COMMIT is empty - the nodeset_compare oracle pin is declared once in this workflow's top-level env block" }
+          function chkOracleFetch($step) { if ($LASTEXITCODE -ne 0) { throw "$step failed (exit $LASTEXITCODE) acquiring the nodeset_compare oracle at commit $env:NODESETTOOLS_COMMIT from $nodeSetToolsRepo - if the fetch is the step that failed, the pinned commit is no longer reachable upstream and NODESETTOOLS_COMMIT must be re-pinned in this workflow" } }
+          git init -q $nodeSetToolsDir; chkOracleFetch 'git init'
+          git -C $nodeSetToolsDir remote add origin $nodeSetToolsRepo; chkOracleFetch 'git remote add origin'
+          git -C $nodeSetToolsDir fetch --depth=1 origin $env:NODESETTOOLS_COMMIT; chkOracleFetch 'git fetch of the pinned commit (git clone -b accepts branch and tag names only, never a commit, hence this init+fetch form)'
+          git -C $nodeSetToolsDir checkout -q --detach FETCH_HEAD; chkOracleFetch 'git checkout --detach FETCH_HEAD'
+          $env:QUASAR_NODESETTOOLS = $nodeSetToolsDir
           python .CI\run_test_case.py --case ${{ matrix.case }} --backend uasdk
           if ($LASTEXITCODE -ne 0) { throw "case ${{ matrix.case }} (uasdk) failed" }
         shell: pwsh
