@@ -11,7 +11,10 @@ RUN git clone https://github.com/quasar-team/UaSwissArmyKnife.git -b v0.7
 RUN git clone https://github.com/pnikiel/PrepareEcosystem.git
 RUN git clone --depth=1 -b v0.1.3 https://github.com/quasar-team/LogIt.git
 RUN git clone -b v1.4.7 https://github.com/quasar-team/open62541-compat.git
-RUN git clone https://github.com/quasar-team/NodeSetTools.git -b v0.0.5
+RUN git init /NodeSetTools \
+  && git -C /NodeSetTools remote add origin https://github.com/quasar-team/NodeSetTools.git \
+  && git -C /NodeSetTools fetch --depth=1 origin e477572df35e90e703e32c9bbeddca110e5c6543 \
+  && git -C /NodeSetTools checkout --detach FETCH_HEAD
 
 FROM cern/alma9-base
 LABEL org.opencontainers.image.source="https://github.com/parasxos/quasar"

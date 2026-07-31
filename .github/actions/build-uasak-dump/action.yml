@@ -1,14 +1,10 @@
 name: Build uasak_dump (Windows)
 description: >
-  Builds the o6 uasak_dump tool (LogIt + open62541-compat fork + uasak, every
-  source pinned to an exact commit) on windows-2025 into
-  ./uasak/build/uasak_dump.exe. uasak_dump is an OPC UA *client* and is
-  backend-agnostic, so the same tool drives the oracle for both the o6 and uasdk
-  servers -- which is why its provenance is pinned rather than tracked. Requires
-  the setup-quasar-windows action to have run first (MSVC + the w2025 dep tree on
-  the environment). The built exe is cached keyed on the pinned source commits,
-  this file's build recipe and the toolchain, so case cells normally restore it
-  in seconds instead of rebuilding.
+  Builds ./uasak/build/uasak_dump.exe on windows-2025 from LogIt + open62541-compat
+  + uasak, each pinned to an exact commit, and caches it keyed on those pins, this
+  file's build recipe and the toolchain. uasak_dump is a backend-agnostic OPC UA
+  client, so one build serves both the o6 and uasdk lanes. Requires the
+  setup-quasar-windows action to have run first.
 
 runs:
   using: composite
@@ -18,96 +14,51 @@ runs:
       shell: pwsh
       run: |
         $ErrorActionPreference='Stop'
-        # $PSNativeCommandUseErrorActionPreference=$true makes a nonzero NATIVE exit a
-        # TERMINATING error under EAP=Stop. It currently defaults to $false (verified on the
-        # 7.6 pwsh the runner ships), but it is a supported knob whose default already moved
-        # once between 7.3-experimental and 7.4-mainstream, and a runner profile can set it.
-        # This step must SURVIVE a failing `git ls-remote` -- the advisory block below is
-        # deliberately non-fatal -- so pin the behaviour instead of inheriting it. The only
-        # native call here checks $LASTEXITCODE itself. No-op on PowerShell versions that do
-        # not know the variable.
         $PSNativeCommandUseErrorActionPreference = $false
-        # uasak_dump.exe is a pure function of the three pinned sources, THIS FILE's build
-        # recipe, the w2025 dep tree it links against (IMAGES_W2025_REF from
-        # setup-quasar-windows) and the MSVC toolchain -- all four are components of the key
-        # below, which is why it carries no hand-bumped salt any more. Sources are pinned to
-        # exact commits here and re-asserted against `git rev-parse HEAD` after checkout, so
-        # the key and the build source are one literal at both ends: do NOT retype a ref or a
-        # URL in the build step, take them from this table's outputs.
-        # Not covered, deliberately: the *contents* of the w2025 dep tree beyond its images
-        # ref. The uasdk lane rewrites libxsd headers in place before calling this action
-        # (windows.yml "Patch CodeSynthesis libxsd ..."), and that dir is on INCLUDE below, so
-        # both lanes share whichever entry was built first. Neutral today; the clean fix is to
-        # order that patch after this action, not to widen the key.
-        #
-        # uasak carries the MSVC port on no tag, so it is pinned by COMMIT: the tip of
-        # refs/heads/windows-msvc in quasar-team/UaSwissArmyKnife as of 2026-07-30. That branch
-        # is not protected and no other ref reaches this commit, so an upstream delete or
-        # discard-force-push breaks every cold build (loudly, at fetch) until it is protected
-        # -- tracked as a follow-up. Bump with:
-        #   git ls-remote https://github.com/quasar-team/UaSwissArmyKnife.git refs/heads/windows-msvc
-        # compat and LogIt are cloned BY TAG, so their pin must be the PEELED commit
-        #   git ls-remote <repo> "refs/tags/<tag>^{}"
-        # which is what `git rev-parse HEAD` yields after `clone -b <annotated tag>`; the
-        # tag-object SHA would fail Assert-Pinned on every cold build. tag='' means "fetched by
-        # commit", and only uasak is wired that way in the build step.
         $pins = @(
           @{ id='uasak';  repo='https://github.com/quasar-team/UaSwissArmyKnife.git'; tag='';       sha='83cfc083a97337dcc4ae2ba4c2925fdaa12901ef' },
           @{ id='compat'; repo='https://github.com/quasar-team/open62541-compat.git'; tag='v1.5.8'; sha='a7c15940c91bb679d5b730c479178a3b13d5a6d4' },
           @{ id='logit';  repo='https://github.com/quasar-team/LogIt.git';            tag='v0.1.3'; sha='6bf35197ef80f175c08d7888fcfa6563916d01ba' }
         )
+        function Write-AdvisoryTagDriftAnnotation {
+          param($id, $repo, $tag, $pinnedSha)
+          try {
+            $out = @(git ls-remote $repo "refs/tags/$($tag)" "refs/tags/$($tag)^{}")
+            if ($LASTEXITCODE -ne 0) {
+              Write-Warning "cannot reach $($repo) to check $($tag) - the pin is still enforced after checkout. This probe is advisory and never fatal, which is why the step pins `$PSNativeCommandUseErrorActionPreference to `$false and inspects `$LASTEXITCODE by hand instead of letting a native failure terminate."
+              return
+            }
+            if (-not $out) {
+              Write-Host "::error::$($id): tag $($tag) no longer exists in $($repo) - warm cells keep serving the pinned binary, but every COLD cell will fail at clone. Re-point or re-pin in .github/actions/build-uasak-dump/action.yml."
+              return
+            }
+            $peeledLines = @($out | Where-Object { $_ -match '\^\{\}$' })
+            $refLine = if ($peeledLines.Count) { $peeledLines[0] } else { $out[0] }
+            $actual = ($refLine -split '\s+')[0]
+            if ($actual -ne $pinnedSha) {
+              Write-Host "::error::$($id): tag $($tag) now resolves to $actual but this action pins $($pinnedSha) - either the upstream tag moved (the oracle would have changed with no commit in this repo) or the pin holds the tag object instead of the peeled commit from ``git ls-remote <repo> 'refs/tags/$($tag)^{}'``. Warm cells are unaffected; every cold cell fails at Assert-Pinned. Re-point or re-pin in .github/actions/build-uasak-dump/action.yml."
+            }
+          } catch {
+            Write-Host "::warning::the tag-drift probe for $($id) failed internally and is deliberately never fatal - it runs before the cache restore and this step has no if:, so throwing here would red the whole Windows matrix on an upstream event: $_"
+          }
+        }
         foreach ($p in $pins) {
           if ($p.sha -cnotmatch '^[0-9a-f]{40}$') { throw "$($p.id): pin must be a full lowercase 40-hex commit, got '$($p.sha)'" }
           "$($p.id)_sha=$($p.sha)"   >> $env:GITHUB_OUTPUT
           "$($p.id)_repo=$($p.repo)" >> $env:GITHUB_OUTPUT
           if (-not $p.tag) { continue }
           "$($p.id)_tag=$($p.tag)" >> $env:GITHUB_OUTPUT
-          # Advisory only, never fatal. This step has no `if:` and runs BEFORE the cache
-          # restore, so a throw here reds the whole Windows matrix on an upstream event --
-          # exactly the outage this pinning exists to remove. Nothing is lost by not throwing:
-          # the key is built from the literal above, never from the resolved ref, so a warm
-          # cell serves precisely the binary its key describes, and a cold cell is still
-          # stopped by the clone (deleted tag) or by Assert-Pinned (moved tag) with an
-          # attributable message. Definitive upstream drift is raised as an ::error::
-          # annotation so it lands on the run summary instead of being buried in the log.
-          # An annotated tag resolves to a tag object whose '^{}' line is the commit; a
-          # lightweight one emits only the plain line, which already is one.
-          $out = @(git ls-remote $p.repo "refs/tags/$($p.tag)" "refs/tags/$($p.tag)^{}")
-          if ($LASTEXITCODE -ne 0) {
-            Write-Warning "cannot reach $($p.repo) to check $($p.tag) - the pin is still enforced after checkout"
-            continue
-          }
-          if (-not $out) {
-            Write-Host "::error::$($p.id): tag $($p.tag) no longer exists in $($p.repo) - warm cells keep serving the pinned binary, but every COLD cell will fail at clone. Re-point or re-pin in .github/actions/build-uasak-dump/action.yml."
-            continue
-          }
-          $peeled = @($out | Where-Object { $_ -match '\^\{\}$' })
-          $line = if ($peeled.Count) { $peeled[0] } else { $out[0] }
-          $actual = ($line -split '\s+')[0]
-          if ($actual -ne $p.sha) {
-            Write-Host "::error::$($p.id): tag $($p.tag) now resolves to $actual but this action pins $($p.sha) - either the upstream tag moved (the oracle would have changed with no commit in this repo) or the pin holds the tag object instead of the peeled commit from ``git ls-remote <repo> 'refs/tags/$($p.tag)^{}'``. Warm cells are unaffected; every cold cell fails at Assert-Pinned. Re-point or re-pin in .github/actions/build-uasak-dump/action.yml."
-          }
+          Write-AdvisoryTagDriftAnnotation -id $p.id -repo $p.repo -tag $p.tag -pinnedSha $p.sha
         }
         $short = $pins | ForEach-Object { $_.sha.Substring(0, 12) }
-        # The build recipe lives in this file too: every cmake flag, the Boost/Boost_DIR
-        # handling, the xerces alias and the INCLUDE/LIB/CL manipulation. Hash the file into
-        # the key so an edited recipe cannot restore a binary built by the previous one. The
-        # acute case is a PR that changes a flag, computes the same key, restores master's exe
-        # from the base-branch cache scope and goes green without ever building its own change
-        # -- then flips the oracle for everyone at a later, unrelated cache eviction. Cost: any
-        # edit here (comments included) forces one matrix-wide cold build, ~90 s per cell, and
-        # it replaces the hand-bumped salt this key used to carry.
         $ap = $env:GITHUB_ACTION_PATH
         if (-not $ap) { throw "GITHUB_ACTION_PATH not set - cannot hash the build recipe into the cache key" }
-        $recipe = (Get-FileHash "$ap/action.yml" -Algorithm SHA256).Hash.Substring(0, 12).ToLower()
-        # Full VCToolsVersion, not major.minor: a patch-level MSVC bump is a different linker.
-        # Unset is not fatal here -- IMAGES_W2025_REF below already catches "setup-quasar-windows
-        # did not run", and a toolchain-less cold build cannot poison this key because the save
-        # step only runs on success.
+        $recipeHash = (Get-FileHash "$ap/action.yml" -Algorithm SHA256).Hash.Substring(0, 12).ToLower()
         $vc = $env:VCToolsVersion; if (-not $vc) { $vc = 'unknown' }
         $deps = $env:IMAGES_W2025_REF; if (-not $deps) { throw "IMAGES_W2025_REF not set - setup-quasar-windows must run first" }
-        $key = "uasak-dump-win-$($short -join '-')-vc$vc-deps$deps-r$recipe"
+        $key = "uasak-dump-win-$($short -join '-')-vc$vc-deps$deps-r$recipeHash"
         Write-Host "uasak_dump cache key: $key"
+        Write-Host "cache key inputs: the pinned uasak/compat/LogIt commits, full MSVC VCToolsVersion $vc, w2025 dep tree $deps, and the SHA-256 of this action.yml - hashing the recipe is what stops an edited build from restoring the binary a previous recipe produced, which would otherwise let a PR go green on master's exe and then flip the oracle for everyone at a later eviction; the price is one cold uasak_dump build per Windows cell whenever this file changes"
         "key=$key" >> $env:GITHUB_OUTPUT
 
     - name: Restore uasak_dump from cache
@@ -120,9 +71,6 @@ runs:
     - name: Build uasak_dump (+ LogIt + compat)
       if: steps.cache.outputs.cache-hit != 'true'
       shell: pwsh
-      # Repos, tags and commits all come from the key step as outputs -- never re-typed here.
-      # That is what makes "the thing we cloned" and "the thing the cache key names" the same
-      # literal by construction rather than by comment.
       env:
         UASAK_REPO:  ${{ steps.key.outputs.uasak_repo }}
         UASAK_SHA:   ${{ steps.key.outputs.uasak_sha }}
@@ -134,90 +82,56 @@ runs:
         LOGIT_SHA:   ${{ steps.key.outputs.logit_sha }}
       run: |
         $ErrorActionPreference='Stop'
-        # ErrorActionPreference alone does NOT stop on a native-exe nonzero exit (that needs
-        # $PSNativeCommandUseErrorActionPreference, which defaults to $false), so a failed
-        # cmake would silently cascade. Pin that default rather than inherit it, and guard
-        # every native call with chk() so the first real failure stops here with a message
-        # naming what failed. Every native call below is chk'd -- keep it that way.
         $PSNativeCommandUseErrorActionPreference = $false
         function chk($what) { if ($LASTEXITCODE -ne 0) { throw "$what failed (exit $LASTEXITCODE)" } }
-        # Fail closed and explain, rather than letting an empty ref reach `git clone -b`, whose
-        # diagnostic ("Remote branch  not found in upstream origin") points nowhere near the
-        # cause. compat and LogIt are cloned BY TAG below, so blanking a tag in the pins table
-        # is not a way to SHA-pin them: that needs the fetch-by-commit form used for uasak.
         foreach ($v in 'UASAK_REPO','UASAK_SHA','COMPAT_REPO','COMPAT_TAG','COMPAT_SHA','LOGIT_REPO','LOGIT_TAG','LOGIT_SHA') {
           if (-not [Environment]::GetEnvironmentVariable($v)) { throw "$v is empty - the pins table in the key step did not emit it (compat/LogIt are cloned by tag; SHA-pinning them means switching to the fetch-by-commit form used for uasak)" }
         }
-        # The cache key names an exact commit per source; prove each working tree IS that
-        # commit before anything is built and saved under that key. A tag moved between key
-        # derivation and clone therefore fails here instead of poisoning the cache entry.
         function Assert-Pinned($dir, $sha) {
           $head = (git -C $dir rev-parse HEAD); chk "rev-parse in $dir"
           if ($head -ne $sha) { throw "$dir is at $head but the cache key was derived from $sha - refusing to cache a binary under a key that does not describe it" }
         }
-        # LogIt (2.8) and uasak (3.0) declare cmake_minimum_required < 3.5, which the
-        # runner's CMake 4.x removed support for -- the documented escape hatch is
-        # CMAKE_POLICY_VERSION_MINIMUM=3.5 (harmless for compat, which requires 3.16).
-        $policy = '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
-        # LogIt/compat/uasak resolve Boost via find_package(Boost ...), independent
-        # of quasar's path-based BoostSetup. The w2025 Boost (1.91) installs CMake
-        # config files, and CMake 4 removed the FindBoost module -- so drive CONFIG
-        # mode via Boost_DIR (the old Boost_COMPILER/FindBoost hints are dead).
-        # Sanity-probe on boost_thread: Boost >= 1.89 ships NO compiled system lib
-        # (header-only, stub removed), so system is the wrong canary.
+        $cmake4LegacyPolicyFlag = '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
         Remove-Item Env:CMAKE_TOOLCHAIN_FILE -ErrorAction SilentlyContinue
         $sample = Get-ChildItem "$env:BOOST_PATH_LIBS" -Filter 'libboost_thread-*-mt-x64-*.lib' | Select-Object -First 1
-        if (-not $sample) { throw "no boost thread lib under $env:BOOST_PATH_LIBS" }
+        if (-not $sample) { throw "no libboost_thread-*-mt-x64-*.lib under $env:BOOST_PATH_LIBS - LogIt/compat/uasak resolve Boost through find_package, independently of quasar's path-based BoostSetup, and thread is the probe because Boost >= 1.89 ships no compiled system lib" }
         $bcfg = Get-ChildItem "$env:BOOST_PATH_LIBS\cmake" -Directory -Filter 'Boost-*' -ErrorAction SilentlyContinue | Select-Object -First 1
-        if (-not $bcfg) { throw "no BoostConfig dir under $env:BOOST_PATH_LIBS\cmake" }
+        if (-not $bcfg) { throw "no BoostConfig dir under $env:BOOST_PATH_LIBS\cmake - CMake 4 removed the FindBoost module, so Boost must resolve in CONFIG mode via Boost_DIR and the old Boost_COMPILER/FindBoost hints no longer apply" }
         Write-Host "boost lib sample: $($sample.Name); Boost_DIR: $($bcfg.FullName)"
         $boost = @(
           "-DBoost_DIR=$($bcfg.FullName)",
           "-DBoost_USE_STATIC_LIBS=ON"
         )
-        # `git clone -b` takes a branch or a tag, never a bare commit, so the pin is fetched
-        # directly. --no-tags keeps `git describe --tags` empty, which is what makes uasak's
-        # CMakeLists take its 0.0.0 fallback rather than splitting a describe string on '.'
-        # and indexing [2] -- a describe that yields fewer parts aborts configure.
         New-Item -ItemType Directory -Force uasak | Out-Null
         cd uasak
         git init -q .; chk "uasak git init"
         git remote add origin $env:UASAK_REPO; chk "uasak remote add"
-        git fetch --no-tags --depth=1 origin $env:UASAK_SHA; chk "uasak fetch of $env:UASAK_SHA (if the commit is gone, the branch it lives on was rewritten or deleted upstream - see the pins table in the key step and re-pin)"
+        git fetch --no-tags --depth=1 origin $env:UASAK_SHA; chk "uasak fetch of $env:UASAK_SHA (git clone -b takes a branch or a tag and never a bare commit, hence this init+fetch form; if the commit is unreachable, the ref carrying it was rewritten or deleted upstream - re-pin from: git ls-remote $env:UASAK_REPO refs/heads/windows-msvc refs/tags/v0.8.0 refs/heads/master)"
         git checkout -q --detach FETCH_HEAD; chk "uasak checkout"
         Assert-Pinned '.' $env:UASAK_SHA
         New-Item -ItemType Directory -Force build\deploy | Out-Null
-        # 1) LogIt -> static lib + headers into build/deploy/LogIt
         git clone --depth=1 -b $env:LOGIT_TAG $env:LOGIT_REPO build\work\LogIt; chk "LogIt clone of $env:LOGIT_TAG (if the tag is gone, re-point or re-pin in this file)"
         Assert-Pinned 'build\work\LogIt' $env:LOGIT_SHA
-        cmake -S build\work\LogIt -B build\work\LogIt\b -G Ninja $policy -DCMAKE_BUILD_TYPE=Release -DLOGIT_BUILD_STAND_ALONE=ON -DLOGIT_BUILD_STATIC_LIB=ON @boost -DCMAKE_INSTALL_PREFIX="$PWD\build\deploy\LogIt"; chk "LogIt configure"
+        cmake -S build\work\LogIt -B build\work\LogIt\b -G Ninja $cmake4LegacyPolicyFlag -DCMAKE_BUILD_TYPE=Release -DLOGIT_BUILD_STAND_ALONE=ON -DLOGIT_BUILD_STATIC_LIB=ON @boost -DCMAKE_INSTALL_PREFIX="$PWD\build\deploy\LogIt"; chk "LogIt configure (LogIt declares cmake_minimum_required 2.8, which CMake 4 refuses without $cmake4LegacyPolicyFlag)"
         cmake --build build\work\LogIt\b; chk "LogIt build"
         cmake --install build\work\LogIt\b; chk "LogIt install"
-        # 2) open62541-compat (fork) -> static lib + headers into build/deploy/open62541-compat
-        # compat >= v1.5.8 resolves Boost via find_package(Boost CONFIG); use compat's
-        # own boost_custom_win.cmake (new in v1.5.8): it globs tagged libs from the
-        # flat $env:BOOST_PATH_LIBS dir (the w2025 Boost lib dir) bypassing discovery.
-        # It requires an explicit CMAKE_BUILD_TYPE (Release picks the -mt- libs and
-        # the /MD runtime; empty drifts to debug autolink names). Absolute config
-        # path: compat's include() resolves relative names against the cmake cwd
-        # (the uasak dir), not its source dir.
         git clone -b $env:COMPAT_TAG $env:COMPAT_REPO build\work\compat; chk "compat clone of $env:COMPAT_TAG (if the tag is gone, re-point or re-pin in this file)"
         Assert-Pinned 'build\work\compat' $env:COMPAT_SHA
-        cmake -S build\work\compat -B build\work\compat\b -G Ninja $policy -DCMAKE_BUILD_TYPE=Release -DSTANDALONE_BUILD=ON -DLOGIT_BUILD_OPTION=LOGIT_AS_EXT_STATIC -DLOGIT_INCLUDE_DIR="$PWD\build\deploy\LogIt\include" -DLOGIT_EXT_LIB_DIR="$PWD\build\deploy\LogIt\lib" -DOPEN62541-COMPAT_BUILD_CONFIG_FILE="$($PWD.Path -replace '\\','/')/build/work/compat/boost_custom_win.cmake" -DCMAKE_INSTALL_PREFIX="$PWD\build\deploy\open62541-compat" -DSKIP_TESTS=ON; chk "compat configure"
-        cmake --build build\work\compat\b; chk "compat build"
+        if (-not (Test-Path 'build\work\compat\boost_custom_win.cmake')) { throw "compat $env:COMPAT_TAG does not ship boost_custom_win.cmake - this build depends on it to glob tagged Boost libs straight from the flat $env:BOOST_PATH_LIBS instead of going through find_package discovery" }
+        $compatBoostConfigAbsolutePath = "$($PWD.Path -replace '\\','/')/build/work/compat/boost_custom_win.cmake"
+        cmake -S build\work\compat -B build\work\compat\b -G Ninja $cmake4LegacyPolicyFlag -DCMAKE_BUILD_TYPE=Release -DSTANDALONE_BUILD=ON -DLOGIT_BUILD_OPTION=LOGIT_AS_EXT_STATIC -DLOGIT_INCLUDE_DIR="$PWD\build\deploy\LogIt\include" -DLOGIT_EXT_LIB_DIR="$PWD\build\deploy\LogIt\lib" -DOPEN62541-COMPAT_BUILD_CONFIG_FILE="$compatBoostConfigAbsolutePath" -DCMAKE_INSTALL_PREFIX="$PWD\build\deploy\open62541-compat" -DSKIP_TESTS=ON; chk "compat configure (the build config file is passed absolute because compat's include() resolves relative names against the cmake working directory, not its own source dir)"
+        cmake --build build\work\compat\b; chk "compat build (unresolved libboost_*-gd-* autolink names here mean CMAKE_BUILD_TYPE did not reach compat as Release, which is what selects the -mt- libs and the /MD runtime)"
         cmake --install build\work\compat\b; chk "compat install"
-        # 3) uasak_dump itself. xerces-c is linked by bare name -> alias the static
-        #    xerces-c_3.lib and put the w2025 lib dirs on LIB; the xsd-generated
-        #    UANodeSet.cxx pulls <xsd/cxx/...> + <xercesc/...> headers that uasak's
-        #    include_directories doesn't cover -> add them to cl's INCLUDE. The
-        #    w2025 xerces is static -> XERCES_STATIC_LIBRARY, or its headers declare
-        #    dllimport symbols and the link fails.
-        if (-not (Test-Path "$env:XERCESC_PATH_LIBS\xerces-c.lib")) { Copy-Item "$env:XERCESC_PATH_LIBS\xerces-c_3.lib" "$env:XERCESC_PATH_LIBS\xerces-c.lib" }
+        if (-not (Test-Path "$env:XERCESC_PATH_LIBS\xerces-c.lib")) {
+          if (-not (Test-Path "$env:XERCESC_PATH_LIBS\xerces-c_3.lib")) { throw "no xerces-c.lib and no xerces-c_3.lib under $env:XERCESC_PATH_LIBS - uasak links xerces-c by bare name, so the w2025 static lib has to be aliased to xerces-c.lib" }
+          Copy-Item "$env:XERCESC_PATH_LIBS\xerces-c_3.lib" "$env:XERCESC_PATH_LIBS\xerces-c.lib"
+        }
         $env:LIB = "$env:LIB;$env:XERCESC_PATH_LIBS"
         $env:INCLUDE = "$env:INCLUDE;$env:CODE_SYNTHESYS_XSD_PATH_HEADERS;$env:XERCESC_PATH_HEADERS"
-        $env:CL = "$env:CL /DXERCES_STATIC_LIBRARY"
-        cmake -S . -B build -G Ninja $policy -DCMAKE_BUILD_TYPE=Release @boost -DXSD_CXX_COMMAND=xsdcxx -DCMAKE_EXE_LINKER_FLAGS="/LIBPATH:$env:XERCESC_PATH_LIBS /LIBPATH:$env:BOOST_PATH_LIBS"; chk "uasak configure"
-        cmake --build build; chk "uasak build"
+        $xercesStaticLinkDefine = '/DXERCES_STATIC_LIBRARY'
+        $env:CL = "$env:CL $xercesStaticLinkDefine"
+        cmake -S . -B build -G Ninja $cmake4LegacyPolicyFlag -DCMAKE_BUILD_TYPE=Release @boost -DXSD_CXX_COMMAND=xsdcxx -DCMAKE_EXE_LINKER_FLAGS="/LIBPATH:$env:XERCESC_PATH_LIBS /LIBPATH:$env:BOOST_PATH_LIBS"; chk "uasak configure (a CMake 'list ... index 2 out of range' here means git describe --tags saw a tag - the fetch above is --no-tags precisely so describe stays empty and uasak's CMakeLists takes its 0.0.0 fallback)"
+        cmake --build build; chk "uasak build (unresolved __imp_ xercesc symbols here mean $xercesStaticLinkDefine did not reach cl - the w2025 xerces is static and its headers declare dllimport without that define; the xsd-generated UANodeSet.cxx also needs the xsd and xercesc header dirs on INCLUDE, which is why they are appended above)"
         Get-ChildItem -Recurse -Filter 'uasak_dump*' build | Select-Object FullName
 
     - name: Save uasak_dump to cache

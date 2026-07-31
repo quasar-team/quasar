@@ -334,3 +334,5 @@ jobs:
         run: python3 .CI/test_no_unbound_delegate.py
       - if: always()
         run: python3 .CI/test_generator_selection.py
+      - if: always()
+        run: python3 .CI/test_ci_supply_chain.py
