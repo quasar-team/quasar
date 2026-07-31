@@ -100,7 +100,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariable.h": {
-                "md5": "e40fd852b66d3911435f6f109fc21ace",
+                "md5": "daaf703eddc45b6c9b1b2016460f62f7",
                 "use_defaults": "file_defaults_of_directory"
             },
             "ASSourceVariableIoManager.h": {
@@ -166,7 +166,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassBody.jinja": {
-                "md5": "a72769ca3dd6c4b7d24e03d94b91aa6f",
+                "md5": "aa1e97bdbf3f668dd7c73543ecac84bb",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToClassHeader.jinja": {
@@ -350,7 +350,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "QuasarThreadPool.cpp": {
-                "md5": "792a18f69b14a361fc41584fa746e3a7",
+                "md5": "fcf043ca2cc48b9b2ed7c61035a57434",
                 "use_defaults": "file_defaults_of_directory"
             }
         },
@@ -371,7 +371,7 @@
         "files": {
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "acd50ad4320e87ee6e8c0770e3936b11",
+                "md5": "c0ad56dea6f0bb08ef90cd1f2970ba5d",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -461,7 +461,7 @@
             },
             "quasarVersion.txt": {
                 "install": "overwrite",
-                "md5": "09a233e24401bc87a41534ddc8b80a30",
+                "md5": "3cdb2a9bdb0d6267af7956f69d568d1f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -550,7 +550,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBaseHeader.jinja": {
-                "md5": "24d989137a88945bd61696d3458a6cc2",
+                "md5": "46fecb3594140db8b926dd5060035d17",
                 "use_defaults": "file_defaults_of_directory"
             },
             "designToDeviceBody.jinja": {
@@ -656,7 +656,7 @@
             },
             "automated_build.py": {
                 "install": "overwrite",
-                "md5": "68b177b69eaabcc0e3c0c799f1d81c62",
+                "md5": "b907e28d595370c36dff3858e9130cf2",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -715,7 +715,7 @@
             },
             "generateCmake.py": {
                 "install": "overwrite",
-                "md5": "fe19ae401b091decc5685a564cad2246",
+                "md5": "07b3fb6d0ef850267d9499ce2dde9e9e",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -810,7 +810,7 @@
         "files": {
             "CMakeLists.txt": {
                 "install": "overwrite",
-                "md5": "448296a8d229e96d95ae1833afa5a62a",
+                "md5": "822af6a6294090f8f7273bf11c15c310",
                 "must_be_versioned": true,
                 "must_exist": true
             }
@@ -854,7 +854,7 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "LogSinkInterface.h": {
-                "md5": "aacede0bc224c07148bdaf57097312da",
+                "md5": "c4efdaff71ea95ee7215fcd1f8f89415",
                 "use_defaults": "file_defaults_of_directory"
             },
             "LogSinks.h": {
@@ -862,11 +862,11 @@
                 "use_defaults": "file_defaults_of_directory"
             },
             "StdOutLog.h": {
-                "md5": "80f0968b8d1eee8d807c3a84b17b6ddf",
+                "md5": "7e701eb98013e7ac9a59413aa207e67b",
                 "use_defaults": "file_defaults_of_directory"
             },
             "UaTraceSink.h": {
-                "md5": "4b5ef9ae295b67b518d979b4ef05ac05",
+                "md5": "06884e56f9c5db6e890f88dcaf8189ff",
                 "use_defaults": "file_defaults_of_directory"
             },
             "WindowsDebuggerSink.h": {
@@ -1138,7 +1138,7 @@
                 "deprecated": true
             },
             "DSourceVariableThreadPool.cpp": {
-                "md5": "eb4ce0481608507df6ccf89e4f5437ef",
+                "md5": "03ecd57f71b8858d29d0e77a79a29115",
                 "use_defaults": "file_defaults_of_directory"
             },
             "DStandardMetaData.cpp": {
@@ -1207,7 +1207,7 @@
             },
             "QuasarVersion.h": {
                 "install": "overwrite",
-                "md5": "6eb955a0950a6d57cf8109e8940599f6",
+                "md5": "2a536e98c316a17c1548d4724a35a958",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1248,7 +1248,7 @@
         "files": {
             "BaseQuasarServer.cpp": {
                 "install": "overwrite",
-                "md5": "6a70fc516d8326e68dba298e7e91d0ea",
+                "md5": "54d9086905577747c727f586e5579c3f",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1273,7 +1273,7 @@
             },
             "opcserver.cpp": {
                 "install": "overwrite",
-                "md5": "50e6243df2c673227b4ac3171b1c4f66",
+                "md5": "1d06767444bf7e380b3ef3f8d1fad5e7",
                 "must_be_versioned": true,
                 "must_exist": true
             },
@@ -1321,7 +1321,7 @@
         "files": {
             "FindOpcUaToolkit.cmake": {
                 "install": "overwrite",
-                "md5": "e0f1977d379f157b8b075e79c426e3c5",
+                "md5": "f41c265c90064cdd4afe80f9324d2b8c",
                 "must_be_versioned": true,
                 "must_exist": true
             },
