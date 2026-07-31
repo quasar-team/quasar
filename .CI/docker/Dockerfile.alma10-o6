@@ -29,6 +29,7 @@ RUN dnf install -y \
   python3-setuptools \
   cmake \
   gcc-c++ \
+  clang \
   boost-devel \
   graphviz \
   ninja-build \

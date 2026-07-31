@@ -32,6 +32,14 @@ permissions:
   contents: read
   packages: read
 
+# Raise pip's retry budget for every pip below, including pip invoked as a
+# subprocess. pip's own default is 5, so only a higher number adds anything.
+# The socket timeout is deliberately left at pip's 15s default: with more
+# retries, failing over off a stalled mirror quickly beats waiting on it.
+# Pins no version, so the frontier probes stay unpinned.
+env:
+  PIP_RETRIES: '10'
+
 jobs:
 
   # ── derive the test matrix from the single-source-of-truth manifest ──────
@@ -40,6 +48,11 @@ jobs:
   # the uasdk images are not yet published under this owner).
   matrix:
     runs-on: ubuntu-latest
+    # Every job here carries a timeout: hardening that lengthens stalls must
+    # also bound them, or a hung fetch burns GitHub's 360-minute default instead
+    # of failing diagnosably. Values sit well clear of observed runtimes
+    # (slowest nightly cell 35.6m; every other job under 3m).
+    timeout-minutes: 15
     outputs:
       matrix: ${{ steps.gen.outputs.matrix }}
     steps:
@@ -64,6 +77,7 @@ jobs:
     needs: matrix
     runs-on: ${{ matrix.runner }}
     name: ${{ matrix.label }}
+    timeout-minutes: 60
     # Advisory cells (e.g. the compat-master probe) show a red X but never fail the workflow.
     continue-on-error: ${{ matrix.advisory }}
     strategy:
@@ -81,8 +95,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      # clang is baked into the alma10-o6 image by this same change
+      # (.CI/docker/Dockerfile.alma10-o6), so this normally short-circuits and
+      # touches the network not at all -- which is the real fix: these 12 cells
+      # were the slowest in the nightly purely because of this 146 MB fetch.
+      # The dnf fallback still runs until the republished image is in use, so it
+      # retries. Note the 24 Jul red was NOT dnf exhausting its per-transfer
+      # `retries` (default 10; llvm-libs failed twice): librepo declared the sole
+      # mirror dead on cumulative failures. Only a fresh dnf invocation resets
+      # that, and it reuses the already-downloaded /var/cache/dnf.
       - if: matrix.compiler == 'clang'
-        run: dnf install -y clang
+        run: |
+          # Test clang++ too -- that is what the build actually invokes (CXX).
+          if command -v clang >/dev/null && command -v clang++ >/dev/null; then
+            clang --version | head -1
+            exit 0
+          fi
+          for attempt in 1 2 3; do
+            rc=0
+            dnf install -y clang || rc=$?
+            if [ "$rc" = 0 ]; then break; fi
+            if [ "$attempt" = 3 ]; then exit "$rc"; fi
+            echo "clang install attempt $attempt failed (rc=$rc); retrying in $((attempt * 20))s" >&2
+            sleep $((attempt * 20))
+          done
       - env:
           COMPAT_BRANCH: ${{ matrix.compat_branch }}
           QUASAR_BUILD_CONFIG: ${{ matrix.build_config }}
@@ -103,6 +139,7 @@ jobs:
     needs: framework-cases
     if: always()
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     container:
       image: ghcr.io/${{ github.repository_owner }}/quasar-ci:alma9-o6
       credentials:
@@ -121,11 +158,21 @@ jobs:
   # ── configure-floor (build system, no compile): stock CMake 3.16 ─────────
   cmake_316_floor:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
       image: ubuntu:20.04
     steps:
       - run: |
-          apt-get update -qq
+          # focal's apt ships Acquire::Retries unset (= no retries), so one
+          # transient reset fails the job. The counter lives on the shared
+          # acquire item, so this covers update and install alike. focal's apt
+          # 2.0.x has no retry backoff at all (that arrives in 2.1.16+), so
+          # budget is the only lever here -- hence 10 rather than a delay knob.
+          printf 'Acquire::Retries "10";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\n' > /etc/apt/apt.conf.d/99-ci-retries
+          apt-config dump Acquire::Retries
+          # No -qq on update: a lost index only warns and exits 0, so the Err:
+          # lines are the sole evidence the job configured against a partial index.
+          apt-get update
           DEBIAN_FRONTEND=noninteractive apt-get install -y -qq cmake g++ git python3 python3-pip libboost-all-dev libssl-dev libxml2-utils libxml2-dev libxerces-c-dev xsdcxx > /dev/null
           pip3 -q install jinja2 lxml colorama pygit2
           cmake --version | head -1
@@ -147,13 +194,16 @@ jobs:
   cmake_frontier:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
       - name: Latest CMake + build deps
         run: |
-          sudo apt-get update -qq
+          printf 'Acquire::Retries "10";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\n' | sudo tee /etc/apt/apt.conf.d/99-ci-retries > /dev/null
+          apt-config dump Acquire::Retries
+          sudo apt-get update
           sudo apt-get install -y -qq g++ git libboost-all-dev libssl-dev libxml2-utils libxml2-dev libxerces-c-dev xsdcxx > /dev/null
           pip3 -q install jinja2 lxml colorama pygit2 cmake
           CMAKE_BIN=$(python3 -c "import cmake,os;print(cmake.CMAKE_BIN_DIR)")
@@ -173,11 +223,14 @@ jobs:
   compat_standalone_frontier:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Latest CMake + Boost dev packages
         run: |
-          sudo apt-get update -qq
+          printf 'Acquire::Retries "10";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\n' | sudo tee /etc/apt/apt.conf.d/99-ci-retries > /dev/null
+          apt-config dump Acquire::Retries
+          sudo apt-get update
           sudo apt-get install -y -qq g++ git libboost-chrono-dev libboost-date-time-dev libboost-thread-dev libboost-program-options-dev libboost-system-dev > /dev/null
           pip3 -q install cmake
           CMAKE_BIN=$(python3 -c "import cmake,os;print(cmake.CMAKE_BIN_DIR)")
@@ -187,7 +240,19 @@ jobs:
         run: |
           COMPAT=$(python3 -c "import json;print(json.load(open('.CI/test_cases/manifest.json'))['backends']['o6']['compat_branch'])")
           echo "compat pin: $COMPAT"
-          git clone --branch "$COMPAT" --depth 1 https://github.com/quasar-team/open62541-compat.git compat
+          # git has no usable native retry. rm -rf first so a second attempt
+          # cannot fail on "destination path already exists" and mask the error.
+          for attempt in 1 2 3; do
+            rc=0
+            rm -rf compat
+            git clone --branch "$COMPAT" --depth 1 https://github.com/quasar-team/open62541-compat.git compat || rc=$?
+            if [ "$rc" = 0 ]; then break; fi
+            if [ "$attempt" = 3 ]; then exit "$rc"; fi
+            # Announce the retry: unlike apt/dnf/pip this loop is otherwise
+            # silent, and a masked retry inside a green step is never counted.
+            echo "clone attempt $attempt failed (rc=$rc); retrying in $((attempt * 15))s" >&2
+            sleep $((attempt * 15))
+          done
       - name: Standalone configure + build + test (real discovery)
         run: |
           cmake -S compat -B build -DSTANDALONE_BUILD=ON -DCMAKE_BUILD_TYPE=Release
@@ -206,6 +271,7 @@ jobs:
   bare_distro_alma10:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     container:
       image: almalinux:10
     steps:
@@ -213,8 +279,25 @@ jobs:
       # it for the LogIt submodule.
       - name: Install build stack from distro/EPEL only
         run: |
-          dnf install -y epel-release
-          dnf install -y git patch make cmake gcc-c++ boost-devel xsd \
+          # Retry the whole transaction rather than tuning dnf.conf: `retries`
+          # already defaults to 10 and `timeout` never fired (observed transfers
+          # ran at 11-102 kB/s, far above minrate). What kills these is librepo
+          # writing off a mirror on cumulative failures, which only a fresh
+          # invocation resets -- and it resumes from the warm /var/cache/dnf.
+          # Editing dnf.conf would also undercut this job's whole point, which is
+          # reproducing a stock user's dnf.
+          dnf_retry() {
+            for attempt in 1 2 3; do
+              rc=0
+              dnf "$@" || rc=$?
+              if [ "$rc" = 0 ]; then return 0; fi
+              if [ "$attempt" = 3 ]; then return "$rc"; fi
+              echo "dnf $* attempt $attempt failed (rc=$rc); retrying in $((attempt * 20))s" >&2
+              sleep $((attempt * 20))
+            done
+          }
+          dnf_retry install -y epel-release
+          dnf_retry install -y git patch make cmake gcc-c++ boost-devel xsd \
             xerces-c-devel libxml2-devel openssl-devel astyle \
             python3-colorama python3-jinja2 python3-lxml python3-pygit2
           cmake --version | head -1
@@ -234,6 +317,7 @@ jobs:
   # ── framework invariants (hermetic: no backend, no compiler) ─────────────
   framework_invariants:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     container:
       image: ghcr.io/${{ github.repository_owner }}/quasar-ci:alma9-o6
       credentials:
