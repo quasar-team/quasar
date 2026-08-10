@@ -151,8 +151,7 @@ class Base_D{{className}}
 
   /* query address-space for config name */
   std::string getConfigName() const { return m_stringConfigName; }
-  void setConfigName(std::string name) { m_stringConfigName = name; }
-
+  void setConfigName(const std::string& name) { m_stringConfigName = name; }
   static std::list<D{{className}}*> s_orphanedObjects;
   static void registerOrphanedObject( D{{className}}* object ) { s_orphanedObjects.push_back( object ); }
   static std::list<D{{className}}*>& orphanedObjects() { return s_orphanedObjects; }
