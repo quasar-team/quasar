@@ -1,0 +1,91 @@
+name: GitLab mirror staleness check
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Compare GitHub and CERN GitLab refs
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: Compare master and release tags
+        run: |
+          set -eu
+          GL_URL="https://token:${{ secrets.GITLAB_MIRROR_RO_TOKEN }}@gitlab.cern.ch/quasar-team/quasar.git"
+          GH_URL="https://github.com/quasar-team/quasar.git"
+          compare() {
+            GH=$(git ls-remote "$GH_URL" refs/heads/master | cut -f1)
+            GL=$(git ls-remote "$GL_URL" refs/heads/master | cut -f1)
+            echo "github master: $GH"
+            echo "gitlab master: $GL"
+            [ "$GH" = "$GL" ]
+          }
+          if ! compare; then
+            echo "master diverged; allowing one mirror-pull cycle (40 min) before alarming"
+            sleep 2400
+            compare || { echo "::error::mirror master still diverged from GitHub"; exit 1; }
+          fi
+          MISSING=$(comm -23 \
+            <(git ls-remote --tags "$GH_URL" 'v*' | grep -v '\^{}' | awk '{print $2}' | sort) \
+            <(git ls-remote --tags "$GL_URL" 'v*' | grep -v '\^{}' | awk '{print $2}' | sort))
+          [ -z "$MISSING" ] || { echo "::error::release tags missing on the mirror: $MISSING"; exit 1; }
+          echo "mirror in sync"
+
+  notify_on_failure:
+    name: Notify on failure
+    needs: [check]
+    if: always() && contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const now = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+            const title = 'CERN GitLab mirror is stale';
+            const body = [
+              `@parasxos — gitlab.cern.ch/quasar-team/quasar no longer matches GitHub, or the check itself cannot authenticate. CERN-side users install quasar from the mirror; when pull mirroring fails it rots silently (in June it served a dead WIP commit for six weeks) — this issue is the visibility.`,
+              '',
+              `| Detail | Value |`,
+              `|--------|-------|`,
+              `| **Trigger** | \`${context.eventName}\` |`,
+              `| **Time** | ${now} |`,
+              `| **Run** | [View logs](${runUrl}) |`,
+              '',
+              `Remediation:`,
+              `- Mirror state: \`glab api projects/5622/mirror/pull --hostname gitlab.cern.ch\` (look at \`last_error\`)`,
+              `- Re-trigger a pull: \`glab api -X POST projects/5622/mirror/pull --hostname gitlab.cern.ch\``,
+              `- Auth failures: the \`GITLAB_MIRROR_RO_TOKEN\` project access token (read_repository, expires 2027-08-01) may need re-minting on the GitLab project, then \`gh secret set GITLAB_MIRROR_RO_TOKEN -R quasar-team/quasar\`.`,
+            ].join('\n');
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'ci-mirror-stale',
+              per_page: 1
+            });
+            if (issues.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body: body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['ci-mirror-stale'],
+                assignees: ['parasxos']
+              });
+            }
