@@ -77,22 +77,22 @@ def generateCmake(context, *args):
     print("Build type [{0}], Builder [{1}]".format(buildType, builder))
     os.chdir(projectBinaryDir)
 
-    print("Calling CMake")
-    if platform.system() == "Windows":
-        # Generator is overridable (QUASAR_CMAKE_GENERATOR [+ _PLATFORM]); with
-        # neither set, CMake auto-detects the newest installed Visual Studio.
-        # (Was hardcoded to the long-dead "Visual Studio 15 2017 Win64".)
-        cmd = [getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType]
-        generator = os.environ.get("QUASAR_CMAKE_GENERATOR")
-        if generator:
-            cmd += ["-G", generator]
-            gen_platform = os.environ.get("QUASAR_CMAKE_GENERATOR_PLATFORM")
-            if gen_platform:
-                cmd += ["-A", gen_platform]
-        cmd += [projectSourceDir]
-        subprocessWithImprovedErrors(cmd, getCommand("cmake"))
-    else:
-        builderArgs = [] if builder == BuilderDefault else ["-G", builder]
-        subprocessWithImprovedErrors([getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType] + builderArgs +
-                                      [projectSourceDir],
-                                     getCommand("cmake"))
+    cmakeCmd = [getCommand("cmake"), "-DCMAKE_BUILD_TYPE=" + buildType]
+    generatorArgs = [] if builder == BuilderDefault else ["-G", builder]
+    # windows build generation :
+    #   quasar build command line --builder has priority
+    # otherwise, use   
+    #   - generator : QUASAR_CMAKE_GENERATOR env-var (if set)
+    #   - architecture QUASAR_CMAKE_GENERATOR_PLATFORM env-var (if set: x64, ARM, etc.)
+    #   (if neither set, cmake will use default)
+    if platform.system() == "Windows" and not generatorArgs:
+        windowsGenerator = os.environ.get("QUASAR_CMAKE_GENERATOR")
+        windowsArchitecture = os.environ.get("QUASAR_CMAKE_GENERATOR_PLATFORM")
+        if windowsGenerator:
+            generatorArgs += ["-G", windowsGenerator]
+            if windowsArchitecture:
+                generatorArgs += ["-A", windowsArchitecture]
+
+    fullCmd = cmakeCmd + generatorArgs + [projectSourceDir]
+    print("Calling CMake : {0}".format(" ".join(fullCmd)))
+    subprocessWithImprovedErrors(fullCmd, getCommand("cmake"))
