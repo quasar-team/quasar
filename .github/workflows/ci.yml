@@ -155,6 +155,50 @@ jobs:
           pattern: dump-*
       - run: .CI/cross_backend_parity.py _dumps
 
+  # ── UaoForQuasar demo tripwire: generation + Client-component discovery ───
+  # Executable proof that the Uao templates render, the generated code compiles
+  # against the frozen client contract, and FindOpcUaToolkit's Client component
+  # resolves the baked toolkit. Guards the finder's client path from this side.
+  uao_demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container:
+      image: ghcr.io/${{ github.repository_owner }}/quasar-uasdk:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/UaoForQuasar
+          path: UaoForQuasar
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Generate a client class
+        run: |
+          cat > Design/Design.xml <<'DESIGN'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <d:design xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" projectShortName="uaodemo" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd">
+            <d:class name="HilariousClass">
+              <d:devicelogic/>
+              <d:cachevariable name="hilariousVariable" addressSpaceWrite="forbidden" initializeWith="configuration" nullPolicy="nullForbidden" dataType="OpcUa_Double"/>
+            </d:class>
+            <d:root>
+              <d:hasobjects instantiateUsing="configuration" class="HilariousClass"/>
+            </d:root>
+          </d:design>
+          DESIGN
+          python3 UaoForQuasar/generateClass.py HilariousClass
+      - name: Build the demo through the Client component
+        run: |
+          mkdir -p UaoForQuasar/demo/build
+          cd UaoForQuasar/demo/build
+          cmake -DOPCUA_TOOLKIT_PATH=/opt/uasdk ..
+          make -j"$(nproc)"
+          test -x demo && ls -l demo
+
   # ── configure-floor (build system, no compile): stock CMake 3.16 ─────────
   cmake_316_floor:
     runs-on: ubuntu-latest
