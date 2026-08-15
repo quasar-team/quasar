@@ -148,6 +148,13 @@ if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
     set(OPCUATOOLKIT_INCLUDE_DIRS
       "${OPCUATOOLKIT_PATH}/include"
       "${OPCUATOOLKIT_PATH}/include/uaclient")
+    foreach(_compat_extra_dir
+        "${OPCUATOOLKIT_PATH}/extern/open62541/include"
+        "${OPCUATOOLKIT_PATH}/build/open62541")
+      if(EXISTS "${_compat_extra_dir}")
+        list(APPEND OPCUATOOLKIT_INCLUDE_DIRS "${_compat_extra_dir}")
+      endif()
+    endforeach()
 
     find_library(_QUASAR_CLIENT_COMPAT_LIB open62541-compat
       PATHS "${OPCUATOOLKIT_PATH}/lib" "${OPCUATOOLKIT_PATH}/lib64" "${OPCUATOOLKIT_PATH}/build"
