@@ -189,6 +189,11 @@ if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
     endif()
 
   else()
+    if(DEFINED _QUASAR_CLIENT_ROOT AND NOT IS_DIRECTORY "${_QUASAR_CLIENT_ROOT}")
+      set(_QUASAR_CLIENT_FAILURE
+        "OPCUA_TOOLKIT_PATH does not exist: ${_QUASAR_CLIENT_ROOT}")
+      set(_QUASAR_CLIENT_ROOT "")
+    endif()
     if(NOT DEFINED _QUASAR_CLIENT_ROOT)
       find_path(_QUASAR_CLIENT_ROOT
         NAMES include/uaclientcpp/uaclientsdk.h include/uaclient/uaclientsdk.h
@@ -251,10 +256,10 @@ if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
       if(_QUASAR_CLIENT_MISSING)
         string(REPLACE ";" ", " _missing_pretty "${_QUASAR_CLIENT_MISSING}")
         set(_QUASAR_CLIENT_FAILURE
-          "UA SDK client closure incomplete at ${_QUASAR_CLIENT_LIB_DIR} (parsed toolkit version ${OPCUATOOLKIT_VERSION}); missing artifacts: ${_missing_pretty}")
+          "UA SDK client closure incomplete at ${_QUASAR_CLIENT_LIB_DIR} (parsed toolkit version ${OPCUATOOLKIT_VERSION}), missing artifacts: ${_missing_pretty}")
       elseif(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
         set(_QUASAR_CLIENT_FAILURE
-          "the Client component's legacy library search links with GNU ld group options and supports Linux only (host is ${CMAKE_SYSTEM_NAME}); use a UA SDK install with a UASDKCPP package config")
+          "the Client component's legacy library search links with GNU ld group options and supports Linux only (host is ${CMAKE_SYSTEM_NAME}), use a UA SDK install with a UASDKCPP package config")
       else()
         set(OPCUATOOLKIT_CLIENT_LIBRARIES "")
         if(_QUASAR_CLIENT_STATIC_LIBS)
@@ -285,9 +290,9 @@ if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
         message(STATUS "  Include dirs: ${OPCUATOOLKIT_INCLUDE_DIRS}")
         message(STATUS "  Libraries: ${OPCUATOOLKIT_CLIENT_LIBRARIES}")
       endif()
-    else()
+    elseif(NOT _QUASAR_CLIENT_FAILURE)
       set(_QUASAR_CLIENT_FAILURE
-        "no OPC UA toolkit found; set OPCUA_TOOLKIT_PATH to a UA SDK or open62541-compat install")
+        "no OPC UA toolkit found, set OPCUA_TOOLKIT_PATH to a UA SDK or open62541-compat install")
     endif()
   endif()
 
@@ -295,11 +300,15 @@ if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
     message(STATUS "OPC UA Toolkit client: ${_QUASAR_CLIENT_FAILURE}")
   endif()
 
+  set(_QUASAR_CLIENT_FPHSA_REASON "")
+  if(_QUASAR_CLIENT_FAILURE AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.18)
+    set(_QUASAR_CLIENT_FPHSA_REASON REASON_FAILURE_MESSAGE "${_QUASAR_CLIENT_FAILURE}")
+  endif()
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(OpcUaToolkit
     REQUIRED_VARS OPCUATOOLKIT_PATH
     VERSION_VAR OPCUATOOLKIT_VERSION
-    REASON_FAILURE_MESSAGE "${_QUASAR_CLIENT_FAILURE}"
+    ${_QUASAR_CLIENT_FPHSA_REASON}
     HANDLE_COMPONENTS)
   return()
 endif()
