@@ -129,7 +129,9 @@ if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
     list(REMOVE_DUPLICATES OPCUATOOLKIT_INCLUDE_DIRS)
 
     set(OPCUATOOLKIT_CLIENT_LIBRARIES UASDKCPP::Client)
-    add_library(OpcUaToolkit::Client INTERFACE IMPORTED)
+    if(NOT TARGET OpcUaToolkit::Client)
+      add_library(OpcUaToolkit::Client INTERFACE IMPORTED)
+    endif()
     set_target_properties(OpcUaToolkit::Client PROPERTIES
       INTERFACE_LINK_LIBRARIES "UASDKCPP::Client"
       INTERFACE_INCLUDE_DIRECTORIES "${OPCUATOOLKIT_INCLUDE_DIRS}")
@@ -169,7 +171,9 @@ if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
       endif()
       list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES -lpthread)
 
-      add_library(OpcUaToolkit::Client INTERFACE IMPORTED)
+      if(NOT TARGET OpcUaToolkit::Client)
+        add_library(OpcUaToolkit::Client INTERFACE IMPORTED)
+      endif()
       set_target_properties(OpcUaToolkit::Client PROPERTIES
         INTERFACE_LINK_LIBRARIES "${OPCUATOOLKIT_CLIENT_LIBRARIES}"
         INTERFACE_INCLUDE_DIRECTORIES "${OPCUATOOLKIT_INCLUDE_DIRS}")
@@ -265,7 +269,9 @@ if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
           list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES "${_QUASAR_CLIENT_UUID_LIB}")
         endif()
 
-        add_library(OpcUaToolkit::Client INTERFACE IMPORTED)
+        if(NOT TARGET OpcUaToolkit::Client)
+          add_library(OpcUaToolkit::Client INTERFACE IMPORTED)
+        endif()
         set_target_properties(OpcUaToolkit::Client PROPERTIES
           INTERFACE_LINK_LIBRARIES "${OPCUATOOLKIT_CLIENT_LIBRARIES}"
           INTERFACE_INCLUDE_DIRECTORIES "${OPCUATOOLKIT_INCLUDE_DIRS}")
