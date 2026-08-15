@@ -197,7 +197,7 @@ jobs:
           cd UaoForQuasar/demo/build
           cmake -DOPCUA_TOOLKIT_PATH=/opt/uasdk ..
           make -j"$(nproc)"
-          file demo
+          test -x demo && ls -l demo
 
   # ── configure-floor (build system, no compile): stock CMake 3.16 ─────────
   cmake_316_floor:
