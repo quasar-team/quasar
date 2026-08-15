@@ -149,6 +149,11 @@ class Base_D{{className}}
   /* query address-space for full name (mostly for debug purposes) */
   std::string getFullName() const { return m_stringAddress; }
 
+  /* local instance name from the configuration, i.e. the name attribute of this object's
+     config element, or its design/default instance name. Cf. getFullName() for the dotted
+     address-space path. */
+  std::string getConfigName() const { return m_stringConfigName; }
+
   static std::list<D{{className}}*> s_orphanedObjects;
   static void registerOrphanedObject( D{{className}}* object ) { s_orphanedObjects.push_back( object ); }
   static std::list<D{{className}}*>& orphanedObjects() { return s_orphanedObjects; }
@@ -157,6 +162,7 @@ private:
   Parent_D{{className}}* m_parent;
   AddressSpace::AS{{className}}* m_addressSpaceLink;
   std::string m_stringAddress;
+  std::string m_stringConfigName;
 
   /* Collections of device logic children objects */
   {{ commonDeviceTemplates.hasobjectsChildrenCollection(this, designInspector, oracle) }}

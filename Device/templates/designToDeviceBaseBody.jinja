@@ -43,12 +43,13 @@ namespace Device
 
 // ctr
 Base_D{{className}}::Base_D{{className}} (
-  const Configuration::{{className}}&{{ ' config' if ctorUsesConfig else '' }},
+  const Configuration::{{className}}& config,
   Parent_D{{className}}* parent
 ):
   m_parent(parent),
   m_addressSpaceLink(nullptr),
-  m_stringAddress("**NB**")
+  m_stringAddress("**NB**"),
+  m_stringConfigName(config.name())
   {% for ce in designInspector.objectify_config_entries(className, "[@isKey='true' or @storedInDeviceObject='true']") %}
   , m_{{ce.get('name')}}( config.{{ce.get('name')}}() ) {# TODO @pnikiel move to body #}
   {% endfor %}
