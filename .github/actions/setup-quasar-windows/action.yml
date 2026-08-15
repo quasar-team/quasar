@@ -43,7 +43,7 @@ runs:
       id: images
       shell: pwsh
       run: |
-        $ref='3c33ca115b35a30fa4be26be2db37046eb2286eb'
+        $ref='78217346da002687cc9a5760cf6f7a0c6daa3a01'
         git clone -q https://github.com/quasar-team/images.git C:\deps\images
         git -C C:\deps\images checkout -q $ref
         "ref=$ref" >> $env:GITHUB_OUTPUT
