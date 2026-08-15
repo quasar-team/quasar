@@ -252,6 +252,9 @@ if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
         string(REPLACE ";" ", " _missing_pretty "${_QUASAR_CLIENT_MISSING}")
         set(_QUASAR_CLIENT_FAILURE
           "UA SDK client closure incomplete at ${_QUASAR_CLIENT_LIB_DIR} (parsed toolkit version ${OPCUATOOLKIT_VERSION}); missing artifacts: ${_missing_pretty}")
+      elseif(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        set(_QUASAR_CLIENT_FAILURE
+          "the Client component's legacy library search links with GNU ld group options and supports Linux only (host is ${CMAKE_SYSTEM_NAME}); use a UA SDK install with a UASDKCPP package config")
       else()
         set(OPCUATOOLKIT_CLIENT_LIBRARIES "")
         if(_QUASAR_CLIENT_STATIC_LIBS)
