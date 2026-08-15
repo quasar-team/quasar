@@ -65,6 +65,9 @@ public:
   /* query address-space for full name (mostly for debug purposes) */
   std::string getFullName () const { return "[ROOT]"; }
 
+  /* local instance name from the configuration; the root is not configured, cf. getFullName() */
+  std::string getConfigName () const { return "[ROOT]"; }
+
 private:
   static DRoot *m_instance; /* it's a singleton class */
 
