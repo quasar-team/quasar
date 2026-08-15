@@ -40,6 +40,17 @@
 #   # Option 2: Explicitly set the path (preferred method)
 #   set(OPCUA_TOOLKIT_PATH "/path/to/OpcUaToolkit")
 #   find_package(OpcUaToolkit REQUIRED)
+#
+# Client component (client-side toolkit, e.g. for UaoForQuasar):
+#   find_package(OpcUaToolkit REQUIRED COMPONENTS Client)
+# resolves the client closure of a UA SDK (UASDKCPP package config, or the
+# legacy library search on 1.x layouts) or, experimentally, an
+# open62541-compat install. It honours the same OPCUA_TOOLKIT_PATH
+# variable/environment and standard prefixes as the server flow, and defines
+# the imported target OpcUaToolkit::Client plus OPCUATOOLKIT_CLIENT_LIBRARIES,
+# OPCUATOOLKIT_INCLUDE_DIRS and OPCUATOOLKIT_VERSION. Request Client alone:
+# the module returns after the client search and does not resolve other
+# components in the same find_package call.
 
 if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
 
