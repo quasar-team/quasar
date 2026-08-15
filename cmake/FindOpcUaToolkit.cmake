@@ -40,6 +40,293 @@
 #   # Option 2: Explicitly set the path (preferred method)
 #   set(OPCUA_TOOLKIT_PATH "/path/to/OpcUaToolkit")
 #   find_package(OpcUaToolkit REQUIRED)
+#
+# Client component (client-side toolkit, e.g. for UaoForQuasar):
+#   find_package(OpcUaToolkit REQUIRED COMPONENTS Client)
+# resolves the client closure of a UA SDK (UASDKCPP package config, or the
+# legacy library search on 1.x layouts) or, experimentally, an
+# open62541-compat install. It honours the same OPCUA_TOOLKIT_PATH
+# variable/environment and standard prefixes as the server flow, and defines
+# the imported target OpcUaToolkit::Client plus OPCUATOOLKIT_CLIENT_LIBRARIES,
+# OPCUATOOLKIT_INCLUDE_DIRS and OPCUATOOLKIT_VERSION. Request Client alone:
+# the module returns after the client search and does not resolve other
+# components in the same find_package call.
+
+if("Client" IN_LIST OpcUaToolkit_FIND_COMPONENTS)
+
+  function(_quasar_client_prod_version root out_var)
+    set(_version "unknown")
+    foreach(_flavour uabasecpp uabase)
+      if(EXISTS "${root}/include/${_flavour}/uabase.h")
+        file(STRINGS "${root}/include/${_flavour}/uabase.h" _prod_lines
+          REGEX "^#define PROD_(MAJOR|MINOR|PATCH)[ \t]+[0-9]+")
+        set(_major "")
+        set(_minor "")
+        set(_patch "")
+        foreach(_line IN LISTS _prod_lines)
+          if(_line MATCHES "PROD_MAJOR[ \t]+([0-9]+)")
+            set(_major "${CMAKE_MATCH_1}")
+          elseif(_line MATCHES "PROD_MINOR[ \t]+([0-9]+)")
+            set(_minor "${CMAKE_MATCH_1}")
+          elseif(_line MATCHES "PROD_PATCH[ \t]+([0-9]+)")
+            set(_patch "${CMAKE_MATCH_1}")
+          endif()
+        endforeach()
+        if(NOT _major STREQUAL "" AND NOT _minor STREQUAL "" AND NOT _patch STREQUAL "")
+          set(_version "${_major}.${_minor}.${_patch}")
+        endif()
+        break()
+      endif()
+    endforeach()
+    set(${out_var} "${_version}" PARENT_SCOPE)
+  endfunction()
+
+  if(DEFINED OPCUA_TOOLKIT_PATH)
+    set(_QUASAR_CLIENT_ROOT "${OPCUA_TOOLKIT_PATH}")
+  elseif(DEFINED ENV{OPCUA_TOOLKIT_PATH})
+    set(_QUASAR_CLIENT_ROOT "$ENV{OPCUA_TOOLKIT_PATH}")
+  endif()
+
+  if(DEFINED _QUASAR_CLIENT_ROOT)
+    find_package(UASDKCPP CONFIG QUIET COMPONENTS Client
+      PATHS "${_QUASAR_CLIENT_ROOT}" NO_DEFAULT_PATH)
+  else()
+    find_package(UASDKCPP CONFIG QUIET COMPONENTS Client
+      PATHS /opt/uasdk /opt/OpcUaToolkit /opt/Unified-Automation /opt/opcua
+            /usr/local/OpcUaToolkit /usr/local/Unified-Automation /usr/local/opcua /usr/opcua)
+  endif()
+
+  set(OpcUaToolkit_Client_FOUND FALSE)
+  set(_QUASAR_CLIENT_FAILURE "")
+
+  if(UASDKCPP_FOUND AND TARGET UASDKCPP::Client)
+    get_filename_component(OPCUATOOLKIT_PATH "${UASDKCPP_DIR}/../../.." ABSOLUTE)
+    set(OPCUATOOLKIT_PATH "${OPCUATOOLKIT_PATH}" CACHE PATH "Path to OPC UA Toolkit installation")
+    set(OPCUA_TOOLKIT_PATH "${OPCUATOOLKIT_PATH}")
+    _quasar_client_prod_version("${OPCUATOOLKIT_PATH}" OPCUATOOLKIT_VERSION)
+    if(OPCUATOOLKIT_VERSION STREQUAL "unknown" AND UASDKCPP_VERSION)
+      set(OPCUATOOLKIT_VERSION "${UASDKCPP_VERSION}")
+    endif()
+
+    function(_quasar_uasdkcpp_client_include_dirs root out_var)
+      set(_stack "${root}")
+      set(_visited "")
+      set(_dirs "")
+      while(_stack)
+        list(POP_FRONT _stack _t)
+        if(_t IN_LIST _visited OR NOT TARGET "${_t}")
+          continue()
+        endif()
+        list(APPEND _visited "${_t}")
+        get_target_property(_inc "${_t}" INTERFACE_INCLUDE_DIRECTORIES)
+        if(_inc)
+          list(APPEND _dirs ${_inc})
+        endif()
+        get_target_property(_deps "${_t}" INTERFACE_LINK_LIBRARIES)
+        if(_deps)
+          foreach(_d IN LISTS _deps)
+            if(_d MATCHES "^UASDKCPP::")
+              list(APPEND _stack "${_d}")
+            endif()
+          endforeach()
+        endif()
+      endwhile()
+      list(REMOVE_DUPLICATES _dirs)
+      set(${out_var} "${_dirs}" PARENT_SCOPE)
+    endfunction()
+
+    _quasar_uasdkcpp_client_include_dirs(UASDKCPP::Client OPCUATOOLKIT_INCLUDE_DIRS)
+    list(APPEND OPCUATOOLKIT_INCLUDE_DIRS "${OPCUATOOLKIT_PATH}/include")
+    list(REMOVE_DUPLICATES OPCUATOOLKIT_INCLUDE_DIRS)
+
+    set(OPCUATOOLKIT_CLIENT_LIBRARIES UASDKCPP::Client)
+    if(NOT TARGET OpcUaToolkit::Client)
+      add_library(OpcUaToolkit::Client INTERFACE IMPORTED)
+    endif()
+    set_target_properties(OpcUaToolkit::Client PROPERTIES
+      INTERFACE_LINK_LIBRARIES "UASDKCPP::Client"
+      INTERFACE_INCLUDE_DIRECTORIES "${OPCUATOOLKIT_INCLUDE_DIRS}")
+    set(OpcUaToolkit_Client_FOUND TRUE)
+
+    message(STATUS "OPC UA Toolkit client configuration (UASDKCPP package config at ${UASDKCPP_DIR}):")
+    message(STATUS "  Version: ${OPCUATOOLKIT_VERSION}")
+    message(STATUS "  Include dirs: ${OPCUATOOLKIT_INCLUDE_DIRS}")
+
+  elseif(DEFINED _QUASAR_CLIENT_ROOT AND EXISTS "${_QUASAR_CLIENT_ROOT}/include/open62541_compat.h")
+    set(OPCUATOOLKIT_PATH "${_QUASAR_CLIENT_ROOT}" CACHE PATH "Path to OPC UA Toolkit installation")
+    set(OPCUA_TOOLKIT_PATH "${OPCUATOOLKIT_PATH}")
+    set(OPCUATOOLKIT_VERSION "open62541-compat")
+    set(OPCUATOOLKIT_INCLUDE_DIRS
+      "${OPCUATOOLKIT_PATH}/include"
+      "${OPCUATOOLKIT_PATH}/include/uaclient")
+    foreach(_compat_extra_dir
+        "${OPCUATOOLKIT_PATH}/extern/open62541/include"
+        "${OPCUATOOLKIT_PATH}/build/open62541")
+      if(EXISTS "${_compat_extra_dir}")
+        list(APPEND OPCUATOOLKIT_INCLUDE_DIRS "${_compat_extra_dir}")
+      endif()
+    endforeach()
+
+    find_library(_QUASAR_CLIENT_COMPAT_LIB open62541-compat
+      PATHS "${OPCUATOOLKIT_PATH}/lib" "${OPCUATOOLKIT_PATH}/lib64" "${OPCUATOOLKIT_PATH}/build"
+      NO_DEFAULT_PATH)
+    find_library(_QUASAR_CLIENT_O6_LIB open62541
+      PATHS "${OPCUATOOLKIT_PATH}/lib" "${OPCUATOOLKIT_PATH}/lib64" "${OPCUATOOLKIT_PATH}/build"
+            "${OPCUATOOLKIT_PATH}/build/open62541"
+      NO_DEFAULT_PATH)
+    find_library(_QUASAR_CLIENT_LOGIT_LIB LogIt
+      PATHS "${OPCUATOOLKIT_PATH}/lib" "${OPCUATOOLKIT_PATH}/lib64" "${OPCUATOOLKIT_PATH}/build"
+            "${OPCUATOOLKIT_PATH}/build/LogIt"
+      NO_DEFAULT_PATH)
+
+    if(_QUASAR_CLIENT_COMPAT_LIB)
+      set(OPCUATOOLKIT_CLIENT_LIBRARIES "${_QUASAR_CLIENT_COMPAT_LIB}")
+      if(_QUASAR_CLIENT_O6_LIB)
+        list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES "${_QUASAR_CLIENT_O6_LIB}")
+      endif()
+      if(_QUASAR_CLIENT_LOGIT_LIB)
+        list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES "${_QUASAR_CLIENT_LOGIT_LIB}")
+      endif()
+      list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES -lpthread)
+
+      if(NOT TARGET OpcUaToolkit::Client)
+        add_library(OpcUaToolkit::Client INTERFACE IMPORTED)
+      endif()
+      set_target_properties(OpcUaToolkit::Client PROPERTIES
+        INTERFACE_LINK_LIBRARIES "${OPCUATOOLKIT_CLIENT_LIBRARIES}"
+        INTERFACE_INCLUDE_DIRECTORIES "${OPCUATOOLKIT_INCLUDE_DIRS}")
+      set(OpcUaToolkit_Client_FOUND TRUE)
+
+      message(STATUS "OPC UA Toolkit client configuration (open62541-compat, experimental):")
+      message(STATUS "  Backend: ${OPCUATOOLKIT_VERSION} at ${OPCUATOOLKIT_PATH}")
+      message(STATUS "  Include dirs: ${OPCUATOOLKIT_INCLUDE_DIRS}")
+      message(STATUS "  Libraries: ${OPCUATOOLKIT_CLIENT_LIBRARIES}")
+    else()
+      set(_QUASAR_CLIENT_FAILURE
+        "open62541-compat install at ${OPCUATOOLKIT_PATH} has no libopen62541-compat under lib, lib64 or build")
+    endif()
+
+  else()
+    if(DEFINED _QUASAR_CLIENT_ROOT AND NOT IS_DIRECTORY "${_QUASAR_CLIENT_ROOT}")
+      set(_QUASAR_CLIENT_FAILURE
+        "OPCUA_TOOLKIT_PATH does not exist: ${_QUASAR_CLIENT_ROOT}")
+      set(_QUASAR_CLIENT_ROOT "")
+    endif()
+    if(NOT DEFINED _QUASAR_CLIENT_ROOT)
+      find_path(_QUASAR_CLIENT_ROOT
+        NAMES include/uaclientcpp/uaclientsdk.h include/uaclient/uaclientsdk.h
+        PATHS /opt/uasdk /opt/OpcUaToolkit /opt/Unified-Automation /opt/opcua
+              /usr/local/OpcUaToolkit /usr/local/Unified-Automation /usr/local/opcua /usr/opcua)
+    endif()
+
+    if(_QUASAR_CLIENT_ROOT)
+      set(OPCUATOOLKIT_PATH "${_QUASAR_CLIENT_ROOT}" CACHE PATH "Path to OPC UA Toolkit installation")
+      set(OPCUA_TOOLKIT_PATH "${OPCUATOOLKIT_PATH}")
+      _quasar_client_prod_version("${OPCUATOOLKIT_PATH}" OPCUATOOLKIT_VERSION)
+
+      set(OPCUATOOLKIT_INCLUDE_DIRS "")
+      foreach(_flavours "uaclientcpp;uaclient" "uabasecpp;uabase" "uastack;uastack"
+                        "uapkicpp;uapki" "xmlparsercpp;xmlparser")
+        foreach(_flavour IN LISTS _flavours)
+          if(EXISTS "${OPCUATOOLKIT_PATH}/include/${_flavour}")
+            list(APPEND OPCUATOOLKIT_INCLUDE_DIRS "${OPCUATOOLKIT_PATH}/include/${_flavour}")
+            break()
+          endif()
+        endforeach()
+      endforeach()
+      list(APPEND OPCUATOOLKIT_INCLUDE_DIRS "${OPCUATOOLKIT_PATH}/include")
+      list(REMOVE_DUPLICATES OPCUATOOLKIT_INCLUDE_DIRS)
+
+      if(EXISTS "${OPCUATOOLKIT_PATH}/lib")
+        set(_QUASAR_CLIENT_LIB_DIR "${OPCUATOOLKIT_PATH}/lib")
+      elseif(EXISTS "${OPCUATOOLKIT_PATH}/lib64")
+        set(_QUASAR_CLIENT_LIB_DIR "${OPCUATOOLKIT_PATH}/lib64")
+      else()
+        set(_QUASAR_CLIENT_LIB_DIR "${OPCUATOOLKIT_PATH}/lib")
+      endif()
+
+      set(_QUASAR_CLIENT_STATIC_LIBS "")
+      set(_QUASAR_CLIENT_SHARED_LIBS "")
+      set(_QUASAR_CLIENT_MISSING "")
+      foreach(_flavours "uaclientcpp;uaclient" "uabasecpp;uabase" "uastack"
+                        "uapkicpp;uapki" "xmlparsercpp;xmlparser" "embeddedstack")
+        set(_resolved "")
+        foreach(_flavour IN LISTS _flavours)
+          if(EXISTS "${_QUASAR_CLIENT_LIB_DIR}/lib${_flavour}.a")
+            list(APPEND _QUASAR_CLIENT_STATIC_LIBS "${_QUASAR_CLIENT_LIB_DIR}/lib${_flavour}.a")
+            set(_resolved "${_flavour}")
+            break()
+          elseif(EXISTS "${_QUASAR_CLIENT_LIB_DIR}/lib${_flavour}.so")
+            list(APPEND _QUASAR_CLIENT_SHARED_LIBS "${_QUASAR_CLIENT_LIB_DIR}/lib${_flavour}.so")
+            set(_resolved "${_flavour}")
+            break()
+          endif()
+        endforeach()
+        list(GET _flavours 0 _first_flavour)
+        if(NOT _resolved AND NOT _first_flavour STREQUAL "uapkicpp"
+           AND NOT _first_flavour STREQUAL "xmlparsercpp"
+           AND NOT _first_flavour STREQUAL "embeddedstack")
+          string(REPLACE ";" "|lib" _alternatives "${_flavours}")
+          list(APPEND _QUASAR_CLIENT_MISSING "lib${_alternatives}")
+        endif()
+      endforeach()
+
+      if(_QUASAR_CLIENT_MISSING)
+        string(REPLACE ";" ", " _missing_pretty "${_QUASAR_CLIENT_MISSING}")
+        set(_QUASAR_CLIENT_FAILURE
+          "UA SDK client closure incomplete at ${_QUASAR_CLIENT_LIB_DIR} (parsed toolkit version ${OPCUATOOLKIT_VERSION}), missing artifacts: ${_missing_pretty}")
+      elseif(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        set(_QUASAR_CLIENT_FAILURE
+          "the Client component's legacy library search links with GNU ld group options and supports Linux only (host is ${CMAKE_SYSTEM_NAME}), use a UA SDK install with a UASDKCPP package config")
+      else()
+        set(OPCUATOOLKIT_CLIENT_LIBRARIES "")
+        if(_QUASAR_CLIENT_STATIC_LIBS)
+          list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES "-Wl,--start-group")
+          list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES ${_QUASAR_CLIENT_STATIC_LIBS})
+          list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES "-Wl,--end-group")
+        endif()
+        list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES ${_QUASAR_CLIENT_SHARED_LIBS})
+        list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES -lxml2 -lssl -lcrypto -lpthread -lrt)
+        find_library(_QUASAR_CLIENT_UUID_LIB uuid)
+        if(_QUASAR_CLIENT_UUID_LIB)
+          list(APPEND OPCUATOOLKIT_CLIENT_LIBRARIES "${_QUASAR_CLIENT_UUID_LIB}")
+        endif()
+
+        if(NOT TARGET OpcUaToolkit::Client)
+          add_library(OpcUaToolkit::Client INTERFACE IMPORTED)
+        endif()
+        set_target_properties(OpcUaToolkit::Client PROPERTIES
+          INTERFACE_LINK_LIBRARIES "${OPCUATOOLKIT_CLIENT_LIBRARIES}"
+          INTERFACE_INCLUDE_DIRECTORIES "${OPCUATOOLKIT_INCLUDE_DIRS}")
+        set(OpcUaToolkit_Client_FOUND TRUE)
+
+        message(STATUS "OPC UA Toolkit client configuration (legacy library search):")
+        message(STATUS "  Version: ${OPCUATOOLKIT_VERSION}")
+        message(STATUS "  Include dirs: ${OPCUATOOLKIT_INCLUDE_DIRS}")
+        message(STATUS "  Libraries: ${OPCUATOOLKIT_CLIENT_LIBRARIES}")
+      endif()
+    elseif(NOT _QUASAR_CLIENT_FAILURE)
+      set(_QUASAR_CLIENT_FAILURE
+        "no OPC UA toolkit found, set OPCUA_TOOLKIT_PATH to a UA SDK or open62541-compat install")
+    endif()
+  endif()
+
+  if(_QUASAR_CLIENT_FAILURE)
+    message(STATUS "OPC UA Toolkit client: ${_QUASAR_CLIENT_FAILURE}")
+  endif()
+
+  set(_QUASAR_CLIENT_FPHSA_REASON "")
+  if(_QUASAR_CLIENT_FAILURE AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.18)
+    set(_QUASAR_CLIENT_FPHSA_REASON REASON_FAILURE_MESSAGE "${_QUASAR_CLIENT_FAILURE}")
+  endif()
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(OpcUaToolkit
+    REQUIRED_VARS OPCUATOOLKIT_PATH
+    VERSION_VAR OPCUATOOLKIT_VERSION
+    ${_QUASAR_CLIENT_FPHSA_REASON}
+    HANDLE_COMPONENTS)
+  return()
+endif()
 
 # --- UASDKCPP package-config discovery (UA SDK >= 2.0) -----------------------
 # UA SDK 2.x installs export find_package(UASDKCPP) with imported targets
