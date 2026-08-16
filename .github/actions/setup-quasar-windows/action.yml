@@ -58,7 +58,7 @@ runs:
     # cache action skips saving on a failed job.
     - name: Restore w2025 deps cache
       id: depscache
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v6
       with:
         path: C:\qdeps
         key: w2025-deps-${{ steps.images.outputs.ref }}-v1
@@ -79,7 +79,7 @@ runs:
         . "$s\Install-LibXsd.ps1"
     - name: Save w2025 deps cache
       if: steps.depscache.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@v6
       with:
         path: C:\qdeps
         key: w2025-deps-${{ steps.images.outputs.ref }}-v1

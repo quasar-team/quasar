@@ -56,7 +56,7 @@ jobs:
     outputs:
       matrix: ${{ steps.gen.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: gen
         env:
           # push/PR -> fast PR tier; nightly schedule -> full cube; dispatch -> chosen tiers.
@@ -92,7 +92,7 @@ jobs:
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
       # clang is baked into the alma10-o6 image by this same change
@@ -125,7 +125,7 @@ jobs:
         run: |
           .CI/run_test_case.py --case "${{ matrix.case }}" --backend "${{ matrix.backend }}" ${COMPAT_BRANCH:+--open62541_compat_branch "$COMPAT_BRANCH"}
       - if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dump-${{ matrix.label }}
           path: build/bin/dump.xml
@@ -146,10 +146,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: _dumps
           pattern: dump-*
@@ -168,10 +168,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           repository: ${{ github.repository_owner }}/UaoForQuasar
           path: UaoForQuasar
@@ -220,7 +220,7 @@ jobs:
           DEBIAN_FRONTEND=noninteractive apt-get install -y -qq cmake g++ git python3 python3-pip libboost-all-dev libssl-dev libxml2-utils libxml2-dev libxerces-c-dev xsdcxx > /dev/null
           pip3 -q install jinja2 lxml colorama pygit2
           cmake --version | head -1
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -240,7 +240,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Latest CMake + build deps
@@ -269,7 +269,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Latest CMake + Boost dev packages
         run: |
           printf 'Acquire::Retries "10";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\n' | sudo tee /etc/apt/apt.conf.d/99-ci-retries > /dev/null
@@ -346,7 +346,7 @@ jobs:
             python3-colorama python3-jinja2 python3-lxml python3-pygit2
           cmake --version | head -1
           g++ --version | head -1
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -368,7 +368,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
       - run: python3 .CI/test_upgrade_override.py

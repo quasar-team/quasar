@@ -45,7 +45,7 @@ jobs:
       uasdk_combos: ${{ steps.gen.outputs.uasdk_combos }}
       sdk_matrix: ${{ steps.gen.outputs.sdk_matrix }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: gen
         run: |
           python3 - '${{ github.event_name }}' <<'EOF' >> "$GITHUB_OUTPUT"
@@ -88,10 +88,10 @@ jobs:
   framework-invariants-windows:
     runs-on: windows-2025
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
       - name: Install Python + tooling deps
@@ -132,8 +132,8 @@ jobs:
     name: w2025 deps warmup
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
       - uses: ./.github/actions/setup-quasar-windows
@@ -155,10 +155,10 @@ jobs:
       QUASAR_COMPAT_URL: https://github.com/quasar-team/open62541-compat.git
       QUASAR_COMPAT_TAG: v1.5.12
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
       - name: Provision the token-free Windows build environment (w2025 deps + MSVC)
@@ -190,7 +190,7 @@ jobs:
         shell: pwsh
       - name: Upload dump.xml (oracle-compare debugging)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windump-o6-${{ matrix.case }}
           path: build/bin/dump.xml
@@ -219,17 +219,17 @@ jobs:
     env:
       QUASAR_CMAKE_GENERATOR: Ninja
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
       # -w2025depsN tracks the dep provisioning generation (bump when the SDK must
       # rebuild against a new images pin; the manifest cache_key knows nothing of deps).
       - name: Restore built SDK from cache
         id: sdkcache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: C:\uasdk
           key: ${{ matrix.cache_key }}-w2025deps2
@@ -351,7 +351,7 @@ jobs:
       # download endpoint (and fork-PR workflows cannot build this: no secret).
       - name: Cache the built UASDK ${{ matrix.sdk_version }} (consumed per case by the cells below)
         if: steps.sdkcache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: C:\uasdk
           key: ${{ matrix.cache_key }}-w2025deps2
@@ -377,16 +377,16 @@ jobs:
       QUASAR_BUILD_CONFIG: uasdk_win_configuration.cmake
       OPCUA_TOOLKIT_PATH: C:/uasdk
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
       - name: Provision the token-free Windows build environment (w2025 deps + MSVC)
         uses: ./.github/actions/setup-quasar-windows
       - name: Restore the pre-built UASDK ${{ matrix.sdk_version }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: C:\uasdk
           key: ${{ matrix.cache_key }}-w2025deps2
@@ -450,7 +450,7 @@ jobs:
         shell: pwsh
       - name: Upload dump.xml (oracle-compare debugging)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windump-uasdk-${{ matrix.sdk_version }}-${{ matrix.case }}
           path: build/bin/dump.xml
@@ -475,7 +475,7 @@ jobs:
     runs-on: ubuntu-latest
     name: w2025 provisioning drift probe
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Compare the pinned images ref against quasar-team/images tips
         run: |
           pin=$(grep -oE "'[0-9a-f]{40}'" .github/actions/setup-quasar-windows/action.yml | tr -d "'" | head -1)
@@ -495,7 +495,7 @@ jobs:
     runs-on: windows-2025
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
@@ -508,7 +508,7 @@ jobs:
           echo "CMAKE_EXE=$cmakeExe" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
       - name: Restore Boost cache
         id: boost-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: C:\BoostB2
           key: boost-1.88.0-b2-clangwin-versioned
@@ -524,7 +524,7 @@ jobs:
           .\b2 install toolset=clang-win --prefix=C:\BoostB2 --with-chrono --with-date_time --with-thread --with-program_options link=static address-model=64 variant=debug,release -j4 | Select-Object -Last 5
       - name: Save Boost cache
         if: always() && steps.boost-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: C:\BoostB2
           key: boost-1.88.0-b2-clangwin-versioned

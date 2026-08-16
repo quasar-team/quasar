@@ -27,7 +27,7 @@ jobs:
           - { tag: alma9-o6,  dockerfile: .CI/docker/Dockerfile.alma9-o6 }
           - { tag: alma10-o6, dockerfile: .CI/docker/Dockerfile.alma10-o6 }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:
@@ -67,7 +67,7 @@ jobs:
         # dispatched; 1.6.5 built with SelectToPoll + poll_fd_size_8192 patches).
         version: ['1.6.5', '1.8.9', '2.0.3']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Download pre-built UASDK ${{ matrix.version }} (x86_64, ${{ matrix.os }})
         env:
           GH_TOKEN: ${{ secrets.UASDK_DL_TOKEN }}
@@ -110,7 +110,7 @@ jobs:
           - { tag: alma9-o6-arm64,  dockerfile: .CI/docker/Dockerfile.alma9-o6 }
           - { tag: alma10-o6-arm64, dockerfile: .CI/docker/Dockerfile.alma10-o6 }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:
@@ -138,7 +138,7 @@ jobs:
         os: [alma9, alma10]
         version: ['1.8.9']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Download pre-built UASDK ${{ matrix.version }} (aarch64, ${{ matrix.os }})
         env:
           GH_TOKEN: ${{ secrets.UASDK_DL_TOKEN }}
