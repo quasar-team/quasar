@@ -153,7 +153,7 @@ jobs:
       # the MSVC build config + the open62541-compat release carrying the MSVC C-flags guard.
       QUASAR_BUILD_CONFIG: open6_win_configuration.cmake
       QUASAR_COMPAT_URL: https://github.com/quasar-team/open62541-compat.git
-      QUASAR_COMPAT_TAG: v1.5.8
+      QUASAR_COMPAT_TAG: v1.5.12
     steps:
       - uses: actions/checkout@v4
         with:
