@@ -16,6 +16,127 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">2.2.0<font size="-1"><br>(16-Aug-2026)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br><code>FindOpcUaToolkit.cmake</code> gains a Client component: <code>find_package(OpcUaToolkit REQUIRED COMPONENTS Client)</code> resolves the client closure of whatever toolkit is on disk and exposes the single imported target <code>OpcUaToolkit::Client</code> together with <code>OPCUATOOLKIT_CLIENT_LIBRARIES</code>, <code>OPCUATOOLKIT_INCLUDE_DIRS</code> and <code>OPCUATOOLKIT_VERSION</code>. UA SDK 2.x resolves through the UASDKCPP package config (<code>UASDKCPP::Client</code>), 1.x layouts through the artifact-driven legacy library search (static libraries in a GNU ld start-group, Linux only), and experimentally an open62541-compat install (compat, open62541 and LogIt, with headers resolved in compat source checkouts). It honours <code>OPCUA_TOOLKIT_PATH</code> as variable or environment, target creation is re-entrant and failure diagnostics come through FPHSA. A component-less <code>find_package(OpcUaToolkit)</code> is byte-identical to before. UaoForQuasar is the intended consumer. Generated <code>Base_D&lt;Class&gt;</code> gains <code>getConfigName()</code>, returning the instance's configuration name (the <code>name</code> attribute of its config element or the design default), set in the constructor initialiser list with no setter, and <code>DRoot</code> reports <code>[ROOT]</code>. <code>quasar.py</code> builds its CMake command through one code path on Linux and Windows: an explicit <code>--builder</code> wins everywhere (it was ignored on Windows), otherwise Windows honours <code>QUASAR_CMAKE_GENERATOR</code> and <code>QUASAR_CMAKE_GENERATOR_PLATFORM</code>, else CMake's default generator, and the full command is printed. CI hardening: the NodeSetTools comparison oracle is pinned to one exact commit at every acquisition site and guarded by a hermetic supply-chain test in both invariants jobs, image-build failures open a GitHub issue, chocolatey installs on Windows retry on outages, a daily job alarms when the CERN GitLab mirror diverges from GitHub, and a <code>uao_demo</code> job generates a client class with UaoForQuasar and builds its demo through the Client component as a tripwire for the client path.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>(none)</td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Improvement
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3477'>OPCUA-3477</a>] - FindOpcUaToolkit Client component: version-agnostic client toolkit discovery for UaoForQuasar</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3382'>OPCUA-3382</a>] - Quit the header autograph book - let git own the credit</li>
+                    </ul>
+                    Task
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3478'>OPCUA-3478</a>] - CERN GitLab quasar mirror silently frozen for six weeks after a force-push</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3479'>OPCUA-3479</a>] - ChangeLog.rst: add the 2.1.1 and 2.1.2 release rows and the getConfigName entry</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3390'>OPCUA-3390</a>] - quasar: negative numeric config values wrap to huge unsigned instead of being rejected</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3282'>OPCUA-3282</a>] - Threadpool usage for quasar server in HGTD</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3276'>OPCUA-3276</a>] - quasar to TimescaleDB/Influx archiver</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar 2.2.0 notes:<br>
+                    <ol>
+                        <li>CI on the release commit green, 43 of 43 run jobs (3 nightly-only probes skipped): all 12 NodeSet oracle cases on open62541 AlmaLinux 10 x86_64 and arm64 and on UASDK 2.0.3 AlmaLinux 10, the AlmaLinux 9 and UASDKCPP package-config smokes, framework invariants including the supply-chain test, the CMake 3.16 floor job, cross-backend parity and the new uao_demo job. Windows Server 2025 workflow green, 28 of 28 run jobs: 12 open62541 and 12 UASDK 2.0.3 cases plus the SDK build, dependency warm-up and invariants.</li>
+                        <li>Nightly on the same commit green: 85 of 85 Linux jobs (all 12 cases on each of open62541 x86_64, arm64 and clang, UASDK 1.8.9 x86_64 and arm64 and UASDK 2.0.3, plus the 1.6.5, AlmaLinux 9, compat-master and uasdk-native cells and the frontier probes) and 45 of 45 Windows jobs (all 12 cases on open62541, UASDK 1.8.9 and 2.0.3, plus 1.6.5, three SDK builds, the provisioning drift probe and standalone compat discovery).</li>
+                        <li>Client discovery verified on UA SDK 1.8.9, 2.0.2 and 2.0.3. Component-less server discovery unchanged, generated NodeSets identical on both backends across all oracle cells.</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
+                <td valign="top">2.1.2<font size="-1"><br>(31-Jul-2026)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>CI is reshaped into a manifest-driven matrix: <code>.CI/test_cases/manifest.json</code> is the single source of truth and <code>.CI/expand_matrix.py</code> flattens case, backend, toolkit version, OS, compiler and architecture into the strategy matrix, with a fast PR tier and a full nightly tier. All 12 test cases now run as NodeSet oracle comparisons on both backends (the three former smoke cases got reference NodeSets), AlmaLinux 10 becomes the primary platform with native arm64 coverage and AlmaLinux 9 reduced to a smoke, clang covers all cases nightly, and toolchain-frontier probes (latest CMake, standalone compat discovery, stock AlmaLinux 10, a CMake 3.16 floor job) run alongside a user-code canary that overlays a hand-written D-class on the generated Configuration API. A new Windows Server 2025 workflow runs the same 12 cases for open62541 and for UASDK built from source, with dependencies provisioned from the BE-ICS w2025 image scripts and the NodeSet oracle built on Windows. UA SDK 2.x is supported: <code>opcserver.cpp</code> follows the 2.0 trace-settings API, <code>FindOpcUaToolkit.cmake</code> tries the UASDKCPP package config first and falls back to the legacy library search for 1.x layouts or pre-set <code>OPCUA_TOOLKIT_LIBS_*</code>, and 2.0.3 becomes the PR gate on Linux and Windows since it is what BE-ICS ships. Generated <code>Base_D&lt;Class&gt;</code> key getters are now <code>[[nodiscard]]</code> and const (GitHub issue #379). On Windows, <code>quasar.py</code> no longer hardcodes the Visual Studio 2017 generator (CMake auto-detects, overridable via <code>QUASAR_CMAKE_GENERATOR</code> and <code>QUASAR_CMAKE_GENERATOR_PLATFORM</code>), the build step is generator-agnostic and no longer swallows errors, and the CodeSynthesis binary is overridable via <code>XSD_CXX_COMMAND</code> (default <code>xsdcxx</code> on every platform). <code>BaseQuasarServer</code> logs the OpenSSL error queue when the platform layer fails to initialise. A new feature-parity page documents what open62541-compat 1.5.x implemented and how parity was verified, and the backend comparison table is updated. The release is cut through <code>release_nebula.py</code>, correcting the 2.1.1 tag which skipped it.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>
+                    <ul>
+                        <li>Generated <code>Base_D&lt;Class&gt;</code> key getters are now <code>[[nodiscard]] T name() const</code>. Ordinary callers are unaffected. Code binding non-const member-function pointers to them, or discarding their result under <code>-Werror=unused-result</code>, changes, and clang warns about the C++17 attribute in C++11 mode.</li>
+                        <li>On Windows, <code>quasar.py</code> no longer forces the "Visual Studio 15 2017 Win64" generator, <code>cmake --build</code> is generator-agnostic and build failures now propagate instead of being swallowed.</li>
+                        <li><code>FindOpcUaToolkit.cmake</code> prefers the UASDKCPP package config when the build config does not pre-set <code>OPCUA_TOOLKIT_LIBS_RELEASE</code>/<code>OPCUA_TOOLKIT_LIBS_DEBUG</code>, so a UA SDK 2.x install links the <code>UASDKCPP::Server</code> imported target instead of the hand list. 1.x installs and pre-set configs are unchanged.</li>
+                        <li>The example <code>open6_win_configuration.cmake</code> now assumes the BE-ICS w2025 dependency layout. Windows users who copied it against the older layout must adapt it.</li>
+                    </ul>
+                </td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Improvement
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3436'>OPCUA-3436</a>] - Generated Base_D key getters not const, forcing const_cast in downstream code</li>
+                    </ul>
+                    Task
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3425'>OPCUA-3425</a>] - Feature parity between open62541 and UA SDK backends is not documented</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3452'>OPCUA-3452</a>] - Manifest-driven CI matrix: symmetric Linux and Windows Server 2025 coverage</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3453'>OPCUA-3453</a>] - Absorb quasar-tma patches upstream: UA SDK 2.x discovery and CI coverage</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3461'>OPCUA-3461</a>] - Windows default (no-env) CMake generator selection has no CI coverage</li>
+                    </ul>
+                    Bug
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3457'>OPCUA-3457</a>] - Windows CI broken - provisions xsd.exe but build expects xsdcxx</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3458'>OPCUA-3458</a>] - Windows CI dependencies drift from BE-ICS production images</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3459'>OPCUA-3459</a>] - Generated Configuration API breaks downstream user code undetected</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3460'>OPCUA-3460</a>] - PR gate tests UASDK 1.8.9 while BE-ICS ships 2.0.3</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3462'>OPCUA-3462</a>] - Windows nightly red: UASDK 1.6.5 snprintf shim breaks Boost 1.91 build</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3464'>OPCUA-3464</a>] - Linux CI red from transient package-mirror failures (apt/dnf fetch)</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3465'>OPCUA-3465</a>] - Windows CI oracle built from a moving, unprotected UaSwissArmyKnife branch</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3466'>OPCUA-3466</a>] - Windows CI comparator cloned from a mutable NodeSetTools tag</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3467'>OPCUA-3467</a>] - CI image builds fail silently, no failure notification</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3468'>OPCUA-3468</a>] - Windows CI cells fail on transient chocolatey outages installing astyle</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar 2.1.2 notes:<br>
+                    <ol>
+                        <li>CI on the tag commit green, 42 of 42 run jobs (3 nightly-only probes skipped): all 12 NodeSet oracle cases on open62541 AlmaLinux 10 x86_64 and arm64, all 12 on UASDK 2.0.3 AlmaLinux 10, the AlmaLinux 9 and UASDKCPP package-config smokes, framework invariants, cross-backend parity and the CMake 3.16 floor job. Windows Server 2025 workflow green, 28 of 28 run jobs: 12 open62541 and 12 UASDK 2.0.3 cases plus the SDK build, dependency warm-up and invariants.</li>
+                        <li>First nightlies after the release green: 84 of 84 Linux jobs (adds UASDK 1.8.9 on x86_64 and arm64, clang on all cases, UASDK 1.6.5 default_design, the compat-master cell and the frontier probes) and 45 of 45 Windows jobs (adds UASDK 1.8.9 on all cases, 1.6.5 default_design, three SDK builds and the provisioning drift probe).</li>
+                        <li>Generated NodeSets identical on both backends across all oracle cells. The generator-selection invariant is mutation-tested: re-introducing the hardcoded generator fails 4 of its 6 cases.</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
+                <td valign="top">2.1.1<font size="-1"><br>(11-Jun-2026)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>Under the open62541 backend, source-variable reads and writes and asynchronous methods now run on the SourceVariables thread pool with the design's <code>addressSpace*UseMutex</code> lock modes applied, matching the Unified Automation behaviour (2.1.0 executed them inline on the iterate thread), and a failed pool dispatch completes the call with the pool status instead of hanging the client. This needs the deferred read/write/call API of open62541-compat 1.5, so the pin moves from v1.4.7 to v1.5.7, taking with it a batch of UASDK-fidelity fixes on the compat side (property browse-name namespace and access level, UaNodeId string formats, <code>UaSession::serverStatus</code>) and the MSVC fix for quasar-embedded Windows links. Cache variables of dataType UaVariant now advertise valueRank ScalarOrOneDimension so clients can write array variants on both backends. Build-system contract fixes: <code>FindOpcUaToolkit.cmake</code> honours <code>OPCUA_TOOLKIT_LIBS_DEBUG</code>/<code>OPCUA_TOOLKIT_LIBS_RELEASE</code> when the build config pre-declares them (restoring the 1.6.x contract for legacy configs that add the client libraries), <code>open62541_config.cmake</code> defines <code>OPCUA_TOOLKIT_COMPAT_LAYER_OBJECTS</code> so extra executables embedding the compat layer link under open62541, and the vendored LogIt submodule follows its v1.0.x maintenance branch. The QuasarThreadPool missing-LogIt-handle error now names the usual cause (a legacy <code>QuasarServer::initializeLogIt()</code> override that does not delegate to the base class). Documentation gains the compiler support matrix and the case-insensitive naming requirement for custom-module public headers, and the manual clang-tidy workflow moves to the AlmaLinux 10 image. Note that the v2.1.1 tag was cut without <code>release_nebula.py</code>, so <code>quasarVersion.txt</code> still reads v2.1.0 and <code>upgrade_project</code> consistency checks fail on it. Use 2.1.2 instead.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>
+                    <ul>
+                        <li>The open62541 backend now requires open62541-compat v1.5.0 or later (deferred read/write/call API). Projects pinned to a 1.4.x compat will not compile after upgrading.</li>
+                        <li>Under open62541, source-variable I/O and asynchronous methods now execute on the SourceVariables thread pool with the design's lock modes applied, so the thread-pool sizing in StandardMetaData matters and device code must be as thread-safe as under UASDK. The <code>ASSourceVariable</code> constructor gained the synchronicity and mutex parameters in open62541 builds, which only affects hand-written code constructing it directly.</li>
+                        <li>Cache variables of dataType UaVariant now advertise valueRank ScalarOrOneDimension (-3) instead of Scalar (-1) on both backends, so NodeSet2 exports and downstream reference NodeSets containing them change.</li>
+                        <li><code>FindOpcUaToolkit.cmake</code> no longer overwrites pre-declared <code>OPCUA_TOOLKIT_LIBS_DEBUG</code>/<code>OPCUA_TOOLKIT_LIBS_RELEASE</code>, so stale values in a build config are now linked.</li>
+                        <li>The tag skipped the release procedure, so <code>upgrade_project</code> fails its consistency check against it. Upgrade to 2.1.2.</li>
+                    </ul>
+                </td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Task
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3128'>OPCUA-3128</a>] - Quasar implementation of UaVariant CacheVariables prevent writing array from client</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3391'>OPCUA-3391</a>] - clang builds of quasar servers fail on AlmaLinux 9 stock Boost 1.75</li>
+                    </ul>
+                    Bug
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3412'>OPCUA-3412</a>] - quasar: open62541_config.cmake leaves OPCUA_TOOLKIT_COMPAT_LAYER_OBJECTS unset, test executables linking the compat layer fail to link</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3414'>OPCUA-3414</a>] - quasar: FindOpcUaToolkit.cmake clobbers client libs (-luaclientcpp) from legacy build configs</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3416'>OPCUA-3416</a>] - quasar: custom-module headers collide case-insensitively with framework headers on macOS checkouts (Meta.h vs meta.h)</li>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3418'>OPCUA-3418</a>] - quasar-embedded Windows builds fail to link since the open62541 1.5 series (unresolved __imp_GetAdaptersAddresses)</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar 2.1.1 notes:<br>
+                    <ol>
+                        <li>CI on the tag commit green, 23 of 23 jobs: 12 open62541 NodeSet oracle cases, 7 UASDK oracle cases, AlmaLinux 10 default_design smokes on both backends, the clang default_design job and framework invariants, all against open62541-compat v1.5.7. No Windows workflow existed at this tag.</li>
+                        <li>Per-change verification: thread-pool dispatch confirmed with gdb on the pool workers and server responsiveness kept during 2 s deferred operations on both backends, UaVariant array writes from a Python client go from BadTypeMismatch to Good on both backends with the readback intact, the LogIt branch green under CMake 3.16.3, 3.31.8 and 4.0.3, and a full AtcaOpcUa rebuild under gcc 16.1 with -Werror.</li>
+                        <li>Production reproductions fixed and re-verified: OpcUaGFexServer startup abort (DCS-630), opcualarltdbserver undefined client-library references (OPCUA-3414), eltek-opcua-server test executables under open62541 (OPCUA-3412).</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">2.1.0<font size="-1"><br>(09-Jun-2026)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>The open62541 backend reaches feature parity with the Unified Automation one: source variables and asynchronous methods are now generated for open62541 too, both executing synchronously inline (no thread pool; the <code>addressSpace*UseMutex</code> lock modes are not applied). Together with open62541-compat v1.4.7 (pin bumped here), method <code>InputArguments</code>/<code>OutputArguments</code> properties carry the canonical quasar node ids, which makes the o6 methods NodeSet comparison pass. Additionally, build-portability hardening for clang/clang++ and glibc-free (musl/Alpine) toolchains: clang is registered as a recognized compiler and honoured via <code>CC</code>/<code>CXX</code>, <code>-lrt</code> is only linked on Linux for both backends, and the clang <code>-Wundef</code> and <code>-Wstrict-prototypes</code> diagnostics from the framework's own sources are resolved. Several Python and C++ paths that assumed only Windows or Linux now also cover macOS/Darwin and other POSIX platforms. Adds an optional, manually-triggered clang-tidy CI workflow plus o6_source_variables, o6_async_methods and clang CI jobs. UASDK generated code is unchanged.</td>
