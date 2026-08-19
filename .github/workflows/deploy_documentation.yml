@@ -1,5 +1,10 @@
 name: Deploy documentation
 
+# CERN/quasar-only. This builds on quasar's own self-hosted runner with
+# quasar's credentials (QUASAR_PASS, RUNNER_API_TOKEN, SMTP_*). Forks inherit
+# this file but have neither, so every job below is guarded on the repository
+# and self-skips there; forks publish documentation by their own means.
+
 on:
   push:
     tags:
@@ -33,6 +38,7 @@ permissions:
 jobs:
 
   wait_for_runner:
+    if: github.repository == 'quasar-team/quasar'
     name: Wait for runner to be online
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -100,6 +106,7 @@ jobs:
           core.setFailed('Runner did not come online within 12 minutes.');
 
   build_deploy:
+    if: github.repository == 'quasar-team/quasar'
     name: Build and deploy documentation
     needs: [wait_for_runner]
     runs-on:
@@ -231,7 +238,7 @@ jobs:
   retry_deploy:
     name: Retry deploy after transient failure
     needs: [build_deploy]
-    if: always() && needs.build_deploy.result != 'success' && needs.build_deploy.result != 'cancelled'
+    if: github.repository == 'quasar-team/quasar' && (always() && needs.build_deploy.result != 'success' && needs.build_deploy.result != 'cancelled')
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -267,7 +274,7 @@ jobs:
   notify_on_failure:
     name: Notify on failure
     needs: [build_deploy, retry_deploy]
-    if: always() && needs.build_deploy.result != 'success' && needs.retry_deploy.result != 'success'
+    if: github.repository == 'quasar-team/quasar' && (always() && needs.build_deploy.result != 'success' && needs.retry_deploy.result != 'success')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

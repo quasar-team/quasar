@@ -1,5 +1,12 @@
 name: GitLab mirror staleness check
 
+# CERN/quasar-only. This watches quasar's own mirror at
+# gitlab.cern.ch/quasar-team/quasar. Forks (e.g. quasarnova-team/supernova)
+# inherit this file but have no mirror and no GITLAB_MIRROR_RO_TOKEN, so every
+# job below is guarded on the repository and self-skips there. Without the
+# guard the check fails on auth and files a false 'mirror is stale' issue into
+# the fork, nightly.
+
 on:
   schedule:
     - cron: '17 6 * * *'
@@ -11,6 +18,7 @@ permissions:
 
 jobs:
   check:
+    if: github.repository == 'quasar-team/quasar'
     name: Compare GitHub and CERN GitLab refs
     runs-on: ubuntu-latest
     timeout-minutes: 70
@@ -41,7 +49,7 @@ jobs:
   notify_on_failure:
     name: Notify on failure
     needs: [check]
-    if: always() && contains(needs.*.result, 'failure')
+    if: github.repository == 'quasar-team/quasar' && (always() && contains(needs.*.result, 'failure'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
