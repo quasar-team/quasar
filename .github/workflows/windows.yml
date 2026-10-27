@@ -93,11 +93,14 @@ jobs:
           submodules: recursive
       - uses: actions/setup-python@v7
         with:
-          python-version: '3.x'
+          # '3.x' resolved to 3.15 on 27 Oct 2026, for which pygit2 ships no wheel
+          # yet and the source build fails without libgit2 headers (seen on PR #408).
+          python-version: '3.14'
       - name: Install Python + tooling deps
         run: |
           python -m pip install --upgrade pip
           python -m pip install jinja2 lxml colorama pygit2
+          if ($LASTEXITCODE -ne 0) { throw "pip install failed (exit $LASTEXITCODE)" }
           $astyleRc = 0
           foreach ($attempt in 1..3) {
             choco install astyle -y --no-progress
@@ -121,6 +124,7 @@ jobs:
           python .CI/test_no_unbound_delegate.py;   chk "test_no_unbound_delegate"
           python .CI/test_generator_selection.py;   chk "test_generator_selection"
           python .CI/test_ci_supply_chain.py;       chk "test_ci_supply_chain"
+          python .CI/test_vcs_gitfile_detection.py; chk "test_vcs_gitfile_detection"
         shell: pwsh
 
   # Build the w2025 dep tree once and populate the cache before the case matrices

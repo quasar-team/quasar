@@ -31,7 +31,9 @@ class VersionControlInterface:
         self.project_path = project_path
         magic_found_per_type = {}
         for vcs_type in known_vcs_types:
-            magic_found_per_type[vcs_type] = os.path.isdir(self.project_path + os.path.sep + magic_vcs_dir[vcs_type])
+            # exists() rather than isdir(): in a git submodule or worktree checkout
+            # .git is a file pointing at the real git dir (OPCUA-3488)
+            magic_found_per_type[vcs_type] = os.path.exists(self.project_path + os.path.sep + magic_vcs_dir[vcs_type])
         #  see what vcs types were identified: preferably there should be exactly one
         magic_found = [x for x in magic_found_per_type if magic_found_per_type[x]]
         if len(magic_found) < 1:
