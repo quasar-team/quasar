@@ -16,6 +16,27 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">2.2.1<font size="-1"><br>(unreleased)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>Version-control detection in <code>FrameworkInternals/version_control_interface.py</code> accepts a checkout whose <code>.git</code> is a file, which is how git lays out submodules and worktrees. <code>check_consistency</code>, <code>style_it</code>, <code>enable_module</code>/<code>disable_module</code> and the commit ID that <code>meta_build_info.py</code> stamps into the build now work in such checkouts, where they previously stopped with "Project is unversioned or it was impossible to determine the version control system used". Covered by <code>.CI/test_vcs_gitfile_detection.py</code> in the framework invariants jobs on Linux and Windows. Reported by Luis Miguens Fernandez.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>(none)</td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Task
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3488'>OPCUA-3488</a>] - Support for submodules in Quasar</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar 2.2.1 notes:<br>
+                    <ol>
+                        <li>(filled at release)</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">2.2.0<font size="-1"><br>(16-Aug-2026)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br><code>FindOpcUaToolkit.cmake</code> gains a Client component: <code>find_package(OpcUaToolkit REQUIRED COMPONENTS Client)</code> resolves the client closure of whatever toolkit is on disk and exposes the single imported target <code>OpcUaToolkit::Client</code> together with <code>OPCUATOOLKIT_CLIENT_LIBRARIES</code>, <code>OPCUATOOLKIT_INCLUDE_DIRS</code> and <code>OPCUATOOLKIT_VERSION</code>. UA SDK 2.x resolves through the UASDKCPP package config (<code>UASDKCPP::Client</code>), 1.x layouts through the artifact-driven legacy library search (static libraries in a GNU ld start-group, Linux only), and experimentally an open62541-compat install (compat, open62541 and LogIt, with headers resolved in compat source checkouts). It honours <code>OPCUA_TOOLKIT_PATH</code> as variable or environment, target creation is re-entrant and failure diagnostics come through FPHSA. A component-less <code>find_package(OpcUaToolkit)</code> is byte-identical to before. UaoForQuasar is the intended consumer. Generated <code>Base_D&lt;Class&gt;</code> gains <code>getConfigName()</code>, returning the instance's configuration name (the <code>name</code> attribute of its config element or the design default), set in the constructor initialiser list with no setter, and <code>DRoot</code> reports <code>[ROOT]</code>. <code>quasar.py</code> builds its CMake command through one code path on Linux and Windows: an explicit <code>--builder</code> wins everywhere (it was ignored on Windows), otherwise Windows honours <code>QUASAR_CMAKE_GENERATOR</code> and <code>QUASAR_CMAKE_GENERATOR_PLATFORM</code>, else CMake's default generator, and the full command is printed. CI hardening: the NodeSetTools comparison oracle is pinned to one exact commit at every acquisition site and guarded by a hermetic supply-chain test in both invariants jobs, image-build failures open a GitHub issue, chocolatey installs on Windows retry on outages, a daily job alarms when the CERN GitLab mirror diverges from GitHub, and a <code>uao_demo</code> job generates a client class with UaoForQuasar and builds its demo through the Client component as a tripwire for the client path.</td>
