@@ -121,6 +121,7 @@ jobs:
           python .CI/test_no_unbound_delegate.py;   chk "test_no_unbound_delegate"
           python .CI/test_generator_selection.py;   chk "test_generator_selection"
           python .CI/test_ci_supply_chain.py;       chk "test_ci_supply_chain"
+          python .CI/test_vcs_gitfile_detection.py; chk "test_vcs_gitfile_detection"
         shell: pwsh
 
   # Build the w2025 dep tree once and populate the cache before the case matrices
