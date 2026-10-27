@@ -139,7 +139,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
-          python-version: '3.x'
+          python-version: '3.14'   # pygit2 has no 3.15 wheel yet, see the invariants job
       - uses: ./.github/actions/setup-quasar-windows
 
   framework-cases-windows:
@@ -164,7 +164,7 @@ jobs:
           submodules: recursive
       - uses: actions/setup-python@v7
         with:
-          python-version: '3.x'
+          python-version: '3.14'   # pygit2 has no 3.15 wheel yet, see the invariants job
       - name: Provision the token-free Windows build environment (w2025 deps + MSVC)
         uses: ./.github/actions/setup-quasar-windows
       - name: Build uasak_dump (backend-agnostic dump tool)
@@ -228,7 +228,7 @@ jobs:
           submodules: recursive
       - uses: actions/setup-python@v7
         with:
-          python-version: '3.x'
+          python-version: '3.14'   # pygit2 has no 3.15 wheel yet, see the invariants job
       # -w2025depsN tracks the dep provisioning generation (bump when the SDK must
       # rebuild against a new images pin; the manifest cache_key knows nothing of deps).
       - name: Restore built SDK from cache
@@ -386,7 +386,7 @@ jobs:
           submodules: recursive
       - uses: actions/setup-python@v7
         with:
-          python-version: '3.x'
+          python-version: '3.14'   # pygit2 has no 3.15 wheel yet, see the invariants job
       - name: Provision the token-free Windows build environment (w2025 deps + MSVC)
         uses: ./.github/actions/setup-quasar-windows
       - name: Restore the pre-built UASDK ${{ matrix.sdk_version }}
