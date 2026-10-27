@@ -16,9 +16,9 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
-                <td valign="top">2.2.1<font size="-1"><br>(unreleased)</font><br></td>
+                <td valign="top">2.2.1<font size="-1"><br>(27-Oct-2026)</font><br></td>
                 <!-- Changes introduced -->
-                <td valign="top"><br>Version-control detection in <code>FrameworkInternals/version_control_interface.py</code> accepts a checkout whose <code>.git</code> is a file, which is how git lays out submodules and worktrees. <code>check_consistency</code>, <code>style_it</code>, <code>enable_module</code>/<code>disable_module</code> and the commit ID that <code>meta_build_info.py</code> stamps into the build now work in such checkouts, where they previously stopped with "Project is unversioned or it was impossible to determine the version control system used". Covered by <code>.CI/test_vcs_gitfile_detection.py</code> in the framework invariants jobs on Linux and Windows. Reported by Luis Miguens Fernandez. CI: the Windows invariants job pins Python 3.14 while pygit2 has no 3.15 wheel, and its dependency install now fails loudly instead of letting the tests report the breakage.</td>
+                <td valign="top"><br>Version-control detection in <code>FrameworkInternals/version_control_interface.py</code> accepts a checkout whose <code>.git</code> is a file, which is how git lays out submodules and worktrees. <code>check_consistency</code>, <code>style_it</code>, <code>enable_module</code>/<code>disable_module</code> and the commit ID that <code>meta_build_info.py</code> stamps into the build now work in such checkouts, where they previously stopped with "Project is unversioned or it was impossible to determine the version control system used". Covered by <code>.CI/test_vcs_gitfile_detection.py</code> in the framework invariants jobs on Linux and Windows. Reported by Luis Miguens Fernandez. The open62541-compat pin moves from v1.5.8 to v1.5.12: <code>UaNodeId::toFullString</code> no longer truncates Guid identifiers (OPCUA-3475), the gcc 13/14 <code>-Warray-bounds</code> false positive that broke <code>-Werror</code> builds is gone (OPCUA-3476), <code>UaVariant</code> carries array dimensions so 2D arrays can be written (OPCUA-3474), <code>UaSession::read</code>/<code>write</code> accept more than one node (OPCUA-3473), and standalone builds gain <code>SKIP_EXAMPLES</code> with the Windows unit test fixed (OPCUA-3454, OPCUA-3455). CI: GitHub Actions move to the Node 24 majors, the Windows invariants job pins Python 3.14 while pygit2 has no 3.15 wheel, and its dependency install now fails loudly instead of letting the tests report the breakage.</td>
                 <!-- Possible backward incompatibilities -->
                 <td valign="top"><br>(none)</td>
                 <!-- JIRA Release notes -->
@@ -30,7 +30,9 @@ ChangeLog
                 </td>
                 <td valign="top">quasar 2.2.1 notes:<br>
                     <ol>
-                        <li>(filled at release)</li>
+                        <li>CI on the pull request that carries the change (#408, head c705b05): all 43 Linux jobs of the pull-request tier green, three nightly-only probes skipped. That covers all NodeSet oracle cases on open62541 AlmaLinux 10 x86_64 and arm64, on UA SDK 2.0.3 AlmaLinux 10, the AlmaLinux 9 default design, the CMake 3.16 floor, the cross-backend parity check, the UaoForQuasar client demo and the framework invariants including the new gitfile test.</li>
+                        <li>Windows: matrix expansion and the framework invariants with the new gitfile test green on the pinned Python 3.14. The Windows case builds and the UA SDK job were still queued behind a cold rebuild of the dependency cache when the tag was cut, the cache having expired during the repository's idle weeks. The nightlies after the release carry the full Windows set.</li>
+                        <li>The gitfile regression test fails on 2.2.0 for exactly the worktree and submodule layouts and passes on 2.2.1. <code>quasar.py check_consistency</code> verified by hand inside a worktree and inside a submodule checkout of the fix.</li>
                     </ol>
                 </td>
             </tr>
