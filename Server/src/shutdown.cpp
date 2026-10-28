@@ -114,7 +114,7 @@ BOOL CtrlHandler(DWORD fdwCtrlType)
     // Handle the CTRL-C signal. 
     case CTRL_C_EVENT: 
         SHUTDOWN_TRACE("Received CTRL-C signal.\n");
-        g_ShutDown = 1;
+        g_RunningFlag = OpcUa_False;
         return( TRUE );
     default:
         break;

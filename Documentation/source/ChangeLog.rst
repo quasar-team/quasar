@@ -16,6 +16,27 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
+                <td valign="top">2.2.2<font size="-1"><br>(unreleased)</font><br></td>
+                <!-- Changes introduced -->
+                <td valign="top"><br>The Windows Ctrl-C shutdown path compiles again. With <code>USE_CTRLC_ON_WINDOWS</code> defined, the handler in <code>Server/src/shutdown.cpp</code> still set <code>g_ShutDown</code>, a flag that became <code>g_RunningFlag</code> in January 2019, and no build had compiled that branch since because nothing in the tree or in CI defines the macro. The handler now clears the running flag, and the <code>default_design</code> open62541 cell of the Windows CI builds with the macro so the path stays compiled. Reported by Tiago Lourinho.</td>
+                <!-- Possible backward incompatibilities -->
+                <td valign="top"><br>(none)</td>
+                <!-- JIRA Release notes -->
+                <td valign="top">
+                    Bug
+                    <ul>
+                        <li>[<a href='https://its.cern.ch/jira/browse/OPCUA-3489'>OPCUA-3489</a>] - Failing windows compilation with CTRL + C</li>
+                    </ul>
+                </td>
+                <td valign="top">quasar 2.2.2 notes:<br>
+                    <ol>
+                        <li>(filled at release)</li>
+                    </ol>
+                </td>
+            </tr>
+
+            <tr>
+                <!-- Version -->
                 <td valign="top">2.2.1<font size="-1"><br>(27-Oct-2026)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>Version-control detection in <code>FrameworkInternals/version_control_interface.py</code> accepts a checkout whose <code>.git</code> is a file, which is how git lays out submodules and worktrees. <code>check_consistency</code>, <code>style_it</code>, <code>enable_module</code>/<code>disable_module</code> and the commit ID that <code>meta_build_info.py</code> stamps into the build now work in such checkouts, where they previously stopped with "Project is unversioned or it was impossible to determine the version control system used". Covered by <code>.CI/test_vcs_gitfile_detection.py</code> in the framework invariants jobs on Linux and Windows. Reported by Luis Miguens Fernandez. The open62541-compat pin moves from v1.5.8 to v1.5.12: <code>UaNodeId::toFullString</code> no longer truncates Guid identifiers (OPCUA-3475), the gcc 13/14 <code>-Warray-bounds</code> false positive that broke <code>-Werror</code> builds is gone (OPCUA-3476), <code>UaVariant</code> carries array dimensions so 2D arrays can be written (OPCUA-3474), <code>UaSession::read</code>/<code>write</code> accept more than one node (OPCUA-3473), and standalone builds gain <code>SKIP_EXAMPLES</code> with the Windows unit test fixed (OPCUA-3454, OPCUA-3455). CI: GitHub Actions move to the Node 24 majors, the Windows invariants job pins Python 3.14 while pygit2 has no 3.15 wheel, and its dependency install now fails loudly instead of letting the tests report the breakage.</td>
