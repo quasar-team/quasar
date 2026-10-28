@@ -371,6 +371,10 @@ jobs:
       - uses: actions/checkout@v7
         with:
           submodules: recursive
+      # The gitfile invariant adds a worktree of this checkout; the workspace is
+      # owned by the runner user while the container runs as root, and both git
+      # and libgit2 refuse such a repository unless it is marked safe.
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - run: python3 .CI/test_upgrade_override.py
       - if: always()
         run: python3 .CI/test_no_spurious_rebuild.py
