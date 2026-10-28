@@ -112,6 +112,68 @@ def rmtree(path):
     shutil.rmtree(path, onerror=make_writable)
 
 
+QUASAR_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+
+
+def run_quasar_tool(args, cwd):
+    """Runs a quasar.py command or framework script with the interpreter running this test."""
+    result = subprocess.run([sys.executable] + args, cwd=cwd, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, universal_newlines=True)
+    return result.returncode, result.stdout
+
+
+def check_commands_in_worktree(root):
+    """The user's view: the framework's own commands inside a worktree of this checkout.
+
+    The class checks above prove the detection; this proves what people run. A
+    worktree of the quasar checkout is a gitfile layout of a real framework tree,
+    so check_consistency must get past the detection and meta_build_info.py must
+    stamp a real commit ID instead of the placeholder it writes when detection
+    fails (that failure is caught, so without this check it would be silent).
+    """
+    failures = []
+    wt = os.path.join(root, 'quasar-worktree')
+    gen = os.path.join(root, 'generated')
+    os.mkdir(gen)
+    try:
+        git('worktree', 'add', '-q', '--detach', wt, 'HEAD', cwd=QUASAR_ROOT)
+    except RuntimeError as e:
+        return ['worktree of the quasar checkout: could not be created: %s' % e]
+    try:
+        if not os.path.isfile(os.path.join(wt, '.git')):
+            failures.append('worktree of the quasar checkout: .git is not a file, the layout under test is missing')
+        # A worktree checks out HEAD. Overlay the working tree's framework scripts so an
+        # uncommitted change to the detection is what gets exercised, not the last commit.
+        shutil.copytree(os.path.join(QUASAR_ROOT, 'FrameworkInternals'), os.path.join(wt, 'FrameworkInternals'),
+                        dirs_exist_ok=True, ignore=shutil.ignore_patterns('__pycache__', 'quasar-modules'))
+        rc, out = run_quasar_tool(['quasar.py', 'check_consistency'], cwd=wt)
+        if 'Determined vcs type: git' not in out or 'impossible to determine the version control system' in out:
+            failures.append('check_consistency in a worktree did not detect git:\n%s' % out[-1500:])
+        elif rc != 0:
+            failures.append('check_consistency in a worktree exited %d:\n%s' % (rc, out[-1500:]))
+        rc, out = run_quasar_tool(['FrameworkInternals/meta_build_info.py', '--project_root_dir', wt,
+                                   '--target_generation_dir', gen, '--toolkit_libs', 'invariant-test'], cwd=wt)
+        if rc != 0:
+            failures.append('meta_build_info.py in a worktree exited %d:\n%s' % (rc, out[-1500:]))
+        else:
+            generated = ''
+            for name in os.listdir(gen):
+                with open(os.path.join(gen, name)) as f:
+                    generated += f.read()
+            commit_lines = [l for l in generated.splitlines() if 'GEND_COMMIT_ID' in l]
+            if not commit_lines:
+                failures.append('meta_build_info.py in a worktree wrote no GEND_COMMIT_ID')
+            elif 'VCS type [git] commit ID [' not in commit_lines[0] or 'No commit ID found' in commit_lines[0] \
+                    or 'Exception' in commit_lines[0]:
+                failures.append('meta_build_info.py in a worktree did not resolve the commit: %s' % commit_lines[0])
+    finally:
+        try:
+            git('worktree', 'remove', '--force', wt, cwd=QUASAR_ROOT)
+        except RuntimeError:
+            git('worktree', 'prune', cwd=QUASAR_ROOT)
+    return failures
+
+
 def main():
     root = tempfile.mkdtemp(prefix='quasar-vcs-gitfile-')
     failures = []
@@ -123,6 +185,7 @@ def main():
         failures += check_layout('worktree', worktree, expect_git_is_file=True)
         failures += check_layout('submodule', submodule, expect_git_is_file=True)
         failures += check_unversioned_is_refused(root)
+        failures += check_commands_in_worktree(root)
     finally:
         rmtree(root)
 
@@ -131,7 +194,8 @@ def main():
     if failures:
         print('%d failure(s): VersionControlInterface does not handle every git checkout layout (OPCUA-3488)' % len(failures))
         return 1
-    print('OK: VersionControlInterface accepts plain, worktree and submodule checkouts and refuses an unversioned directory')
+    print('OK: VersionControlInterface accepts plain, worktree and submodule checkouts and refuses an unversioned directory; '
+          'check_consistency and meta_build_info.py work inside a worktree of this checkout')
     return 0
 
 
