@@ -16,7 +16,7 @@ ChangeLog
 
             <tr>
                 <!-- Version -->
-                <td valign="top">2.2.2<font size="-1"><br>(unreleased)</font><br></td>
+                <td valign="top">2.2.2<font size="-1"><br>(28-Oct-2026)</font><br></td>
                 <!-- Changes introduced -->
                 <td valign="top"><br>The Windows Ctrl-C shutdown path compiles again. With <code>USE_CTRLC_ON_WINDOWS</code> defined, the handler in <code>Server/src/shutdown.cpp</code> still set <code>g_ShutDown</code>, a flag that became <code>g_RunningFlag</code> in January 2019, and no build had compiled that branch since because nothing in the tree or in CI defines the macro. The handler now clears the running flag, and the <code>default_design</code> open62541 cell of the Windows CI builds with the macro so the path stays compiled. Reported by Tiago Lourinho.</td>
                 <!-- Possible backward incompatibilities -->
@@ -30,7 +30,8 @@ ChangeLog
                 </td>
                 <td valign="top">quasar 2.2.2 notes:<br>
                     <ol>
-                        <li>(filled at release)</li>
+                        <li>Reproduced before the fix: with the CI guard alone (commit c9988ad) the <code>default_design</code> open62541 cell on Windows Server 2025 stops with <code>shutdown.cpp(117): error C2065: 'g_ShutDown': undeclared identifier</code>, the error of the report, while the eleven other Windows cells of that run stay green. Reproduced locally as well by compiling the unit with the Windows branch selected and the macro on.</li>
+                        <li>With the fix (pull request #412, head 65ec04e): Linux 43 of 43 jobs of the pull-request tier green, three nightly-only probes skipped; Windows Server 2025 28 of 28 jobs green, two nightly-only probes skipped, including <code>default_design</code> on open62541 with the macro and on UA SDK 2.0.3.</li>
                     </ol>
                 </td>
             </tr>
