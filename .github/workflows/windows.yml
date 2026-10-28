@@ -156,6 +156,10 @@ jobs:
       # run_test_case.py honours these on Windows (unset on Linux, so its path is unchanged):
       # the MSVC build config + the open62541-compat release carrying the MSVC C-flags guard.
       QUASAR_BUILD_CONFIG: open6_win_configuration.cmake
+      # default_design also compiles the Ctrl-C shutdown path (USE_CTRLC_ON_WINDOWS),
+      # which no cell had built since the 2019 g_RunningFlag rename (OPCUA-3489).
+      # CMake folds CXXFLAGS into CMAKE_CXX_FLAGS on the first configure.
+      CXXFLAGS: ${{ matrix.case == 'default_design' && '/DUSE_CTRLC_ON_WINDOWS' || '' }}
       QUASAR_COMPAT_URL: https://github.com/quasar-team/open62541-compat.git
       QUASAR_COMPAT_TAG: v1.5.12
     steps:
